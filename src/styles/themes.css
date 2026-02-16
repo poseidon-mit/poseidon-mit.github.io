@@ -1,67 +1,11 @@
-/* Dark Theme (Default) */
-:root,
-[data-theme="dark"],
-.dark {
-  --color-bg-primary: #020410;
-  --color-bg-secondary: #0a0e1a;
-  --color-bg-tertiary: rgba(255, 255, 255, 0.03);
-
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #a0aec0;
-  --color-text-tertiary: #718096;
-
-  --color-border: rgba(255, 255, 255, 0.1);
-  --color-border-hover: rgba(255, 255, 255, 0.2);
-
-  --color-glass-bg: rgba(255, 255, 255, 0.03);
-  --color-glass-border: rgba(255, 255, 255, 0.08);
-
-  --gradient-bg: linear-gradient(to bottom, #020410, #0a0e1a);
-}
-
-/* Light Theme */
-[data-theme="light"],
-.light {
-  --color-bg-primary: #f7fafc;
-  --color-bg-secondary: #ffffff;
-  --color-bg-tertiary: rgba(0, 0, 0, 0.02);
-
-  --color-text-primary: #1a202c;
-  --color-text-secondary: #4a5568;
-  --color-text-tertiary: #718096;
-
-  --color-border: rgba(0, 0, 0, 0.1);
-  --color-border-hover: rgba(0, 0, 0, 0.2);
-
-  --color-glass-bg: rgba(255, 255, 255, 0.8);
-  --color-glass-border: rgba(0, 0, 0, 0.1);
-
-  --gradient-bg: linear-gradient(to bottom, #f7fafc, #edf2f7);
-}
-
-/* Smooth theme transitions */
-* {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-/* Override specific elements for light mode */
-.light .bg-gradient-to-b {
-  background: var(--gradient-bg);
-}
-
-.light .text-white {
-  color: var(--color-text-primary);
-}
-
-.light .text-gray-400 {
-  color: var(--color-text-secondary);
-}
-
-.light .text-gray-300 {
-  color: var(--color-text-tertiary);
-}
-
-/* Glass effect adjustments for light mode */
-.light [style*="backdrop-filter"] {
-  backdrop-filter: blur(20px) saturate(180%);
+/* Poseidon theme tokens — minimal stub */
+:root {
+  --color-bg-primary: #070d1a;
+  --color-bg-surface: rgba(255, 255, 255, 0.03);
+  --color-text-primary: #e6edf7;
+  --color-text-secondary: #94a3b8;
+  --color-accent-teal: #0dd9b4;
+  --color-accent-cyan: #22d3ee;
+  --color-accent-blue: #4e94ff;
+  --color-border: rgba(255, 255, 255, 0.06);
 }
