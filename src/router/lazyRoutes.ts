@@ -71,6 +71,9 @@ export const routeLoaders = {
   '/v2/dashboard': () => import('../pages/v2/DashboardV2'),
   '/v2/landing': () => import('../pages/v2/LandingV2'),
 
+  // ─── v3 standalone reference pages ──────────────────────────────────────────
+  '/v3/landing': () => import('../pages/v3/LandingV3'),
+
   // ─── Compatibility aliases ──────────────────────────────────────────────────
   '/protect-v2': () => import('../pages/Protect'),
   '/grow-v2': () => import('../pages/Grow'),
@@ -146,6 +149,7 @@ export const routeUxMeta: Record<string, RouteUXMeta> = {
   '/v2/settings': { intent: 'configure', primaryActionLabel: 'Open v1 settings', primaryActionPath: '/settings', navGroup: 'settings', cognitiveLoad: 'medium', demoPriority: 'P1', ctaBudget: 1, first5sMessage: 'DS v2 Settings reference implementation.' },
   '/v2/dashboard': { intent: 'monitor', primaryActionLabel: 'Open v1 dashboard', primaryActionPath: '/dashboard', navGroup: 'core', cognitiveLoad: 'medium', demoPriority: 'P1', ctaBudget: 1, first5sMessage: 'DS v2 Dashboard reference implementation.' },
   '/v2/landing': { intent: 'monitor', primaryActionLabel: 'Open v1 landing', primaryActionPath: '/', navGroup: 'public', cognitiveLoad: 'low', demoPriority: 'P1', ctaBudget: 1, first5sMessage: 'DS v2 Landing reference implementation.' },
+  '/v3/landing': { intent: 'monitor', primaryActionLabel: 'Open v3 dashboard', primaryActionPath: '/v3/dashboard', navGroup: 'public', cognitiveLoad: 'low', demoPriority: 'P1', ctaBudget: 1, first5sMessage: 'v3 standalone Landing reference.' },
 };
 
 function resolveRouteUXMeta(meta: RouteUXMeta): ResolvedRouteUXMeta {
