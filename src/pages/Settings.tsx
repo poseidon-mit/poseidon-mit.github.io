@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Bell, Mail, Smartphone, Shield, Fingerprint } from 'lucide-react';
 import { Link } from '../router';
-import { DefinitionLine } from '../components/DefinitionLine';
 import { PageShell } from '../components/PageShell';
+import { GovernContractSet } from '../components/GovernContractSet';
 import { MissionDataRows } from '../components/MissionDataRows';
 import { MissionSectionHeader } from '../components/MissionSectionHeader';
 import { MissionToggle } from '../components/MissionToggle';
@@ -10,47 +9,72 @@ import { ProofLine } from '../components/ProofLine';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { getRouteScreenContract } from '../contracts/route-screen-contracts';
 
-const kpiSparklines = {
-  policies: [{ value: 12 }, { value: 12 }, { value: 13 }, { value: 13 }, { value: 14 }, { value: 14 }],
-  seats: [{ value: 6 }, { value: 6 }, { value: 7 }, { value: 7 }, { value: 8 }, { value: 8 }],
-  muted: [{ value: 4 }, { value: 3 }, { value: 3 }, { value: 3 }, { value: 2 }, { value: 2 }],
-  backups: [{ value: 1 }, { value: 1 }, { value: 1 }, { value: 1 }, { value: 1 }, { value: 1 }],
-};
+// ── Component ────────────────────────────────────────────────
 
 export const Settings: React.FC = () => {
   const contract = getRouteScreenContract('settings');
-  const [notifications, setNotifications] = useState({ push: true, email: true, sms: false });
-  const [security, setSecurity] = useState({ twoFactor: true, biometric: false });
+  const [notifications, setNotifications] = useState({
+    protect: true,
+    grow: true,
+    execute: true,
+    govern: true,
+  });
+  const [security, setSecurity] = useState({
+    twoFactor: true,
+    biometric: false,
+  });
 
-  const mainContent = (
+  const primaryFeed = (
     <>
+      {/* Profile */}
+      <article className="engine-card">
+        <MissionSectionHeader
+          title="Profile"
+          message="Your account details and identity."
+        />
+        <MissionDataRows
+          items={[
+            { id: 'P-1', title: 'Name', value: 'Sarah Chen', tone: 'primary' },
+            { id: 'P-2', title: 'Email', value: 'sarah@poseidon.ai', tone: 'primary' },
+            { id: 'P-3', title: 'Role', value: 'Owner', tone: 'healthy' },
+          ]}
+        />
+        <button type="button" className="entry-btn entry-btn--ghost mt-3">Edit profile</button>
+      </article>
+
       {/* Notification preferences */}
       <article className="engine-card">
         <MissionSectionHeader
           title="Notification preferences"
-          message="Control how you receive alerts and updates."
+          message="Per-engine alert controls."
         />
         <MissionToggle
-          checked={notifications.push}
-          onChange={(v) => setNotifications((p) => ({ ...p, push: v }))}
-          label="Push notifications"
-          description="Receive real-time alerts on your device."
+          checked={notifications.protect}
+          onChange={(v) => setNotifications((p) => ({ ...p, protect: v }))}
+          label="Protect alerts"
+          description="Threat detection and fraud warnings."
         />
         <MissionToggle
-          checked={notifications.email}
-          onChange={(v) => setNotifications((p) => ({ ...p, email: v }))}
-          label="Email notifications"
-          description="Daily digest and critical alerts via email."
+          checked={notifications.grow}
+          onChange={(v) => setNotifications((p) => ({ ...p, grow: v }))}
+          label="Grow insights"
+          description="Forecast updates and goal progress."
         />
         <MissionToggle
-          checked={notifications.sms}
-          onChange={(v) => setNotifications((p) => ({ ...p, sms: v }))}
-          label="SMS notifications"
-          description="High-priority security alerts via text message."
+          checked={notifications.execute}
+          onChange={(v) => setNotifications((p) => ({ ...p, execute: v }))}
+          label="Execute actions"
+          description="New actions ready for approval."
+        />
+        <MissionToggle
+          checked={notifications.govern}
+          onChange={(v) => setNotifications((p) => ({ ...p, govern: v }))}
+          label="Govern reviews"
+          description="Compliance alerts and audit updates."
         />
       </article>
 
-      {/* Security settings */}
+      {/* Security */}
       <article className="engine-card">
         <MissionSectionHeader
           title="Security"
@@ -60,7 +84,7 @@ export const Settings: React.FC = () => {
           checked={security.twoFactor}
           onChange={(v) => setSecurity((p) => ({ ...p, twoFactor: v }))}
           label="Two-factor authentication"
-          description="Adds an extra layer of security to your account. Recommended."
+          description="Adds an extra layer of security. Recommended."
         />
         <MissionToggle
           checked={security.biometric}
@@ -68,48 +92,47 @@ export const Settings: React.FC = () => {
           label="Biometric login"
           description="Use fingerprint or face recognition to sign in."
         />
-      </article>
-
-      <article className="engine-card" data-slot="preferences">
-        <MissionSectionHeader
-          title="Preferences"
-          message="General application settings and display options."
-        />
-        <SettingsPanel />
-        <ProofLine
-          claim="All settings audit-logged"
-          evidence="Changes tracked with timestamps | Revert available"
-          source="Settings engine"
-          basis="real-time"
-          sourceType="system"
-        />
-      </article>
-
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Quick navigation"
-          message="Jump to specialized settings surfaces."
-        />
         <MissionDataRows
           items={[
-            { id: 'QN-1', title: 'AI delegation', value: 'Configure', detail: 'Autonomy levels and risk thresholds', tone: 'primary' },
-            { id: 'QN-2', title: 'Integrations', value: 'Manage', detail: 'Connected accounts and data sources', tone: 'primary' },
-            { id: 'QN-3', title: 'Data rights', value: 'Review', detail: 'Export, delete, or restrict your data', tone: 'primary' },
+            { id: 'S-1', title: 'Active sessions', value: '2 devices', tone: 'primary' },
+            { id: 'S-2', title: 'Last login', value: '2h ago', tone: 'primary' },
           ]}
         />
-        <div className="mission-dual-actions">
-          <Link className="entry-btn entry-btn--primary" to="/settings/ai">AI settings</Link>
-          <Link className="entry-btn entry-btn--ghost" to="/settings/integrations">Integrations</Link>
-          <Link className="entry-btn entry-btn--ghost" to="/settings/rights">Data rights</Link>
+      </article>
+
+      {/* Quick links */}
+      <article className="engine-card">
+        <MissionSectionHeader
+          title="Quick links"
+          message="Jump to specialized settings."
+        />
+        <div className="flex flex-col gap-2">
+          <Link className="entry-btn entry-btn--ghost" to="/settings/ai">
+            AI Configuration
+          </Link>
+          <Link className="entry-btn entry-btn--ghost" to="/settings/rights">
+            Data Rights
+          </Link>
         </div>
       </article>
 
-      <DefinitionLine
-        metric="Configuration health"
-        formula="configured_policies / recommended_policies"
-        unit="percentage"
-        period="current"
-        threshold="100%"
+      {/* Preferences panel */}
+      <article className="engine-card">
+        <MissionSectionHeader title="General preferences" />
+        <SettingsPanel />
+      </article>
+
+      <ProofLine
+        claim="Account created Jan 15, 2026"
+        evidence="2FA enabled | Last login: 2h ago"
+        source="Account system"
+        sourceType="system"
+      />
+
+      <GovernContractSet
+        auditId="GV-2026-0215-SET"
+        modelVersion="Settings v1.0"
+        explanationVersion="N/A"
       />
     </>
   );
@@ -123,27 +146,17 @@ export const Settings: React.FC = () => {
       heroVariant="editorial"
       hero={{
         kicker: 'Settings',
-        headline: 'Policies, team access, and AI controls.',
-        subline: 'Adjust delegation levels, manage integrations, and review data rights.',
-        proofLine: {
-          claim: 'Confidence 0.93',
-          evidence: '14 active policies | All consent tracked',
-          source: 'Policy engine',
-        },
-        heroAction: {
-          label: 'Recommended:',
-          text: 'Run setup health-check after changing policy or team access rules.',
-          cta: { label: 'Open onboarding →', to: '/onboarding' },
-        },
-        freshness: new Date(Date.now() - 20 * 60 * 1000),
+        headline: 'Account & preferences',
+        subline: 'Manage notifications, security, and AI behavior.',
+        freshness: new Date(Date.now() - 2 * 60 * 60 * 1000),
         kpis: [
-          { label: 'Active policies', value: '14', definition: 'Configured and enforced policy rules', accent: 'blue', sparklineData: kpiSparklines.policies, sparklineColor: 'var(--state-primary)' },
-          { label: 'Team seats', value: '8', definition: 'Licensed team members with active access', accent: 'teal', sparklineData: kpiSparklines.seats, sparklineColor: 'var(--state-healthy)' },
-          { label: 'Alerts muted', value: '2', definition: 'Temporarily suppressed alert categories', accent: 'amber', sparklineData: kpiSparklines.muted, sparklineColor: 'var(--state-warning)' },
-          { label: 'Backups', value: 'Daily', definition: 'Automatic configuration backup frequency', accent: 'cyan', sparklineData: kpiSparklines.backups, sparklineColor: '#00F0FF' },
+          { label: 'Active policies', value: '14', definition: 'Configured and enforced policy rules.', accent: 'blue' },
+          { label: 'Team seats', value: '8', definition: 'Licensed team members with active access.', accent: 'teal' },
+          { label: 'Alerts muted', value: '2', definition: 'Temporarily suppressed alert categories.', accent: 'amber' },
+          { label: 'Backups', value: 'Daily', definition: 'Automatic configuration backup frequency.', accent: 'cyan' },
         ],
       }}
-      primaryFeed={mainContent}
+      primaryFeed={primaryFeed}
     />
   );
 };

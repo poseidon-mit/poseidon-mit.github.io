@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { Lock, Scale, Search, Users } from 'lucide-react';
 import { Link } from '../router';
+import { Lock, Scale, Search, Users } from 'lucide-react';
 import { AuditLinkChip } from '../components/AuditLinkChip';
 import { AuditLogCard } from '../components/AuditLogCard';
 import { CategoryScoreBar } from '../components/CategoryScoreBar';
 import type { CategoryScore } from '../components/CategoryScoreBar';
+import { DefinitionLine } from '../components/DefinitionLine';
 import { PageShell } from '../components/PageShell';
+import { GovernContractSet } from '../components/GovernContractSet';
 import { GovernVerifiedBadge } from '../components/GovernVerifiedBadge';
 import { HumanReviewCTA } from '../components/HumanReviewCTA';
+import { MilestonesTimeline } from '../components/MilestonesTimeline';
+import type { Milestone } from '../components/MilestonesTimeline';
 import { MissionActionList } from '../components/MissionActionList';
-import { MissionDataRows } from '../components/MissionDataRows';
 import { MissionSectionHeader } from '../components/MissionSectionHeader';
 import { MissionStatusChip } from '../components/MissionStatusChip';
 import { PrivacyControlCard } from '../components/PrivacyControlCard';
@@ -17,7 +20,6 @@ import { ProofLine } from '../components/ProofLine';
 import { ScoreRing } from '../components/ScoreRing';
 import {
   mockAuditLogs,
-  mockDataExports,
   mockGovernStats,
   mockPrivacyControls,
 } from '../services/mockGovern';
@@ -25,26 +27,30 @@ import type { PrivacyControl } from '../services/mockGovern';
 import { getRouteScreenContract } from '../contracts/route-screen-contracts';
 import { useUI } from '../contexts/UIContext';
 
-const kpiSparklines = {
-  coverage: [{ value: 95 }, { value: 96 }, { value: 97 }, { value: 97 }, { value: 98 }, { value: 98 }],
-  exceptions: [{ value: 3 }, { value: 3 }, { value: 2 }, { value: 2 }, { value: 1 }, { value: 1 }],
-  latency: [{ value: 55 }, { value: 52 }, { value: 50 }, { value: 49 }, { value: 48 }, { value: 47 }],
-  policy: [{ value: 100 }, { value: 100 }, { value: 100 }, { value: 100 }, { value: 100 }, { value: 100 }],
-};
-
-const complianceItems = [
-  { id: 'CMP-1', regulation: 'GDPR', status: 'Compliant', tone: 'healthy' as const },
-  { id: 'CMP-2', regulation: 'CCPA', status: 'Compliant', tone: 'healthy' as const },
-  { id: 'CMP-3', regulation: 'ECOA', status: 'Compliant', tone: 'healthy' as const },
-  { id: 'CMP-4', regulation: 'SOX', status: 'In review', tone: 'warning' as const },
-];
+// ── Static data ──────────────────────────────────────────────
 
 const complianceCategories: CategoryScore[] = [
   { name: 'Data Privacy', score: 98, icon: Lock, color: 'var(--state-healthy)' },
   { name: 'Fair Lending', score: 94, icon: Scale, color: 'var(--state-healthy)' },
-  { name: 'AML/KYC', score: 92, icon: Search, color: 'var(--state-healthy)' },
+  { name: 'AML / KYC', score: 92, icon: Search, color: 'var(--state-healthy)' },
   { name: 'Consumer Protection', score: 100, icon: Users, color: 'var(--state-healthy)' },
 ];
+
+const governMilestones: Milestone[] = [
+  { label: 'Governance engine deployed', date: 'Jan 15, 2026', status: 'completed' },
+  { label: '1,000 decisions audited', date: 'Feb 1, 2026', status: 'completed' },
+  { label: 'Zero-violation streak: 30d', date: 'Feb 15, 2026', status: 'upcoming' },
+  { label: 'SOC 2 audit target', date: 'Mar 15, 2026', status: 'future' },
+];
+
+const kpiSparklines = {
+  compliance: [{ value: 93 }, { value: 94 }, { value: 95 }, { value: 95 }, { value: 96 }, { value: 96 }],
+  audited: [{ value: 800 }, { value: 900 }, { value: 1000 }, { value: 1100 }, { value: 1200 }, { value: 1247 }],
+  override: [{ value: 5 }, { value: 4.5 }, { value: 4 }, { value: 3.8 }, { value: 3.5 }, { value: 3.2 }],
+  response: [{ value: 250 }, { value: 230 }, { value: 220 }, { value: 210 }, { value: 205 }, { value: 198 }],
+};
+
+// ── Component ────────────────────────────────────────────────
 
 export const Govern: React.FC = () => {
   const contract = getRouteScreenContract('govern');
@@ -67,39 +73,47 @@ export const Govern: React.FC = () => {
   };
 
   const handleFeedback = () => {
-    // Prototype: no-op callback
+    // Prototype no-op
   };
 
-  const mainContent = (
+  // ── Primary feed ───────────────────────────────────────────
+
+  const primaryFeed = (
     <>
-      {/* Compliance score ring — visual summary */}
+      {/* Compliance score ring */}
       <article className="engine-card">
         <ScoreRing
-          score={mockGovernStats.complianceRate}
+          score={96}
           label="Compliance Score"
           subtitle="/ 100"
-          statusText={mockGovernStats.complianceRate >= 95 ? 'Excellent' : 'Review needed'}
+          statusText="Excellent -- no violations"
           color="var(--accent-blue)"
           gradientEnd="#60A5FA"
           size="lg"
         />
-        <p className="mt-2 text-center text-xs" style={{ color: 'var(--muted-2)' }}>
-          Last audit: 2 days ago
-        </p>
       </article>
 
-      {/* Compliance category breakdown */}
+      {/* Category breakdown */}
       <article className="engine-card">
         <MissionSectionHeader
           title="Compliance categories"
           message="Score breakdown by regulatory area."
         />
         <CategoryScoreBar categories={complianceCategories} iconAccent="var(--accent-blue)" />
+        <DefinitionLine
+          metric="Compliance Score"
+          formula="mean(category_scores) weighted by regulatory priority"
+          unit="0-100"
+          period="rolling 30d"
+          threshold="< 80 triggers review"
+        />
       </article>
 
+      {/* Audit log preview */}
       <section className="engine-section">
         <MissionSectionHeader
           title="Audit log"
+          message="Recent AI decisions with full audit trail."
           right={<MissionStatusChip tone="primary" label={`${mockGovernStats.totalDecisions.toLocaleString()} decisions`} />}
         />
         <div className="engine-item-list">
@@ -108,82 +122,108 @@ export const Govern: React.FC = () => {
               <AuditLogCard log={log} onProvideFeedback={handleFeedback} />
               <ProofLine
                 claim={`Accuracy ${log.decision.model.accuracy}%`}
-                evidence={`GDPR: ${log.complianceFlags.gdprCompliant ? '✓' : '✗'} | ECOA: ${log.complianceFlags.ecoaCompliant ? '✓' : '✗'}`}
+                evidence={`GDPR: ${log.complianceFlags.gdprCompliant ? 'Compliant' : 'Non-compliant'} | ECOA: ${log.complianceFlags.ecoaCompliant ? 'Compliant' : 'Non-compliant'}`}
                 source="Govern engine"
+                sourceType="audit"
               />
             </div>
           ))}
         </div>
-
         <div className="mission-dual-actions">
-          <GovernVerifiedBadge auditId="GV-2026-0211-GOV1" modelVersion="v3.2" />
-          <AuditLinkChip auditId="audit-full-2026-02" />
+          <Link className="entry-btn entry-btn--ghost" to="/govern/audit">View full audit ledger</Link>
         </div>
       </section>
 
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Compliance status"
-          right={<MissionStatusChip tone="healthy" label={`${mockGovernStats.complianceRate}%`} />}
-        />
-        <MissionDataRows
-          items={complianceItems.map((item) => ({
-            id: item.id,
-            title: item.regulation,
-            value: item.status,
-            detail: 'Govern policy scan',
-            tone: item.tone,
-          }))}
-        />
-        <ProofLine
-          claim="Compliance scan"
-          evidence={`${mockGovernStats.totalDecisions.toLocaleString()} decisions reviewed | ${mockGovernStats.userFeedbackCount} feedbacks`}
-          source="Govern engine"
-        />
-      </article>
-
-      <article className="engine-card">
-        <MissionSectionHeader title="Human oversight queue" />
-        <HumanReviewCTA />
-      </article>
-    </>
-  );
-
-  const sideContent = (
-    <>
+      {/* Privacy controls */}
       <section className="engine-section">
         <MissionSectionHeader
           title="Privacy controls"
-          right={<MissionStatusChip tone="primary" label={`${controls.filter((item) => item.enabled).length}/${controls.length} active`} />}
+          message="Data sharing and processing preferences."
+          right={<MissionStatusChip tone="primary" label={`${controls.filter((c) => c.enabled).length}/${controls.length} active`} />}
         />
         <div className="engine-item-list">
           {controls.map((control) => (
             <PrivacyControlCard key={control.category} control={control} onToggle={handleToggleControl} />
           ))}
         </div>
+        <ProofLine
+          claim="Privacy controls configured"
+          evidence="GDPR + CCPA compliant | User consent tracked"
+          source="Governance policy engine"
+          sourceType="policy"
+        />
       </section>
 
+      {/* Govern footer */}
+      <GovernContractSet
+        auditId="GV-2026-0215-GOV"
+        modelVersion="Governance v1.8"
+        explanationVersion="SHAP v2.1"
+      />
+    </>
+  );
+
+  // ── Decision rail ──────────────────────────────────────────
+
+  const decisionRail = (
+    <>
+      {/* Verified badge */}
       <article className="engine-card">
-        <MissionSectionHeader title="Data rights (GDPR)" />
-        <MissionDataRows
-          items={[
-            { id: 'DR-1', title: 'Export my data', value: 'Ready', detail: 'JSON/CSV available', tone: 'primary' },
-            { id: 'DR-2', title: 'Restrict processing', value: 'Manual', detail: 'Consent workflow', tone: 'warning' },
-            { id: 'DR-3', title: 'Delete my data', value: 'Protected', detail: 'Human approval required', tone: 'critical' },
-          ]}
+        <div className="flex flex-col items-center gap-4 py-4">
+          <GovernVerifiedBadge
+            auditId="GV-2026-0215-GOV"
+            modelVersion="Governance v1.8"
+            explanationVersion="SHAP v2.1"
+          />
+          <p className="text-center text-sm font-medium" style={{ color: 'var(--text)' }}>
+            All Systems Verified
+          </p>
+        </div>
+      </article>
+
+      {/* Audit summary */}
+      <article className="engine-card">
+        <MissionSectionHeader title="Audit summary" />
+        <div className="flex flex-col gap-3 py-2">
+          <div className="flex items-center justify-between">
+            <span className="text-sm" style={{ color: 'var(--muted)' }}>Total decisions</span>
+            <span className="text-lg font-bold font-mono" style={{ color: 'var(--text)' }}>1,247</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm" style={{ color: 'var(--muted)' }}>Audit coverage</span>
+            <span
+              className="rounded-full px-2 py-0.5 text-xs font-medium"
+              style={{ background: 'rgba(20,184,166,0.1)', color: 'var(--state-healthy)' }}
+            >
+              100%
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm" style={{ color: 'var(--muted)' }}>Last entry</span>
+            <span className="text-sm" style={{ color: 'var(--muted-2)' }}>4m ago</span>
+          </div>
+        </div>
+        <AuditLinkChip auditId="GV-2026-0215-GOV" />
+      </article>
+
+      {/* Milestones */}
+      <article className="engine-card">
+        <MissionSectionHeader
+          title="Governance milestones"
+          message="Progress toward compliance targets."
         />
-        <MissionSectionHeader title="Recent exports" />
-        <MissionDataRows
-          items={mockDataExports.map((item) => ({
-            id: item.id,
-            title: `${item.format.toUpperCase()} export`,
-            value: item.status,
-            detail: item.requestedAt.toLocaleDateString('en-US'),
-            tone: item.status === 'completed' ? 'healthy' : 'warning',
-          }))}
+        <MilestonesTimeline
+          milestones={governMilestones}
+          accentColor="var(--accent-blue)"
         />
       </article>
 
+      {/* Human review CTA */}
+      <article className="engine-card">
+        <HumanReviewCTA />
+      </article>
+
+      {/* Next actions */}
       <article className="engine-card">
         <MissionSectionHeader title="Next best actions" />
         <MissionActionList
@@ -207,31 +247,59 @@ export const Govern: React.FC = () => {
       layout="engine"
       heroVariant="analytical"
       hero={{
-        kicker: 'Govern Engine',
+        kicker: 'Govern',
         engineBadge: 'Govern',
-        headline: 'Full audit trail. Every AI decision explained.',
-        subline: 'Audit logs, compliance status, and privacy controls — all verifiable.',
-        valueStatement: `${mockGovernStats.totalDecisions.toLocaleString()} decisions audited. ${mockGovernStats.complianceRate}% compliant. ${controls.filter((c) => c.enabled).length}/${controls.length} privacy controls active.`,
+        headline: '1,247 decisions audited. Compliance score: 96/100.',
+        subline: 'Every AI decision explainable, auditable, and reversible. Zero compliance violations.',
+        statSummary: `${mockGovernStats.totalDecisions.toLocaleString()} audited | 0 violations | Last audit: 4m ago`,
         proofLine: {
-          claim: 'Confidence 0.97',
-          evidence: `${mockGovernStats.totalDecisions.toLocaleString()} decisions audited | ${mockGovernStats.complianceRate}% compliance`,
+          claim: '1,247 audited | 0 violations | Last audit: 4m ago',
+          evidence: 'Model: Governance v1.8 | Basis: GDPR + Fair Lending Act',
           source: 'Govern engine',
         },
         heroAction: {
-          label: 'Recommended:',
-          text: 'Review open policy exceptions before the next compliance window.',
-          cta: { label: 'Tune settings →', to: '/settings' },
+          label: 'AI insight:',
+          text: 'All 4 engines within compliance bounds. Data Privacy score improved +2 points this week.',
+          cta: { label: 'View audit ledger', to: '/govern/audit' },
         },
-        freshness: new Date(Date.now() - 8 * 60 * 1000),
+        freshness: new Date(Date.now() - 4 * 60 * 1000),
         kpis: [
-          { label: 'Audit coverage', value: '98%', definition: 'Percentage of AI decisions with full audit trail', accent: 'blue', sparklineData: kpiSparklines.coverage, sparklineColor: 'var(--state-primary)' },
-          { label: 'Open exceptions', value: '1', definition: 'Unresolved policy exceptions requiring review', accent: 'amber', sparklineData: kpiSparklines.exceptions, sparklineColor: 'var(--state-warning)' },
-          { label: 'Trace latency', value: '47ms', definition: 'Time to generate explanation for any decision', accent: 'cyan', sparklineData: kpiSparklines.latency, sparklineColor: '#00F0FF' },
-          { label: 'Policy match', value: '100%', definition: 'Decisions aligned with current policy set', accent: 'teal', sparklineData: kpiSparklines.policy, sparklineColor: 'var(--state-healthy)' },
+          {
+            label: 'Compliance',
+            value: '96/100',
+            definition: 'Composite compliance score across all regulatory categories.',
+            accent: 'teal',
+            sparklineData: kpiSparklines.compliance,
+            sparklineColor: 'var(--state-healthy)',
+          },
+          {
+            label: 'Decisions audited',
+            value: '1,247',
+            definition: 'Total AI decisions with full audit trail.',
+            accent: 'blue',
+            sparklineData: kpiSparklines.audited,
+            sparklineColor: 'var(--state-primary)',
+          },
+          {
+            label: 'Override rate',
+            value: '3.2%',
+            definition: 'Percentage of AI decisions overridden by humans.',
+            accent: 'cyan',
+            sparklineData: kpiSparklines.override,
+            sparklineColor: '#00F0FF',
+          },
+          {
+            label: 'Response time',
+            value: '<200ms',
+            definition: 'Time to generate explanation for any decision.',
+            accent: 'amber',
+            sparklineData: kpiSparklines.response,
+            sparklineColor: 'var(--state-warning)',
+          },
         ],
       }}
-      primaryFeed={mainContent}
-      decisionRail={sideContent}
+      primaryFeed={primaryFeed}
+      decisionRail={decisionRail}
     />
   );
 };

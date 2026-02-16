@@ -1,31 +1,30 @@
 import React, { useReducer, useMemo, useCallback } from 'react';
 import { Link } from '../router';
+import { Shield, CreditCard, MapPin, Clock } from 'lucide-react';
 import { ActionOutcomePreview } from '../components/ActionOutcomePreview';
 import { AuditLinkChip } from '../components/AuditLinkChip';
 import { Button } from '../components/Button';
+import { CategoryScoreBar } from '../components/CategoryScoreBar';
+import type { CategoryScore } from '../components/CategoryScoreBar';
 import { DefinitionLine } from '../components/DefinitionLine';
 import { PageShell } from '../components/PageShell';
 import { ExplainableInsightPanel } from '../components/ExplainabilityPanel';
 import { GovernContractSet } from '../components/GovernContractSet';
 import { GovernVerifiedBadge } from '../components/GovernVerifiedBadge';
 import { HumanReviewCTA } from '../components/HumanReviewCTA';
+import { MilestonesTimeline } from '../components/MilestonesTimeline';
+import type { Milestone } from '../components/MilestonesTimeline';
 import { MissionActionList } from '../components/MissionActionList';
-import { MissionDataRows } from '../components/MissionDataRows';
-import { MissionMetricTiles } from '../components/MissionMetricTiles';
+import { MissionEvidencePanel } from '../components/MissionEvidencePanel';
 import { MissionSectionHeader } from '../components/MissionSectionHeader';
 import { MissionStatusChip } from '../components/MissionStatusChip';
 import { ProofLine } from '../components/ProofLine';
-import { RiskScoreDial } from '../components/RiskScoreDial';
 import { ScoreRing } from '../components/ScoreRing';
-import { SignalRow, SignalGroup } from '../components/SignalRow';
-import { SubscriptionLeakCard } from '../components/SubscriptionLeakCard';
 import { ThreatAlertCard } from '../components/ThreatAlertCard';
-import { TrustIndexCard } from '../components/TrustIndexCard';
 import { getRouteScreenContract } from '../contracts/route-screen-contracts';
 import { useUI } from '../contexts/UIContext';
 import {
   mockProtectStats,
-  mockSubscriptionLeaks,
   mockThreats,
 } from '../services/mockProtect';
 import type { ThreatAlert } from '../services/mockProtect';
@@ -74,31 +73,32 @@ function protectReducer(state: ProtectState, event: ProtectEvent): ProtectState 
 
 // ── Static data ──────────────────────────────────────────────
 
-const statusRows = [
-  { key: 'Card misuse', status: 'Escalated', score: '0.96', tone: 'critical' as const },
-  { key: 'Vendor anomaly', status: 'Investigating', score: '0.91', tone: 'warning' as const },
-  { key: 'Chargeback wave', status: 'Monitored', score: '0.88', tone: 'primary' as const },
+const categoryBreakdown: CategoryScore[] = [
+  { name: 'Transaction patterns', score: 92, icon: CreditCard, color: 'var(--accent-teal)' },
+  { name: 'Merchant risk', score: 87, icon: Shield, color: 'var(--accent-teal)' },
+  { name: 'Geographic signals', score: 95, icon: MapPin, color: 'var(--accent-teal)' },
+  { name: 'Behavioral match', score: 91, icon: Clock, color: 'var(--accent-teal)' },
+];
+
+const protectMilestones: Milestone[] = [
+  { label: 'Signal detected', date: '14:28 UTC', status: 'completed' },
+  { label: 'Analysis complete', date: '14:29 UTC', status: 'completed' },
+  { label: 'Alert raised', date: '14:30 UTC', status: 'completed' },
+  { label: 'Resolution pending', date: 'Awaiting', status: 'upcoming' },
 ];
 
 const quickActions = [
-  { title: 'Freeze risky merchant rules', meta: 'Immediate containment | Confidence 0.96 | Model v3.2', tone: 'critical' as const },
-  { title: 'Open review with evidence pack', meta: 'SLA 24h | Confidence 0.91 | Model v3.2', tone: 'warning' as const },
-  { title: 'Notify finance owner', meta: 'High severity protocol | Confidence 0.88 | Model v3.2', tone: 'primary' as const },
+  { title: 'Freeze card', meta: 'Immediate containment | Confidence 0.96', tone: 'critical' as const },
+  { title: 'Investigate MerchantX', meta: 'SLA 24h | Confidence 0.91', tone: 'warning' as const },
+  { title: 'Update alert rules', meta: 'Low priority | Confidence 0.88', tone: 'healthy' as const },
 ];
 
 const kpiSparklines = {
-  alert: [{ value: 5 }, { value: 4 }, { value: 6 }, { value: 3 }, { value: 4 }, { value: 2 }, { value: 3 }, { value: 3 }],
-  fp: [{ value: 18 }, { value: 16 }, { value: 15 }, { value: 14 }, { value: 13 }, { value: 12 }, { value: 11 }, { value: 12 }],
-  recovery: [{ value: 45 }, { value: 40 }, { value: 35 }, { value: 32 }, { value: 28 }, { value: 25 }, { value: 20 }, { value: 18 }],
-  blocked: [{ value: 8 }, { value: 9 }, { value: 11 }, { value: 12 }, { value: 14 }, { value: 15 }, { value: 17 }, { value: 18 }],
+  signals: [{ value: 5 }, { value: 4 }, { value: 6 }, { value: 3 }, { value: 4 }, { value: 3 }],
+  blocked: [{ value: 0 }, { value: 1 }, { value: 0 }, { value: 1 }, { value: 0 }, { value: 1 }],
+  fpRate: [{ value: 3.5 }, { value: 3.2 }, { value: 2.8 }, { value: 2.5 }, { value: 2.3 }, { value: 2.1 }],
+  coverage: [{ value: 98 }, { value: 99 }, { value: 99 }, { value: 100 }, { value: 100 }, { value: 100 }],
 };
-
-const protectTrustComponents = [
-  { label: 'Detection', score: 94, trend: 'stable' as const },
-  { label: 'FP control', score: 88, trend: 'up' as const },
-  { label: 'Response time', score: 91, trend: 'stable' as const },
-  { label: 'Containment', score: 96, trend: 'up' as const },
-];
 
 // ── Component ────────────────────────────────────────────────
 
@@ -111,33 +111,11 @@ export const Protect: React.FC = () => {
   const { addNotification } = useUI();
   const contract = getRouteScreenContract('protect');
 
-  // Derived
+  // Derived values
   const pendingCount = useMemo(
     () => state.threats.filter((t) => t.status === 'pending').length,
     [state.threats],
   );
-  const criticalCount = useMemo(
-    () => state.threats.filter((t) => t.severity === 'critical').length,
-    [state.threats],
-  );
-  const compositeScore = useMemo(
-    () => state.threats.length > 0
-      ? state.threats.reduce((sum, t) => sum + t.aiExplanation.confidence, 0) / (state.threats.length * 100)
-      : 0,
-    [state.threats],
-  );
-  const riskBand = compositeScore >= 0.9 ? 'critical' : compositeScore >= 0.75 ? 'high' : compositeScore >= 0.5 ? 'medium' : 'low';
-  const wasteTotal = useMemo(
-    () => mockSubscriptionLeaks.reduce((sum, leak) => sum + leak.estimatedWaste, 0),
-    [],
-  );
-  const activeSignals = useMemo(() => ({
-    fraud: state.threats.filter((t) => t.type === 'fraud').length,
-    spending: state.threats.filter((t) => t.type === 'unusual_spending').length,
-    overdraft: state.threats.filter((t) => t.type === 'overdraft').length,
-    subscriptions: mockSubscriptionLeaks.length,
-  }), [state.threats]);
-
   const focusedThreat = useMemo(
     () => state.threats.find((t) => t.id === state.focusedThreatId) ?? null,
     [state.threats, state.focusedThreatId],
@@ -164,11 +142,11 @@ export const Protect: React.FC = () => {
     dispatch({ type: 'CANCEL_PREVIEW' });
   }, []);
 
-  // ── Primary feed ─────────────────────────────────────────
+  // ── Primary feed ───────────────────────────────────────────
 
   const primaryFeed = (
     <>
-      {/* 1. Threat triage queue */}
+      {/* Threat table / triage queue */}
       <section className="engine-section">
         <MissionSectionHeader
           title="Threat triage queue"
@@ -204,168 +182,98 @@ export const Protect: React.FC = () => {
           ))}
         </div>
         <DefinitionLine
-          metric="Risk score"
-          formula="SHAP(features) x confidence"
-          unit="score (0-1)"
-          period="per-event"
-          threshold="> 0.70 = actionable"
+          metric="Risk Score"
+          formula="weighted_sum(signal_confidence x severity_factor)"
+          unit="0-1"
+          period="rolling 24h"
+          threshold="> 0.7 triggers alert"
         />
       </section>
 
-      {/* 2. Signal intelligence */}
+      {/* Quick actions */}
       <article className="engine-card">
         <MissionSectionHeader
-          title="Signal intelligence"
-          message="Live signal decomposition. Model v3.2."
+          title="Recommended actions"
+          message="Ranked by severity and confidence."
         />
-        <SignalGroup>
-          <SignalRow icon="●" label="Fraud signals" value={`${activeSignals.fraud} active`} color="red" />
-          <SignalRow icon="●" label="Spending anomalies" value={`${activeSignals.spending} active`} color="amber" />
-          <SignalRow icon="●" label="Overdraft risk" value={`${activeSignals.overdraft} active`} color="teal" />
-          <SignalRow icon="●" label="Subscription leaks" value={`${activeSignals.subscriptions} detected`} color="violet" />
-        </SignalGroup>
+        <MissionActionList items={quickActions} />
         <ProofLine
-          claim="Signal ensemble active"
-          evidence={`4 categories | ${state.threats.length} threat models | Real-time`}
-          source="Protect signal pipeline v3.2"
+          claim="3 actions recommended"
+          evidence="Prioritized by severity x confidence | Model v3.2"
+          source="Protect action ranker"
           sourceType="model"
-        />
-        <DefinitionLine
-          metric="Signal strength"
-          formula="max(category_signals)"
-          unit="count"
-          period="real-time"
         />
       </article>
 
-      {/* 3. Protection performance */}
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Protection performance"
-          message="Aggregate containment metrics across all threat models."
-        />
-        <MissionMetricTiles
-          items={[
-            { id: 'PRO-STAT-1', label: 'Protected', value: `$${mockProtectStats.totalProtected.toLocaleString()}`, tone: 'healthy' },
-            { id: 'PRO-STAT-2', label: 'Blocked', value: String(mockProtectStats.threatsBlocked), tone: 'critical' },
-            { id: 'PRO-STAT-3', label: 'Saved (mo)', value: `$${mockProtectStats.savingsThisMonth}`, tone: 'primary' },
-            { id: 'PRO-STAT-4', label: 'Accuracy', value: `${mockProtectStats.accuracy}%`, tone: 'healthy' },
-          ]}
-        />
-        <ProofLine
-          claim={`${mockProtectStats.threatsBlocked} threats blocked`}
-          evidence={`$${mockProtectStats.totalProtected.toLocaleString()} protected | ${mockProtectStats.accuracy}% accuracy | Model v3.2`}
-          source="Protect engine containment"
-          basis="30d rolling"
-          sourceType="model"
-        />
-        <DefinitionLine
-          metric="Protection rate"
-          formula="blocked / (blocked + missed)"
-          unit="percentage"
-          period="30d rolling"
-          threshold="> 90%"
-        />
-      </article>
-
-      {/* 4. Subscription leak detection */}
-      <section className="engine-section">
-        <MissionSectionHeader
-          title="Subscription leak detection"
-          message="Detected unused or overpriced subscriptions."
-          right={(
-            <MissionStatusChip
-              tone="warning"
-              label={`$${wasteTotal.toLocaleString()}/yr waste`}
-            />
-          )}
-        />
-        <div className="engine-item-list">
-          {mockSubscriptionLeaks.slice(0, 2).map((leak) => (
-            <SubscriptionLeakCard key={leak.id} leak={leak} />
-          ))}
-        </div>
-        <ProofLine
-          claim={`${mockSubscriptionLeaks.length} leaks detected`}
-          evidence={`$${wasteTotal.toLocaleString()}/yr estimated waste | Trailing 12mo analysis`}
-          source="Protect subscription monitor"
-          sourceType="model"
-        />
-        <DefinitionLine
-          metric="Waste estimate"
-          formula="monthly_charge x months_unused"
-          unit="USD/year"
-          period="trailing 12mo"
-        />
-      </section>
-
-      {/* 5. Govern footer */}
+      {/* Govern footer */}
       <GovernContractSet
-        auditId="GV-2026-0212-PRT1"
-        modelVersion="v3.2"
-        explanationVersion="xai-2.1"
+        auditId="GV-2026-0215-PRT-SIG"
+        modelVersion="FraudDetection v3.2"
+        explanationVersion="SHAP v2.1"
       />
       <div className="govern-footer">
         <GovernVerifiedBadge
-          auditId="GV-2026-0212-PRT1"
-          modelVersion="v3.2"
-          explanationVersion="xai-2.1"
+          auditId="GV-2026-0215-PRT-SIG"
+          modelVersion="FraudDetection v3.2"
+          explanationVersion="SHAP v2.1"
         />
-        <AuditLinkChip auditId="GV-2026-0212-PRT1" />
+        <AuditLinkChip auditId="GV-2026-0215-PRT-SIG" />
         <HumanReviewCTA caseType="dispute" />
       </div>
     </>
   );
 
-  // ── Decision rail ────────────────────────────────────────
+  // ── Decision rail ──────────────────────────────────────────
 
   const decisionRail = (
     <>
-      {/* 0. Security score ring — visual summary */}
+      {/* Score ring */}
       <article className="engine-card">
         <ScoreRing
-          score={mockProtectStats.accuracy}
-          label="Security Score"
-          subtitle={`/ 100`}
-          statusText={mockProtectStats.accuracy >= 90 ? 'Excellent Protection' : 'Review Recommended'}
+          score={94}
+          label="Risk Score"
+          subtitle="/ 100"
+          statusText="Low -- monitoring"
           color="var(--accent-teal)"
           size="lg"
         />
       </article>
 
-      {/* 1. Composite risk */}
+      {/* Category breakdown */}
       <article className="engine-card">
         <MissionSectionHeader
-          title="Composite risk"
-          message="Weighted average across all active threat models."
+          title="Category breakdown"
+          message="Per-category threat scores."
         />
-        <RiskScoreDial
-          score={compositeScore}
-          band={riskBand}
-          trend="down"
-          trendDelta="-0.03"
+        <CategoryScoreBar categories={categoryBreakdown} iconAccent="var(--accent-teal)" />
+      </article>
+
+      {/* Milestones timeline */}
+      <article className="engine-card">
+        <MissionSectionHeader
+          title="Alert timeline"
+          message="Signal lifecycle from detection to resolution."
         />
-        <ProofLine
-          claim={`Risk ${compositeScore.toFixed(2)} — ${riskBand}`}
-          evidence={`Weighted across ${state.threats.length} models | Threshold < 0.70`}
-          source="Protect threat ensemble v3.2"
-          sourceType="model"
-        />
-        <DefinitionLine
-          metric="Composite risk"
-          formula="weighted_avg(threat_confidences)"
-          unit="0–1"
-          period="real-time"
-          threshold="< 0.70"
+        <MilestonesTimeline
+          milestones={protectMilestones}
+          accentColor="var(--accent-teal)"
         />
       </article>
 
-      {/* 2. Threat evidence panel */}
-      {focusedThreat ? (
+      {/* Evidence summary */}
+      <MissionEvidencePanel
+        className="engine-card"
+        title="Evidence summary"
+        summary="AI identified 3 correlated signals across 2 accounts in the last 6 hours."
+        tone="primary"
+      />
+
+      {/* Focused threat evidence */}
+      {focusedThreat && (
         <article className="engine-card">
           <MissionSectionHeader
             title={`Alert: ${focusedThreat.transaction.merchant}`}
-            message={`${focusedThreat.type} · ${focusedThreat.severity} severity`}
+            message={`${focusedThreat.type} -- ${focusedThreat.severity} severity`}
           />
           <ExplainableInsightPanel
             title="Threat evidence"
@@ -378,9 +286,9 @@ export const Protect: React.FC = () => {
             confidence={focusedThreat.aiExplanation.confidence / 100}
             recency="Just now"
             governMeta={{
-              auditId: `GV-2026-0212-${focusedThreat.id}`,
-              modelVersion: 'v3.2',
-              explanationVersion: 'xai-2.1',
+              auditId: `GV-2026-0215-${focusedThreat.id}`,
+              modelVersion: 'FraudDetection v3.2',
+              explanationVersion: 'SHAP v2.1',
               timestamp: new Date().toISOString(),
             }}
           />
@@ -400,7 +308,7 @@ export const Protect: React.FC = () => {
                 />
               ) : (
                 <ActionOutcomePreview
-                  outcome="Transaction approved. Alert resolved. Model will incorporate this feedback to reduce future false positives."
+                  outcome="Transaction approved. Alert resolved. Model will incorporate this feedback."
                   reversibleWindow="N/A"
                   sideEffects={[
                     'Model updated with approval feedback',
@@ -418,107 +326,16 @@ export const Protect: React.FC = () => {
               </div>
             </>
           )}
-          <ProofLine
-            claim={`Confidence ${(focusedThreat.aiExplanation.confidence / 100).toFixed(2)}`}
-            evidence={`Top: ${focusedThreat.aiExplanation.shapValues[0]?.feature ?? 'N/A'} | FP rate ${focusedThreat.aiExplanation.falsePositiveRate}%`}
-            source={`Model v3.2 | ${focusedThreat.severity} severity`}
-            sourceType="model"
-          />
-        </article>
-      ) : (
-        <article className="engine-card">
-          <MissionSectionHeader
-            title="Threat evidence"
-            message="Select a threat from the triage queue to inspect its SHAP evidence and decide."
-          />
         </article>
       )}
 
-      {/* 3. Investigation status board */}
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Active investigations"
-          message="Ongoing investigations and their model confidence scores."
-        />
-        <MissionDataRows
-          items={statusRows.map((row) => ({
-            id: `PRO-ROW-${row.key}`,
-            title: row.key,
-            value: row.score,
-            detail: row.status,
-            tone: row.tone,
-          }))}
-        />
-        <ProofLine
-          claim="3 active investigations"
-          evidence="Card misuse 0.96 | Vendor anomaly 0.91 | Chargeback 0.88"
-          source="Protect investigation pipeline"
-          sourceType="model"
-        />
-        <DefinitionLine
-          metric="Investigation score"
-          formula="model_confidence x severity_weight"
-          unit="0–1"
-          period="per-case"
-          threshold="> 0.90 = auto-escalate"
-        />
-      </article>
-
-      {/* 4. Containment actions */}
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Recommended containment"
-          message="Ranked by severity and confidence."
-        />
-        <MissionActionList items={quickActions} />
-        <ProofLine
-          claim="3 actions recommended"
-          evidence="Prioritized by severity x confidence | Model v3.2"
-          source="Protect action ranker"
-          sourceType="model"
-        />
-        <DefinitionLine
-          metric="Action priority"
-          formula="severity_weight x confidence"
-          unit="rank"
-          period="real-time"
-        />
-        <div className="mission-dual-actions">
-          <Link className="entry-btn entry-btn--ghost" to="/execute">Open action queue</Link>
-          <Link className="entry-btn entry-btn--ghost" to="/govern">Audit trail</Link>
-        </div>
-      </article>
-
-      {/* 5. Protect sub-trust */}
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Protect engine trust"
-          message="Sub-component confidence breakdown."
-        />
-        <TrustIndexCard
-          score={92}
-          trend="stable"
-          components={protectTrustComponents}
-          updatedAt="2 hours ago"
-        />
-        <ProofLine
-          claim="Protect trust 92/100"
-          evidence="4 sub-components | All above threshold | Detection 94, FP 88, Response 91, Containment 96"
-          source="Protect trust composite"
-          sourceType="model"
-        />
-        <DefinitionLine
-          metric="Sub-trust index"
-          formula="weighted_mean(sub_components)"
-          unit="0–100"
-          period="rolling 30d"
-          threshold="> 85"
-        />
-      </article>
+      {/* Navigation links */}
+      <div className="mission-dual-actions">
+        <Link className="entry-btn entry-btn--ghost" to="/protect/alert-detail">Alert detail</Link>
+        <Link className="entry-btn entry-btn--ghost" to="/govern">Audit trail</Link>
+      </div>
     </>
   );
-
-  // ── Render ───────────────────────────────────────────────
 
   return (
     <PageShell
@@ -527,56 +344,54 @@ export const Protect: React.FC = () => {
       layout="engine"
       heroVariant="focused"
       hero={{
-        kicker: 'Protect Engine',
+        kicker: 'Protect',
         engineBadge: 'Protect',
-        headline: `${pendingCount} pending threats. Composite risk: ${compositeScore.toFixed(2)} (${riskBand}).`,
-        subline: `${criticalCount} critical alerts require triage. Model v3.2 | FP < 5% | ${mockProtectStats.accuracy}% accuracy.`,
-        valueStatement: `$${mockProtectStats.totalProtected.toLocaleString()} protected this cycle. ${mockProtectStats.threatsBlocked} threats contained.`,
+        headline: `3 active signals. Confidence 0.94. No action required.`,
+        subline: 'Continuous monitoring across all accounts. Last scan: 4 minutes ago.',
+        valueStatement: `$${mockProtectStats.totalProtected.toLocaleString()} protected this cycle.`,
         proofLine: {
-          claim: `Composite risk ${compositeScore.toFixed(2)} — ${riskBand}`,
-          evidence: `${state.threats.length} active models | Weighted confidence | Guardrail < 0.70`,
-          source: 'Protect threat ensemble v3.2',
+          claim: '3 signals detected | Confidence 0.94',
+          evidence: 'Model: FraudDetection v3.2 | Basis: 180-day behavioral analysis',
+          source: 'Protect engine',
         },
         heroAction: {
-          label: 'Triage priority:',
-          text: `Resolve ${criticalCount} critical alerts before 24h SLA.`,
+          label: 'AI insight:',
+          text: 'Unusual pattern detected at MerchantX -- $4,200 charge deviates 3.2x from category average.',
           cta: { label: 'Begin triage', to: '#threat-triage' },
         },
-        freshness: new Date(Date.now() - 5 * 60 * 1000),
+        freshness: new Date(Date.now() - 4 * 60 * 1000),
         kpis: [
           {
-            label: 'Pending threats',
-            value: String(pendingCount),
-            definition: 'Active threats awaiting triage. Threshold: 0 pending within 24h SLA.',
+            label: 'Active signals',
+            value: '3',
+            definition: 'Active threat signals across all accounts.',
+            accent: 'amber',
+            sparklineData: kpiSparklines.signals,
+            sparklineColor: 'var(--state-warning)',
+          },
+          {
+            label: 'Blocked today',
+            value: '1',
+            definition: 'Transactions blocked by automated fraud detection.',
             accent: 'teal',
-            sparklineData: kpiSparklines.alert,
+            sparklineData: kpiSparklines.blocked,
             sparklineColor: 'var(--state-healthy)',
           },
           {
             label: 'False positive rate',
-            value: '-12%',
-            delta: 'MoM',
-            definition: 'Month-over-month false positive rate change. Target: < 5%.',
+            value: '2.1%',
+            definition: 'Percentage of alerts later marked as false positives.',
             accent: 'cyan',
-            sparklineData: kpiSparklines.fp,
+            sparklineData: kpiSparklines.fpRate,
             sparklineColor: '#00F0FF',
           },
           {
-            label: 'Mean resolution',
-            value: '18m',
-            definition: 'Mean time to resolve flagged threat. Target: < 30m.',
+            label: 'Coverage',
+            value: '100%',
+            definition: 'Percentage of accounts monitored by threat detection.',
             accent: 'blue',
-            sparklineData: kpiSparklines.recovery,
+            sparklineData: kpiSparklines.coverage,
             sparklineColor: 'var(--state-primary)',
-          },
-          {
-            label: 'Value protected',
-            value: `$${mockProtectStats.totalProtected.toLocaleString()}`,
-            delta: '+$4.2k',
-            definition: 'Total value of prevented fraudulent transactions this cycle.',
-            accent: 'amber',
-            sparklineData: kpiSparklines.blocked,
-            sparklineColor: 'var(--state-warning)',
           },
         ],
       }}

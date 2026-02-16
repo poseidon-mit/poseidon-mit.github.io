@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from '../router';
+import { TrendingUp, DollarSign, Target } from 'lucide-react';
+import { CategoryScoreBar } from '../components/CategoryScoreBar';
+import type { CategoryScore } from '../components/CategoryScoreBar';
+import { ContributionChart } from '../components/ContributionChart';
 import { DefinitionLine } from '../components/DefinitionLine';
-import { NetWorthHero } from '../components/NetWorthHero';
-import { PageShell } from '../components/PageShell';
-import { ExplainableInsightPanel } from '../components/ExplainabilityPanel';
 import { ForecastBandChart } from '../components/ForecastBandChart';
 import { GovernContractSet } from '../components/GovernContractSet';
+import { MilestonesTimeline } from '../components/MilestonesTimeline';
+import type { Milestone } from '../components/MilestonesTimeline';
 import { MissionActionList } from '../components/MissionActionList';
-import { MissionDataRows } from '../components/MissionDataRows';
-import { MissionMetricTiles } from '../components/MissionMetricTiles';
 import { MissionSectionHeader } from '../components/MissionSectionHeader';
 import { MissionStatusChip } from '../components/MissionStatusChip';
+import { NetWorthHero } from '../components/NetWorthHero';
+import { PageShell } from '../components/PageShell';
 import { ProofLine } from '../components/ProofLine';
 import { SavingsGoalCard } from '../components/SavingsGoalCard';
 import { ScoreRing } from '../components/ScoreRing';
-import { ScenarioSimulator } from '../components/ScenarioSimulator';
 import { getRouteScreenContract } from '../contracts/route-screen-contracts';
 import {
   generateCashFlowForecast,
@@ -22,48 +24,77 @@ import {
   mockSavingsGoals,
 } from '../services/mockGrow';
 
+// ── Static data ──────────────────────────────────────────────
+
+const healthCategories: CategoryScore[] = [
+  { name: 'Savings rate', score: 85, icon: DollarSign, color: 'var(--accent-violet)' },
+  { name: 'Debt ratio', score: 72, icon: TrendingUp, color: 'var(--accent-violet)' },
+  { name: 'Income growth', score: 81, icon: TrendingUp, color: 'var(--accent-violet)' },
+  { name: 'Investment', score: 74, icon: Target, color: 'var(--accent-violet)' },
+];
+
+const growMilestones: Milestone[] = [
+  { label: 'Emergency fund started', date: 'Jan 2026', status: 'completed' },
+  { label: '$5k milestone', date: 'Jan 28', status: 'completed' },
+  { label: '$8k milestone', date: 'Feb 10', status: 'completed' },
+  { label: '$12k target', date: 'May 2026 (projected)', status: 'upcoming' },
+  { label: '6-month runway', date: 'Aug 2026', status: 'future' },
+];
+
+const monthlyContributions = [
+  { month: 'Sep', amount: 1400 },
+  { month: 'Oct', amount: 1650 },
+  { month: 'Nov', amount: 1800 },
+  { month: 'Dec', amount: 1950 },
+  { month: 'Jan', amount: 2000 },
+  { month: 'Feb', amount: 2100 },
+];
+
 const kpiSparklines = {
-  forecast: [{ value: 4.2 }, { value: 5.1 }, { value: 5.8 }, { value: 6.0 }, { value: 6.5 }, { value: 6.8 }],
-  runway: [{ value: 18 }, { value: 19 }, { value: 19 }, { value: 20 }, { value: 21 }, { value: 21 }],
-  confidence: [{ value: 0.85 }, { value: 0.86 }, { value: 0.87 }, { value: 0.88 }, { value: 0.88 }, { value: 0.89 }],
-  goalFit: [{ value: 70 }, { value: 75 }, { value: 78 }, { value: 82 }, { value: 85 }, { value: 88 }],
+  netWorth: [{ value: 780 }, { value: 795 }, { value: 810 }, { value: 825 }, { value: 840 }, { value: 847 }],
+  savings: [{ value: 1.4 }, { value: 1.6 }, { value: 1.8 }, { value: 1.9 }, { value: 2.0 }, { value: 2.1 }],
+  goals: [{ value: 2 }, { value: 2 }, { value: 3 }, { value: 3 }, { value: 3 }, { value: 3 }],
+  confidence: [{ value: 0.85 }, { value: 0.86 }, { value: 0.87 }, { value: 0.88 }, { value: 0.89 }, { value: 0.89 }],
 };
+
+// ── Component ────────────────────────────────────────────────
 
 export const Grow: React.FC = () => {
   const [forecastDays, setForecastDays] = useState(30);
   const contract = getRouteScreenContract('grow');
-  const cashFlowData = generateCashFlowForecast(forecastDays);
+  const cashFlowData = useMemo(() => generateCashFlowForecast(forecastDays), [forecastDays]);
   const currentBalance = cashFlowData[0]?.balance || 0;
   const projectedBalance = cashFlowData[cashFlowData.length - 1]?.balance || 0;
   const balanceChange = projectedBalance - currentBalance;
   const endConfidence = cashFlowData[cashFlowData.length - 1]?.confidence || 0;
 
-  const mainContent = (
+  // ── Primary feed ───────────────────────────────────────────
+
+  const primaryFeed = (
     <>
-      {/* Net worth hero — visual summary */}
+      {/* Net worth hero */}
       <article className="engine-card">
         <NetWorthHero
-          total={`$${projectedBalance.toLocaleString()}`}
-          change={`${balanceChange >= 0 ? '+' : ''}$${Math.abs(balanceChange).toLocaleString()} (${((balanceChange / Math.max(currentBalance, 1)) * 100).toFixed(1)}%)`}
-          trend={balanceChange >= 0 ? 'up' : 'down'}
-          period={`${forecastDays}d projection`}
+          total="$847,200"
+          change="+$12,400 (+1.5%)"
+          trend="up"
+          period="this quarter"
           glowColor="var(--engine-grow)"
         />
       </article>
 
+      {/* Forecast chart */}
       <article className="engine-card">
         <MissionSectionHeader
           title="Cash flow forecast"
-          message="Historical data with forward projection and confidence bands."
-          contextCue="Run a scenario to test your plan"
-          right={(
+          message="Monte Carlo simulation with 10,000 paths. Updated every 6 hours."
+          right={
             <MissionStatusChip
               tone={balanceChange >= 0 ? 'healthy' : 'warning'}
               label={`${forecastDays}d horizon`}
             />
-          )}
+          }
         />
-
         <div className="grow-forecast-controls">
           {[7, 30, 90].map((days) => (
             <button
@@ -76,21 +107,18 @@ export const Grow: React.FC = () => {
             </button>
           ))}
         </div>
-
         <ForecastBandChart
           data={cashFlowData}
           height={320}
           historicalCount={Math.min(5, forecastDays)}
         />
-
         <ProofLine
           claim={`${forecastDays}-day forecast`}
           evidence={`Projected ${balanceChange >= 0 ? '+' : ''}$${Math.abs(balanceChange).toLocaleString()} | Confidence ${endConfidence}%`}
-          source="CashFlowLSTM v2.1"
-          basis={`${forecastDays} days forward`}
+          source="GrowthForecast v3.2"
+          basis="180-day pattern analysis"
           sourceType="model"
         />
-
         <DefinitionLine
           metric="Forecast confidence"
           formula="ensemble(LSTM, ARIMA, seasonal)"
@@ -98,76 +126,9 @@ export const Grow: React.FC = () => {
           period={`${forecastDays} days rolling`}
           threshold="> 80%"
         />
-
-        <MissionMetricTiles
-          items={[
-            {
-              id: 'GROW-CONF',
-              label: 'Confidence',
-              value: `${endConfidence}%`,
-              tone: 'healthy',
-            },
-            { id: 'GROW-RISK', label: 'Risk period', value: 'None', tone: 'primary' },
-            { id: 'GROW-ACC', label: 'Accuracy', value: `${mockGrowStats.forecastAccuracy}%`, tone: 'primary' },
-            { id: 'GROW-BAL', label: 'Projected', value: `$${projectedBalance.toLocaleString()}`, tone: balanceChange >= 0 ? 'healthy' : 'warning' },
-          ]}
-        />
       </article>
 
-      <section className="engine-section">
-        <MissionSectionHeader
-          title="Scenario analysis"
-          message="Test how changes in income or expenses affect your forecast."
-        />
-        <ScenarioSimulator />
-      </section>
-
-      <GovernContractSet
-        auditId="GV-2026-0212-GRW1"
-        modelVersion="v3.2"
-        explanationVersion="xai-1.1"
-      />
-    </>
-  );
-
-  const sideContent = (
-    <>
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Forecast methodology"
-          message="How predictions are generated and validated."
-        />
-        <ExplainableInsightPanel
-          title="Forecast model"
-          summary={`Ensemble of LSTM, ARIMA, and seasonal models trained on ${forecastDays * 3} days of historical data. Confidence bands widen as forecast horizon extends.`}
-          topFactors={[
-            { label: 'Income regularity', contribution: 0.92, note: 'Monthly salary detected' },
-            { label: 'Expense variance', contribution: 0.78, note: '±15% monthly fluctuation' },
-            { label: 'Seasonal patterns', contribution: 0.65, note: 'Utility costs cycle detected' },
-          ]}
-          confidence={endConfidence / 100}
-          recency="Updated 12m ago"
-          governMeta={{
-            auditId: 'GV-2026-0212-GRW1',
-            modelVersion: 'v3.2',
-            explanationVersion: 'xai-1.1',
-            timestamp: new Date().toISOString(),
-          }}
-        />
-      </article>
-
-      {/* Goal progress ring — visual summary */}
-      <article className="engine-card">
-        <ScoreRing
-          score={Math.round((mockGrowStats.goalsOnTrack / Math.max(mockGrowStats.totalGoals, 1)) * 100)}
-          label="Goal Progress"
-          subtitle="% on track"
-          statusText={`${mockGrowStats.goalsOnTrack} of ${mockGrowStats.totalGoals} goals on track`}
-          color="var(--accent-violet)"
-          size="md"
-        />
-      </article>
-
+      {/* Goal cards */}
       <section className="engine-section">
         <MissionSectionHeader
           title="Savings goals"
@@ -179,44 +140,97 @@ export const Grow: React.FC = () => {
             <SavingsGoalCard key={goal.id} goal={goal} />
           ))}
         </div>
+        <ProofLine
+          claim={`${mockGrowStats.goalsOnTrack} of ${mockGrowStats.totalGoals} goals on track`}
+          evidence={`${mockGrowStats.forecastAccuracy}% forecast accuracy | Updated 6h ago`}
+          source="Goal tracker v2.1"
+          sourceType="model"
+        />
       </section>
 
+      {/* Contribution chart */}
       <article className="engine-card">
         <MissionSectionHeader
-          title="Forecast drivers"
-          message="Key factors influencing the current projection."
+          title="Monthly contributions"
+          message="Contribution history with target line."
         />
-        <MissionDataRows
-          items={[
-            { id: 'DRV-1', title: 'Salary variance', value: '+3.2%', tone: 'healthy' },
-            { id: 'DRV-2', title: 'Subscription costs', value: '-1.8%', tone: 'critical' },
-            { id: 'DRV-3', title: 'Seasonal utilities', value: '-0.9%', tone: 'warning' },
-          ]}
-        />
-        <DefinitionLine
-          metric="Driver impact"
-          formula="delta(category) / total_cashflow"
-          unit="percentage"
-          period="30 days rolling"
+        <ContributionChart
+          data={monthlyContributions}
+          targetMonthly={2000}
+          accentColor="var(--engine-grow)"
         />
       </article>
 
+      {/* Govern footer */}
+      <GovernContractSet
+        auditId="GV-2026-0215-GRW"
+        modelVersion="GrowthForecast v3.2"
+        explanationVersion="SHAP v2.1"
+      />
+    </>
+  );
+
+  // ── Decision rail ──────────────────────────────────────────
+
+  const decisionRail = (
+    <>
+      {/* Financial health score */}
+      <article className="engine-card">
+        <ScoreRing
+          score={78}
+          label="Financial Health"
+          subtitle="/ 100"
+          statusText="Good"
+          color="var(--accent-violet)"
+          size="lg"
+        />
+      </article>
+
+      {/* Category breakdown */}
       <article className="engine-card">
         <MissionSectionHeader
-          title="Next best actions"
-          message="Recommended steps to improve financial trajectory."
+          title="Health categories"
+          message="Score breakdown by financial dimension."
         />
-        <MissionActionList
-          items={[
-            { title: 'Adopt +$500/mo save scenario', meta: 'Runway +4 days', tone: 'healthy' },
-            { title: 'Rebalance recurring spend', meta: 'Impact medium', tone: 'warning' },
-            { title: 'Lock monthly cap policy', meta: 'Guardrail sync', tone: 'primary' },
-          ]}
-        />
-        <div className="mission-dual-actions">
-          <Link className="entry-btn entry-btn--ghost" to="/govern">Open audit trail</Link>
-        </div>
+        <CategoryScoreBar categories={healthCategories} iconAccent="var(--accent-violet)" />
       </article>
+
+      {/* Goal milestones */}
+      <article className="engine-card">
+        <MissionSectionHeader
+          title="Goal milestones"
+          message="Progress toward key financial targets."
+        />
+        <MilestonesTimeline
+          milestones={growMilestones}
+          accentColor="var(--accent-violet)"
+        />
+      </article>
+
+      {/* AI recommendation */}
+      <article className="engine-card">
+        <MissionSectionHeader title="AI recommendation" />
+        <div
+          className="rounded-xl p-4"
+          style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)' }}
+        >
+          <p className="text-sm leading-relaxed" style={{ color: 'var(--text)' }}>
+            Increasing monthly savings by $200 would accelerate emergency fund goal by 2.3 months.
+          </p>
+        </div>
+        <ProofLine
+          claim="Acceleration possible"
+          evidence="+$200/mo brings completion to Mar 2026"
+          source="GrowthForecast v3.2"
+          sourceType="model"
+        />
+      </article>
+
+      {/* Navigation */}
+      <div className="mission-dual-actions">
+        <Link className="entry-btn entry-btn--ghost" to="/grow/scenarios">Scenario simulator</Link>
+        <Link className="entry-btn entry-btn--ghost" to="/govern">Audit trail</Link>
+      </div>
     </>
   );
 
@@ -227,31 +241,60 @@ export const Grow: React.FC = () => {
       layout="engine"
       heroVariant="focused"
       hero={{
-        kicker: 'Grow Engine',
+        kicker: 'Grow',
         engineBadge: 'Grow',
-        headline: 'Forecast outcomes with confidence.',
-        subline: contract.oneScreenMessage,
-        valueStatement: `${forecastDays}-day projection: ${balanceChange >= 0 ? '+' : ''}$${Math.abs(balanceChange).toLocaleString()} at ${endConfidence}% confidence. ${mockGrowStats.goalsOnTrack}/${mockGrowStats.totalGoals} goals on track.`,
+        headline: 'Net worth trajectory: +8.2% this quarter. 3 goals on track.',
+        subline: 'Monte Carlo forecast with 10,000 simulations. Updated every 6 hours.',
         proofLine: {
-          claim: `Confidence ${(endConfidence / 100).toFixed(2)}`,
-          evidence: `CashFlowLSTM model v2.1 | ${mockGrowStats.forecastAccuracy}% historical accuracy`,
+          claim: 'Forecast confidence 0.89',
+          evidence: 'Simulations: 10,000 | Model: GrowthForecast v3.2 | Basis: 180-day pattern analysis',
           source: 'Grow engine',
         },
         heroAction: {
-          label: 'Recommended:',
-          text: 'Apply the top growth scenario before your next billing cycle.',
-          cta: { label: 'Send to Execute →', to: '/execute' },
+          label: 'AI insight:',
+          text: 'Increasing monthly savings by $200 would accelerate emergency fund goal by 2.3 months.',
+          cta: { label: 'Send to Execute', to: '/execute' },
         },
-        freshness: new Date(Date.now() - 12 * 60 * 1000),
+        freshness: new Date(Date.now() - 6 * 60 * 60 * 1000),
         kpis: [
-          { label: 'Forecast delta', value: '+6.8%', delta: '+2.1% MoM', definition: 'Projected balance change vs. 30-day baseline', accent: 'teal', sparklineData: kpiSparklines.forecast, sparklineColor: 'var(--state-healthy)' },
-          { label: 'Cash runway', value: '21d', delta: '+3d', definition: 'Days of expenses covered by current balance', accent: 'violet', sparklineData: kpiSparklines.runway, sparklineColor: 'var(--engine-grow)' },
-          { label: 'Plan confidence', value: (endConfidence / 100).toFixed(2), definition: 'Statistical confidence of primary forecast path', accent: 'cyan', sparklineData: kpiSparklines.confidence, sparklineColor: '#00F0FF' },
-          { label: 'Goal fit', value: 'High', definition: 'Alignment of current trajectory with active savings goals', accent: 'blue', sparklineData: kpiSparklines.goalFit, sparklineColor: 'var(--state-primary)' },
+          {
+            label: 'Net worth',
+            value: '$847k',
+            delta: '+8.2%',
+            definition: 'Total net worth across all linked accounts.',
+            accent: 'teal',
+            sparklineData: kpiSparklines.netWorth,
+            sparklineColor: 'var(--state-healthy)',
+          },
+          {
+            label: 'Monthly savings',
+            value: '$2.1k',
+            delta: '+12%',
+            definition: 'Total saved this month across all goals.',
+            accent: 'violet',
+            sparklineData: kpiSparklines.savings,
+            sparklineColor: 'var(--engine-grow)',
+          },
+          {
+            label: 'Goals on track',
+            value: '3/4',
+            definition: 'Goals projected to meet target on time.',
+            accent: 'cyan',
+            sparklineData: kpiSparklines.goals,
+            sparklineColor: '#00F0FF',
+          },
+          {
+            label: 'Forecast confidence',
+            value: '0.89',
+            definition: 'Statistical confidence of primary forecast path.',
+            accent: 'blue',
+            sparklineData: kpiSparklines.confidence,
+            sparklineColor: 'var(--state-primary)',
+          },
         ],
       }}
-      primaryFeed={mainContent}
-      decisionRail={sideContent}
+      primaryFeed={primaryFeed}
+      decisionRail={decisionRail}
     />
   );
 };
