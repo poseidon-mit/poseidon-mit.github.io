@@ -1,0 +1,49 @@
+/* ── Glass Morphism Utilities ──
+ *
+ * Reusable glass-morphism classes for v0 adaptation workflow.
+ * Applied during "Poseidon化" step to upgrade plain cards.
+ */
+
+.glass-surface {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--radius, 1rem);
+}
+
+.glass-surface-strong {
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border-strong);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--radius, 1rem);
+}
+
+.glass-surface-soft {
+  background: var(--glass-bg-soft);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--radius, 1rem);
+}
+
+.glass-surface-card {
+  background: var(--glass-bg-card-inner);
+  border: 1px solid var(--glass-border-page);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--radius, 1rem);
+  box-shadow: var(--glass-inset), var(--glass-shadow);
+}
+
+/* Mobile: reduce blur for GPU savings */
+@media (max-width: 640px) {
+  .glass-surface,
+  .glass-surface-strong,
+  .glass-surface-soft,
+  .glass-surface-card {
+    backdrop-filter: blur(var(--glass-blur-mobile));
+    -webkit-backdrop-filter: blur(var(--glass-blur-mobile));
+  }
+}

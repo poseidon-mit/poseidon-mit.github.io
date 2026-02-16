@@ -1,0 +1,86 @@
+/* ── Layer 2: Poseidon Expression Tokens ──
+ *
+ * Poseidon-specific design vocabulary that goes beyond shadcn/ui.
+ * Engine semantics, glass morphism, neon effects, typography, motion.
+ *
+ * These variables are consumed by components/poseidon/* facades
+ * and the existing design-system/ internals.
+ */
+
+@layer base {
+  :root {
+    /* ── Engine Semantics ── */
+    --engine-dashboard: #00F0FF;
+    --engine-protect: #22C55E;
+    --engine-grow: #8B5CF6;
+    --engine-execute: #EAB308;
+    --engine-govern: #3B82F6;
+
+    /* ── Glass Morphism ── */
+    --glass-bg: rgba(8, 12, 24, 0.62);
+    --glass-bg-strong: rgba(8, 12, 24, 0.72);
+    --glass-bg-soft: rgba(10, 16, 28, 0.6);
+    --glass-bg-subtle: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-border-strong: rgba(255, 255, 255, 0.16);
+    --glass-border-page: rgba(155, 195, 238, 0.24);
+    --glass-border-page-strong: rgba(163, 203, 244, 0.26);
+    --glass-bg-card-inner: rgba(12, 27, 52, 0.72);
+    --glass-bg-card-section: rgba(11, 24, 45, 0.68);
+    --glass-blur: 44px;
+    --glass-blur-mobile: 20px;
+    --glass-shadow: 0 24px 70px rgba(0,0,0,0.62),
+                    0 0 28px rgba(0,240,255,0.12);
+    --glass-inset: inset 0 1px 0 0 rgba(255,255,255,0.26),
+                   inset 0 -1px 0 0 rgba(255,255,255,0.1),
+                   inset 0 0 20px rgba(255,255,255,0.06);
+    --glass-edge: inset 0 0 0 1px rgba(255,255,255,0.18),
+                  inset 0 -16px 30px rgba(0,0,0,0.35);
+    --glass-backdrop: blur(44px) saturate(1.55) brightness(1.08);
+    --glass-backdrop-mobile: blur(20px) saturate(1.3) brightness(1.05);
+
+    /* ── Neon — Desktop (6 layers) ── */
+    --neon-cyan: 0 0 2px rgba(0,240,255,1), 0 0 6px rgba(0,240,255,1), 0 0 15px rgba(0,240,255,0.8), 0 0 30px rgba(0,240,255,0.6), 0 0 50px rgba(0,240,255,0.4), 0 0 80px rgba(0,240,255,0.2);
+    --neon-teal: 0 0 2px rgba(20,184,166,1), 0 0 6px rgba(20,184,166,1), 0 0 15px rgba(20,184,166,0.8), 0 0 30px rgba(20,184,166,0.6), 0 0 50px rgba(20,184,166,0.4), 0 0 80px rgba(20,184,166,0.2);
+    --neon-violet: 0 0 2px rgba(139,92,246,1), 0 0 6px rgba(139,92,246,1), 0 0 15px rgba(139,92,246,0.8), 0 0 30px rgba(139,92,246,0.6), 0 0 50px rgba(139,92,246,0.4), 0 0 80px rgba(139,92,246,0.2);
+    --neon-amber: 0 0 2px rgba(245,158,11,1), 0 0 6px rgba(245,158,11,1), 0 0 15px rgba(245,158,11,0.8), 0 0 30px rgba(245,158,11,0.6), 0 0 50px rgba(245,158,11,0.4), 0 0 80px rgba(245,158,11,0.2);
+    --neon-blue: 0 0 2px rgba(59,130,246,1), 0 0 6px rgba(59,130,246,1), 0 0 15px rgba(59,130,246,0.8), 0 0 30px rgba(59,130,246,0.6), 0 0 50px rgba(59,130,246,0.4), 0 0 80px rgba(59,130,246,0.2);
+    --neon-red: 0 0 2px rgba(239,68,68,1), 0 0 6px rgba(239,68,68,1), 0 0 15px rgba(239,68,68,0.8), 0 0 30px rgba(239,68,68,0.6), 0 0 50px rgba(239,68,68,0.4), 0 0 80px rgba(239,68,68,0.2);
+
+    /* ── Neon — Mobile (3 layers, lighter GPU) ── */
+    --neon-cyan-mobile: 0 0 4px rgba(0,240,255,0.8), 0 0 12px rgba(0,240,255,0.5), 0 0 24px rgba(0,240,255,0.2);
+    --neon-teal-mobile: 0 0 4px rgba(20,184,166,0.8), 0 0 12px rgba(20,184,166,0.5), 0 0 24px rgba(20,184,166,0.2);
+    --neon-violet-mobile: 0 0 4px rgba(139,92,246,0.8), 0 0 12px rgba(139,92,246,0.5), 0 0 24px rgba(139,92,246,0.2);
+    --neon-amber-mobile: 0 0 4px rgba(245,158,11,0.8), 0 0 12px rgba(245,158,11,0.5), 0 0 24px rgba(245,158,11,0.2);
+    --neon-blue-mobile: 0 0 4px rgba(59,130,246,0.8), 0 0 12px rgba(59,130,246,0.5), 0 0 24px rgba(59,130,246,0.2);
+    --neon-red-mobile: 0 0 4px rgba(239,68,68,0.8), 0 0 12px rgba(239,68,68,0.5), 0 0 24px rgba(239,68,68,0.2);
+
+    /* ── Semantic States ── */
+    --state-healthy: #14B8A6;
+    --state-active: #00F0FF;
+    --state-primary: #3B82F6;
+    --state-warning: #F59E0B;
+    --state-critical: #EF4444;
+
+    /* ── Text Gradients ── */
+    --gradient-cyan: linear-gradient(90deg, #bffcff, #00f0ff);
+    --gradient-teal: linear-gradient(90deg, #5eead4, #15e1c2);
+    --gradient-violet: linear-gradient(90deg, #d7b7ff, #8b5cf6);
+    --gradient-amber: linear-gradient(90deg, #ffe0a1, #f59e0b);
+    --gradient-blue: linear-gradient(90deg, #b8d6ff, #58a6ff);
+
+    /* ── Typography ── */
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Noto Sans JP', ui-monospace, monospace;
+
+    /* ── Motion ── */
+    --motion-fast: 120ms;
+    --motion-base: 200ms;
+    --motion-slow: 320ms;
+    --motion-micro: 80ms;
+    --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+    --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  }
+}

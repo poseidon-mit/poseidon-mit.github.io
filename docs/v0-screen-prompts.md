@@ -1,72 +1,155 @@
-# Poseidon.AI v0 Screen Prompts
+# Poseidon.AI v0 Screen Prompts — Architecture B Edition
 
-> Aligned with `docs/mit-demo-content-strategy.md`. Organized by tier priority.
-> Each prompt references existing Poseidon components by name for direct post-v0 mapping.
-
----
-
-## v0 Custom Instructions (apply globally)
-
-```
-## Design System Rules
-- Dark theme ONLY. Background: #0A1628 (navy). Never use white/light backgrounds.
-- Card component: Use glass-morphism effect (backdrop-blur-xl + bg-white/5 + border border-white/10)
-- Color palette:
-  - Protect engine: teal #14B8A6 / #00D9B5
-  - Grow engine: purple #8B5CF6
-  - Execute engine: gold #F59E0B / #EAB308
-  - Govern engine: blue #3B82F6
-  - Text primary: #FFFFFF, secondary: #CBD5E1, muted: #A5B4C6
-  - Status: success #10B981, warning #F59E0B, error #EF4444
-- Typography: Inter font. Headings bold, body normal.
-- Spacing: 4px base unit. Cards use p-4 md:p-6 with rounded-2xl.
-- Shadows: 0 4px 16px rgba(0,0,0,0.2) for cards.
-- Icons: Always wrap in a colored circle background (bg-{color}/10 rounded-full p-2).
-- Animation: Use framer-motion. Stagger children with 0.08s delay. FadeUp (y:20->0, opacity:0->1).
-- Mobile-first responsive design with md: breakpoints.
-- Use shadcn/ui primitives (Button, Badge, Tabs, etc.)
-- Charts: Use Recharts with dark theme (grid #253852, tick #6B7280, tooltip bg #0F1D32)
-
-## Key Domain Components (reference these names in output)
-- ScoreRing: Animated circular progress indicator (score/maxScore, size sm|md|lg, color prop)
-- CategoryScoreBar: Horizontal bar chart for category breakdown (categories array, iconAccent)
-- ContributionChart: Recharts bar chart with target reference line (data, targetMonthly, accentColor)
-- MilestonesTimeline: Vertical timeline with status indicators (milestones array, accentColor)
-- NetWorthHero: Large hero display of net worth with trend + glow (total, change, trend, glowColor)
-- TransactionTable: Paginated table with sorting + mobile card view (columns, data, pageSize)
-- ProofLine: Claim + evidence + source attribution row (claim, evidence, source, basis)
-- DefinitionLine: Metric definition showing formula/unit/period/threshold
-- GovernContractSet: Governance footer with auditId, modelVersion, explanationVersion
-- GovernVerifiedBadge: Verified badge with audit trail reference
-- PageShell: Page layout with hero/KPI/primaryFeed/decisionRail slots
-- ForecastBandChart: SVG forecast with confidence bands (data, historicalCount)
-- RiskScoreDial: Arc gauge showing risk score 0-1 with band labels
-- ActionQueueCard: Action card with approve/decline/defer controls
-- DashboardInsightsPanel: Morning/evening AI briefing panel
-- EngineHealthStrip: Horizontal row of 4 engine status chips
-- AlertsHub: Prioritized alert list with severity and engine tags
-- ActivityTimeline: Vertical cross-engine activity timeline
-- SHAPWaterfallChart: SHAP feature importance waterfall (features, baseValue)
-```
+> **Architecture B: v0 Foundation + Poseidon Expression Layer**
+>
+> Aligned with `docs/mit-demo-content-strategy.md` and `CLAUDE.md`.
+> Each prompt generates shadcn/ui-native output that can be adapted via the 10-step Poseidon化 workflow.
+>
+> **Workflow**: v0.dev → paste prompt → copy output → save to `src/components/blocks/` → Claude Code Poseidon化
 
 ---
 
-## Conversion Checklist (v0 → Poseidon)
+## v0 Custom Instructions (paste into v0.dev settings)
 
-After generating each screen in v0:
+```
+## Design System Rules (Architecture B — 2-layer CSS)
 
-1. **Colors**: Replace hardcoded hex → CSS variables (`var(--bg)`, `var(--accent-teal)`, `var(--engine-grow)`, etc.)
-2. **Layout**: Wrap in `<PageShell>` with correct `slug`, `heroVariant`, `contract`
-3. **Proof**: Add `<ProofLine>` under every data section — claim + evidence + source + basis
-4. **Definitions**: Add `<DefinitionLine>` for computed metrics — metric + formula + unit + period + threshold
-5. **Govern**: Add `<GovernContractSet>` at bottom of engine pages — auditId + modelVersion + explanationVersion
-6. **Tables**: Replace any custom tables with `<TransactionTable>` — columns + data + pageSize
-7. **Score rings**: Replace circular progress → `<ScoreRing>` — score + maxScore + label + size + color
-8. **Category bars**: Replace horizontal bar charts → `<CategoryScoreBar>` — categories array
-9. **Timelines**: Replace vertical timelines → `<MilestonesTimeline>` — milestones + accentColor
-10. **Animation**: Replace Framer Motion → `useReducedMotionSafe()` + design tokens
-11. **Routing**: Replace `<Link href=...>` → `<Link to=...>` from `src/router`
-12. **Types**: Add TypeScript interfaces for all props
+### Theme & Colors
+- Dark theme ONLY. Background: #0B1221 (deep navy). Never use white/light backgrounds.
+- Surface: #0F1D32. Card: #132237. Accent overlay: rgba(255,255,255,0.05).
+- Engine accent colors (use CSS variables in comments for post-v0 mapping):
+  - Dashboard: cyan #00F0FF (→ var(--engine-dashboard))
+  - Protect: teal #14B8A6 (→ var(--engine-protect))
+  - Grow: violet #8B5CF6 (→ var(--engine-grow))
+  - Execute: amber #EAB308 (→ var(--engine-execute))
+  - Govern: blue #3B82F6 (→ var(--engine-govern))
+- Text: primary #F1F5F9, secondary #CBD5E1, muted #64748B
+- Status: success #10B981, warning #F59E0B, error #EF4444, info #38BDF8
+
+### Card Component (→ GlassCard in Poseidon)
+- Use glass-morphism: backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl
+- Padding: p-4 md:p-6. Shadow: 0 4px 16px rgba(0,0,0,0.2).
+- Engine-colored cards: add left border-2 with engine color (border-l-2 border-[#14B8A6])
+
+### Typography
+- Font: Inter (headers bold 600, body normal 400, mono JetBrains Mono)
+- Scale: display 36px, h1 30px, h2 24px, h3 20px, body 16px, caption 12px
+- Headings: text-white font-semibold. Body: text-slate-300.
+
+### Layout
+- Mobile-first responsive with md: breakpoints. Max-width: 1280px centered.
+- Spacing: 4px base unit. Section gaps: gap-4 md:gap-6.
+- Two-column engine pages: 2/3 primary feed (left) + 1/3 decision rail (right), stack on mobile.
+
+### Components & Patterns
+- Use shadcn/ui primitives: Button, Badge, Tabs, Card, Table, ScrollArea, Separator, Input
+- Icons: Always wrap in colored circle (bg-{color}/10 rounded-full p-2). Use lucide-react.
+- Animation: framer-motion stagger children 0.08s delay. FadeUp (y:20→0, opacity:0→1).
+- Charts: Recharts with dark theme (grid #253852, tick #6B7280, tooltip bg #0F1D32)
+
+### Governance Pattern (CRITICAL — add to EVERY screen)
+- Every screen MUST end with a governance footer bar:
+  Full-width bg-white/3 border-t border-white/10 p-3 with:
+  - Shield icon + "Verified" badge (green)
+  - Audit ID in monospace (e.g. "GV-2026-0215-DASH")
+  - "Request human review" ghost button
+- Add evidence rows ("ProofLine") under key data sections:
+  Small muted row: "Claim | Evidence | Source | Basis" format
+
+## Key Domain Components (reference names → post-v0 Poseidon mapping)
+- ScoreRing: Circular progress (score/maxScore, size sm|md|lg, color) → @/components/poseidon/score-ring
+- CategoryScoreBar: Horizontal bar breakdown (categories array) → existing DS v2
+- ContributionChart: Bar chart + target line (data, targetMonthly) → existing DS v2
+- MilestonesTimeline: Vertical timeline (milestones, accentColor) → existing DS v2
+- NetWorthHero: Large stat with glow (total, change, trend) → existing DS v2
+- TransactionTable: Paginated sortable table (columns, data) → existing DS v2
+- ProofLine: Evidence row (claim, evidence, source, basis) → @/components/poseidon/proof-line
+- GovernContractSet: Governance footer (auditId, modelVersion) → @/components/poseidon/govern-footer
+- ForecastBandChart: SVG forecast bands (data, historicalCount) → @/components/poseidon/forecast-band
+- SHAPWaterfallChart: Feature importance waterfall (features, baseValue) → @/components/poseidon/shap-waterfall
+- ActionQueueCard: Approve/decline/defer card (action) → @/components/poseidon/action-queue
+- Sparkline: Compact trend line (data, color) → @/components/poseidon/sparkline
+- NeonText: Heading with gradient glow (engine, as) → @/components/poseidon/neon-text
+- EngineBadge: Engine-colored badge (engine, label) → @/components/poseidon/engine-badge
+- GlassCard: Frosted glass card (engine, variant) → @/components/poseidon/glass-card
+- PageShell: Page layout (engine, hero, children) → @/components/layout/page-shell
+- Section: Content section (engine, title) → @/components/layout/section
+```
+
+---
+
+## Poseidon化 Checklist (v0 → Production — Architecture B)
+
+After generating each screen in v0, Claude Code applies this 10-step adaptation:
+
+```
+1. IMPORT FIX     next/image → <img>, next/link → <Link to=...> (react-router)
+2. LAYER 1 CHECK  Verify shadcn/ui classes render correctly (dark theme, CSS vars)
+3. GLASS          Wrap cards: <GlassCard engine="protect"> or add class="glass-surface"
+4. ENGINE COLOR   Add engine prop: <EngineBadge engine="protect">, <Section engine="grow">
+5. GOVERN FOOTER  Add <GovernFooter /> at bottom of all Tier 1-2 pages
+6. PROOF LINE     Inject <ProofLine source="..." confidence={85} /> in data sections
+7. ANIMATIONS     Import from @/lib/motion-presets (fadeUp, staggerContainer, staggerItem)
+8. VISUALIZATIONS Replace plain numbers with <Sparkline>, <ScoreRing>, <ShapWaterfall>
+9. MOBILE         Verify 375px layout, touch targets ≥44px, stack columns
+10. ACCESSIBILITY  Contrast ratio ≥4.5:1, keyboard nav, aria-labels
+```
+
+### Key imports for Poseidon化:
+
+```tsx
+// Poseidon facades
+import { GlassCard, EngineBadge, ScoreRing, GovernFooter, ProofLine,
+         NeonText, Sparkline, ShapWaterfall, ForecastBand, ActionQueue,
+         AuditChip } from '@/components/poseidon'
+
+// Layout
+import { PageShell, Section } from '@/components/layout'
+
+// Engine utilities
+import { type EngineName, getEngineToken } from '@/lib/engine-tokens'
+import { useEngineTheme } from '@/hooks/use-engine-theme'
+
+// Motion presets
+import { fadeUp, staggerContainer, staggerItem, pageTransition } from '@/lib/motion-presets'
+
+// shadcn/ui primitives (v0-generated, no changes needed)
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+```
+
+### File placement:
+- **v0 raw output** → `src/components/blocks/{screen-name}-v0.tsx` (keep as reference)
+- **Poseidon-adapted** → `src/components/blocks/{screen-name}.tsx` (production version)
+- **Page integration** → `src/pages/{ScreenName}.tsx` imports from blocks
+
+---
+
+## v0 Prompt Template
+
+Use this template for any new screen prompt:
+
+```
+Create a [SCREEN DESCRIPTION] for "Poseidon.AI".
+Tech: React + TypeScript + Tailwind CSS + shadcn/ui (new-york style).
+Theme: Dark mode only. Deep navy background (#0B1221). Surface: #0F1D32.
+Cards: Glass-morphism (backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl).
+Primary accent: [ENGINE COLOR] (#HEX).
+Icons: lucide-react, wrapped in colored circles (bg-{color}/10 rounded-full p-2).
+Charts: Recharts with dark grid (#253852), tooltips bg-[#0F1D32].
+Animation: framer-motion staggerChildren 0.08s, fadeUp (y:20→0).
+Mobile: responsive, md: breakpoints, single column on mobile.
+
+Layout:
+1. HERO SECTION: [kicker badge + headline + subline + AI insight + ProofLine]
+2. KPI GRID: [4 stat cards with sparklines]
+3. PRIMARY FEED (2/3 width): [main content]
+4. DECISION RAIL (1/3 width): [sidebar content]
+5. GOVERN FOOTER: Shield icon + "Verified" + audit ID + "Request human review"
+
+[DETAILED SECTION DESCRIPTIONS WITH COMPONENT MAPPINGS]
+```
 
 ---
 
@@ -946,101 +1029,130 @@ Icons: Shield, Download, PauseCircle, Trash2, Lock, FileText, Database, Eye. Mob
 
 ---
 
-## Appendix: Component Reference
+## Appendix A: Architecture B Component Map
 
-### Core Layout Components
+### Poseidon Facade Components (`@/components/poseidon/`)
 
-| Component | Purpose | Key Props |
-|-----------|---------|-----------|
-| `PageShell` | Page layout with hero/KPI/feed/rail | `slug`, `heroVariant`, `contract`, `primaryFeed`, `decisionRail` |
-| `AppShell` | Application shell with nav | `children`, `variant`, `showBottomNav` |
-| `GlassCard` | Frosted glass card | `variant` (teal/violet/amber/blue), `tone`, `shine` |
-| `Card` | Compound card with Header/Content/Footer | `variant`, `tone`, `as` |
-| `Section` | Compound section | `variant`, `tone` |
-| `Grid` | Responsive grid | `columns`, `gap` |
-| `AdaptiveCardGrid` | Auto-responsive card grid | `children` |
+These are the **primary** components for v0 → Poseidon adaptation. Import from `@/components/poseidon`.
 
-### Data Visualization Components
+| Facade | Wraps (DS v2) | Key Props | Usage |
+|--------|---------------|-----------|-------|
+| `GlassCard` | `GlassPanel` | `engine`, `variant`, `shine`, `className` | Every glass card |
+| `EngineBadge` | `Badge` | `engine`, `label`, `variant` | Engine identification |
+| `ScoreRing` | `ConfidenceRing` | `score`, `maxScore`, `label`, `size`, `color` | Circular progress |
+| `TrustPulse` | `PulsingOrb` | `engine`, `size`, `className` | Ambient trust glow |
+| `GovernFooter` | `GovernContractSet` | `auditId?`, `modelVersion?` | Audit footer (auto-defaults) |
+| `ProofLine` | (new) | `source`, `confidence`, `evidence` | Evidence anchoring |
+| `NeonText` | (new) | `engine`, `as`, `children` | Heading with gradient glow |
+| `Sparkline` | `SparkLine` | `data`, `width`, `height`, `color` | Inline trend |
+| `ShapWaterfall` | (new) | `factors`, `baseValue`, `prediction` | SHAP attribution chart |
+| `ForecastBand` | (new) | `data`, `historicalCount`, `width`, `height` | Monte Carlo bands |
+| `ActionQueue` | `ActionQueueCard` | `actions`, `onApprove`, `onDecline` | Approval queue |
+| `AuditChip` | `AuditLinkChip` | `auditId` | Audit trail link |
 
-| Component | Purpose | Key Props |
-|-----------|---------|-----------|
-| `ScoreRing` | Animated circular progress | `score`, `maxScore`, `label`, `size` (sm/md/lg), `color` |
-| `CategoryScoreBar` | Horizontal bar chart breakdown | `categories`, `iconAccent` |
-| `ContributionChart` | Monthly bar chart with target line | `data`, `targetMonthly`, `accentColor` |
-| `MilestonesTimeline` | Vertical milestone timeline | `milestones`, `accentColor` |
-| `NetWorthHero` | Large net worth display with glow | `total`, `change`, `trend`, `glowColor` |
-| `TransactionTable` | Paginated sortable table | `columns`, `data`, `pageSize`, `loading` |
-| `ForecastBandChart` | SVG forecast with confidence bands | `data`, `historicalCount` |
-| `RiskScoreDial` | Arc gauge risk score | `score`, `band`, `trend`, `trendDelta` |
-| `SHAPWaterfallChart` | Feature importance waterfall | `features`, `baseValue`, `prediction` |
-| `Sparkline` | Compact trend line | `data`, `width`, `height`, `color` |
-| `CashFlowChart` | Area chart with confidence bands | `data`, `height` |
-| `StatCard` | Stat display with sparkline | `label`, `value`, `meta`, `sparkline`, `accent` |
-
-### Evidence & Governance Components
+### Layout Components (`@/components/layout/`)
 
 | Component | Purpose | Key Props |
 |-----------|---------|-----------|
-| `ProofLine` | Claim + evidence + source | `claim`, `evidence`, `source`, `basis`, `sourceType` |
-| `DefinitionLine` | Metric definition | `metric`, `formula`, `unit`, `period`, `threshold` |
-| `GovernContractSet` | Governance footer | `auditId`, `modelVersion`, `explanationVersion` |
-| `GovernVerifiedBadge` | Verified badge | `auditId`, `modelVersion`, `explanationVersion` |
-| `AuditLinkChip` | Link to audit detail | `auditId` |
-| `HumanReviewCTA` | Request human review | `onClick` |
-| `FactorsDropdown` | SHAP factors expandable | `factors` |
+| `PageShell` | Page wrapper with hero + GovernFooter | `engine`, `hero`, `children` |
+| `Section` | Content section | `engine`, `title`, `children` |
+| `AppShell` | Re-export: app frame with nav | `children` |
+| `TopNav` | Re-export: desktop navigation | — |
+| `BottomNav` | Re-export: mobile navigation | — |
 
-### Action Components
+### shadcn/ui Primitives (`@/components/ui/`) — v0 drop-in zone
+
+| Component | File | Notes |
+|-----------|------|-------|
+| `Button` | `button.tsx` | CVA variants: default, destructive, outline, secondary, ghost, link |
+| `Card` family | `card.tsx` | Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter |
+| `Badge` | `badge.tsx` | CVA variants: default, secondary, destructive, outline |
+| `Input` | `input.tsx` | Standard text input |
+| `Separator` | `separator.tsx` | Horizontal/vertical divider |
+| `Table` family | `table.tsx` | Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableCaption |
+| `ScrollArea` | `scroll-area.tsx` | Scrollable container |
+
+### Existing DS v2 Components (use via facades, not directly)
 
 | Component | Purpose | Key Props |
 |-----------|---------|-----------|
-| `ActionQueueCard` | Action with approve/decline/defer | `action`, `onApprove`, `onDecline`, `onDefer` |
-| `ActionOutcomePreview` | Projected action outcome | (contextual) |
-| `AutoSaveRuleCard` | Auto-save rule with toggle | (contextual) |
-| `MissionActionList` | Ranked action list | `items` |
-| `MissionDataRows` | Row-based data display | `items` |
-| `MissionEvidencePanel` | Evidence summary | `title`, `summary`, `meta`, `tone` |
-
-### Dashboard & Feed Components
-
-| Component | Purpose | Key Props |
-|-----------|---------|-----------|
-| `DashboardInsightsPanel` | AI briefing panel | `variant` (morning/evening), `headingOverride` |
-| `EngineHealthStrip` | 4 engine status chips | (contextual) |
+| `CategoryScoreBar` | Horizontal bar breakdown | `categories`, `iconAccent` |
+| `ContributionChart` | Bar chart + target line | `data`, `targetMonthly`, `accentColor` |
+| `MilestonesTimeline` | Vertical timeline | `milestones`, `accentColor` |
+| `NetWorthHero` | Large stat with glow | `total`, `change`, `trend`, `glowColor` |
+| `TransactionTable` | Paginated sortable table | `columns`, `data`, `pageSize` |
+| `RiskScoreDial` | Arc gauge | `score`, `band`, `trend` |
+| `DashboardInsightsPanel` | AI briefing panel | `variant` (morning/evening) |
+| `EngineHealthStrip` | Engine status row | (contextual) |
 | `AlertsHub` | Alert list with severity | (contextual) |
 | `ActivityTimeline` | Cross-engine timeline | (contextual) |
-| `DashboardStats` | Auto-refresh stat grid | (contextual) |
+| `ActionOutcomePreview` | Projected outcome | (contextual) |
+| `ExplainableInsightPanel` | SHAP explanation | (contextual) |
+| `StatCard` | Stat + sparkline | `label`, `value`, `meta`, `accent` |
+| `DefinitionLine` | Metric definition | `metric`, `formula`, `unit`, `period` |
+| `GovernVerifiedBadge` | Verified badge | `auditId`, `modelVersion` |
+| `HumanReviewCTA` | Request review | `onClick` |
 
-### Shared Design Patterns
+---
 
-**Glass Card Pattern:**
+## Appendix B: CSS Utility Classes
+
+### Glass Morphism (`src/styles/effects/glass.css`)
+
+```css
+.glass-surface          /* Standard: blur-xl + bg-white/5 + border-white/10 */
+.glass-surface-strong   /* Heavier: bg-white/8 + border-white/15 */
+.glass-surface-soft     /* Lighter: blur-lg + bg-white/3 + border-white/5 */
+.glass-surface-card     /* Full card: inset shadow + outer shadow */
 ```
-className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-4 md:p-6 shadow-[0_4px_16px_rgba(0,0,0,0.2)]"
+
+### Neon Glow (`src/styles/effects/neon.css`)
+
+```css
+/* Engine-mapped glow (box-shadow) */
+.neon-glow-protect      /* Green glow */
+.neon-glow-grow         /* Violet glow */
+.neon-glow-execute      /* Amber glow */
+.neon-glow-govern       /* Blue glow */
+
+/* Direct color glow */
+.neon-glow-cyan         /* Cyan glow */
+.neon-glow-teal         /* Teal glow */
+.neon-glow-violet       /* Violet glow */
+.neon-glow-amber        /* Amber glow */
+.neon-glow-blue         /* Blue glow */
+.neon-glow-red          /* Red glow (alerts) */
+
+/* Neon text glow (text-shadow) */
+.neon-text-cyan         .neon-text-teal
+.neon-text-violet       .neon-text-amber
+.neon-text-blue         .neon-text-red
 ```
 
-**Stagger Animation Pattern:**
+### Stagger Animation Pattern (Framer Motion)
+
 ```tsx
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
-};
-const childVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
-};
+import { staggerContainer, staggerItem, fadeUp } from '@/lib/motion-presets'
+
+<motion.div variants={staggerContainer} initial="hidden" animate="visible">
+  <motion.div variants={staggerItem}>Card 1</motion.div>
+  <motion.div variants={staggerItem}>Card 2</motion.div>
+</motion.div>
 ```
 
 ---
 
-## Engine Color Quick Reference
+## Appendix C: Engine Color Quick Reference
 
-| Engine | Primary | CSS Variable | Ring/Glow | Badge BG |
-|--------|---------|--------------|-----------|----------|
-| Protect | #14B8A6 | `var(--accent-teal)` | #14B8A6/20 | #14B8A6/10 |
-| Grow | #8B5CF6 | `var(--accent-violet)` | #8B5CF6/20 | #8B5CF6/10 |
-| Execute | #F59E0B | `var(--accent-gold)` | #F59E0B/20 | #F59E0B/10 |
-| Govern | #3B82F6 | `var(--accent-blue)` | #3B82F6/20 | #3B82F6/10 |
+| Engine | Primary | CSS Variable | Neon Class | Text Class | Badge BG |
+|--------|---------|--------------|------------|------------|----------|
+| Dashboard | `#00F0FF` | `var(--engine-dashboard)` | `.neon-glow-cyan` | `.neon-text-cyan` | `bg-[#00F0FF]/10` |
+| Protect | `#14B8A6` | `var(--engine-protect)` | `.neon-glow-protect` | `.neon-text-teal` | `bg-[#14B8A6]/10` |
+| Grow | `#8B5CF6` | `var(--engine-grow)` | `.neon-glow-grow` | `.neon-text-violet` | `bg-[#8B5CF6]/10` |
+| Execute | `#EAB308` | `var(--engine-execute)` | `.neon-glow-execute` | `.neon-text-amber` | `bg-[#EAB308]/10` |
+| Govern | `#3B82F6` | `var(--engine-govern)` | `.neon-glow-govern` | `.neon-text-blue` | `bg-[#3B82F6]/10` |
 
-## Hero Variant Mapping
+## Appendix D: Hero Variant Mapping
 
 | Variant | Used by | Character |
 |---------|---------|-----------|
@@ -1050,11 +1162,24 @@ const childVariants = {
 | `editorial` | Settings, Help, Notifications, Insights, Timeline, AI Settings, Rights | Configuration, informational |
 | `minimal` | Landing, Auth, Pricing | Clean, uncluttered |
 
-## PageShell Slot Reference
+## Appendix E: PageShell Slot Reference
 
 | Prop | Purpose |
 |------|---------|
+| `engine` | Engine name for color theming |
+| `hero` | Hero section ReactNode |
 | `primaryFeed` | Main content column (left/full) |
 | `decisionRail` | Side panel for context/actions (right) |
 | `layout="engine"` | Two-column engine layout |
 | `fullWidth` | Single-column full-width layout |
+
+## Appendix F: Mock Data Conventions
+
+| Field | Format | Example |
+|-------|--------|---------|
+| Audit ID | `GV-YYYY-MMDD-{ENGINE}-{SEQ}` | `GV-2026-0215-PRT-001` |
+| Confidence | 0.80-0.97 (2 decimal) | `0.94` |
+| Dollar amounts | Hundreds-to-thousands | `$4,200` |
+| Dates | Within last 30 days | `Feb 15, 2026` |
+| Model versions | `{Name} v{X.Y}` | `FraudDetection v3.2` |
+| Timestamps | Relative | `4m ago`, `2h ago` |
