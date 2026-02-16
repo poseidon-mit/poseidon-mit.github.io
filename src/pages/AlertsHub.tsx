@@ -1,169 +1,204 @@
 import React, { useState } from 'react';
 import { Link } from '../router';
-import { PageShell } from '../components/PageShell';
+import { CategoryScoreBar } from '../components/CategoryScoreBar';
 import { GovernContractSet } from '../components/GovernContractSet';
-import { ExplainableInsightPanel } from '../components/ExplainabilityPanel';
-import { MissionDataRows } from '../components/MissionDataRows';
-import { MissionSectionHeader } from '../components/MissionSectionHeader';
-import { MissionStatusChip } from '../components/MissionStatusChip';
+import { MilestonesTimeline } from '../components/MilestonesTimeline';
+import { PageShell } from '../components/PageShell';
 import { ProofLine } from '../components/ProofLine';
-import { DefinitionLine } from '../components/DefinitionLine';
-import { SignalRow, SignalGroup } from '../components/SignalRow';
+import { ScoreRing } from '../components/ScoreRing';
 import { getRouteScreenContract } from '../contracts/route-screen-contracts';
+
+/* ── mock data ────────────────────────────────────────────── */
 
 interface Alert {
   id: string;
-  severity: 'critical' | 'high' | 'medium' | 'low';
+  severity: 'critical' | 'warning' | 'info';
+  engine: 'Protect' | 'Grow' | 'Execute' | 'Govern';
   title: string;
-  source: string;
+  confidence: number;
   time: string;
-  score: string;
-  summary: string;
-  factors: Array<{ label: string; contribution: number }>;
+  status: 'unread' | 'in-progress' | 'resolved';
+  shapFactors: Array<{ label: string; value: number }>;
 }
 
 const alerts: Alert[] = [
-  {
-    id: 'ALT-001', severity: 'critical', title: 'Unusual login from new device',
-    source: 'Protect', time: '12m ago', score: '0.96',
-    summary: 'Login detected from unrecognized device in a new geographic location. Risk pattern matches known credential theft vectors.',
-    factors: [{ label: 'Device fingerprint', contribution: 0.42 }, { label: 'Geo anomaly', contribution: 0.35 }, { label: 'Session timing', contribution: 0.23 }],
-  },
-  {
-    id: 'ALT-002', severity: 'high', title: 'Recurring charge spike detected',
-    source: 'Protect', time: '1h ago', score: '0.91',
-    summary: 'Monthly recurring charges increased 23% compared to 90-day baseline without corresponding service changes.',
-    factors: [{ label: 'Charge variance', contribution: 0.55 }, { label: 'Pattern deviation', contribution: 0.30 }, { label: 'Vendor risk', contribution: 0.15 }],
-  },
-  {
-    id: 'ALT-003', severity: 'medium', title: 'Budget threshold approaching',
-    source: 'Grow', time: '3h ago', score: '0.84',
-    summary: 'Current spending trajectory will breach the monthly budget threshold within 5 days at current rate.',
-    factors: [{ label: 'Spending rate', contribution: 0.50 }, { label: 'Budget remaining', contribution: 0.30 }, { label: 'Historical pattern', contribution: 0.20 }],
-  },
-  {
-    id: 'ALT-004', severity: 'low', title: 'New savings opportunity identified',
-    source: 'Grow', time: '6h ago', score: '0.78',
-    summary: 'Surplus cash detected in checking account. Transferring to savings could yield additional $12/mo in interest.',
-    factors: [{ label: 'Cash surplus', contribution: 0.60 }, { label: 'Rate differential', contribution: 0.25 }, { label: 'Timing', contribution: 0.15 }],
-  },
-  {
-    id: 'ALT-005', severity: 'medium', title: 'Action queue requires approval',
-    source: 'Execute', time: '8h ago', score: '0.82',
-    summary: 'Three pending actions awaiting user approval before execution window closes in 16 hours.',
-    factors: [{ label: 'Time urgency', contribution: 0.45 }, { label: 'Action count', contribution: 0.35 }, { label: 'Impact', contribution: 0.20 }],
-  },
+  { id: 'ALT-001', severity: 'critical', engine: 'Protect', title: 'Unusual login from new device — IP 203.0.113.42', confidence: 0.96, time: '12m ago', status: 'unread', shapFactors: [{ label: 'Device fingerprint', value: 0.42 }, { label: 'Geo anomaly', value: 0.35 }, { label: 'Session timing', value: 0.23 }] },
+  { id: 'ALT-002', severity: 'critical', engine: 'Protect', title: 'Suspicious vendor charge — MerchantX $4,200', confidence: 0.94, time: '28m ago', status: 'unread', shapFactors: [{ label: 'Merchant history', value: 0.55 }, { label: 'Amount deviation', value: 0.30 }, { label: 'Category risk', value: 0.15 }] },
+  { id: 'ALT-003', severity: 'warning', engine: 'Grow', title: 'Budget threshold approaching — 87% utilized', confidence: 0.84, time: '1h ago', status: 'in-progress', shapFactors: [{ label: 'Spending rate', value: 0.50 }, { label: 'Budget remaining', value: 0.30 }] },
+  { id: 'ALT-004', severity: 'warning', engine: 'Execute', title: '2 actions expire within 24 hours', confidence: 0.82, time: '3h ago', status: 'unread', shapFactors: [{ label: 'Time urgency', value: 0.45 }, { label: 'Impact', value: 0.35 }] },
+  { id: 'ALT-005', severity: 'info', engine: 'Grow', title: 'New savings opportunity — surplus cash detected', confidence: 0.78, time: '6h ago', status: 'in-progress', shapFactors: [{ label: 'Cash surplus', value: 0.60 }, { label: 'Rate differential', value: 0.25 }] },
+  { id: 'ALT-006', severity: 'info', engine: 'Govern', title: 'Model retrained — FraudDetection v3.3 deployed', confidence: 0.99, time: '8h ago', status: 'resolved', shapFactors: [{ label: 'Model accuracy', value: 0.72 }, { label: 'Dataset coverage', value: 0.28 }] },
 ];
 
-const severityTone: Record<string, 'critical' | 'warning' | 'primary' | 'healthy'> = {
-  critical: 'critical',
-  high: 'warning',
-  medium: 'primary',
-  low: 'healthy',
-};
+const severityColors = { critical: 'bg-red-500', warning: 'bg-amber-500', info: 'bg-blue-500' };
+const severityText = { critical: 'text-red-400', warning: 'text-amber-400', info: 'text-blue-400' };
+const engineColors = { Protect: 'bg-teal-500/20 text-teal-400', Grow: 'bg-violet-500/20 text-violet-400', Execute: 'bg-amber-500/20 text-amber-400', Govern: 'bg-blue-500/20 text-blue-400' };
+const statusDots = { unread: 'bg-white', 'in-progress': 'bg-amber-400', resolved: 'bg-emerald-400' };
 
-const kpiSparklines = {
-  active: [{ value: 8 }, { value: 7 }, { value: 6 }, { value: 5 }, { value: 5 }, { value: 5 }],
-  resolved: [{ value: 12 }, { value: 14 }, { value: 16 }, { value: 18 }, { value: 20 }, { value: 22 }],
-  mttr: [{ value: 45 }, { value: 40 }, { value: 35 }, { value: 32 }, { value: 28 }, { value: 25 }],
-  fp: [{ value: 8 }, { value: 7 }, { value: 6 }, { value: 5 }, { value: 4 }, { value: 3 }],
-};
+type SeverityFilter = 'all' | 'critical' | 'warning' | 'info';
+type EngineFilter = 'all' | 'Protect' | 'Grow' | 'Execute' | 'Govern';
+
+const milestones = [
+  { label: 'Root cause identified', date: '14:28', status: 'completed' as const },
+  { label: 'Alerts correlated', date: '14:30', status: 'completed' as const },
+  { label: 'User notified', date: '14:31', status: 'current' as const },
+  { label: 'Resolution pending', date: '—', status: 'upcoming' as const },
+];
+
+/* ── component ────────────────────────────────────────────── */
 
 export const AlertsHub: React.FC = () => {
   const contract = getRouteScreenContract('alerts-hub');
-  const [selectedAlert, setSelectedAlert] = useState<Alert | null>(alerts[0]);
+  const [severityFilter, setSeverityFilter] = useState<SeverityFilter>('all');
+  const [engineFilter, setEngineFilter] = useState<EngineFilter>('all');
+  const [expandedAlert, setExpandedAlert] = useState<string | null>(alerts[0].id);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  const mainContent = (
+  const filtered = alerts.filter((a) => {
+    if (severityFilter !== 'all' && a.severity !== severityFilter) return false;
+    if (engineFilter !== 'all' && a.engine !== engineFilter) return false;
+    return true;
+  });
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  /* ── primary feed ───────────────────────────────────────── */
+  const primaryFeed = (
     <>
-      <section className="engine-section">
-        <MissionSectionHeader
-          title="Priority alerts"
-          message="Alerts sorted by severity and confidence score."
-          contextCue="Open alert to see evidence and take action"
-          right={<MissionStatusChip tone="critical" label={`${alerts.filter((a) => a.severity === 'critical').length} critical`} />}
-        />
-        <MissionDataRows
-          items={alerts.map((alert) => ({
-            id: alert.id,
-            title: alert.title,
-            value: alert.score,
-            detail: `${alert.source} · ${alert.time}`,
-            tone: severityTone[alert.severity] ?? 'primary',
-            onClick: () => setSelectedAlert(alert),
-          }))}
-        />
-        <ProofLine
-          claim={`${alerts.length} active alerts`}
-          evidence="Priority-sorted by confidence score | All engines reporting"
-          source="Cross-engine composite"
-          basis="real-time"
-          sourceType="model"
-        />
+      {/* AI Root Cause Insight */}
+      <div className="engine-card border-l-2 border-violet-500/50 mb-4">
+        <div className="flex items-start gap-3">
+          <div className="w-8 h-8 rounded-lg bg-violet-500/20 flex items-center justify-center shrink-0">
+            <span className="text-violet-400 text-sm">AI</span>
+          </div>
+          <div>
+            <p className="text-sm text-white">3 alerts share a common root cause: <span className="text-violet-300 font-semibold">vendor payment anomaly</span>.</p>
+            <p className="text-xs text-white/50 mt-1">Correlation detected across Protect and Execute engines.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Filter Bar */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {/* Engine filter chips */}
+        {(['all', 'Protect', 'Grow', 'Execute', 'Govern'] as EngineFilter[]).map((eng) => {
+          const count = eng === 'all' ? alerts.length : alerts.filter((a) => a.engine === eng).length;
+          return (
+            <button key={eng} onClick={() => setEngineFilter(eng)} className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${engineFilter === eng ? 'bg-white/15 text-white border border-white/20' : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'}`}>
+              {eng === 'all' ? 'All' : eng} ({count})
+            </button>
+          );
+        })}
+      </div>
+      <div className="flex flex-wrap gap-2 mb-4">
+        {(['all', 'critical', 'warning', 'info'] as SeverityFilter[]).map((sev) => (
+          <button key={sev} onClick={() => setSeverityFilter(sev)} className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors capitalize ${severityFilter === sev ? 'bg-white/15 text-white border border-white/20' : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'}`}>
+            {sev === 'all' ? 'All severity' : sev}
+          </button>
+        ))}
+      </div>
+
+      {/* Batch Actions */}
+      {selectedIds.size > 0 && (
+        <div className="flex items-center gap-3 mb-4 px-3 py-2 rounded-lg bg-white/5 border border-white/10">
+          <span className="text-xs text-white/60">{selectedIds.size} selected</span>
+          <button className="text-xs text-teal-400 hover:underline">Resolve all</button>
+          <button className="text-xs text-white/40 hover:underline">Dismiss all</button>
+        </div>
+      )}
+
+      {/* Alert List */}
+      <section className="space-y-2">
+        {filtered.map((alert) => (
+          <div key={alert.id} className="engine-card">
+            <div className="flex items-start gap-3">
+              {/* Checkbox */}
+              <input type="checkbox" checked={selectedIds.has(alert.id)} onChange={() => toggleSelect(alert.id)} className="mt-1.5 accent-teal-500" />
+
+              {/* Severity dot */}
+              <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${severityColors[alert.severity]}`} />
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${engineColors[alert.engine]}`}>{alert.engine}</span>
+                  <span className={`text-[10px] font-medium uppercase ${severityText[alert.severity]}`}>{alert.severity}</span>
+                  <span className="text-[10px] text-white/30">{alert.time}</span>
+                  <div className={`w-1.5 h-1.5 rounded-full ml-auto ${statusDots[alert.status]}`} title={alert.status} />
+                </div>
+                <button onClick={() => setExpandedAlert(expandedAlert === alert.id ? null : alert.id)} className="text-sm font-medium text-white hover:text-teal-300 transition-colors text-left mt-1">
+                  {alert.title}
+                </button>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-[10px] text-white/40">Confidence {alert.confidence}</span>
+                </div>
+
+                {/* Expanded SHAP factors */}
+                {expandedAlert === alert.id && (
+                  <div className="mt-3 pt-3 border-t border-white/5 space-y-2">
+                    {alert.shapFactors.map((f) => (
+                      <div key={f.label} className="flex items-center gap-2">
+                        <span className="text-xs text-white/50 w-32 shrink-0">{f.label}</span>
+                        <div className="flex-1 h-1.5 rounded-full bg-white/5">
+                          <div className="h-full rounded-full bg-teal-500/60" style={{ width: `${f.value * 100}%` }} />
+                        </div>
+                        <span className="text-xs text-white/40 w-8 text-right">{f.value.toFixed(2)}</span>
+                      </div>
+                    ))}
+                    <div className="flex gap-2 mt-3">
+                      <Link to="/protect/alert-detail" className="text-xs text-teal-400 hover:underline">View detail</Link>
+                      <button className="text-xs text-white/40 hover:text-white/60">Dismiss</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
       </section>
 
-      <article className="engine-card">
-        <MissionSectionHeader title="Signal breakdown" />
-        <SignalGroup>
-          <SignalRow icon="●" label="Protect signals" value="3 active" color="teal" />
-          <SignalRow icon="●" label="Grow signals" value="1 active" color="violet" />
-          <SignalRow icon="●" label="Execute signals" value="1 active" color="amber" />
-          <SignalRow icon="●" label="Govern signals" value="0 active" color="blue" />
-        </SignalGroup>
-      </article>
+      <ProofLine claim={`${filtered.length} alerts displayed`} evidence="Priority-sorted by severity and confidence | All engines reporting" source="Cross-engine composite" basis="real-time" sourceType="model" />
 
-      <GovernContractSet
-        auditId="GV-2026-0212-ALT1"
-        modelVersion="v3.2"
-        explanationVersion="xai-1.1"
-      />
+      <GovernContractSet auditId="GV-2026-0216-ALT1" modelVersion="v3.2" explanationVersion="xai-1.1" />
     </>
   );
 
-  const sideContent = (
+  /* ── decision rail ──────────────────────────────────────── */
+  const decisionRail = (
     <>
-      {selectedAlert && (
-        <article className="engine-card">
-          <MissionSectionHeader
-            title={selectedAlert.title}
-            message={`${selectedAlert.source} engine · ${selectedAlert.time}`}
-          />
-          <ExplainableInsightPanel
-            title="Alert evidence"
-            summary={selectedAlert.summary}
-            topFactors={selectedAlert.factors}
-            confidence={parseFloat(selectedAlert.score)}
-            recency={selectedAlert.time}
-            governMeta={{
-              auditId: `GV-2026-0212-${selectedAlert.id}`,
-              modelVersion: 'v3.2',
-              explanationVersion: 'xai-1.1',
-              timestamp: new Date().toISOString(),
-            }}
-          />
-          <div className="engine-actions" style={{ marginTop: 16 }}>
-            <Link to="/protect/alert-detail" className="entry-btn entry-btn--primary">
-              Investigate →
-            </Link>
-          </div>
-        </article>
-      )}
+      <article className="engine-card flex flex-col items-center">
+        <ScoreRing score={25} maxScore={100} label="MTTR" size="md" color="var(--accent-teal)" />
+        <p className="text-xs text-white/40 mt-2">Mean time to resolve: 25 minutes</p>
+      </article>
 
       <article className="engine-card">
-        <MissionSectionHeader title="Alert policy" />
-        <DefinitionLine
-          metric="Severity scoring"
-          formula="SHAP(features) × confidence"
-          unit="score (0-1)"
-          period="per-event"
-        />
-        <MissionDataRows
-          items={[
-            { id: 'AP-1', title: 'Critical → immediate', value: 'Active', tone: 'critical' },
-            { id: 'AP-2', title: 'High → 1h review', value: 'Active', tone: 'warning' },
-            { id: 'AP-3', title: 'Medium → daily digest', value: 'Active', tone: 'primary' },
-            { id: 'AP-4', title: 'Low → weekly summary', value: 'Active', tone: 'healthy' },
-          ]}
-        />
+        <h4 className="text-xs text-white/50 uppercase tracking-wider mb-3">By Engine</h4>
+        <CategoryScoreBar categories={[
+          { label: 'Protect', score: 3, color: 'var(--accent-teal)' },
+          { label: 'Grow', score: 1, color: 'var(--accent-violet)' },
+          { label: 'Execute', score: 1, color: 'var(--accent-gold)' },
+          { label: 'Govern', score: 1, color: 'var(--accent-blue)' },
+        ]} />
+      </article>
+
+      <article className="engine-card">
+        <h4 className="text-xs text-white/50 uppercase tracking-wider mb-3">Resolution Timeline</h4>
+        <MilestonesTimeline milestones={milestones} accentColor="var(--accent-teal)" />
+      </article>
+
+      <article className="engine-card">
+        <h4 className="text-xs text-white/50 uppercase tracking-wider mb-3">Alert Stats</h4>
+        <div className="space-y-2 text-xs">
+          <div className="flex justify-between"><span className="text-white/50">Resolved this week</span><span className="text-emerald-400">35</span></div>
+          <div className="flex justify-between"><span className="text-white/50">Avg resolution</span><span className="text-white/70">2.4h</span></div>
+          <div className="flex justify-between"><span className="text-white/50">False positive rate</span><span className="text-white/70">3%</span></div>
+        </div>
       </article>
     </>
   );
@@ -176,23 +211,19 @@ export const AlertsHub: React.FC = () => {
       heroVariant="editorial"
       hero={{
         kicker: 'Alerts Hub',
-        headline: 'Priority-sorted signal board.',
-        subline: contract.oneScreenMessage,
-        proofLine: {
-          claim: `${alerts.length} active alerts`,
-          evidence: 'Cross-engine priority ranking | Real-time',
-          source: 'Signal composite',
-        },
+        headline: '3 alerts share a common root cause: vendor payment anomaly.',
+        subline: '12 active | 35 resolved this week | Avg resolution: 2.4h',
+        proofLine: { claim: '12 active alerts', evidence: 'Cross-engine priority ranking | Real-time correlation', source: 'Signal composite' },
         freshness: new Date(Date.now() - 3 * 60 * 1000),
         kpis: [
-          { label: 'Active alerts', value: '5', delta: '−2 from last week', definition: 'Unresolved alerts across all engines', accent: 'amber', sparklineData: kpiSparklines.active, sparklineColor: 'var(--state-warning)' },
-          { label: 'Resolved (7d)', value: '22', delta: '+6', definition: 'Alerts resolved in the last 7 days', accent: 'teal', sparklineData: kpiSparklines.resolved, sparklineColor: 'var(--state-healthy)' },
-          { label: 'MTTR', value: '25m', delta: '▼ 42%', definition: 'Mean time to resolve alerts', accent: 'cyan', sparklineData: kpiSparklines.mttr, sparklineColor: '#00F0FF' },
-          { label: 'False positive', value: '3%', delta: '▼ from 8%', definition: 'Rate of incorrectly flagged alerts', accent: 'blue', sparklineData: kpiSparklines.fp, sparklineColor: 'var(--state-primary)' },
+          { label: 'Active', value: '12', accent: 'amber', definition: 'Unresolved alerts across all engines' },
+          { label: 'Resolved (7d)', value: '35', accent: 'teal', definition: 'Alerts resolved in the last 7 days' },
+          { label: 'MTTR', value: '25m', accent: 'cyan', definition: 'Mean time to resolve alerts' },
+          { label: 'False pos.', value: '3%', accent: 'blue', definition: 'Rate of incorrectly flagged alerts' },
         ],
       }}
-      primaryFeed={mainContent}
-      decisionRail={sideContent}
+      primaryFeed={primaryFeed}
+      decisionRail={decisionRail}
     />
   );
 };

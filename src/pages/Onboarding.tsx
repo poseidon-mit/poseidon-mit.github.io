@@ -1,280 +1,229 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from '../router';
+import { GovernContractSet } from '../components/GovernContractSet';
 import { PageShell } from '../components/PageShell';
-import { MissionActionList } from '../components/MissionActionList';
-import { MissionMetadataStrip } from '../components/MissionMetadataStrip';
-import { MissionSectionHeader } from '../components/MissionSectionHeader';
 import { ProofLine } from '../components/ProofLine';
 import { getRouteScreenContract } from '../contracts/route-screen-contracts';
 
-const onboardingSteps = [
-  {
-    title: 'Connect accounts',
-    summary: 'Link cards and banks with read-only defaults.',
-    trust: 'Confidence 0.94 | Updated now | Model v3.2',
-    readiness: 'Data scope verified',
-  },
-  {
-    title: 'Set guardrails',
-    summary: 'Define budget caps and risk boundaries.',
-    trust: 'Confidence 0.91 | Updated now | Policy G-ON-002',
-    readiness: 'Policy constraints active',
-  },
-  {
-    title: 'Approve automation',
-    summary: 'Enable only reviewed actions.',
-    trust: 'Confidence 0.90 | Updated now | Human review on',
-    readiness: 'Execution gating locked',
-  },
+/* ── types & data ─────────────────────────────────────────── */
+
+const steps = [
+  { title: 'Connect accounts', description: 'Link your financial accounts with read-only access.' },
+  { title: 'Set preferences', description: 'Configure notification and privacy preferences.' },
+  { title: 'Configure AI', description: 'Set autonomy levels and trust thresholds.' },
+  { title: 'Review & go', description: 'Confirm settings and launch your dashboard.' },
 ];
 
-const kpiSparklines = {
-  progress: [{ value: 33 }, { value: 38 }, { value: 44 }, { value: 52 }, { value: 66 }, { value: 100 }],
-  trust: [{ value: 0.89 }, { value: 0.9 }, { value: 0.91 }, { value: 0.92 }, { value: 0.93 }, { value: 0.94 }],
-  policy: [{ value: 84 }, { value: 86 }, { value: 88 }, { value: 90 }, { value: 93 }, { value: 96 }],
-  readiness: [{ value: 72 }, { value: 76 }, { value: 81 }, { value: 85 }, { value: 90 }, { value: 94 }],
-};
+const connectionTypes = [
+  { type: 'Bank', icon: 'B', description: 'Checking & savings accounts', count: 0 },
+  { type: 'Credit Card', icon: 'C', description: 'Credit cards & lines of credit', count: 0 },
+  { type: 'Investment', icon: 'I', description: 'Brokerage & retirement accounts', count: 0 },
+  { type: 'Wallet', icon: 'W', description: 'Digital wallets & crypto', count: 0 },
+];
+
+const connectedAccounts = [
+  { name: 'Chase Checking ****4821', type: 'Bank', status: 'synced', lastSync: '2m ago' },
+  { name: 'Amex Platinum ****1234', type: 'Credit Card', status: 'synced', lastSync: '5m ago' },
+];
+
+/* ── component ────────────────────────────────────────────── */
 
 export const Onboarding: React.FC = () => {
-  const [stepIndex, setStepIndex] = useState(0);
-  const activeStep = onboardingSteps[stepIndex];
+  const [currentStep, setCurrentStep] = useState(0);
+  const contract = getRouteScreenContract('onboarding', { onboardingStepIndex: currentStep });
 
-  const baseContract = getRouteScreenContract('onboarding', { onboardingStepIndex: stepIndex });
-  const completionContract = getRouteScreenContract('onboarding', { onboardingCompleted: true });
+  const goNext = () => setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1));
+  const goBack = () => setCurrentStep((prev) => Math.max(0, prev - 1));
 
-  const shellContract = useMemo(() => {
-    if (stepIndex < onboardingSteps.length - 1) {
-      return baseContract;
-    }
-
-    return {
-      ...baseContract,
-      transitionCue: completionContract.transitionCue,
-      transitionTo: completionContract.transitionTo,
-    };
-  }, [baseContract, completionContract, stepIndex]);
-
-  const mainContent = (
-    <article className="engine-card" data-slot="onboarding_flow">
-      <MissionSectionHeader
-        title="Setup flow"
-        message="Complete each step to activate governed workflows."
-      />
-
-      <div className="entry-onboard-grid">
-        <aside className="entry-step-rail">
-          {onboardingSteps.map((step, idx) => (
-            <button
-              key={step.title}
-              type="button"
-              className={`entry-step-item${idx === stepIndex ? ' is-active' : ''}${idx < stepIndex ? ' is-done' : ''}`}
-              onClick={() => setStepIndex(idx)}
-            >
-              <span>{idx < stepIndex ? '✓' : idx + 1}</span>
-              <div>
-                <strong>{step.title}</strong>
-                <small>{step.summary}</small>
-              </div>
-            </button>
-          ))}
-        </aside>
-
-        <section className="entry-onboard-main">
-          <div
-            className="entry-progress-bar"
-            role="progressbar"
-            aria-valuenow={stepIndex + 1}
-            aria-valuemin={1}
-            aria-valuemax={onboardingSteps.length}
-            aria-label="Onboarding progress"
-          >
-            {onboardingSteps.map((_, idx) => (
-              <div
-                key={`progress-${idx}`}
-                className={`entry-progress-segment${idx <= stepIndex ? ' entry-progress-segment--filled' : ''}${idx === stepIndex ? ' entry-progress-segment--active' : ''}`}
-              />
-            ))}
-          </div>
-          <header>
-            <p className="entry-kicker">Step {stepIndex + 1} of {onboardingSteps.length}</p>
-            <h1>{activeStep.title}</h1>
-            <p className="entry-subline">{activeStep.summary}</p>
-          </header>
-
-          <ProofLine
-            claim={`Step ${stepIndex + 1} validated`}
-            evidence={activeStep.trust}
-            source="Onboarding governance flow"
-            basis="per-step"
-            sourceType="system"
-          />
-
-          <div className="entry-surface-grid">
-            <article>
-              <h3>Summary first</h3>
-              <p>Primary signals and one next action stay visible above the fold.</p>
-            </article>
-            <article>
-              <h3>Details on demand</h3>
-              <p>Factors and policy context expand only when requested.</p>
-            </article>
-            <article>
-              <h3>Govern ready</h3>
-              <p>Audit and human review remain attached to every risky recommendation.</p>
-            </article>
-          </div>
-
-          <footer className="entry-onboard-actions">
-            <button
-              type="button"
-              className="entry-btn entry-btn--ghost"
-              onClick={() => setStepIndex((prev) => Math.max(0, prev - 1))}
-            >
-              Back
-            </button>
-            {stepIndex < onboardingSteps.length - 1 ? (
-              <button
-                type="button"
-                className="entry-btn entry-btn--primary"
-                onClick={() => setStepIndex((prev) => Math.min(onboardingSteps.length - 1, prev + 1))}
-              >
-                Next step
-              </button>
-            ) : (
-              <Link className="entry-btn entry-btn--primary" to="/dashboard">
-                Finish setup
-              </Link>
-            )}
-          </footer>
-        </section>
-      </div>
-    </article>
-  );
-
-  const sideContent = (
+  /* ── primary feed ───────────────────────────────────────── */
+  const primaryFeed = (
     <>
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Step status"
-          message="Current progress and readiness indicators."
-        />
-        <MissionMetadataStrip
-          compact
-          items={[
-            `Step ${stepIndex + 1} / ${onboardingSteps.length}`,
-            activeStep.readiness,
-            'Human review on',
-          ]}
-        />
-        <MissionActionList
-          items={[
-            { title: activeStep.title, meta: 'Current', tone: 'primary' },
-            { title: 'Complete all steps', meta: 'Required', tone: 'warning' },
-            { title: 'Launch dashboard', meta: 'Final', tone: 'healthy' },
-          ]}
-        />
-      </article>
+      {/* Progress Stepper */}
+      <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
+        {steps.map((step, idx) => (
+          <React.Fragment key={step.title}>
+            <button onClick={() => setCurrentStep(idx)} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${idx === currentStep ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : idx < currentStep ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-white/5 text-white/40 border border-white/10'}`}>
+              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${idx < currentStep ? 'bg-emerald-500 text-white' : idx === currentStep ? 'bg-teal-500 text-white' : 'bg-white/10 text-white/40'}`}>
+                {idx < currentStep ? '\u2713' : idx + 1}
+              </span>
+              <span className="hidden md:inline">{step.title}</span>
+            </button>
+            {idx < steps.length - 1 && <div className={`w-6 h-px ${idx < currentStep ? 'bg-emerald-500/40' : 'bg-white/10'}`} />}
+          </React.Fragment>
+        ))}
+      </div>
 
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Operational context"
-          message="Governance metrics for the current onboarding session."
-        />
-        <div className="entry-kpi-grid">
-          <article>
-            <small>Policy coverage</small>
-            <strong>96%</strong>
-          </article>
-          <article>
-            <small>Rollback ready</small>
-            <strong>100%</strong>
-          </article>
-          <article>
-            <small>Ownership</small>
-            <strong>Tracked</strong>
-          </article>
-          <article>
-            <small>Audit link</small>
-            <strong>Live</strong>
-          </article>
-        </div>
-      </article>
+      {/* Step 1: Connect Accounts */}
+      {currentStep === 0 && (
+        <>
+          <section className="engine-section">
+            <h3 className="text-lg font-bold text-white mb-2">Connect your first account</h3>
+            <p className="text-sm text-white/50 mb-4">Choose an account type to begin. All connections use bank-grade encryption with read-only access.</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {connectionTypes.map((ct) => (
+                <button key={ct.type} className="engine-card text-left hover:bg-white/[0.06] transition-colors">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-teal-500/20 flex items-center justify-center shrink-0">
+                      <span className="text-teal-400 font-semibold">{ct.icon}</span>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-medium text-white">{ct.type}</h4>
+                      <p className="text-xs text-white/40 mt-0.5">{ct.description}</p>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Security note */}
+            <div className="flex items-center gap-2 mt-4 px-3 py-2 rounded-lg bg-teal-500/5 border border-teal-500/10">
+              <svg className="w-4 h-4 text-teal-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              <p className="text-xs text-teal-400/70">Bank-grade encryption. Read-only access. Disconnect anytime.</p>
+            </div>
+          </section>
+
+          {/* Connected Accounts */}
+          {connectedAccounts.length > 0 && (
+            <section className="engine-section mt-4">
+              <h4 className="text-sm font-semibold text-white/70 uppercase tracking-wider mb-3">Connected Accounts</h4>
+              <div className="space-y-2">
+                {connectedAccounts.map((acct) => (
+                  <div key={acct.name} className="engine-card flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-white">{acct.name}</p>
+                      <p className="text-xs text-white/40">{acct.type} | Last sync: {acct.lastSync}</p>
+                    </div>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400">Synced</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+        </>
+      )}
+
+      {/* Step 2: Preferences */}
+      {currentStep === 1 && (
+        <section className="engine-section">
+          <h3 className="text-lg font-bold text-white mb-2">Set your preferences</h3>
+          <div className="engine-card space-y-4">
+            {[{ label: 'Protect alerts', desc: 'Real-time fraud and security notifications' },
+              { label: 'Grow insights', desc: 'Savings opportunities and goal updates' },
+              { label: 'Execute actions', desc: 'Action recommendations and approvals' },
+              { label: 'Govern reviews', desc: 'Audit summaries and compliance updates' },
+            ].map((pref, idx) => (
+              <div key={pref.label} className="flex items-center justify-between">
+                <div><p className="text-sm text-white">{pref.label}</p><p className="text-xs text-white/40">{pref.desc}</p></div>
+                <button className={`w-9 h-5 rounded-full relative ${idx < 3 ? 'bg-teal-500' : 'bg-white/10'}`}>
+                  <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${idx < 3 ? 'left-4' : 'left-0.5'}`} />
+                </button>
+              </div>
+            ))}
+            <div>
+              <span className="text-xs text-white/50 block mb-1">Email digest frequency</span>
+              <select className="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-xs text-white/70 focus:outline-none">
+                <option>Daily</option><option>Weekly</option><option>Monthly</option>
+              </select>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Step 3: Configure AI */}
+      {currentStep === 2 && (
+        <section className="engine-section">
+          <h3 className="text-lg font-bold text-white mb-2">Configure AI behavior</h3>
+          <div className="engine-card space-y-4">
+            <div>
+              <span className="text-xs text-white/50 block mb-2">Autonomy level</span>
+              <div className="flex gap-2">
+                {['Manual', 'Guided', 'Balanced'].map((level) => (
+                  <button key={level} className={`px-4 py-2 rounded-lg text-xs font-medium transition-colors ${level === 'Guided' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'}`}>{level}</button>
+                ))}
+              </div>
+              <p className="text-xs text-white/40 mt-2">Guided: AI provides recommendations with explanations. You approve all actions.</p>
+            </div>
+            <div>
+              <span className="text-xs text-white/50 block mb-1">Auto-approval confidence threshold</span>
+              <input type="range" min={50} max={100} defaultValue={85} className="w-full accent-teal-500" />
+              <div className="flex justify-between text-[10px] text-white/30"><span>50%</span><span>100%</span></div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Step 4: Review & Go */}
+      {currentStep === 3 && (
+        <section className="engine-section">
+          <h3 className="text-lg font-bold text-white mb-2">Review & launch</h3>
+          <div className="engine-card space-y-3">
+            <div className="flex justify-between text-xs"><span className="text-white/50">Connected accounts</span><span className="text-white">{connectedAccounts.length}</span></div>
+            <div className="flex justify-between text-xs"><span className="text-white/50">Notifications</span><span className="text-emerald-400">3 of 4 enabled</span></div>
+            <div className="flex justify-between text-xs"><span className="text-white/50">Autonomy level</span><span className="text-teal-400">Guided</span></div>
+            <div className="flex justify-between text-xs"><span className="text-white/50">Trust threshold</span><span className="text-white">85%</span></div>
+          </div>
+          <ProofLine claim="Setup complete" evidence="2 accounts connected | Guided autonomy | All policies active" source="Onboarding flow" basis="per-session" sourceType="system" />
+        </section>
+      )}
+
+      {/* Bottom Navigation */}
+      <div className="flex justify-between mt-6">
+        <button onClick={goBack} disabled={currentStep === 0} className={`px-4 py-2.5 rounded-lg text-sm transition-colors ${currentStep === 0 ? 'text-white/20 cursor-not-allowed' : 'text-white/50 hover:text-white/70 bg-white/5 border border-white/10'}`}>
+          {currentStep === 0 ? 'Skip for now' : 'Back'}
+        </button>
+        {currentStep < steps.length - 1 ? (
+          <button onClick={goNext} className="px-6 py-2.5 rounded-lg bg-teal-500 text-white text-sm font-semibold hover:bg-teal-600 transition-colors">Continue</button>
+        ) : (
+          <Link to="/dashboard" className="px-6 py-2.5 rounded-lg bg-teal-500 text-white text-sm font-semibold hover:bg-teal-600 transition-colors inline-flex items-center">Launch Dashboard</Link>
+        )}
+      </div>
+
+      <GovernContractSet auditId="GV-2026-0216-ONBRD" modelVersion="OnboardFlow v1.0" explanationVersion="xai-1.0" />
     </>
   );
 
-  const rail = (
-    <article className="engine-card mission-rail-card">
-      <MissionMetadataStrip
-        compact
-        items={['Guided setup', 'Contract-driven flow', 'Transition to dashboard enforced']}
-      />
+  /* ── decision rail ──────────────────────────────────────── */
+  const decisionRail = (
+    <article className="engine-card">
+      <h4 className="text-xs text-white/50 uppercase tracking-wider mb-3">Setup Progress</h4>
+      <div className="space-y-2">
+        {steps.map((step, idx) => (
+          <div key={step.title} className="flex items-center gap-2">
+            <div className={`w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold ${idx < currentStep ? 'bg-emerald-500 text-white' : idx === currentStep ? 'bg-teal-500 text-white' : 'bg-white/10 text-white/30'}`}>
+              {idx < currentStep ? '\u2713' : idx + 1}
+            </div>
+            <span className={`text-xs ${idx === currentStep ? 'text-white' : idx < currentStep ? 'text-emerald-400/70' : 'text-white/30'}`}>{step.title}</span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 pt-3 border-t border-white/5">
+        <div className="flex justify-between text-xs"><span className="text-white/50">Completion</span><span className="text-teal-400">{Math.round(((currentStep + 1) / steps.length) * 100)}%</span></div>
+      </div>
     </article>
   );
 
   return (
     <PageShell
       slug="onboarding"
-      contract={shellContract}
-      layout="dashboard"
+      contract={contract}
+      layout="engine"
       heroVariant="minimal"
       hero={{
-        kicker: 'Onboarding',
-        headline: 'Activate decision-ready workflows.',
-        subline: shellContract.oneScreenMessage,
-        proofLine: {
-          claim: `Confidence ${(0.94 - stepIndex * 0.02).toFixed(2)}`,
-          evidence: activeStep.trust,
-          source: 'Onboarding governance flow',
-        },
-        heroAction: {
-          label: 'Recommended:',
-          text: stepIndex < onboardingSteps.length - 1
-            ? 'Finish all steps before enabling autonomous execution.'
-            : 'Finalize setup and open the dashboard with governed defaults.',
-          cta: {
-            label: stepIndex < onboardingSteps.length - 1 ? 'Continue setup →' : 'Open dashboard →',
-            to: stepIndex < onboardingSteps.length - 1 ? '/onboarding' : '/dashboard',
-          },
-        },
+        kicker: `Step ${currentStep + 1} of ${steps.length}`,
+        headline: steps[currentStep].title,
+        subline: steps[currentStep].description,
+        proofLine: { claim: `${Math.round(((currentStep + 1) / steps.length) * 100)}% complete`, evidence: 'Bank-grade encryption | Read-only access | Governed flow', source: 'Onboarding system' },
         freshness: new Date(),
         kpis: [
-          {
-            label: 'Progress',
-            value: `${Math.round(((stepIndex + 1) / onboardingSteps.length) * 100)}%`,
-            definition: 'Completion ratio across required setup steps',
-            accent: 'blue',
-            sparklineData: kpiSparklines.progress,
-            sparklineColor: 'var(--state-primary)',
-          },
-          {
-            label: 'Flow trust',
-            value: (0.94 - stepIndex * 0.02).toFixed(2),
-            definition: 'Confidence that current setup stage is validated',
-            accent: 'teal',
-            sparklineData: kpiSparklines.trust,
-            sparklineColor: 'var(--state-healthy)',
-          },
-          {
-            label: 'Policy sync',
-            value: `${86 + stepIndex * 5}%`,
-            definition: 'Coverage of required policy defaults for activation',
-            accent: 'cyan',
-            sparklineData: kpiSparklines.policy,
-            sparklineColor: '#00F0FF',
-          },
-          {
-            label: 'Readiness',
-            value: `${80 + stepIndex * 7}%`,
-            definition: 'Operational readiness to transition into dashboard mode',
-            accent: 'amber',
-            sparklineData: kpiSparklines.readiness,
-            sparklineColor: 'var(--state-warning)',
-          },
+          { label: 'Progress', value: `${Math.round(((currentStep + 1) / steps.length) * 100)}%`, accent: 'teal', definition: 'Setup completion progress' },
+          { label: 'Accounts', value: `${connectedAccounts.length}`, accent: 'blue', definition: 'Connected financial accounts' },
+          { label: 'Security', value: 'AES-256', accent: 'cyan', definition: 'Encryption standard' },
+          { label: 'Access', value: 'Read-only', accent: 'amber', definition: 'Account access level' },
         ],
       }}
-      rail={rail}
-      primaryFeed={mainContent}
-      decisionRail={sideContent}
+      primaryFeed={primaryFeed}
+      decisionRail={decisionRail}
     />
   );
 };
