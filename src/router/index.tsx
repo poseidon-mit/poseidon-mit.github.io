@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { logger } from './utils/logger';
-import { prefetchRoute, type RoutePath } from './router/lazyRoutes';
+import { logger } from '../utils/logger';
+import { prefetchRoute, type RoutePath } from './lazyRoutes';
 
 interface RouterState {
   path: string;

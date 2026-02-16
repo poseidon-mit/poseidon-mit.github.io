@@ -1,403 +1,782 @@
-import React, { useReducer, useMemo, useCallback } from 'react';
-import { Link } from '../router';
-import { Shield, CreditCard, MapPin, Clock } from 'lucide-react';
-import { ActionOutcomePreview } from '../components/ActionOutcomePreview';
-import { AuditLinkChip } from '../components/AuditLinkChip';
-import { Button } from '../components/Button';
-import { CategoryScoreBar } from '../components/CategoryScoreBar';
-import type { CategoryScore } from '../components/CategoryScoreBar';
-import { DefinitionLine } from '../components/DefinitionLine';
-import { PageShell } from '../components/PageShell';
-import { ExplainableInsightPanel } from '../components/ExplainabilityPanel';
-import { GovernContractSet } from '../components/GovernContractSet';
-import { GovernVerifiedBadge } from '../components/GovernVerifiedBadge';
-import { HumanReviewCTA } from '../components/HumanReviewCTA';
-import { MilestonesTimeline } from '../components/MilestonesTimeline';
-import type { Milestone } from '../components/MilestonesTimeline';
-import { MissionActionList } from '../components/MissionActionList';
-import { MissionEvidencePanel } from '../components/MissionEvidencePanel';
-import { MissionSectionHeader } from '../components/MissionSectionHeader';
-import { MissionStatusChip } from '../components/MissionStatusChip';
-import { ProofLine } from '../components/ProofLine';
-import { ScoreRing } from '../components/ScoreRing';
-import { ThreatAlertCard } from '../components/ThreatAlertCard';
-import { getRouteScreenContract } from '../contracts/route-screen-contracts';
-import { useUI } from '../contexts/UIContext';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import {
-  mockProtectStats,
-  mockThreats,
-} from '../services/mockProtect';
-import type { ThreatAlert } from '../services/mockProtect';
+  Shield,
+  AlertCircle,
+  Eye,
+  Sparkles,
+  Brain,
+  CreditCard,
+  MapPin,
+  Clock,
+  ChevronDown,
+  ExternalLink,
+  Check,
+} from 'lucide-react';
+import {
+  RadialBarChart,
+  RadialBar,
+  PolarAngleAxis,
+} from 'recharts';
 
-// ── State machine ────────────────────────────────────────────
+/* ─── Animation variants ─────────────────────────────────── */
 
-type ThreatAction = 'idle' | 'previewing_block' | 'previewing_approve';
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08 },
+  },
+};
 
-interface ProtectState {
-  threats: ThreatAlert[];
-  focusedThreatId: string | null;
-  pendingAction: ThreatAction;
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+};
+
+/* ─── Types ───────────────────────────────────────────────── */
+
+interface Signal {
+  id: string;
+  severity: 'critical' | 'warning' | 'info';
+  title: string;
+  merchant: string;
+  amount: string;
+  confidence: number;
+  time: string;
 }
 
-type ProtectEvent =
-  | { type: 'FOCUS_THREAT'; id: string }
-  | { type: 'PREVIEW_BLOCK'; id: string }
-  | { type: 'PREVIEW_APPROVE'; id: string }
-  | { type: 'CONFIRM_ACTION' }
-  | { type: 'CANCEL_PREVIEW' };
+/* ─── Data ────────────────────────────────────────────────── */
 
-function protectReducer(state: ProtectState, event: ProtectEvent): ProtectState {
-  switch (event.type) {
-    case 'FOCUS_THREAT':
-      return { ...state, focusedThreatId: event.id, pendingAction: 'idle' };
-    case 'PREVIEW_BLOCK':
-      return { ...state, focusedThreatId: event.id, pendingAction: 'previewing_block' };
-    case 'PREVIEW_APPROVE':
-      return { ...state, focusedThreatId: event.id, pendingAction: 'previewing_approve' };
-    case 'CONFIRM_ACTION': {
-      const newStatus = state.pendingAction === 'previewing_block' ? 'blocked' : 'approved';
-      return {
-        ...state,
-        threats: state.threats.map((t) =>
-          t.id === state.focusedThreatId ? { ...t, status: newStatus } : t,
-        ),
-        pendingAction: 'idle',
-      };
-    }
-    case 'CANCEL_PREVIEW':
-      return { ...state, pendingAction: 'idle' };
-    default:
-      return state;
-  }
-}
-
-// ── Static data ──────────────────────────────────────────────
-
-const categoryBreakdown: CategoryScore[] = [
-  { name: 'Transaction patterns', score: 92, icon: CreditCard, color: 'var(--accent-teal)' },
-  { name: 'Merchant risk', score: 87, icon: Shield, color: 'var(--accent-teal)' },
-  { name: 'Geographic signals', score: 95, icon: MapPin, color: 'var(--accent-teal)' },
-  { name: 'Behavioral match', score: 91, icon: Clock, color: 'var(--accent-teal)' },
+const signals: Signal[] = [
+  {
+    id: 's1',
+    severity: 'critical',
+    title: 'Unusual high-value transaction',
+    merchant: 'MerchantX Electronics',
+    amount: '$4,200.00',
+    confidence: 0.94,
+    time: '14:28',
+  },
+  {
+    id: 's2',
+    severity: 'warning',
+    title: 'Geographic anomaly detected',
+    merchant: 'TravelCo International',
+    amount: '$890.00',
+    confidence: 0.87,
+    time: '13:45',
+  },
+  {
+    id: 's3',
+    severity: 'info',
+    title: 'New merchant first transaction',
+    merchant: 'CloudServices Pro',
+    amount: '$149.99',
+    confidence: 0.72,
+    time: '12:10',
+  },
 ];
 
-const protectMilestones: Milestone[] = [
-  { label: 'Signal detected', date: '14:28 UTC', status: 'completed' },
-  { label: 'Analysis complete', date: '14:29 UTC', status: 'completed' },
-  { label: 'Alert raised', date: '14:30 UTC', status: 'completed' },
-  { label: 'Resolution pending', date: 'Awaiting', status: 'upcoming' },
+const shapFactors = [
+  { label: 'Merchant history', value: 0.82 },
+  { label: 'Amount deviation', value: 0.71 },
+  { label: 'Geographic mismatch', value: 0.65 },
+];
+
+const categoryScores = [
+  { name: 'Transaction patterns', score: 92, icon: CreditCard },
+  { name: 'Merchant risk', score: 87, icon: Shield },
+  { name: 'Geographic', score: 95, icon: MapPin },
+  { name: 'Behavioral', score: 91, icon: Brain },
+];
+
+const milestones = [
+  { label: 'Signal detected', time: '14:28', status: 'completed' as const },
+  { label: 'Analysis complete', time: '14:29', status: 'completed' as const },
+  { label: 'Alert raised', time: '14:30', status: 'completed' as const },
+  { label: 'Resolution pending', time: 'Now', status: 'current' as const },
 ];
 
 const quickActions = [
-  { title: 'Freeze card', meta: 'Immediate containment | Confidence 0.96', tone: 'critical' as const },
-  { title: 'Investigate MerchantX', meta: 'SLA 24h | Confidence 0.91', tone: 'warning' as const },
-  { title: 'Update alert rules', meta: 'Low priority | Confidence 0.88', tone: 'healthy' as const },
+  { title: 'Freeze card', priority: 'urgent' as const, color: '#EF4444' },
+  { title: 'Investigate MerchantX', priority: 'normal' as const, color: '#F59E0B' },
+  { title: 'Update alert rules', priority: 'low' as const, color: '#10B981' },
 ];
 
-const kpiSparklines = {
-  signals: [{ value: 5 }, { value: 4 }, { value: 6 }, { value: 3 }, { value: 4 }, { value: 3 }],
-  blocked: [{ value: 0 }, { value: 1 }, { value: 0 }, { value: 1 }, { value: 0 }, { value: 1 }],
-  fpRate: [{ value: 3.5 }, { value: 3.2 }, { value: 2.8 }, { value: 2.5 }, { value: 2.3 }, { value: 2.1 }],
-  coverage: [{ value: 98 }, { value: 99 }, { value: 99 }, { value: 100 }, { value: 100 }, { value: 100 }],
-};
+/* ─── Severity Badge ──────────────────────────────────────── */
 
-// ── Component ────────────────────────────────────────────────
-
-export const Protect: React.FC = () => {
-  const [state, dispatch] = useReducer(protectReducer, {
-    threats: mockThreats,
-    focusedThreatId: mockThreats[0]?.id ?? null,
-    pendingAction: 'idle',
-  });
-  const { addNotification } = useUI();
-  const contract = getRouteScreenContract('protect');
-
-  // Derived values
-  const pendingCount = useMemo(
-    () => state.threats.filter((t) => t.status === 'pending').length,
-    [state.threats],
+function SeverityBadge({ severity }: { severity: Signal['severity'] }) {
+  const config = {
+    critical: { bg: 'rgba(239,68,68,0.15)', border: 'rgba(239,68,68,0.3)', color: '#EF4444', label: 'Critical' },
+    warning: { bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.3)', color: '#F59E0B', label: 'Warning' },
+    info: { bg: 'rgba(56,189,248,0.15)', border: 'rgba(56,189,248,0.3)', color: '#38BDF8', label: 'Info' },
+  };
+  const c = config[severity];
+  return (
+    <span
+      className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider"
+      style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.color }}
+    >
+      {c.label}
+    </span>
   );
-  const focusedThreat = useMemo(
-    () => state.threats.find((t) => t.id === state.focusedThreatId) ?? null,
-    [state.threats, state.focusedThreatId],
+}
+
+/* ─── Mini Score Ring (inline in table) ───────────────────── */
+
+function MiniScoreRing({ value }: { value: number }) {
+  const pct = Math.round(value * 100);
+  return (
+    <div className="flex items-center gap-2">
+      <div className="relative h-8 w-8">
+        <svg viewBox="0 0 36 36" className="h-8 w-8 -rotate-90">
+          <circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3" />
+          <circle
+            cx="18" cy="18" r="14" fill="none" stroke="#14B8A6" strokeWidth="3"
+            strokeLinecap="round"
+            strokeDasharray={`${pct * 0.88} ${88 - pct * 0.88}`}
+          />
+        </svg>
+      </div>
+      <span className="font-mono text-sm font-semibold" style={{ color: '#14B8A6' }}>
+        {pct}{'%'}
+      </span>
+    </div>
   );
+}
 
-  // Handlers
-  const handleBlock = useCallback((id: string) => {
-    dispatch({ type: 'PREVIEW_BLOCK', id });
-  }, []);
+/* ─── Score Ring (large, for Decision Rail) ────────────────── */
 
-  const handleApprove = useCallback((id: string) => {
-    dispatch({ type: 'PREVIEW_APPROVE', id });
-  }, []);
+function ScoreRingLarge({ score }: { score: number }) {
+  const data = [{ value: score, fill: '#14B8A6' }];
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <p className="text-xs font-medium uppercase tracking-widest" style={{ color: '#64748B' }}>
+        Risk Score
+      </p>
+      <div className="relative">
+        <RadialBarChart
+          width={180}
+          height={180}
+          cx={90}
+          cy={90}
+          innerRadius={62}
+          outerRadius={80}
+          barSize={12}
+          data={data}
+          startAngle={90}
+          endAngle={-270}
+        >
+          <PolarAngleAxis type="number" domain={[0, 100]} tick={false} angleAxisId={0} />
+          <RadialBar
+            dataKey="value"
+            cornerRadius={6}
+            background={{ fill: 'rgba(255,255,255,0.06)' }}
+            angleAxisId={0}
+          />
+        </RadialBarChart>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="font-mono text-4xl font-bold" style={{ color: '#F1F5F9' }}>{score}</span>
+          <span className="text-xs" style={{ color: '#64748B' }}>{'/100'}</span>
+        </div>
+      </div>
+      <span className="text-sm font-medium" style={{ color: '#14B8A6' }}>
+        {'Low \u2014 monitoring'}
+      </span>
+    </div>
+  );
+}
 
-  const handleConfirm = useCallback(() => {
-    dispatch({ type: 'CONFIRM_ACTION' });
-    const message = state.pendingAction === 'previewing_block'
-      ? 'Threat blocked. Protection controls active. Audit trail updated.'
-      : 'Alert resolved. Model feedback recorded. Audit trail updated.';
-    addNotification({ type: 'success', message });
-  }, [state.pendingAction, addNotification]);
+/* ─── Category Score Bars ─────────────────────────────────── */
 
-  const handleCancel = useCallback(() => {
-    dispatch({ type: 'CANCEL_PREVIEW' });
-  }, []);
-
-  // ── Primary feed ───────────────────────────────────────────
-
-  const primaryFeed = (
-    <>
-      {/* Threat table / triage queue */}
-      <section className="engine-section">
-        <MissionSectionHeader
-          title="Threat triage queue"
-          message="Sorted by severity and confidence. Select to inspect evidence."
-          contextCue="Tap a threat to see SHAP evidence and decide"
-          right={pendingCount > 0 ? <MissionStatusChip tone="critical" label={`${pendingCount} pending`} /> : undefined}
-        />
-        <div className="engine-item-list">
-          {state.threats.map((threat) => (
+function CategoryScoreBars() {
+  return (
+    <div className="flex flex-col gap-3">
+      {categoryScores.map((cat) => {
+        const Icon = cat.icon;
+        return (
+          <div
+            key={cat.name}
+            className="flex items-center gap-3 rounded-xl p-3"
+            style={{ background: 'rgba(255,255,255,0.03)' }}
+          >
             <div
-              key={threat.id}
-              onClick={() => dispatch({ type: 'FOCUS_THREAT', id: threat.id })}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => { if (e.key === 'Enter') dispatch({ type: 'FOCUS_THREAT', id: threat.id }); }}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+              style={{ background: 'rgba(20,184,166,0.1)' }}
             >
-              <ThreatAlertCard
-                alert={threat}
-                onApprove={handleApprove}
-                onBlock={handleBlock}
-                summaryMaxLinesDesktop={contract.density.maxSummaryLinesDesktop}
-                summaryMaxLinesMobile={contract.density.maxSummaryLinesMobile}
-                detailsDefault={contract.density.detailsDefault}
+              <Icon className="h-4 w-4" style={{ color: '#14B8A6' }} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="mb-1.5 flex items-center justify-between">
+                <span className="text-sm font-medium" style={{ color: '#F1F5F9' }}>{cat.name}</span>
+                <span className="font-mono text-sm font-semibold" style={{ color: '#14B8A6' }}>{cat.score}</span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                <motion.div
+                  className="h-full rounded-full"
+                  style={{ background: 'linear-gradient(90deg, #14B8A6, rgba(20,184,166,0.6))' }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${cat.score}%` }}
+                  transition={{ duration: 1, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+                />
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── Milestones Timeline ─────────────────────────────────── */
+
+function Timeline() {
+  return (
+    <div className="flex flex-col">
+      {milestones.map((m, i) => {
+        const isLast = i === milestones.length - 1;
+        return (
+          <div key={m.label} className="relative flex gap-4">
+            {!isLast && (
+              <div
+                className="absolute left-4 top-8 h-full w-px -translate-x-1/2"
+                style={{
+                  background: m.status === 'completed'
+                    ? 'linear-gradient(to bottom, rgba(20,184,166,0.3), rgba(20,184,166,0.1))'
+                    : 'linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
+                }}
               />
-              <ProofLine
-                claim={`Confidence ${(threat.aiExplanation.confidence / 100).toFixed(2)}`}
-                evidence={`Top SHAP: ${threat.aiExplanation.shapValues[0]?.feature ?? 'N/A'} (${Math.abs(threat.aiExplanation.shapValues[0]?.shapValue ?? 0).toFixed(2)})`}
-                source={`FP rate ${threat.aiExplanation.falsePositiveRate}%`}
-                basis="per-event"
-                sourceType="model"
+            )}
+            <div className="z-10 shrink-0">
+              {m.status === 'completed' ? (
+                <div
+                  className="flex h-8 w-8 items-center justify-center rounded-full"
+                  style={{ background: 'rgba(20,184,166,0.15)', boxShadow: 'inset 0 0 0 2px rgba(20,184,166,0.3)' }}
+                >
+                  <Check className="h-4 w-4" style={{ color: '#10B981' }} />
+                </div>
+              ) : (
+                <div
+                  className="flex h-8 w-8 items-center justify-center rounded-full"
+                  style={{ background: 'rgba(20,184,166,0.15)', boxShadow: 'inset 0 0 0 2px rgba(20,184,166,0.3)' }}
+                >
+                  <div className="h-3 w-3 animate-pulse rounded-full" style={{ background: '#14B8A6' }} />
+                </div>
+              )}
+            </div>
+            <div className={`flex flex-1 items-center justify-between ${isLast ? 'pb-0' : 'pb-6'}`}>
+              <div>
+                <p className="text-sm font-medium" style={{ color: m.status === 'completed' ? '#F1F5F9' : '#CBD5E1' }}>
+                  {m.label}
+                </p>
+                <p className="text-xs" style={{ color: '#64748B' }}>{m.time}</p>
+              </div>
+              {m.status === 'completed' && (
+                <span
+                  className="rounded-full px-2.5 py-0.5 text-xs font-medium"
+                  style={{ background: 'rgba(20,184,166,0.1)', color: '#10B981' }}
+                >
+                  Done
+                </span>
+              )}
+              {m.status === 'current' && (
+                <span
+                  className="rounded-full px-2.5 py-0.5 text-xs font-medium"
+                  style={{ background: 'rgba(20,184,166,0.1)', color: '#14B8A6' }}
+                >
+                  Active
+                </span>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── SHAP Detail Panel ───────────────────────────────────── */
+
+function SHAPPanel() {
+  return (
+    <div className="flex flex-col gap-4 rounded-xl p-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="flex items-center gap-2">
+        <Brain className="h-4 w-4" style={{ color: '#14B8A6' }} />
+        <span className="text-sm font-semibold" style={{ color: '#F1F5F9' }}>SHAP Factor Analysis</span>
+      </div>
+      <div className="flex flex-col gap-3">
+        {shapFactors.map((f) => (
+          <div key={f.label} className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-sm" style={{ color: '#CBD5E1' }}>{f.label}</span>
+              <span className="font-mono text-sm font-semibold" style={{ color: '#14B8A6' }}>{f.value.toFixed(2)}</span>
+            </div>
+            <div className="h-2 overflow-hidden rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+              <motion.div
+                className="h-full rounded-full"
+                style={{ background: 'linear-gradient(90deg, #14B8A6, rgba(20,184,166,0.5))' }}
+                initial={{ width: 0 }}
+                animate={{ width: `${f.value * 100}%` }}
+                transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
               />
             </div>
-          ))}
-        </div>
-        <DefinitionLine
-          metric="Risk Score"
-          formula="weighted_sum(signal_confidence x severity_factor)"
-          unit="0-1"
-          period="rolling 24h"
-          threshold="> 0.7 triggers alert"
-        />
-      </section>
-
-      {/* Quick actions */}
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Recommended actions"
-          message="Ranked by severity and confidence."
-        />
-        <MissionActionList items={quickActions} />
-        <ProofLine
-          claim="3 actions recommended"
-          evidence="Prioritized by severity x confidence | Model v3.2"
-          source="Protect action ranker"
-          sourceType="model"
-        />
-      </article>
-
-      {/* Govern footer */}
-      <GovernContractSet
-        auditId="GV-2026-0215-PRT-SIG"
-        modelVersion="FraudDetection v3.2"
-        explanationVersion="SHAP v2.1"
-      />
-      <div className="govern-footer">
-        <GovernVerifiedBadge
-          auditId="GV-2026-0215-PRT-SIG"
-          modelVersion="FraudDetection v3.2"
-          explanationVersion="SHAP v2.1"
-        />
-        <AuditLinkChip auditId="GV-2026-0215-PRT-SIG" />
-        <HumanReviewCTA caseType="dispute" />
+          </div>
+        ))}
       </div>
-    </>
-  );
-
-  // ── Decision rail ──────────────────────────────────────────
-
-  const decisionRail = (
-    <>
-      {/* Score ring */}
-      <article className="engine-card">
-        <ScoreRing
-          score={94}
-          label="Risk Score"
-          subtitle="/ 100"
-          statusText="Low -- monitoring"
-          color="var(--accent-teal)"
-          size="lg"
-        />
-      </article>
-
-      {/* Category breakdown */}
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Category breakdown"
-          message="Per-category threat scores."
-        />
-        <CategoryScoreBar categories={categoryBreakdown} iconAccent="var(--accent-teal)" />
-      </article>
-
-      {/* Milestones timeline */}
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Alert timeline"
-          message="Signal lifecycle from detection to resolution."
-        />
-        <MilestonesTimeline
-          milestones={protectMilestones}
-          accentColor="var(--accent-teal)"
-        />
-      </article>
-
-      {/* Evidence summary */}
-      <MissionEvidencePanel
-        className="engine-card"
-        title="Evidence summary"
-        summary="AI identified 3 correlated signals across 2 accounts in the last 6 hours."
-        tone="primary"
-      />
-
-      {/* Focused threat evidence */}
-      {focusedThreat && (
-        <article className="engine-card">
-          <MissionSectionHeader
-            title={`Alert: ${focusedThreat.transaction.merchant}`}
-            message={`${focusedThreat.type} -- ${focusedThreat.severity} severity`}
-          />
-          <ExplainableInsightPanel
-            title="Threat evidence"
-            summary={focusedThreat.aiExplanation.reason}
-            topFactors={focusedThreat.aiExplanation.shapValues.slice(0, 3).map((s) => ({
-              label: s.feature,
-              contribution: Math.abs(s.shapValue),
-              note: s.explanation,
-            }))}
-            confidence={focusedThreat.aiExplanation.confidence / 100}
-            recency="Just now"
-            governMeta={{
-              auditId: `GV-2026-0215-${focusedThreat.id}`,
-              modelVersion: 'FraudDetection v3.2',
-              explanationVersion: 'SHAP v2.1',
-              timestamp: new Date().toISOString(),
-            }}
-          />
-          {state.pendingAction !== 'idle' && (
-            <>
-              {state.pendingAction === 'previewing_block' ? (
-                <ActionOutcomePreview
-                  outcome="Transaction blocked. Merchant rule updated. Future transactions from this merchant will be flagged."
-                  reversibleWindow="24h"
-                  sideEffects={[
-                    'Merchant flagged for future transactions',
-                    'Finance owner notified via alert',
-                    'Audit trail entry created',
-                  ]}
-                  impact={`$${focusedThreat.transaction.amount.toLocaleString()} blocked`}
-                  reversible
-                />
-              ) : (
-                <ActionOutcomePreview
-                  outcome="Transaction approved. Alert resolved. Model will incorporate this feedback."
-                  reversibleWindow="N/A"
-                  sideEffects={[
-                    'Model updated with approval feedback',
-                    'False positive rate may adjust',
-                    'Audit trail entry created',
-                  ]}
-                  reversible={false}
-                />
-              )}
-              <div className="mission-dual-actions">
-                <Button variant="primary" onClick={handleConfirm}>
-                  {state.pendingAction === 'previewing_block' ? 'Confirm block' : 'Confirm approve'}
-                </Button>
-                <Button variant="ghost" onClick={handleCancel}>Cancel</Button>
-              </div>
-            </>
-          )}
-        </article>
-      )}
-
-      {/* Navigation links */}
-      <div className="mission-dual-actions">
-        <Link className="entry-btn entry-btn--ghost" to="/protect/alert-detail">Alert detail</Link>
-        <Link className="entry-btn entry-btn--ghost" to="/govern">Audit trail</Link>
+      <div className="rounded-lg p-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
+        <p className="font-mono text-xs" style={{ color: '#64748B' }}>
+          {'FraudDetection v3.2 | Trained on 180d | Accuracy 97.2%'}
+        </p>
       </div>
-    </>
+    </div>
   );
+}
+
+/* ─── Glass Card wrapper ──────────────────────────────────── */
+
+function GlassCard({
+  children,
+  className = '',
+  borderAccent,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  borderAccent?: string;
+}) {
+  return (
+    <div
+      className={`rounded-2xl p-4 md:p-6 ${className}`}
+      style={{
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        background: 'rgba(255,255,255,0.05)',
+        border: '1px solid rgba(255,255,255,0.1)',
+        boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+        ...(borderAccent ? { borderLeft: `2px solid ${borderAccent}` } : {}),
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════ */
+/* ─── MAIN PAGE COMPONENT ──────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════ */
+
+export const Protect: React.FC = () => {
+  const [expandedSignal, setExpandedSignal] = useState<string | null>(null);
 
   return (
-    <PageShell
-      slug="protect"
-      contract={contract}
-      layout="engine"
-      heroVariant="focused"
-      hero={{
-        kicker: 'Protect',
-        engineBadge: 'Protect',
-        headline: `3 active signals. Confidence 0.94. No action required.`,
-        subline: 'Continuous monitoring across all accounts. Last scan: 4 minutes ago.',
-        valueStatement: `$${mockProtectStats.totalProtected.toLocaleString()} protected this cycle.`,
-        proofLine: {
-          claim: '3 signals detected | Confidence 0.94',
-          evidence: 'Model: FraudDetection v3.2 | Basis: 180-day behavioral analysis',
-          source: 'Protect engine',
-        },
-        heroAction: {
-          label: 'AI insight:',
-          text: 'Unusual pattern detected at MerchantX -- $4,200 charge deviates 3.2x from category average.',
-          cta: { label: 'Begin triage', to: '#threat-triage' },
-        },
-        freshness: new Date(Date.now() - 4 * 60 * 1000),
-        kpis: [
-          {
-            label: 'Active signals',
-            value: '3',
-            definition: 'Active threat signals across all accounts.',
-            accent: 'amber',
-            sparklineData: kpiSparklines.signals,
-            sparklineColor: 'var(--state-warning)',
-          },
-          {
-            label: 'Blocked today',
-            value: '1',
-            definition: 'Transactions blocked by automated fraud detection.',
-            accent: 'teal',
-            sparklineData: kpiSparklines.blocked,
-            sparklineColor: 'var(--state-healthy)',
-          },
-          {
-            label: 'False positive rate',
-            value: '2.1%',
-            definition: 'Percentage of alerts later marked as false positives.',
-            accent: 'cyan',
-            sparklineData: kpiSparklines.fpRate,
-            sparklineColor: '#00F0FF',
-          },
-          {
-            label: 'Coverage',
-            value: '100%',
-            definition: 'Percentage of accounts monitored by threat detection.',
-            accent: 'blue',
-            sparklineData: kpiSparklines.coverage,
-            sparklineColor: 'var(--state-primary)',
-          },
-        ],
-      }}
-      primaryFeed={primaryFeed}
-      decisionRail={decisionRail}
-    />
+    <div
+      className="relative min-h-screen overflow-hidden"
+      style={{ background: '#0A1628' }}
+    >
+      {/* Aurora background glow */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: 'radial-gradient(70% 50% at 50% 0%, rgba(20,184,166,0.06), transparent), radial-gradient(40% 40% at 80% 20%, rgba(20,184,166,0.03), transparent)',
+        }}
+      />
+
+      {/* Main content */}
+      <motion.main
+        className="relative z-10 mx-auto flex max-w-[1280px] flex-col gap-6 px-4 py-8 md:gap-8 md:px-6 lg:px-8"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="show"
+        role="main"
+        aria-label="Protect Engine - Threat Detection"
+      >
+        {/* ═══ 1. HERO SECTION ═══ */}
+        <motion.section variants={fadeUp} className="flex flex-col gap-3" aria-labelledby="protect-headline">
+          {/* Kicker badge */}
+          <div className="flex items-center gap-2.5">
+            <div
+              className="flex h-7 w-7 items-center justify-center rounded-full"
+              style={{ background: 'rgba(20,184,166,0.15)' }}
+            >
+              <Shield className="h-3.5 w-3.5" style={{ color: '#14B8A6' }} />
+            </div>
+            <span className="text-sm font-semibold tracking-wide" style={{ color: '#14B8A6' }}>
+              Protect
+            </span>
+          </div>
+
+          {/* Headline */}
+          <h1
+            id="protect-headline"
+            className="text-2xl font-bold leading-tight tracking-tight text-balance md:text-4xl"
+            style={{ color: '#F1F5F9' }}
+          >
+            3 active signals. Confidence 0.94. No action required.
+          </h1>
+
+          {/* Subline */}
+          <p className="max-w-xl text-base leading-relaxed" style={{ color: '#CBD5E1' }}>
+            Continuous monitoring across all accounts. Last scan: 4 minutes ago.
+          </p>
+
+          {/* AI Insight Banner */}
+          <GlassCard className="flex flex-wrap items-center gap-3">
+            <div
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+              style={{ background: 'rgba(20,184,166,0.1)' }}
+            >
+              <Sparkles className="h-4 w-4" style={{ color: '#14B8A6' }} />
+            </div>
+            <p className="min-w-[200px] flex-1 text-sm leading-relaxed" style={{ color: 'rgba(248,250,252,0.9)' }}>
+              Unusual pattern detected at <strong style={{ color: '#F1F5F9' }}>MerchantX</strong> {'\u2014'} $4,200 charge deviates 3.2x from category average.
+            </p>
+          </GlassCard>
+
+          {/* ProofLine */}
+          <div className="flex flex-wrap items-center gap-2 font-mono text-xs" style={{ color: 'rgba(165,180,198,0.8)' }}>
+            <span>3 signals detected</span>
+            <span style={{ opacity: 0.3 }}>|</span>
+            <span>Confidence 0.94</span>
+            <span style={{ opacity: 0.3 }}>|</span>
+            <span>{'Model: FraudDetectionV3.2'}</span>
+            <span style={{ opacity: 0.3 }}>|</span>
+            <span>{'Basis: 180-day behavioral analysis'}</span>
+          </div>
+        </motion.section>
+
+        {/* ═══ 2. KPI GRID ═══ */}
+        <motion.section variants={fadeUp} aria-label="Key metrics">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+            {[
+              { label: 'Active signals', value: '3', accent: '#F59E0B', status: 'amber' },
+              { label: 'Blocked today', value: '1', accent: '#10B981', status: 'green' },
+              { label: 'False positive rate', value: '2.1%', accent: '#10B981', status: 'green' },
+              { label: 'Coverage', value: '100%', accent: '#10B981', status: 'green' },
+            ].map((kpi) => (
+              <GlassCard key={kpi.label}>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium tracking-wide" style={{ color: '#64748B' }}>
+                    {kpi.label}
+                  </span>
+                  <div className="h-2 w-2 rounded-full" style={{ background: kpi.accent }} />
+                </div>
+                <p
+                  className="mt-2 font-mono text-2xl font-bold tracking-tight md:text-3xl"
+                  style={{ color: kpi.accent }}
+                >
+                  {kpi.value}
+                </p>
+              </GlassCard>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* ═══ 3. TWO-COLUMN CONTENT ═══ */}
+        <div className="flex flex-col gap-6 lg:flex-row lg:gap-5">
+          {/* ── LEFT: Primary Feed ── */}
+          <motion.div variants={fadeUp} className="flex min-w-0 flex-[2] flex-col gap-5">
+            {/* Threat Table */}
+            <GlassCard borderAccent="#14B8A6">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-lg font-semibold" style={{ color: '#F1F5F9' }}>
+                  Threat Signals
+                </h2>
+                <span
+                  className="rounded-full px-2.5 py-1 text-xs font-semibold"
+                  style={{ background: 'rgba(245,158,11,0.15)', color: '#F59E0B', border: '1px solid rgba(245,158,11,0.3)' }}
+                >
+                  3 active
+                </span>
+              </div>
+
+              {/* Desktop Table */}
+              <div className="hidden md:block">
+                <table className="w-full" role="table">
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                      {['Severity', 'Signal', 'Amount', 'Confidence', 'Time', 'Actions'].map((h) => (
+                        <th
+                          key={h}
+                          className="pb-3 text-left text-xs font-medium uppercase tracking-wider"
+                          style={{ color: '#64748B' }}
+                        >
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {signals.map((s) => (
+                      <React.Fragment key={s.id}>
+                        <tr
+                          className="cursor-pointer transition-colors"
+                          style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+                          onClick={() => setExpandedSignal(expandedSignal === s.id ? null : s.id)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExpandedSignal(expandedSignal === s.id ? null : s.id); }}
+                          aria-expanded={expandedSignal === s.id}
+                        >
+                          <td className="py-3 pr-3">
+                            <SeverityBadge severity={s.severity} />
+                          </td>
+                          <td className="py-3 pr-3">
+                            <div>
+                              <p className="text-sm font-medium" style={{ color: '#F1F5F9' }}>{s.title}</p>
+                              <p className="text-xs" style={{ color: '#64748B' }}>{s.merchant}</p>
+                            </div>
+                          </td>
+                          <td className="py-3 pr-3 font-mono text-sm font-semibold" style={{ color: '#F1F5F9' }}>
+                            {s.amount}
+                          </td>
+                          <td className="py-3 pr-3">
+                            <MiniScoreRing value={s.confidence} />
+                          </td>
+                          <td className="py-3 pr-3">
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="h-3.5 w-3.5" style={{ color: '#64748B' }} />
+                              <span className="text-sm" style={{ color: '#CBD5E1' }}>{s.time}</span>
+                            </div>
+                          </td>
+                          <td className="py-3">
+                            <button
+                              className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors"
+                              style={{
+                                background: 'rgba(20,184,166,0.1)',
+                                border: '1px solid rgba(20,184,166,0.3)',
+                                color: '#14B8A6',
+                              }}
+                              onClick={(e) => { e.stopPropagation(); setExpandedSignal(s.id); }}
+                            >
+                              <Eye className="h-3.5 w-3.5" />
+                              View
+                            </button>
+                          </td>
+                        </tr>
+                        {/* Expanded row */}
+                        {expandedSignal === s.id && (
+                          <tr>
+                            <td colSpan={6} className="pb-4 pt-1">
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.3 }}
+                              >
+                                <SHAPPanel />
+                              </motion.div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="flex flex-col gap-3 md:hidden">
+                {signals.map((s) => (
+                  <div key={s.id}>
+                    <div
+                      className="flex flex-col gap-3 rounded-xl p-3 transition-colors"
+                      style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        border: '1px solid rgba(255,255,255,0.06)',
+                        borderLeft: `3px solid ${s.severity === 'critical' ? '#EF4444' : s.severity === 'warning' ? '#F59E0B' : '#38BDF8'}`,
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setExpandedSignal(expandedSignal === s.id ? null : s.id)}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExpandedSignal(expandedSignal === s.id ? null : s.id); }}
+                      aria-expanded={expandedSignal === s.id}
+                    >
+                      <div className="flex items-center justify-between">
+                        <SeverityBadge severity={s.severity} />
+                        <span className="text-xs" style={{ color: '#64748B' }}>{s.time}</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium" style={{ color: '#F1F5F9' }}>{s.title}</p>
+                        <p className="text-xs" style={{ color: '#64748B' }}>{s.merchant}</p>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-sm font-semibold" style={{ color: '#F1F5F9' }}>{s.amount}</span>
+                        <MiniScoreRing value={s.confidence} />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <button
+                          className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold"
+                          style={{ background: 'rgba(20,184,166,0.1)', border: '1px solid rgba(20,184,166,0.3)', color: '#14B8A6' }}
+                          onClick={(e) => { e.stopPropagation(); setExpandedSignal(s.id); }}
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                          View
+                        </button>
+                        <ChevronDown
+                          className="h-4 w-4 transition-transform"
+                          style={{
+                            color: '#64748B',
+                            transform: expandedSignal === s.id ? 'rotate(180deg)' : 'rotate(0deg)',
+                          }}
+                        />
+                      </div>
+                    </div>
+                    {expandedSignal === s.id && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        transition={{ duration: 0.3 }}
+                        className="mt-2"
+                      >
+                        <SHAPPanel />
+                      </motion.div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </GlassCard>
+
+            {/* DefinitionLine */}
+            <div
+              className="rounded-xl p-3"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+            >
+              <p className="font-mono text-xs leading-relaxed" style={{ color: '#64748B' }}>
+                {'Risk Score = weighted_sum(signal_confidence \u00D7 severity_factor) | Unit: 0\u20131 | Period: rolling 24h | Threshold: >0.7 triggers alert'}
+              </p>
+            </div>
+
+            {/* Quick Actions */}
+            <GlassCard borderAccent="#14B8A6">
+              <h2 className="mb-4 text-lg font-semibold" style={{ color: '#F1F5F9' }}>
+                Quick Actions
+              </h2>
+              <div className="flex flex-col gap-3">
+                {quickActions.map((a) => (
+                  <div
+                    key={a.title}
+                    className="flex items-center gap-3 rounded-xl p-3 transition-colors"
+                    style={{
+                      background: 'rgba(255,255,255,0.03)',
+                      border: '1px solid rgba(255,255,255,0.06)',
+                      borderLeft: `3px solid ${a.color}`,
+                      cursor: 'pointer',
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <div
+                      className="h-2.5 w-2.5 shrink-0 rounded-full"
+                      style={{ background: a.color }}
+                    />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium" style={{ color: '#F1F5F9' }}>{a.title}</p>
+                      <p className="text-xs" style={{ color: '#64748B' }}>
+                        {a.priority === 'urgent' ? 'Immediate containment required' : a.priority === 'normal' ? 'SLA: 24 hours' : 'Low priority'}
+                      </p>
+                    </div>
+                    <ExternalLink className="h-4 w-4 shrink-0" style={{ color: '#64748B' }} />
+                  </div>
+                ))}
+              </div>
+            </GlassCard>
+          </motion.div>
+
+          {/* ── RIGHT: Decision Rail ── */}
+          <motion.aside variants={fadeUp} className="flex min-w-0 flex-1 flex-col gap-5" aria-label="Decision rail">
+            {/* Score Ring */}
+            <GlassCard>
+              <ScoreRingLarge score={94} />
+            </GlassCard>
+
+            {/* Category Score Bars */}
+            <GlassCard>
+              <h3 className="mb-4 text-sm font-semibold" style={{ color: '#F1F5F9' }}>
+                Category Breakdown
+              </h3>
+              <CategoryScoreBars />
+            </GlassCard>
+
+            {/* Milestones Timeline */}
+            <GlassCard>
+              <h3 className="mb-4 text-sm font-semibold" style={{ color: '#F1F5F9' }}>
+                Signal Timeline
+              </h3>
+              <Timeline />
+            </GlassCard>
+
+            {/* Evidence Summary */}
+            <GlassCard borderAccent="#14B8A6">
+              <div className="flex items-start gap-3">
+                <div
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+                  style={{ background: 'rgba(20,184,166,0.1)' }}
+                >
+                  <AlertCircle className="h-4 w-4" style={{ color: '#14B8A6' }} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold" style={{ color: '#F1F5F9' }}>
+                    Evidence Summary
+                  </h3>
+                  <p className="mt-1 text-sm leading-relaxed" style={{ color: '#CBD5E1' }}>
+                    AI identified 3 correlated signals across 2 accounts in the last 6 hours.
+                  </p>
+                </div>
+              </div>
+            </GlassCard>
+          </motion.aside>
+        </div>
+
+        {/* ═══ 4. GOVERN FOOTER ═══ */}
+        <motion.footer
+          variants={fadeUp}
+          className="flex flex-wrap items-center gap-4 rounded-xl p-3"
+          style={{
+            background: 'rgba(255,255,255,0.03)',
+            borderTop: '1px solid rgba(255,255,255,0.1)',
+          }}
+          aria-label="Governance verification"
+        >
+          <div className="flex items-center gap-2">
+            <div
+              className="flex h-6 w-6 items-center justify-center rounded-full"
+              style={{ background: 'rgba(16,185,129,0.15)' }}
+            >
+              <Shield className="h-3 w-3" style={{ color: '#10B981' }} />
+            </div>
+            <span
+              className="rounded-full px-2 py-0.5 text-xs font-semibold"
+              style={{ background: 'rgba(16,185,129,0.1)', color: '#10B981', border: '1px solid rgba(16,185,129,0.3)' }}
+            >
+              Verified
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center gap-3 font-mono text-xs" style={{ color: '#64748B' }}>
+            <span>{'GV-2026-0215-PRT-SIG'}</span>
+            <span style={{ opacity: 0.3 }}>|</span>
+            <span>{'FraudDetection v3.2'}</span>
+            <span style={{ opacity: 0.3 }}>|</span>
+            <span>{'SHAP v2.1'}</span>
+          </div>
+          <div className="ml-auto">
+            <button
+              className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+              style={{
+                background: 'transparent',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: '#CBD5E1',
+              }}
+            >
+              Request human review
+            </button>
+          </div>
+        </motion.footer>
+      </motion.main>
+    </div>
   );
 };
 
