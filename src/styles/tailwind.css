@@ -1,32 +1,35 @@
-/* Tailwind CSS v4 import */
 @import 'tailwindcss';
 
-/* Poseidon.AI custom base layer */
+@theme inline {
+  --font-sans: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+
+  /* Engine accent colors */
+  --color-engine-dashboard: #00F0FF;
+  --color-engine-protect: #14B8A6;
+  --color-engine-grow: #8B5CF6;
+  --color-engine-execute: #EAB308;
+  --color-engine-govern: #3B82F6;
+
+  /* Surface colors */
+  --color-surface-base: #0B1221;
+  --color-surface-card: #0F1D32;
+  --color-surface-elevated: #132237;
+
+  /* Text colors */
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #CBD5E1;
+  --color-text-muted: #64748B;
+
+  /* Status colors */
+  --color-status-success: #10B981;
+  --color-status-warning: #F59E0B;
+  --color-status-error: #EF4444;
+  --color-status-info: #38BDF8;
+}
+
 @layer base {
-  @font-face {
-    font-family: 'Space Grotesk';
-    src: local('Space Grotesk'), local('SpaceGrotesk');
-    font-weight: 400 700;
-    font-style: normal;
-    font-display: swap;
-  }
-
-  @font-face {
-    font-family: 'Inter';
-    src: local('Inter'), local('Inter Regular');
-    font-weight: 400 700;
-    font-style: normal;
-    font-display: swap;
-  }
-
-  @font-face {
-    font-family: 'JetBrains Mono';
-    src: local('JetBrains Mono'), local('JetBrainsMono-Regular');
-    font-weight: 400 700;
-    font-style: normal;
-    font-display: swap;
-  }
-
   :root {
     color-scheme: dark;
   }
@@ -44,9 +47,9 @@
   }
 
   body {
-    font-family: var(--font-body, 'Inter', 'Noto Sans JP', system-ui, sans-serif);
-    background: #0B1221;
-    color: #f8fafc;
+    font-family: var(--font-sans);
+    background: var(--color-surface-base);
+    color: var(--color-text-primary);
     line-height: 1.5;
     overflow-x: hidden;
   }
