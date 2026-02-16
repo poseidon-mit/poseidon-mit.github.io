@@ -1,11 +1,26 @@
-/* ── Tailwind CSS + base reset ── */
+/* ══════════════════════════════════════════════════════════════
+ * Poseidon.AI — Architecture B CSS Import Chain
+ *
+ * Layer 1 (Foundation):  shadcn/ui standard variables → v0 compat
+ * Layer 2 (Expression):  Poseidon extension tokens    → identity
+ * ══════════════════════════════════════════════════════════════ */
+
+/* ── Tailwind CSS + base reset + fonts ── */
 @import './tailwind.css';
 
-/* ── System: tokens, base, utilities ── */
+/* ── Layer 1: shadcn/ui v0 Compatibility ── */
+@import './layers/shadcn.css';
+
+/* ── Layer 2: Poseidon Expression Tokens ── */
+@import './layers/poseidon.css';
+
+/* ── System: existing tokens (backward compat) + base ── */
 @import './system/tokens.css';
 @import './system/base.css';
 
-/* ── Design System v2: Effect Presets ── */
+/* ── Effects ── */
+@import './effects/glass.css';
+@import './effects/neon.css';
 @import '../design-system/css/effect-presets.css';
 
 /* ── Layouts ── */

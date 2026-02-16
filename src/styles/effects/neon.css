@@ -1,0 +1,43 @@
+/* ── Neon Glow Effects ──
+ *
+ * Engine-mapped and direct-color neon glow utilities.
+ * Applied during "Poseidon化" step to add signature glow effects.
+ */
+
+/* ── Direct color neon ── */
+.neon-glow-cyan   { box-shadow: var(--neon-cyan); }
+.neon-glow-teal   { box-shadow: var(--neon-teal); }
+.neon-glow-violet { box-shadow: var(--neon-violet); }
+.neon-glow-amber  { box-shadow: var(--neon-amber); }
+.neon-glow-blue   { box-shadow: var(--neon-blue); }
+.neon-glow-red    { box-shadow: var(--neon-red); }
+
+/* ── Engine-mapped neon ── */
+.neon-glow-dashboard { box-shadow: var(--neon-cyan); }
+.neon-glow-protect   { box-shadow: var(--neon-teal); }
+.neon-glow-grow      { box-shadow: var(--neon-violet); }
+.neon-glow-execute   { box-shadow: var(--neon-amber); }
+.neon-glow-govern    { box-shadow: var(--neon-blue); }
+
+/* ── Mobile-optimized neon (lighter GPU) ── */
+@media (max-width: 640px) {
+  .neon-glow-cyan   { box-shadow: var(--neon-cyan-mobile); }
+  .neon-glow-teal   { box-shadow: var(--neon-teal-mobile); }
+  .neon-glow-violet { box-shadow: var(--neon-violet-mobile); }
+  .neon-glow-amber  { box-shadow: var(--neon-amber-mobile); }
+  .neon-glow-blue   { box-shadow: var(--neon-blue-mobile); }
+  .neon-glow-red    { box-shadow: var(--neon-red-mobile); }
+
+  .neon-glow-dashboard { box-shadow: var(--neon-cyan-mobile); }
+  .neon-glow-protect   { box-shadow: var(--neon-teal-mobile); }
+  .neon-glow-grow      { box-shadow: var(--neon-violet-mobile); }
+  .neon-glow-execute   { box-shadow: var(--neon-amber-mobile); }
+  .neon-glow-govern    { box-shadow: var(--neon-blue-mobile); }
+}
+
+/* ── Neon text glow (for headings) ── */
+.neon-text-cyan   { text-shadow: 0 0 8px rgba(0,240,255,0.6), 0 0 20px rgba(0,240,255,0.3); }
+.neon-text-teal   { text-shadow: 0 0 8px rgba(20,184,166,0.6), 0 0 20px rgba(20,184,166,0.3); }
+.neon-text-violet { text-shadow: 0 0 8px rgba(139,92,246,0.6), 0 0 20px rgba(139,92,246,0.3); }
+.neon-text-amber  { text-shadow: 0 0 8px rgba(245,158,11,0.6), 0 0 20px rgba(245,158,11,0.3); }
+.neon-text-blue   { text-shadow: 0 0 8px rgba(59,130,246,0.6), 0 0 20px rgba(59,130,246,0.3); }
