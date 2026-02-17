@@ -121,7 +121,7 @@ export function Onboarding() {
         {/* Hero */}
         <motion.div variants={fadeUp} className="flex flex-col items-center text-center gap-2">
           <div className="flex items-center gap-1.5 mb-2">
-            <img src="/logo.svg" alt="" className="h-4 w-4 object-contain" aria-hidden="true" />
+            <img src="/logo.png" alt="" className="h-4 w-4 object-contain" aria-hidden="true" />
             <span className="text-xs font-mono" style={{ color: '#00F0FF' }}>Step 1 of 4</span>
           </div>
           <h1 className="text-2xl font-bold text-white text-balance">Connect your accounts</h1>
