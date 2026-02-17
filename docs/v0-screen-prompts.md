@@ -1,6 +1,7 @@
 ---
 render_with_liquid: false
 ---
+{% raw %}
 # Poseidon.AI v0 Screen Prompts — Revised Edition (2026-02)
 
 > **重要な前提 (読んでから作業すること)**
@@ -61,11 +62,13 @@ render_with_liquid: false
 ```
 
 ### Card Components (describe inline, do NOT import)
+{% raw %}
 - **Score ring**: inline `<svg>` with `strokeDasharray`. r=40, viewBox="0 0 96 96"
 - **Horizontal bar**: `<div className="h-1.5 rounded-full bg-white/10"><div style={{width:`${pct}%`, background: ENGINE_COLOR}} /></div>`
 - **Vertical timeline**: `<div className="relative pl-6"><div className="absolute left-2 top-0 bottom-0 w-px bg-white/10" />{items.map(...)}</div>`
 - **Bar chart**: Recharts `<BarChart>` with `fill="#cartesianGrid stroke="#253852"`, wrapper bg transparent
 - **Governance footer**: `<div className="border-t border-white/[0.06] py-3 px-4 flex items-center gap-3 text-xs text-white/30"><Shield className="h-3 w-3 text-emerald-400" />Verified · <span className="font-mono">GV-2026-XXXX</span></div>`
+{% endraw %}
 
 ### Animation
 - framer-motion `staggerChildren: 0.08`, `fadeUp { hidden: {opacity:0,y:12}, visible: {opacity:1,y:0} }`
@@ -1008,3 +1011,4 @@ const circumference = 2 * Math.PI * 40;
 | Date | 直近30日以内 | `Feb 16, 2026` |
 | Model version | `{Name} v{X.Y}` | `FraudDetection v3.3` |
 | Timestamp | 相対表記 | `4m ago`, `2h ago` |
+{% endraw %}
