@@ -46,10 +46,10 @@ export const Slide09EpilogueV2: React.FC<Slide09EpilogueV2Props> = ({
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const qrOptions = useMemo(
     () => ({
-      errorCorrectionLevel: 'M' as const,
+      errorCorrectionLevel: 'H' as const,
       margin: 1,
       width: layout.qrImageSize,
-      color: { dark: '#0a1120', light: '#f8fbff' },
+      color: { dark: '#000000', light: '#ffffff' },
     }),
     [layout.qrImageSize],
   );

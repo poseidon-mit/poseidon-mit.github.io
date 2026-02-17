@@ -4,7 +4,7 @@
  *
  * Options:
  *   --fast            Render at scale=1 (1920x1080) for quick iteration
- *   --scale <n>       Explicit scale factor (default: 2 for 4K; use 3 for 5760x3240 master)
+ *   --scale <n>       Explicit scale factor (default: 3 for 5760x3240 master; use 1 for fast)
  *   --no-cache-clear  Skip clearing the Remotion bundle cache
  *   --incremental     Skip slides whose source files have not changed (SHA-256 cache)
  *
@@ -26,7 +26,7 @@ const fast = args.includes('--fast');
 const noCacheClear = args.includes('--no-cache-clear');
 const incremental = args.includes('--incremental');
 const scaleIdx = args.indexOf('--scale');
-const scale = fast ? 1 : (scaleIdx !== -1 ? Number(args[scaleIdx + 1]) : 2);
+const scale = fast ? 1 : (scaleIdx !== -1 ? Number(args[scaleIdx + 1]) : 3);
 
 mkdirSync(outputDir, { recursive: true });
 

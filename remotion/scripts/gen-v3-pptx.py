@@ -255,6 +255,14 @@ def main() -> None:
         raise SystemExit(1)
 
     prs = Presentation()
+    cp = prs.core_properties
+    cp.author = "Group 7 — MIT Professional Education"
+    cp.title = "Poseidon.AI — MIT CTO Capstone 2026"
+    cp.subject = "AI-Native Personal Finance Platform"
+    cp.company = "MIT Professional Education"
+    cp.keywords = "fintech, AI, governance, open banking"
+    cp.category = "Presentation"
+    cp.created = datetime(2026, 3, 1)
     prs.slide_width = Inches(13.333)
     prs.slide_height = Inches(7.5)
     blank = prs.slide_layouts[6]

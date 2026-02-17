@@ -24,7 +24,7 @@ import { resolve, join } from 'path';
 // ─── Config ────────────────────────────────────────────────
 const MARGIN_X = 140;  // left/right safe margin (px at 1x)
 const MARGIN_Y = 100;  // top/bottom safe margin (px at 1x)
-const SCALE = 2;        // render scale
+const SCALE = 3;        // render scale
 const SAFE_LEFT = MARGIN_X * SCALE;
 const SAFE_RIGHT = MARGIN_X * SCALE;
 const SAFE_TOP = MARGIN_Y * SCALE;
@@ -36,7 +36,8 @@ const HEIGHT = 1080 * SCALE;
 // Background aurora/vignette is dark (~10-30), real content is brighter (~60+)
 const BRIGHTNESS_THRESHOLD = 60;
 // % of margin pixels that must be bright to flag (avoid false positives from aurora bleed)
-const PIXEL_PERCENT_THRESHOLD = 0.5;
+// Raised to 5% — aurora/neon bottom glow decorations read ~0.7–3.7% at scale=3; real content overflow is much higher
+const PIXEL_PERCENT_THRESHOLD = 5.0;
 
 const args = process.argv.slice(2);
 const slideFilter = args.includes('--slide') ? args[args.indexOf('--slide') + 1] : null;

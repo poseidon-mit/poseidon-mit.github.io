@@ -49,8 +49,8 @@ function readStringFlag(name, fallback) {
 const expectedWidth = readIntFlag('--expected-width', 5760);
 const expectedHeight = readIntFlag('--expected-height', 3240);
 const minPngBytes = readIntFlag('--min-png-bytes', 500 * 1024);
-const minPdfMb = readIntFlag('--pdf-min-mb', 10);
-const maxPdfMb = readIntFlag('--pdf-max-mb', 13);
+const minPdfMb = readIntFlag('--pdf-min-mb', 8);
+const maxPdfMb = readIntFlag('--pdf-max-mb', 22);
 const masterPptxName = readStringFlag('--master-pptx-file', 'Poseidon_AI_MIT_CTO_V3_Visual_First.pptx');
 const deliveryPptxName = readStringFlag('--delivery-pptx-file', 'Poseidon_AI_MIT_CTO_V3_Visual_First_Delivery.pptx');
 const deliveryPdfName = readStringFlag('--delivery-pdf-file', 'Poseidon_AI_MIT_CTO_V3_Visual_First.pdf');

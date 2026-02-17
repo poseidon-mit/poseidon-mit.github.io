@@ -42,6 +42,14 @@ if (!skipRender) {
     name: 'Render V3 slides',
     cmd: `node scripts/render-all-slides.mjs ${renderFlags}`.trim(),
   });
+  steps.push({
+    name: 'ICC color profile',
+    cmd: 'node scripts/tag-png-icc.mjs',
+  });
+  steps.push({
+    name: 'Overflow gate',
+    cmd: 'node scripts/check-overflow-gate.mjs',
+  });
 }
 
 steps.push({

@@ -131,8 +131,8 @@ export const slideLayouts = {
     logoHeight: 110,
     teamCardPadding: '14px 20px',
     ctaMaxWidth: 1200,
-    qrBoxSize: 280,
-    qrImageSize: 256,
+    qrBoxSize: 320,
+    qrImageSize: 292,
     avatarSize: 80,
     badgeFontSize: 36,        // Badge text (sizeM)
     qrPlaceholderSize: 16,    // QR placeholder text (sizeXXS)

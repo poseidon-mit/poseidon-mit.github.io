@@ -1,11 +1,6 @@
 import React from 'react';
 import { Composition } from 'remotion';
-import { loadFont as loadSpaceGrotesk } from '@remotion/google-fonts/SpaceGrotesk';
-import { loadFont as loadInter } from '@remotion/google-fonts/Inter';
-import { loadFont as loadJetBrainsMono } from '@remotion/google-fonts/JetBrainsMono';
-import { loadFont as loadNotoSansJP } from '@remotion/google-fonts/NotoSansJP';
-import { loadFont as loadOutfit } from '@remotion/google-fonts/Outfit';
-import { loadFont as loadSora } from '@remotion/google-fonts/Sora';
+import { loadLocalFonts } from './shared/localFonts';
 import { Opening } from './Opening';
 import { Demo30s } from './Demo30s';
 import { Slide01Title } from './Slide01Title';
@@ -65,12 +60,7 @@ import {
   SettingsHeroMobileLayout,
 } from './app/hero';
 
-loadSpaceGrotesk('normal', { weights: ['400', '700'], subsets: ['latin'] });
-loadInter('normal', { weights: ['400', '500', '700'], subsets: ['latin'] });
-loadJetBrainsMono('normal', { weights: ['400', '700'], subsets: ['latin'] });
-loadNotoSansJP('normal', { weights: ['400', '700'], subsets: ['latin'] });
-loadOutfit('normal', { weights: ['300', '400', '700'], subsets: ['latin'] });
-loadSora('normal', { weights: ['300', '400', '700'], subsets: ['latin'] });
+loadLocalFonts();
 
 const FPS = 30;
 const WIDTH = 1920;
