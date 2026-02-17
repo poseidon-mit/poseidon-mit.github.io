@@ -152,7 +152,7 @@ export default function LandingV3() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Left: logo */}
           <Link to="/v3/landing" className="flex items-center gap-2 font-bold text-lg text-white" aria-label="Poseidon.AI home">
-            <img src="/logo.png" alt="" className="h-5 w-5 object-contain" aria-hidden="true" />
+            <img src="/logo.png" alt="" className="h-8 w-8 object-contain" aria-hidden="true" />
             Poseidon.AI
           </Link>
           {/* Center: links */}
