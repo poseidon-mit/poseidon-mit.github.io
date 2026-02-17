@@ -28,19 +28,19 @@ const metricsData = [
   {
     label: 'System Confidence',
     value: '0.92',
-    color: '#0DD9B4',
+    color: '#14B8A6',
     spark: [4, 6, 5, 7, 8, 7, 9, 8, 9, 9.2],
   },
   {
     label: 'Decisions Audited',
     value: '1,247',
-    color: '#4E94FF',
+    color: '#3B82F6',
     spark: [2, 4, 5, 7, 8, 9, 10, 11, 12, 12.5],
   },
   {
     label: 'Threats Blocked',
     value: '23',
-    color: '#FFB020',
+    color: '#EAB308',
     spark: [8, 7, 5, 6, 4, 3, 3, 2, 2, 2.3],
   },
   {
@@ -55,28 +55,28 @@ const engines = [
   {
     icon: Shield,
     name: 'Protect',
-    color: '#0DD9B4',
+    color: '#14B8A6',
     desc: 'Real-time threat detection with explainable AI.',
     confidence: 0.94,
   },
   {
     icon: TrendingUp,
     name: 'Grow',
-    color: '#9B6DFF',
+    color: '#8B5CF6',
     desc: 'Forecast-driven growth with Monte Carlo simulations.',
     confidence: 0.89,
   },
   {
     icon: Zap,
     name: 'Execute',
-    color: '#FFB020',
+    color: '#EAB308',
     desc: 'Consent-first automation with reversible actions.',
     confidence: 0.91,
   },
   {
     icon: Scale,
     name: 'Govern',
-    color: '#4E94FF',
+    color: '#3B82F6',
     desc: 'Full audit trail for every AI decision.',
     confidence: 0.97,
   },
@@ -87,19 +87,19 @@ const governancePillars = [
     icon: Brain,
     title: 'Explainable',
     desc: 'Every AI decision includes SHAP feature attribution.',
-    color: '#4E94FF',
+    color: '#3B82F6',
   },
   {
     icon: ScrollText,
     title: 'Auditable',
     desc: '1,247 decisions with full audit trails.',
-    color: '#4E94FF',
+    color: '#3B82F6',
   },
   {
     icon: RotateCcw,
     title: 'Reversible',
     desc: 'One-click rollback on any automated action.',
-    color: '#4E94FF',
+    color: '#3B82F6',
   },
 ];
 
@@ -125,8 +125,8 @@ function Sparkline({ data, color }: { data: number[]; color: string }) {
       <AreaChart data={chartData} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
         <defs>
           <linearGradient id={`spark-${color.replace('#', '')}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={color} stopOpacity={0.4} />
-            <stop offset="100%" stopColor={color} stopOpacity={0} />
+            <stop offset="0%" stopColor={color} stopOpacity={0.3} />
+            <stop offset="100%" stopColor={color} stopOpacity={0.02} />
           </linearGradient>
         </defs>
         <Area
@@ -136,6 +136,8 @@ function Sparkline({ data, color }: { data: number[]; color: string }) {
           strokeWidth={1.5}
           fill={`url(#spark-${color.replace('#', '')})`}
           isAnimationActive={false}
+          dot={false}
+          activeDot={{ r: 4, strokeWidth: 0 }}
         />
       </AreaChart>
     </ResponsiveContainer>
@@ -179,9 +181,17 @@ export default function LandingV3() {
       {/* ── 2. Hero ───────────────────────────────────────────────────── */}
       <section className="relative pt-24 md:pt-32 pb-16">
         {/* Background glow */}
-        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-teal-500/[0.07] blur-[120px]" />
-        </div>
+        <div
+          className="absolute inset-0 pointer-events-none"
+          aria-hidden="true"
+          style={{
+            background: [
+              'radial-gradient(ellipse 70% 50% at 50% -10%, rgba(20,184,166,0.13), transparent)',
+              'radial-gradient(ellipse 40% 30% at 85% 60%, rgba(139,92,246,0.09), transparent)',
+              'radial-gradient(ellipse 30% 25% at 15% 80%, rgba(0,240,255,0.07), transparent)',
+            ].join(', '),
+          }}
+        />
 
         <motion.div
           className="relative z-10 max-w-7xl mx-auto px-6 text-center"
@@ -193,6 +203,7 @@ export default function LandingV3() {
             variants={fadeUp}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight text-balance"
+            style={{ letterSpacing: 'var(--tracking-h1)' }}
           >
             Safer satisfying money decisions in one place.
           </motion.h1>
@@ -291,6 +302,7 @@ export default function LandingV3() {
               variants={fadeUp}
               transition={{ duration: 0.6 }}
               className="text-3xl md:text-4xl font-bold text-white text-center mb-12"
+              style={{ letterSpacing: 'var(--tracking-h2)' }}
             >
               Four engines. One trusted system.
             </motion.h2>
@@ -348,6 +360,7 @@ export default function LandingV3() {
               variants={fadeUp}
               transition={{ duration: 0.6 }}
               className="text-3xl md:text-4xl font-bold text-white text-center mb-12"
+              style={{ letterSpacing: 'var(--tracking-h2)' }}
             >
               Governance by design, not by checkbox.
             </motion.h2>

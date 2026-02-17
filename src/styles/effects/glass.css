@@ -37,6 +37,19 @@
   box-shadow: var(--glass-inset), var(--glass-shadow);
 }
 
+/* Hover lift — unified interactive elevation */
+.glass-surface:hover,
+.glass-surface-strong:hover,
+.glass-surface-soft:hover,
+.glass-surface-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: var(--glass-shadow), 0 12px 40px rgba(0, 0, 0, 0.4);
+  transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              border-color 200ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 /* Mobile: reduce blur for GPU savings */
 @media (max-width: 640px) {
   .glass-surface,

@@ -32,6 +32,12 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Help', path: '/help', icon: HelpCircle, color: '#94a3b8', group: 'system' },
 ];
 
+/* ─── Live status badges (mock) ─────────────────────────────── */
+const NAV_BADGES: Record<string, { type: 'pulse' | 'count'; value?: number; color: string }> = {
+  '/protect': { type: 'pulse', color: '#EF4444' },
+  '/execute': { type: 'count', value: 3, color: '#EAB308' },
+};
+
 const ENGINE_ITEMS = NAV_ITEMS.filter((i) => i.group === 'engine');
 const SYSTEM_ITEMS = NAV_ITEMS.filter((i) => i.group === 'system');
 
@@ -139,6 +145,15 @@ function getSubNav(path: string): SubNavItem[] | null {
   return isSubPage ? items : null;
 }
 
+/* ─── Pulse animation (injected once) ───────────────────────── */
+const PULSE_STYLE = `
+@keyframes nav-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(239,68,68,0.6); }
+  100% { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+}
+.nav-badge-pulse { animation: nav-pulse 1.8s ease-out infinite; }
+`;
+
 /* ─── Component ──────────────────────────────────────────── */
 
 export function AppNavShell({
@@ -164,6 +179,7 @@ export function AppNavShell({
 
   return (
     <div className="flex min-h-screen" style={{ background: '#070d1a' }}>
+      <style>{PULSE_STYLE}</style>
       {/* ── Desktop Sidebar ── */}
       <aside
         className="hidden lg:flex flex-col fixed top-0 left-0 h-screen z-40"
@@ -219,7 +235,26 @@ export function AppNavShell({
                 aria-current={isActive ? 'page' : undefined}
               >
                 <Icon className="w-[18px] h-[18px]" style={{ color: isActive ? item.color : undefined }} aria-hidden="true" />
-                <span className="text-sm font-medium">{item.label}</span>
+                <span className="text-sm font-medium flex-1">{item.label}</span>
+                {NAV_BADGES[item.path]?.type === 'pulse' && (
+                  <span
+                    className="nav-badge-pulse w-2 h-2 rounded-full flex-shrink-0"
+                    style={{ background: NAV_BADGES[item.path].color }}
+                    aria-label="Active alerts"
+                  />
+                )}
+                {NAV_BADGES[item.path]?.type === 'count' && (
+                  <span
+                    className="flex-shrink-0 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold flex items-center justify-center"
+                    style={{
+                      background: NAV_BADGES[item.path].color,
+                      color: '#0a0e1a',
+                    }}
+                    aria-label={`${NAV_BADGES[item.path].value} pending`}
+                  >
+                    {NAV_BADGES[item.path].value}
+                  </span>
+                )}
               </Link>
             );
           })}
@@ -492,7 +527,25 @@ export function AppNavShell({
                 }}
                 aria-hidden="true"
               />
-              <Icon className="w-5 h-5" aria-hidden="true" />
+              <div className="relative">
+                <Icon className="w-5 h-5" aria-hidden="true" />
+                {NAV_BADGES[item.path]?.type === 'pulse' && (
+                  <span
+                    className="nav-badge-pulse absolute -top-1 -right-1 w-2 h-2 rounded-full"
+                    style={{ background: NAV_BADGES[item.path].color }}
+                    aria-label="Active alerts"
+                  />
+                )}
+                {NAV_BADGES[item.path]?.type === 'count' && (
+                  <span
+                    className="absolute -top-1 -right-1 min-w-[14px] h-[14px] px-0.5 rounded-full text-[9px] font-bold flex items-center justify-center"
+                    style={{ background: NAV_BADGES[item.path].color, color: '#0a0e1a' }}
+                    aria-label={`${NAV_BADGES[item.path].value} pending`}
+                  >
+                    {NAV_BADGES[item.path].value}
+                  </span>
+                )}
+              </div>
               <span className="text-[10px] font-medium">{item.label}</span>
             </Link>
           );

@@ -10,13 +10,13 @@
 @layer base {
   :root {
     /* ── Color Slots ── */
-    --background: 220 40% 7%;
+    --background: 220 42% 6%;
     --foreground: 210 40% 98%;
 
-    --card: 220 30% 9%;
+    --card: 220 32% 11%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 220 30% 9%;
+    --popover: 220 35% 13%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 186 100% 50%;
@@ -40,7 +40,7 @@
     --radius: 1rem;
 
     /* ── Sidebar (shadcn/ui sidebar component) ── */
-    --sidebar-background: 220 40% 7%;
+    --sidebar-background: 220 42% 6%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 186 100% 50%;
     --sidebar-primary-foreground: 200 50% 8%;
