@@ -96,6 +96,7 @@ export const V0_READY_ROUTES = new Set<RoutePath>([
   '/',
   '/dashboard',
   '/protect',
+  '/execute',
 ]);
 
 export interface RouteUXMeta {
