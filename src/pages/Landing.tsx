@@ -152,7 +152,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Left: logo */}
           <Link to="/" className="flex items-center gap-2 font-bold text-lg text-white" aria-label="Poseidon.AI home">
-            <img src="/logo.png" alt="" className="h-10 w-10 object-contain" aria-hidden="true" />
+            <img src="/logo.png" alt="" width="40" height="40" className="h-10 w-10 object-contain" aria-hidden="true" />
             Poseidon.AI
           </Link>
           {/* Center: links */}

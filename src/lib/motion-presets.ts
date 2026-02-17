@@ -66,17 +66,3 @@ export function staggerDelay(i: number, base = 0.06): Transition {
   return { delay: i * base }
 }
 
-/* ── Spring Presets ── */
-export const springs = {
-  /** Card entrance, page sections — smooth settling */
-  gentle: { type: 'spring' as const, stiffness: 200, damping: 24, mass: 1.2 },
-  /** Button press, tooltip open — sharp, precise */
-  snappy: { type: 'spring' as const, stiffness: 400, damping: 28, mass: 0.8 },
-  /** Notification badge, success state — playful */
-  bounce: { type: 'spring' as const, stiffness: 300, damping: 15, mass: 0.9 },
-}
-
-/* Named exports for direct use without object destructuring */
-export const springGentle = springs.gentle
-export const springSnappy = springs.snappy
-export const springBounce = springs.bounce

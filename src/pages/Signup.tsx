@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
   Shield, TrendingUp, Zap, Scale,
@@ -11,6 +11,8 @@ const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.2, 0.8, 0.2, 1] } },
 };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function passwordScore(pw: string): number {
   if (!pw) return 0;
@@ -50,12 +52,34 @@ export function Signup() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [updatesOptIn, setUpdatesOptIn] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string; confirm?: string }>({});
+  const [touched, setTouched] = useState<{ email?: boolean; password?: boolean; confirm?: boolean }>({});
 
   const pwScore = useMemo(() => passwordScore(password), [password]);
+
+  const validate = useCallback(() => {
+    const e: { email?: string; password?: string; confirm?: string } = {};
+    if (!email) e.email = 'Email is required';
+    else if (!EMAIL_RE.test(email)) e.email = 'Enter a valid email address';
+    if (!password) e.password = 'Password is required';
+    else if (password.length < 8) e.password = 'Password must be at least 8 characters';
+    if (confirm && password && confirm !== password) e.confirm = 'Passwords do not match';
+    else if (!confirm) e.confirm = 'Please confirm your password';
+    return e;
+  }, [email, password, confirm]);
+
+  const handleBlur = (field: 'email' | 'password' | 'confirm') => {
+    setTouched((t) => ({ ...t, [field]: true }));
+    setErrors((prev) => ({ ...prev, ...validate() }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!termsAccepted) return;
+    setTouched({ email: true, password: true, confirm: true });
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+    setErrors({});
     setLoading(true);
     setTimeout(() => {
       navigate('/onboarding/connect');
@@ -89,7 +113,7 @@ export function Signup() {
         >
           {/* Wordmark */}
           <motion.div variants={fadeUp} className="flex items-center gap-2.5 mb-16">
-            <img src="/logo.png" alt="" className="h-11 w-11 object-contain" aria-hidden="true" />
+            <img src="/logo.png" alt="" width="44" height="44" className="h-11 w-11 object-contain" aria-hidden="true" />
             <span className="text-lg font-bold" style={{ color: '#00F0FF' }}>
               Poseidon.AI
             </span>
@@ -152,7 +176,7 @@ export function Signup() {
       <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center px-6 md:px-12 py-12">
         {/* Mobile logo */}
         <div className="flex lg:hidden items-center gap-2 mb-8">
-          <img src="/logo.png" alt="" className="h-11 w-11 object-contain" aria-hidden="true" />
+          <img src="/logo.png" alt="" width="44" height="44" className="h-11 w-11 object-contain" aria-hidden="true" />
           <span className="text-xl font-bold text-white">Poseidon.AI</span>
         </div>
 
@@ -214,11 +238,17 @@ export function Signup() {
                   id="signup-email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); if (touched.email) setErrors((prev) => ({ ...prev, email: EMAIL_RE.test(e.target.value) ? undefined : (e.target.value ? 'Enter a valid email address' : 'Email is required') })); }}
+                  onBlur={() => handleBlur('email')}
                   placeholder="you@company.com"
-                  className={`${inputClass} pl-10`}
+                  className={`${inputClass} pl-10 ${touched.email && errors.email ? '!border-red-500/60' : ''}`}
                   autoComplete="email"
+                  aria-invalid={!!(touched.email && errors.email)}
+                  aria-describedby={touched.email && errors.email ? 'signup-email-err' : undefined}
                 />
+                {touched.email && errors.email && (
+                  <p id="signup-email-err" className="mt-1 text-xs text-red-400">{errors.email}</p>
+                )}
               </div>
             </motion.div>
 
@@ -233,10 +263,13 @@ export function Signup() {
                   id="signup-pw"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => { setPassword(e.target.value); if (touched.password) setErrors((prev) => ({ ...prev, password: e.target.value.length >= 8 ? undefined : (e.target.value ? 'Password must be at least 8 characters' : 'Password is required') })); }}
+                  onBlur={() => handleBlur('password')}
                   placeholder="8+ characters"
-                  className={`${inputClass} pl-10 pr-10`}
+                  className={`${inputClass} pl-10 pr-10 ${touched.password && errors.password ? '!border-red-500/60' : ''}`}
                   autoComplete="new-password"
+                  aria-invalid={!!(touched.password && errors.password)}
+                  aria-describedby={touched.password && errors.password ? 'signup-pw-err' : undefined}
                 />
                 <button
                   type="button"
@@ -264,6 +297,9 @@ export function Signup() {
                   {strengthLabels[pwScore]}
                 </p>
               )}
+              {touched.password && errors.password && (
+                <p id="signup-pw-err" className="mt-1 text-xs text-red-400">{errors.password}</p>
+              )}
             </motion.div>
 
             {/* Confirm password */}
@@ -277,11 +313,17 @@ export function Signup() {
                   id="signup-confirm"
                   type={showConfirm ? 'text' : 'password'}
                   value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
+                  onChange={(e) => { setConfirm(e.target.value); if (touched.confirm) setErrors((prev) => ({ ...prev, confirm: e.target.value !== password ? 'Passwords do not match' : undefined })); }}
+                  onBlur={() => handleBlur('confirm')}
                   placeholder="Repeat password"
-                  className={`${inputClass} pl-10 pr-10`}
+                  className={`${inputClass} pl-10 pr-10 ${touched.confirm && errors.confirm ? '!border-red-500/60' : ''}`}
                   autoComplete="new-password"
+                  aria-invalid={!!(touched.confirm && errors.confirm)}
+                  aria-describedby={touched.confirm && errors.confirm ? 'signup-confirm-err' : undefined}
                 />
+                {touched.confirm && errors.confirm && (
+                  <p id="signup-confirm-err" className="mt-1 text-xs text-red-400">{errors.confirm}</p>
+                )}
                 <button
                   type="button"
                   onClick={() => setShowConfirm(!showConfirm)}

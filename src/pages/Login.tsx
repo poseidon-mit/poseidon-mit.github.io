@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Lock, Eye, EyeOff, Mail, CheckCircle, Loader2 } from 'lucide-react';
 import { Link, useRouter } from '../router';
@@ -9,20 +9,41 @@ const fadeUp = {
 };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function Login() {
   const { navigate } = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [touched, setTouched] = useState<{ email?: boolean; password?: boolean }>({});
+
+  const validate = useCallback(() => {
+    const e: { email?: string; password?: string } = {};
+    if (!email) e.email = 'Email is required';
+    else if (!EMAIL_RE.test(email)) e.email = 'Enter a valid email address';
+    if (!password) e.password = 'Password is required';
+    return e;
+  }, [email, password]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setTouched({ email: true, password: true });
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+    setErrors({});
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       navigate('/dashboard');
     }, 1500);
+  };
+
+  const handleBlur = (field: 'email' | 'password') => {
+    setTouched((t) => ({ ...t, [field]: true }));
+    setErrors((prev) => ({ ...prev, ...validate() }));
   };
 
   return (
@@ -62,11 +83,17 @@ export function Login() {
                     id="login-email"
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => { setEmail(e.target.value); if (touched.email) setErrors((prev) => ({ ...prev, email: EMAIL_RE.test(e.target.value) ? undefined : (e.target.value ? 'Enter a valid email address' : 'Email is required') })); }}
+                    onBlur={() => handleBlur('email')}
                     placeholder="you@company.com"
-                    className="w-full rounded-xl bg-white/5 border border-white/10 pl-10 pr-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#00F0FF]/50 transition-colors"
+                    className={`w-full rounded-xl bg-white/5 border pl-10 pr-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none transition-colors ${touched.email && errors.email ? 'border-red-500/60 focus:border-red-500/80' : 'border-white/10 focus:border-[#00F0FF]/50'}`}
                     autoComplete="email"
+                    aria-invalid={!!(touched.email && errors.email)}
+                    aria-describedby={touched.email && errors.email ? 'login-email-err' : undefined}
                   />
+                  {touched.email && errors.email && (
+                    <p id="login-email-err" className="mt-1 text-xs text-red-400">{errors.email}</p>
+                  )}
                 </div>
               </div>
 
@@ -84,11 +111,17 @@ export function Login() {
                     id="login-password"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => { setPassword(e.target.value); if (touched.password) setErrors((prev) => ({ ...prev, password: e.target.value ? undefined : 'Password is required' })); }}
+                    onBlur={() => handleBlur('password')}
                     placeholder="Enter your password"
-                    className="w-full rounded-xl bg-white/5 border border-white/10 pl-10 pr-10 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#00F0FF]/50 transition-colors"
+                    className={`w-full rounded-xl bg-white/5 border pl-10 pr-10 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none transition-colors ${touched.password && errors.password ? 'border-red-500/60 focus:border-red-500/80' : 'border-white/10 focus:border-[#00F0FF]/50'}`}
                     autoComplete="current-password"
+                    aria-invalid={!!(touched.password && errors.password)}
+                    aria-describedby={touched.password && errors.password ? 'login-pw-err' : undefined}
                   />
+                  {touched.password && errors.password && (
+                    <p id="login-pw-err" className="mt-1 text-xs text-red-400">{errors.password}</p>
+                  )}
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}

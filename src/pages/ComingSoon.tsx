@@ -12,7 +12,7 @@ export default function ComingSoon() {
             className="flex items-center gap-2 font-bold text-lg text-white"
             aria-label="Poseidon.AI home"
           >
-            <img src="/logo.png" alt="" className="h-10 w-10 object-contain" aria-hidden="true" />
+            <img src="/logo.png" alt="" width="40" height="40" className="h-10 w-10 object-contain" aria-hidden="true" />
             Poseidon.AI
           </Link>
           <Link

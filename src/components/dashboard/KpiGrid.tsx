@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 
@@ -21,8 +21,8 @@ interface StatCardProps {
   sparkColor: string;
 }
 
-function StatCard({ label, value, delta, deltaPositive, sparkData, sparkColor }: StatCardProps) {
-  const data = sparkData.map((v, i) => ({ i, v }));
+const StatCard = memo(function StatCard({ label, value, delta, deltaPositive, sparkData, sparkColor }: StatCardProps) {
+  const data = useMemo(() => sparkData.map((v, i) => ({ i, v })), [sparkData]);
   return (
     <motion.div variants={fadeUp} className="stat-card glass-surface">
       <div className="stat-card__header">
@@ -54,7 +54,7 @@ function StatCard({ label, value, delta, deltaPositive, sparkData, sparkColor }:
       </span>
     </motion.div>
   );
-}
+});
 
 export function KpiGrid() {
   const [alertCount, setAlertCount] = useState(2);
