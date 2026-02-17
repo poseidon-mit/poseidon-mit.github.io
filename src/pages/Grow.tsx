@@ -693,7 +693,14 @@ export function Grow() {
   usePageTitle('Grow');
   const { navigate } = useRouter();
   return (
-    <div className="min-h-screen w-full" style={{ background: '#0B1221' }}>
+    <div className="relative min-h-screen w-full" style={{ background: '#0B1221' }}>
+      {/* Aurora background glow */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: 'radial-gradient(70% 50% at 50% 0%, rgba(139,92,246,0.06), transparent), radial-gradient(40% 40% at 80% 20%, rgba(139,92,246,0.03), transparent)',
+        }}
+      />
       {/* Skip link */}
       <a
         href="#main-content"
