@@ -21,9 +21,9 @@ export const routeLoaders = {
   '/login': () => import('../pages/Login'),
   '/recovery': () => import('../pages/Recovery'),
   '/onboarding/connect': () => import('../pages/Onboarding'),
-  '/onboarding/goals': () => import('../pages/Onboarding'),
-  '/onboarding/consent': () => import('../pages/Onboarding'),
-  '/onboarding/complete': () => import('../pages/Onboarding'),
+  '/onboarding/goals': () => import('../pages/OnboardingGoals'),
+  '/onboarding/consent': () => import('../pages/OnboardingConsent'),
+  '/onboarding/complete': () => import('../pages/OnboardingComplete'),
 
   // ─── Core ───────────────────────────────────────────────────────────────────
   '/dashboard': () => import('../pages/Dashboard'),
