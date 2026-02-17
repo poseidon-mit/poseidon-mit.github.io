@@ -49,17 +49,25 @@ function RouteLoadingFallback() {
     <div
       style={{
         minHeight: '100vh',
-        display: 'grid',
-        placeItems: 'center',
         background: '#070d1a',
-        color: '#94a3b8',
         fontFamily: 'Inter, system-ui, sans-serif',
+        padding: '80px 16px 16px',
       }}
       role="status"
       aria-live="polite"
       aria-label="Loading page"
     >
-      Loading...
+      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="shimmer" style={{ height: 24, width: 120, borderRadius: 999 }} />
+        <div className="shimmer" style={{ height: 36, width: '70%', borderRadius: 8 }} />
+        <div className="shimmer" style={{ height: 16, width: '50%', borderRadius: 8 }} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, marginTop: 8 }}>
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="shimmer" style={{ height: 80, borderRadius: 16 }} />
+          ))}
+        </div>
+        <div className="shimmer" style={{ height: 200, borderRadius: 16, marginTop: 8 }} />
+      </div>
     </div>
   );
 }

@@ -13,6 +13,10 @@ import {
   Clock,
   ChevronDown,
   ExternalLink,
+  AlertTriangle,
+  AlertOctagon,
+  ArrowDown,
+  Zap,
 } from 'lucide-react'
 import { GlassCard, SeverityBadge, ReasoningChain } from '@/components/poseidon'
 import type { ViewMode } from '@/hooks/useViewMode'
@@ -105,7 +109,8 @@ export function ThreatTable({ navigate, viewMode = 'detail' }: ThreatTableProps)
         }}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold" style={{ color: '#F1F5F9' }}>
+          <h2 className="text-lg font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
+            <AlertTriangle size={18} style={{ color: '#22C55E' }} aria-hidden="true" />
             Threat Signals
           </h2>
           <span
@@ -288,7 +293,8 @@ export function ThreatTable({ navigate, viewMode = 'detail' }: ThreatTableProps)
           border: '1px solid rgba(255,255,255,0.1)',
         }}
       >
-        <h2 className="mb-4 text-lg font-semibold" style={{ color: '#F1F5F9' }}>
+        <h2 className="mb-4 text-lg font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
+          <Zap size={18} style={{ color: '#22C55E' }} aria-hidden="true" />
           Quick Actions
         </h2>
         <div className="flex flex-col gap-3">
@@ -313,8 +319,11 @@ export function ThreatTable({ navigate, viewMode = 'detail' }: ThreatTableProps)
               />
               <div className="flex-1">
                 <p className="text-sm font-medium" style={{ color: '#F1F5F9' }}>{a.title}</p>
-                <p className="text-xs" style={{ color: '#64748B' }}>
-                  {a.priority === 'urgent' ? 'Immediate containment required' : a.priority === 'normal' ? 'SLA: 24 hours' : 'Low priority'}
+                <p className="text-xs flex items-center gap-1" style={{ color: '#64748B' }}>
+                  {a.priority === 'urgent' && <AlertOctagon size={10} aria-hidden="true" />}
+                  {a.priority === 'normal' && <Clock size={10} aria-hidden="true" />}
+                  {a.priority === 'low' && <ArrowDown size={10} aria-hidden="true" />}
+                  {a.priority === 'urgent' ? 'Immediate' : a.priority === 'normal' ? '24h SLA' : 'Low'}
                 </p>
               </div>
               <ExternalLink className="h-4 w-4 shrink-0" style={{ color: '#64748B' }} />

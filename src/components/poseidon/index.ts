@@ -30,3 +30,6 @@ export { MethodologyCard, type MethodologyCardProps } from './methodology-card'
 
 /* ── Presentation Mode (Phase 7) ── */
 export { AuroraPulse, type AuroraPulseProps } from './aurora-pulse'
+
+/* ── Empty State ── */
+export { EmptyState, type EmptyStateProps } from './empty-state'

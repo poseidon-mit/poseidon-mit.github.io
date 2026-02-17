@@ -9,6 +9,8 @@ import { motion } from 'framer-motion'
 import {
   Check,
   AlertCircle,
+  Layers,
+  Activity,
 } from 'lucide-react'
 import {
   RadialBarChart,
@@ -181,22 +183,13 @@ function EvidenceSummary() {
         border: '1px solid rgba(255,255,255,0.1)',
       }}
     >
-      <div className="flex items-start gap-3">
-        <div
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
-          style={{ background: 'rgba(34,197,94,0.1)' }}
-        >
-          <AlertCircle className="h-4 w-4" style={{ color: '#22C55E' }} />
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold" style={{ color: '#F1F5F9' }}>
-            Evidence Summary
-          </h3>
-          <p className="mt-1 text-sm leading-relaxed" style={{ color: '#CBD5E1' }}>
-            AI identified 3 correlated signals across 2 accounts in the last 6 hours.
-          </p>
-        </div>
-      </div>
+      <h3 className="mb-3 text-sm font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
+        <AlertCircle size={14} style={{ color: '#22C55E' }} aria-hidden="true" />
+        Evidence Summary
+      </h3>
+      <p className="text-sm leading-relaxed" style={{ color: '#CBD5E1' }}>
+        AI identified 3 correlated signals across 2 accounts in the last 6 hours.
+      </p>
     </GlassCard>
   )
 }
@@ -229,7 +222,8 @@ export function ProtectSidebar({ viewMode = 'detail' }: ProtectSidebarProps) {
           border: '1px solid rgba(255,255,255,0.1)',
         }}
       >
-        <h3 className="mb-4 text-sm font-semibold" style={{ color: '#F1F5F9' }}>
+        <h3 className="mb-4 text-sm font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
+          <Layers size={14} style={{ color: '#22C55E' }} aria-hidden="true" />
           Category Breakdown
         </h3>
         <CategoryScoreBars />
@@ -242,7 +236,8 @@ export function ProtectSidebar({ viewMode = 'detail' }: ProtectSidebarProps) {
           border: '1px solid rgba(255,255,255,0.1)',
         }}
       >
-        <h3 className="mb-4 text-sm font-semibold" style={{ color: '#F1F5F9' }}>
+        <h3 className="mb-4 text-sm font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
+          <Activity size={14} style={{ color: '#22C55E' }} aria-hidden="true" />
           Signal Timeline
         </h3>
         <Timeline />

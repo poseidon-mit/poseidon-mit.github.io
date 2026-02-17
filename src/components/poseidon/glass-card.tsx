@@ -3,14 +3,18 @@
  *
  * Self-contained implementation matching v0 engine page pattern.
  * Supports optional left-border accent via borderColor prop.
+ * Includes whileTap spring feedback for mobile haptic feel.
  */
+import { motion, type HTMLMotionProps } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
-export interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface GlassCardProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
   children: React.ReactNode
   className?: string
   borderColor?: string
 }
+
+const tapSpring = { type: 'spring' as const, stiffness: 400, damping: 25 }
 
 export function GlassCard({
   children,
@@ -20,7 +24,9 @@ export function GlassCard({
   ...props
 }: GlassCardProps) {
   return (
-    <div
+    <motion.div
+      whileTap={{ scale: 0.97 }}
+      transition={tapSpring}
       className={cn('rounded-2xl border border-white/[0.06] p-4 md:p-6', className)}
       style={{
         background: 'rgba(255,255,255,0.03)',
@@ -33,7 +39,7 @@ export function GlassCard({
       {...props}
     >
       {children}
-    </div>
+    </motion.div>
   )
 }
 

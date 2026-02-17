@@ -10,9 +10,13 @@ import {
   ChevronRight,
   Bell,
   Search,
+  WifiOff,
+  Radio,
 } from 'lucide-react';
 import { Link } from '../../router';
 import { useCommandPalette } from '../../hooks/useCommandPalette';
+import { usePresentationMode } from '../../hooks/usePresentationMode';
+import { usePWA } from '../../hooks/usePWA';
 import { CommandPalette } from './CommandPalette';
 
 /* ─── Engine config ──────────────────────────────────────── */
@@ -30,7 +34,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Protect', path: '/protect', icon: Shield, color: '#22C55E', group: 'engine' },
   { label: 'Grow', path: '/grow', icon: TrendingUp, color: '#8B5CF6', group: 'engine' },
   { label: 'Execute', path: '/execute', icon: Zap, color: '#EAB308', group: 'engine' },
-  { label: 'Govern', path: '/govern', icon: Scale, color: '#3B82F6', group: 'engine' },
+  { label: 'Govern', path: '/govern', icon: Scale, color: '#60A5FA', group: 'engine' },
   { label: 'Settings', path: '/settings', icon: Settings, color: '#94a3b8', group: 'system' },
   { label: 'Help', path: '/help', icon: HelpCircle, color: '#94a3b8', group: 'system' },
 ];
@@ -171,6 +175,8 @@ export function AppNavShell({
   const breadcrumbs = useMemo(() => BREADCRUMB_MAP[path] ?? ['Unknown'], [path]);
   const subNav = useMemo(() => getSubNav(path), [path]);
   const { isOpen: isPaletteOpen, open: openPalette, close: closePalette } = useCommandPalette();
+  const { isPresentation } = usePresentationMode();
+  const { isOffline } = usePWA();
 
   const handleBottomNavTap = useCallback(
     (itemPath: string) => {
@@ -371,8 +377,30 @@ export function AppNavShell({
             })}
           </nav>
 
-          {/* Right side: search + bell + avatar */}
-          <div className="flex items-center gap-4">
+          {/* Right side: status + search + bell + avatar */}
+          <div className="flex items-center gap-3">
+            {/* Offline indicator */}
+            {isOffline && (
+              <span
+                className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider"
+                style={{ background: 'rgba(239,68,68,0.15)', color: '#EF4444', border: '1px solid rgba(239,68,68,0.3)' }}
+                aria-label="Offline"
+              >
+                <WifiOff className="w-3 h-3" aria-hidden="true" />
+                Offline
+              </span>
+            )}
+            {/* Presentation mode badge */}
+            {isPresentation && (
+              <span
+                className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider"
+                style={{ background: 'rgba(0,240,255,0.1)', color: '#00F0FF', border: '1px solid rgba(0,240,255,0.25)' }}
+                aria-label="Presentation mode active"
+              >
+                <Radio className="w-3 h-3" aria-hidden="true" />
+                Presenting
+              </span>
+            )}
             {/* Cmd+K search trigger */}
             <button
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-colors duration-150"
@@ -453,10 +481,23 @@ export function AppNavShell({
             </span>
           </div>
 
-          {/* Center: current section */}
-          <span className="text-sm font-medium" style={{ color: '#f8fafc' }}>
-            {activeSection?.label ?? ''}
-          </span>
+          {/* Center: current section + status */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium" style={{ color: '#f8fafc' }}>
+              {activeSection?.label ?? ''}
+            </span>
+            {isPresentation && (
+              <span
+                className="rounded-full px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider"
+                style={{ background: 'rgba(0,240,255,0.15)', color: '#00F0FF' }}
+              >
+                Live
+              </span>
+            )}
+            {isOffline && (
+              <WifiOff className="w-3.5 h-3.5" style={{ color: '#EF4444' }} aria-label="Offline" />
+            )}
+          </div>
 
           {/* Right: bell */}
           <button
@@ -545,8 +586,8 @@ export function AppNavShell({
             <Link
               key={item.path}
               to={item.path}
-              className="flex flex-col items-center justify-center gap-1 flex-1 pt-2 pb-1 transition-colors duration-150"
-              style={{ color: isActive ? item.color : '#64748b' }}
+              className="flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors duration-150"
+              style={{ color: isActive ? item.color : '#64748b', minHeight: 48 }}
               onClick={() => handleBottomNavTap(item.path)}
               aria-current={isActive ? 'page' : undefined}
               aria-label={item.label}

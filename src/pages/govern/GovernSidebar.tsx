@@ -2,7 +2,7 @@
  * GovernSidebar — Right sidebar with confidence trend chart,
  * evidence distribution bars, and compliance status for the Govern engine page.
  */
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Database, TrendingUp, ShieldCheck } from 'lucide-react';
 import {
   LineChart,
   Line,
@@ -20,7 +20,8 @@ import { confidenceTrendData, evidenceTypes, complianceItems, governMethodology 
 function EvidenceDistribution() {
   return (
     <GlassCard className="flex flex-col gap-4">
-      <h3 className="text-sm font-semibold" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+      <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+        <Database size={14} style={{ color: '#3B82F6' }} aria-hidden="true" />
         Evidence Types
       </h3>
       <div className="flex flex-col gap-3">
@@ -51,7 +52,8 @@ function ConfidenceTrend() {
   return (
     <GlassCard className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+        <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+          <TrendingUp size={14} style={{ color: '#3B82F6' }} aria-hidden="true" />
           30-Day Confidence
         </h3>
         <span className="text-xs font-mono tabular-nums" style={{ color: '#10B981' }}>0.97</span>
@@ -92,7 +94,8 @@ function ConfidenceTrend() {
 function ComplianceStatus() {
   return (
     <GlassCard className="flex flex-col gap-4">
-      <h3 className="text-sm font-semibold" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+      <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+        <ShieldCheck size={14} style={{ color: '#3B82F6' }} aria-hidden="true" />
         Compliance Status
       </h3>
       <div className="flex flex-col gap-3">

@@ -8,6 +8,10 @@ import {
   Eye,
   FileText,
   TrendingUp,
+  CheckCircle2,
+  Database,
+  User,
+  type LucideIcon,
 } from 'lucide-react';
 import { fadeUp, staggerContainer, staggerContainerDelayed } from '@/lib/motion-presets';
 import { GlassCard, ViewModeToggle, CitationCard, CountUp } from '@/components/poseidon';
@@ -128,6 +132,13 @@ interface KpiGridProps {
   viewMode?: ViewMode;
 }
 
+const kpiIcons: Record<string, LucideIcon> = {
+  'Decisions Audited': FileText,
+  'Verifiable': CheckCircle2,
+  'Avg Evidence Points': Database,
+  'Human Reviews': User,
+}
+
 function KpiGrid({ viewMode: _viewMode = 'detail' }: KpiGridProps) {
   return (
     <motion.section
@@ -137,37 +148,41 @@ function KpiGrid({ viewMode: _viewMode = 'detail' }: KpiGridProps) {
       className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4"
       aria-label="Key performance indicators"
     >
-      {kpiData.map((kpi) => (
-        <motion.div key={kpi.label} variants={fadeUp}>
-          <GlassCard className="flex flex-col gap-2">
-            <span className="text-xs uppercase tracking-wider font-medium" style={{ color: '#64748B' }}>
-              {kpi.label}
-            </span>
-            <div className="flex items-end gap-2">
-              <span
-                className="text-2xl md:text-3xl font-bold tabular-nums"
-                style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}
-              >
-                {renderKpiValue(kpi.value)}
+      {kpiData.map((kpi) => {
+        const KpiIcon = kpiIcons[kpi.label]
+        return (
+          <motion.div key={kpi.label} variants={fadeUp}>
+            <GlassCard className="flex flex-col gap-2">
+              <span className="text-xs uppercase tracking-wider font-medium flex items-center gap-1.5" style={{ color: '#64748B' }}>
+                {KpiIcon && <KpiIcon size={12} aria-hidden="true" />}
+                {kpi.label}
               </span>
-              {kpi.badge && (
+              <div className="flex items-end gap-2">
                 <span
-                  className="mb-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
-                  style={{ background: kpi.badge.bg, color: kpi.badge.color }}
+                  className="text-2xl md:text-3xl font-bold tabular-nums"
+                  style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}
                 >
-                  {kpi.badge.text}
+                  {renderKpiValue(kpi.value)}
+                </span>
+                {kpi.badge && (
+                  <span
+                    className="mb-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                    style={{ background: kpi.badge.bg, color: kpi.badge.color }}
+                  >
+                    {kpi.badge.text}
+                  </span>
+                )}
+              </div>
+              {kpi.trend && (
+                <span className="flex items-center gap-1 text-xs font-medium" style={{ color: kpi.trend.color }}>
+                  <TrendingUp size={12} />
+                  {kpi.trend.text}
                 </span>
               )}
-            </div>
-            {kpi.trend && (
-              <span className="flex items-center gap-1 text-xs font-medium" style={{ color: kpi.trend.color }}>
-                <TrendingUp size={12} />
-                {kpi.trend.text}
-              </span>
-            )}
-          </GlassCard>
-        </motion.div>
-      ))}
+            </GlassCard>
+          </motion.div>
+        )
+      })}
     </motion.section>
   );
 }

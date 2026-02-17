@@ -4,7 +4,7 @@
  * Open with Cmd+K / Ctrl+K from anywhere in the app.
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   LayoutDashboard,
   Shield,
@@ -17,7 +17,10 @@ import {
   Eye,
   LayoutGrid,
   Database,
+  Mic,
+  MicOff,
 } from 'lucide-react';
+import { useVoiceInput } from '../../hooks/useVoiceInput';
 import {
   CommandDialog,
   CommandEmpty,
@@ -188,13 +191,16 @@ interface CommandPaletteProps {
 
 export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   const { navigate, path } = useRouter();
+  const { isListening, startListening, stopListening, isSupported } = useVoiceInput();
+  const [searchValue, setSearchValue] = useState('');
 
   const handleSelect = useCallback(
     (navPath: string) => {
+      if (isListening) stopListening();
       onClose();
       navigate(navPath);
     },
-    [navigate, onClose]
+    [navigate, onClose, isListening, stopListening]
   );
 
   const renderCommandGroup = (commands: Command[]) =>
@@ -225,8 +231,27 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
     });
 
   return (
-    <CommandDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <CommandInput placeholder="Search engines, actions, presentations…" />
+    <CommandDialog open={isOpen} onOpenChange={(open) => { if (!open) { if (isListening) stopListening(); setSearchValue(''); onClose(); } }}>
+      <div className="flex items-center">
+        <CommandInput
+          placeholder={isListening ? 'Listening…' : 'Search engines, actions, presentations…'}
+          value={searchValue}
+          onValueChange={setSearchValue}
+        />
+        {isSupported && (
+          <button
+            onClick={isListening ? stopListening : startListening}
+            className="mr-3 flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg transition-colors"
+            style={{
+              background: isListening ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.05)',
+              color: isListening ? '#EF4444' : '#64748B',
+            }}
+            aria-label={isListening ? 'Stop voice input' : 'Start voice input'}
+          >
+            {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+          </button>
+        )}
+      </div>
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
 

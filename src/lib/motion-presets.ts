@@ -102,3 +102,26 @@ export const staticContainer: Variants = {
   hidden: {},
   visible: {},
 }
+
+/** Page transition with reduced motion (instant) */
+export const pageTransitionReduced: Variants = {
+  initial: { opacity: 1, y: 0 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 1, y: 0 },
+}
+
+/**
+ * Returns motion-safe or static variants based on prefers-reduced-motion.
+ * Use at the top of a component to pick the right set.
+ */
+export function getMotionPreset(prefersReduced: boolean) {
+  return {
+    fadeUp: prefersReduced ? staticVariants : fadeUp,
+    fadeIn: prefersReduced ? staticVariants : fadeIn,
+    fadeScale: prefersReduced ? staticVariants : fadeScale,
+    staggerContainer: prefersReduced ? staticContainer : staggerContainer,
+    staggerContainerDelayed: prefersReduced ? staticContainer : staggerContainerDelayed,
+    staggerItem: prefersReduced ? staticVariants : staggerItem,
+    pageTransition: prefersReduced ? pageTransitionReduced : pageTransition,
+  }
+}

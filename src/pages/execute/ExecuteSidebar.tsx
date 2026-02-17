@@ -10,6 +10,9 @@ import {
   Zap,
   Clock,
   CircleDot,
+  Calendar,
+  Gauge,
+  History,
 } from 'lucide-react'
 import {
   BarChart,
@@ -60,7 +63,8 @@ function ExecutionStats() {
 
   return (
     <GlassCard className="flex flex-col gap-4">
-      <h3 className="text-sm font-semibold" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+      <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+        <Calendar size={14} style={{ color: '#EAB308' }} aria-hidden="true" />
         {"Today's Activity"}
       </h3>
       <div className="flex flex-col gap-3">
@@ -98,7 +102,8 @@ function ExecutionStats() {
 function ConfidenceChart() {
   return (
     <GlassCard className="flex flex-col gap-4">
-      <h3 className="text-sm font-semibold" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+      <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+        <Gauge size={14} style={{ color: '#EAB308' }} aria-hidden="true" />
         Confidence Scores
       </h3>
       <div className="h-36" role="img" aria-label="Confidence score distribution chart">
@@ -147,7 +152,8 @@ function ConfidenceChart() {
 function RecentExecutionsTimeline() {
   return (
     <GlassCard className="flex flex-col gap-4">
-      <h3 className="text-sm font-semibold" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+      <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+        <History size={14} style={{ color: '#EAB308' }} aria-hidden="true" />
         Recent Executions
       </h3>
       <div className="flex flex-col gap-0">

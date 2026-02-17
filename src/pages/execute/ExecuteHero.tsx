@@ -11,6 +11,10 @@ import {
   XCircle,
   ArrowUpRight,
   ArrowDownRight,
+  Clock,
+  Gauge,
+  ShieldOff,
+  type LucideIcon,
 } from 'lucide-react'
 import { fadeUp, staggerContainer, staggerContainerDelayed } from '@/lib/motion-presets'
 import { GlassCard, ViewModeToggle, CitationCard, CountUp } from '@/components/poseidon'
@@ -125,6 +129,13 @@ function parseKpiValue(value: string): { num: number; decimals: number; suffix: 
   return { num, decimals, suffix }
 }
 
+const kpiIcons: Record<string, LucideIcon> = {
+  'Pending Actions': Clock,
+  'Auto-approved Today': CheckCircle2,
+  'Blocked Today': ShieldOff,
+  'Avg Review Time': Gauge,
+}
+
 function KpiGrid({ viewMode: _viewMode }: { viewMode: ViewMode }) {
   return (
     <motion.section
@@ -136,10 +147,12 @@ function KpiGrid({ viewMode: _viewMode }: { viewMode: ViewMode }) {
     >
       {kpiData.map((kpi) => {
         const parsed = parseKpiValue(kpi.value)
+        const KpiIcon = kpiIcons[kpi.label]
         return (
           <motion.div key={kpi.label} variants={fadeUp}>
             <GlassCard className="flex flex-col gap-2">
-              <span className="text-xs uppercase tracking-wider font-medium" style={{ color: '#64748B' }}>
+              <span className="text-xs uppercase tracking-wider font-medium flex items-center gap-1.5" style={{ color: '#64748B' }}>
+                {KpiIcon && <KpiIcon size={12} aria-hidden="true" />}
                 {kpi.label}
               </span>
               <div className="flex items-end gap-2">

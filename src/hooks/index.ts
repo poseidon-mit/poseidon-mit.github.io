@@ -1,5 +1,6 @@
 // Custom hooks barrel exports
 export { useAriaAnnouncer } from './useAriaAnnouncer';
+export { useAutoAdvance } from './useAutoAdvance';
 export { useColorblindMode } from './useColorblindMode';
 export { useCommandPalette } from './useCommandPalette';
 export { useExpertMode } from './useExpertMode';

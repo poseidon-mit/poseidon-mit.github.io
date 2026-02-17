@@ -16,7 +16,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { CheckCircle2 } from 'lucide-react'
+import { CheckCircle2, TrendingUp as TrendingUpIcon, PieChart as PieChartIcon, Activity } from 'lucide-react'
 import { GlassCard, MethodologyCard } from '@/components/poseidon'
 import type { ViewMode } from '@/hooks/useViewMode'
 import { projectionData, allocationData, recentActivity, growMethodology } from './grow-data'
@@ -27,7 +27,8 @@ function GrowthProjection() {
   return (
     <GlassCard className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+        <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+          <TrendingUpIcon size={14} style={{ color: '#8B5CF6' }} aria-hidden="true" />
           30-Year Projection
         </h3>
       </div>
@@ -79,7 +80,8 @@ function GrowthProjection() {
 function AssetAllocation() {
   return (
     <GlassCard className="flex flex-col gap-4">
-      <h3 className="text-sm font-semibold" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+      <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+        <PieChartIcon size={14} style={{ color: '#8B5CF6' }} aria-hidden="true" />
         Asset Allocation
       </h3>
       <div className="flex items-center gap-4">
@@ -129,7 +131,8 @@ function AssetAllocation() {
 function RecentActivity() {
   return (
     <GlassCard className="flex flex-col gap-4">
-      <h3 className="text-sm font-semibold" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+      <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
+        <Activity size={14} style={{ color: '#8B5CF6' }} aria-hidden="true" />
         Recent Activity
       </h3>
       <div className="flex flex-col gap-0">

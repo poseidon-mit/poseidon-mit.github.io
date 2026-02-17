@@ -12,6 +12,7 @@ import {
   ChevronDown,
   ChevronUp,
   CircleDot,
+  ListTodo,
 } from 'lucide-react'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
 import { GlassCard, PriorityBadge, ConfidenceIndicator, ReasoningChain } from '@/components/poseidon'
@@ -62,9 +63,10 @@ export function ActionQueue({ viewMode = 'detail' }: ActionQueueProps) {
   return (
     <motion.section variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-4">
       <h2
-        className="text-lg md:text-xl font-semibold"
+        className="text-lg md:text-xl font-semibold flex items-center gap-2"
         style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}
       >
+        <ListTodo size={20} style={{ color: '#EAB308' }} aria-hidden="true" />
         Pending Actions
       </h2>
 

@@ -3,7 +3,7 @@
  */
 
 import { motion } from 'framer-motion'
-import { Shield } from 'lucide-react'
+import { Shield, Activity, ShieldOff, AlertTriangle, Gauge, Cpu, Calendar, type LucideIcon } from 'lucide-react'
 import { GlassCard, ViewModeToggle, CitationCard, CountUp } from '@/components/poseidon'
 import type { ViewMode } from '@/hooks/useViewMode'
 import { fadeUp } from '@/lib/motion-presets'
@@ -16,6 +16,13 @@ const kpiCountUp: Record<string, { value: number; decimals?: number; suffix?: st
   'Blocked today': { value: 1 },
   'False positive rate': { value: 2.1, decimals: 1, suffix: '%' },
   'Coverage': { value: 100, suffix: '%' },
+}
+
+const kpiIcons: Record<string, LucideIcon> = {
+  'Active signals': Activity,
+  'Blocked today': ShieldOff,
+  'False positive rate': AlertTriangle,
+  'Coverage': Shield,
 }
 
 /* ─── Props ──────────────────────────────────────────────── */
@@ -71,13 +78,13 @@ export function ProtectHero({ viewMode, onViewModeChange }: ProtectHeroProps) {
 
         {/* ProofLine */}
         <div className="flex flex-wrap items-center gap-2 font-mono text-xs" style={{ color: 'rgba(165,180,198,0.8)' }}>
-          <span>3 signals detected</span>
+          <span className="inline-flex items-center gap-1"><Activity size={10} aria-hidden="true" />3 signals</span>
           <span style={{ opacity: 0.3 }}>|</span>
-          <span>Confidence 0.94</span>
+          <span className="inline-flex items-center gap-1"><Gauge size={10} aria-hidden="true" />0.94</span>
           <span style={{ opacity: 0.3 }}>|</span>
-          <span>{'Model: FraudDetectionV3.2'}</span>
+          <span className="inline-flex items-center gap-1"><Cpu size={10} aria-hidden="true" />FraudDetectionV3.2</span>
           <span style={{ opacity: 0.3 }}>|</span>
-          <span>{'Basis: 180-day behavioral analysis'}</span>
+          <span className="inline-flex items-center gap-1"><Calendar size={10} aria-hidden="true" />180d basis</span>
         </div>
       </motion.section>
 
@@ -86,6 +93,7 @@ export function ProtectHero({ viewMode, onViewModeChange }: ProtectHeroProps) {
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           {kpis.map((kpi) => {
             const cu = kpiCountUp[kpi.label]
+            const KpiIcon = kpiIcons[kpi.label]
             return (
               <GlassCard
                 key={kpi.label}
@@ -95,7 +103,8 @@ export function ProtectHero({ viewMode, onViewModeChange }: ProtectHeroProps) {
                 }}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium tracking-wide" style={{ color: '#64748B' }}>
+                  <span className="text-xs font-medium tracking-wide flex items-center gap-1.5" style={{ color: '#64748B' }}>
+                    {KpiIcon && <KpiIcon size={12} aria-hidden="true" />}
                     {kpi.label}
                   </span>
                   <div className="h-2 w-2 rounded-full" style={{ background: kpi.accent }} />

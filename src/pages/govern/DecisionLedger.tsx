@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Eye, CircleDot } from 'lucide-react';
+import { Eye, CircleDot, FileText } from 'lucide-react';
 import { fadeUp, staggerContainer } from '@/lib/motion-presets';
 import { GlassCard, StatusBadge, ConfidenceIndicator, CitationCard, ReasoningChain } from '@/components/poseidon';
 import type { ViewMode } from '@/hooks/useViewMode';
@@ -42,9 +42,10 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
   return (
     <motion.section variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-4">
       <h2
-        className="text-lg md:text-xl font-semibold"
+        className="text-lg md:text-xl font-semibold flex items-center gap-2"
         style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}
       >
+        <FileText size={20} style={{ color: '#3B82F6' }} aria-hidden="true" />
         Decision Audit Trail
       </h2>
 
