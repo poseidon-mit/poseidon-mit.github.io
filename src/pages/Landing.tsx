@@ -16,6 +16,7 @@ import {
   Lock,
   ScrollText,
   PlayCircle,
+  FileDown,
   RotateCcw,
   Brain,
 } from 'lucide-react';
@@ -223,6 +224,14 @@ export default function Landing() {
               <PlayCircle className="h-5 w-5" />
               Try the Demo
             </Link>
+            <a
+              href="/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf"
+              download
+              className="px-8 py-4 rounded-xl border border-white/[0.1] text-white hover:bg-white/[0.05] transition-all flex items-center gap-2"
+            >
+              <FileDown className="h-5 w-5" />
+              Deck (.pdf)
+            </a>
           </motion.div>
 
           <motion.div
