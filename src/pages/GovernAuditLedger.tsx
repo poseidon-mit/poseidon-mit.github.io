@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from '../router';
 import { motion } from 'framer-motion';
 import {
   Shield,
@@ -540,6 +541,7 @@ function ExportOptionsPanel() {
    ═══════════════════════════════════════════ */
 
 function GovernFooter() {
+  const { navigate } = useRouter();
   return (
     <footer
       className="mt-8 flex flex-col gap-3 md:flex-row md:items-center md:justify-between rounded-2xl border border-white/[0.06] px-4 py-3 md:px-6 md:py-4"
@@ -577,6 +579,7 @@ function GovernFooter() {
         className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-medium transition-all hover:bg-white/[0.04] cursor-pointer"
         style={{ borderColor: 'rgba(255,255,255,0.08)', color: '#CBD5E1', background: 'transparent', minHeight: '44px' }}
         aria-label="Request human review of audit records"
+        onClick={() => navigate('/govern/oversight')}
       >
         <User size={14} />
         Request human review

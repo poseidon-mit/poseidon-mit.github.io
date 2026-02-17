@@ -224,7 +224,7 @@ export function GovernOversight() {
           <span className="text-xs font-mono text-white/30">GV-2026-0216-OVR</span>
           <span className="text-xs text-white/20">·</span>
           <span className="text-xs text-white/30">OversightEngine v1.1</span>
-          <button className="ml-auto text-xs text-white/40 hover:text-white/60 transition-colors">Request human review</button>
+          <Link to="/govern/audit" className="ml-auto text-xs text-white/40 hover:text-white/60 transition-colors">Request human review</Link>
         </motion.footer>
       </motion.div>
     </div>

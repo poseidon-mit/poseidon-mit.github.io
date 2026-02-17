@@ -774,6 +774,7 @@ export const Protect: React.FC = () => {
                 border: '1px solid rgba(255,255,255,0.1)',
                 color: '#CBD5E1',
               }}
+              onClick={() => navigate('/govern/oversight')}
             >
               Request human review
             </button>

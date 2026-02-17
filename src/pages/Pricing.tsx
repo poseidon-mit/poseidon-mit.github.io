@@ -121,7 +121,7 @@ export function Pricing() {
                 </li>
               ))}
             </ul>
-            <button className="w-full text-center py-3 rounded-xl text-sm font-semibold border border-white/10 text-white/70 hover:bg-white/5 transition-colors">Contact sales</button>
+            <Link to="/help" className="block w-full text-center py-3 rounded-xl text-sm font-semibold border border-white/10 text-white/70 hover:bg-white/5 transition-colors">Contact sales</Link>
           </div>
         </motion.div>
 
@@ -207,7 +207,7 @@ export function Pricing() {
             <Link to="/dashboard" className="flex items-center gap-1.5 px-6 py-3 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity" style={{ background: '#00F0FF', color: '#0B1221' }}>
               Open Dashboard <ArrowRight className="h-4 w-4" />
             </Link>
-            <button className="px-6 py-3 rounded-xl text-sm font-semibold border border-white/10 text-white/70 hover:bg-white/5 transition-colors">Talk to sales</button>
+            <Link to="/help" className="px-6 py-3 rounded-xl text-sm font-semibold border border-white/10 text-white/70 hover:bg-white/5 transition-colors">Talk to sales</Link>
           </div>
         </motion.div>
 

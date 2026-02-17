@@ -244,7 +244,7 @@ export function GovernRegistry() {
           <span className="text-xs font-mono text-white/30">GV-2026-0216-REG</span>
           <span className="text-xs text-white/20">·</span>
           <span className="text-xs text-white/30">ModelRegistry v1.0</span>
-          <button className="ml-auto text-xs text-white/40 hover:text-white/60 transition-colors">Request human review</button>
+          <Link to="/govern/oversight" className="ml-auto text-xs text-white/40 hover:text-white/60 transition-colors">Request human review</Link>
         </motion.footer>
       </motion.div>
     </div>

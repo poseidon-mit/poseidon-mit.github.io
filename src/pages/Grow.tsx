@@ -675,6 +675,7 @@ function GovernFooter() {
         className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-medium transition-all hover:bg-white/[0.04] cursor-pointer"
         style={{ borderColor: 'rgba(255,255,255,0.08)', color: '#CBD5E1', background: 'transparent', minHeight: '44px' }}
         aria-label="Request human review of growth projections"
+        onClick={() => navigate('/govern/oversight')}
       >
         <User size={14} />
         Request human review
