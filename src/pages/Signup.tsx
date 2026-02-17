@@ -1,243 +1,204 @@
 import React, { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Shield, CheckCircle, Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 import { Link, useRouter } from '../router';
-import { PageShell } from '../components/PageShell';
-import { MissionActionList } from '../components/MissionActionList';
-import { MissionMetadataStrip } from '../components/MissionMetadataStrip';
-import { MissionSectionHeader } from '../components/MissionSectionHeader';
-import { ProofLine } from '../components/ProofLine';
-import { getRouteScreenContract } from '../contracts/route-screen-contracts';
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.2, 0.8, 0.2, 1] } },
+};
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
 
-function passwordScore(password: string) {
-  if (!password) return 0;
-  let score = 0;
-  if (password.length >= 8) score += 1;
-  if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score += 1;
-  if (/\d/.test(password)) score += 1;
-  if (/[^A-Za-z0-9]/.test(password)) score += 1;
-  return score;
+function passwordScore(pw: string): number {
+  if (!pw) return 0;
+  let s = 0;
+  if (pw.length >= 8) s++;
+  if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) s++;
+  if (/\d/.test(pw)) s++;
+  if (/[^A-Za-z0-9]/.test(pw)) s++;
+  return s;
 }
 
-const kpiSparklines = {
-  completion: [{ value: 82 }, { value: 83 }, { value: 84 }, { value: 86 }, { value: 88 }, { value: 89 }],
-  speed: [{ value: 3.9 }, { value: 3.7 }, { value: 3.5 }, { value: 3.3 }, { value: 3.2 }, { value: 3.1 }],
-  policy: [{ value: 95 }, { value: 96 }, { value: 96 }, { value: 97 }, { value: 98 }, { value: 98 }],
-  verification: [{ value: 90 }, { value: 91 }, { value: 92 }, { value: 93 }, { value: 94 }, { value: 95 }],
-};
+const strengthLabels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+const strengthColors = ['', '#EF4444', '#EAB308', '#00F0FF', '#22C55E'];
 
-export const Signup: React.FC = () => {
+export function Signup() {
   const { navigate } = useRouter();
-  const contract = getRouteScreenContract('signup');
-
-  const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('Founder');
-  const [agree, setAgree] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [confirm, setConfirm] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreeUpdates, setAgreeUpdates] = useState(false);
 
-  const emailOk = EMAIL_RE.test(email);
   const pwScore = useMemo(() => passwordScore(password), [password]);
-  const canContinue = fullName.trim().length >= 2 && emailOk && pwScore >= 2 && agree;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    if (!canContinue) return;
-    navigate('/onboarding');
+    navigate('/onboarding/connect');
   };
 
-  const mainContent = (
-    <article className="engine-card" data-slot="signup_form">
-      <MissionSectionHeader
-        title="Create your studio account"
-        message="Set up credentials to access the command center."
-        contextCue="Use your work email to enable team invites from day one"
-      />
-
-      <form className="entry-form" onSubmit={handleSubmit} noValidate>
-        <label>
-          <span>Full name</span>
-          <input
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            placeholder="Aki Sato"
-          />
-        </label>
-        <label>
-          <span>Work email</span>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@company.com"
-          />
-        </label>
-        <label>
-          <span>Password</span>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Use 8+ chars"
-          />
-          <div className="entry-strength">
-            {[0, 1, 2, 3].map((i) => (
-              <i key={i} className={pwScore > i ? 'is-on' : ''} />
-            ))}
-          </div>
-        </label>
-        <label>
-          <span>Role</span>
-          <select value={role} onChange={(e) => setRole(e.target.value)}>
-            <option>Founder</option>
-            <option>Operator</option>
-            <option>Finance lead</option>
-            <option>Risk manager</option>
-          </select>
-        </label>
-        <label className="entry-check">
-          <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} />
-          <span>I agree to Terms and Privacy.</span>
-        </label>
-
-        {submitted && !canContinue && (
-          <p className="entry-error">Complete all fields to continue.</p>
-        )}
-
-        <button type="submit" className="entry-btn entry-btn--primary entry-btn--block">
-          Continue to onboarding
-        </button>
-      </form>
-      <ProofLine
-        claim="Governed signup"
-        evidence="Account creation is audit-logged | Fail-closed defaults enabled"
-        source="Activation telemetry"
-        basis="per-event"
-        sourceType="system"
-      />
-    </article>
-  );
-
-  const sideContent = (
-    <>
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Trust & provenance"
-          message="Security guarantees applied during account creation."
-        />
-        <MissionMetadataStrip
-          compact
-          items={['Model v3.2', 'Govern fail-closed', 'Audit ownership tracked']}
-        />
-        <MissionActionList
-          items={[
-            { title: 'Use work email', meta: 'Required', tone: 'primary' },
-            { title: 'Set strong password', meta: 'Min score 2', tone: 'warning' },
-            { title: 'Review terms once', meta: '1 step', tone: 'healthy' },
-          ]}
-        />
-      </article>
-
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Why this flow"
-          message="Design principles behind the signup experience."
-        />
-        <ul>
-          <li><strong>Summary first:</strong> one-screen message and recommendation always above fold.</li>
-          <li><strong>Evidence visible:</strong> confidence, recency, and model context in hero metadata.</li>
-          <li><strong>Governed handoff:</strong> onboarding transition is explicit and auditable.</li>
-        </ul>
-        <div className="entry-kpi-grid">
-          <article>
-            <small>Audit coverage</small>
-            <strong>98%</strong>
-          </article>
-          <article>
-            <small>Median setup</small>
-            <strong>3.1m</strong>
-          </article>
-        </div>
-        <div className="dashboard-side-actions">
-          <Link className="entry-btn entry-btn--ghost" to="/dashboard">Preview dashboard</Link>
-          <Link className="entry-btn entry-btn--primary" to="/onboarding">Open onboarding</Link>
-        </div>
-      </article>
-    </>
-  );
-
-  const rail = (
-    <article className="engine-card mission-rail-card">
-      <MissionMetadataStrip
-        compact
-        items={['Step 1 of 3', 'Account creation', 'Human review on critical actions']}
-      />
-    </article>
-  );
+  const inputClass = 'w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#00F0FF]/50 transition-colors';
 
   return (
-    <PageShell
-      slug="signup"
-      contract={contract}
-      layout="dashboard"
-      heroVariant="minimal"
-      hero={{
-        kicker: 'Signup',
-        headline: 'Create your studio account.',
-        subline: contract.oneScreenMessage,
-        proofLine: {
-          claim: 'Confidence 0.89',
-          evidence: 'Signup completion trend stable | Fail-closed defaults enabled',
-          source: 'Activation telemetry',
-        },
-        heroAction: {
-          label: 'Recommended:',
-          text: 'Use your work email to enable team invites and audit ownership from day one.',
-          cta: { label: 'Continue setup →', to: '/onboarding' },
-        },
-        freshness: new Date(Date.now() - 20 * 60 * 1000),
-        kpis: [
-          {
-            label: 'Completion rate',
-            value: '89%',
-            definition: 'Users who complete signup without retries',
-            accent: 'teal',
-            sparklineData: kpiSparklines.completion,
-            sparklineColor: 'var(--state-healthy)',
-          },
-          {
-            label: 'Median time',
-            value: '3.1m',
-            definition: 'Time from first field input to onboarding handoff',
-            accent: 'blue',
-            sparklineData: kpiSparklines.speed,
-            sparklineColor: 'var(--state-primary)',
-          },
-          {
-            label: 'Policy clarity',
-            value: '98%',
-            definition: 'Users confirming terms without support intervention',
-            accent: 'cyan',
-            sparklineData: kpiSparklines.policy,
-            sparklineColor: '#00F0FF',
-          },
-          {
-            label: 'Verification readiness',
-            value: '95%',
-            definition: 'Accounts prepared for governed onboarding flow',
-            accent: 'amber',
-            sparklineData: kpiSparklines.verification,
-            sparklineColor: 'var(--state-warning)',
-          },
-        ],
-      }}
-      rail={rail}
-      primaryFeed={mainContent}
-      decisionRail={sideContent}
-    />
+    <div className="min-h-screen w-full flex" style={{ background: '#0B1221' }}>
+      {/* Left brand panel — hidden on mobile */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center px-12 relative overflow-hidden"
+        style={{ background: 'linear-gradient(to bottom, #0B1221, #0F1D32)' }}
+      >
+        {/* Dot grid overlay */}
+        <div className="absolute inset-0 opacity-[0.03]"
+          style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '24px 24px' }}
+        />
+
+        <motion.div className="relative z-10 flex flex-col items-center text-center max-w-md" variants={stagger} initial="hidden" animate="visible">
+          <motion.div variants={fadeUp}>
+            <Shield className="h-16 w-16 mb-4" style={{ color: '#00F0FF' }} />
+          </motion.div>
+          <motion.h1 variants={fadeUp} className="text-3xl font-bold text-white mb-2">Poseidon.AI</motion.h1>
+          <motion.p variants={fadeUp} className="text-sm text-slate-400 mb-8">Trusted Financial Sentience</motion.p>
+
+          <motion.div variants={fadeUp} className="flex flex-col gap-3 text-left w-full mb-10">
+            {['Real-time threat detection', 'Explainable AI decisions', 'Full audit trail'].map((f) => (
+              <div key={f} className="flex items-center gap-2.5">
+                <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0" />
+                <span className="text-sm text-white/70">{f}</span>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* Testimonial */}
+          <motion.div variants={fadeUp} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 w-full">
+            <p className="text-sm text-white/60 italic leading-relaxed mb-3">
+              &ldquo;Poseidon gave us the confidence to automate financial decisions with full transparency.&rdquo;
+            </p>
+            <div>
+              <p className="text-xs font-semibold text-white/80">Sarah Chen</p>
+              <p className="text-xs text-white/40">VP Finance, Meridian Corp</p>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Right form panel */}
+      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-4 py-12 lg:px-12">
+        {/* Mobile logo */}
+        <div className="flex lg:hidden items-center gap-2 mb-8">
+          <Shield className="h-6 w-6" style={{ color: '#00F0FF' }} />
+          <span className="text-xl font-bold text-white">Poseidon.AI</span>
+        </div>
+
+        <motion.div className="w-full max-w-md" variants={stagger} initial="hidden" animate="visible">
+          <motion.div variants={fadeUp} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8">
+            <h1 className="text-2xl font-bold text-white mb-6">Create your account</h1>
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              {/* Name row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-first">First name</label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                    <input id="signup-first" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Aki" className={`${inputClass} pl-10`} autoComplete="given-name" />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-last">Last name</label>
+                  <input id="signup-last" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Sato" className={inputClass} autoComplete="family-name" />
+                </div>
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-email">Email</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                  <input id="signup-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.com" className={`${inputClass} pl-10`} autoComplete="email" />
+                </div>
+              </div>
+
+              {/* Password + strength */}
+              <div>
+                <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-pw">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                  <input id="signup-pw" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="8+ characters" className={`${inputClass} pl-10 pr-10`} autoComplete="new-password" />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors" aria-label={showPassword ? 'Hide password' : 'Show password'}>
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+                {/* Strength bar */}
+                <div className="flex gap-1 mt-2">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="flex-1 h-1 rounded-full transition-colors" style={{ background: pwScore >= i ? strengthColors[pwScore] : 'rgba(255,255,255,0.1)' }} />
+                  ))}
+                </div>
+                {password && <p className="text-[10px] mt-1" style={{ color: strengthColors[pwScore] }}>{strengthLabels[pwScore]}</p>}
+              </div>
+
+              {/* Confirm password */}
+              <div>
+                <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-confirm">Confirm password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                  <input id="signup-confirm" type={showConfirm ? 'text' : 'password'} value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Repeat password" className={`${inputClass} pl-10 pr-10`} autoComplete="new-password" />
+                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors" aria-label={showConfirm ? 'Hide confirmation' : 'Show confirmation'}>
+                    {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Checkboxes */}
+              <div className="flex flex-col gap-2 mt-1">
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} className="mt-0.5 accent-[#00F0FF]" />
+                  <span className="text-xs text-white/50">I agree to the <span className="underline" style={{ color: '#00F0FF' }}>Terms of Service</span> and <span className="underline" style={{ color: '#00F0FF' }}>Privacy Policy</span></span>
+                </label>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input type="checkbox" checked={agreeUpdates} onChange={(e) => setAgreeUpdates(e.target.checked)} className="mt-0.5 accent-[#00F0FF]" />
+                  <span className="text-xs text-white/50">Send me product updates</span>
+                </label>
+              </div>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={!agreeTerms}
+                className="w-full rounded-xl font-semibold py-3 text-sm transition-opacity hover:opacity-90 disabled:opacity-40 mt-2"
+                style={{ background: '#00F0FF', color: '#0B1221' }}
+              >
+                Create account
+              </button>
+            </form>
+
+            <p className="text-center text-sm text-white/40 mt-6">
+              {'Already have an account? '}
+              <Link to="/login" className="font-medium hover:opacity-80 transition-opacity" style={{ color: '#00F0FF' }}>
+                {'Sign in \u2192'}
+              </Link>
+            </p>
+          </motion.div>
+
+          {/* Trust signals */}
+          <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-4 mt-6">
+            {[
+              { icon: Lock, text: 'Bank-grade security' },
+              { icon: Shield, text: 'GDPR compliant' },
+              { icon: CheckCircle, text: '100% auditable' },
+            ].map((t) => (
+              <div key={t.text} className="flex items-center gap-1.5">
+                <t.icon className="h-3.5 w-3.5 text-white/30" />
+                <span className="text-xs text-white/40">{t.text}</span>
+              </div>
+            ))}
+          </motion.div>
+        </motion.div>
+      </div>
+    </div>
   );
-};
+}
 
 export default Signup;

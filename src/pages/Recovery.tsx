@@ -1,128 +1,129 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { KeyRound, Mail, MailCheck, ArrowLeft, Loader2 } from 'lucide-react';
 import { Link } from '../router';
-import { PageShell } from '../components/PageShell';
-import { MissionActionList } from '../components/MissionActionList';
-import { MissionMetadataStrip } from '../components/MissionMetadataStrip';
-import { MissionSectionHeader } from '../components/MissionSectionHeader';
-import { ProofLine } from '../components/ProofLine';
-import { getRouteScreenContract } from '../contracts/route-screen-contracts';
 
-const kpiSparklines = {
-  recovery: [{ value: 92 }, { value: 93 }, { value: 94 }, { value: 95 }, { value: 96 }, { value: 97 }],
-  latency: [{ value: 4.5 }, { value: 4.2 }, { value: 3.8 }, { value: 3.5 }, { value: 3.2 }, { value: 2.8 }],
-  policy: [{ value: 98 }, { value: 98 }, { value: 99 }, { value: 99 }, { value: 100 }, { value: 100 }],
-  secure: [{ value: 100 }, { value: 100 }, { value: 100 }, { value: 100 }, { value: 100 }, { value: 100 }],
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.2, 0.8, 0.2, 1] } },
 };
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
 
-export const Recovery: React.FC = () => {
-  const contract = getRouteScreenContract('recovery');
+export function Recovery() {
   const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [step, setStep] = useState<1 | 2>(1);
+  const [loading, setLoading] = useState(false);
+  const [countdown, setCountdown] = useState(60);
+  const [canResend, setCanResend] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.includes('@')) setSubmitted(true);
+    if (!email.includes('@')) return;
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setStep(2);
+      setCountdown(60);
+      setCanResend(false);
+    }, 1200);
   };
 
-  const mainContent = (
-    <article className="engine-card" data-slot="recovery_form">
-      <MissionSectionHeader
-        title="Account recovery"
-        message="Securely reset your password with an audit-logged process."
-      />
-      {!submitted ? (
-        <form className="entry-form" onSubmit={handleSubmit} noValidate>
-          <label>
-            <span>Email address</span>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@company.com"
-            />
-          </label>
-          <ProofLine
-            claim="Secure recovery"
-            evidence="Password reset link valid for 1 hour | Audit trail created"
-            source="Security policy"
-            basis="per-event"
-            sourceType="policy"
-          />
-          <button type="submit" className="entry-btn entry-btn--primary entry-btn--block">
-            Send recovery link
-          </button>
-        </form>
-      ) : (
-        <div className="entry-form">
-          <MissionSectionHeader
-            title="Check your email"
-            message="Recovery instructions have been sent."
-          />
-          <p>If an account exists for <strong>{email}</strong>, you'll receive a recovery link within 2 minutes.</p>
-          <ProofLine
-            claim="Link sent"
-            evidence="Recovery event logged to audit trail"
-            source="Security system"
-            basis="per-event"
-            sourceType="system"
-          />
-          <Link to="/login" className="entry-btn entry-btn--ghost entry-btn--block">
-            Back to login
-          </Link>
-        </div>
-      )}
-    </article>
-  );
+  const handleResend = () => {
+    setCountdown(60);
+    setCanResend(false);
+  };
 
-  const sideContent = (
-    <>
-      <article className="engine-card">
-        <MissionSectionHeader
-          title="Security notes"
-          message="Safety guarantees during account recovery."
-        />
-        <MissionMetadataStrip
-          compact
-          items={['Reset link expires in 1h', 'Audit-logged event', 'No data exposed']}
-        />
-        <MissionActionList
-          items={[
-            { title: 'Check spam folder', meta: 'Common fix', tone: 'primary' },
-            { title: 'Try alternate email', meta: 'If registered', tone: 'warning' },
-            { title: 'Contact support', meta: '4h SLA', tone: 'healthy' },
-          ]}
-        />
-      </article>
-    </>
-  );
+  useEffect(() => {
+    if (step !== 2) return;
+    if (countdown <= 0) {
+      setCanResend(true);
+      return;
+    }
+    const t = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [step, countdown]);
 
   return (
-    <PageShell
-      slug="recovery"
-      contract={contract}
-      layout="dashboard"
-      heroVariant="minimal"
-      hero={{
-        kicker: 'Recovery',
-        headline: 'Regain access securely.',
-        subline: contract.oneScreenMessage,
-        proofLine: {
-          claim: 'Secure process',
-          evidence: 'All recovery attempts are audit-logged | No data disclosed',
-          source: 'Security policy',
-        },
-        freshness: new Date(),
-        kpis: [
-          { label: 'Success rate', value: '97%', definition: 'Accounts successfully recovered', accent: 'teal', sparklineData: kpiSparklines.recovery, sparklineColor: 'var(--state-healthy)' },
-          { label: 'Avg time', value: '2.8m', definition: 'Median time from request to access', accent: 'blue', sparklineData: kpiSparklines.latency, sparklineColor: 'var(--state-primary)' },
-          { label: 'Policy compliance', value: '100%', definition: 'Recovery attempts matching security policy', accent: 'cyan', sparklineData: kpiSparklines.policy, sparklineColor: '#00F0FF' },
-          { label: 'Zero disclosure', value: '100%', definition: 'No sensitive data exposed in recovery', accent: 'amber', sparklineData: kpiSparklines.secure, sparklineColor: 'var(--state-warning)' },
-        ],
-      }}
-      primaryFeed={mainContent}
-      decisionRail={sideContent}
-    />
+    <div className="min-h-screen w-full flex flex-col items-center justify-center px-4" style={{ background: '#0B1221' }}>
+      <motion.div className="w-full max-w-md flex flex-col items-center" variants={stagger} initial="hidden" animate="visible">
+        {step === 1 ? (
+          <>
+            {/* Step 1 — Enter email */}
+            <motion.div variants={fadeUp} className="mb-6">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto" style={{ background: 'rgba(0,240,255,0.1)' }}>
+                <KeyRound className="h-8 w-8" style={{ color: '#00F0FF' }} />
+              </div>
+            </motion.div>
+
+            <motion.div variants={fadeUp} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 w-full">
+              <h1 className="text-2xl font-bold text-white mb-2 text-center">Reset your password</h1>
+              <p className="text-sm text-slate-400 text-center mb-6">Enter your email and we&apos;ll send a reset link.</p>
+
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@company.com"
+                    className="w-full rounded-xl bg-white/5 border border-white/10 pl-10 pr-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#00F0FF]/50 transition-colors"
+                    autoComplete="email"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full rounded-xl font-semibold py-3 text-sm transition-opacity hover:opacity-90 disabled:opacity-60 flex items-center justify-center gap-2"
+                  style={{ background: '#00F0FF', color: '#0B1221' }}
+                >
+                  {loading ? <><Loader2 className="h-4 w-4 animate-spin" />Sending...</> : 'Send reset link'}
+                </button>
+              </form>
+
+              <div className="text-center mt-4">
+                <Link to="/login" className="text-sm hover:opacity-80 transition-opacity" style={{ color: '#00F0FF' }}>
+                  <ArrowLeft className="inline h-3.5 w-3.5 mr-1" />
+                  Back to sign in
+                </Link>
+              </div>
+            </motion.div>
+          </>
+        ) : (
+          <>
+            {/* Step 2 — Email sent */}
+            <motion.div variants={fadeUp} className="mb-6">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto" style={{ background: 'rgba(34,197,94,0.1)', boxShadow: '0 0 30px rgba(34,197,94,0.15)' }}>
+                <MailCheck className="h-8 w-8 text-emerald-400" />
+              </div>
+            </motion.div>
+
+            <motion.div variants={fadeUp} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 w-full text-center">
+              <h1 className="text-2xl font-bold text-white mb-2">Check your email</h1>
+              <p className="text-sm text-slate-400 mb-6">
+                Reset link sent to <span className="text-white font-medium">{email}</span>. Valid for 15 minutes.
+              </p>
+
+              <button
+                onClick={handleResend}
+                disabled={!canResend}
+                className={`w-full rounded-xl border py-3 text-sm font-medium transition-colors ${canResend ? 'border-white/10 text-white/70 hover:bg-white/10' : 'border-white/5 text-white/30 cursor-not-allowed'}`}
+              >
+                {canResend ? 'Resend email' : `Resend in ${countdown}s`}
+              </button>
+
+              <div className="mt-4">
+                <Link to="/login" className="text-sm hover:opacity-80 transition-opacity" style={{ color: '#00F0FF' }}>
+                  <ArrowLeft className="inline h-3.5 w-3.5 mr-1" />
+                  Back to sign in
+                </Link>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </motion.div>
+    </div>
   );
-};
+}
 
 export default Recovery;

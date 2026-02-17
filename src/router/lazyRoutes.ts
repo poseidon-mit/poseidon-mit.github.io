@@ -105,6 +105,7 @@ export const V0_READY_ROUTES = new Set<RoutePath>([
   '/grow',
   '/grow/goal',
   '/grow/scenarios',
+  '/grow/recommendations',
   '/execute',
   '/execute/approval',
   '/execute/history',
