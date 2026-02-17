@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Shield, TrendingUp, Zap, Scale, Waves,
+  Shield, TrendingUp, Zap, Scale,
   CheckCircle, Eye, EyeOff, Mail, Lock, User, Loader2,
 } from 'lucide-react';
 import { Link, useRouter } from '../router';
@@ -89,7 +89,7 @@ export function Signup() {
         >
           {/* Wordmark */}
           <motion.div variants={fadeUp} className="flex items-center gap-2.5 mb-16">
-            <Waves className="h-6 w-6" style={{ color: '#00F0FF' }} />
+            <img src="/logo.svg" alt="" className="h-6 w-6 object-contain" aria-hidden="true" />
             <span className="text-lg font-bold" style={{ color: '#00F0FF' }}>
               Poseidon.AI
             </span>
@@ -152,7 +152,7 @@ export function Signup() {
       <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center px-6 md:px-12 py-12">
         {/* Mobile logo */}
         <div className="flex lg:hidden items-center gap-2 mb-8">
-          <Waves className="h-6 w-6" style={{ color: '#00F0FF' }} />
+          <img src="/logo.svg" alt="" className="h-6 w-6 object-contain" aria-hidden="true" />
           <span className="text-xl font-bold text-white">Poseidon.AI</span>
         </div>
 

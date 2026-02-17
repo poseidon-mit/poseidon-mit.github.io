@@ -18,7 +18,6 @@ import {
   PlayCircle,
   RotateCcw,
   Brain,
-  Waves,
 } from 'lucide-react';
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 import { Link } from '../router';
@@ -153,7 +152,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Left: logo */}
           <Link to="/" className="flex items-center gap-2 font-bold text-lg text-white" aria-label="Poseidon.AI home">
-            <Waves className="h-5 w-5 text-teal-400" />
+            <img src="/logo.svg" alt="" className="h-5 w-5 object-contain" aria-hidden="true" />
             Poseidon.AI
           </Link>
           {/* Center: links */}

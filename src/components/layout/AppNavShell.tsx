@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 import {
-  Waves,
   LayoutDashboard,
   Shield,
   TrendingUp,
@@ -178,7 +177,7 @@ export function AppNavShell({
       >
         {/* Logo */}
         <div className="flex items-center gap-2.5 px-5 py-5">
-          <Waves className="w-6 h-6" style={{ color: '#00F0FF' }} aria-hidden="true" />
+          <img src="/logo.svg" alt="" className="w-6 h-6 object-contain" aria-hidden="true" />
           <span className="text-base font-bold tracking-tight" style={{ color: '#f8fafc' }}>
             Poseidon.AI
           </span>
@@ -380,7 +379,7 @@ export function AppNavShell({
         >
           {/* Left: Logo */}
           <div className="flex items-center gap-2">
-            <Waves className="w-5 h-5" style={{ color: '#00F0FF' }} aria-hidden="true" />
+            <img src="/logo.svg" alt="" className="w-5 h-5 object-contain" aria-hidden="true" />
             <span className="text-sm font-bold" style={{ color: '#f8fafc' }}>
               Poseidon.AI
             </span>

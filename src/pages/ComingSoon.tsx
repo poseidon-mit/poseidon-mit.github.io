@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Construction, ArrowLeft, Waves } from 'lucide-react';
+import { Construction, ArrowLeft } from 'lucide-react';
 import { Link } from '../router';
 
 export default function ComingSoon() {
@@ -12,7 +12,7 @@ export default function ComingSoon() {
             className="flex items-center gap-2 font-bold text-lg text-white"
             aria-label="Poseidon.AI home"
           >
-            <Waves className="h-5 w-5 text-teal-400" />
+            <img src="/logo.svg" alt="" className="h-5 w-5 object-contain" aria-hidden="true" />
             Poseidon.AI
           </Link>
           <Link
