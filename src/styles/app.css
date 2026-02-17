@@ -54,8 +54,8 @@
     --glass-border-strong: rgba(255, 255, 255, 0.16);
     --glass-border-page: rgba(155, 195, 238, 0.24);
     --glass-bg-card-inner: rgba(12, 27, 52, 0.72);
-    --glass-blur: 44px;
-    --glass-blur-mobile: 20px;
+    --glass-blur: 16px;
+    --glass-blur-mobile: 10px;
     --glass-shadow: 0 24px 70px rgba(0,0,0,0.62), 0 0 28px rgba(0,240,255,0.12);
     --glass-inset: inset 0 1px 0 0 rgba(255,255,255,0.26), inset 0 -1px 0 0 rgba(255,255,255,0.1), inset 0 0 20px rgba(255,255,255,0.06);
 

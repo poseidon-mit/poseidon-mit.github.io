@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Bell, CheckCircle2, Clock, TrendingDown } from 'lucide-react';
+import { ArrowLeft, Bell, CheckCircle2, Clock, TrendingDown, Shield } from 'lucide-react';
 import { Link } from '../router';
 import { GovernFooter } from '../components/dashboard/GovernFooter';
 
@@ -195,6 +195,13 @@ export function AlertsHub() {
 
             {/* Alert list */}
             <div className="space-y-2">
+              {filtered.length === 0 && (
+                <div className="flex flex-col items-center gap-3 py-16">
+                  <Shield className="w-12 h-12 opacity-30" style={{ color: '#22C55E' }} />
+                  <p className="text-sm text-white/50">No alerts match your filters.</p>
+                  <p className="text-xs text-white/30">System is operating normally.</p>
+                </div>
+              )}
               {filtered.map((alert) => (
                 <div key={alert.id} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
                   <div className="flex items-start gap-3">

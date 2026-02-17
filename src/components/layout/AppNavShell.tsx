@@ -9,8 +9,11 @@ import {
   HelpCircle,
   ChevronRight,
   Bell,
+  Search,
 } from 'lucide-react';
 import { Link } from '../../router';
+import { useCommandPalette } from '../../hooks/useCommandPalette';
+import { CommandPalette } from './CommandPalette';
 
 /* ─── Engine config ──────────────────────────────────────── */
 
@@ -167,6 +170,7 @@ export function AppNavShell({
   const engineColor = useMemo(() => getEngineColor(path), [path]);
   const breadcrumbs = useMemo(() => BREADCRUMB_MAP[path] ?? ['Unknown'], [path]);
   const subNav = useMemo(() => getSubNav(path), [path]);
+  const { isOpen: isPaletteOpen, open: openPalette, close: closePalette } = useCommandPalette();
 
   const handleBottomNavTap = useCallback(
     (itemPath: string) => {
@@ -180,6 +184,7 @@ export function AppNavShell({
   return (
     <div className="flex min-h-screen" style={{ background: '#070d1a' }}>
       <style>{PULSE_STYLE}</style>
+      <CommandPalette isOpen={isPaletteOpen} onClose={closePalette} />
       {/* ── Desktop Sidebar ── */}
       <aside
         className="hidden lg:flex flex-col fixed top-0 left-0 h-screen z-40"
@@ -366,8 +371,36 @@ export function AppNavShell({
             })}
           </nav>
 
-          {/* Right side: bell + avatar */}
+          {/* Right side: search + bell + avatar */}
           <div className="flex items-center gap-4">
+            {/* Cmd+K search trigger */}
+            <button
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-colors duration-150"
+              style={{
+                color: '#64748b',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.07)',
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.08)';
+                (e.currentTarget as HTMLButtonElement).style.color = '#94a3b8';
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.04)';
+                (e.currentTarget as HTMLButtonElement).style.color = '#64748b';
+              }}
+              onClick={openPalette}
+              aria-label="Open command palette"
+            >
+              <Search className="w-3.5 h-3.5" aria-hidden="true" />
+              <span>Search</span>
+              <kbd
+                className="ml-1 px-1 py-0.5 rounded text-[10px]"
+                style={{ background: 'rgba(255,255,255,0.08)', color: '#475569' }}
+              >
+                ⌘K
+              </kbd>
+            </button>
             <button
               className="relative p-2 rounded-lg transition-colors duration-150"
               style={{ color: '#94a3b8' }}

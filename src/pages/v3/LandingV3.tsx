@@ -227,13 +227,13 @@ export default function LandingV3() {
             >
               Open Dashboard
             </Link>
-            <button
-              type="button"
+            <Link
+              to="/v3/dashboard"
               className="px-8 py-4 rounded-xl border border-white/[0.1] text-white hover:bg-white/[0.05] transition-all flex items-center gap-2"
             >
               <PlayCircle className="h-5 w-5" />
               Watch Demo
-            </button>
+            </Link>
           </motion.div>
 
           <motion.div
@@ -410,8 +410,8 @@ export default function LandingV3() {
             <span className="text-sm font-medium">MIT Sloan CTO Program &middot; Group 7 &middot; March 2026</span>
           </div>
           <div className="flex gap-6 text-xs text-slate-600">
-            <a href="#" className="hover:text-slate-400 cursor-pointer transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-slate-400 cursor-pointer transition-colors">Terms of Service</a>
+            <Link to="/trust" className="hover:text-slate-400 cursor-pointer transition-colors">Privacy Policy</Link>
+            <Link to="/trust" className="hover:text-slate-400 cursor-pointer transition-colors">Terms of Service</Link>
           </div>
         </div>
       </footer>

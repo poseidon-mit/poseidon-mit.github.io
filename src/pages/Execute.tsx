@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from '../router';
+import { usePageTitle } from '../hooks/use-page-title';
 import {
   Shield,
   ShieldCheck,
@@ -842,6 +843,7 @@ function GovernFooter() {
    ═══════════════════════════════════════════ */
 
 export function Execute() {
+  usePageTitle('Execute');
   const [actions, setActions] = useState<ActionItem[]>(initialActions);
   const { navigate } = useRouter();
 

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Zap, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { Link } from '../router';
 import { GovernFooter } from '../components/dashboard/GovernFooter';
+import { Dialog, DialogContent } from '../components/ui/dialog';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 12 },
@@ -47,6 +48,18 @@ const circumference = 2 * Math.PI * 40;
 
 export function ExecuteApproval() {
   const [expandedAction, setExpandedAction] = useState<string | null>(queueActions[0].id);
+  const [confirmAction, setConfirmAction] = useState<{ id: string; type: 'approve' | 'decline' } | null>(null);
+  const [processedIds, setProcessedIds] = useState<Set<string>>(new Set());
+
+  const handleConfirm = () => {
+    if (confirmAction) {
+      setProcessedIds((prev) => new Set([...prev, confirmAction.id]));
+      setExpandedAction(null);
+      setConfirmAction(null);
+    }
+  };
+
+  const visibleActions = queueActions.filter((a) => !processedIds.has(a.id));
 
   return (
     <div className="min-h-screen w-full" style={{ background: '#0B1221' }}>
@@ -134,7 +147,7 @@ export function ExecuteApproval() {
 
             {/* Action queue */}
             <div className="flex flex-col gap-3">
-              {queueActions.map((action) => (
+              {visibleActions.map((action) => (
                 <div
                   key={action.id}
                   className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 md:p-5"
@@ -209,10 +222,14 @@ export function ExecuteApproval() {
                         <button
                           className="px-4 py-2 rounded-lg text-white text-xs font-semibold hover:opacity-90 transition-opacity"
                           style={{ background: '#EAB308', color: '#0B1221' }}
+                          onClick={() => setConfirmAction({ id: action.id, type: 'approve' })}
                         >
                           Approve
                         </button>
-                        <button className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs hover:bg-white/10 transition-colors">Decline</button>
+                        <button
+                          className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs hover:bg-white/10 transition-colors"
+                          onClick={() => setConfirmAction({ id: action.id, type: 'decline' })}
+                        >Decline</button>
                         <button className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/40 text-xs hover:bg-white/10 transition-colors">Defer</button>
                         <Link to="/dashboard" className="px-4 py-2 rounded-lg text-white/30 text-xs hover:text-white/50 transition-colors">More info</Link>
                       </div>
@@ -222,7 +239,14 @@ export function ExecuteApproval() {
               ))}
             </div>
 
-            <p className="text-xs text-white/30">Consent-first: no action executes without explicit approval · {queueActions.length} pending · 3 approved today</p>
+            {visibleActions.length === 0 && (
+              <div className="flex flex-col items-center gap-3 py-16">
+                <CheckCircle2 className="w-12 h-12 opacity-30" style={{ color: '#22C55E' }} />
+                <p className="text-sm text-white/50">All actions reviewed. Queue is clear.</p>
+                <p className="text-xs text-white/30">3 actions approved today.</p>
+              </div>
+            )}
+            <p className="text-xs text-white/30">Consent-first: no action executes without explicit approval · {visibleActions.length} pending · 3 approved today</p>
           </motion.div>
 
           {/* Side rail */}
@@ -299,6 +323,72 @@ export function ExecuteApproval() {
 
         <GovernFooter />
       </motion.div>
+
+      {/* Confirm / Decline Dialog */}
+      {confirmAction && (() => {
+        const action = queueActions.find((a) => a.id === confirmAction.id)!;
+        const isApprove = confirmAction.type === 'approve';
+        return (
+          <Dialog open={true} onOpenChange={(open) => !open && setConfirmAction(null)}>
+            <DialogContent
+              className="max-w-md"
+              style={{ background: '#0f1e35', border: '1px solid rgba(255,255,255,0.12)' }}
+            >
+              <div className="flex flex-col gap-4 p-2">
+                <div>
+                  <p
+                    className="text-xs font-semibold uppercase tracking-widest mb-1"
+                    style={{ color: isApprove ? '#EAB308' : '#EF4444' }}
+                  >
+                    {isApprove ? 'Confirm Approval' : 'Confirm Decline'}
+                  </p>
+                  <h3 className="text-base font-semibold text-white">{action.title}</h3>
+                  <p className="text-xs text-white/50 mt-1">{action.description}</p>
+                </div>
+
+                {/* Impact preview */}
+                <div
+                  className="rounded-xl p-3"
+                  style={{
+                    background: isApprove ? 'rgba(34,197,94,0.05)' : 'rgba(239,68,68,0.05)',
+                    border: `1px solid ${isApprove ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'}`,
+                  }}
+                >
+                  <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: isApprove ? '#22C55E' : '#EF4444' }}>
+                    {isApprove ? 'Expected outcome' : 'If declined'}
+                  </p>
+                  <p className="text-xs text-white/70">
+                    {isApprove ? action.impact.approved : action.impact.declined}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-90"
+                    style={{
+                      background: isApprove ? '#EAB308' : '#EF4444',
+                      color: isApprove ? '#0B1221' : '#ffffff',
+                    }}
+                    onClick={handleConfirm}
+                  >
+                    {isApprove ? 'Approve' : 'Decline'}
+                  </button>
+                  <button
+                    className="flex-1 px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 transition-colors"
+                    onClick={() => setConfirmAction(null)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+
+                <p className="text-[10px] text-white/25 text-center">
+                  Confidence {action.confidence} · {action.reversible ? 'Reversible' : 'Irreversible'}
+                </p>
+              </div>
+            </DialogContent>
+          </Dialog>
+        );
+      })()}
     </div>
   );
 }

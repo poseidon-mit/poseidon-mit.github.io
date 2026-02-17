@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from '../router';
+import { usePageTitle } from '../hooks/use-page-title';
 import {
   Shield,
   AlertCircle,
@@ -371,6 +372,7 @@ function GlassCard({
 /* ═══════════════════════════════════════════════════════════ */
 
 export const Protect: React.FC = () => {
+  usePageTitle('Protect');
   const [expandedSignal, setExpandedSignal] = useState<string | null>(null);
   const { navigate } = useRouter();
 

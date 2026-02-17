@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from '../router';
+import { usePageTitle } from '../hooks/use-page-title';
 import {
   Shield,
   ShieldCheck,
@@ -689,6 +690,7 @@ function GovernFooter() {
    ═══════════════════════════════════════════ */
 
 export function Grow() {
+  usePageTitle('Grow');
   const { navigate } = useRouter();
   return (
     <div className="min-h-screen w-full" style={{ background: '#0B1221' }}>

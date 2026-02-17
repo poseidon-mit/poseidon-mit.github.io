@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 
@@ -56,6 +57,35 @@ function StatCard({ label, value, delta, deltaPositive, sparkData, sparkColor }:
 }
 
 export function KpiGrid() {
+  const [alertCount, setAlertCount] = useState(2);
+  const [alertSpark, setAlertSpark] = useState([8, 7, 5, 6, 4, 3, 3, 2]);
+  const [cashSpark, setCashSpark] = useState([10, 20, 15, 30, 25, 35, 40, 42]);
+  const [riskSpark, setRiskSpark] = useState([60, 55, 50, 45, 35, 30, 25, 20]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      // Alert count: random walk ±1, clamped 0-8
+      setAlertCount((prev) => Math.max(0, Math.min(8, prev + (Math.random() > 0.45 ? -1 : 1))));
+      // Sparkline update: drop oldest, append new point
+      setAlertSpark((prev) => {
+        const last = prev[prev.length - 1];
+        const next = Math.max(0, last + Math.round((Math.random() - 0.5) * 2));
+        return [...prev.slice(1), next];
+      });
+      setCashSpark((prev) => {
+        const last = prev[prev.length - 1];
+        const next = Math.max(5, last + Math.round((Math.random() - 0.3) * 4));
+        return [...prev.slice(1), next];
+      });
+      setRiskSpark((prev) => {
+        const last = prev[prev.length - 1];
+        const next = Math.max(10, Math.min(70, last + Math.round((Math.random() - 0.6) * 3)));
+        return [...prev.slice(1), next];
+      });
+    }, 12000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <motion.section
       className="kpi-grid"
@@ -77,7 +107,7 @@ export function KpiGrid() {
         value="+$4.1k"
         delta="+12%"
         deltaPositive
-        sparkData={[10, 20, 15, 30, 25, 35, 40, 42]}
+        sparkData={cashSpark}
         sparkColor="#00F0FF"
       />
       <StatCard
@@ -85,15 +115,15 @@ export function KpiGrid() {
         value="Low"
         delta="Down from Med"
         deltaPositive
-        sparkData={[60, 55, 50, 45, 35, 30, 25, 20]}
+        sparkData={riskSpark}
         sparkColor="#3B82F6"
       />
       <StatCard
         label="Alerts"
-        value="2"
-        delta="-3 resolved"
-        deltaPositive
-        sparkData={[8, 7, 5, 6, 4, 3, 3, 2]}
+        value={String(alertCount)}
+        delta={alertCount <= 2 ? '-3 resolved' : `+${alertCount - 2} new`}
+        deltaPositive={alertCount <= 2}
+        sparkData={alertSpark}
         sparkColor="#F59E0B"
       />
     </motion.section>

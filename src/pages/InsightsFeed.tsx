@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Lightbulb, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Lightbulb, TrendingUp, Sparkles } from 'lucide-react';
 import { Link } from '../router';
 import { GovernFooter } from '../components/dashboard/GovernFooter';
 
@@ -151,6 +151,13 @@ export function InsightsFeed() {
 
             {/* Insight cards */}
             <div className="flex flex-col gap-3">
+              {filtered.length === 0 && (
+                <div className="flex flex-col items-center gap-3 py-16">
+                  <Sparkles className="w-12 h-12 opacity-30" style={{ color: '#8B5CF6' }} />
+                  <p className="text-sm text-white/50">No insights match your filter.</p>
+                  <p className="text-xs text-white/30">Try selecting a different category.</p>
+                </div>
+              )}
               {filtered.map((insight) => (
                 <div
                   key={insight.id}

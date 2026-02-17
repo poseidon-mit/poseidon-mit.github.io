@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, ReactNode, useCallback, useRef, useEffect } from 'react';
 
 export type NotificationType = 'success' | 'error' | 'warning' | 'info';
 
@@ -29,6 +29,13 @@ const NotificationContext = createContext<NotificationContextValue | undefined>(
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const timerIds = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+
+  useEffect(() => {
+    return () => {
+      timerIds.current.forEach(clearTimeout);
+    };
+  }, []);
 
   const addNotification = useCallback((notification: Omit<Notification, 'id'>) => {
     const id = `notification-${Date.now()}-${Math.random()}`;
@@ -42,9 +49,11 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
     // Auto-remove after duration
     if (newNotification.duration && newNotification.duration > 0) {
-      setTimeout(() => {
-        removeNotification(id);
+      const timerId = setTimeout(() => {
+        setNotifications((prev) => prev.filter((n) => n.id !== id));
+        timerIds.current.delete(timerId);
       }, newNotification.duration);
+      timerIds.current.add(timerId);
     }
 
     return id;

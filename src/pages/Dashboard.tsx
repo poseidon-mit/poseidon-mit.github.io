@@ -1,3 +1,4 @@
+import { usePageTitle } from '@/hooks/use-page-title';
 import { HeroSection } from '@/components/dashboard/HeroSection';
 import { KpiGrid } from '@/components/dashboard/KpiGrid';
 import { EngineHealthStrip } from '@/components/dashboard/EngineHealthStrip';
@@ -6,6 +7,7 @@ import { DecisionRail } from '@/components/dashboard/DecisionRail';
 import { GovernFooter } from '@/components/dashboard/GovernFooter';
 
 export function Dashboard() {
+  usePageTitle('Dashboard');
   return (
     <div className="command-center">
       <a href="#main-content" className="skip-link">

@@ -509,6 +509,30 @@ function EvidenceFlowDiagram() {
 }
 
 function ExportOptionsPanel() {
+  const [pdfState, setPdfState] = useState<'idle' | 'generating' | 'done'>('idle');
+
+  const handleCSVExport = () => {
+    const headers = ['Decision ID', 'Timestamp', 'Type', 'Action', 'Confidence', 'Evidence', 'Status'];
+    const rows = auditEntries.map((e) => [
+      e.id, e.timestamp, e.type, e.action, e.confidence.toFixed(2), String(e.evidence), e.status,
+    ]);
+    const csvContent = [headers, ...rows].map((r) => r.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `poseidon-audit-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handlePDFExport = () => {
+    setPdfState('generating');
+    setTimeout(() => setPdfState('done'), 1800);
+  };
+
   return (
     <GlassCard className="flex flex-col gap-3">
       <h3 className="text-sm font-semibold" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
@@ -517,16 +541,19 @@ function ExportOptionsPanel() {
       <button
         className="w-full inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-medium transition-all hover:bg-white/[0.04] cursor-pointer"
         style={{ borderColor: 'rgba(255,255,255,0.1)', color: '#CBD5E1', background: 'transparent', minHeight: '44px' }}
+        onClick={handleCSVExport}
       >
         <Download size={14} />
         Export full ledger (CSV)
       </button>
       <button
         className="w-full inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-medium transition-all hover:bg-white/[0.04] cursor-pointer"
-        style={{ borderColor: 'rgba(255,255,255,0.1)', color: '#CBD5E1', background: 'transparent', minHeight: '44px' }}
+        style={{ borderColor: 'rgba(255,255,255,0.1)', color: pdfState === 'done' ? '#22C55E' : '#CBD5E1', background: 'transparent', minHeight: '44px' }}
+        onClick={handlePDFExport}
+        disabled={pdfState === 'generating'}
       >
         <FileText size={14} />
-        Generate compliance report (PDF)
+        {pdfState === 'generating' ? 'Generating…' : pdfState === 'done' ? 'Report ready ✓' : 'Generate compliance report (PDF)'}
       </button>
       <div className="flex items-center justify-between pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <span className="text-xs" style={{ color: '#64748B' }}>Last export</span>
