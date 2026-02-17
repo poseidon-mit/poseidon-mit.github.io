@@ -288,7 +288,7 @@ export function AppNavShell({
       </aside>
 
       {/* ── Main area ── */}
-      <div className="flex-1 flex flex-col lg:ml-[240px]">
+      <div className="flex-1 flex flex-col lg:ml-[240px] min-w-0">
         {/* ── Desktop top header ── */}
         <header
           className="hidden lg:flex items-center justify-between sticky top-0 z-30 px-6"
