@@ -1,6 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, CheckCircle, Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import {
+  Shield, TrendingUp, Zap, Scale, Waves,
+  CheckCircle, Eye, EyeOff, Mail, Lock, User, Loader2,
+} from 'lucide-react';
 import { Link, useRouter } from '../router';
 
 const fadeUp = {
@@ -19,8 +22,21 @@ function passwordScore(pw: string): number {
   return s;
 }
 
-const strengthLabels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+const strengthLabels = ['', 'Weak', 'Fair', 'Strong', 'Secure'];
 const strengthColors = ['', '#EF4444', '#EAB308', '#00F0FF', '#22C55E'];
+
+const valueProps = [
+  { icon: Shield, color: '#22C55E', label: 'Protect', desc: 'Fraud blocked in <100ms with explainable AI' },
+  { icon: TrendingUp, color: '#8B5CF6', label: 'Grow', desc: 'Personalized forecasts and savings automation' },
+  { icon: Zap, color: '#EAB308', label: 'Execute', desc: 'Consent-first actions with full audit trail' },
+  { icon: Scale, color: '#3B82F6', label: 'Govern', desc: 'Every decision logged and explained' },
+];
+
+const avatars = [
+  { initials: 'MK', bg: '#22C55E' },
+  { initials: 'JL', bg: '#8B5CF6' },
+  { initials: 'AR', bg: '#3B82F6' },
+];
 
 export function Signup() {
   const { navigate } = useRouter();
@@ -31,158 +47,308 @@ export function Signup() {
   const [confirm, setConfirm] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [agreeTerms, setAgreeTerms] = useState(false);
-  const [agreeUpdates, setAgreeUpdates] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [updatesOptIn, setUpdatesOptIn] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const pwScore = useMemo(() => passwordScore(password), [password]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/onboarding/connect');
+    if (!termsAccepted) return;
+    setLoading(true);
+    setTimeout(() => {
+      navigate('/onboarding/connect');
+    }, 1500);
   };
 
-  const inputClass = 'w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#00F0FF]/50 transition-colors';
+  const inputClass =
+    'w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#00F0FF]/50 transition-colors';
 
   return (
     <div className="min-h-screen w-full flex" style={{ background: '#0B1221' }}>
-      {/* Left brand panel — hidden on mobile */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center px-12 relative overflow-hidden"
-        style={{ background: 'linear-gradient(to bottom, #0B1221, #0F1D32)' }}
+      {/* ── Left Panel ── */}
+      <div
+        className="hidden lg:flex w-[480px] shrink-0 flex-col justify-between border-r border-white/[0.06] relative overflow-hidden"
+        style={{ background: 'linear-gradient(160deg, #0B1221 0%, #060D1A 100%)' }}
       >
-        {/* Dot grid overlay */}
-        <div className="absolute inset-0 opacity-[0.03]"
-          style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '24px 24px' }}
+        {/* Dot grid */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+            backgroundSize: '24px 24px',
+          }}
         />
 
-        <motion.div className="relative z-10 flex flex-col items-center text-center max-w-md" variants={stagger} initial="hidden" animate="visible">
-          <motion.div variants={fadeUp}>
-            <Shield className="h-16 w-16 mb-4" style={{ color: '#00F0FF' }} />
+        <motion.div
+          className="relative z-10 flex flex-col px-10 pt-10 pb-8 flex-1"
+          variants={stagger}
+          initial="hidden"
+          animate="visible"
+        >
+          {/* Wordmark */}
+          <motion.div variants={fadeUp} className="flex items-center gap-2.5 mb-16">
+            <Waves className="h-6 w-6" style={{ color: '#00F0FF' }} />
+            <span className="text-lg font-bold" style={{ color: '#00F0FF' }}>
+              Poseidon.AI
+            </span>
           </motion.div>
-          <motion.h1 variants={fadeUp} className="text-3xl font-bold text-white mb-2">Poseidon.AI</motion.h1>
-          <motion.p variants={fadeUp} className="text-sm text-slate-400 mb-8">Trusted Financial Sentience</motion.p>
 
-          <motion.div variants={fadeUp} className="flex flex-col gap-3 text-left w-full mb-10">
-            {['Real-time threat detection', 'Explainable AI decisions', 'Full audit trail'].map((f) => (
-              <div key={f} className="flex items-center gap-2.5">
-                <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0" />
-                <span className="text-sm text-white/70">{f}</span>
+          {/* Headline */}
+          <motion.h1 variants={fadeUp} className="text-3xl font-bold text-white mb-3 leading-tight text-balance">
+            Your money, finally coordinated.
+          </motion.h1>
+          <motion.p variants={fadeUp} className="text-sm text-white/60 leading-relaxed mb-10 max-w-[340px]">
+            AI that detects threats, grows wealth, and executes actions — with your consent, every time.
+          </motion.p>
+
+          {/* Value props */}
+          <motion.div variants={fadeUp} className="flex flex-col gap-4 mb-auto">
+            {valueProps.map((vp) => (
+              <div key={vp.label} className="flex items-start gap-3">
+                <div
+                  className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                  style={{ background: `${vp.color}15` }}
+                >
+                  <vp.icon className="h-4 w-4" style={{ color: vp.color }} />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-white">{vp.label}</p>
+                  <p className="text-xs text-white/50 leading-relaxed">{vp.desc}</p>
+                </div>
               </div>
             ))}
           </motion.div>
 
-          {/* Testimonial */}
-          <motion.div variants={fadeUp} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 w-full">
-            <p className="text-sm text-white/60 italic leading-relaxed mb-3">
-              &ldquo;Poseidon gave us the confidence to automate financial decisions with full transparency.&rdquo;
+          {/* Social proof card */}
+          <motion.div
+            variants={fadeUp}
+            className="rounded-2xl border border-white/[0.06] p-4 mt-8"
+            style={{ background: 'rgba(255,255,255,0.04)' }}
+          >
+            <p className="text-sm text-white/70 italic leading-relaxed mb-3">
+              {'"92% of users catch a hidden fee in the first week"'}
             </p>
-            <div>
-              <p className="text-xs font-semibold text-white/80">Sarah Chen</p>
-              <p className="text-xs text-white/40">VP Finance, Meridian Corp</p>
+            <div className="flex items-center gap-3">
+              <div className="flex -space-x-2">
+                {avatars.map((a) => (
+                  <div
+                    key={a.initials}
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white ring-2 ring-[#060D1A]"
+                    style={{ background: a.bg }}
+                  >
+                    {a.initials}
+                  </div>
+                ))}
+              </div>
+              <span className="text-xs text-white/40">14,000+ users protected</span>
             </div>
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Right form panel */}
-      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-4 py-12 lg:px-12">
+      {/* ── Right Panel ── */}
+      <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center px-6 md:px-12 py-12">
         {/* Mobile logo */}
         <div className="flex lg:hidden items-center gap-2 mb-8">
-          <Shield className="h-6 w-6" style={{ color: '#00F0FF' }} />
+          <Waves className="h-6 w-6" style={{ color: '#00F0FF' }} />
           <span className="text-xl font-bold text-white">Poseidon.AI</span>
         </div>
 
-        <motion.div className="w-full max-w-md" variants={stagger} initial="hidden" animate="visible">
-          <motion.div variants={fadeUp} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8">
-            <h1 className="text-2xl font-bold text-white mb-6">Create your account</h1>
-
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              {/* Name row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-first">First name</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
-                    <input id="signup-first" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Aki" className={`${inputClass} pl-10`} autoComplete="given-name" />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-last">Last name</label>
-                  <input id="signup-last" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Sato" className={inputClass} autoComplete="family-name" />
-                </div>
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-email">Email</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
-                  <input id="signup-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.com" className={`${inputClass} pl-10`} autoComplete="email" />
-                </div>
-              </div>
-
-              {/* Password + strength */}
-              <div>
-                <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-pw">Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
-                  <input id="signup-pw" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="8+ characters" className={`${inputClass} pl-10 pr-10`} autoComplete="new-password" />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors" aria-label={showPassword ? 'Hide password' : 'Show password'}>
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-                {/* Strength bar */}
-                <div className="flex gap-1 mt-2">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="flex-1 h-1 rounded-full transition-colors" style={{ background: pwScore >= i ? strengthColors[pwScore] : 'rgba(255,255,255,0.1)' }} />
-                  ))}
-                </div>
-                {password && <p className="text-[10px] mt-1" style={{ color: strengthColors[pwScore] }}>{strengthLabels[pwScore]}</p>}
-              </div>
-
-              {/* Confirm password */}
-              <div>
-                <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-confirm">Confirm password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
-                  <input id="signup-confirm" type={showConfirm ? 'text' : 'password'} value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Repeat password" className={`${inputClass} pl-10 pr-10`} autoComplete="new-password" />
-                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors" aria-label={showConfirm ? 'Hide confirmation' : 'Show confirmation'}>
-                    {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-
-              {/* Checkboxes */}
-              <div className="flex flex-col gap-2 mt-1">
-                <label className="flex items-start gap-2 cursor-pointer">
-                  <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} className="mt-0.5 accent-[#00F0FF]" />
-                  <span className="text-xs text-white/50">I agree to the <span className="underline" style={{ color: '#00F0FF' }}>Terms of Service</span> and <span className="underline" style={{ color: '#00F0FF' }}>Privacy Policy</span></span>
-                </label>
-                <label className="flex items-start gap-2 cursor-pointer">
-                  <input type="checkbox" checked={agreeUpdates} onChange={(e) => setAgreeUpdates(e.target.checked)} className="mt-0.5 accent-[#00F0FF]" />
-                  <span className="text-xs text-white/50">Send me product updates</span>
-                </label>
-              </div>
-
-              {/* Submit */}
-              <button
-                type="submit"
-                disabled={!agreeTerms}
-                className="w-full rounded-xl font-semibold py-3 text-sm transition-opacity hover:opacity-90 disabled:opacity-40 mt-2"
-                style={{ background: '#00F0FF', color: '#0B1221' }}
-              >
-                Create account
-              </button>
-            </form>
-
-            <p className="text-center text-sm text-white/40 mt-6">
-              {'Already have an account? '}
-              <Link to="/login" className="font-medium hover:opacity-80 transition-opacity" style={{ color: '#00F0FF' }}>
-                {'Sign in \u2192'}
-              </Link>
+        <motion.div className="w-full max-w-[480px]" variants={stagger} initial="hidden" animate="visible">
+          <motion.div variants={fadeUp}>
+            <h1 className="text-2xl font-bold text-white mb-1">Create your account</h1>
+            <p className="text-xs text-white/40 mb-8">
+              {'Free forever \u00b7 No credit card \u00b7 Cancel anytime'}
             </p>
           </motion.div>
 
-          {/* Trust signals */}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            {/* Name row */}
+            <motion.div variants={fadeUp} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-first">
+                  First name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                  <input
+                    id="signup-first"
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Aki"
+                    className={`${inputClass} pl-10`}
+                    autoComplete="given-name"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-last">
+                  Last name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                  <input
+                    id="signup-last"
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Sato"
+                    className={`${inputClass} pl-10`}
+                    autoComplete="family-name"
+                  />
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Email */}
+            <motion.div variants={fadeUp}>
+              <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-email">
+                Email
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                <input
+                  id="signup-email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@company.com"
+                  className={`${inputClass} pl-10`}
+                  autoComplete="email"
+                />
+              </div>
+            </motion.div>
+
+            {/* Password + strength */}
+            <motion.div variants={fadeUp}>
+              <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-pw">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                <input
+                  id="signup-pw"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="8+ characters"
+                  className={`${inputClass} pl-10 pr-10`}
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+              {/* Strength bar */}
+              <div className="flex gap-1 mt-2">
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="flex-1 h-1 rounded-full transition-colors"
+                    style={{
+                      background: pwScore >= i ? strengthColors[pwScore] : 'rgba(255,255,255,0.1)',
+                    }}
+                  />
+                ))}
+              </div>
+              {password && (
+                <p className="text-[10px] mt-1" style={{ color: strengthColors[pwScore] }}>
+                  {strengthLabels[pwScore]}
+                </p>
+              )}
+            </motion.div>
+
+            {/* Confirm password */}
+            <motion.div variants={fadeUp}>
+              <label className="text-xs text-white/50 uppercase tracking-wider block mb-1.5" htmlFor="signup-confirm">
+                Confirm password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                <input
+                  id="signup-confirm"
+                  type={showConfirm ? 'text' : 'password'}
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  placeholder="Repeat password"
+                  className={`${inputClass} pl-10 pr-10`}
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                  aria-label={showConfirm ? 'Hide confirmation' : 'Show confirmation'}
+                >
+                  {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Checkboxes */}
+            <motion.div variants={fadeUp} className="flex flex-col gap-2 mt-1">
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="mt-0.5 accent-[#00F0FF]"
+                />
+                <span className="text-xs text-white/50">
+                  {'I agree to the '}
+                  <span className="underline" style={{ color: '#00F0FF' }}>Terms of Service</span>
+                  {' and '}
+                  <span className="underline" style={{ color: '#00F0FF' }}>Privacy Policy</span>
+                </span>
+              </label>
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={updatesOptIn}
+                  onChange={(e) => setUpdatesOptIn(e.target.checked)}
+                  className="mt-0.5 accent-[#00F0FF]"
+                />
+                <span className="text-xs text-white/50">Keep me informed about product updates</span>
+              </label>
+            </motion.div>
+
+            {/* Submit */}
+            <motion.div variants={fadeUp}>
+              <button
+                type="submit"
+                disabled={!termsAccepted || loading}
+                className="w-full rounded-xl font-bold py-3 text-sm transition-opacity hover:opacity-90 disabled:opacity-40 mt-2 flex items-center justify-center gap-2"
+                style={{ background: '#00F0FF', color: '#0B1221' }}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Creating account...
+                  </>
+                ) : (
+                  'Create account \u2192'
+                )}
+              </button>
+            </motion.div>
+          </form>
+
+          {/* Sign in link */}
+          <motion.p variants={fadeUp} className="text-center text-sm text-white/40 mt-6">
+            {'Already have an account? '}
+            <Link to="/login" className="font-medium hover:opacity-80 transition-opacity" style={{ color: '#00F0FF' }}>
+              {'Sign in \u2192'}
+            </Link>
+          </motion.p>
+
+          {/* Trust strip */}
           <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-4 mt-6">
             {[
               { icon: Lock, text: 'Bank-grade security' },
