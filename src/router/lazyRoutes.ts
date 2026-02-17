@@ -94,6 +94,12 @@ export type RoutePath = keyof typeof routeLoaders;
  */
 export const V0_READY_ROUTES = new Set<RoutePath>([
   '/',
+  '/trust',
+  '/pricing',
+  '/signup',
+  '/login',
+  '/recovery',
+  '/onboarding/connect',
   '/dashboard',
   '/dashboard/alerts',
   '/dashboard/insights',
@@ -105,6 +111,7 @@ export const V0_READY_ROUTES = new Set<RoutePath>([
   '/grow',
   '/grow/goal',
   '/grow/scenarios',
+  '/grow/recommendations',
   '/execute',
   '/execute/approval',
   '/execute/history',
@@ -112,7 +119,14 @@ export const V0_READY_ROUTES = new Set<RoutePath>([
   '/govern/trust',
   '/govern/audit',
   '/govern/audit-detail',
+  '/govern/registry',
+  '/govern/oversight',
+  '/govern/policy',
   '/settings',
+  '/settings/ai',
+  '/settings/integrations',
+  '/settings/rights',
+  '/help',
 ]);
 
 export interface RouteUXMeta {

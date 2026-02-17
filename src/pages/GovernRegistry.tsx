@@ -1,150 +1,254 @@
-import React from 'react';
-import { DefinitionLine } from '../components/DefinitionLine';
-import { PageShell } from '../components/PageShell';
-import { GovernContractSet } from '../components/GovernContractSet';
-import { MissionDataRows } from '../components/MissionDataRows';
-import { MissionSectionHeader } from '../components/MissionSectionHeader';
-import { ProofLine } from '../components/ProofLine';
-import { getRouteScreenContract } from '../contracts/route-screen-contracts';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowLeft, Database, Bot, Shield, TrendingUp, Zap, Scale, ChevronDown, ExternalLink, RefreshCw } from 'lucide-react';
+import { Link } from '../router';
 
-const explanationFormats = [
-  { id: 'EF-001', name: 'SHAP-based factor decomposition', version: '1.1', engine: 'Protect', status: 'Active', tone: 'healthy' as const },
-  { id: 'EF-002', name: 'Confidence band visualization', version: '1.0', engine: 'Grow', status: 'Active', tone: 'healthy' as const },
-  { id: 'EF-003', name: 'Action outcome preview', version: '1.2', engine: 'Execute', status: 'Active', tone: 'healthy' as const },
-  { id: 'EF-004', name: 'Natural language summary', version: '2.0', engine: 'All', status: 'Active', tone: 'healthy' as const },
-  { id: 'EF-005', name: 'Counterfactual alternatives', version: '0.9', engine: 'Protect', status: 'Beta', tone: 'warning' as const },
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.2, 0.8, 0.2, 1] } },
+};
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
+
+const engineColors: Record<string, string> = {
+  Protect: '#22C55E',
+  Grow: '#8B5CF6',
+  Execute: '#EAB308',
+  Govern: '#3B82F6',
+};
+
+const models = [
+  { name: 'FraudDetection', engine: 'Protect', version: 'v3.3.1', accuracy: 97.2, lastTrained: '2d', status: 'Active', precision: 96.8, recall: 97.5, f1: 97.1, trainingPeriod: '90 days' },
+  { name: 'BehavioralBaseline', engine: 'Protect', version: 'v2.1.0', accuracy: 94.8, lastTrained: '5d', status: 'Active', precision: 93.5, recall: 95.2, f1: 94.3, trainingPeriod: '60 days' },
+  { name: 'GrowthForecast', engine: 'Grow', version: 'v3.2.0', accuracy: 89.1, lastTrained: '3d', status: 'Active', precision: 88.5, recall: 89.7, f1: 89.1, trainingPeriod: '120 days' },
+  { name: 'GoalTracker', engine: 'Grow', version: 'v2.1.3', accuracy: 91.5, lastTrained: '7d', status: 'Active', precision: 90.8, recall: 92.1, f1: 91.4, trainingPeriod: '90 days' },
+  { name: 'BillNegotiator', engine: 'Execute', version: 'v2.1.0', accuracy: 98.4, lastTrained: '1d', status: 'Active', precision: 98.1, recall: 98.7, f1: 98.4, trainingPeriod: '30 days' },
+  { name: 'ExecuteEngine', engine: 'Execute', version: 'v2.4.0', accuracy: 97.8, lastTrained: '4d', status: 'Active', precision: 97.2, recall: 98.3, f1: 97.7, trainingPeriod: '60 days' },
+  { name: 'GovernanceEngine', engine: 'Govern', version: 'v1.8.2', accuracy: 99.1, lastTrained: '6d', status: 'Active', precision: 99.0, recall: 99.2, f1: 99.1, trainingPeriod: '180 days' },
+  { name: 'PolicyEngine', engine: 'Govern', version: 'v2.0.0', accuracy: 98.7, lastTrained: '2d', status: 'Active', precision: 98.5, recall: 98.9, f1: 98.7, trainingPeriod: '120 days' },
 ];
 
-const kpiSparklines = {
-  formats: [{ value: 3 }, { value: 4 }, { value: 4 }, { value: 5 }, { value: 5 }, { value: 5 }],
-  coverage: [{ value: 90 }, { value: 92 }, { value: 94 }, { value: 96 }, { value: 97 }, { value: 98 }],
-  versions: [{ value: 8 }, { value: 9 }, { value: 10 }, { value: 11 }, { value: 12 }, { value: 12 }],
-  engines: [{ value: 4 }, { value: 4 }, { value: 4 }, { value: 4 }, { value: 4 }, { value: 4 }],
-};
+const recentUpdates = [
+  { model: 'BillNegotiator', version: 'v2.1.0', date: 'Feb 15' },
+  { model: 'PolicyEngine', version: 'v2.0.0', date: 'Feb 14' },
+  { model: 'FraudDetection', version: 'v3.3.1', date: 'Feb 14' },
+  { model: 'GrowthForecast', version: 'v3.2.0', date: 'Feb 13' },
+  { model: 'ExecuteEngine', version: 'v2.4.0', date: 'Feb 12' },
+];
 
-export const GovernRegistry: React.FC = () => {
-  const contract = getRouteScreenContract('govern-registry');
-
-  const mainContent = (
-    <>
-      <section className="engine-section" data-slot="format_registry">
-        <MissionSectionHeader
-          title="Explanation format registry"
-          message="Standardized formats ensuring every AI decision is human-readable."
-          contextCue="Each format is versioned and auditable across engines"
-        />
-        <MissionDataRows
-          items={explanationFormats.map((fmt) => ({
-            id: fmt.id,
-            title: fmt.name,
-            value: `v${fmt.version}`,
-            detail: `${fmt.engine} · ${fmt.status}`,
-            tone: fmt.tone,
-          }))}
-        />
-        <ProofLine
-          claim="5 explanation formats"
-          evidence="4 active + 1 beta | All engines covered"
-          source="Registry v2.0"
-          basis="all time"
-          sourceType="system"
-        />
-        <DefinitionLine
-          metric="Format coverage"
-          formula="decisions_with_registered_format / total_decisions"
-          unit="percentage"
-          period="30 days rolling"
-          threshold="95%"
-        />
-      </section>
-
-      <article className="engine-card" data-slot="format_standards">
-        <MissionSectionHeader
-          title="Format standards"
-          message="Design principles governing all explanation formats."
-        />
-        <div className="entry-surface-grid">
-          <article>
-            <h3>Human-readable</h3>
-            <p>Every explanation must be understandable without technical knowledge.</p>
-          </article>
-          <article>
-            <h3>Auditable</h3>
-            <p>Every format produces a persistent, verifiable record.</p>
-          </article>
-          <article>
-            <h3>Versioned</h3>
-            <p>Format changes are tracked and backward-compatible.</p>
-          </article>
-        </div>
-        <ProofLine
-          claim="3 design principles"
-          evidence="Human-readable, auditable, and versioned — enforced across all formats"
-          source="Govern registry"
-          basis="policy"
-          sourceType="policy"
-        />
-      </article>
-
-      <GovernContractSet
-        auditId="GV-2026-0212-REG"
-        modelVersion="v3.2"
-        explanationVersion="xai-2.0"
-      />
-    </>
-  );
-
-  const sideContent = (
-    <article className="engine-card">
-      <MissionSectionHeader
-        title="Registry stats"
-        message="Summary of registered explanation formats."
-      />
-      <MissionDataRows
-        items={[
-          { id: 'RS-1', title: 'Total formats', value: '5', tone: 'primary' },
-          { id: 'RS-2', title: 'Active', value: '4', tone: 'healthy' },
-          { id: 'RS-3', title: 'Beta', value: '1', tone: 'warning' },
-          { id: 'RS-4', title: 'Deprecated', value: '0', tone: 'healthy' },
-        ]}
-      />
-      <DefinitionLine
-        metric="Registry completeness"
-        formula="engines_with_format / total_engines"
-        unit="ratio"
-        period="current"
-        threshold="4/4"
-      />
-    </article>
-  );
+export function GovernRegistry() {
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   return (
-    <PageShell
-      slug="govern"
-      contract={contract}
-      layout="engine"
-      heroVariant="analytical"
-      hero={{
-        kicker: 'Explanation Registry',
-        headline: 'How AI explains its decisions.',
-        subline: contract.oneScreenMessage,
-        proofLine: {
-          claim: '5 registered formats',
-          evidence: 'All standardized, versioned, and auditable',
-          source: 'Govern registry',
-        },
-        freshness: new Date(Date.now() - 24 * 60 * 60 * 1000),
-        kpis: [
-          { label: 'Formats', value: '5', definition: 'Registered explanation formats', accent: 'blue', sparklineData: kpiSparklines.formats, sparklineColor: 'var(--state-primary)' },
-          { label: 'Coverage', value: '98%', definition: 'Decisions using registered format', accent: 'teal', sparklineData: kpiSparklines.coverage, sparklineColor: 'var(--state-healthy)' },
-          { label: 'Versions', value: '12', definition: 'Total format versions tracked', accent: 'cyan', sparklineData: kpiSparklines.versions, sparklineColor: '#00F0FF' },
-          { label: 'Engines', value: '4/4', definition: 'Engines with registered formats', accent: 'amber', sparklineData: kpiSparklines.engines, sparklineColor: 'var(--state-warning)' },
-        ],
-      }}
-      primaryFeed={mainContent}
-      decisionRail={sideContent}
-    />
+    <div className="min-h-screen w-full" style={{ background: '#0B1221' }}>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: '#3B82F6', color: '#fff' }}>Skip to main content</a>
+
+      <nav className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/[0.06]" style={{ background: 'rgba(11,18,33,0.8)' }} aria-label="Breadcrumb">
+        <div className="mx-auto px-4 md:px-6 lg:px-8 h-14 flex items-center gap-2" style={{ maxWidth: '1280px' }}>
+          <Link to="/govern" className="flex items-center gap-1.5 text-sm font-medium hover:opacity-80 transition-opacity" style={{ color: '#3B82F6' }}>
+            <ArrowLeft className="h-4 w-4" />Govern
+          </Link>
+          <span className="text-white/20">/</span>
+          <span className="text-sm text-white/50">Model Registry</span>
+        </div>
+      </nav>
+
+      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: '1280px' }} variants={stagger} initial="hidden" animate="visible" role="main">
+        {/* Hero */}
+        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(59,130,246,0.15)' }}>
+              <Database className="h-4 w-4" style={{ color: '#3B82F6' }} />
+            </div>
+            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#3B82F6' }}>Govern · Registry</span>
+          </div>
+          <h1 className="text-2xl md:text-3xl font-bold text-white">AI Model Registry</h1>
+          <p className="text-sm text-slate-400">8 active models · Last updated 4m ago · All models audited.</p>
+        </motion.div>
+
+        {/* KPI bar */}
+        <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { label: 'Active models', value: '8', color: '#3B82F6' },
+            { label: 'Avg accuracy', value: '96.2%', color: '#22C55E' },
+            { label: 'Last retrained', value: '2d ago', color: '#00F0FF' },
+            { label: 'Coverage', value: '100%', color: '#8B5CF6' },
+          ].map((kpi) => (
+            <div key={kpi.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+              <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
+              <p className="text-lg font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Main 2-col */}
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Model table / cards */}
+          <div className="flex-1 lg:w-2/3 flex flex-col gap-4">
+            <motion.div variants={fadeUp}>
+              {/* Desktop table */}
+              <div className="hidden md:block rounded-2xl border border-white/[0.08] bg-white/[0.03] overflow-hidden">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="border-b border-white/[0.06]">
+                      {['Model', 'Engine', 'Version', 'Accuracy', 'Last trained', 'Status', ''].map((h) => (
+                        <th key={h} className="px-4 py-3 text-[10px] font-semibold text-white/30 uppercase tracking-wider">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {models.map((m) => (
+                      <React.Fragment key={m.name}>
+                        <tr className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors cursor-pointer" onClick={() => setExpanded(expanded === m.name ? null : m.name)}>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              <Bot className="h-3.5 w-3.5 text-white/30" />
+                              <span className="text-sm font-medium text-white">{m.name}</span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: `${engineColors[m.engine]}20`, color: engineColors[m.engine] }}>
+                              {m.engine}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-xs text-white/60 font-mono">{m.version}</td>
+                          <td className="px-4 py-3 text-xs font-semibold" style={{ color: m.accuracy >= 95 ? '#22C55E' : m.accuracy >= 90 ? '#00F0FF' : '#EAB308' }}>{m.accuracy}%</td>
+                          <td className="px-4 py-3 text-xs text-white/40">{m.lastTrained}</td>
+                          <td className="px-4 py-3">
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400">{m.status}</span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <ChevronDown className={`h-3.5 w-3.5 text-white/30 transition-transform ${expanded === m.name ? 'rotate-180' : ''}`} />
+                          </td>
+                        </tr>
+                        {expanded === m.name && (
+                          <tr>
+                            <td colSpan={7} className="px-4 py-4 bg-white/[0.01]">
+                              <div className="flex flex-wrap gap-6">
+                                {/* Sparkline bars */}
+                                <div className="flex-1 min-w-[200px]">
+                                  <p className="text-[10px] text-white/30 uppercase tracking-wider mb-2">7-Day Accuracy</p>
+                                  <div className="flex items-end gap-1 h-8">
+                                    {[m.accuracy - 0.8, m.accuracy - 0.4, m.accuracy - 0.2, m.accuracy, m.accuracy - 0.1, m.accuracy + 0.1, m.accuracy].map((v, i) => (
+                                      <div key={i} className="flex-1 rounded-sm" style={{ height: `${(v / 100) * 100}%`, minHeight: '4px', background: '#3B82F6' }} />
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="grid grid-cols-3 gap-4 text-xs">
+                                  <div><p className="text-white/30">Precision</p><p className="text-white/70 font-semibold">{m.precision}%</p></div>
+                                  <div><p className="text-white/30">Recall</p><p className="text-white/70 font-semibold">{m.recall}%</p></div>
+                                  <div><p className="text-white/30">F1 Score</p><p className="text-white/70 font-semibold">{m.f1}%</p></div>
+                                </div>
+                                <div className="text-xs">
+                                  <p className="text-white/30">Training period</p>
+                                  <p className="text-white/70 font-semibold">{m.trainingPeriod}</p>
+                                </div>
+                              </div>
+                              <button className="flex items-center gap-1.5 mt-3 text-xs font-medium hover:opacity-80 transition-opacity" style={{ color: '#3B82F6' }}>
+                                <ExternalLink className="h-3 w-3" />View audit trail
+                              </button>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile cards */}
+              <div className="md:hidden flex flex-col gap-3">
+                {models.map((m) => (
+                  <div key={m.name} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-semibold text-white">{m.name}</span>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: `${engineColors[m.engine]}20`, color: engineColors[m.engine] }}>{m.engine}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-3 text-xs">
+                      <span className="text-white/40">{m.version}</span>
+                      <span style={{ color: m.accuracy >= 95 ? '#22C55E' : '#EAB308' }}>{m.accuracy}%</span>
+                      <span className="text-white/40">Trained {m.lastTrained}</span>
+                    </div>
+                    <span className="inline-block mt-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400">{m.status}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Side rail */}
+          <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4">
+            {/* Registry health */}
+            <motion.div variants={fadeUp} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 md:p-6">
+              <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Registry Health</h3>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-white/50">Active</span>
+                  <span className="text-emerald-400 font-semibold">8/8</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-white/50">Degraded</span>
+                  <span className="text-white/30">0</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-white/50">Failed</span>
+                  <span className="text-white/30">0</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Accuracy distribution */}
+            <motion.div variants={fadeUp} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 md:p-6">
+              <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Accuracy by Engine</h3>
+              <div className="flex flex-col gap-3">
+                {[
+                  { engine: 'Protect', avg: 96.0 },
+                  { engine: 'Grow', avg: 90.3 },
+                  { engine: 'Execute', avg: 98.1 },
+                  { engine: 'Govern', avg: 98.9 },
+                ].map((e) => (
+                  <div key={e.engine}>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span style={{ color: engineColors[e.engine] }}>{e.engine}</span>
+                      <span className="text-white/50">{e.avg}%</span>
+                    </div>
+                    <div className="h-1.5 rounded-full bg-white/10">
+                      <div className="h-full rounded-full" style={{ width: `${e.avg}%`, background: engineColors[e.engine] }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Recent updates */}
+            <motion.div variants={fadeUp} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 md:p-6">
+              <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Recent Updates</h3>
+              <div className="flex flex-col gap-3">
+                {recentUpdates.map((u, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <div className="w-2 h-2 rounded-full mt-1.5 shrink-0" style={{ background: '#3B82F6' }} />
+                    <div>
+                      <p className="text-xs text-white/70">{u.model} <span className="text-white/30 font-mono">{u.version}</span></p>
+                      <p className="text-[10px] text-white/30">{u.date}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Govern footer */}
+        <motion.footer variants={fadeUp} className="flex flex-wrap items-center gap-3 rounded-2xl border-t border-white/10 bg-white/[0.03] px-4 py-3" role="contentinfo">
+          <Shield className="h-4 w-4 text-emerald-400" />
+          <span className="text-xs font-medium text-emerald-400">Verified</span>
+          <span className="text-xs font-mono text-white/30">GV-2026-0216-REG</span>
+          <span className="text-xs text-white/20">·</span>
+          <span className="text-xs text-white/30">ModelRegistry v1.0</span>
+          <button className="ml-auto text-xs text-white/40 hover:text-white/60 transition-colors">Request human review</button>
+        </motion.footer>
+      </motion.div>
+    </div>
   );
-};
+}
 
 export default GovernRegistry;
