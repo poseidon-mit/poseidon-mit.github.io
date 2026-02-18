@@ -16,7 +16,7 @@ export function GovernFooter() {
       role="contentinfo"
       aria-label="Governance verification"
     >
-      <div className="govern-footer__badge">
+      <div className="govern-footer__badge mission-govern-badge">
         <Shield size={14} style={{ color: 'var(--engine-govern)' }} />
         <span>Verified</span>
       </div>

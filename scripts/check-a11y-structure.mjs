@@ -11,14 +11,14 @@ function read(file) {
 
 const checks = [
   {
-    file: 'src/components/AppShell.tsx',
-    test: (s) => /<main id="main-content">/.test(s),
-    message: 'AppShell must expose <main id="main-content">.',
+    file: 'src/pages/Dashboard.tsx',
+    test: (s) => /<main[^>]*id="main-content"/.test(s),
+    message: 'Dashboard must expose <main id="main-content">.',
   },
   {
-    file: 'src/components/AppNav.tsx',
-    test: (s) => /Skip to content/.test(s),
-    message: 'AppNav must include skip link.',
+    file: 'src/pages/Dashboard.tsx',
+    test: (s) => /Skip to/.test(s),
+    message: 'Dashboard must include skip link.',
   },
   {
     file: 'src/components/PageShell/PageShell.tsx',

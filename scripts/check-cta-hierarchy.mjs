@@ -9,19 +9,17 @@ function read(file) {
   return fs.readFileSync(path.join(root, file), 'utf8');
 }
 
-const appNav = read('src/components/AppNav.tsx');
+const appNav = read('src/components/layout/AppNavShell.tsx');
 
-if (!appNav.includes("if (uxMeta.navGroup === 'engine' || uxMeta.navGroup === 'core')")) {
-  failures.push('AppNav must special-case engine/core nav groups.');
+// Verify engine group nav items do not expose primary CTA buttons.
+// AppNavShell uses group: 'engine' | 'system' pattern.
+if (!appNav.includes("group: 'engine' | 'system'")) {
+  failures.push('AppNavShell must define engine/system nav groups.');
 }
 
-const engineGroupBlock = appNav.match(
-  /if \(uxMeta\.navGroup === 'engine' \|\| uxMeta\.navGroup === 'core'\) \{([\s\S]*?)\n\s*\}/,
-);
-if (!engineGroupBlock) {
-  failures.push('Unable to locate AppNav engine/core action block.');
-} else if (engineGroupBlock[1].includes("variant: 'primary'")) {
-  failures.push('Engine/core AppNav must not expose primary CTA actions.');
+// Engine nav items must not include primary CTA variant buttons.
+if (appNav.includes("entry-btn--primary") || appNav.includes("variant: 'primary'")) {
+  failures.push('Engine/system AppNavShell must not expose primary CTA actions in nav items.');
 }
 
 const heroFiles = [

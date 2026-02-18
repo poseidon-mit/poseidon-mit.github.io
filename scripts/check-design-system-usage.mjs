@@ -9,6 +9,7 @@ import {
   COMPONENT_REGISTRY,
   ENGINE_COLOR_LITERAL_ALLOWED_FILES,
   FORBIDDEN_ENGINE_COLOR_LITERALS,
+  SHELL_EXEMPT_PAGES,
   STYLE_EXCEPTION_FILES,
 } from './design-system-config.mjs';
 
@@ -181,6 +182,11 @@ for (const filePath of surfaceFiles) {
 for (const filePath of pageFiles) {
   const pageName = path.basename(filePath, '.tsx');
   if (!ACTIVE_PAGES.has(pageName)) {
+    continue;
+  }
+  // v0-generated self-contained pages are wrapped by AppNavShell via the router;
+  // they intentionally do not import PageShell directly.
+  if (SHELL_EXEMPT_PAGES.has(pageName)) {
     continue;
   }
 

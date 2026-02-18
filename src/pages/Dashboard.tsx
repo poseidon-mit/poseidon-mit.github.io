@@ -5,6 +5,7 @@ import { EngineHealthStrip } from '@/components/dashboard/EngineHealthStrip';
 import { PrimaryFeed } from '@/components/dashboard/PrimaryFeed';
 import { DecisionRail } from '@/components/dashboard/DecisionRail';
 import { GovernFooter } from '@/components/dashboard/GovernFooter';
+import { DashboardInsightsPanel } from '@/components/dashboard/DashboardInsightsPanel';
 
 export function Dashboard() {
   usePageTitle('Dashboard');
@@ -15,6 +16,7 @@ export function Dashboard() {
       </a>
       <main id="main-content" className="command-center__main">
         <HeroSection />
+        <DashboardInsightsPanel />
         <KpiGrid />
         <EngineHealthStrip />
 

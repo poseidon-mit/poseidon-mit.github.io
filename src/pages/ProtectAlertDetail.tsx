@@ -210,7 +210,7 @@ function AlertHeader() {
 function AlertSummary() {
   return (
     <motion.div variants={fadeUp}>
-      <GlassCard borderColor="#EF4444" className="flex flex-col gap-4">
+      <GlassCard borderColor="#EF4444" className="engine-section flex flex-col gap-4">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div className="flex flex-col gap-1">
             <span className="text-[10px] uppercase tracking-wider" style={{ color: '#64748B' }}>Merchant</span>
@@ -224,13 +224,13 @@ function AlertSummary() {
             <span className="text-[10px] uppercase tracking-wider" style={{ color: '#64748B' }}>Confidence</span>
             <div className="flex items-center gap-2">
               <div className="h-1.5 w-20 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                <div className="h-full rounded-full" style={{ width: '94%', background: '#EF4444' }} />
+                <div className="h-full rounded-full" style={{ width: '97%', background: '#EF4444' }} />
               </div>
-              <span className="text-sm font-mono font-semibold" style={{ color: '#EF4444' }}>94%</span>
+              <span className="text-sm font-mono font-semibold" style={{ color: '#EF4444' }}>97%</span>
             </div>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] uppercase tracking-wider" style={{ color: '#64748B' }}>Category</span>
+            <span className="text-[10px] uppercase tracking-wider" style={{ color: '#64748B' }}>Alert type</span>
             <span className="text-sm" style={{ color: '#CBD5E1' }}>Unusual transaction pattern</span>
           </div>
           <div className="flex flex-col gap-1">
@@ -351,7 +351,7 @@ function EvidencePanel() {
         className="text-lg md:text-xl font-semibold"
         style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}
       >
-        AI Evidence (9 signals detected)
+        Evidence analysis
       </h2>
 
       <div className="flex flex-col gap-3">
@@ -420,10 +420,11 @@ function EvidencePanel() {
    ═══════════════════════════════════════════ */
 
 function RecommendedActions() {
+  const { navigate } = useRouter();
   return (
-    <GlassCard className="flex flex-col gap-3">
+    <GlassCard data-slot="action_preview" className="flex flex-col gap-3">
       <h3 className="text-sm font-semibold" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
-        Recommended Actions
+        Recommended actions
       </h3>
       <button
         className="w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
@@ -432,10 +433,10 @@ function RecommendedActions() {
           color: '#ffffff',
           minHeight: '48px',
         }}
-        aria-label="Block this transaction"
+        aria-label="Block and investigate this transaction"
       >
         <XCircle size={16} />
-        Block transaction
+        Block &amp; investigate
       </button>
       <button
         className="w-full inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all hover:shadow-[0_0_12px_rgba(245,158,11,0.3)] cursor-pointer"
@@ -446,11 +447,12 @@ function RecommendedActions() {
       <button
         className="w-full text-center text-sm font-medium transition-colors cursor-pointer"
         style={{ color: '#10B981', background: 'transparent', border: 'none', padding: '8px 0', minHeight: '44px' }}
+        onClick={() => navigate('/protect/dispute')}
       >
-        Mark as safe
+        Open dispute
       </button>
       <p className="text-[10px] text-center" style={{ color: '#64748B' }}>
-        AI recommends blocking (94% confidence)
+        AI recommends blocking (97% confidence)
       </p>
     </GlassCard>
   );
@@ -538,7 +540,7 @@ function GovernFooter() {
           <ShieldCheck size={14} style={{ color: '#3B82F6' }} />
         </div>
         <span
-          className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+          className="mission-govern-badge inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
           style={{ background: 'rgba(16,185,129,0.12)', color: '#10B981' }}
         >
           <Shield size={10} />

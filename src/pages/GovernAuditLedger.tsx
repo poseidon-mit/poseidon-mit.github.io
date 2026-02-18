@@ -585,7 +585,7 @@ function GovernFooter() {
           <ShieldCheck size={14} style={{ color: '#3B82F6' }} />
         </div>
         <span
-          className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+          className="mission-govern-badge inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
           style={{ background: 'rgba(16,185,129,0.12)', color: '#10B981' }}
         >
           <Shield size={10} />

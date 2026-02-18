@@ -21,3 +21,9 @@ src/components/RealtimeIndicator.tsx|duration
 src/components/RealtimeIndicator.tsx|infinite
 src/components/Skeleton.css|duration
 src/components/Toast.css|duration
+
+# Decorative ambient animations (nav pulse badge, aurora background effect)
+src/components/layout/AppNavShell.tsx|duration
+src/components/layout/AppNavShell.tsx|infinite
+src/components/poseidon/aurora-pulse.tsx|duration
+src/components/poseidon/aurora-pulse.tsx|infinite

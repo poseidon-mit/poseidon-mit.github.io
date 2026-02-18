@@ -52,6 +52,7 @@ export function ExecuteApproval() {
   const [expandedAction, setExpandedAction] = useState<string | null>(queueActions[0].id);
   const [confirmAction, setConfirmAction] = useState<{ id: string; type: 'approve' | 'decline' } | null>(null);
   const [processedIds, setProcessedIds] = useState<Set<string>>(new Set());
+  const [consentReviewed, setConsentReviewed] = useState(false);
 
   const handleConfirm = () => {
     if (confirmAction) {
@@ -136,6 +137,38 @@ export function ExecuteApproval() {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Main feed */}
           <motion.div variants={fadeUp} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
+            {/* Consent scope card — must be reviewed before approving */}
+            <div
+              data-slot="consent_scope"
+              onClick={() => setConsentReviewed(true)}
+              className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 cursor-pointer hover:bg-amber-500/10 transition-colors"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && setConsentReviewed(true)}
+              aria-label="Review consent scope"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-0.5" style={{ color: '#EAB308' }}>Consent scope</p>
+                  <p className="text-sm text-white/70">Click to review the data access scope for these actions.</p>
+                </div>
+                {consentReviewed ? (
+                  <span className="text-xs font-semibold text-emerald-400 shrink-0">Reviewed</span>
+                ) : (
+                  <span className="text-xs text-white/30 shrink-0">Tap to review</span>
+                )}
+              </div>
+            </div>
+
+            {/* Primary approve action */}
+            <button
+              disabled={!consentReviewed}
+              className="w-full py-3 rounded-xl text-sm font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ background: consentReviewed ? '#EAB308' : 'rgba(234,179,8,0.15)', color: consentReviewed ? '#0B1221' : '#EAB308' }}
+            >
+              {consentReviewed ? 'Approve & execute' : 'Review consent scope first'}
+            </button>
+
             {/* Urgency banner */}
             <div className="rounded-2xl border border-red-500/30 bg-red-500/5 p-4" style={{ borderLeftWidth: 2, borderLeftColor: '#EF4444' }}>
               <div className="flex items-center gap-2">
@@ -192,7 +225,8 @@ export function ExecuteApproval() {
                   {/* Expanded evidence */}
                   {expandedAction === action.id && (
                     <div className="mt-4 pt-3 border-t border-white/[0.06] space-y-3">
-                      {/* SHAP factors */}
+                      {/* Action evidence */}
+                      <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#EAB308' }}>Action evidence</p>
                       <div className="space-y-2">
                         {action.factors.map((f) => (
                           <div key={f.label} className="flex items-center gap-2">
@@ -205,7 +239,8 @@ export function ExecuteApproval() {
                         ))}
                       </div>
 
-                      {/* Impact preview */}
+                      {/* Expected outcome */}
+                      <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#EAB308' }}>Expected outcome</p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/20 p-3">
                           <p className="text-[10px] text-emerald-400 uppercase tracking-wider mb-1">If approved</p>

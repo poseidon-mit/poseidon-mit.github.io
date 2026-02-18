@@ -25,9 +25,10 @@ const consentItems = [
 ];
 
 export function SettingsRights() {
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteInput, setDeleteInput] = useState('');
   const [expandedInventory, setExpandedInventory] = useState<string | null>(null);
   const [consents, setConsents] = useState(consentItems);
+  const deleteConfirmed = deleteInput === 'DELETE';
 
   const toggleConsent = (idx: number) => {
     setConsents((prev) => prev.map((c, i) => (i === idx ? { ...c, enabled: !c.enabled } : c)));
@@ -86,8 +87,11 @@ export function SettingsRights() {
               <Download className="h-5 w-5" style={{ color: '#3B82F6' }} />
             </div>
             <h3 className="text-sm font-semibold text-white">Export My Data</h3>
-            <p className="text-xs text-slate-400">Download JSON or CSV</p>
-            <button className="mt-auto px-4 py-2 rounded-xl text-xs font-semibold text-white hover:opacity-90 transition-opacity" style={{ background: '#3B82F6' }}>Request export</button>
+            <p className="text-xs text-slate-400">Download a copy of your data</p>
+            <div className="mt-auto flex flex-col gap-2">
+              <button className="w-full px-4 py-2 rounded-xl text-xs font-semibold text-white hover:opacity-90 transition-opacity" style={{ background: '#3B82F6' }}>Export as JSON</button>
+              <button className="w-full px-4 py-2 rounded-xl text-xs font-semibold border hover:bg-blue-500/10 transition-colors" style={{ borderColor: 'rgba(59,130,246,0.3)', color: '#3B82F6' }}>Export as CSV</button>
+            </div>
           </div>
           <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 md:p-6 flex flex-col gap-3">
             <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'rgba(234,179,8,0.15)' }}>
@@ -101,23 +105,37 @@ export function SettingsRights() {
             <div className="w-10 h-10 rounded-full flex items-center justify-center bg-red-500/10">
               <Trash2 className="h-5 w-5 text-red-400" />
             </div>
-            <h3 className="text-sm font-semibold text-white">Delete All Data</h3>
-            <p className="text-xs text-slate-400">Irreversible.</p>
-            <button onClick={() => setShowDeleteModal(true)} className="mt-auto px-4 py-2 rounded-xl text-xs font-semibold border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors">Delete all data</button>
+            <h3 className="text-sm font-semibold text-white">Restrict processing</h3>
+            <p className="text-xs text-slate-400">Pause AI analysis of your data</p>
           </div>
         </motion.div>
 
-        {/* Delete confirmation modal */}
-        {showDeleteModal && (
-          <motion.div variants={fadeUp} className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4 md:p-6">
-            <h3 className="text-sm font-semibold text-red-400 mb-2">Confirm Data Deletion</h3>
-            <p className="text-xs text-white/50 mb-3">This action is irreversible. All your data will be permanently deleted.</p>
-            <div className="flex gap-3">
-              <button onClick={() => setShowDeleteModal(false)} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-xs text-white/60 hover:bg-white/10 transition-colors">Cancel</button>
-              <button className="px-4 py-2 rounded-lg bg-red-500 text-white text-xs font-semibold hover:bg-red-600 transition-colors">Permanently delete</button>
-            </div>
-          </motion.div>
-        )}
+        {/* Delete my data — inline confirmation with typed DELETE required */}
+        <motion.div variants={fadeUp} className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4 md:p-6 flex flex-col gap-4">
+          <div>
+            <h2 className="text-sm font-semibold text-red-400 mb-1">Delete my data</h2>
+            <p className="text-xs text-white/50">This action is irreversible. All your personal data and AI decisions will be permanently removed.</p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs text-white/40" htmlFor="delete-confirm-input">
+              Type <span className="font-mono font-bold text-white/60">DELETE</span> to confirm
+            </label>
+            <input
+              id="delete-confirm-input"
+              type="text"
+              placeholder="Type DELETE to confirm"
+              value={deleteInput}
+              onChange={(e) => setDeleteInput(e.target.value)}
+              className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm text-white placeholder-white/20 outline-none focus:border-red-500/40"
+            />
+          </div>
+          <button
+            disabled={!deleteConfirmed}
+            className="self-start px-4 py-2 rounded-xl text-xs font-semibold border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {deleteConfirmed ? 'Permanently delete all data' : 'Type DELETE above to confirm'}
+          </button>
+        </motion.div>
 
         {/* Active requests table */}
         <motion.div variants={fadeUp} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 md:p-6">
@@ -173,7 +191,7 @@ export function SettingsRights() {
         {/* Consent management */}
         <motion.div variants={fadeUp} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 md:p-6">
           <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-            <Lock className="h-4 w-4 text-white/40" />Consent Management
+            <Lock className="h-4 w-4 text-white/40" />Data consent scopes
           </h2>
           <div className="flex flex-col gap-3">
             {consents.map((c, idx) => (
@@ -197,7 +215,7 @@ export function SettingsRights() {
         {/* Govern footer */}
         <motion.footer variants={fadeUp} className="flex flex-wrap items-center gap-3 rounded-2xl border-t border-white/10 bg-white/[0.03] px-4 py-3" role="contentinfo">
           <Shield className="h-4 w-4 text-emerald-400" />
-          <span className="text-xs font-medium text-emerald-400">Verified</span>
+          <span className="mission-govern-badge text-xs font-medium text-emerald-400">Verified</span>
           <span className="text-xs font-mono text-white/30">GV-2026-0216-RIGHTS</span>
           <span className="text-xs text-white/20">·</span>
           <span className="text-xs text-white/30">DataGovernance v1.2</span>

@@ -213,17 +213,17 @@ export default function Landing() {
           <motion.div
             variants={fadeUp}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="flex items-center justify-center gap-4 mt-8"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-8 w-full"
           >
             <Link
               to="/signup"
-              className="px-8 py-4 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-950 font-semibold text-lg shadow-[0_0_30px_rgba(13,217,180,0.3)] hover:shadow-[0_0_40px_rgba(13,217,180,0.4)] transition-all"
+              className="w-full sm:w-auto px-6 sm:px-8 py-4 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-950 font-semibold text-lg shadow-[0_0_30px_rgba(13,217,180,0.3)] hover:shadow-[0_0_40px_rgba(13,217,180,0.4)] transition-all text-center"
             >
               Open Dashboard
             </Link>
             <Link
               to="/dashboard"
-              className="px-8 py-4 rounded-xl border border-white/[0.1] text-white hover:bg-white/[0.05] transition-all flex items-center gap-2"
+              className="w-full sm:w-auto px-6 sm:px-8 py-4 rounded-xl border border-white/[0.1] text-white hover:bg-white/[0.05] transition-all flex items-center justify-center gap-2"
             >
               <PlayCircle className="h-5 w-5" />
               Try the Demo
@@ -231,7 +231,7 @@ export default function Landing() {
             <a
               href="/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf"
               download
-              className="px-8 py-4 rounded-xl border border-white/[0.1] text-white hover:bg-white/[0.05] transition-all flex items-center gap-2"
+              className="w-full sm:w-auto px-6 sm:px-8 py-4 rounded-xl border border-white/[0.1] text-white hover:bg-white/[0.05] transition-all flex items-center justify-center gap-2"
             >
               <FileDown className="h-5 w-5" />
               Deck (.pdf)
@@ -241,7 +241,7 @@ export default function Landing() {
           <motion.div
             variants={fadeUp}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="flex items-center justify-center gap-8 mt-6 text-xs text-slate-500"
+            className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-6 text-xs text-slate-500"
           >
             <span className="flex items-center gap-1.5">
               <Lock className="h-3.5 w-3.5" />
