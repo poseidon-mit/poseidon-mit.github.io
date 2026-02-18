@@ -327,9 +327,9 @@ export const Slide04SolutionV2: React.FC<Slide04SolutionV2Props> = ({
             innerGlow
             glowColor={theme.accent.blue}
             edgeHighlight
-            borderRadius={14}
+            borderRadius={12}
             frosted
-            frostedBlur={12}
+            frostedBlur={16}
           >
             <div
               style={{

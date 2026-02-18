@@ -10,6 +10,7 @@ import { v4Presets } from '../shared/backgroundPresets.v4';
 import { SlideHeader } from '../shared/SlideHeader';
 import { slideLayouts, v2Policy } from '../shared/slideLayouts';
 import { DustMotes } from '../shared/effects/FloatingParticles';
+import { staticFile } from 'remotion';
 import { DeviceFrame } from '../shared/visuals/DeviceFrame';
 import { getSlideHeaderColors, recolorBackgroundLayers } from '../shared/slideThemeColor';
 
@@ -67,7 +68,7 @@ export const Slide07DemoV2: React.FC<Slide07DemoV2Props> = ({
               textShadow: tc.titleTextShadow,
             }}
             subtitleStyle={{
-              fontSize: Math.min(50, v2Policy.header.subtitleMaxPx),
+              fontSize: Math.min(48, v2Policy.header.subtitleMaxPx),
               lineHeight: 1.1,
               maxWidth: 1500,
             }}
@@ -111,28 +112,29 @@ export const Slide07DemoV2: React.FC<Slide07DemoV2Props> = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background:
-                  'radial-gradient(120% 120% at 52% 35%, rgba(20,184,166,0.16) 0%, rgba(2,6,18,0.98) 62%, rgba(0,0,0,1) 100%)',
                 overflow: 'hidden',
               }}
               data-debug-id="slide07v2.playerSurface"
             >
+              {/* Dashboard screenshot background */}
+              <img
+                src={staticFile('assets/screenshots/demo/dashboard.png')}
+                alt="Poseidon Dashboard"
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
+              {/* Dark overlay for play button contrast */}
               <div
                 style={{
                   position: 'absolute',
                   inset: 0,
                   background:
-                    'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 35%, rgba(255,255,255,0.04) 100%)',
-                  pointerEvents: 'none',
-                }}
-              />
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 24,
-                  borderRadius: 20,
-                  border: `1px solid ${theme.glassPremium.innerPanelBorder}`,
-                  boxShadow: 'inset 0 0 96px rgba(0,0,0,0.46)',
+                    'radial-gradient(ellipse at center, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.55) 100%)',
                   pointerEvents: 'none',
                 }}
               />

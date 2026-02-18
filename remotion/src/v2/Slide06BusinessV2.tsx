@@ -281,7 +281,7 @@ export const Slide06BusinessV2: React.FC<Slide06BusinessV2Props> = ({
                     flex: 1, display: 'flex', flexDirection: 'column',
                     background: theme.glassPremium.innerPanelBg,
                     border: `1px solid ${phase.color}44`,
-                    borderRadius: 14, padding: '14px 18px 12px',
+                    borderRadius: 12, padding: '14px 18px 12px',
                     overflow: 'hidden',
                   }}
                   data-debug-id={`slide06v2.phase.${phase.id}`}

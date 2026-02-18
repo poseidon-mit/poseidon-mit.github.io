@@ -77,7 +77,7 @@ export const Slide11FinModelV2: React.FC<Slide11FinModelV2Props> = ({
           maxWidth={1740}
           headerStyle={{ marginBottom: 0 }}
           titleStyle={{
-            fontSize: Math.min(92, v2Policy.header.titleMaxPx),
+            fontSize: Math.min(96, v2Policy.header.titleMaxPx),
             lineHeight: 1,
             textShadow: tc.titleTextShadow,
           }}

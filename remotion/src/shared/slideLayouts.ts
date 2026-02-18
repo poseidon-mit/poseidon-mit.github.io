@@ -161,7 +161,7 @@ export const slideLayouts = {
     // 案5A: Disconnected icons + big numbers
     toolIconSize: 96,
     toolLabelSize: 28,
-    toolBadgeSize: 16,
+    toolBadgeSize: 20,
     connectorWidth: 80,
     heroStatementSize: 48,
     statValueSize: 60,

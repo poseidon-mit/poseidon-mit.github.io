@@ -69,7 +69,7 @@ const pillarBarStyle = (accentColor: string): React.CSSProperties => ({
   background: theme.glassPremium.innerPanelBg,
   border: `1px solid ${accentColor}44`,
   borderLeft: `3px solid ${accentColor}`,
-  borderRadius: 14,
+  borderRadius: 12,
   padding: '16px 20px',
   display: 'flex',
   flexDirection: 'column',
@@ -148,7 +148,7 @@ export const Slide08SummaryV2: React.FC<Slide08SummaryV2Props> = ({
               innerGlow
               glowColor={theme.accent.cyan}
               edgeHighlight
-              borderRadius={14}
+              borderRadius={12}
               frosted
               frostedBlur={16}
             >
