@@ -329,7 +329,7 @@ export const Slide09EpilogueV2: React.FC<Slide09EpilogueV2Props> = ({
               display: 'flex',
               alignItems: 'center',
               width: 'fit-content',
-              transform: 'translateX(-45px)',
+              transform: 'translateX(-45px) translateY(-35px)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
