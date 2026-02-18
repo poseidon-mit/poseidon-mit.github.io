@@ -165,10 +165,7 @@ export default function DeckViewer() {
         )}
 
         {!loading && !error && (
-          <div
-            className="flex flex-col"
-            style={{ opacity: ready ? 1 : 0 }}
-          >
+          <div className={`flex flex-col transition-opacity duration-300 ${ready ? 'opacity-100' : 'opacity-0'}`}>
             {Array.from({ length: numPages }, (_, i) => (
               <canvas
                 key={i}
