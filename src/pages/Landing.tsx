@@ -154,7 +154,8 @@ function HeroVideoBackground({ reducedMotion }: { reducedMotion: boolean }) {
     if (reducedMotion) {
       el.pause();
     } else {
-      el.play().catch(() => {});
+      const p = el.play();
+      if (p != null && typeof p.catch === 'function') p.catch(() => {});
     }
   }, [reducedMotion]);
 
