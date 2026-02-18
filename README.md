@@ -35,6 +35,13 @@ npm run build      # Production build
 npm test           # Run tests
 ```
 
+To include the pitch deck PDF on the site (e.g. for `/deck` and download), copy it into `public/` before building:
+
+```bash
+npm run copy:deck-pdf   # copies remotion/out/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf → public/
+npm run build
+```
+
 **Tech stack:** React 18, Vite, Tailwind CSS v4, Framer Motion, Recharts, Lucide Icons
 
 ## Pitch Deck (Remotion)

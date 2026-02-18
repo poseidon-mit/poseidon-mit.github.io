@@ -4,6 +4,7 @@ import { lazy } from 'react';
 export const routeLoaders = {
   // ─── Public ─────────────────────────────────────────────────────────────────
   '/': () => import('../pages/Landing'),
+  '/deck': () => import('../pages/DeckViewer'),
   '/trust': () => import('../pages/TrustSecurity'),
   '/pricing': () => import('../pages/Pricing'),
 
@@ -79,6 +80,7 @@ export type RoutePath = keyof typeof routeLoaders;
  */
 export const V0_READY_ROUTES = new Set<RoutePath>([
   '/',
+  '/deck',
   '/trust',
   '/pricing',
   '/signup',
@@ -136,6 +138,7 @@ export interface ResolvedRouteUXMeta extends Omit<RouteUXMeta, 'demoPriority' | 
 
 export const routeUxMeta: Record<string, RouteUXMeta> = {
   '/': { intent: 'monitor', primaryActionLabel: 'Open dashboard', primaryActionPath: '/dashboard', navGroup: 'public', cognitiveLoad: 'low', demoPriority: 'P0', ctaBudget: 1, first5sMessage: 'Understand your financial posture instantly.' },
+  '/deck': { intent: 'monitor', primaryActionLabel: 'Download PDF', primaryActionPath: '/', navGroup: 'public', cognitiveLoad: 'low' },
   '/trust': { intent: 'monitor', primaryActionLabel: 'Open dashboard', primaryActionPath: '/dashboard', navGroup: 'public', cognitiveLoad: 'low' },
   '/pricing': { intent: 'monitor', primaryActionLabel: 'Start onboarding', primaryActionPath: '/onboarding/connect', navGroup: 'public', cognitiveLoad: 'low' },
   '/design-system': { intent: 'monitor', primaryActionLabel: 'Browse tokens', primaryActionPath: '/design-system/tokens', navGroup: 'public', cognitiveLoad: 'low', demoPriority: 'P1', ctaBudget: 1, first5sMessage: 'Explore tokens, components, and quality gates.' },

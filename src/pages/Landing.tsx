@@ -23,17 +23,6 @@ import {
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 import { Link } from '../router';
 
-const DECK_PDF = '/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf';
-const PROD_ORIGIN = 'https://poseidon-mit.com';
-
-function getDeckHref() {
-  const loc = typeof window !== 'undefined' ? window.location : null;
-  if (loc && (loc.hostname === 'localhost' || /^(127\.|192\.168\.|10\.)/.test(loc.hostname))) {
-    return DECK_PDF;                       // local dev — open raw PDF
-  }
-  return `https://docs.google.com/gview?url=${encodeURIComponent(PROD_ORIGIN + DECK_PDF)}`;
-}
-
 /* ─── Mock data ────────────────────────────────────────────────────────────── */
 
 const metricsData = [
@@ -239,15 +228,13 @@ export default function Landing() {
               <PlayCircle className="h-5 w-5" />
               Try the Demo
             </Link>
-            <a
-              href={getDeckHref()}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/deck"
               className="w-full sm:w-auto px-6 sm:px-8 py-4 rounded-xl border border-white/[0.1] text-white hover:bg-white/[0.05] transition-all flex items-center justify-center gap-2"
             >
               <FileDown className="h-5 w-5" />
               Deck (.pdf)
-            </a>
+            </Link>
           </motion.div>
 
           <motion.div

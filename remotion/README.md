@@ -116,6 +116,10 @@ Wrapper component that renders full-bleed visuals behind slide content:
   ```bash
   node scripts/gen-v3-pdf.mjs --target-mb-min 10 --target-mb-max 13
   ```
+- **Optional — set default “fit window” viewer preferences** (for viewers that respect document metadata; from repo root):
+  ```bash
+  npm run set-pdf-viewer-prefs
+  ```
 - **Verify master + delivery artifacts:**
   ```bash
   node scripts/verify-pptx-pipeline.mjs --profile all --delivery
