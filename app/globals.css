@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+
+  /* Poseidon engine colors */
+  --color-engine-protect: oklch(0.82 0.18 172);
+  --color-engine-grow: oklch(0.58 0.22 285);
+  --color-engine-execute: oklch(0.78 0.16 85);
+  --color-engine-govern: oklch(0.62 0.18 250);
+
+  /* Background surfaces */
+  --color-bg-deepest: #0B1221;
+  --color-bg-base: oklch(0.15 0.01 260);
+  --color-bg-elevated-1: oklch(0.18 0.01 260);
+  --color-bg-elevated-2: oklch(0.21 0.01 260);
+
+  /* Text */
+  --color-text-primary: oklch(0.98 0 0);
+  --color-text-secondary: oklch(0.82 0.01 250);
+  --color-text-muted: oklch(0.7 0.02 250);
+
+  /* Timing */
+  --duration-instant: 100ms;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+
+  /* Radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+
+  /* Shadows */
+  --shadow-card: 0 4px 16px oklch(0 0 0 / 0.2);
+  --shadow-glow-protect: 0 0 20px oklch(0.82 0.18 172 / 0.12);
+}
+
+body {
+  background-color: #0B1221;
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
