@@ -4,9 +4,9 @@
  * Renders each page to a <canvas> fitted to the viewport width.
  *
  * Anti-flicker strategy:
- *  - All canvases are rendered off-screen (opacity 0) during the draw pass.
- *  - A single `ready` flag flips after ALL pages are drawn, revealing them at once.
- *  - A render lock prevents overlapping draws from ResizeObserver.
+ *  - Canvases use opacity-only hiding (no position changes) to avoid layout shifts.
+ *  - readyRef (not state) is used in the render-skip check to keep useCallback stable.
+ *  - ResizeObserver is debounced and does NOT reset ready — renderPages handles it.
  */
 import { useEffect, useRef, useState, useCallback } from 'react';
 import * as pdfjs from 'pdfjs-dist';
@@ -23,6 +23,7 @@ export default function DeckViewer() {
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const renderingRef = useRef(false);
   const lastWidthRef = useRef(0);
+  const readyRef = useRef(false);
   const [numPages, setNumPages] = useState(0);
   const [pdfDoc, setPdfDoc] = useState<pdfjs.PDFDocumentProxy | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -53,16 +54,18 @@ export default function DeckViewer() {
     };
   }, []);
 
-  // Render all pages fit-to-width (guarded against concurrent calls)
+  // Render all pages fit-to-width (guarded against concurrent calls).
+  // Uses readyRef (not ready state) so this callback reference stays stable.
   const renderPages = useCallback(async () => {
     if (!pdfDoc || !containerRef.current) return;
-    if (renderingRef.current) return;        // skip if already drawing
+    if (renderingRef.current) return;
 
     const containerWidth = containerRef.current.clientWidth;
     if (containerWidth === 0) return;
-    if (containerWidth === lastWidthRef.current && ready) return; // no change
+    if (containerWidth === lastWidthRef.current && readyRef.current) return;
 
     renderingRef.current = true;
+    readyRef.current = false;
     lastWidthRef.current = containerWidth;
 
     const dpr = window.devicePixelRatio || 1;
@@ -87,11 +90,12 @@ export default function DeckViewer() {
 
         await page.render({ canvasContext: ctx, viewport }).promise;
       }
+      readyRef.current = true;
       setReady(true);
     } finally {
       renderingRef.current = false;
     }
-  }, [pdfDoc, ready]);
+  }, [pdfDoc]);  // NO ready in deps — keeps callback reference stable
 
   // Render on load + debounced resize
   useEffect(() => {
@@ -105,10 +109,7 @@ export default function DeckViewer() {
     let resizeTimer: ReturnType<typeof setTimeout>;
     const ro = new ResizeObserver(() => {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        setReady(false);           // hide while re-rendering
-        renderPages();
-      }, 150);
+      resizeTimer = setTimeout(renderPages, 200);  // just re-render, no setReady(false)
     });
     ro.observe(container);
 
@@ -166,7 +167,7 @@ export default function DeckViewer() {
         {!loading && !error && (
           <div
             className="flex flex-col"
-            style={{ opacity: ready ? 1 : 0, position: ready ? 'relative' : 'absolute' }}
+            style={{ opacity: ready ? 1 : 0 }}
           >
             {Array.from({ length: numPages }, (_, i) => (
               <canvas
