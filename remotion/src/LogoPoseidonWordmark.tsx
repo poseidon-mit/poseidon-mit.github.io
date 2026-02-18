@@ -79,7 +79,7 @@ export const LogoPoseidonWordmark: React.FC<{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: 40,
+                    gap: 12,
                     position: 'relative',
                     zIndex: 1,
                 }}>
