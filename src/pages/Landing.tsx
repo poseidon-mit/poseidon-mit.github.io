@@ -1,12 +1,13 @@
 /**
- * Landing — Standalone greenfield landing page.
+ * Landing — Standalone greenfield landing page with cinematic video hero.
  *
  * Self-contained: no design-system imports. Only React, framer-motion,
  * lucide-react, recharts, and the project router Link.
  *
- * Visual style: Linear.app / Vercel-inspired — premium dark glass-morphism,
- * generous spacing, teal accent palette, frosted-glass cards.
+ * Visual style: Premium dark glass-morphism with full-screen video hero,
+ * gradient text, engine-colored accents, and scroll-revealed sections.
  */
+import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Shield,
@@ -19,10 +20,12 @@ import {
   FileDown,
   RotateCcw,
   Brain,
+  ArrowRight,
 } from 'lucide-react';
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 import { Link } from '../router';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets'
+import { getMotionPreset } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 
 /* ─── Mock data ────────────────────────────────────────────────────────────── */
 
@@ -30,25 +33,25 @@ const metricsData = [
   {
     label: 'System Confidence',
     value: '0.92',
-    color: '#0DD9B4',
+    color: '#00F0FF',
     spark: [4, 6, 5, 7, 8, 7, 9, 8, 9, 9.2],
   },
   {
     label: 'Decisions Audited',
     value: '1,247',
-    color: '#4E94FF',
+    color: '#3B82F6',
     spark: [2, 4, 5, 7, 8, 9, 10, 11, 12, 12.5],
   },
   {
     label: 'Threats Blocked',
     value: '23',
-    color: '#FFB020',
+    color: '#22C55E',
     spark: [8, 7, 5, 6, 4, 3, 3, 2, 2, 2.3],
   },
   {
     label: 'Response Time',
     value: '<200ms',
-    color: '#34D399',
+    color: '#8B5CF6',
     spark: [5, 4, 5, 4, 3, 4, 3, 3, 2, 2],
   },
 ];
@@ -58,29 +61,37 @@ const engines = [
     icon: Shield,
     name: 'Protect',
     color: 'var(--engine-protect)',
-    desc: 'Real-time threat detection with explainable AI.',
+    hex: '#22C55E',
+    desc: 'Real-time threat detection powered by explainable AI that shows its reasoning.',
     confidence: 0.94,
+    hoverClass: 'glass-hover-protect',
   },
   {
     icon: TrendingUp,
     name: 'Grow',
-    color: '#9B6DFF',
-    desc: 'Forecast-driven growth with Monte Carlo simulations.',
+    color: 'var(--engine-grow)',
+    hex: '#8B5CF6',
+    desc: 'Monte Carlo simulations and forecast-driven strategies for confident growth.',
     confidence: 0.89,
+    hoverClass: 'glass-hover-grow',
   },
   {
     icon: Zap,
     name: 'Execute',
-    color: '#FFB020',
-    desc: 'Consent-first automation with reversible actions.',
+    color: 'var(--engine-execute)',
+    hex: '#EAB308',
+    desc: 'Consent-first automation with one-click reversibility on every action.',
     confidence: 0.91,
+    hoverClass: 'glass-hover-execute',
   },
   {
     icon: Scale,
     name: 'Govern',
-    color: '#4E94FF',
-    desc: 'Full audit trail for every AI decision.',
+    color: 'var(--engine-govern)',
+    hex: '#3B82F6',
+    desc: 'Complete audit trail and compliance proof for every AI decision.',
     confidence: 0.97,
+    hoverClass: 'glass-hover-govern',
   },
 ];
 
@@ -88,20 +99,17 @@ const governancePillars = [
   {
     icon: Brain,
     title: 'Explainable',
-    desc: 'Every AI decision includes SHAP feature attribution.',
-    color: '#4E94FF',
+    desc: 'Every decision includes SHAP feature attribution so you understand the "why" behind every recommendation.',
   },
   {
     icon: ScrollText,
     title: 'Auditable',
-    desc: '1,247 decisions with full audit trails.',
-    color: '#4E94FF',
+    desc: '1,247+ decisions tracked with immutable audit trails. Full compliance proof at your fingertips.',
   },
   {
     icon: RotateCcw,
     title: 'Reversible',
-    desc: 'One-click rollback on any automated action.',
-    color: '#4E94FF',
+    desc: 'One-click rollback on any automated action. You are always in the pilot seat.',
   },
 ];
 
@@ -131,33 +139,102 @@ function Sparkline({ data, color }: { data: number[]; color: string }) {
   );
 }
 
+/* ─── Video background sub-component ───────────────────────────────────────── */
+
+const HERO_VIDEO_URL =
+  'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260217_030345_246c0224-10a4-422c-b324-070b7c0eceda.mp4';
+
+function HeroVideoBackground({ reducedMotion }: { reducedMotion: boolean }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    if (reducedMotion) {
+      el.pause();
+    } else {
+      el.play().catch(() => {});
+    }
+  }, [reducedMotion]);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+      {/* Poster shown instantly, fades out when video is ready */}
+      <div
+        className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ${ready ? 'opacity-0' : 'opacity-100'}`}
+        style={{
+          backgroundImage: 'url(/videos/hero-bg-poster.jpg)',
+        }}
+      />
+      <video
+        ref={videoRef}
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        onPlaying={() => setReady(true)}
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${ready ? 'opacity-100' : 'opacity-0'}`}
+        src={HERO_VIDEO_URL}
+      />
+      {/* Overlay — matches tmp/tmp original: bg-black/50 */}
+      <div className="absolute inset-0 bg-black/50" />
+    </div>
+  );
+}
+
 /* ─── Main component ───────────────────────────────────────────────────────── */
 
 export default function Landing() {
+  const reducedMotion = useReducedMotionSafe();
+  const mp = getMotionPreset(reducedMotion);
+
   return (
     <div className="min-h-screen bg-[#070d1a] text-white overflow-hidden">
       {/* ── 1. Navigation ─────────────────────────────────────────────── */}
-      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/[0.03] border-b border-white/[0.06]">
+      <nav
+        className="sticky top-0 z-50 glass-surface border-b border-white/[0.06]"
+        aria-label="Main navigation"
+      >
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          {/* Left: logo */}
           <Link to="/" className="flex items-center gap-1.5 text-white" aria-label="Poseidon home">
-            <img src="/logo.png" alt="" width="40" height="40" className="h-10 w-10 object-contain" aria-hidden="true" />
-            <span className="text-lg font-light tracking-widest">Poseidon</span>
+            <img
+              src="/logo.png"
+              alt=""
+              width="40"
+              height="40"
+              className="h-10 w-10 object-contain"
+              aria-hidden="true"
+            />
+            <span
+              className="text-lg font-light tracking-widest"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              Poseidon
+            </span>
           </Link>
-          {/* Center: links */}
           <div className="hidden md:flex items-center gap-8 text-sm text-slate-400">
-            <a href="#product" className="hover:text-white cursor-pointer transition-colors">Product</a>
-            <a href="#trust" className="hover:text-white cursor-pointer transition-colors">Trust</a>
-            <a href="#pricing" className="hover:text-white cursor-pointer transition-colors">Pricing</a>
+            <a href="#platform" className="hover:text-white cursor-pointer transition-colors">
+              Platform
+            </a>
+            <a href="#governance" className="hover:text-white cursor-pointer transition-colors">
+              Governance
+            </a>
+            <a href="#pricing" className="hover:text-white cursor-pointer transition-colors">
+              Pricing
+            </a>
           </div>
-          {/* Right: buttons */}
           <div className="flex items-center gap-3">
-            <Link to="/login" className="text-sm text-slate-400 hover:text-white transition-colors hidden md:inline-block">
+            <Link
+              to="/login"
+              className="text-sm text-slate-400 hover:text-white transition-colors hidden md:inline-block"
+            >
               Sign in
             </Link>
             <Link
               to="/signup"
-              className="text-sm font-medium px-5 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-950 hover:brightness-110 transition-all"
+              className="text-sm font-medium px-5 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-950 shadow-[0_0_20px_rgba(0,240,255,0.15)] hover:shadow-[0_0_30px_rgba(0,240,255,0.25)] hover:brightness-110 transition-all"
             >
               Get Started
             </Link>
@@ -165,70 +242,85 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* ── 2. Hero ───────────────────────────────────────────────────── */}
-      <section className="relative pt-24 md:pt-32 pb-16">
-        {/* Background glow */}
-        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-teal-500/[0.07] blur-[120px]"
-            animate={{ scale: [1, 1.05, 1], opacity: [0.07, 0.12, 0.07] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        </div>
+      {/* ── 2. Hero with Video Background ─────────────────────────────── */}
+      <section className="relative min-h-[85vh] flex items-center justify-center">
+        <HeroVideoBackground reducedMotion={reducedMotion} />
 
         <motion.div
-          className="relative z-10 max-w-7xl mx-auto px-6 text-center"
+          className="relative z-10 max-w-4xl mx-auto px-6 text-center py-24 md:py-32"
           initial="hidden"
           animate="visible"
           variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
         >
-          <motion.h1
-            variants={fadeUp}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight text-balance"
+          {/* Badge pill */}
+          <motion.div
+            variants={mp.fadeUp}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/[0.12] bg-white/[0.05] backdrop-blur-sm mb-8"
           >
-            Safer satisfying money decisions in one place.
+            <span
+              className={`w-2 h-2 rounded-full bg-emerald-400 ${reducedMotion ? '' : 'animate-pulse'}`}
+            />
+            <span className="text-[13px] font-medium text-white/60">
+              Early Access — <span className="text-white">May 2026</span>
+            </span>
+          </motion.div>
+
+          {/* Headline */}
+          <motion.h1
+            variants={mp.fadeUp}
+            className="text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            <span className="bg-gradient-to-b from-white via-white to-white/40 bg-clip-text text-transparent">
+              AI That Earns Your
+            </span>
+            <br />
+            <span className="bg-gradient-to-r from-cyan-300 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
+              Financial Trust
+            </span>
           </motion.h1>
 
+          {/* Subheading */}
           <motion.p
-            variants={fadeUp}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mt-6 text-pretty"
+            variants={mp.fadeUp}
+            className="text-base md:text-lg text-slate-400 max-w-2xl mx-auto mt-6 text-pretty leading-relaxed"
           >
-            Four AI engines working together. Every decision explainable, auditable, and reversible.
+            Four transparent engines working in concert. Every decision explainable, auditable, and
+            reversible — so you stay in control.
           </motion.p>
 
+          {/* CTAs */}
           <motion.div
-            variants={fadeUp}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-8 w-full"
+            variants={mp.fadeUp}
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-10 w-full"
           >
             <Link
-              to="/signup"
-              className="w-full sm:w-auto px-6 sm:px-8 py-4 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-950 font-semibold text-lg shadow-[0_0_30px_rgba(13,217,180,0.3)] hover:shadow-[0_0_40px_rgba(13,217,180,0.4)] transition-all text-center"
+              to="/dashboard"
+              className="group w-full sm:w-auto px-6 sm:px-8 py-4 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-950 font-semibold text-lg shadow-[0_0_30px_rgba(13,217,180,0.3)] hover:shadow-[0_0_40px_rgba(13,217,180,0.4)] transition-all text-center inline-flex items-center justify-center gap-2"
             >
-              Open Dashboard
+              Explore the Platform
+              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
               to="/dashboard"
-              className="w-full sm:w-auto px-6 sm:px-8 py-4 rounded-xl border border-white/[0.1] text-white hover:bg-white/[0.05] transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 sm:px-8 py-4 rounded-xl border border-white/[0.12] text-white hover:bg-white/[0.05] transition-all flex items-center justify-center gap-2"
             >
               <PlayCircle className="h-5 w-5" />
-              Try the Demo
+              Watch Demo
             </Link>
             <Link
               to="/deck"
-              className="w-full sm:w-auto px-6 sm:px-8 py-4 rounded-xl border border-white/[0.1] text-white hover:bg-white/[0.05] transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 sm:px-8 py-4 rounded-xl border border-white/[0.12] text-white hover:bg-white/[0.05] transition-all flex items-center justify-center gap-2"
             >
               <FileDown className="h-5 w-5" />
               Deck (.pdf)
             </Link>
           </motion.div>
 
+          {/* Trust badges */}
           <motion.div
-            variants={fadeUp}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-6 text-xs text-slate-500"
+            variants={mp.fadeUp}
+            className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-8 text-xs text-slate-500"
           >
             <span className="flex items-center gap-1.5">
               <Lock className="h-3.5 w-3.5" />
@@ -246,35 +338,52 @@ export default function Landing() {
         </motion.div>
       </section>
 
-      {/* ── Sections wrapper with generous spacing ────────────────────── */}
+      {/* ── Sections wrapper ──────────────────────────────────────────── */}
       <div className="space-y-20 md:space-y-28">
         {/* ── 3. Live metrics strip ─────────────────────────────────────── */}
-        <section id="product">
+        <section id="platform">
           <motion.div
-            className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+            className="max-w-7xl mx-auto px-6"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-60px' }}
-            variants={stagger}
+            variants={mp.staggerContainerDelayed}
           >
-            {metricsData.map((m) => (
-              <motion.div
-                key={m.label}
-                variants={fadeUp}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="backdrop-blur-xl bg-white/[0.04] border border-white/[0.08] rounded-2xl p-5 shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500">
-                      {m.label}
-                    </p>
-                    <p className="mt-1 text-2xl font-bold text-white">{m.value}</p>
+            <motion.p
+              variants={mp.fadeUp}
+              className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-500 text-center mb-6"
+            >
+              Live System Metrics
+            </motion.p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {metricsData.map((m) => (
+                <motion.div
+                  key={m.label}
+                  variants={mp.fadeUp}
+                  className="glass-surface-card rounded-2xl p-5 relative overflow-hidden"
+                >
+                  {/* Accent top line */}
+                  <div
+                    className="absolute top-0 left-0 right-0 h-px"
+                    style={{ background: m.color }}
+                  />
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500">
+                        {m.label}
+                      </p>
+                      <p
+                        className="mt-1 text-2xl font-bold text-white"
+                        style={{ fontFamily: 'var(--font-display)' }}
+                      >
+                        {m.value}
+                      </p>
+                    </div>
+                    <Sparkline data={m.spark} color={m.color} />
                   </div>
-                  <Sparkline data={m.spark} color={m.color} />
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
         </section>
 
@@ -288,47 +397,62 @@ export default function Landing() {
             variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
           >
             <motion.h2
-              variants={fadeUp}
-              transition={{ duration: 0.6 }}
-              className="text-3xl md:text-4xl font-bold text-white text-center mb-12"
+              variants={mp.fadeUp}
+              className="text-3xl md:text-4xl font-bold text-white text-center"
+              style={{ fontFamily: 'var(--font-display)' }}
             >
-              Four engines. One trusted system.
+              Four Engines. One Unified Intelligence.
             </motion.h2>
+            <motion.p
+              variants={mp.fadeUp}
+              className="text-base text-slate-400 text-center mt-4 mb-12 max-w-2xl mx-auto"
+            >
+              Each engine specializes in a critical dimension of your financial life — working
+              together as one trusted system.
+            </motion.p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
               {engines.map((eng) => {
                 const Icon = eng.icon;
                 return (
-                  <motion.div
-                    key={eng.name}
-                    variants={fadeUp}
-                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                    className="group backdrop-blur-xl bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:border-white/[0.12] hover:shadow-[0_8px_40px_rgba(0,0,0,0.3)]"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div
-                        className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-                        style={{ backgroundColor: `${eng.color}18` }}
-                      >
-                        <Icon className="h-5 w-5" style={{ color: eng.color }} />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3">
-                          <h3 className="text-lg font-bold text-white">{eng.name}</h3>
-                          <span
-                            className="text-xs font-mono px-2.5 py-1 rounded-full"
-                            style={{
-                              backgroundColor: `${eng.color}18`,
-                              color: eng.color,
-                            }}
-                          >
-                            {eng.confidence.toFixed(2)}
-                          </span>
+                  <Link key={eng.name} to={`/${eng.name.toLowerCase()}`} className="block group">
+                    <motion.div
+                      variants={mp.fadeUp}
+                      className={`glass-surface rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 ${eng.hoverClass}`}
+                    >
+                      <div className="flex items-start gap-4">
+                        <div
+                          className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+                          style={{
+                            backgroundColor: `color-mix(in srgb, ${eng.hex} 12%, transparent)`,
+                          }}
+                        >
+                          <Icon className="h-5 w-5" style={{ color: eng.color }} />
                         </div>
-                        <p className="mt-1.5 text-sm leading-relaxed text-slate-400">{eng.desc}</p>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3">
+                            <h3 className="text-lg font-bold text-white">{eng.name}</h3>
+                            <span
+                              className="text-xs font-mono px-2.5 py-1 rounded-full"
+                              style={{
+                                backgroundColor: `color-mix(in srgb, ${eng.hex} 12%, transparent)`,
+                                color: eng.color,
+                              }}
+                            >
+                              {eng.confidence.toFixed(2)}
+                            </span>
+                          </div>
+                          <p className="mt-1.5 text-sm leading-relaxed text-slate-400">
+                            {eng.desc}
+                          </p>
+                          <div className="mt-3 flex items-center gap-1.5 text-xs text-slate-500 group-hover:text-slate-300 transition-colors">
+                            <span>Explore {eng.name}</span>
+                            <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
+                    </motion.div>
+                  </Link>
                 );
               })}
             </div>
@@ -336,7 +460,7 @@ export default function Landing() {
         </section>
 
         {/* ── 5. Governance proof ───────────────────────────────────────── */}
-        <section id="trust">
+        <section id="governance">
           <motion.div
             className="max-w-7xl mx-auto px-6"
             initial="hidden"
@@ -345,11 +469,11 @@ export default function Landing() {
             variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
           >
             <motion.h2
-              variants={fadeUp}
-              transition={{ duration: 0.6 }}
+              variants={mp.fadeUp}
               className="text-3xl md:text-4xl font-bold text-white text-center mb-12"
+              style={{ fontFamily: 'var(--font-display)' }}
             >
-              Governance by design, not by checkbox.
+              Governance Built In, Not Bolted On
             </motion.h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
@@ -358,15 +482,16 @@ export default function Landing() {
                 return (
                   <motion.div
                     key={g.title}
-                    variants={fadeUp}
-                    transition={{ duration: 0.6 }}
-                    className="backdrop-blur-xl bg-white/[0.04] border border-white/[0.08] rounded-2xl p-6 text-center shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+                    variants={mp.fadeUp}
+                    className="glass-surface-card rounded-2xl p-6 text-center"
                   >
                     <div
                       className="mx-auto mb-4 w-12 h-12 rounded-full flex items-center justify-center"
-                      style={{ backgroundColor: `${g.color}18` }}
+                      style={{
+                        backgroundColor: 'color-mix(in srgb, var(--engine-govern) 12%, transparent)',
+                      }}
                     >
-                      <Icon className="h-5 w-5" style={{ color: g.color }} />
+                      <Icon className="h-5 w-5" style={{ color: 'var(--engine-govern)' }} />
                     </div>
                     <h3 className="text-base font-bold text-white">{g.title}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-slate-400">{g.desc}</p>
@@ -377,28 +502,83 @@ export default function Landing() {
 
             {/* Proof bar */}
             <motion.div
-              variants={fadeUp}
-              transition={{ duration: 0.6 }}
-              className="backdrop-blur-xl bg-white/[0.03] border border-white/[0.06] rounded-xl px-6 py-3 mt-8 max-w-4xl mx-auto"
+              variants={mp.fadeUp}
+              className="glass-surface rounded-xl px-6 py-3 mt-8 max-w-4xl mx-auto flex items-center justify-center gap-4 flex-wrap"
             >
-              <p className="text-xs font-mono text-slate-500 text-center">
-                System uptime 99.97% &middot; Last audit: 4m ago &middot; Model version: v3.2.1 &middot; Decisions today: 47
-              </p>
+              <span className="flex items-center gap-1.5 text-xs font-mono text-slate-500">
+                <span
+                  className={`w-1.5 h-1.5 rounded-full bg-emerald-400 ${reducedMotion ? '' : 'animate-pulse'}`}
+                />
+                Uptime 99.97%
+              </span>
+              <span className="text-slate-700">|</span>
+              <span className="text-xs font-mono text-slate-500">Last audit: 4m ago</span>
+              <span className="text-slate-700">|</span>
+              <span className="text-xs font-mono text-slate-500">Model v3.2.1</span>
+              <span className="text-slate-700">|</span>
+              <span className="text-xs font-mono text-slate-500">47 decisions today</span>
             </motion.div>
           </motion.div>
         </section>
       </div>
 
-      {/* ── 6. Footer ─────────────────────────────────────────────────── */}
-      <footer className="border-t border-white/[0.06] py-12 mt-20">
-        <div className="flex flex-col items-center gap-3 text-center">
-          <div className="flex items-center gap-2 text-slate-400">
-            <Shield className="h-4 w-4" />
-            <span className="text-sm font-medium">MIT Sloan CTO Program &middot; Group 7 &middot; March 2026</span>
-          </div>
-          <div className="flex gap-6 text-xs text-slate-600">
-            <Link to="/trust" className="hover:text-slate-400 cursor-pointer transition-colors">Privacy Policy</Link>
-            <Link to="/trust" className="hover:text-slate-400 cursor-pointer transition-colors">Terms of Service</Link>
+      {/* ── 6. Footer ──────────────────────────────────────────────────── */}
+      <footer className="mt-20 pt-12 pb-8 border-t border-white/[0.06]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+            {/* Brand */}
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <img
+                  src="/logo.png"
+                  alt=""
+                  width="24"
+                  height="24"
+                  className="h-6 w-6 object-contain"
+                  aria-hidden="true"
+                />
+                <span
+                  className="text-sm font-light tracking-widest text-slate-300"
+                  style={{ fontFamily: 'var(--font-display)' }}
+                >
+                  Poseidon.AI
+                </span>
+              </div>
+              <p className="text-xs text-slate-600">Built with transparency, for trust.</p>
+              <div className="flex items-center gap-2 text-slate-500 mt-1">
+                <Shield className="h-3.5 w-3.5" />
+                <span className="text-xs">MIT Sloan CTO Program &middot; Group 7 &middot; March 2026</span>
+              </div>
+            </div>
+
+            {/* Quick links */}
+            <div className="flex gap-6 text-xs text-slate-500">
+              <Link to="/dashboard" className="hover:text-slate-300 transition-colors">
+                Platform
+              </Link>
+              <Link to="/govern" className="hover:text-slate-300 transition-colors">
+                Governance
+              </Link>
+              <Link to="/pricing" className="hover:text-slate-300 transition-colors">
+                Pricing
+              </Link>
+              <Link to="/deck" className="hover:text-slate-300 transition-colors">
+                Deck
+              </Link>
+            </div>
+
+            {/* Legal */}
+            <div className="flex flex-col gap-1 text-xs text-slate-600">
+              <div className="flex gap-4">
+                <Link to="/trust" className="hover:text-slate-400 transition-colors">
+                  Privacy Policy
+                </Link>
+                <Link to="/trust" className="hover:text-slate-400 transition-colors">
+                  Terms of Service
+                </Link>
+              </div>
+              <p className="text-slate-700">&copy; 2026 Poseidon.AI. Research project — not financial advice.</p>
+            </div>
           </div>
         </div>
       </footer>
