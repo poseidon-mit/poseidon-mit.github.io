@@ -1,3 +1,5 @@
+import { motion } from 'framer-motion';
+
 export type InsightVariant = 'morning' | 'evening';
 
 interface EngineIconBadgeProps {
@@ -28,6 +30,16 @@ const EVENING_METRICS = [
   { label: 'Actions pending', value: '2', tone: 'warning' },
 ];
 
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06 } },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.2, 0.8, 0.2, 1] } },
+};
+
 interface DashboardInsightsPanelProps {
   variant: InsightVariant;
 }
@@ -40,42 +52,53 @@ export function DashboardInsightsPanel({ variant }: DashboardInsightsPanelProps)
       className="dashboard-insights-panel"
     >
       {variant === 'morning' ? (
-        <div className="dashboard-main-card dashboard-insights-card dashboard-insights-card--activity">
-          <h2 className="dashboard-insights-heading">Good morning</h2>
-          <div className="dashboard-insights-activity-rail">
+        <motion.div
+          className="dashboard-main-card dashboard-insights-card dashboard-insights-card--activity glass-surface"
+          variants={stagger}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.h2 variants={fadeUp} className="dashboard-insights-heading">Good morning</motion.h2>
+          <motion.div variants={fadeUp} className="dashboard-insights-activity-rail">
             {MORNING_ACTIVITIES.map((item) => (
-              <div key={item.label} className="activity-rail-item">
+              <div key={item.label} className="activity-rail-item" data-engine={item.engine}>
                 <span className="activity-rail-node">
                   <EngineIconBadge engine={item.engine} />
                 </span>
                 <span className="activity-rail-label">{item.label}</span>
               </div>
             ))}
-          </div>
-          <ul className="dashboard-action-list">
+          </motion.div>
+          <motion.ul variants={fadeUp} className="dashboard-action-list">
             <li>Review flagged charge in Protect</li>
             <li>Top-up emergency fund</li>
             <li>Approve queued transfers</li>
-          </ul>
-        </div>
+          </motion.ul>
+        </motion.div>
       ) : (
-        <div className="dashboard-main-card dashboard-insights-card">
-          <h2 className="dashboard-insights-heading">Day in review</h2>
-          <div className="dashboard-insights-metrics">
+        <motion.div
+          className="dashboard-main-card dashboard-insights-card glass-surface"
+          variants={stagger}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.h2 variants={fadeUp} className="dashboard-insights-heading">Day in review</motion.h2>
+          <motion.div variants={fadeUp} className="dashboard-insights-metrics">
             {EVENING_METRICS.map((metric) => (
               <div key={metric.label} className="dashboard-insights-metric" data-tone={metric.tone}>
                 <span className="dashboard-insights-metric-value">{metric.value}</span>
                 <span className="dashboard-insights-metric-label">{metric.label}</span>
               </div>
             ))}
-          </div>
-          <div className="dashboard-insights-signal-trend">
+          </motion.div>
+          <motion.div variants={fadeUp} className="dashboard-insights-signal-trend">
             <EngineIconBadge engine="Protect" />
             <EngineIconBadge engine="Grow" />
             <EngineIconBadge engine="Execute" />
-          </div>
-          <p className="dashboard-insights-proof">AI recommendations</p>
-        </div>
+            <span className="dashboard-insights-signal-label">engines active today</span>
+          </motion.div>
+          <motion.p variants={fadeUp} className="dashboard-insights-proof">AI recommendations</motion.p>
+        </motion.div>
       )}
     </div>
   );

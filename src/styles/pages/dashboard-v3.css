@@ -587,12 +587,12 @@
 }
 
 .dashboard-insights-metric {
-  border-radius: 12px;
-  border: 1px solid rgba(143, 185, 231, 0.22);
-  background: rgba(12, 27, 52, 0.7);
-  padding: var(--space-2-5);
+  border-radius: 14px;
+  border: 1px solid rgba(143, 185, 231, 0.18);
+  background: rgba(12, 27, 52, 0.6);
+  padding: var(--space-3-5) var(--space-4-5);
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
 
 .dashboard-insights-metric[data-tone="healthy"] {
@@ -663,16 +663,26 @@
 .dashboard-insights-signal-trend {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+}
+
+.dashboard-insights-signal-label {
+  font-size: 11px;
+  color: rgba(161, 189, 222, 0.55);
+  font-family: var(--font-mono);
+  letter-spacing: var(--tracking-wide);
 }
 
 .dashboard-insights-proof {
+  margin: 0;
   border-radius: 10px;
-  border: 1px solid rgba(143, 187, 233, 0.22);
-  background: rgba(13, 29, 53, 0.72);
+  border: 1px solid rgba(143, 187, 233, 0.15);
+  background: rgba(13, 29, 53, 0.5);
   padding: 8px var(--space-2-5);
   font-size: 12px;
-  color: rgba(181, 205, 234, 0.72);
+  color: rgba(181, 205, 234, 0.6);
+  font-family: var(--font-mono);
+  letter-spacing: var(--tracking-wide);
 }
 
 .dashboard-insights-actions {
