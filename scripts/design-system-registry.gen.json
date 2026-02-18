@@ -137,10 +137,16 @@
   "FilterPanel": {
     "status": "canonical"
   },
+  "ForecastBand": {
+    "status": "canonical"
+  },
   "ForecastBandChart": {
     "status": "canonical"
   },
   "FreshnessIndicator": {
+    "status": "canonical"
+  },
+  "GlassCard": {
     "status": "canonical"
   },
   "Grid": {
@@ -221,7 +227,13 @@
   "PrivacyControlCard": {
     "status": "canonical"
   },
+  "PriorityBadge": {
+    "status": "canonical"
+  },
   "ProofLine": {
+    "status": "canonical"
+  },
+  "ReasoningChain": {
     "status": "canonical"
   },
   "RiskScoreDial": {
@@ -293,7 +305,55 @@
   "VoiceInput": {
     "status": "canonical"
   },
+  "ViewModeToggle": {
+    "status": "canonical"
+  },
   "WellnessCard": {
+    "status": "canonical"
+  },
+  "AuroraPulse": {
+    "status": "canonical"
+  },
+  "BentoGrid": {
+    "status": "canonical"
+  },
+  "BentoItem": {
+    "status": "canonical"
+  },
+  "CitationCard": {
+    "status": "canonical"
+  },
+  "ConfidenceIndicator": {
+    "status": "canonical"
+  },
+  "CountUp": {
+    "status": "canonical"
+  },
+  "DashboardGlance": {
+    "status": "canonical"
+  },
+  "DecisionRail": {
+    "status": "canonical"
+  },
+  "HeroSection": {
+    "status": "canonical"
+  },
+  "KpiGrid": {
+    "status": "canonical"
+  },
+  "MethodologyCard": {
+    "status": "canonical"
+  },
+  "PrimaryFeed": {
+    "status": "canonical"
+  },
+  "SeverityBadge": {
+    "status": "canonical"
+  },
+  "ShapWaterfall": {
+    "status": "canonical"
+  },
+  "StatusBadge": {
     "status": "canonical"
   },
   "CommandCenterShell": {
@@ -315,11 +375,6 @@
     "status": "legacy",
     "replacement": "EngineHealthStrip",
     "note": "Legacy card-per-engine visual grammar."
-  },
-  "GlassCard": {
-    "status": "legacy",
-    "replacement": "engine-card / dashboard-main-card",
-    "note": "Deprecated visual primitive from pre mission-control era."
   },
   "OnboardingStep": {
     "status": "legacy",

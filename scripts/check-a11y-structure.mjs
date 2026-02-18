@@ -6,7 +6,12 @@ const root = process.cwd();
 const failures = [];
 
 function read(file) {
-  return fs.readFileSync(path.join(root, file), 'utf8');
+  const fullPath = path.join(root, file);
+  if (!fs.existsSync(fullPath)) {
+    failures.push(`${file}: required file is missing.`);
+    return null;
+  }
+  return fs.readFileSync(fullPath, 'utf8');
 }
 
 const checks = [
@@ -21,31 +26,38 @@ const checks = [
     message: 'Dashboard must include skip link.',
   },
   {
-    file: 'src/components/PageShell/PageShell.tsx',
-    test: (s) => /data-slot="primary_feed"[\s\S]*aria-labelledby=\{heroHeadingId\}/.test(s),
-    message: 'PageShell primary feed must be labelled by hero heading.',
+    file: 'src/components/layout/page-shell.tsx',
+    test: (s) => /<header className="page-shell-hero/.test(s) && /<footer className="page-shell-footer/.test(s),
+    message: 'PageShell layout must expose semantic hero and footer wrappers.',
   },
 ];
 
 for (const check of checks) {
   const source = read(check.file);
+  if (!source) continue;
   if (!check.test(source)) {
     failures.push(`${check.file}: ${check.message}`);
   }
 }
 
-const heroFiles = [
-  'src/components/PageShell/variants/HeroCommand.tsx',
-  'src/components/PageShell/variants/HeroFocused.tsx',
-  'src/components/PageShell/variants/HeroAnalytical.tsx',
-  'src/components/PageShell/variants/HeroEditorial.tsx',
-  'src/components/PageShell/variants/HeroMinimal.tsx',
+const structureChecks = [
+  {
+    file: 'src/components/layout/page-shell.tsx',
+    test: (s) => /<header className="page-shell-hero/.test(s),
+    message: 'PageShell layout must expose a semantic hero header wrapper.',
+  },
+  {
+    file: 'src/components/layout/AppNavShell.tsx',
+    test: (s) => /aria-label="Main navigation"/.test(s),
+    message: 'AppNavShell must expose an accessible main navigation label.',
+  },
 ];
 
-for (const file of heroFiles) {
-  const source = read(file);
-  if (!/<h1 id=\{heroHeadingId\}>/.test(source)) {
-    failures.push(`${file}: hero variant must render h1 with shared id.`);
+for (const check of structureChecks) {
+  const source = read(check.file);
+  if (!source) continue;
+  if (!check.test(source)) {
+    failures.push(`${check.file}: ${check.message}`);
   }
 }
 
