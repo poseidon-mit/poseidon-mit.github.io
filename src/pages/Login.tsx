@@ -55,9 +55,9 @@ export function Login() {
         initial="hidden"
         animate="visible"
       >
-        <motion.div variants={fadeUp} className="flex items-center gap-2 mb-1">
-          <Shield className="h-7 w-7" style={{ color: '#00F0FF' }} />
-          <span className="text-2xl font-bold text-white">Poseidon.AI</span>
+        <motion.div variants={fadeUp} className="flex items-center gap-1.5 mb-1">
+          <img src="/logo.png" alt="" width="36" height="36" className="h-9 w-9 object-contain" aria-hidden="true" />
+          <span className="text-2xl font-light tracking-widest text-white">Poseidon</span>
         </motion.div>
         <motion.p variants={fadeUp} className="text-xs text-slate-400">Trusted Financial Sentience</motion.p>
       </motion.div>
