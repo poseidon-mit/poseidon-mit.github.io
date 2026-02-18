@@ -32,6 +32,7 @@ export const ROUTE_SCREEN_MAP: Record<string, ScreenId> = {
 
   // Grow
   '/grow': 'S-V3-GRW01',
+  '/grow/goal': 'S-V3-GRW01',
   '/grow/scenarios': 'S-V3-GRW02',
   '/grow/recommendations': 'S-V3-GRW03',
 

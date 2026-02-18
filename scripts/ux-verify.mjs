@@ -8,10 +8,13 @@ const outputPath = path.join(root, 'docs', 'baselines', 'ux-verify-last-run.json
 
 const checks = [
   ['npm', ['run', 'test:run']],
+  ['npm', ['run', 'check:target-contracts']],
   ['npm', ['run', 'check:design-system']],
   ['npm', ['run', 'check:motion-policy']],
   ['npm', ['run', 'check:a11y-structure']],
   ['npm', ['run', 'check:cta-hierarchy']],
+  ['npm', ['run', 'check:prompt-completeness']],
+  ['npm', ['run', 'check:cross-thread-consistency']],
   ['npm', ['run', 'check:contrast-budget']],
   ['npm', ['run', 'build']],
   ['npm', ['run', 'check:bundle-budget']],
