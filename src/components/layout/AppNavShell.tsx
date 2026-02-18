@@ -65,12 +65,10 @@ const SUB_NAV: Record<string, SubNavItem[]> = {
   ],
   '/protect': [
     { label: 'Alerts', path: '/protect' },
-    { label: 'Alert Detail', path: '/protect/alert-detail' },
     { label: 'Dispute', path: '/protect/dispute' },
   ],
   '/grow': [
     { label: 'Goals', path: '/grow' },
-    { label: 'Goal Detail', path: '/grow/goal' },
     { label: 'Scenarios', path: '/grow/scenarios' },
     { label: 'Recommendations', path: '/grow/recommendations' },
   ],
@@ -82,17 +80,10 @@ const SUB_NAV: Record<string, SubNavItem[]> = {
   '/govern': [
     { label: 'Overview', path: '/govern' },
     { label: 'Audit Ledger', path: '/govern/audit' },
-    { label: 'Audit Detail', path: '/govern/audit-detail' },
     { label: 'Trust', path: '/govern/trust' },
     { label: 'Registry', path: '/govern/registry' },
     { label: 'Oversight', path: '/govern/oversight' },
     { label: 'Policy', path: '/govern/policy' },
-  ],
-  '/settings': [
-    { label: 'General', path: '/settings' },
-    { label: 'AI', path: '/settings/ai' },
-    { label: 'Integrations', path: '/settings/integrations' },
-    { label: 'Rights', path: '/settings/rights' },
   ],
 };
 
@@ -146,10 +137,7 @@ function getSubNav(path: string): SubNavItem[] | null {
     (key) => path === key || path.startsWith(key + '/')
   );
   if (!sectionKey) return null;
-  const items = SUB_NAV[sectionKey];
-  // Only show sub-nav if we're on a sub-page (not root of section)
-  const isSubPage = path !== sectionKey;
-  return isSubPage ? items : null;
+  return SUB_NAV[sectionKey];
 }
 
 /* ─── Pulse animation (injected once) ───────────────────────── */
@@ -203,12 +191,12 @@ export function AppNavShell({
         }}
       >
         {/* Logo */}
-        <div className="flex items-center gap-1.5 px-5 py-5">
+        <Link to="/" className="flex items-center gap-1.5 px-5 py-5" aria-label="Poseidon home">
           <img src="/logo.png" alt="" width="44" height="44" className="w-11 h-11 object-contain" style={{ filter: 'drop-shadow(0 0 8px rgba(0,240,255,0.6))' }} aria-hidden="true" />
           <span className="text-base font-light tracking-widest" style={{ color: '#f8fafc' }}>
             Poseidon
           </span>
-        </div>
+        </Link>
 
         {/* Engines section */}
         <nav className="flex-1 flex flex-col px-3 gap-1" aria-label="Main navigation">
@@ -324,10 +312,10 @@ export function AppNavShell({
             }}
             aria-hidden="true"
           >
-            DU
+            SF
           </div>
           <span className="text-sm" style={{ color: '#94a3b8' }}>
-            Demo User
+            Shinji Fujiwara
           </span>
         </div>
       </aside>
@@ -345,37 +333,50 @@ export function AppNavShell({
             borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
           }}
         >
-          {/* Breadcrumb */}
-          <nav className="flex items-center gap-1.5" aria-label="Breadcrumb">
-            {breadcrumbs.map((segment, idx) => {
-              const isLast = idx === breadcrumbs.length - 1;
-              return (
-                <React.Fragment key={idx}>
-                  {idx > 0 && (
-                    <ChevronRight
-                      className="w-3 h-3"
-                      style={{ color: '#475569' }}
-                      aria-hidden="true"
-                    />
-                  )}
-                  <span
-                    className={`text-sm ${isLast ? 'font-medium' : ''}`}
-                    style={{ color: isLast ? '#f8fafc' : '#94a3b8' }}
-                    aria-current={isLast ? 'page' : undefined}
-                  >
-                    {isLast && engineColor && (
-                      <span
-                        className="inline-block w-2 h-2 rounded-full mr-1.5 align-middle"
-                        style={{ background: engineColor }}
+          {/* Breadcrumb — only show when 2+ segments; otherwise show page title */}
+          {breadcrumbs.length > 1 ? (
+            <nav className="flex items-center gap-1.5" aria-label="Breadcrumb">
+              {breadcrumbs.map((segment, idx) => {
+                const isLast = idx === breadcrumbs.length - 1;
+                return (
+                  <React.Fragment key={idx}>
+                    {idx > 0 && (
+                      <ChevronRight
+                        className="w-3 h-3"
+                        style={{ color: '#475569' }}
                         aria-hidden="true"
                       />
                     )}
-                    {segment}
-                  </span>
-                </React.Fragment>
-              );
-            })}
-          </nav>
+                    <span
+                      className={`text-sm ${isLast ? 'font-medium' : ''}`}
+                      style={{ color: isLast ? '#f8fafc' : '#94a3b8' }}
+                      aria-current={isLast ? 'page' : undefined}
+                    >
+                      {isLast && engineColor && (
+                        <span
+                          className="inline-block w-2 h-2 rounded-full mr-1.5 align-middle"
+                          style={{ background: engineColor }}
+                          aria-hidden="true"
+                        />
+                      )}
+                      {segment}
+                    </span>
+                  </React.Fragment>
+                );
+              })}
+            </nav>
+          ) : (
+            <span className="text-sm font-medium" style={{ color: '#f8fafc' }}>
+              {engineColor && (
+                <span
+                  className="inline-block w-2 h-2 rounded-full mr-1.5 align-middle"
+                  style={{ background: engineColor }}
+                  aria-hidden="true"
+                />
+              )}
+              {breadcrumbs[0]}
+            </span>
+          )}
 
           {/* Right side: status + search + bell + avatar */}
           <div className="flex items-center gap-3">
@@ -457,7 +458,7 @@ export function AppNavShell({
               }}
               aria-label="User menu"
             >
-              DU
+              SF
             </button>
           </div>
         </header>
@@ -474,12 +475,12 @@ export function AppNavShell({
           }}
         >
           {/* Left: Logo */}
-          <div className="flex items-center gap-1.5">
+          <Link to="/" className="flex items-center gap-1.5" aria-label="Poseidon home">
             <img src="/logo.png" alt="" width="40" height="40" className="w-10 h-10 object-contain" style={{ filter: 'drop-shadow(0 0 8px rgba(0,240,255,0.6))' }} aria-hidden="true" />
             <span className="text-sm font-light tracking-widest" style={{ color: '#f8fafc' }}>
               Poseidon
             </span>
-          </div>
+          </Link>
 
           {/* Center: current section + status */}
           <div className="flex items-center gap-2">
