@@ -112,9 +112,20 @@ import { fadeUp, staggerContainer, staggerItem, pageTransition } from '@/lib/mot
 - v0 pages go into `src/pages/` directly as self-contained components
 - v0 primitives go into `components/ui/`, composites into `components/blocks/`
 
+### New Page Requirements (App Shell routes)
+
+Every page under AppNavShell (27+ routes) **must** include:
+
+1. **GovernFooter** — `<GovernFooter auditId={GOVERNANCE_META['/path'].auditId} pageContext={GOVERNANCE_META['/path'].pageContext} />`
+2. **Motion presets** — `import { fadeUp, staggerContainer } from '@/lib/motion-presets'` (ローカル定義禁止)
+3. **Engine color tokens** — hex 直書き禁止。`var(--engine-*)` または `engineTokens[engine].*Class` を使用
+4. **AuroraPulse** — サブページは `<AuroraPulse color="var(--engine-*)" intensity="subtle" />`
+5. **governance-meta.ts** — 新規ルートは `src/lib/governance-meta.ts` にエントリ追加必須
+
 ## Tech Stack
 
-- React 19 + TypeScript 5.4 + Vite 5.2
+- React 19 + TypeScript 5.9 + Vite 7
 - Tailwind CSS 4.1 + shadcn/ui (new-york style)
 - Framer Motion 12 + Recharts 3.7
 - Radix UI primitives + class-variance-authority
+- pdfjs-dist 5 (DeckViewer)

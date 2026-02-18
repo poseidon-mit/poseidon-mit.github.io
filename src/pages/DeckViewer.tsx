@@ -10,13 +10,13 @@
  */
 import { useEffect, useRef, useState, useCallback } from 'react';
 import * as pdfjs from 'pdfjs-dist';
+import pdfjsWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { FileDown } from 'lucide-react';
 import { Link } from '../router';
 
 const PDF_URL = '/CTO-Group7-Poseidon.pdf';
-const PDFJS_VERSION = '3.11.174';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorkerUrl;
 
 export default function DeckViewer() {
   const containerRef = useRef<HTMLDivElement>(null);
