@@ -17,6 +17,7 @@ const checks = [
   ['npm', ['run', 'check:bundle-budget']],
   ['npm', ['run', 'verify:pwa']],
 ];
+const OUTPUT_CAP = 40_000;
 
 function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
@@ -28,12 +29,18 @@ function run(cmd, args) {
     encoding: 'utf8',
     shell: process.platform === 'win32',
   });
+  const stdoutRaw = (result.stdout ?? '').trim();
+  const stderrRaw = (result.stderr ?? '').trim();
+  const stdoutTruncated = stdoutRaw.length > OUTPUT_CAP;
+  const stderrTruncated = stderrRaw.length > OUTPUT_CAP;
   return {
     cmd: [cmd, ...args].join(' '),
     ok: result.status === 0,
     status: result.status ?? 1,
-    stdout: (result.stdout ?? '').trim().slice(-2000),
-    stderr: (result.stderr ?? '').trim().slice(-2000),
+    stdout: stdoutTruncated ? stdoutRaw.slice(-OUTPUT_CAP) : stdoutRaw,
+    stderr: stderrTruncated ? stderrRaw.slice(-OUTPUT_CAP) : stderrRaw,
+    stdout_truncated: stdoutTruncated,
+    stderr_truncated: stderrTruncated,
   };
 }
 

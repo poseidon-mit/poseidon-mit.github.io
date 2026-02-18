@@ -6,35 +6,44 @@ const root = process.cwd();
 const failures = [];
 
 function read(file) {
-  return fs.readFileSync(path.join(root, file), 'utf8');
+  const fullPath = path.join(root, file);
+  if (!fs.existsSync(fullPath)) {
+    failures.push(`${file}: required file is missing.`);
+    return null;
+  }
+  return fs.readFileSync(fullPath, 'utf8');
 }
 
 const appNav = read('src/components/layout/AppNavShell.tsx');
+if (!appNav) {
+  // Missing file already recorded.
+}
 
 // Verify engine group nav items do not expose primary CTA buttons.
 // AppNavShell uses group: 'engine' | 'system' pattern.
-if (!appNav.includes("group: 'engine' | 'system'")) {
+if (appNav && !/group:\s*'engine'\s*\|\s*'system'/.test(appNav)) {
   failures.push('AppNavShell must define engine/system nav groups.');
 }
 
 // Engine nav items must not include primary CTA variant buttons.
-if (appNav.includes("entry-btn--primary") || appNav.includes("variant: 'primary'")) {
+if (appNav && (appNav.includes("entry-btn--primary") || appNav.includes("variant: 'primary'"))) {
   failures.push('Engine/system AppNavShell must not expose primary CTA actions in nav items.');
 }
 
-const heroFiles = [
-  'src/components/PageShell/variants/HeroCommand.tsx',
-  'src/components/PageShell/variants/HeroFocused.tsx',
-  'src/components/PageShell/variants/HeroAnalytical.tsx',
-  'src/components/PageShell/variants/HeroEditorial.tsx',
-  'src/components/PageShell/variants/HeroMinimal.tsx',
+const routeFilesWithPrimary = [
+  'src/pages/Dashboard.tsx',
+  'src/pages/Protect.tsx',
+  'src/pages/Grow.tsx',
+  'src/pages/Execute.tsx',
+  'src/pages/Govern.tsx',
 ];
 
-for (const file of heroFiles) {
+for (const file of routeFilesWithPrimary) {
   const source = read(file);
-  const primaryCount = (source.match(/entry-btn entry-btn--primary/g) ?? []).length;
+  if (!source) continue;
+  const primaryCount = (source.match(/entry-btn--primary/g) ?? []).length;
   if (primaryCount > 1) {
-    failures.push(`${file}: hero must expose at most one primary CTA.`);
+    failures.push(`${file}: page appears to expose too many primary CTAs (${primaryCount}).`);
   }
 }
 

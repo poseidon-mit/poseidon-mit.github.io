@@ -126,6 +126,14 @@ function parseImports(filePath) {
   return imports;
 }
 
+function componentNameFromResolvedPath(resolvedPath) {
+  let componentName = path.basename(resolvedPath, path.extname(resolvedPath));
+  if (componentName === 'index') {
+    componentName = path.basename(path.dirname(resolvedPath));
+  }
+  return componentName;
+}
+
 function getEntryFiles() {
   const pageFiles = fs
     .readdirSync(PAGES_ROOT)
@@ -212,11 +220,39 @@ for (const filePath of surfaceFiles) {
       continue;
     }
 
-    let componentName = path.basename(item.resolved, path.extname(item.resolved));
-    // Directory imports resolve to index.ts — use parent directory name instead
-    if (componentName === 'index') {
-      componentName = path.basename(path.dirname(item.resolved));
+    const resolvedExt = path.extname(item.resolved);
+    const resolvedBase = path.basename(item.resolved, resolvedExt);
+    const isBarrelImport = resolvedBase === 'index';
+
+    // For barrel imports like "@/components/poseidon", validate imported symbol names
+    // against the registry instead of directory name "poseidon".
+    if (isBarrelImport && item.importedNames.length > 0) {
+      for (const importedName of item.importedNames) {
+        const entry = COMPONENT_REGISTRY[importedName];
+        if (!entry) {
+          errors.push(
+            `[registry] ${relativePath} imports ${importedName} from ${item.moduleSpecifier} but registry entry is missing.`,
+          );
+          continue;
+        }
+
+        if (entry.status === 'legacy' || entry.status === 'forbidden') {
+          errors.push(
+            `[registry] ${relativePath} imports ${importedName} (${entry.status}). Replace with ${entry.replacement ?? 'canonical primitive'}.`,
+          );
+          continue;
+        }
+
+        if (STRICT && entry.status === 'compat') {
+          errors.push(
+            `[registry] ${relativePath} imports ${importedName} (compat). Strict mode requires canonical replacement ${entry.replacement ?? ''}.`,
+          );
+        }
+      }
+      continue;
     }
+
+    const componentName = componentNameFromResolvedPath(item.resolved);
     const entry = COMPONENT_REGISTRY[componentName];
 
     if (!entry) {
@@ -249,10 +285,20 @@ if (!STRICT) {
       if (!resolvedRel.startsWith('src/components/')) {
         continue;
       }
-      let componentName = path.basename(item.resolved, path.extname(item.resolved));
-      if (componentName === 'index') {
-        componentName = path.basename(path.dirname(item.resolved));
+      const resolvedExt = path.extname(item.resolved);
+      const resolvedBase = path.basename(item.resolved, resolvedExt);
+      const isBarrelImport = resolvedBase === 'index';
+
+      if (isBarrelImport && item.importedNames.length > 0) {
+        for (const importedName of item.importedNames) {
+          const entry = COMPONENT_REGISTRY[importedName];
+          if (entry?.status === 'compat') {
+            compatUsed.add(importedName);
+          }
+        }
+        continue;
       }
+      const componentName = componentNameFromResolvedPath(item.resolved);
       const entry = COMPONENT_REGISTRY[componentName];
       if (entry?.status === 'compat') {
         compatUsed.add(componentName);
