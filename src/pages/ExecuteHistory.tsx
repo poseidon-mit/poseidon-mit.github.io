@@ -12,6 +12,7 @@ import {
   Filter,
   DollarSign,
 } from "lucide-react"
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -25,7 +26,7 @@ const staggerContainer = {
 }
 
 /* ── Cross-thread ── */
-const MONTHLY_SAVINGS = "$847/month"
+const MONTHLY_SAVINGS = `$${DEMO_THREAD.monthlySavings}/month`
 
 /* ── AuroraPulse ── */
 function AuroraPulse({ color }: { color: string }) {

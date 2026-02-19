@@ -5,6 +5,7 @@ import { Link } from '../router';
 import { GovernFooter, AuroraPulse } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets'
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ═══════════════════════════════════════════
    DATA
@@ -22,9 +23,9 @@ interface Notification {
 }
 
 const notifications: Notification[] = [
-  { id: 'N-001', engine: 'Protect', category: 'security', title: 'Suspicious transaction blocked', body: 'Card ending 4821 temporarily frozen after unrecognized $4,200 charge.', time: 'Just now', read: false, actionLink: '/protect/alert-detail' },
+  { id: 'N-001', engine: 'Protect', category: 'security', title: 'Suspicious transaction blocked', body: `Card ending ${DEMO_THREAD.criticalAlert.cardLast4} temporarily frozen after unrecognized $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} charge.`, time: 'Just now', read: false, actionLink: '/protect/alert-detail' },
   { id: 'N-002', engine: 'Protect', category: 'security', title: 'Login from new device detected', body: 'IP 203.0.113.42 — if this was you, no action needed.', time: '12m ago', read: false, actionLink: '/protect' },
-  { id: 'N-003', engine: 'Grow', category: 'growth', title: 'Emergency fund milestone — $8,000 reached', body: 'You are now 67% toward your $12,000 goal.', time: '1h ago', read: false },
+  { id: 'N-003', engine: 'Grow', category: 'growth', title: `Emergency fund milestone — $${DEMO_THREAD.emergencyFund.current.toLocaleString()} reached`, body: `You are now ${DEMO_THREAD.emergencyFund.percent}% toward your $${DEMO_THREAD.emergencyFund.target.toLocaleString()} goal.`, time: '1h ago', read: false },
   { id: 'N-004', engine: 'Grow', category: 'growth', title: 'New savings recommendation available', body: 'Subscription consolidation could save $140/mo.', time: '2h ago', read: false },
   { id: 'N-005', engine: 'Execute', category: 'actions', title: 'Action approved — Bill negotiation sent', body: 'Internet bill renegotiation request submitted to ISP.', time: '3h ago', read: true, actionLink: '/execute/history' },
   { id: 'N-006', engine: 'Execute', category: 'actions', title: '2 actions expiring soon', body: 'Streaming consolidation and card freeze expire in 18h.', time: '4h ago', read: true, actionLink: '/execute/approval' },
@@ -33,7 +34,7 @@ const notifications: Notification[] = [
 ];
 
 const engineBadgeCls: Record<string, string> = { Protect: 'bg-emerald-500/20 text-emerald-400', Grow: 'bg-violet-500/20 text-violet-400', Execute: 'bg-amber-500/20 text-amber-400', Govern: 'bg-blue-500/20 text-blue-400' };
-const engineInitial: Record<string, string> = { Protect: 'P', Grow: 'G', Execute: 'E', Govern: 'V' };
+const engineInitial: Record<string, string> = { Protect: 'P', Grow: 'G', Execute: 'E', Govern: 'G' };
 
 type CategoryFilter = 'all' | 'security' | 'growth' | 'actions' | 'system';
 
@@ -50,6 +51,12 @@ export function Notifications() {
   const unreadCount = Object.values(readState).filter((r) => !r).length;
   const filtered = filter === 'all' ? notifications : notifications.filter((n) => n.category === filter);
   const sorted = [...filtered].sort((a, b) => (readState[a.id] === readState[b.id] ? 0 : readState[a.id] ? 1 : -1));
+  const categoryCounts = {
+    security: notifications.filter((n) => n.category === 'security').length,
+    growth: notifications.filter((n) => n.category === 'growth').length,
+    actions: notifications.filter((n) => n.category === 'actions').length,
+    system: notifications.filter((n) => n.category === 'system').length,
+  };
 
   const markAllRead = () => setReadState(Object.fromEntries(notifications.map((n) => [n.id, true])));
   const markRead = (id: string) => setReadState((prev) => ({ ...prev, [id]: true }));
@@ -110,12 +117,12 @@ export function Notifications() {
         {/* KPI bar */}
         <motion.div variants={fadeUp}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: 'Unread', value: String(unreadCount), color: 'var(--engine-execute)' },
-              { label: 'Security', value: '5', color: 'var(--engine-protect)' },
-              { label: 'Growth', value: '8', color: 'var(--engine-grow)' },
-              { label: 'Actions', value: '6', color: 'var(--engine-dashboard)' },
-            ].map((kpi) => (
+              {[
+                { label: 'Unread', value: String(unreadCount), color: 'var(--engine-execute)' },
+                { label: 'Security', value: String(categoryCounts.security), color: 'var(--engine-protect)' },
+                { label: 'Growth', value: String(categoryCounts.growth), color: 'var(--engine-grow)' },
+                { label: 'Actions', value: String(categoryCounts.actions), color: 'var(--engine-dashboard)' },
+              ].map((kpi) => (
               <div key={kpi.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
                 <p className="text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
@@ -230,9 +237,9 @@ export function Notifications() {
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Stats</h3>
               <div className="space-y-2.5">
                 {[
-                  { label: 'Total today', value: '23', color: 'text-white/70' },
+                  { label: 'Total today', value: String(notifications.length), color: 'text-white/70' },
                   { label: 'Unread', value: String(unreadCount), color: 'text-amber-400' },
-                  { label: 'Security', value: '5', color: 'text-emerald-400' },
+                  { label: 'Security', value: String(categoryCounts.security), color: 'text-emerald-400' },
                   { label: 'Actioned (7d)', value: '87%', color: 'text-cyan-400' },
                 ].map((row) => (
                   <div key={row.label} className="flex justify-between">

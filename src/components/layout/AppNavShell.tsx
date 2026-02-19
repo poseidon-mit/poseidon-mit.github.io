@@ -19,6 +19,7 @@ import { usePresentationMode } from '../../hooks/usePresentationMode';
 import { usePWA } from '../../hooks/usePWA';
 import { CommandPalette } from './CommandPalette';
 import { engineTokens } from '../../lib/engine-tokens';
+import { DEMO_THREAD } from '@/lib/demo-thread';
 
 /* ─── Engine config ──────────────────────────────────────── */
 
@@ -43,7 +44,7 @@ const NAV_ITEMS: NavItem[] = [
 /* ─── Live status badges (mock) ─────────────────────────────── */
 const NAV_BADGES: Record<string, { type: 'pulse' | 'count'; value?: number; color: string }> = {
   '/protect': { type: 'pulse', color: 'var(--state-critical)' },
-  '/execute': { type: 'count', value: 3, color: engineTokens.execute.color },
+  '/execute': { type: 'count', value: DEMO_THREAD.pendingActions, color: engineTokens.execute.color },
 };
 
 const ENGINE_ITEMS = NAV_ITEMS.filter((i) => i.group === 'engine');
@@ -86,6 +87,12 @@ const SUB_NAV: Record<string, SubNavItem[]> = {
     { label: 'Oversight', path: '/govern/oversight' },
     { label: 'Policy', path: '/govern/policy' },
   ],
+  '/settings': [
+    { label: 'General', path: '/settings' },
+    { label: 'AI', path: '/settings/ai' },
+    { label: 'Integrations', path: '/settings/integrations' },
+    { label: 'Rights', path: '/settings/rights' },
+  ],
 };
 
 /* ─── Breadcrumb definitions ─────────────────────────────── */
@@ -117,7 +124,7 @@ const BREADCRUMB_MAP: Record<string, string[]> = {
   '/settings/ai': ['Settings', 'AI'],
   '/settings/integrations': ['Settings', 'Integrations'],
   '/settings/rights': ['Settings', 'Rights'],
-  '/help': ['Settings', 'Help'],
+  '/help': ['Help'],
 };
 
 /* ─── Helpers ────────────────────────────────────────────── */

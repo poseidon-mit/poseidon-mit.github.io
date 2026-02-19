@@ -13,7 +13,7 @@ const staggerContainer = {
 }
 
 /**
- * Next.js catch-all not-found page.
+ * Vite SPA catch-all not-found page.
  * Renders the same UI as /404 explicit route for consistency.
  */
 export default function NotFound() {
@@ -58,7 +58,7 @@ export default function NotFound() {
 
           <motion.div variants={fadeUp}>
             <Link
-              to="/dashboard"
+              to="/"
               className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl transition-all"
               style={{
                 background: "linear-gradient(135deg, #14B8A6, #06B6D4)",

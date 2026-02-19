@@ -1,6 +1,6 @@
 import { motion } from "framer-motion"
 import { Lock, Shield, ScrollText, Play, Presentation } from "lucide-react"
-import { Link } from '@/router'
+import { Link, useRouter } from '@/router'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -18,6 +18,8 @@ const trustBadges = [
 ]
 
 export function HeroSection() {
+  const { navigate } = useRouter()
+
   return (
     <section className="relative pt-24 md:pt-32 pb-16 overflow-hidden">
       {/* Background video — clipped above CTAs */}
@@ -46,7 +48,7 @@ export function HeroSection() {
           animate="visible"
           custom={0}
         >
-          Safer satisfying money decisions, in one place.
+          Safer, smarter money decisions, in one place.
         </motion.h1>
 
         <motion.p
@@ -56,7 +58,7 @@ export function HeroSection() {
           animate="visible"
           custom={1}
         >
-          Four AI engines working together. Every decision explainable,
+          Four AI engines plus your command center. Every decision explainable,
           auditable, and reversible.
         </motion.p>
 
@@ -72,25 +74,24 @@ export function HeroSection() {
             to="/signup"
             className="w-full rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 px-8 py-4 text-lg font-semibold text-slate-950 shadow-[0_0_30px_rgba(13,217,180,0.3)] transition-all hover:shadow-[0_0_40px_rgba(13,217,180,0.4)] hover:brightness-110 sm:w-auto"
           >
-            Open Dashboard
+            Get Started
           </Link>
           <div className="flex w-full gap-3 sm:w-auto sm:gap-4">
             <button
               type="button"
+              onClick={() => navigate('/dashboard')}
               className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/[0.1] px-6 py-4 text-text-primary transition-all hover:bg-white/[0.05] sm:flex-none sm:px-8"
             >
               <Play className="h-4 w-4" />
               Watch Demo
             </button>
-            <a
-              href="/CTO-Group7-Poseidon.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/deck"
               className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/[0.1] px-6 py-4 text-text-primary transition-all hover:bg-white/[0.05] sm:flex-none sm:px-8"
             >
               <Presentation className="h-4 w-4" />
               Presentation
-            </a>
+            </Link>
           </div>
         </motion.div>
 

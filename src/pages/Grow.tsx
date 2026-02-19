@@ -11,6 +11,7 @@ import {
 } from "lucide-react"
 import { ForecastBand } from "@/components/poseidon/forecast-band"
 import type { ForecastPoint } from "@/components/poseidon/forecast-band"
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -24,9 +25,9 @@ const staggerContainer = {
 }
 
 /* ── Cross-thread values ── */
-const EMERGENCY_FUND_PROGRESS = 73
-const EMERGENCY_FUND_CURRENT = 7300
-const EMERGENCY_FUND_TARGET = 10000
+const EMERGENCY_FUND_PROGRESS = DEMO_THREAD.emergencyFund.percent
+const EMERGENCY_FUND_CURRENT = DEMO_THREAD.emergencyFund.current
+const EMERGENCY_FUND_TARGET = DEMO_THREAD.emergencyFund.target
 
 /* ── AuroraPulse ── */
 function AuroraPulse({ color }: { color: string }) {
@@ -76,9 +77,9 @@ function GovernFooter({ auditId, pageContext }: { auditId: string; pageContext: 
 /* ── Forecast data ── */
 const FORECAST_DATA: ForecastPoint[] = Array.from({ length: 12 }, (_, i) => ({
   x: i,
-  median: 7300 + i * 250,
-  low: 7300 + i * 180,
-  high: 7300 + i * 320,
+  median: EMERGENCY_FUND_CURRENT + i * 250,
+  low: EMERGENCY_FUND_CURRENT + i * 180,
+  high: EMERGENCY_FUND_CURRENT + i * 320,
 }))
 
 /* ── Goal KPIs ── */
@@ -118,9 +119,9 @@ export default function GrowPage() {
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex gap-3 mt-2">
-            {/* CTA: Primary -> /execute */}
+            {/* CTA: Primary -> /grow/goal */}
             <Link
-              to="/execute"
+              to="/grow/goal"
               className="inline-flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-xl transition-all"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6, #A78BFA)",

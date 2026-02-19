@@ -66,7 +66,7 @@ const staggerItem = {
 
 export function EngineCards() {
   return (
-    <section className="mx-auto max-w-7xl px-6" aria-label="Four AI engines">
+    <section className="mx-auto max-w-7xl px-6" aria-label="Four AI engines and command center">
       <motion.h2
         className="mb-12 text-center text-3xl font-bold text-text-primary text-balance md:text-4xl"
         initial={{ opacity: 0, y: 20 }}
@@ -74,7 +74,7 @@ export function EngineCards() {
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       >
-        Four engines. One trusted system.
+        Four engines. One trusted command center.
       </motion.h2>
 
       <motion.div

@@ -40,7 +40,21 @@ export function Recovery() {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center px-4" style={{ background: '#0B1221' }}>
-      <motion.div className="w-full max-w-md flex flex-col items-center" variants={stagger} initial="hidden" animate="visible">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
+        style={{ background: 'var(--engine-dashboard)', color: '#0B1221' }}
+      >
+        Skip to main content
+      </a>
+      <motion.main
+        id="main-content"
+        role="main"
+        className="w-full max-w-md flex flex-col items-center"
+        variants={stagger}
+        initial="hidden"
+        animate="visible"
+      >
         {step === 1 ? (
           <>
             {/* Step 1 — Enter email */}
@@ -116,7 +130,7 @@ export function Recovery() {
             </motion.div>
           </>
         )}
-      </motion.div>
+      </motion.main>
     </div>
   );
 }

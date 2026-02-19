@@ -102,6 +102,18 @@ export function GrowRecommendations() {
       const diffOrder: Record<Difficulty, number> = { Easy: 0, Medium: 1, Hard: 2 };
       return diffOrder[a.difficulty] - diffOrder[b.difficulty];
     });
+  const totalMonthlyImpact = recommendations.reduce((sum, rec) => sum + rec.monthlySavings, 0);
+  const totalAnnualImpact = recommendations.reduce((sum, rec) => sum + rec.annualSavings, 0);
+  const highConfidenceCount = recommendations.filter((rec) => rec.confidence >= 0.85).length;
+  const actionableNowCount = recommendations.filter((rec) => rec.confidence >= 0.9).length;
+  const avgConfidence = (recommendations.reduce((sum, rec) => sum + rec.confidence, 0) / recommendations.length).toFixed(2);
+  const impactByCategory = {
+    Savings: recommendations.filter((rec) => rec.category === 'Savings').reduce((sum, rec) => sum + rec.monthlySavings, 0),
+    Investment: recommendations.filter((rec) => rec.category === 'Investment').reduce((sum, rec) => sum + rec.monthlySavings, 0),
+    Debt: recommendations.filter((rec) => rec.category === 'Debt').reduce((sum, rec) => sum + rec.monthlySavings, 0),
+    Income: recommendations.filter((rec) => rec.category === 'Income').reduce((sum, rec) => sum + rec.monthlySavings, 0),
+  };
+  const maxCategoryImpact = Math.max(...Object.values(impactByCategory), 1);
 
   const sortOptions: SortMode[] = ['Highest Impact', 'Highest Confidence', 'Easiest'];
   const categoryOptions: Category[] = ['All', 'Savings', 'Debt', 'Income', 'Investment'];
@@ -154,7 +166,7 @@ export function GrowRecommendations() {
           </div>
           <h1 className="text-2xl md:text-3xl font-bold text-white">Growth Recommendations</h1>
           <p className="text-sm text-slate-400">
-            8 AI-generated recommendations · Est. +$840/mo total impact · Updated 2h ago
+            {recommendations.length} AI-generated recommendations · Est. +${totalMonthlyImpact}/mo total impact · Updated 2h ago
           </p>
         </motion.div>
 
@@ -162,10 +174,10 @@ export function GrowRecommendations() {
         <motion.div variants={fadeUp}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: 'Total impact', value: '+$840/mo', color: 'var(--engine-grow)' },
-              { label: 'High confidence', value: '5', color: 'var(--engine-protect)' },
-              { label: 'Actionable now', value: '3', color: 'var(--engine-dashboard)' },
-              { label: 'Avg confidence', value: '0.91', color: 'var(--engine-execute)' },
+              { label: 'Total impact', value: `+$${totalMonthlyImpact}/mo`, color: 'var(--engine-grow)' },
+              { label: 'High confidence', value: String(highConfidenceCount), color: 'var(--engine-protect)' },
+              { label: 'Actionable now', value: String(actionableNowCount), color: 'var(--engine-dashboard)' },
+              { label: 'Avg confidence', value: avgConfidence, color: 'var(--engine-execute)' },
             ].map((kpi) => (
               <div key={kpi.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
@@ -310,10 +322,10 @@ export function GrowRecommendations() {
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Summary</h3>
               <div className="space-y-3">
                 {[
-                  { label: 'Monthly impact', value: '$840', color: 'var(--engine-grow)' },
-                  { label: 'Annual impact', value: '$10,080', color: 'var(--engine-grow)' },
-                  { label: 'Actions pending', value: '3', color: 'var(--engine-execute)' },
-                  { label: 'Confidence avg', value: '0.91', color: 'var(--engine-protect)' },
+                  { label: 'Monthly impact', value: `$${totalMonthlyImpact}`, color: 'var(--engine-grow)' },
+                  { label: 'Annual impact', value: `$${totalAnnualImpact.toLocaleString()}`, color: 'var(--engine-grow)' },
+                  { label: 'Actions pending', value: String(actionableNowCount), color: 'var(--engine-execute)' },
+                  { label: 'Confidence avg', value: avgConfidence, color: 'var(--engine-protect)' },
                 ].map((s) => (
                   <div key={s.label} className="flex justify-between items-center">
                     <span className="text-xs text-white/50">{s.label}</span>
@@ -328,10 +340,10 @@ export function GrowRecommendations() {
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Impact Breakdown</h3>
               <div className="space-y-3">
                 {[
-                  { label: 'Savings', amount: 325, max: 325 },
-                  { label: 'Investment', amount: 180, max: 325 },
-                  { label: 'Debt', amount: 215, max: 325 },
-                  { label: 'Income', amount: 120, max: 325 },
+                  { label: 'Savings', amount: impactByCategory.Savings, max: maxCategoryImpact },
+                  { label: 'Investment', amount: impactByCategory.Investment, max: maxCategoryImpact },
+                  { label: 'Debt', amount: impactByCategory.Debt, max: maxCategoryImpact },
+                  { label: 'Income', amount: impactByCategory.Income, max: maxCategoryImpact },
                 ].map((b) => (
                   <div key={b.label}>
                     <div className="flex justify-between text-xs mb-1">

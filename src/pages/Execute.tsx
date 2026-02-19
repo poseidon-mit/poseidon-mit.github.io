@@ -15,6 +15,7 @@ import {
   TrendingUp,
   AlertTriangle,
 } from "lucide-react"
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -22,8 +23,8 @@ const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, tra
 const staggerContainer = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }
 
 /* ── Cross-thread values ── */
-const PENDING_ACTIONS = 5
-const MONTHLY_SAVINGS = 847
+const PENDING_ACTIONS = DEMO_THREAD.pendingActions
+const MONTHLY_SAVINGS = DEMO_THREAD.monthlySavings
 
 /* ── Shared ── */
 function AuroraPulse({ color }: { color: string }) {
@@ -55,10 +56,10 @@ interface QueueAction {
 
 const queueActions: QueueAction[] = [
   { id: "EXE-001", title: "Portfolio rebalance", engine: "Execute", amount: "$12,400", confidence: 0.97, status: "pending", time: "14:28", description: "Optimize allocation based on 90-day pattern" },
-  { id: "EXE-002", title: "Block wire transfer", engine: "Protect", amount: "$4,200", confidence: 0.94, status: "pending", time: "14:15", description: "Suspicious transaction to MerchantX" },
+  { id: "EXE-002", title: "Block wire transfer", engine: "Protect", amount: `$${DEMO_THREAD.criticalAlert.amount.toLocaleString()}`, confidence: DEMO_THREAD.criticalAlert.confidence, status: "pending", time: "14:15", description: `Suspicious transaction to ${DEMO_THREAD.criticalAlert.merchant}` },
   { id: "EXE-003", title: "Subscription consolidation", engine: "Grow", amount: "$140/mo", confidence: 0.89, status: "pending", time: "13:52", description: "3 overlapping subscriptions detected" },
   { id: "EXE-004", title: "Archive invoices", engine: "Execute", amount: "-", confidence: 0.78, status: "pending", time: "11:20", description: "Batch archive of 47 paid invoices" },
-  { id: "EXE-005", title: "Pay electricity bill", engine: "Execute", amount: "$187", confidence: 0.99, status: "approved", time: "10:30", description: "Recurring auto-payment" },
+  { id: "EXE-005", title: "Pay electricity bill", engine: "Execute", amount: "$187", confidence: 0.99, status: "pending", time: "10:30", description: "Recurring auto-payment" },
 ]
 
 const engineColorMap: Record<string, string> = {
@@ -168,8 +169,8 @@ export default function ExecutePage() {
             {/* Queue summary */}
             <GlassCard className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Queue Summary</h3>
-              {[
-                { label: "Pending actions", value: String(PENDING_ACTIONS), color: "var(--state-warning)" },
+                {[
+                { label: "Pending actions", value: String(pending.length), color: "var(--state-warning)" },
                 { label: "Completed today", value: "12", color: "var(--state-healthy)" },
                 { label: "Auto-approved", value: "8" },
                 { label: "Rollbacks (24h)", value: "0", color: "var(--state-healthy)" },

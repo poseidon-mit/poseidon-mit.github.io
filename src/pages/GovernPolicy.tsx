@@ -43,6 +43,8 @@ export function GovernPolicy() {
   const [showAll, setShowAll] = useState(false);
 
   const displayed = showAll ? policies : policies.slice(0, 5);
+  const activePolicies = policies.filter((p) => p.status === 'Active').length;
+  const pendingReview = policies.filter((p) => p.status === 'Pending review').length;
 
   return (
     <div className="relative min-h-screen w-full" style={{ background: '#0B1221' }}>
@@ -75,9 +77,9 @@ export function GovernPolicy() {
         {/* KPI bar */}
         <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'Active policies', value: '12', color: 'var(--engine-govern)' },
+            { label: 'Active policies', value: String(activePolicies), color: 'var(--engine-govern)' },
             { label: 'Violations (30d)', value: '0', color: 'var(--engine-protect)' },
-            { label: 'Pending review', value: '2', color: 'var(--engine-execute)' },
+            { label: 'Pending review', value: String(pendingReview), color: 'var(--engine-execute)' },
             { label: 'Compliance', value: '100%', color: 'var(--engine-protect)' },
           ].map((kpi) => (
             <div key={kpi.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">

@@ -102,8 +102,11 @@ export function SettingsRights() {
             <div className="w-10 h-10 rounded-full flex items-center justify-center bg-red-500/10">
               <Trash2 className="h-5 w-5 text-red-400" />
             </div>
-            <h3 className="text-sm font-semibold text-white">Restrict processing</h3>
-            <p className="text-xs text-slate-400">Pause AI analysis of your data</p>
+            <h3 className="text-sm font-semibold text-white">Delete my data</h3>
+            <p className="text-xs text-slate-400">Permanently remove all personal data</p>
+            <button className="mt-auto px-4 py-2 rounded-xl text-xs font-semibold border hover:bg-red-500/10 transition-colors" style={{ borderColor: 'rgba(239,68,68,0.35)', color: '#FCA5A5' }}>
+              Open delete flow
+            </button>
           </div>
         </motion.div>
 

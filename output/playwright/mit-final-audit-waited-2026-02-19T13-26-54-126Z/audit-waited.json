@@ -1,0 +1,680 @@
+{
+  "base": "https://poseidon-mit.com",
+  "generatedAt": "2026-02-19T13:28:57.091Z",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [],
+      "h1": [
+        "Safer satisfying money decisions, in one place."
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": false,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/root.png",
+      "body": "Skip to main contentSkip to main contentPoseidonProductPricingSign inGet StartedSafer satisfying money decisions, in one place.Four AI engines working together. Every decision explainable, auditable, and reversible.Open DashboardWatch DemoPresentationBank-grade encryptionGDPR compliant100% auditableSystem Confidence0.92Decisions Audited1,247Threats Blocked23Response Time<200msFour engines. One trusted system.0.94ProtectReal-time threat detection with explainable AI0.89GrowForecast-driven growth with Monte Carlo simulations0.91ExecuteConsent-first automation with reversible actions0.97GovernFull audit trail for every AI decisionGovernance by design, not by checkboxExplainableEvery AI recommendation comes with a plain-language reasoning chain and contributing data sources.AuditableImmutable audit trail for every decision. Full lineage from data input to action output.ReversibleOne-click undo on any automated action. Consent gates before every execution.System uptime 99.97% · Last audit: 4m ago · Model version: v3.2.1 · Decisions today: 47MIT Sloan CTO Program · Group 7 · March 2026Privacy PolicyTerms of Service"
+    },
+    {
+      "route": "/pricing",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/pricing",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Choose your level of protection"
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": false,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/pricing.png",
+      "body": "PoseidonProductPricingSign inGet StartedSimple, transparent pricingChoose your level of protectionEvery plan includes explainable AI decisions, full audit trails, and the ability to reverse any action.MonthlyAnnualSave 17%StarterFor individuals exploring AI-powered finance$0/month1 connected accountBasic threat detectionWeekly digestCommunity supportStandard dashboardsGet started freeMost PopularProFor users who want full protection and growth$24/monthUnlimited accountsReal-time threat detectionScenario modelingPriority supportCustom dashboardsFull audit ledgerExecute automationCreate accountEnterpriseFor teams requiring compliance and governanceCustomEverything in ProSSO & team managementDedicated supportSLA guaranteeCustom integrationsCompliance reportingOn-premise optionContact salesFrequently asked questionsHow does the free trial work?Can I switch plans later?Is my financial data secure?What happens when I cancel? Bank-level encryption| Explainable AI| Reversible actions"
+    },
+    {
+      "route": "/trust",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/trust",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": false,
+      "activeNav": false,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/trust.png",
+      "body": "Poseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to Dashboard"
+    },
+    {
+      "route": "/deck",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/deck",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": false,
+      "activeNav": false,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/deck.png",
+      "body": "Poseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to Dashboard"
+    },
+    {
+      "route": "/signup",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/signup",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Start making safer money decisions today"
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": false,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/signup.png",
+      "body": "PoseidonProductPricingSign inGet StartedPoseidon.AIStart making safer money decisions todayCreate your account and connect your first financial source. Setup takes under 3 minutes.Bank-level encryption for all dataRead-only access to financial accountsEvery AI decision is explainableFull audit trail in the Govern engineReverse any action at any timeCreate your accountContinue with GoogleContinue with AppleorFull nameEmailPasswordContinue onboardingAlready have an account? Sign in"
+    },
+    {
+      "route": "/login",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/login",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Welcome back to your command center"
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": false,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/login.png",
+      "body": "PoseidonProductPricingSign inGet StartedPoseidon.AIWelcome back to your command centerYour AI engines have been working while you were away. Sign in to review decisions and take action.Encrypted end-to-endEvery session fully auditableSign inContinue with GoogleContinue with AppleorEmailPasswordRemember meForgot password?Sign inDon't have an account? Create one"
+    },
+    {
+      "route": "/recovery",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/recovery",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": false,
+      "activeNav": false,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/recovery.png",
+      "body": "Poseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to Dashboard"
+    },
+    {
+      "route": "/onboarding",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/onboarding",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Let's set up your financial command center"
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": false,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/onboarding.png",
+      "body": "Let's set up your financial command center4 quick steps to activate your AI engines. Takes under 3 minutes.1. ConnectLink your financial accounts securely with read-only access2. Set goalsDefine what matters most to your financial growth3. Set boundariesControl what the AI can and cannot do on your behalf4. ActivateYour AI engines start working immediatelyRead-only access|Bank-level encryption|Cancel anytimeContinue setup"
+    },
+    {
+      "route": "/onboarding/connect",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/onboarding/connect",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Connect your financial accounts"
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": false,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/onboarding__connect.png",
+      "body": "Connect your financial accountsWe use read-only access. Poseidon never moves money or modifies your accounts.Bank accountChecking & savings accountsCredit cardsTrack spending and paymentsInvestment accountsBrokerage & retirementRead-only accessWe use bank-level encryption and never store credentials. Your data is analyzed locally and every access is logged in the audit ledger.BackSkip for nowContinue to goals"
+    },
+    {
+      "route": "/onboarding/goals",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/onboarding/goals",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "What matters most to you?"
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": false,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/onboarding__goals.png",
+      "body": "What matters most to you?Select your priorities. Your AI engines will be tuned accordingly. You can always change these later.Protect my moneyDetect fraud, block threats, monitor riskGrow my wealthOptimize savings, hit financial milestonesBuild emergency fundAutomated savings toward safety netInvest smarterScenario-based portfolio optimizationBackContinue to consent"
+    },
+    {
+      "route": "/onboarding/consent",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/onboarding/consent",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Set your boundaries"
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": false,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/onboarding__consent.png",
+      "body": "Set your boundariesControl exactly what Poseidon can do. You can adjust these at any time from Settings.Analyze my transactionsRequiredAllow AI engines to process your financial data to detect threats and find opportunities.Generate recommendationsAllow AI to suggest actions like savings transfers, budget adjustments, and investment moves.Require my approval before actingRequiredEvery automated action must be explicitly approved by you before execution.Send real-time alertsReceive notifications about threats, opportunities, and pending approvals.All AI decisions are logged in the immutable audit ledger. You can review, reverse, or dispute any action at any time through the Govern engine.BackActivate Poseidon"
+    },
+    {
+      "route": "/onboarding/complete",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/onboarding/complete",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "You're all set"
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": false,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/onboarding__complete.png",
+      "body": "You're all setYour AI engines are now active and working on your behalf. Every decision is explainable, auditable, and reversible.Protect engineMonitoring for threatsGrow engineTracking your goalsExecute engineReady for approvalsGovern engineAudit trail activeSetup summaryAccounts connected3Goals selected2Consent boundariesAll setEnter dashboard"
+    },
+    {
+      "route": "/dashboard",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/dashboard",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Good morning. System confidence: 0.92 across 4 engines."
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/dashboard.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraDashboardSearch⌘KSFPoseidonDashboardOverviewAlerts HubInsightsTimelineNotificationsSkip to main contentDashboardGood morning. System confidence: 0.92 across 4 engines.One unresolved alert. Three actions queued. Cash buffer at 14 days.System confidence 0.92|Protect 0.94|Grow 0.89|Execute 0.91|Govern 0.97Net position$847k+8.2%Cash flow+$4.1k+12%RiskLowDown from MedAlerts2-3 resolvedProtect0.94ActiveGrow0.89ActiveExecute0.91ActiveGovern0.97ActiveRecent ActivityBlocked suspicious transfer to MerchantX2m agoSavings goal projection updated15m agoAuto-paid electricity bill1h agoCompliance check passed (96/100)2h agoNew alert: unusual pattern detected3h agoDecision Queue5 pendingApprove rebalanceExecute0.91Block vendor chargeProtect0.94Update savings goalGrow0.89Archive old invoicesExecute0.78Policy updateGovern1.00Review planVerifiedGV-2026-0216-DASHRequest human reviewDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/dashboard/alerts",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/dashboard/alerts",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/dashboard__alerts.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraDashboardAlertsSearch⌘KSFPoseidonDashboardOverviewAlerts HubInsightsTimelineNotificationsPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/dashboard/insights",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/dashboard/insights",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/dashboard__insights.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraDashboardInsightsSearch⌘KSFPoseidonDashboardOverviewAlerts HubInsightsTimelineNotificationsPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/dashboard/timeline",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/dashboard/timeline",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/dashboard__timeline.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraDashboardTimelineSearch⌘KSFPoseidonDashboardOverviewAlerts HubInsightsTimelineNotificationsPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/dashboard/notifications",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/dashboard/notifications",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/dashboard__notifications.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraDashboardNotificationsSearch⌘KSFPoseidonDashboardOverviewAlerts HubInsightsTimelineNotificationsPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/protect",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/protect",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Threat posture: 1 critical, 1 high, 3 monitoring."
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/protect.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraProtectSearch⌘KSFPoseidonProtectAlertsDisputeSkip to main contentProtect EngineThreat posture: 1 critical, 1 high, 3 monitoring.Real-time threat detection across all connected accounts. AI confidence scoring with full evidence chain.IDMerchantAmountConfidence Severity Time ActionTHR-001TechElectro StoreUnusual transaction pattern$2,8470.94Critical2m agoInvestigate THR-002Unknown VendorUnrecognized merchant$1,2000.87High15m agoInvestigate THR-005Crypto ExchangeHigh-risk category transfer$5,0000.91High5h agoInvestigate THR-003Travel Agency XYZInternational wire transfer$3,4000.72Medium1h agoInvestigate THR-004Subscription ServiceDuplicate charge detected$49.990.65Low3h agoInvestigate THR-001Critical2m agoTechElectro Store$2,8470.94Investigate THR-002High15m agoUnknown Vendor$1,2000.87Investigate THR-005High5h agoCrypto Exchange$5,0000.91Investigate THR-003Medium1h agoTravel Agency XYZ$3,4000.72Investigate THR-004Low3h agoSubscription Service$49.990.65Investigate Threat SummaryActive threats5Critical1High1Blocked today3Avg response<200msRisk BreakdownTransaction fraud45%Merchant risk25%Geo anomaly20%Velocity10%Open top alertVerifiedGV-2026-0215-PRT-SIGRequest human reviewDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/protect/alert-detail",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/protect/alert-detail",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Signal #PRT-2026-0216-003"
+      ],
+      "comingSoon": false,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/protect__alert-detail.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraProtectAlert DetailSearch⌘KSFPoseidonProtectAlertsDisputeSkip to main contentBack to ProtectSignal #PRT-2026-0216-003Detected: Today 14:28 | Updated: 14:30CRITICALMerchantMerchantXAmount$4,200.00Confidence97%Alert typeUnusual transaction patternAccountChecking ****4567LocationOnline | IP: 203.0.113.42Flagged regionSignal detected14:28Analysis complete14:29Alert raised14:30User notified14:31Resolution pendingNowSignal detected14:28Analysis complete14:29Alert raised14:30User notified14:31Resolution pendingNowEvidence analysis0.96Transaction Pattern Deviation0.87Merchant Risk Score0.95Geographic Anomaly0.72Velocity Check0.91Behavioral AnalysisSHAP attributionFeature contribution to threat scoreTransaction velocity+8.2Geo anomaly+5.7Amount deviation+4.1Time pattern-2.3Account history-1.8Base42Final: 55.9Recommended actionsBlock & investigateRequest verificationAI recommends blocking (97% confidence)Open execute queue Similar IncidentsMerchantX flagged2 weeks agoBlockedUnusual pattern3 weeks agoVerified safeHigh-risk geo1 month agoBlockedAccount ContextAccount balance$12,847Avg monthly spend$3,200Risk scoreLow (0.12)Alerts this month2VerifiedGV-2026-0216-PRT-DETRequest human reviewDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/protect/dispute",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/protect/dispute",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/protect__dispute.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraProtectDisputeSearch⌘KSFPoseidonProtectAlertsDisputePoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/grow",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/grow",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Emergency fund at 73%"
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/grow.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraGrowSearch⌘KSFPoseidonGrowGoalsScenariosRecommendationsGrow EngineEmergency fund at 73%$7,300 of $10,000 target. At current pace, you will reach your goal in approximately 3 months.Review growth planOpen scenariosEmergency fund73%+5% this monthMonthly savings$420+$60 vs planInvest targetOn trackQ3 milestone12-month forecastNow+12 monthsTop recommendationIncrease monthly transfer by $60This would accelerate your emergency fund target by 3 weeks based on current projections.Compare scenarios Every decision on this page is logged to the immutable audit ledger.GV-2026-0216-GROWOpen ledgerDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/grow/goal",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/grow/goal",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Emergency fund"
+      ],
+      "comingSoon": false,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/grow__goal.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraGrowGoal DetailSearch⌘KSFPoseidonGrowGoalsScenariosRecommendationsBack to Grow73%Emergency fund$7,300 of $10,000At current pace, you will reach your target in approximately 3 months.Recent contributionsOct 2026$350Nov 2026$380Dec 2026$360Jan 2026$420Feb 2026$420Projected pathNow+12 monthsAdjust your savings paceIncreasing your monthly transfer by $60 would accelerate your target by 3 weeks.Back to growAdjust goalEvery decision on this page is logged to the immutable audit ledger.GV-2026-0216-GROW-GLOpen ledgerDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/grow/scenarios",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/grow/scenarios",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Compare growth paths"
+      ],
+      "comingSoon": false,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/grow__scenarios.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraGrowScenariosSearch⌘KSFPoseidonGrowGoalsScenariosRecommendationsBack to GrowScenario ComparisonCompare growth pathsEmergency fund at 73%. Choose a scenario to see projected outcomes.ConservativeKeep current pace. Lower risk, longer timeline.Monthly$420Time to goal7 monthsConfidence92%Moderate boostIncrease monthly by $60. Balanced risk-reward.Monthly$480Time to goal5 monthsConfidence87%AggressiveMaximize contributions. Fastest path, tighter budget.Monthly$600Time to goal4 monthsConfidence79%Moderate boost forecastConfidence: 87%Now ($7,300)+12 months ($10,820 projected)Ready to commit to moderate boost?This will queue a monthly transfer of $480 for approval in the Execute engine.Back to growSend to ExecuteSensitivity notesForecasts incorporate market volatility, expense variation, and income stability. Confidence bands widen at longer horizons. All projections are re-evaluated weekly. Historical accuracy of this model: 89% within 5% margin.Every decision on this page is logged to the immutable audit ledger.GV-2026-0216-GROW-SCOpen ledgerDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/grow/recommendations",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/grow/recommendations",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/grow__recommendations.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraGrowRecommendationsSearch⌘KSFPoseidonGrowGoalsScenariosRecommendationsPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/execute",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/execute",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "5 actions queued. Projected savings: $847/mo."
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/execute.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraExecuteSearch⌘KSFPoseidonExecuteQueueApprovalHistorySkip to main contentExecute Engine5 actions queued. Projected savings: $847/mo.AI-optimized execution queue. Every action is auditable and reversible within 24 hours.Pending approval (4)EXE-001Execute14:28Portfolio rebalanceOptimize allocation based on 90-day pattern$12,4000.97ApproveDeferEXE-002Protect14:15Block wire transferSuspicious transaction to MerchantX$4,2000.94ApproveDeferEXE-003Grow13:52Subscription consolidation3 overlapping subscriptions detected$140/mo0.89ApproveDeferEXE-004Execute11:20Archive invoicesBatch archive of 47 paid invoices-0.78ApproveDeferCompleted (1)Pay electricity billEXE-00510:30Queue SummaryPending actions5Completed today12Auto-approved8Rollbacks (24h)0Savings Tracker$847/mo+12% vs last monthRollback SafetyAll actions are reversible within 24 hours. Rollback requests are processed immediately.0 active rollbacksReview execution history VerifiedGV-2026-0216-EXECRequest human reviewDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/execute/approval",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/execute/approval",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/execute__approval.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraExecuteApproval QueueSearch⌘KSFPoseidonExecuteQueueApprovalHistoryPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/execute/history",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/execute/history",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [],
+      "comingSoon": false,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/execute__history.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraExecuteHistorySearch⌘KSFPoseidonExecuteQueueApprovalHistoryBack to ExecuteTotal executed23Reversed2Monthly savings$847/monthSuccess rate91%AllCompletedReversedPendingActionEngineStatusAmountDateEX-001Savings transferGrowCompleted+$420Feb 15, 2026EX-002Alert escalationProtectCompleted--Feb 14, 2026EX-003Budget rebalanceExecuteCompleted-$85Feb 13, 2026EX-004Investment reallocGrowReversed+$1,200Feb 12, 2026EX-005Card freeze requestProtectCompleted--Feb 11, 2026Verify execution integrityEvery action above has an immutable trace in the govern audit ledger.Open govern traceEvery decision on this page is logged to the immutable audit ledger.GV-2026-0216-EXEC-HISTOpen ledgerDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/govern",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/govern",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Compliance score: 96/100. 1,247 decisions audited."
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/govern.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraGovernSearch⌘KSFPoseidonGovernOverviewAudit LedgerTrustRegistryOversightPolicySkip to main contentGovern EngineCompliance score: 96/100. 1,247 decisions audited.Full governance transparency. Every AI decision is explainable, auditable, and reversible.96ScoreDecisions audited1,247Verified93%Pending review55Flagged3Recent DecisionsExecuteVerifiedPortfolio rebalanceGV-8470.9714:28 TodayProtectVerifiedBlock wire transferGV-8460.9414:15 TodayGrowVerifiedSubscription consolidationGV-8450.8913:52 TodayExecutePendingArchive invoicesGV-8440.7811:20 TodayProtectVerifiedUnusual transactionGV-8430.92YesterdayGovernVerifiedPolicy updateGV-8421.00YesterdayCompliance BreakdownTransparency98%Auditability100%Reversibility95%Human oversight88%Policy StatusActive policies12Last updated2h agoAuto-enforceEnabledOpen audit ledger VerifiedGV-2026-0216-GOVRequest human reviewDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/govern/audit",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/govern/audit",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Audit Ledger"
+      ],
+      "comingSoon": false,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/govern__audit.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraGovernAudit LedgerSearch⌘KSFPoseidonGovernOverviewAudit LedgerTrustRegistryOversightPolicySkip to main contentBack to GovernAudit LedgerAudit LedgerImmutable record of 1,247 decisions with full evidence chainAllVerified(789)Pending review(55)Flagged(3)Decision ID Timestamp TypeActionConfidence Evidence StatusGV-2026-0216-84714:28 TodayExecutePortfolio rebalance0.9712VerifiedGV-2026-0216-84614:15 TodayProtectBlock wire transfer0.949VerifiedGV-2026-0216-84513:52 TodayGrowSubscription consolidation0.897VerifiedGV-2026-0216-84411:20 TodayExecuteArchive invoices0.785Pending reviewGV-2026-0215-843YesterdayProtectUnusual transaction0.9210VerifiedGV-2026-0215-842YesterdayGrowGoal update0.866VerifiedGV-2026-0214-841Feb 14ExecutePayment processed0.918VerifiedGV-2026-0214-840Feb 14GovernPolicy update1.0015VerifiedExecuteVerified14:28 TodayGV-2026-0216-847Portfolio rebalance12 evidence ptsConf: 0.97ProtectVerified14:15 TodayGV-2026-0216-846Block wire transfer9 evidence ptsConf: 0.94GrowVerified13:52 TodayGV-2026-0216-845Subscription consolidation7 evidence ptsConf: 0.89ExecutePending review11:20 TodayGV-2026-0216-844Archive invoices5 evidence ptsConf: 0.78ProtectVerifiedYesterdayGV-2026-0215-843Unusual transaction10 evidence ptsConf: 0.92GrowVerifiedYesterdayGV-2026-0215-842Goal update6 evidence ptsConf: 0.86ExecuteVerifiedFeb 14GV-2026-0214-841Payment processed8 evidence ptsConf: 0.91GovernVerifiedFeb 14GV-2026-0214-840Policy update15 evidence ptsConf: 1.00Audit SummaryTotal decisions847Verified789 (93%)Pending55 (6%)Flagged3 (1%)Avg evidence8.4 ptsCompliance96%Evidence FlowData SourceAI AnalysisEvidence AggregationConfidence ScoreAudit RecordExport OptionsExport full ledger (CSV)Generate complianc"
+    },
+    {
+      "route": "/govern/audit-detail",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/govern/audit-detail",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/govern__audit-detail.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraGovernAudit DetailSearch⌘KSFPoseidonGovernOverviewAudit LedgerTrustRegistryOversightPolicyPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/govern/trust",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/govern/trust",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/govern__trust.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraGovernTrustSearch⌘KSFPoseidonGovernOverviewAudit LedgerTrustRegistryOversightPolicyPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/govern/registry",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/govern/registry",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/govern__registry.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraGovernRegistrySearch⌘KSFPoseidonGovernOverviewAudit LedgerTrustRegistryOversightPolicyPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/govern/oversight",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/govern/oversight",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/govern__oversight.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraGovernOversightSearch⌘KSFPoseidonGovernOverviewAudit LedgerTrustRegistryOversightPolicyPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/govern/policy",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/govern/policy",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/govern__policy.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraGovernPolicySearch⌘KSFPoseidonGovernOverviewAudit LedgerTrustRegistryOversightPolicyPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/settings",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/settings",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Control your experience"
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/settings.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraSettingsSearch⌘KSFPoseidonSettingsSettingsControl your experienceManage your profile, notifications, and security preferences. All changes are logged.ProfileAccount detailsNameJane DoeEmailjane@example.comPlanProNotificationsAlert preferencesThreat alertsImmediate notification for critical threatsWeekly digestSummary of activity and recommendationsExecution alertsNotify when actions are auto-queuedSecurityAuthentication and access controlsTwo-factor authenticationAdd an extra layer of securityEnabledActive sessionsManage your logged-in devices2 devicesData exportDownload all your dataExportAll settings changes are recorded in the audit ledger.Review settings controlsEvery decision on this page is logged to the immutable audit ledger.GV-2026-0216-SETTOpen ledgerDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/settings/ai",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/settings/ai",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/settings__ai.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraSettingsAISearch⌘KSFPoseidonSettingsPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/settings/integrations",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/settings/integrations",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/settings__integrations.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraSettingsIntegrationsSearch⌘KSFPoseidonSettingsPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/settings/rights",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/settings/rights",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/settings__rights.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraSettingsRightsSearch⌘KSFPoseidonSettingsPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/help",
+      "status": 404,
+      "finalUrl": "https://poseidon-mit.com/help",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "h1": [
+        "Coming Soon"
+      ],
+      "comingSoon": true,
+      "breadcrumb": true,
+      "activeNav": true,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/help.png",
+      "body": "PoseidonEnginesDashboardProtectGrowExecute3GovernSystemSettingsHelpSFShinji FujiwaraSettingsHelpSearch⌘KSFPoseidonHelpPoseidon.AIDashboardComing SoonThis feature is currently in development and will be available soon.Back to DashboardDashboardProtectGrow3ExecuteGovern"
+    },
+    {
+      "route": "/404",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/404",
+      "title": "Poseidon.AI Prototype",
+      "consoleErrors": [],
+      "h1": [
+        "Page not found"
+      ],
+      "comingSoon": false,
+      "breadcrumb": false,
+      "activeNav": false,
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mit-final-audit-waited-2026-02-19T13-26-54-126Z/404.png",
+      "body": "404Page not foundThis route does not exist. Return safely to the command center where your engines are waiting.Back to dashboardIf you expected this page to exist, contact support."
+    }
+  ]
+}

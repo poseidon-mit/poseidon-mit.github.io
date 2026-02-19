@@ -60,6 +60,10 @@ export function AlertsHub() {
     if (engineFilter !== 'all' && a.engine !== engineFilter) return false;
     return true;
   });
+  const activeAlerts = alerts.filter((a) => a.status !== 'resolved').length;
+  const resolvedAlerts = alerts.filter((a) => a.status === 'resolved').length;
+  const sharedRootCauseAlerts = alerts.filter((a) => /vendor|charge/i.test(a.title)).length;
+  const falsePositiveRate = Math.round((alerts.filter((a) => a.severity === 'info').length / alerts.length) * 100);
 
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) => {
@@ -118,7 +122,7 @@ export function AlertsHub() {
           </div>
           <h1 className="text-2xl md:text-3xl font-bold text-white">Alerts Hub</h1>
           <p className="text-sm text-slate-400">
-            3 alerts share a common root cause: vendor payment anomaly.
+            {sharedRootCauseAlerts} alerts share a common root cause: vendor payment anomaly.
           </p>
         </motion.div>
 
@@ -126,10 +130,10 @@ export function AlertsHub() {
         <motion.div variants={fadeUp}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: 'Active', value: '12', color: 'var(--engine-execute)' },
-              { label: 'Resolved (7d)', value: '35', color: 'var(--engine-protect)' },
+              { label: 'Active', value: String(activeAlerts), color: 'var(--engine-execute)' },
+              { label: 'Resolved (7d)', value: String(resolvedAlerts), color: 'var(--engine-protect)' },
               { label: 'MTTR', value: '25m', color: 'var(--engine-dashboard)' },
-              { label: 'False positive', value: '3%', color: 'var(--engine-govern)' },
+              { label: 'False positive', value: `${falsePositiveRate}%`, color: 'var(--engine-govern)' },
             ].map((kpi) => (
               <div key={kpi.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
@@ -292,9 +296,9 @@ export function AlertsHub() {
               </div>
               <div className="space-y-2.5">
                 {[
-                  { label: 'Resolved this week', value: '35', positive: true },
-                  { label: 'Avg resolution', value: '2.4h', positive: false },
-                  { label: 'False positive rate', value: '3%', positive: false },
+                  { label: 'Resolved this week', value: String(resolvedAlerts), positive: true },
+                  { label: 'Avg resolution', value: '25m', positive: false },
+                  { label: 'False positive rate', value: `${falsePositiveRate}%`, positive: false },
                 ].map((stat) => (
                   <div key={stat.label} className="flex justify-between">
                     <span className="text-xs text-white/50">{stat.label}</span>

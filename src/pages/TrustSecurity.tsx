@@ -19,6 +19,13 @@ const shapFactors = [
 export function TrustSecurity() {
   return (
     <div className="min-h-screen w-full" style={{ background: '#0B1221' }}>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
+        style={{ background: 'var(--engine-protect)', color: '#0B1221' }}
+      >
+        Skip to main content
+      </a>
       {/* Top nav */}
       <nav className="border-b border-white/[0.06]" style={{ background: 'rgba(11,18,33,0.8)' }}>
         <div className="mx-auto px-4 md:px-6 lg:px-8 h-14 flex items-center justify-between" style={{ maxWidth: '1280px' }}>
@@ -33,7 +40,7 @@ export function TrustSecurity() {
         </div>
       </nav>
 
-      <motion.div className="mx-auto flex flex-col gap-8 md:gap-12 px-4 py-10 md:px-6 md:py-16 lg:px-8" style={{ maxWidth: '1280px' }} variants={stagger} initial="hidden" animate="visible">
+      <motion.div id="main-content" role="main" className="mx-auto flex flex-col gap-8 md:gap-12 px-4 py-10 md:px-6 md:py-16 lg:px-8" style={{ maxWidth: '1280px' }} variants={stagger} initial="hidden" animate="visible">
         {/* Hero */}
         <motion.div variants={fadeUp} className="text-center flex flex-col items-center gap-4">
           <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.1)', boxShadow: '0 0 40px rgba(34,197,94,0.2)' }}>
@@ -43,7 +50,7 @@ export function TrustSecurity() {
           <h1 className="text-3xl md:text-4xl font-bold text-white text-balance">Trusted by design, not by chance</h1>
           <p className="text-sm text-slate-400 max-w-lg text-pretty">Every decision auditable. Every byte encrypted. Zero trust architecture.</p>
           <div className="flex flex-wrap justify-center gap-2 mt-2">
-            {['GDPR', 'CCPA', 'SOC 2 (Coming)'].map((b) => (
+            {['GDPR', 'CCPA', 'SOC 2 (In progress)'].map((b) => (
               <span key={b} className="text-xs font-semibold px-3 py-1 rounded-full border" style={{ borderColor: 'var(--engine-protect)', color: 'var(--engine-protect)' }}>{b}</span>
             ))}
           </div>
@@ -156,7 +163,7 @@ export function TrustSecurity() {
               { badge: 'GDPR', label: 'General Data Protection Regulation' },
               { badge: 'CCPA', label: 'California Consumer Privacy Act' },
               { badge: 'ISO 27001', label: 'Information Security Management' },
-              { badge: 'SOC 2', label: 'Service Organization Controls' },
+              { badge: 'SOC 2 Type II (In progress)', label: 'Service Organization Controls' },
             ].map((c) => (
               <div key={c.badge} className="flex items-center gap-3">
                 <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0" />
@@ -178,7 +185,14 @@ export function TrustSecurity() {
             <Link to="/dashboard" className="flex items-center gap-1.5 px-6 py-3 rounded-xl text-sm font-semibold text-[#0B1221] hover:opacity-90 transition-opacity" style={{ background: 'var(--engine-protect)' }}>
               See the dashboard <ArrowRight className="h-4 w-4" />
             </Link>
-            <button className="px-6 py-3 rounded-xl text-sm font-semibold border border-white/10 text-white/70 hover:bg-white/5 transition-colors">Read security whitepaper</button>
+            <a
+              href="/CTO-Group7-Poseidon.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 rounded-xl text-sm font-semibold border border-white/10 text-white/70 hover:bg-white/5 transition-colors"
+            >
+              Read security whitepaper
+            </a>
           </div>
         </motion.div>
 

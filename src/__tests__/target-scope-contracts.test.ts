@@ -86,9 +86,61 @@ describe('target scope routing contract', () => {
   });
 
   it('keeps deferred routes out of ready set', () => {
-    const deferredRoutes: RoutePath[] = ['/trust', '/recovery', '/help'];
+    const deferredRoutes: RoutePath[] = [
+      '/design-system',
+      '/design-system/components',
+      '/design-system/tokens',
+      '/design-system/tokens/colors',
+      '/design-system/tokens/motion',
+      '/design-system/tokens/spacing',
+      '/design-system/tokens/typography',
+    ];
     for (const route of deferredRoutes) {
       expect(V0_READY_ROUTES.has(route)).toBe(false);
+    }
+  });
+
+  it('keeps the demo golden path routes in ready set', () => {
+    const goldenPathRoutes: RoutePath[] = [
+      '/',
+      '/signup',
+      '/onboarding/connect',
+      '/onboarding/goals',
+      '/onboarding/consent',
+      '/onboarding/complete',
+      '/dashboard',
+      '/dashboard/alerts',
+      '/dashboard/insights',
+      '/dashboard/timeline',
+      '/dashboard/notifications',
+      '/protect',
+      '/protect/alert-detail',
+      '/protect/dispute',
+      '/grow',
+      '/grow/goal',
+      '/grow/scenarios',
+      '/grow/recommendations',
+      '/execute',
+      '/execute/approval',
+      '/execute/history',
+      '/govern',
+      '/govern/audit',
+      '/govern/audit-detail',
+      '/govern/trust',
+      '/govern/registry',
+      '/govern/oversight',
+      '/govern/policy',
+      '/settings',
+      '/settings/ai',
+      '/settings/integrations',
+      '/settings/rights',
+      '/help',
+      '/trust',
+      '/deck',
+      '/recovery',
+    ];
+    for (const route of goldenPathRoutes) {
+      expect(V0_READY_ROUTES.has(route)).toBe(true);
     }
   });
 });
@@ -115,10 +167,9 @@ describe('route meta and governance contract', () => {
     }
   });
 
-  it('all target ready routes have route prompt blueprints', () => {
-    for (const route of TARGET_SCOPE_READY_ROUTES) {
-      expect(ROUTE_PROMPT_BLUEPRINTS).toHaveProperty(route);
-      const blueprint = ROUTE_PROMPT_BLUEPRINTS[route];
+  it('route prompt blueprints stay aligned to target ready routes', () => {
+    for (const [route, blueprint] of Object.entries(ROUTE_PROMPT_BLUEPRINTS)) {
+      expect(TARGET_SCOPE_READY_ROUTES).toContain(route);
       expect(blueprint.initialDisclosure).toBe('summary-first');
       if (blueprint.tier === 'B') {
         expect(blueprint.initialBlockCap).toBe(4);

@@ -141,7 +141,7 @@ export default function DeckViewer() {
         </a>
       </header>
 
-      <main ref={containerRef} className="flex-1 min-h-0 overflow-auto">
+      <main id="main-content" role="main" ref={containerRef} className="flex-1 min-h-0 overflow-auto">
         {(loading || (!ready && !error)) && (
           <div className="flex items-center justify-center min-h-[50vh] text-slate-400">
             Loading deck…

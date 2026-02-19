@@ -6,6 +6,7 @@ import { GovernFooter, AuroraPulse } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { usePageTitle } from '../hooks/use-page-title';
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets'
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ═══════════════════════════════════════════
    DATA
@@ -27,7 +28,7 @@ const insights: Insight[] = [
   { id: 'INS-001', engine: 'Grow', category: 'actionable', title: 'Subscription consolidation opportunity', body: 'Three overlapping services detected. Consolidating could save $140/mo with minimal disruption.', confidence: 0.89, impact: '+$140/mo', time: '5m ago', shapFactors: [{ label: 'Service overlap', value: 0.92 }, { label: 'Cost impact', value: 0.88 }, { label: 'Usage frequency', value: 0.45 }] },
   { id: 'INS-002', engine: 'Protect', category: 'warning', title: 'Recurring charge spike — vendor anomaly', body: 'Monthly charges from 3 vendors increased 23% over 60 days without corresponding service changes.', confidence: 0.84, impact: 'Risk alert', time: '15m ago', shapFactors: [{ label: 'Charge variance', value: 0.87 }, { label: 'Historical baseline', value: 0.81 }, { label: 'Pattern deviation', value: 0.76 }] },
   { id: 'INS-003', engine: 'Execute', category: 'actionable', title: 'Optimal save-day identified — transfer on 3rd', body: 'Based on income timing, transferring surplus on the 3rd yields 12% higher savings rate.', confidence: 0.91, impact: '+12% yield', time: '1h ago', shapFactors: [{ label: 'Income timing', value: 0.94 }, { label: 'Buffer adequacy', value: 0.82 }, { label: 'Expense clustering', value: 0.68 }] },
-  { id: 'INS-004', engine: 'Grow', category: 'actionable', title: 'Emergency fund at 68% — accelerate possible', body: 'Increasing monthly contribution by $100 would accelerate completion by 3 weeks.', confidence: 0.87, impact: '-3 weeks', time: '2h ago', shapFactors: [{ label: 'Income stability', value: 0.94 }, { label: 'Budget headroom', value: 0.76 }] },
+  { id: 'INS-004', engine: 'Grow', category: 'actionable', title: `Emergency fund at ${DEMO_THREAD.emergencyFund.percent}% — accelerate possible`, body: 'Increasing monthly contribution by $100 would accelerate completion by 3 weeks.', confidence: 0.87, impact: '-3 weeks', time: '2h ago', shapFactors: [{ label: 'Income stability', value: 0.94 }, { label: 'Budget headroom', value: 0.76 }] },
   { id: 'INS-005', engine: 'Protect', category: 'informational', title: 'Model retrained — FraudDetection v3.3', body: 'FraudDetection model updated with latest transaction patterns. Accuracy improved from 99.5% to 99.7%.', confidence: 0.99, impact: '+0.2% accuracy', time: '4h ago', shapFactors: [{ label: 'Dataset coverage', value: 0.95 }, { label: 'Feature engineering', value: 0.78 }] },
   { id: 'INS-006', engine: 'Govern', category: 'informational', title: 'Weekly audit coverage at 100%', body: 'All 1,247 AI decisions this week have complete audit trails. SOC 2 compliance maintained.', confidence: 0.99, impact: 'Compliance OK', time: '6h ago', shapFactors: [{ label: 'Coverage rate', value: 1.0 }, { label: 'Completeness', value: 0.98 }] },
 ];
@@ -50,6 +51,13 @@ export function InsightsFeed() {
   const filtered = tab === 'all' ? insights : insights.filter((i) => i.category === tab);
   const actionableCount = insights.filter((i) => i.category === 'actionable').length;
   const avgConfidence = (insights.reduce((s, i) => s + i.confidence, 0) / insights.length).toFixed(2);
+  const estMonthlyImpact = insights
+    .filter((i) => i.category === 'actionable')
+    .reduce((sum, i) => {
+      const match = i.impact.match(/\$([\d,]+)\s*\/mo/i);
+      if (!match) return sum;
+      return sum + Number(match[1].replace(/,/g, ''));
+    }, 0);
 
   return (
     <div className="relative min-h-screen w-full" style={{ background: '#0B1221' }}>
@@ -111,7 +119,7 @@ export function InsightsFeed() {
               { label: 'Today', value: String(insights.length), color: 'var(--engine-dashboard)' },
               { label: 'Actionable', value: String(actionableCount), color: 'var(--engine-protect)' },
               { label: 'Avg confidence', value: avgConfidence, color: 'var(--engine-grow)' },
-              { label: 'Est. impact', value: '+$280/mo', color: 'var(--engine-execute)' },
+              { label: 'Est. impact', value: `+$${estMonthlyImpact}/mo`, color: 'var(--engine-execute)' },
             ].map((kpi) => (
               <div key={kpi.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
@@ -261,9 +269,9 @@ export function InsightsFeed() {
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Stats</h3>
               <div className="space-y-2.5">
                 {[
-                  { label: 'Insights today', value: '12', color: 'text-white/70' },
-                  { label: 'Actionable', value: '4', color: 'text-emerald-400' },
-                  { label: 'Avg confidence', value: '0.89', color: 'text-white/70' },
+                  { label: 'Insights today', value: String(insights.length), color: 'text-white/70' },
+                  { label: 'Actionable', value: String(actionableCount), color: 'text-emerald-400' },
+                  { label: 'Avg confidence', value: avgConfidence, color: 'text-white/70' },
                   { label: 'Acted on (30d)', value: '78%', color: 'text-violet-400' },
                 ].map((row) => (
                   <div key={row.label} className="flex justify-between">

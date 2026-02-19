@@ -12,6 +12,7 @@ import {
   ArrowUpRight,
   CircleDot,
 } from "lucide-react"
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -19,8 +20,8 @@ const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, tra
 const staggerContainer = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }
 
 /* ── Cross-thread values ── */
-const DECISIONS_AUDITED = 1247
-const COMPLIANCE_SCORE = 96
+const DECISIONS_AUDITED = DEMO_THREAD.decisionsAudited
+const COMPLIANCE_SCORE = DEMO_THREAD.complianceScore
 
 /* ── Shared ── */
 function AuroraPulse({ color }: { color: string }) {
@@ -61,7 +62,7 @@ const ledgerEntries = [
   { id: "GV-845", type: "Grow" as DecisionType, action: "Subscription consolidation", confidence: 0.89, status: "Verified" as DecisionStatus, time: "13:52 Today" },
   { id: "GV-844", type: "Execute" as DecisionType, action: "Archive invoices", confidence: 0.78, status: "Pending" as DecisionStatus, time: "11:20 Today" },
   { id: "GV-843", type: "Protect" as DecisionType, action: "Unusual transaction", confidence: 0.92, status: "Verified" as DecisionStatus, time: "Yesterday" },
-  { id: "GV-842", type: "Govern" as DecisionType, action: "Policy update", confidence: 1.0, status: "Verified" as DecisionStatus, time: "Yesterday" },
+  { id: "GV-842", type: "Govern" as DecisionType, action: "Policy update", confidence: 0.97, status: "Verified" as DecisionStatus, time: "Yesterday" },
 ]
 
 /* ═══════════════════════════════════════════════════════

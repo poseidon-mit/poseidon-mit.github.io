@@ -4,6 +4,7 @@ import { Link } from '@/router'
 import { TrendingUp, ArrowRight, ArrowLeft, Scale, Check, Zap } from "lucide-react"
 import { ForecastBand } from "@/components/poseidon/forecast-band"
 import type { ForecastPoint } from "@/components/poseidon/forecast-band"
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -17,7 +18,8 @@ const staggerContainer = {
 }
 
 /* ── Cross-thread ── */
-const EMERGENCY_FUND_PROGRESS = 73
+const EMERGENCY_FUND_PROGRESS = DEMO_THREAD.emergencyFund.percent
+const EMERGENCY_FUND_CURRENT = DEMO_THREAD.emergencyFund.current
 
 /* ── AuroraPulse ── */
 function AuroraPulse({ color }: { color: string }) {
@@ -78,9 +80,9 @@ interface Scenario {
 const BASE_DATA = (factor: number): ForecastPoint[] =>
   Array.from({ length: 12 }, (_, i) => ({
     x: i,
-    median: 7300 + i * factor,
-    low: 7300 + i * (factor * 0.7),
-    high: 7300 + i * (factor * 1.3),
+    median: EMERGENCY_FUND_CURRENT + i * factor,
+    low: EMERGENCY_FUND_CURRENT + i * (factor * 0.7),
+    high: EMERGENCY_FUND_CURRENT + i * (factor * 1.3),
   }))
 
 const SCENARIOS: Scenario[] = [

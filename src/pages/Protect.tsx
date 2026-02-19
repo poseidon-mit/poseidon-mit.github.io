@@ -12,6 +12,7 @@ import {
   ArrowDown,
   ChevronRight,
 } from "lucide-react"
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -61,11 +62,11 @@ interface ThreatRow {
 
 /* ── Data ── */
 const threats: ThreatRow[] = [
-  { id: "THR-001", merchant: "TechElectro Store", amount: "$2,847", confidence: 0.94, severity: "Critical", time: "2m ago", sortTime: 8, description: "Unusual transaction pattern" },
+  { id: DEMO_THREAD.criticalAlert.id, merchant: DEMO_THREAD.criticalAlert.merchant, amount: `$${DEMO_THREAD.criticalAlert.amount.toLocaleString()}`, confidence: DEMO_THREAD.criticalAlert.confidence, severity: "Critical", time: "2m ago", sortTime: 8, description: "Unusual transaction pattern" },
   { id: "THR-002", merchant: "Unknown Vendor", amount: "$1,200", confidence: 0.87, severity: "High", time: "15m ago", sortTime: 7, description: "Unrecognized merchant" },
   { id: "THR-003", merchant: "Travel Agency XYZ", amount: "$3,400", confidence: 0.72, severity: "Medium", time: "1h ago", sortTime: 6, description: "International wire transfer" },
   { id: "THR-004", merchant: "Subscription Service", amount: "$49.99", confidence: 0.65, severity: "Low", time: "3h ago", sortTime: 5, description: "Duplicate charge detected" },
-  { id: "THR-005", merchant: "Crypto Exchange", amount: "$5,000", confidence: 0.91, severity: "High", time: "5h ago", sortTime: 4, description: "High-risk category transfer" },
+  { id: "THR-005", merchant: "Crypto Exchange", amount: "$5,000", confidence: 0.91, severity: "Medium", time: "5h ago", sortTime: 4, description: "High-risk category transfer" },
 ]
 
 const severityConfig: Record<Severity, { color: string; bg: string; order: number }> = {
@@ -105,6 +106,9 @@ export default function ProtectPage() {
     }
     return sortDir === "asc" ? cmp : -cmp
   })
+  const criticalCount = threats.filter((t) => t.severity === "Critical").length
+  const highCount = threats.filter((t) => t.severity === "High").length
+  const monitoringCount = threats.filter((t) => t.severity === "Medium" || t.severity === "Low").length
 
   const SortIndicator = ({ field }: { field: SortField }) => {
     if (sortField !== field) return <ArrowUpDown size={11} style={{ color: "#475569" }} />
@@ -126,7 +130,7 @@ export default function ProtectPage() {
             </span>
           </motion.div>
           <motion.h1 variants={fadeUp} className="text-2xl md:text-4xl font-bold leading-tight tracking-tight text-balance" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>
-            Threat posture: <span style={{ color: "var(--state-warning)" }}>1 critical</span>, 1 high, 3 monitoring.
+            Threat posture: <span style={{ color: "var(--state-warning)" }}>{criticalCount} critical</span>, {highCount} high, {monitoringCount} monitoring.
           </motion.h1>
           <motion.p variants={fadeUp} className="text-sm md:text-base leading-relaxed" style={{ color: "#CBD5E1" }}>
             Real-time threat detection across all connected accounts. AI confidence scoring with full evidence chain.
@@ -215,7 +219,7 @@ export default function ProtectPage() {
             {/* Threat summary */}
             <GlassCard className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Threat Summary</h3>
-              {[{ label: "Active threats", value: "5" }, { label: "Critical", value: "1", color: "var(--state-critical)" }, { label: "High", value: "1", color: "var(--state-warning)" }, { label: "Blocked today", value: "3", color: "var(--state-healthy)" }, { label: "Avg response", value: "<200ms" }].map(d => (
+              {[{ label: "Active threats", value: String(threats.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Blocked today", value: "3", color: "var(--state-healthy)" }, { label: "Avg response", value: "<200ms" }].map(d => (
                 <div key={d.label} className="flex items-center justify-between">
                   <span className="text-xs" style={{ color: "#64748B" }}>{d.label}</span>
                   <span className="text-sm font-mono font-semibold tabular-nums" style={{ color: d.color || "#F1F5F9" }}>{d.value}</span>

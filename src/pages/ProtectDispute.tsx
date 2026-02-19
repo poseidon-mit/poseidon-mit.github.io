@@ -5,18 +5,19 @@ import { Link } from '../router';
 import { GovernFooter, AuroraPulse } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ═══════════════════════════════════════════
    DATA
    ═══════════════════════════════════════════ */
 
 const transaction = {
-  merchant: 'MerchantX',
-  amount: '$4,200.00',
+  merchant: DEMO_THREAD.criticalAlert.merchant,
+  amount: `$${DEMO_THREAD.criticalAlert.amount.toLocaleString()}.00`,
   date: 'Feb 16, 2026 at 03:00 AM',
-  card: '****4821',
+  card: `****${DEMO_THREAD.criticalAlert.cardLast4}`,
   category: 'Electronics',
-  confidence: 94,
+  confidence: Math.round(DEMO_THREAD.criticalAlert.confidence * 100),
 };
 
 const shapFactors = [

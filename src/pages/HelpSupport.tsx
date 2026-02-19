@@ -14,11 +14,11 @@ const quickLinks = [
 ];
 
 const faqItems = [
-  { q: 'How does Poseidon.AI protect my data?', a: 'All data is encrypted at rest (AES-256) and in transit (TLS 1.3). We maintain SOC 2 Type II compliance, and sensitive data never leaves your control through our zero-knowledge architecture.' },
+  { q: 'How does Poseidon.AI protect my data?', a: 'All data is encrypted at rest (AES-256) and in transit (TLS 1.3). SOC 2 Type II is currently in progress, and sensitive data never leaves your control through our zero-knowledge architecture.' },
   { q: 'What does "confidence score" mean?', a: 'A confidence score (0.0-1.0) represents how certain the AI model is about its recommendation. Higher scores indicate stronger evidence supporting the decision. Scores below 0.70 are always flagged for human review.' },
   { q: 'Can I undo an automated action?', a: 'Yes. All actions marked as reversible can be rolled back within 24 hours from the Execute > History page. Irreversible actions always require explicit human approval before execution.' },
   { q: 'How do I dispute a blocked transaction?', a: 'Navigate to Protect > Alert Detail for the blocked transaction and click "Dispute." Provide your reason and supporting information. Our team reviews disputes within 4 hours.' },
-  { q: 'What AI models are used?', a: 'Poseidon uses 8 specialized models across 4 engines: FraudDetection & BehavioralBaseline (Protect), GrowthForecast & GoalTracker (Grow), BillNegotiator & ExecuteEngine (Execute), GovernanceEngine & PolicyEngine (Govern).' },
+  { q: 'What AI models are used?', a: 'Poseidon uses 8 specialized models across 4 engines plus the dashboard command center: FraudDetection & BehavioralBaseline (Protect), GrowthForecast & GoalTracker (Grow), BillNegotiator & ExecuteEngine (Execute), GovernanceEngine & PolicyEngine (Govern).' },
   { q: 'How is my financial data secured?', a: 'Bank-grade 256-bit encryption, read-only access to accounts, SOC 2 certified infrastructure, and zero-knowledge proofs ensure your data is never exposed.' },
   { q: 'Can I export my data?', a: 'Yes. Go to Settings > Data Rights to request a JSON or CSV export of all your data. Exports are typically ready within 24 hours.' },
   { q: 'How do I contact support?', a: 'Use the contact form on this page, or email support@poseidon.ai. Priority support is available for Pro and Enterprise plans with a 4-hour SLA.' },

@@ -48,7 +48,7 @@ export function PublicTopBar() {
             Sign in
           </Link>
           <Link
-            to="/dashboard"
+            to="/signup"
             className="text-sm font-medium px-5 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-950 transition-all hover:brightness-110"
           >
             Get Started
@@ -98,7 +98,7 @@ export function PublicTopBar() {
                 Sign in
               </Link>
               <Link
-                to="/dashboard"
+                to="/signup"
                 className="text-sm font-medium px-5 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-950 text-center transition-all hover:brightness-110"
                 onClick={() => setMobileOpen(false)}
               >

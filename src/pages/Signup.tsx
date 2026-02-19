@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Link } from '@/router'
+import { Link, useRouter } from '@/router'
 import { Shield, Eye, EyeOff, Check, Waves } from "lucide-react"
 import { PublicTopBar } from '@/components/landing/PublicTopBar'
 
@@ -24,6 +24,7 @@ const TRUST_POINTS = [
 
 export default function SignupPage() {
   const [showPass, setShowPass] = useState(false)
+  const { navigate } = useRouter()
 
   return (
     <>
@@ -90,6 +91,8 @@ export default function SignupPage() {
               {/* SSO buttons */}
               <div className="flex flex-col gap-3 mb-6">
                 <button
+                  type="button"
+                  onClick={() => navigate('/onboarding/connect')}
                   className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-medium transition-colors"
                   style={{
                     background: "rgba(255,255,255,0.06)",
@@ -101,6 +104,8 @@ export default function SignupPage() {
                   Continue with Google
                 </button>
                 <button
+                  type="button"
+                  onClick={() => navigate('/onboarding/connect')}
                   className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-medium transition-colors"
                   style={{
                     background: "rgba(255,255,255,0.06)",

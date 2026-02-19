@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, memo } from "react"
+import { useMemo, memo } from "react"
 import { motion } from "framer-motion"
 import { Link } from '@/router'
 import {
@@ -17,6 +17,7 @@ import {
   Clock,
 } from "lucide-react"
 import { AreaChart, Area, ResponsiveContainer } from "recharts"
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ── Motion presets (same names/values as src/lib/motion-presets.ts) ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -30,9 +31,9 @@ const staggerContainer = {
 }
 
 /* ── Cross-thread values (frozen from CROSS_SCREEN_DATA_THREAD) ── */
-const SYSTEM_CONFIDENCE = 0.92
-const PENDING_ACTIONS = 5
-const COMPLIANCE_SCORE = 96
+const SYSTEM_CONFIDENCE = DEMO_THREAD.systemConfidence
+const PENDING_ACTIONS = DEMO_THREAD.pendingActions
+const COMPLIANCE_SCORE = DEMO_THREAD.complianceScore
 
 /* ── AuroraPulse (inlined from src/components/poseidon/aurora-pulse) ── */
 function AuroraPulse({ color }: { color: string }) {
@@ -185,7 +186,7 @@ const activities = [
   { icon: Shield, label: "Blocked suspicious transfer to MerchantX", time: "2m ago", color: "var(--engine-protect)" },
   { icon: TrendingUp, label: "Savings goal projection updated", time: "15m ago", color: "var(--engine-grow)" },
   { icon: Zap, label: "Auto-paid electricity bill", time: "1h ago", color: "var(--engine-execute)" },
-  { icon: Scale, label: "Compliance check passed (96/100)", time: "2h ago", color: "var(--engine-govern)" },
+  { icon: Scale, label: `Compliance check passed (${COMPLIANCE_SCORE}/100)`, time: "2h ago", color: "var(--engine-govern)" },
   { icon: AlertTriangle, label: "New alert: unusual pattern detected", time: "3h ago", color: "var(--state-warning)" },
 ]
 
@@ -225,7 +226,7 @@ const decisions = [
   { label: "Block vendor charge", engine: "Protect", status: "pending", confidence: 0.94 },
   { label: "Update savings goal", engine: "Grow", status: "approved", confidence: 0.89 },
   { label: "Archive old invoices", engine: "Execute", status: "pending", confidence: 0.78 },
-  { label: "Policy update", engine: "Govern", status: "approved", confidence: 1.0 },
+  { label: "Policy update", engine: "Govern", status: "approved", confidence: 0.97 },
 ]
 
 const engineColorMap: Record<string, string> = {
@@ -292,20 +293,8 @@ function DecisionRail() {
    ═══════════════════════════════════════════════════════ */
 
 export default function DashboardPage() {
-  const [alertCount, setAlertCount] = useState(2)
-  const [alertSpark, setAlertSpark] = useState([8, 7, 5, 6, 4, 3, 3, 2])
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setAlertCount((prev) => Math.max(0, Math.min(8, prev + (Math.random() > 0.45 ? -1 : 1))))
-      setAlertSpark((prev) => {
-        const last = prev[prev.length - 1]
-        const next = Math.max(0, last + Math.round((Math.random() - 0.5) * 2))
-        return [...prev.slice(1), next]
-      })
-    }, 12000)
-    return () => clearInterval(id)
-  }, [])
+  const alertCount = 1
+  const alertSpark = [6, 5, 4, 4, 3, 2, 2, 1]
 
   return (
     <div className="command-center relative overflow-hidden">
@@ -329,17 +318,17 @@ export default function DashboardPage() {
           </motion.div>
 
           <motion.h1 variants={fadeUp} className="hero-headline">
-            {"Good morning. System confidence: "}
+            {"Welcome back. System confidence: "}
             <span className="hero-headline__accent">{SYSTEM_CONFIDENCE}</span>
-            {" across 4 engines."}
+            {" across 5 engines."}
           </motion.h1>
 
           <motion.p variants={fadeUp} className="hero-subline">
-            One unresolved alert. Three actions queued. Cash buffer at 14 days.
+            One unresolved alert. Five actions queued. Cash buffer at 14 days.
           </motion.p>
 
           <motion.div variants={fadeUp} className="hero-proof" role="status" aria-label="Engine confidence scores">
-            <span className="hero-proof__label">{"System confidence 0.92"}</span>
+            <span className="hero-proof__label">{`System confidence ${SYSTEM_CONFIDENCE.toFixed(2)}`}</span>
             <span className="hero-proof__sep" aria-hidden="true">|</span>
             <span style={{ color: "var(--engine-protect)" }}>Protect 0.94</span>
             <span className="hero-proof__sep" aria-hidden="true">|</span>

@@ -18,6 +18,7 @@ import {
   User,
   ArrowLeft,
 } from "lucide-react"
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -25,8 +26,8 @@ const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, tra
 const staggerContainer = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }
 
 /* ── Cross-thread values ── */
-const DECISIONS_AUDITED = 1247
-const COMPLIANCE_SCORE = 96
+const DECISIONS_AUDITED = DEMO_THREAD.decisionsAudited
+const COMPLIANCE_SCORE = DEMO_THREAD.complianceScore
 
 /* ── Shared ── */
 function AuroraPulse({ color }: { color: string }) {
@@ -71,7 +72,7 @@ const auditEntries: AuditEntry[] = [
   { id: "GV-2026-0215-843", timestamp: "Yesterday", sortTime: 4, type: "Protect", action: "Unusual transaction", confidence: 0.92, evidence: 10, status: "Verified" },
   { id: "GV-2026-0215-842", timestamp: "Yesterday", sortTime: 3, type: "Grow", action: "Goal update", confidence: 0.86, evidence: 6, status: "Verified" },
   { id: "GV-2026-0214-841", timestamp: "Feb 14", sortTime: 2, type: "Execute", action: "Payment processed", confidence: 0.91, evidence: 8, status: "Verified" },
-  { id: "GV-2026-0214-840", timestamp: "Feb 14", sortTime: 1, type: "Govern", action: "Policy update", confidence: 1.0, evidence: 15, status: "Verified" },
+  { id: "GV-2026-0214-840", timestamp: "Feb 14", sortTime: 1, type: "Govern", action: "Policy update", confidence: 0.97, evidence: 15, status: "Verified" },
 ]
 
 const typeColor: Record<DecisionType, string> = { Protect: "var(--engine-protect)", Grow: "var(--engine-grow)", Execute: "var(--engine-execute)", Govern: "var(--engine-govern)" }
@@ -237,7 +238,7 @@ export default function GovernAuditPage() {
             <GlassCard className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Audit Summary</h3>
               {[
-                { label: "Total decisions", value: "847" },
+                { label: "Total decisions", value: DECISIONS_AUDITED.toLocaleString() },
                 { label: "Verified", value: "789 (93%)", color: "var(--state-healthy)" },
                 { label: "Pending", value: "55 (6%)", color: "var(--state-warning)" },
                 { label: "Flagged", value: "3 (1%)", color: "var(--state-critical)" },

@@ -213,7 +213,7 @@ export default function PricingPage() {
               </ul>
 
               <Link
-                to={plan.price.monthly === null ? "#contact" : "/signup"}
+                to={plan.price.monthly === null ? "mailto:team@poseidon-ai.com" : "/signup"}
                 className="block text-center text-sm font-semibold py-3 rounded-xl transition-all"
                 style={{
                   background: plan.highlight
