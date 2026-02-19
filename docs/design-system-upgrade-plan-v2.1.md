@@ -175,7 +175,9 @@ Create Radix-wrapped primitives with CVA variant definitions:
 dialog.tsx, tabs.tsx, select.tsx, tooltip.tsx, popover.tsx, dropdown-menu.tsx, command.tsx (wraps cmdk), slot.tsx
 
 Each primitive uses CVA for variant/size/tone definitions. Example pattern:
-tsx// src/components/ui/dialog.tsx
+
+```tsx
+// src/components/ui/dialog.tsx
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
@@ -192,6 +194,7 @@ const dialogOverlayVariants = cva(
     defaultVariants: { tone: "default" },
   }
 );
+```
 Step 1.4: Token Architecture Harmonization (M)
 New files:
 
@@ -255,10 +258,12 @@ src/components/PageShell/
 │   └── PageShell.test.tsx     -- Slot contract validation tests
 └── index.ts
 PageShell Compound API
-tsx<PageShell variant="focused" slug="protect" contract={protectContract}>
+
+```tsx
+<PageShell variant="focused" slug="protect" contract={protectContract}>
   <PageShell.Hero
     headline="Prevent loss before it compounds."
-    proofLine={{ claim: "...", evidence: "..." }}
+    proofLine=\{\{ claim: "...", evidence: "..." \}\}
   />
   <PageShell.KPIGrid kpis={kpis} />  {/* 4-6 cards, auto-layout */}
   <PageShell.PrimaryFeed>
@@ -268,6 +273,7 @@ tsx<PageShell variant="focused" slug="protect" contract={protectContract}>
     <RiskScoreDial />
   </PageShell.DecisionRail>
 </PageShell>
+```
 KPI Auto-Layout Logic
 CountLayout0Grid hidden1-2flex-row equal width33-column grid42x2 grid53+2 asymmetric63x2 grid
 Navigation: AppNav (Not TopNav/BottomNav)
