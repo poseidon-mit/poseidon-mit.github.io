@@ -75,4 +75,9 @@ describe('Infrastructure integrity', () => {
   it('V0_READY_ROUTES includes the landing page', () => {
     expect(V0_READY_ROUTES.has('/')).toBe(true);
   });
+
+  it('govern audit ledger links to audit detail route with decision query', () => {
+    const source = read('src/pages/GovernAuditLedger.tsx');
+    expect(source).toContain('/govern/audit-detail?decision=');
+  });
 });

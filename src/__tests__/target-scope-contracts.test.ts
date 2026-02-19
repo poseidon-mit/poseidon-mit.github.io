@@ -249,6 +249,21 @@ describe('target pages enforce minimum structure', () => {
     const source = readPageSource(route);
     expect(source).toContain('ShapWaterfall');
   });
+
+  it('anchors demo-critical timeline pages to March 2026 absolute dates', () => {
+    const anchoredRoutes: RoutePath[] = [
+      '/govern',
+      '/govern/audit',
+      '/dashboard/timeline',
+      '/protect/alert-detail',
+      '/execute/history',
+    ];
+
+    for (const route of anchoredRoutes) {
+      const source = readPageSource(route);
+      expect(source).toContain('2026-03-19');
+    }
+  });
 });
 
 describe('cross-thread consistency contract', () => {

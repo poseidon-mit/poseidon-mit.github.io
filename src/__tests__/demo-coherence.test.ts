@@ -51,4 +51,27 @@ describe('demo coherence invariants', () => {
       expect(source).not.toContain('$4,200')
     }
   })
+
+  it('keeps SOC 2 wording consistently in-progress on demo-critical surfaces', () => {
+    const files = [
+      'src/pages/TrustSecurity.tsx',
+      'src/pages/HelpSupport.tsx',
+      'src/pages/SettingsIntegrations.tsx',
+      'src/pages/InsightsFeed.tsx',
+      'src/pages/govern/govern-data.ts',
+    ]
+
+    for (const file of files) {
+      const source = readSource(file)
+      expect(source).toContain('SOC 2 Type II in progress')
+      expect(source).not.toMatch(/SOC 2 certified/i)
+      expect(source).not.toMatch(/SOC 2 compliance maintained/i)
+    }
+  })
+
+  it('keeps dashboard narrative aligned to four engines plus command center', () => {
+    const dashboard = readSource('src/pages/Dashboard.tsx')
+    expect(dashboard).toContain('across 4 engines + command center')
+    expect(dashboard).not.toContain('across 5 engines')
+  })
 })
