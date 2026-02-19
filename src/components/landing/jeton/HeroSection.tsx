@@ -5,7 +5,7 @@ import {
   useState,
 } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Lock, PlayCircle, Shield, ShieldCheck } from 'lucide-react';
+import { FileText, Lock, PlayCircle, Shield, ShieldCheck } from 'lucide-react';
 import { Link, useRouter } from '@/router';
 import { JETON_COPY } from '@/content/landing-copy-jeton';
 import { useJetonHeroVideoEnabled } from './hooks/useJetonWebGLEnabled';
@@ -16,7 +16,7 @@ const HERO_VIDEO_MOBILE_SRC = '/videos/hero-theme-mobile.mp4';
 const HERO_VIDEO_POSTER_SRC = '/videos/hero-theme-poster.jpg';
 
 export function HeroSection() {
-  const [videoReady, setVideoReady] = useState(false);
+  const [videoReady, setVideoReady] = useState(true);
   const [videoFailed, setVideoFailed] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -47,6 +47,11 @@ export function HeroSection() {
       return;
     }
 
+    // Safari/iOS strict autoplay workaround:
+    // React's `muted` attribute is sometimes ignored by Safari's autoplay policies.
+    video.defaultMuted = true;
+    video.muted = true;
+
     let visible = document.visibilityState === 'visible';
     let intersecting = true;
 
@@ -56,8 +61,10 @@ export function HeroSection() {
       }
       try {
         await video.play();
-      } catch {
-        setVideoFailed(true);
+      } catch (err: any) {
+        if (err.name !== 'NotAllowedError' && err.name !== 'AbortError') {
+          setVideoFailed(true);
+        }
       }
     };
 
@@ -93,6 +100,11 @@ export function HeroSection() {
 
     void tryPlay();
 
+    // Ensure we handle case where video is already ready before events attach
+    if (video.readyState >= 3) {
+      setVideoReady(true);
+    }
+
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       observer?.disconnect();
@@ -104,9 +116,8 @@ export function HeroSection() {
     <section ref={sectionRef} className="relative isolate flex min-h-screen items-center overflow-hidden bg-[#0B1221] px-6 pb-20 pt-28 md:px-8 md:pt-32">
       <div
         aria-hidden="true"
-        className={`pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_60%,rgba(0,240,255,0.08),transparent_60%),radial-gradient(ellipse_at_85%_15%,rgba(56,189,248,0.16),transparent_58%),#0B1221] transition-opacity duration-[650ms] ${
-          showFallback ? 'opacity-100' : 'opacity-0'
-        }`}
+        className={`pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_60%,rgba(0,240,255,0.08),transparent_60%),radial-gradient(ellipse_at_85%_15%,rgba(56,189,248,0.16),transparent_58%),#0B1221] transition-opacity duration-[650ms] ${showFallback ? 'opacity-100' : 'opacity-0'
+          }`}
       />
 
       {heroVideoEnabled && !videoFailed ? (
@@ -119,7 +130,7 @@ export function HeroSection() {
             muted
             playsInline
             disablePictureInPicture
-            preload="metadata"
+            preload="auto"
             poster={HERO_VIDEO_POSTER_SRC}
             aria-hidden="true"
             tabIndex={-1}
@@ -191,6 +202,15 @@ export function HeroSection() {
             <PlayCircle className="h-4 w-4" aria-hidden="true" />
             {JETON_COPY.hero.secondaryCta}
           </button>
+          <a
+            href="/CTO-Group7-Poseidon.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/90 transition-all duration-200 hover:border-white/25 hover:bg-white/10 hover:shadow-[0_0_26px_rgba(56,189,248,0.2)]"
+          >
+            <FileText className="h-4 w-4" aria-hidden="true" />
+            Presentation
+          </a>
         </motion.div>
 
         <motion.div

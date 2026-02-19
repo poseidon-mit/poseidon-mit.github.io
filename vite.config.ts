@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
+
 import { visualizer } from 'rollup-plugin-visualizer';
 
 const enableVisualizer = process.env.V4_ENABLE_VISUALIZER === '1';

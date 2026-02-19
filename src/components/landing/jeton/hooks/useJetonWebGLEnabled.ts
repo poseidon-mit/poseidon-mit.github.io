@@ -8,13 +8,9 @@ interface JetonHeroVideoEnabledInput {
 }
 
 export function shouldEnableJetonHeroVideo({
-  prefersReducedMotion,
-  saveData,
   featureEnabled,
 }: JetonHeroVideoEnabledInput): boolean {
   if (!featureEnabled) return false;
-  if (prefersReducedMotion) return false;
-  if (saveData) return false;
   return true;
 }
 
