@@ -1,55 +1,213 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, FileText, CheckCircle2, AlertTriangle, User, ChevronDown } from 'lucide-react';
-import { Link } from '../router';
-import { GovernFooter, AuroraPulse } from '@/components/poseidon'
-import { GOVERNANCE_META } from '@/lib/governance-meta'
+import { Link, useRouter } from '../router';
+import { GovernFooter, AuroraPulse } from '@/components/poseidon';
+import { GOVERNANCE_META } from '@/lib/governance-meta';
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { DEMO_THREAD } from '@/lib/demo-thread';
+import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date';
 
-/* ═══════════════════════════════════════════
-   DATA
-   ═══════════════════════════════════════════ */
-
-const auditEntry = {
-  id: 'GV-2026-0216-001',
-  engine: 'Protect',
-  type: 'fraud_detected',
-  timestamp: '12 minutes ago',
-  model: { name: 'FraudDetectionV3.2', version: '3.2.1', accuracy: 99.7 },
+interface AuditDecision {
+  id: string;
+  engine: 'Protect' | 'Grow' | 'Execute' | 'Govern';
+  type: string;
+  action: string;
+  timestamp: string;
+  model: { name: string; version: string; accuracy: number };
   explanation: {
-    summary:
-      'Transaction flagged as fraudulent based on amount deviation (3x usual), location anomaly (5,000 km from usual), and time-of-day risk (03:00 AM local). All three signals exceeded their respective thresholds simultaneously.',
-    confidence: 97,
+    summary: string;
+    confidence: number;
+  };
+  topFactors: Array<{ label: string; contribution: number; note: string }>;
+  compliance: { gdpr: boolean; ecoa: boolean; ccpa: boolean };
+  userFeedback: { correct: boolean; comment: string };
+}
+
+const DEFAULT_DECISION_ID = 'GV-2026-0319-846';
+
+const sharedFactors = [
+  { label: 'Amount deviation', contribution: 0.95, note: '3x typical transaction amount' },
+  { label: 'Location anomaly', contribution: 0.92, note: 'Unusual network region for account profile' },
+  { label: 'Time-of-day risk', contribution: 0.88, note: 'Activity outside normal behavior window' },
+  { label: 'Merchant history', contribution: 0.72, note: 'Low historical trust score in this category' },
+];
+
+const AUDIT_DECISIONS: Record<string, AuditDecision> = {
+  'GV-2026-0319-847': {
+    id: 'GV-2026-0319-847',
+    engine: 'Execute',
+    type: 'portfolio_rebalance',
+    action: 'Portfolio rebalance',
+    timestamp: '2026-03-19T14:28:00-04:00',
+    model: { name: 'ExecutePlanner', version: '4.1.0', accuracy: 99.1 },
+    explanation: {
+      summary: 'Portfolio allocation shifted from concentrated tech exposure to balanced risk targets after market-volatility threshold crossed.',
+      confidence: 0.97,
+    },
+    topFactors: [
+      { label: 'Risk concentration', contribution: 0.93, note: 'Technology allocation exceeded target by 14%' },
+      { label: 'Volatility index', contribution: 0.89, note: '30-day volatility exceeded policy threshold' },
+      { label: 'Liquidity buffer', contribution: 0.81, note: 'Cash reserve remains above required floor' },
+      { label: 'Tax impact', contribution: 0.62, note: 'Estimated tax drag stayed within accepted range' },
+    ],
+    compliance: { gdpr: true, ecoa: true, ccpa: true },
+    userFeedback: { correct: true, comment: 'Matches investment policy and approved risk profile.' },
   },
-  topFactors: [
-    { label: 'Amount deviation', contribution: 0.95, note: '3x typical transaction amount' },
-    { label: 'Location anomaly', contribution: 0.92, note: '5,000 km from usual location' },
-    { label: 'Time-of-day risk', contribution: 0.88, note: '03:00 AM local time' },
-    { label: 'Merchant history', contribution: 0.72, note: 'First purchase at this merchant' },
-  ],
-  compliance: { gdpr: true, ecoa: true, ccpa: true },
-  userFeedback: { correct: true, comment: 'Confirmed fraudulent transaction' },
+  'GV-2026-0319-846': {
+    id: 'GV-2026-0319-846',
+    engine: 'Protect',
+    type: 'fraud_detected',
+    action: 'Block wire transfer',
+    timestamp: '2026-03-19T14:15:00-04:00',
+    model: { name: 'FraudDetectionV3.2', version: '3.2.1', accuracy: 99.7 },
+    explanation: {
+      summary: `Transaction was blocked after concurrent anomalies on merchant (${DEMO_THREAD.criticalAlert.merchant}), amount ($${DEMO_THREAD.criticalAlert.amount.toLocaleString()}), and location signal. Combined risk exceeded auto-block threshold.`,
+      confidence: DEMO_THREAD.criticalAlert.confidence,
+    },
+    topFactors: sharedFactors,
+    compliance: { gdpr: true, ecoa: true, ccpa: true },
+    userFeedback: { correct: true, comment: 'Confirmed suspicious transfer. Keep card protection active.' },
+  },
+  'GV-2026-0319-845': {
+    id: 'GV-2026-0319-845',
+    engine: 'Grow',
+    type: 'savings_optimization',
+    action: 'Subscription consolidation',
+    timestamp: '2026-03-19T13:52:00-04:00',
+    model: { name: 'GrowthForecast', version: '3.2.0', accuracy: 97.8 },
+    explanation: {
+      summary: 'Three overlapping services with low combined utilization were grouped into one replacement plan with lower monthly burn.',
+      confidence: 0.89,
+    },
+    topFactors: [
+      { label: 'Utilization overlap', contribution: 0.91, note: 'Three services provide duplicative content' },
+      { label: 'Monthly cost delta', contribution: 0.87, note: 'Projected savings of $140 per month' },
+      { label: 'Service switching risk', contribution: 0.74, note: 'Low disruption expected from consolidation' },
+      { label: 'Contract term', contribution: 0.58, note: 'Cancellation windows confirmed open' },
+    ],
+    compliance: { gdpr: true, ecoa: true, ccpa: true },
+    userFeedback: { correct: true, comment: 'Recommendation approved. Savings target updated.' },
+  },
+  'GV-2026-0319-844': {
+    id: 'GV-2026-0319-844',
+    engine: 'Execute',
+    type: 'document_archive',
+    action: 'Archive invoices',
+    timestamp: '2026-03-19T11:20:00-04:00',
+    model: { name: 'ExecutePlanner', version: '4.1.0', accuracy: 99.1 },
+    explanation: {
+      summary: 'Automated retention policy identified stale paid invoices and queued them for archive to reduce dashboard noise.',
+      confidence: 0.78,
+    },
+    topFactors: [
+      { label: 'Retention policy match', contribution: 0.84, note: 'Documents exceeded retention visibility window' },
+      { label: 'Duplicate artifacts', contribution: 0.73, note: '47 paid invoices already stored in backup archive' },
+      { label: 'Searchability score', contribution: 0.66, note: 'Metadata quality sufficient for recall' },
+      { label: 'Audit preservation', contribution: 0.59, note: 'Immutable references retained in ledger' },
+    ],
+    compliance: { gdpr: true, ecoa: true, ccpa: true },
+    userFeedback: { correct: true, comment: 'Queued for human review before completion.' },
+  },
+  'GV-2026-0318-843': {
+    id: 'GV-2026-0318-843',
+    engine: 'Protect',
+    type: 'transaction_review',
+    action: 'Unusual transaction',
+    timestamp: '2026-03-18T16:42:00-04:00',
+    model: { name: 'FraudDetectionV3.2', version: '3.2.1', accuracy: 99.7 },
+    explanation: {
+      summary: 'Transaction pattern deviated from baseline and triggered manual verification workflow before settlement.',
+      confidence: 0.92,
+    },
+    topFactors: sharedFactors,
+    compliance: { gdpr: true, ecoa: true, ccpa: true },
+    userFeedback: { correct: true, comment: 'Escalation was appropriate for this charge profile.' },
+  },
+  'GV-2026-0318-842': {
+    id: 'GV-2026-0318-842',
+    engine: 'Grow',
+    type: 'goal_update',
+    action: 'Goal update',
+    timestamp: '2026-03-18T10:18:00-04:00',
+    model: { name: 'GoalTracker', version: '2.9.0', accuracy: 96.9 },
+    explanation: {
+      summary: 'Savings trajectory model recalculated expected completion after recurring transfers increased.',
+      confidence: 0.86,
+    },
+    topFactors: [
+      { label: 'Contribution consistency', contribution: 0.88, note: 'Transfers remained stable for 10 weeks' },
+      { label: 'Income stability', contribution: 0.84, note: 'No variance events in payroll stream' },
+      { label: 'Expense variability', contribution: 0.72, note: 'Spend volatility remained within expected band' },
+      { label: 'Forecast uncertainty', contribution: 0.61, note: 'Confidence interval narrowed month-over-month' },
+    ],
+    compliance: { gdpr: true, ecoa: true, ccpa: true },
+    userFeedback: { correct: true, comment: 'Progress estimate aligns with current account balances.' },
+  },
+  'GV-2026-0317-841': {
+    id: 'GV-2026-0317-841',
+    engine: 'Execute',
+    type: 'payment_execution',
+    action: 'Payment processed',
+    timestamp: '2026-03-17T14:12:00-04:00',
+    model: { name: 'ExecutePlanner', version: '4.1.0', accuracy: 99.1 },
+    explanation: {
+      summary: 'Scheduled payment executed inside approved threshold with complete trace of consent and transaction lifecycle.',
+      confidence: 0.91,
+    },
+    topFactors: [
+      { label: 'Consent state', contribution: 0.94, note: 'Action approved by account owner' },
+      { label: 'Policy alignment', contribution: 0.88, note: 'Payment complied with risk and spend constraints' },
+      { label: 'Funds availability', contribution: 0.85, note: 'Buffer remained above minimum reserve target' },
+      { label: 'Counterparty trust', contribution: 0.63, note: 'Verified vendor with prior successful history' },
+    ],
+    compliance: { gdpr: true, ecoa: true, ccpa: true },
+    userFeedback: { correct: true, comment: 'Execution met expected timing and amount.' },
+  },
+  'GV-2026-0317-840': {
+    id: 'GV-2026-0317-840',
+    engine: 'Govern',
+    type: 'policy_update',
+    action: 'Policy update',
+    timestamp: '2026-03-17T09:40:00-04:00',
+    model: { name: 'GovernanceTracer', version: '3.1.0', accuracy: 98.9 },
+    explanation: {
+      summary: 'Policy thresholds were recalibrated after oversight review to improve explainability and reduce false-positive escalation.',
+      confidence: 0.97,
+    },
+    topFactors: [
+      { label: 'Oversight feedback', contribution: 0.93, note: 'Human review signaled threshold adjustment need' },
+      { label: 'False-positive trend', contribution: 0.89, note: 'Recent alerts exceeded target false-positive rate' },
+      { label: 'Audit completeness', contribution: 0.82, note: 'Policy migration retained full evidence lineage' },
+      { label: 'Policy coverage', contribution: 0.67, note: 'Controls expanded for edge-case transactions' },
+    ],
+    compliance: { gdpr: true, ecoa: true, ccpa: true },
+    userFeedback: { correct: true, comment: 'Policy update approved with full oversight trace.' },
+  },
 };
 
-const metaRows = [
-  { label: 'Audit ID', value: auditEntry.id, highlight: false },
-  { label: 'Engine', value: auditEntry.engine, highlight: false },
-  { label: 'Decision type', value: auditEntry.type, highlight: true },
-  { label: 'Timestamp', value: auditEntry.timestamp, highlight: false },
-  { label: 'Model', value: `${auditEntry.model.name} v${auditEntry.model.version}`, highlight: false },
-  { label: 'Model accuracy', value: `${auditEntry.model.accuracy}%`, highlight: false },
-];
-
-const complianceFlags = [
-  { label: 'GDPR', compliant: auditEntry.compliance.gdpr },
-  { label: 'ECOA', compliant: auditEntry.compliance.ecoa },
-  { label: 'CCPA', compliant: auditEntry.compliance.ccpa },
-];
-
-/* ═══════════════════════════════════════════
-   COMPONENT
-   ═══════════════════════════════════════════ */
-
 export function GovernAuditDetail() {
+  const { search } = useRouter();
+  const decisionId = new URLSearchParams(search).get('decision');
+  const auditEntry = (decisionId && AUDIT_DECISIONS[decisionId]) || AUDIT_DECISIONS[DEFAULT_DECISION_ID];
+  const resolvedTimestamp = formatDemoTimestamp(auditEntry.timestamp);
+  const resolvedConfidence = formatConfidence(auditEntry.explanation.confidence);
+
+  const metaRows = [
+    { label: 'Audit ID', value: auditEntry.id, highlight: false },
+    { label: 'Engine', value: auditEntry.engine, highlight: false },
+    { label: 'Decision type', value: auditEntry.type, highlight: true },
+    { label: 'Action', value: auditEntry.action, highlight: false },
+    { label: 'Timestamp', value: resolvedTimestamp, highlight: false },
+    { label: 'Model', value: `${auditEntry.model.name} v${auditEntry.model.version}`, highlight: false },
+    { label: 'Model accuracy', value: `${auditEntry.model.accuracy}%`, highlight: false },
+  ];
+
+  const complianceFlags = [
+    { label: 'GDPR', compliant: auditEntry.compliance.gdpr },
+    { label: 'ECOA', compliant: auditEntry.compliance.ecoa },
+    { label: 'CCPA', compliant: auditEntry.compliance.ccpa },
+  ];
+
   return (
     <div className="relative min-h-screen w-full" style={{ background: '#0B1221' }}>
       <AuroraPulse color="var(--engine-govern)" intensity="subtle" />
@@ -89,7 +247,6 @@ export function GovernAuditDetail() {
         animate="visible"
         role="main"
       >
-        {/* Hero */}
         <motion.div variants={fadeUp} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <FileText className="h-5 w-5" style={{ color: 'var(--engine-govern)' }} />
@@ -99,18 +256,17 @@ export function GovernAuditDetail() {
           </div>
           <h1 className="text-2xl md:text-3xl font-bold text-white">Decision Reconstruction</h1>
           <p className="text-sm text-slate-400">
-            Full decision audit for <code className="text-blue-400 bg-white/5 px-1 rounded">{auditEntry.id}</code> — Confidence {auditEntry.explanation.confidence}% · {auditEntry.timestamp}
+            Full decision audit for <code className="text-blue-400 bg-white/5 px-1 rounded">{auditEntry.id}</code> · Confidence {resolvedConfidence} · {resolvedTimestamp}
           </p>
         </motion.div>
 
-        {/* KPI bar */}
         <motion.div variants={fadeUp}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: 'Confidence', value: `${auditEntry.explanation.confidence}%`, color: 'var(--engine-govern)' },
+              { label: 'Confidence', value: resolvedConfidence, color: 'var(--engine-govern)' },
               { label: 'Factors', value: String(auditEntry.topFactors.length), color: 'var(--engine-dashboard)' },
               { label: 'Model accuracy', value: `${auditEntry.model.accuracy}%`, color: 'var(--engine-protect)' },
-              { label: 'Feedback rate', value: '95%', color: 'var(--engine-execute)' },
+              { label: 'Card', value: `••••${DEMO_THREAD.criticalAlert.cardLast4}`, color: 'var(--engine-execute)' },
             ].map((kpi) => (
               <div key={kpi.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
@@ -120,11 +276,8 @@ export function GovernAuditDetail() {
           </div>
         </motion.div>
 
-        {/* 2-column layout */}
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Main feed */}
           <motion.div variants={fadeUp} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
-            {/* Decision metadata */}
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 md:p-6">
               <h2 className="text-sm font-semibold text-white mb-4">Decision Metadata</h2>
               <div className="space-y-3">
@@ -137,15 +290,14 @@ export function GovernAuditDetail() {
               </div>
             </div>
 
-            {/* Decision reconstruction */}
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 md:p-6" style={{ borderLeftWidth: 3, borderLeftColor: 'var(--engine-govern)' }}>
               <h2 className="text-sm font-semibold text-white mb-3">Decision Reconstruction</h2>
               <p className="text-sm text-slate-300 leading-relaxed mb-4">{auditEntry.explanation.summary}</p>
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex-1 h-2 rounded-full bg-white/10">
-                  <div className="h-full rounded-full bg-blue-500" style={{ width: `${auditEntry.explanation.confidence}%` }} />
+                  <div className="h-full rounded-full bg-blue-500" style={{ width: `${auditEntry.explanation.confidence * 100}%` }} />
                 </div>
-                <span className="text-sm font-bold text-blue-400 shrink-0">{auditEntry.explanation.confidence}% confidence</span>
+                <span className="text-sm font-bold text-blue-400 shrink-0">{resolvedConfidence} confidence</span>
               </div>
               <div className="space-y-3">
                 {auditEntry.topFactors.map((factor) => (
@@ -157,13 +309,12 @@ export function GovernAuditDetail() {
                     <div className="h-1.5 rounded-full bg-white/10">
                       <div className="h-full rounded-full bg-blue-400/70" style={{ width: `${factor.contribution * 100}%` }} />
                     </div>
-                    <span className="text-[10px] text-white/30">Contribution: {factor.contribution.toFixed(2)}</span>
+                    <span className="text-[10px] text-white/30">Contribution: {formatConfidence(factor.contribution)}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Compliance flags */}
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 md:p-6">
               <h2 className="text-sm font-semibold text-white mb-4">Compliance Flags</h2>
               <div className="space-y-2.5">
@@ -181,9 +332,7 @@ export function GovernAuditDetail() {
             </div>
           </motion.div>
 
-          {/* Side rail */}
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Audit detail sidebar">
-            {/* Contributing factors */}
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
               <div className="flex items-center gap-2 mb-3">
                 <ChevronDown className="h-4 w-4 text-blue-400" />
@@ -196,13 +345,12 @@ export function GovernAuditDetail() {
                     <div className="flex-1 h-1.5 rounded-full bg-white/10">
                       <div className="h-full rounded-full bg-blue-500/60" style={{ width: `${f.contribution * 100}%` }} />
                     </div>
-                    <span className="text-xs text-white/40 w-8 text-right">{f.contribution.toFixed(2)}</span>
+                    <span className="text-xs text-white/40 w-8 text-right">{formatConfidence(f.contribution)}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* User feedback */}
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
               <div className="flex items-center gap-2 mb-3">
                 <User className="h-4 w-4 text-blue-400" />
@@ -223,7 +371,6 @@ export function GovernAuditDetail() {
               <p className="text-xs text-white/30 mt-3">Human-validated · Source: Feedback system</p>
             </div>
 
-            {/* Navigation */}
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Related</h3>
               <div className="flex flex-col gap-2">

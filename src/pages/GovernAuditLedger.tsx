@@ -14,12 +14,12 @@ import {
   ArrowUp,
   CircleDot,
   FileText,
-  ExternalLink,
   User,
   ArrowLeft,
 } from "lucide-react"
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
+import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -65,7 +65,25 @@ type FilterTab = "All" | "Verified" | "Pending review" | "Flagged"
 type SortField = "id" | "timestamp" | "confidence" | "evidence"
 type SortDir = "asc" | "desc"
 
-interface AuditEntry { id: string; timestamp: string; sortTime: number; type: DecisionType; action: string; confidence: number; evidence: number; status: DecisionStatus }
+interface AuditEntry {
+  id: string
+  timestamp: string
+  sortTime: number
+  type: DecisionType
+  action: string
+  confidence: number
+  evidence: number
+  status: DecisionStatus
+}
+
+const toAuditTimestamp = (value: string) =>
+  formatDemoTimestamp(value, {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
 
 const filterTabs: { label: FilterTab; count?: number }[] = [
   { label: "All" },
@@ -75,14 +93,14 @@ const filterTabs: { label: FilterTab; count?: number }[] = [
 ]
 
 const auditEntries: AuditEntry[] = [
-  { id: "GV-2026-0216-847", timestamp: "14:28 Today", sortTime: 8, type: "Execute", action: "Portfolio rebalance", confidence: 0.97, evidence: 12, status: "Verified" },
-  { id: "GV-2026-0216-846", timestamp: "14:15 Today", sortTime: 7, type: "Protect", action: "Block wire transfer", confidence: 0.94, evidence: 9, status: "Verified" },
-  { id: "GV-2026-0216-845", timestamp: "13:52 Today", sortTime: 6, type: "Grow", action: "Subscription consolidation", confidence: 0.89, evidence: 7, status: "Verified" },
-  { id: "GV-2026-0216-844", timestamp: "11:20 Today", sortTime: 5, type: "Execute", action: "Archive invoices", confidence: 0.78, evidence: 5, status: "Pending review" },
-  { id: "GV-2026-0215-843", timestamp: "Yesterday", sortTime: 4, type: "Protect", action: "Unusual transaction", confidence: 0.92, evidence: 10, status: "Verified" },
-  { id: "GV-2026-0215-842", timestamp: "Yesterday", sortTime: 3, type: "Grow", action: "Goal update", confidence: 0.86, evidence: 6, status: "Verified" },
-  { id: "GV-2026-0214-841", timestamp: "Feb 14", sortTime: 2, type: "Execute", action: "Payment processed", confidence: 0.91, evidence: 8, status: "Verified" },
-  { id: "GV-2026-0214-840", timestamp: "Feb 14", sortTime: 1, type: "Govern", action: "Policy update", confidence: 0.97, evidence: 15, status: "Verified" },
+  { id: "GV-2026-0319-847", timestamp: toAuditTimestamp("2026-03-19T14:28:00-04:00"), sortTime: new Date("2026-03-19T14:28:00-04:00").getTime(), type: "Execute", action: "Portfolio rebalance", confidence: 0.97, evidence: 12, status: "Verified" },
+  { id: "GV-2026-0319-846", timestamp: toAuditTimestamp("2026-03-19T14:15:00-04:00"), sortTime: new Date("2026-03-19T14:15:00-04:00").getTime(), type: "Protect", action: "Block wire transfer", confidence: 0.94, evidence: 9, status: "Verified" },
+  { id: "GV-2026-0319-845", timestamp: toAuditTimestamp("2026-03-19T13:52:00-04:00"), sortTime: new Date("2026-03-19T13:52:00-04:00").getTime(), type: "Grow", action: "Subscription consolidation", confidence: 0.89, evidence: 7, status: "Verified" },
+  { id: "GV-2026-0319-844", timestamp: toAuditTimestamp("2026-03-19T11:20:00-04:00"), sortTime: new Date("2026-03-19T11:20:00-04:00").getTime(), type: "Execute", action: "Archive invoices", confidence: 0.78, evidence: 5, status: "Pending review" },
+  { id: "GV-2026-0318-843", timestamp: toAuditTimestamp("2026-03-18T16:42:00-04:00"), sortTime: new Date("2026-03-18T16:42:00-04:00").getTime(), type: "Protect", action: "Unusual transaction", confidence: 0.92, evidence: 10, status: "Verified" },
+  { id: "GV-2026-0318-842", timestamp: toAuditTimestamp("2026-03-18T10:18:00-04:00"), sortTime: new Date("2026-03-18T10:18:00-04:00").getTime(), type: "Grow", action: "Goal update", confidence: 0.86, evidence: 6, status: "Verified" },
+  { id: "GV-2026-0317-841", timestamp: toAuditTimestamp("2026-03-17T14:12:00-04:00"), sortTime: new Date("2026-03-17T14:12:00-04:00").getTime(), type: "Execute", action: "Payment processed", confidence: 0.91, evidence: 8, status: "Verified" },
+  { id: "GV-2026-0317-840", timestamp: toAuditTimestamp("2026-03-17T09:40:00-04:00"), sortTime: new Date("2026-03-17T09:40:00-04:00").getTime(), type: "Govern", action: "Policy update", confidence: 0.97, evidence: 15, status: "Verified" },
 ]
 
 const typeColor: Record<DecisionType, string> = { Protect: "var(--engine-protect)", Grow: "var(--engine-grow)", Execute: "var(--engine-execute)", Govern: "var(--engine-govern)" }
@@ -113,7 +131,10 @@ export default function GovernAuditPage() {
 
   let filtered = auditEntries as AuditEntry[]
   if (activeFilter !== "All") { filtered = filtered.filter(e => e.status === activeFilter) }
-  if (searchQuery) { const q = searchQuery.toLowerCase(); filtered = filtered.filter(e => e.id.toLowerCase().includes(q) || e.type.toLowerCase().includes(q) || e.action.toLowerCase().includes(q)) }
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase()
+    filtered = filtered.filter(e => e.id.toLowerCase().includes(q) || e.type.toLowerCase().includes(q) || e.action.toLowerCase().includes(q) || e.timestamp.toLowerCase().includes(q))
+  }
 
   const sorted = [...filtered].sort((a, b) => {
     let cmp = 0
@@ -200,11 +221,20 @@ export default function GovernAuditPage() {
                         const SIcon = sCfg.icon
                         return (
                           <motion.tr key={entry.id} variants={fadeUp} className="group transition-colors hover:bg-white/[0.02]" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                            <td className="px-4 py-3.5"><span className="text-sm font-mono font-medium" style={{ color: "var(--engine-govern)" }}>{entry.id}</span></td>
+                            <td className="px-4 py-3.5">
+                              <Link
+                                to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
+                                className="text-sm font-mono font-medium underline-offset-2 hover:underline focus-visible:underline"
+                                style={{ color: "var(--engine-govern)" }}
+                                aria-label={`Open audit detail for ${entry.id}`}
+                              >
+                                {entry.id}
+                              </Link>
+                            </td>
                             <td className="px-4 py-3.5"><span className="text-xs" style={{ color: "#94A3B8" }}>{entry.timestamp}</span></td>
                             <td className="px-4 py-3.5"><span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium" style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}><CircleDot size={10} />{entry.type}</span></td>
                             <td className="px-4 py-3.5"><span className="text-sm" style={{ color: "#CBD5E1" }}>{entry.action}</span></td>
-                            <td className="px-4 py-3.5"><span className="text-xs font-mono tabular-nums" style={{ color: getConfidenceColor(entry.confidence) }}>{entry.confidence.toFixed(2)}</span></td>
+                            <td className="px-4 py-3.5"><span className="text-xs font-mono tabular-nums" style={{ color: getConfidenceColor(entry.confidence) }}>{formatConfidence(entry.confidence)}</span></td>
                             <td className="px-4 py-3.5"><span className="text-sm font-mono tabular-nums" style={{ color: "#CBD5E1" }}>{entry.evidence}</span></td>
                             <td className="px-4 py-3.5"><span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold" style={{ background: sCfg.bg, color: sCfg.color }}><SIcon size={11} />{entry.status}</span></td>
                           </motion.tr>
@@ -229,11 +259,18 @@ export default function GovernAuditPage() {
                         <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: sCfg.bg, color: sCfg.color }}><SIcon size={10} />{entry.status}</span>
                         <span className="ml-auto text-xs" style={{ color: "#64748B" }}>{entry.timestamp}</span>
                       </div>
-                      <span className="text-sm font-mono font-medium" style={{ color: "var(--engine-govern)" }}>{entry.id}</span>
+                      <Link
+                        to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
+                        className="text-sm font-mono font-medium underline-offset-2 hover:underline focus-visible:underline"
+                        style={{ color: "var(--engine-govern)" }}
+                        aria-label={`Open audit detail for ${entry.id}`}
+                      >
+                        {entry.id}
+                      </Link>
                       <span className="text-xs" style={{ color: "#CBD5E1" }}>{entry.action}</span>
                       <div className="flex items-center justify-between">
                         <span className="text-xs" style={{ color: "#64748B" }}>{entry.evidence} evidence pts</span>
-                        <span className="text-xs font-mono tabular-nums" style={{ color: getConfidenceColor(entry.confidence) }}>Conf: {entry.confidence.toFixed(2)}</span>
+                        <span className="text-xs font-mono tabular-nums" style={{ color: getConfidenceColor(entry.confidence) }}>Conf: {formatConfidence(entry.confidence)}</span>
                       </div>
                     </GlassCard>
                   </motion.div>
@@ -276,8 +313,12 @@ export default function GovernAuditPage() {
             {/* Export */}
             <GlassCard className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Export Options</h3>
-              <button className="w-full inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-medium transition-all hover:bg-white/[0.04] cursor-pointer" style={{ borderColor: "rgba(255,255,255,0.1)", color: "#CBD5E1", background: "transparent", minHeight: "44px" }}><Download size={14} />Export full ledger (CSV)</button>
-              <button className="w-full inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-medium transition-all hover:bg-white/[0.04] cursor-pointer" style={{ borderColor: "rgba(255,255,255,0.1)", color: "#CBD5E1", background: "transparent", minHeight: "44px" }}><FileText size={14} />Generate compliance report (PDF)</button>
+              <button disabled className="w-full inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-medium cursor-not-allowed opacity-60" style={{ borderColor: "rgba(255,255,255,0.1)", color: "#CBD5E1", background: "transparent", minHeight: "44px" }} aria-label="Export full ledger preview only">
+                <Download size={14} />Export full ledger (CSV) · Preview
+              </button>
+              <button disabled className="w-full inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-medium cursor-not-allowed opacity-60" style={{ borderColor: "rgba(255,255,255,0.1)", color: "#CBD5E1", background: "transparent", minHeight: "44px" }} aria-label="Generate compliance report preview only">
+                <FileText size={14} />Generate compliance report (PDF) · Preview
+              </button>
             </GlassCard>
 
             {/* Primary CTA: Back to govern overview -> /govern */}
