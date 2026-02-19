@@ -5,6 +5,8 @@
   "type": "module",
   "packageManager": "npm@11.6.2",
   "scripts": {
+    "setup:hooks": "git config core.hooksPath .githooks",
+    "deploy:trigger": "gh workflow run deploy.yml --repo poseidon-mit/poseidon-mit.github.io --ref main",
     "dev": "vite",
     "build": "vite build",
     "dev:vite": "vite",
