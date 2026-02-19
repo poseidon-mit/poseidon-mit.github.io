@@ -15,12 +15,32 @@ const HERO_VIDEO_DESKTOP_SRC = '/videos/hero-theme-desktop.mp4';
 const HERO_VIDEO_MOBILE_SRC = '/videos/hero-theme-mobile.mp4';
 const HERO_VIDEO_POSTER_SRC = '/videos/hero-theme-poster.jpg';
 
+function useHeroVideoSrc() {
+  const [src, setSrc] = useState(() =>
+    typeof window !== 'undefined' && window.innerWidth < 768
+      ? HERO_VIDEO_MOBILE_SRC
+      : HERO_VIDEO_DESKTOP_SRC,
+  );
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 767px)');
+    const update = (e: MediaQueryListEvent | MediaQueryList) =>
+      setSrc(e.matches ? HERO_VIDEO_MOBILE_SRC : HERO_VIDEO_DESKTOP_SRC);
+    update(mql);
+    mql.addEventListener('change', update);
+    return () => mql.removeEventListener('change', update);
+  }, []);
+
+  return src;
+}
+
 export function HeroSection() {
   const [videoReady, setVideoReady] = useState(true);
   const [videoFailed, setVideoFailed] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const heroVideoEnabled = useJetonHeroVideoEnabled();
+  const heroVideoSrc = useHeroVideoSrc();
   const { navigate } = useRouter();
 
   const { scrollY } = useScroll();
@@ -124,6 +144,8 @@ export function HeroSection() {
         <div className={`pointer-events-none absolute inset-0 transition-opacity duration-[650ms] ${videoReady ? 'opacity-100' : 'opacity-0'}`}>
           <video
             ref={videoRef}
+            key={heroVideoSrc}
+            src={heroVideoSrc}
             className="h-full w-full object-cover object-center brightness-[0.68] saturate-[0.86]"
             autoPlay
             loop
@@ -138,10 +160,7 @@ export function HeroSection() {
             onLoadedData={() => setVideoReady(true)}
             onCanPlay={() => setVideoReady(true)}
             onError={() => setVideoFailed(true)}
-          >
-            <source src={HERO_VIDEO_MOBILE_SRC} media="(max-width: 767px)" type="video/mp4" />
-            <source src={HERO_VIDEO_DESKTOP_SRC} type="video/mp4" />
-          </video>
+          />
         </div>
       ) : null}
 
