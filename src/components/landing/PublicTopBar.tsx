@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Waves, Menu, X } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import { Link } from '@/router'
 
 export function PublicTopBar() {
@@ -16,11 +16,11 @@ export function PublicTopBar() {
         {/* Left: Logo */}
         <Link
           to="/"
-          className="flex items-center gap-2 font-bold text-lg text-text-primary"
+          className="flex items-center gap-1.5"
           aria-label="Poseidon.AI home"
         >
-          <Waves className="h-5 w-5 text-engine-protect" />
-          Poseidon.AI
+          <img src="/logo.png" alt="" width="36" height="36" className="w-9 h-9 object-contain" style={{ filter: 'drop-shadow(0 0 3px rgba(0,240,255,0.3))' }} aria-hidden="true" />
+          <span className="text-xl font-light tracking-widest" style={{ color: '#f8fafc' }}>Poseidon</span>
         </Link>
 
         {/* Center: Desktop Links */}

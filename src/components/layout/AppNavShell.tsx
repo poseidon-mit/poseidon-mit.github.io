@@ -182,9 +182,9 @@ export function AppNavShell({
         }}
       >
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-1.5 px-5 py-5" aria-label="Poseidon home">
-          <img src="/logo.png" alt="" width="44" height="44" className="w-11 h-11 object-contain" style={{ filter: 'drop-shadow(0 0 8px rgba(0,240,255,0.6))' }} aria-hidden="true" />
-          <span className="text-base font-light tracking-widest" style={{ color: '#f8fafc' }}>
+        <Link to="/" className="flex items-center gap-2 px-5 py-5" aria-label="Poseidon home">
+          <img src="/logo.png" alt="" width="64" height="64" className="w-16 h-16 object-contain" style={{ filter: 'drop-shadow(0 0 3px rgba(0,240,255,0.3))' }} aria-hidden="true" />
+          <span className="text-xl font-light tracking-widest" style={{ color: '#f8fafc' }}>
             Poseidon
           </span>
         </Link>
@@ -467,7 +467,7 @@ export function AppNavShell({
         >
           {/* Left: Logo */}
           <Link to="/" className="flex items-center gap-1.5" aria-label="Poseidon home">
-            <img src="/logo.png" alt="" width="40" height="40" className="w-10 h-10 object-contain" style={{ filter: 'drop-shadow(0 0 8px rgba(0,240,255,0.6))' }} aria-hidden="true" />
+            <img src="/logo.png" alt="" width="40" height="40" className="w-10 h-10 object-contain" style={{ filter: 'drop-shadow(0 0 3px rgba(0,240,255,0.3))' }} aria-hidden="true" />
             <span className="text-sm font-light tracking-widest" style={{ color: '#f8fafc' }}>
               Poseidon
             </span>
