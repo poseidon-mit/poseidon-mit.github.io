@@ -1,161 +1,115 @@
 #!/usr/bin/env node
 
-import fs from 'node:fs';
-import path from 'node:path';
-import process from 'node:process';
+import fs from 'node:fs'
+import path from 'node:path'
+import process from 'node:process'
 
-const ROOT = process.cwd();
-const PAGES_DIR = path.join(ROOT, 'src', 'pages');
-const STRICT = process.argv.includes('--strict');
+const ROOT = process.cwd()
+const ROUTES_FILE = path.join(ROOT, 'src', 'router', 'lazyRoutes.ts')
+const APP_ROUTES_FILE = path.join(ROOT, 'src', 'router', 'app-shell-routes.ts')
+const STRICT = process.argv.includes('--strict')
 
-const ACTIVE_PAGES = new Set([
-  'Landing',
-  'Signup',
-  'Onboarding',
-  'Dashboard',
-  'Protect',
-  'Grow',
-  'Execute',
-  'Govern',
-  'Settings',
-]);
-
-// Baseline from the legacy-system investigation report.
-const BASELINE = {
-  Dashboard: { styles: 3, utility: 0 },
-  EngineWorkspace: { styles: 0, utility: 1 },
-  Engines: { styles: 5, utility: 21 },
-  Execute: { styles: 15, utility: 0 },
-  ExecuteV2: { styles: 12, utility: 53 },
-  Govern: { styles: 20, utility: 0 },
-  GovernV2: { styles: 9, utility: 54 },
-  Grow: { styles: 19, utility: 0 },
-  GrowV2: { styles: 9, utility: 46 },
-  Landing: { styles: 6, utility: 3 },
-  Login: { styles: 3, utility: 18 },
-  NotFound: { styles: 5, utility: 1 },
-  Onboarding: { styles: 2, utility: 4 },
-  OnboardingV2: { styles: 14, utility: 49 },
-  Protect: { styles: 19, utility: 3 },
-  ProtectV2: { styles: 6, utility: 29 },
-  Settings: { styles: 0, utility: 0 },
-  Signup: { styles: 1, utility: 1 },
-  V3Hub: { styles: 1, utility: 11 },
-};
-
-const STYLE_RE = /style=\{\{/g;
-const CLASSNAME_RE = /className="([^"]*)"/g;
-const SHELL_RE = /CommandCenterShell|EnginePageShell|AppNavShell/g;
-
-function isUtilityToken(token) {
-  return (
-    token === 'flex' ||
-    token.startsWith('flex-') ||
-    token === 'grid' ||
-    token.startsWith('grid-') ||
-    token.startsWith('text-') ||
-    token.startsWith('bg-') ||
-    token.startsWith('p-') ||
-    token.startsWith('pt-') ||
-    token.startsWith('pr-') ||
-    token.startsWith('pb-') ||
-    token.startsWith('pl-') ||
-    token.startsWith('px-') ||
-    token.startsWith('py-') ||
-    token.startsWith('m-') ||
-    token.startsWith('mt-') ||
-    token.startsWith('mr-') ||
-    token.startsWith('mb-') ||
-    token.startsWith('ml-') ||
-    token.startsWith('mx-') ||
-    token.startsWith('my-') ||
-    token.startsWith('rounded') ||
-    token.startsWith('border') ||
-    token.startsWith('space-y-') ||
-    token.startsWith('gap-') ||
-    token.startsWith('items-') ||
-    token.startsWith('justify-') ||
-    token.startsWith('w-') ||
-    token.startsWith('h-')
-  );
+function read(filePath) {
+  return fs.readFileSync(filePath, 'utf8')
 }
 
-function countUtilityClassStrings(source) {
-  let count = 0;
-  for (const match of source.matchAll(CLASSNAME_RE)) {
-    const classNames = match[1] || '';
-    const tokens = classNames.split(/\s+/).filter(Boolean);
-    if (tokens.some(isUtilityToken)) {
-      count += 1;
-    }
-  }
-  return count;
+function parseAppPrefixes(source) {
+  const blockMatch = source.match(/APP_SHELL_PREFIXES\s*=\s*\[([\s\S]*?)\]/)
+  if (!blockMatch) return []
+  const quoted = blockMatch[1].match(/'\/[^']*'/g) ?? []
+  return [...new Set(quoted.map((item) => item.slice(1, -1)))]
 }
 
-function metricsFor(filePath) {
-  const source = fs.readFileSync(filePath, 'utf8');
-  return {
-    styles: (source.match(STYLE_RE) || []).length,
-    utility: countUtilityClassStrings(source),
-    shell: (source.match(SHELL_RE) || []).length,
-  };
+function parseRouteLoaders(source) {
+  const matches = [
+    ...source.matchAll(/'([^']+)':\s*\(\)\s*=>\s*import\('\.\.\/pages\/([^']+)'\)/g),
+  ]
+  return matches.map((match) => ({
+    route: match[1],
+    pageFile: `src/pages/${match[2]}.tsx`,
+  }))
 }
 
-const files = fs
-  .readdirSync(PAGES_DIR)
-  .filter((name) => name.endsWith('.tsx') && !name.includes('__tests__'))
-  .sort();
+function isAppRoute(route, prefixes) {
+  return prefixes.some((prefix) => route === prefix || route.startsWith(`${prefix}/`))
+}
 
-let hasError = false;
+function hasInlineRootBackground(source) {
+  return /<div\s+className="[^"]*min-h-screen[^"]*"[\s\S]{0,140}?style=\{\{\s*background:\s*['"]#0B1221['"]/.test(
+    source,
+  )
+}
 
-console.log(`[visual-system] Mode: ${STRICT ? 'strict' : 'baseline'}`);
+function checkPageInvariants(pagePath, source, strict) {
+  const failures = []
 
-for (const file of files) {
-  const pageName = file.replace('.tsx', '');
-  const fullPath = path.join(PAGES_DIR, file);
-  const metrics = metricsFor(fullPath);
-  const baseline = BASELINE[pageName];
-
-  if (!baseline) {
-    console.error(`[visual-system] Missing baseline entry: ${pageName}`);
-    hasError = true;
-    continue;
+  if (hasInlineRootBackground(source)) {
+    failures.push(`${pagePath}: inline root background '#0B1221' is forbidden (use AppNavShell/app-bg-depth).`)
   }
 
-  if (ACTIVE_PAGES.has(pageName) && metrics.shell === 0) {
-    console.error(`[visual-system] Active page missing shell contract: ${pageName}`);
-    hasError = true;
+  if (/function\s+AuroraPulse\s*\(/.test(source)) {
+    failures.push(`${pagePath}: local AuroraPulse definition detected; import from '@/components/poseidon'.`)
+  }
+  if (/function\s+GovernFooter\s*\(/.test(source)) {
+    failures.push(`${pagePath}: local GovernFooter definition detected; import from '@/components/poseidon'.`)
+  }
+  if (/const\s+fadeUp\s*=/.test(source)) {
+    failures.push(`${pagePath}: local fadeUp motion preset detected; import from '@/lib/motion-presets'.`)
+  }
+  if (/const\s+staggerContainer\s*=/.test(source)) {
+    failures.push(`${pagePath}: local staggerContainer motion preset detected; import from '@/lib/motion-presets'.`)
   }
 
-  if (STRICT) {
-    const maxStyles = ACTIVE_PAGES.has(pageName) ? 0 : baseline.styles;
-    const maxUtility = ACTIVE_PAGES.has(pageName) ? 0 : baseline.utility;
-    if (metrics.styles > maxStyles) {
-      console.error(`[visual-system] Strict style violation: ${pageName} (got ${metrics.styles}, max ${maxStyles})`);
-      hasError = true;
-    }
-    if (metrics.utility > maxUtility) {
-      console.error(`[visual-system] Strict utility violation: ${pageName} (got ${metrics.utility}, max ${maxUtility})`);
-      hasError = true;
-    }
-  } else {
-    if (metrics.styles > baseline.styles) {
-      console.error(`[visual-system] Style regression: ${pageName} (got ${metrics.styles}, baseline ${baseline.styles})`);
-      hasError = true;
-    }
-    if (metrics.utility > baseline.utility) {
-      console.error(`[visual-system] Utility regression: ${pageName} (got ${metrics.utility}, baseline ${baseline.utility})`);
-      hasError = true;
-    }
+  if (/<AuroraPulse\b/.test(source) && !/from\s+['"]@\/components\/poseidon['"]/.test(source)) {
+    failures.push(`${pagePath}: AuroraPulse usage must import from '@/components/poseidon'.`)
+  }
+  if (/<GovernFooter\b/.test(source) && !/from\s+['"]@\/components\/poseidon['"]/.test(source)) {
+    failures.push(`${pagePath}: GovernFooter usage must import from '@/components/poseidon'.`)
+  }
+  if (
+    /(variants=\{fadeUp\}|variants=\{staggerContainer\}|staggerContainer\b|fadeUp\b)/.test(source) &&
+    !/from\s+['"]@\/lib\/motion-presets['"]/.test(source)
+  ) {
+    failures.push(`${pagePath}: shared motion presets must be imported from '@/lib/motion-presets'.`)
   }
 
-  console.log(
-    `[visual-system] ${pageName.padEnd(14)} styles=${String(metrics.styles).padEnd(2)} utility=${String(metrics.utility).padEnd(2)} shell=${metrics.shell}`,
-  );
+  return failures
 }
 
-if (hasError) {
-  process.exit(1);
+const routeSource = read(ROUTES_FILE)
+const appRouteSource = read(APP_ROUTES_FILE)
+const appPrefixes = parseAppPrefixes(appRouteSource)
+const routeEntries = parseRouteLoaders(routeSource)
+
+if (appPrefixes.length === 0) {
+  console.error('[visual-system] could not parse app-shell prefixes')
+  process.exit(1)
 }
 
-console.log('[visual-system] Page visual-system checks passed.');
+const appRouteEntries = routeEntries.filter(({ route }) => isAppRoute(route, appPrefixes))
+const failures = []
+
+for (const { route, pageFile } of appRouteEntries) {
+  const absolutePath = path.join(ROOT, pageFile)
+  if (!fs.existsSync(absolutePath)) {
+    failures.push(`${route}: page file is missing (${pageFile}).`)
+    continue
+  }
+
+  const source = read(absolutePath)
+  failures.push(...checkPageInvariants(pageFile, source, STRICT))
+}
+
+console.log(`[visual-system] Mode: ${STRICT ? 'strict' : 'contract'}`)
+console.log(`[visual-system] app routes checked: ${appRouteEntries.length}`)
+console.log(`[visual-system] app prefixes: ${appPrefixes.join(', ')}`)
+
+if (failures.length > 0) {
+  console.error('[visual-system] contract violations:')
+  for (const failure of failures) {
+    console.error(`- ${failure}`)
+  }
+  process.exit(1)
+}
+
+console.log('[visual-system] Route contract checks passed.')

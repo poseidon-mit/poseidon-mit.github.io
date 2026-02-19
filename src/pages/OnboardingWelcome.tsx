@@ -1,119 +1,64 @@
-import { motion } from "framer-motion"
+import { motion } from 'framer-motion'
 import { Link } from '@/router'
-import { Shield, TrendingUp, Zap, Scale, Waves, ArrowRight } from "lucide-react"
-
-const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: spring },
-}
-const staggerContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
-}
+import { Shield, TrendingUp, Zap, Scale, ArrowRight } from 'lucide-react'
+import { OnboardingShell } from '@/components/layout/OnboardingShell'
+import { fadeUp, staggerContainer } from '@/lib/motion-presets'
 
 const STEPS_PREVIEW = [
-  { icon: Shield, label: "Connect", desc: "Link your financial accounts securely with read-only access" },
-  { icon: TrendingUp, label: "Set goals", desc: "Define what matters most to your financial growth" },
-  { icon: Scale, label: "Set boundaries", desc: "Control what the AI can and cannot do on your behalf" },
-  { icon: Zap, label: "Activate", desc: "Your AI engines start working immediately" },
+  { icon: Shield, label: 'Connect', desc: 'Link your financial accounts securely with read-only access' },
+  { icon: TrendingUp, label: 'Set goals', desc: 'Define priorities that guide growth and risk posture' },
+  { icon: Scale, label: 'Set boundaries', desc: 'Control exactly what AI can and cannot do for you' },
+  { icon: Zap, label: 'Activate', desc: 'Engines begin generating explainable recommendations' },
 ]
 
 export default function OnboardingWelcomePage() {
   return (
-    <main id="main-content" className="relative">
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: "var(--engine-dashboard)", color: "#0B1221" }}
-      >
-        Skip to main content
-      </a>
-      <div
-        className="pointer-events-none absolute inset-0"
-        aria-hidden="true"
-        style={{
-          background: "radial-gradient(50% 40% at 50% 0%, rgba(0,240,255,0.05), transparent)",
-        }}
-      />
-
-      <div className="relative z-10 mx-auto max-w-2xl px-6 py-16 text-center">
-        <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
-          {/* Logo */}
-          <motion.div variants={fadeUp} className="flex items-center justify-center gap-3 mb-8">
-            <div
-              className="flex items-center justify-center w-14 h-14 rounded-2xl"
-              style={{ background: "rgba(0,240,255,0.08)", border: "1px solid rgba(0,240,255,0.15)" }}
-            >
-              <Waves size={28} style={{ color: "var(--engine-dashboard)" }} />
-            </div>
-          </motion.div>
-
-          <motion.h1
-            variants={fadeUp}
-            className="text-3xl md:text-4xl font-bold leading-tight tracking-tight mb-4 text-balance"
-            style={{ color: "#F1F5F9" }}
-          >
-            {"Let's set up your financial command center"}
-          </motion.h1>
-
-          <motion.p variants={fadeUp} className="text-base mb-12" style={{ color: "#94A3B8" }}>
-            4 quick steps to activate your AI engines. Takes under 3 minutes.
-          </motion.p>
-
-          {/* Step preview cards */}
-          <motion.div variants={staggerContainer} className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12 text-left">
-            {STEPS_PREVIEW.map((step, i) => (
-              <motion.div
-                key={step.label}
-                variants={fadeUp}
-                className="glass-surface rounded-xl p-4 flex items-start gap-3"
-              >
-                <div
-                  className="flex items-center justify-center w-9 h-9 rounded-lg flex-shrink-0"
-                  style={{ background: "rgba(0,240,255,0.08)" }}
-                >
-                  <step.icon size={18} style={{ color: "var(--engine-dashboard)" }} />
-                </div>
+    <OnboardingShell
+      step={1}
+      showProgress={false}
+      title="One AI studio for safer and faster money decisions"
+      subtitle="Complete four short steps to activate your command center. Average setup time is under three minutes."
+    >
+      <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
+        <motion.div variants={staggerContainer} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {STEPS_PREVIEW.map((step, index) => (
+            <motion.div key={step.label} variants={fadeUp} className="glass-surface rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <span className="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-[var(--engine-dashboard)]">
+                  <step.icon className="h-4.5 w-4.5" aria-hidden="true" />
+                </span>
                 <div>
-                  <p className="text-sm font-semibold mb-0.5" style={{ color: "#F1F5F9" }}>
-                    {i + 1}. {step.label}
+                  <p className="text-sm font-semibold text-slate-100">
+                    {index + 1}. {step.label}
                   </p>
-                  <p className="text-xs leading-relaxed" style={{ color: "#94A3B8" }}>{step.desc}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-300">{step.desc}</p>
                 </div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* Trust badges */}
-          <motion.div
-            variants={fadeUp}
-            className="flex items-center justify-center gap-4 flex-wrap mb-10 text-[10px] font-mono uppercase tracking-widest"
-            style={{ color: "#475569" }}
-          >
-            <span>Read-only access</span>
-            <span style={{ opacity: 0.3 }}>|</span>
-            <span>Bank-level encryption</span>
-            <span style={{ opacity: 0.3 }}>|</span>
-            <span>Cancel anytime</span>
-          </motion.div>
-
-          {/* CTA: Primary -> /onboarding/connect */}
-          <motion.div variants={fadeUp}>
-            <Link
-              to="/onboarding/connect"
-              className="inline-flex items-center gap-2 text-sm font-semibold px-8 py-3.5 rounded-xl transition-all"
-              style={{
-                background: "linear-gradient(135deg, #14B8A6, #06B6D4)",
-                color: "#0B1221",
-              }}
-            >
-              Continue setup
-              <ArrowRight size={16} />
-            </Link>
-          </motion.div>
+              </div>
+            </motion.div>
+          ))}
         </motion.div>
-      </div>
-    </main>
+
+        <motion.div
+          variants={fadeUp}
+          className="mt-8 flex flex-wrap items-center gap-3 text-[10px] font-mono uppercase tracking-[0.16em] text-slate-500"
+        >
+          <span>Read-only access</span>
+          <span className="text-slate-600">•</span>
+          <span>Bank-level encryption</span>
+          <span className="text-slate-600">•</span>
+          <span>Cancel anytime</span>
+        </motion.div>
+
+        <motion.div variants={fadeUp} className="mt-8">
+          <Link
+            to="/onboarding/connect"
+            className="cta-primary-glow inline-flex min-h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-teal-400 to-cyan-300 px-7 py-3 text-sm font-semibold text-[#0B1221]"
+          >
+            Continue setup
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </motion.div>
+      </motion.div>
+    </OnboardingShell>
   )
 }

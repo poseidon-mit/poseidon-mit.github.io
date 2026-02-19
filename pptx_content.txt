@@ -1,0 +1,71 @@
+Presentation: /Users/shinjifujiwara/code/poseidon-mit.github.io/remotion/out/Poseidon_AI_MIT_CTO_V3_Visual_First.pptx
+Slide Width: 13.33299978127734 inches
+Slide Height: 7.5 inches
+Total Slides: 11
+
+--- Slide 1 ---
+Notes: Poseidon.AI is our trusted AI-native money platform. Today I will walk through the four engines and show how they operate as one system. → Next: The Coordination Gap
+  Shape 1: [PICTURE (13)] 
+    Position: x:0.0, y:0.0, w:13.3, h:7.5
+
+
+--- Slide 2 ---
+Notes: The hidden coordination tax is real: around $133 per month in user loss, $12.5B annual fraud loss, and major overdraft burden. Mint proved visibility alone is not enough. Users still act as the integrator. → Next: Why Now
+  Shape 1: [PICTURE (13)] 
+    Position: x:0.0, y:0.0, w:13.3, h:7.5
+
+
+--- Slide 3 ---
+Notes: Three forces converge now: open banking standards, AI economics improving, and user expectations shifting to proactive guidance. 2025 is the window for AI-native financial services. → Next: The Architecture
+  Shape 1: [PICTURE (13)] 
+    Position: x:0.0, y:0.0, w:13.3, h:7.5
+
+
+--- Slide 4 ---
+Notes: Our architecture is a closed loop: Protect, Grow, Execute, Govern. Each engine has a clear role, and together they deliver auditable decisions, not isolated insights. → Next: Differentiation
+  Shape 1: [PICTURE (13)] 
+    Position: x:0.0, y:0.0, w:13.3, h:7.5
+
+
+--- Slide 5 ---
+Notes: We match baseline fintech features, then differentiate on five critical capabilities, especially governance-by-design. That governance moat is difficult to replicate. → Next: Roadmap
+  Shape 1: [PICTURE (13)] 
+    Position: x:0.0, y:0.0, w:13.3, h:7.5
+
+
+--- Slide 6 ---
+Notes: Execution is phased across four stages. We track hard gates like 9K users, 70% precision, and 99.9% uptime to prove break-even and operational readiness. → Next: Unit Economics
+  Shape 1: [PICTURE (13)] 
+    Position: x:0.0, y:0.0, w:13.3, h:7.5
+
+
+--- Slide 7 ---
+Notes: Unit economics justify the business: 17x–77x value-to-cost ratio, blended CAC under $10, and 87% gross margin at scale. Operating break-even at Month 15 on $25M total capital, with Series A triggered at $300K MRR in Month 9. By Month 36: 2.2M monthly users, 717K paid, $96M annual revenue. → Next: Live Demo
+  Shape 1: [PICTURE (13)] 
+    Position: x:0.0, y:0.0, w:13.3, h:7.5
+
+
+--- Slide 8 ---
+Notes: The demo follows a 30-second journey: unified dashboard, Protect with explainability, Execute with human approval, and Govern with audit logging. → Next: Closing
+  Shape 1: [PICTURE (13)] 
+    Position: x:0.0, y:0.0, w:13.3, h:7.5
+
+
+--- Slide 9 ---
+Notes: The strategy rests on three pillars: governance, architecture, and business model. Economics target about $640 yearly user savings, 87% margin, and roughly 6x value-to-cost. → Next: Team + QR Code
+  Shape 1: [PICTURE (13)] 
+    Position: x:0.0, y:0.0, w:13.3, h:7.5
+
+
+--- Slide 10 ---
+Notes: We close with the team and operating principle: deterministic compute, explainable AI, and explicit human approval before action. The QR code links to the live demo. → Next: Financial Appendix
+  Shape 1: [PICTURE (13)] 
+    Position: x:0.0, y:0.0, w:13.3, h:7.5
+
+
+--- Slide 11 ---
+Notes: Appendix: supporting assumptions, references, and calculation details for diligence review.
+  Shape 1: [PICTURE (13)] 
+    Position: x:0.0, y:0.0, w:13.3, h:7.5
+
+

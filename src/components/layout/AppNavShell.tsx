@@ -12,13 +12,15 @@ import {
   Search,
   WifiOff,
   Radio,
+  type LucideIcon,
 } from 'lucide-react';
 import { Link } from '../../router';
 import { useCommandPalette } from '../../hooks/useCommandPalette';
 import { usePresentationMode } from '../../hooks/usePresentationMode';
 import { usePWA } from '../../hooks/usePWA';
 import { CommandPalette } from './CommandPalette';
-import { engineTokens } from '../../lib/engine-tokens';
+import { AuroraPulse } from '@/components/poseidon';
+import { engineTokens, type EngineName } from '../../lib/engine-tokens';
 import { DEMO_THREAD } from '@/lib/demo-thread';
 
 /* ─── Engine config ──────────────────────────────────────── */
@@ -26,17 +28,18 @@ import { DEMO_THREAD } from '@/lib/demo-thread';
 interface NavItem {
   label: string;
   path: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   color: string;
+  engine?: EngineName;
   group: 'engine' | 'system';
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, color: engineTokens.dashboard.color, group: 'engine' },
-  { label: 'Protect', path: '/protect', icon: Shield, color: engineTokens.protect.color, group: 'engine' },
-  { label: 'Grow', path: '/grow', icon: TrendingUp, color: engineTokens.grow.color, group: 'engine' },
-  { label: 'Execute', path: '/execute', icon: Zap, color: engineTokens.execute.color, group: 'engine' },
-  { label: 'Govern', path: '/govern', icon: Scale, color: engineTokens.govern.color, group: 'engine' },
+  { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, color: engineTokens.dashboard.color, engine: 'dashboard', group: 'engine' },
+  { label: 'Protect', path: '/protect', icon: Shield, color: engineTokens.protect.color, engine: 'protect', group: 'engine' },
+  { label: 'Grow', path: '/grow', icon: TrendingUp, color: engineTokens.grow.color, engine: 'grow', group: 'engine' },
+  { label: 'Execute', path: '/execute', icon: Zap, color: engineTokens.execute.color, engine: 'execute', group: 'engine' },
+  { label: 'Govern', path: '/govern', icon: Scale, color: engineTokens.govern.color, engine: 'govern', group: 'engine' },
   { label: 'Settings', path: '/settings', icon: Settings, color: '#94a3b8', group: 'system' },
   { label: 'Help', path: '/help', icon: HelpCircle, color: '#94a3b8', group: 'system' },
 ];
@@ -140,6 +143,12 @@ function getEngineColor(path: string): string | undefined {
   return section.color;
 }
 
+function getActiveEngine(path: string): EngineName | undefined {
+  const section = getActiveSection(path);
+  if (!section || section.group === 'system') return undefined;
+  return section.engine;
+}
+
 function getSubNav(path: string): SubNavItem[] | null {
   const sectionKey = Object.keys(SUB_NAV).find(
     (key) => path === key || path.startsWith(key + '/')
@@ -159,6 +168,7 @@ export function AppNavShell({
 }) {
   const activeSection = useMemo(() => getActiveSection(path), [path]);
   const engineColor = useMemo(() => getEngineColor(path), [path]);
+  const activeEngine = useMemo(() => getActiveEngine(path), [path]);
   const breadcrumbs = useMemo(() => BREADCRUMB_MAP[path] ?? ['Unknown'], [path]);
   const subNav = useMemo(() => getSubNav(path), [path]);
   const { isOpen: isPaletteOpen, open: openPalette, close: closePalette } = useCommandPalette();
@@ -179,18 +189,11 @@ export function AppNavShell({
   );
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#0B1221' }}>
+    <div className="app-bg-depth flex min-h-screen">
       <CommandPalette isOpen={isPaletteOpen} onClose={closePalette} />
       {/* ── Desktop Sidebar ── */}
       <aside
-        className="hidden lg:flex flex-col fixed top-0 left-0 h-screen z-40"
-        style={{
-          width: 240,
-          background: 'rgba(255, 255, 255, 0.03)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          borderRight: '1px solid rgba(255, 255, 255, 0.06)',
-        }}
+        className="glass-sidebar fixed top-0 left-0 z-40 hidden h-screen w-[240px] flex-col lg:flex"
       >
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 px-5 py-5" aria-label="Poseidon home">
@@ -215,23 +218,11 @@ export function AppNavShell({
               <Link
                 key={item.path}
                 to={item.path}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-150"
+                className="flex items-center gap-3 rounded-xl border-l-[3px] px-4 py-3 transition-colors duration-150 hover:bg-white/5 hover:text-slate-50"
                 style={{
                   color: isActive ? '#f8fafc' : '#94a3b8',
                   background: isActive ? `${item.color}1a` : 'transparent',
                   borderLeft: isActive ? `3px solid ${item.color}` : '3px solid transparent',
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLAnchorElement).style.color = '#f8fafc';
-                    (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,0.05)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLAnchorElement).style.color = '#94a3b8';
-                    (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
-                  }
                 }}
                 aria-current={isActive ? 'page' : undefined}
               >
@@ -274,23 +265,11 @@ export function AppNavShell({
               <Link
                 key={item.path}
                 to={item.path}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-150"
+                className="flex items-center gap-3 rounded-xl border-l-[3px] px-4 py-3 transition-colors duration-150 hover:bg-white/5 hover:text-slate-50"
                 style={{
                   color: isActive ? '#f8fafc' : '#94a3b8',
                   background: isActive ? 'rgba(255,255,255,0.08)' : 'transparent',
                   borderLeft: isActive ? '3px solid #94a3b8' : '3px solid transparent',
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLAnchorElement).style.color = '#f8fafc';
-                    (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,0.05)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLAnchorElement).style.color = '#94a3b8';
-                    (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
-                  }
                 }}
                 aria-current={isActive ? 'page' : undefined}
               >
@@ -323,17 +302,11 @@ export function AppNavShell({
       </aside>
 
       {/* ── Main area ── */}
-      <div className="flex-1 flex flex-col lg:ml-[240px] min-w-0">
+      <div className="relative flex min-w-0 flex-1 flex-col lg:ml-[240px]">
+        <AuroraPulse engine={activeEngine} intensity="subtle" />
         {/* ── Desktop top header ── */}
         <header
-          className="hidden lg:flex items-center justify-between sticky top-0 z-30 px-6"
-          style={{
-            height: 56,
-            background: 'rgba(11, 18, 33, 0.85)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-          }}
+          className="glass-header sticky top-0 z-30 hidden h-14 items-center justify-between px-6 lg:flex"
         >
           {/* Breadcrumb — only show when 2+ segments; otherwise show page title */}
           {breadcrumbs.length > 1 ? (
@@ -406,19 +379,9 @@ export function AppNavShell({
             )}
             {/* Cmd+K search trigger */}
             <button
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-colors duration-150"
+              className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-slate-500 transition-colors duration-150 hover:bg-white/[0.08] hover:text-slate-400"
               style={{
                 color: '#64748b',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.07)',
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.08)';
-                (e.currentTarget as HTMLButtonElement).style.color = '#94a3b8';
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.04)';
-                (e.currentTarget as HTMLButtonElement).style.color = '#64748b';
               }}
               onClick={openPalette}
               aria-label="Open command palette"
@@ -433,14 +396,8 @@ export function AppNavShell({
               </kbd>
             </button>
             <button
-              className="relative p-2 rounded-lg transition-colors duration-150"
+              className="relative rounded-lg p-2 text-slate-400 transition-colors duration-150 hover:bg-white/5"
               style={{ color: '#94a3b8' }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)';
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-              }}
               aria-label="Notifications"
             >
               <Bell className="w-5 h-5" aria-hidden="true" />
@@ -467,14 +424,7 @@ export function AppNavShell({
 
         {/* ── Mobile top header ── */}
         <header
-          className="flex lg:hidden items-center justify-between sticky top-0 z-30 px-4"
-          style={{
-            height: 56,
-            background: 'rgba(11, 18, 33, 0.9)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-          }}
+          className="glass-header sticky top-0 z-30 flex h-14 items-center justify-between px-4 lg:hidden"
         >
           {/* Left: Logo */}
           <Link to="/" className="flex items-center gap-1.5" aria-label="Poseidon home">
@@ -520,9 +470,8 @@ export function AppNavShell({
         {/* ── Sub-navigation strip ── */}
         {subNav && (
           <div
-            className="flex items-center gap-2 px-4 lg:px-6 py-2.5 overflow-x-auto"
+            className="glass-header flex items-center gap-2 overflow-x-auto border-b border-white/5 px-4 py-2.5 lg:px-6"
             style={{
-              borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
               background: 'rgba(11, 18, 33, 0.6)',
             }}
             role="navigation"
@@ -535,23 +484,11 @@ export function AppNavShell({
                 <Link
                   key={item.path}
                   to={item.path}
-                  className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors duration-150"
+                  className="flex-shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors duration-150 hover:bg-white/5 hover:text-slate-50"
                   style={{
                     color: isActive ? color : '#94a3b8',
                     background: isActive ? `${color}1a` : 'transparent',
                     border: isActive ? `1px solid ${color}40` : '1px solid transparent',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      (e.currentTarget as HTMLAnchorElement).style.color = '#f8fafc';
-                      (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,0.05)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      (e.currentTarget as HTMLAnchorElement).style.color = '#94a3b8';
-                      (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
-                    }
                   }}
                   aria-current={isActive ? 'page' : undefined}
                 >
@@ -571,14 +508,10 @@ export function AppNavShell({
 
       {/* ── Mobile bottom navigation ── */}
       <nav
-        className="fixed bottom-0 left-0 right-0 lg:hidden z-40 flex items-center justify-around"
+        className="glass-header fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-white/5 lg:hidden"
         style={{
           height: 64,
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-          background: 'rgba(11, 18, 33, 0.9)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          borderTop: '1px solid rgba(255, 255, 255, 0.06)',
         }}
         aria-label="Mobile navigation"
       >

@@ -1,11 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { shouldEnableJetonWebGL } from '../hooks/useJetonWebGLEnabled';
+import { shouldEnableJetonHeroVideo } from '../hooks/useJetonWebGLEnabled';
 
-describe('shouldEnableJetonWebGL', () => {
-  it('enables only when all constraints pass', () => {
+describe('shouldEnableJetonHeroVideo', () => {
+  it('enables when feature is on and user/device constraints pass', () => {
     expect(
-      shouldEnableJetonWebGL({
-        isDesktop: true,
+      shouldEnableJetonHeroVideo({
         prefersReducedMotion: false,
         saveData: false,
         featureEnabled: true,
@@ -15,17 +14,7 @@ describe('shouldEnableJetonWebGL', () => {
 
   it('disables for each guard condition', () => {
     expect(
-      shouldEnableJetonWebGL({
-        isDesktop: false,
-        prefersReducedMotion: false,
-        saveData: false,
-        featureEnabled: true,
-      }),
-    ).toBe(false);
-
-    expect(
-      shouldEnableJetonWebGL({
-        isDesktop: true,
+      shouldEnableJetonHeroVideo({
         prefersReducedMotion: true,
         saveData: false,
         featureEnabled: true,
@@ -33,8 +22,7 @@ describe('shouldEnableJetonWebGL', () => {
     ).toBe(false);
 
     expect(
-      shouldEnableJetonWebGL({
-        isDesktop: true,
+      shouldEnableJetonHeroVideo({
         prefersReducedMotion: false,
         saveData: true,
         featureEnabled: true,
@@ -42,12 +30,21 @@ describe('shouldEnableJetonWebGL', () => {
     ).toBe(false);
 
     expect(
-      shouldEnableJetonWebGL({
-        isDesktop: true,
+      shouldEnableJetonHeroVideo({
         prefersReducedMotion: false,
         saveData: false,
         featureEnabled: false,
       }),
     ).toBe(false);
+  });
+
+  it('supports mobile playback policy when constraints pass', () => {
+    expect(
+      shouldEnableJetonHeroVideo({
+        prefersReducedMotion: false,
+        saveData: false,
+        featureEnabled: true,
+      }),
+    ).toBe(true);
   });
 });

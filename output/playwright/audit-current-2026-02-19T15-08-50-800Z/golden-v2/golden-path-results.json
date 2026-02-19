@@ -1,0 +1,466 @@
+[
+  {
+    "env": "live",
+    "total": 32,
+    "passed": 22,
+    "failed": 10,
+    "steps": [
+      {
+        "name": "landing-open",
+        "pass": true,
+        "note": "",
+        "path": "/",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/01-landing-open.png"
+      },
+      {
+        "name": "landing-to-signup",
+        "pass": true,
+        "note": "clicked a:has-text('Get Started')",
+        "path": "/signup",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/02-landing-to-signup.png"
+      },
+      {
+        "name": "signup-to-onboarding",
+        "pass": true,
+        "note": "clicked a:has-text('Continue onboarding')",
+        "path": "/onboarding/connect",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/03-signup-to-onboarding.png"
+      },
+      {
+        "name": "onboarding-connect-to-goals",
+        "pass": false,
+        "note": "continue to goals missing/disabled",
+        "path": "/onboarding/connect",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/04-onboarding-connect-to-goals.png"
+      },
+      {
+        "name": "onboarding-goals-to-consent",
+        "pass": true,
+        "note": "clicked a:has-text('Continue to consent')",
+        "path": "/onboarding/consent",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/05-onboarding-goals-to-consent.png"
+      },
+      {
+        "name": "onboarding-consent-to-complete",
+        "pass": false,
+        "note": "activate missing/disabled",
+        "path": "/onboarding/consent",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/06-onboarding-consent-to-complete.png"
+      },
+      {
+        "name": "onboarding-complete-to-dashboard",
+        "pass": true,
+        "note": "clicked a:has-text('Enter dashboard')",
+        "path": "/dashboard",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/07-onboarding-complete-to-dashboard.png"
+      },
+      {
+        "name": "dashboard-to-protect",
+        "pass": false,
+        "note": "protect nav missing",
+        "path": "/dashboard",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/08-dashboard-to-protect.png"
+      },
+      {
+        "name": "protect-to-alert-detail",
+        "pass": true,
+        "note": "clicked a:has-text('Investigate')",
+        "path": "/protect/alert-detail",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/09-protect-to-alert-detail.png"
+      },
+      {
+        "name": "alert-detail-to-dispute",
+        "pass": false,
+        "note": "block & investigate missing",
+        "path": "/protect/alert-detail",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/10-alert-detail-to-dispute.png"
+      },
+      {
+        "name": "dashboard-to-grow",
+        "pass": true,
+        "note": "clicked a:has-text('Grow')",
+        "path": "/grow",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/11-dashboard-to-grow.png"
+      },
+      {
+        "name": "grow-to-goal",
+        "pass": false,
+        "note": "review growth plan missing",
+        "path": "/grow",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/12-grow-to-goal.png"
+      },
+      {
+        "name": "goal-to-scenarios",
+        "pass": true,
+        "note": "clicked a:has-text('Scenarios')",
+        "path": "/grow/scenarios",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/13-goal-to-scenarios.png"
+      },
+      {
+        "name": "scenarios-to-recommendations",
+        "pass": true,
+        "note": "clicked a:has-text('Recommendations')",
+        "path": "/grow/recommendations",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/14-scenarios-to-recommendations.png"
+      },
+      {
+        "name": "dashboard-to-execute",
+        "pass": true,
+        "note": "clicked a:has-text('Execute')",
+        "path": "/execute",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/15-dashboard-to-execute.png"
+      },
+      {
+        "name": "execute-to-approval",
+        "pass": false,
+        "note": "approval tab missing",
+        "path": "/execute",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/16-execute-to-approval.png"
+      },
+      {
+        "name": "approval-to-history",
+        "pass": false,
+        "note": "history tab missing",
+        "path": "/execute",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/17-approval-to-history.png"
+      },
+      {
+        "name": "dashboard-to-govern",
+        "pass": true,
+        "note": "clicked a:has-text('Govern')",
+        "path": "/govern",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/18-dashboard-to-govern.png"
+      },
+      {
+        "name": "govern-to-audit",
+        "pass": false,
+        "note": "audit link missing",
+        "path": "/govern",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/19-govern-to-audit.png"
+      },
+      {
+        "name": "audit-to-audit-detail",
+        "pass": false,
+        "note": "audit-detail row link missing",
+        "path": "/govern/audit",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/20-audit-to-audit-detail.png"
+      },
+      {
+        "name": "govern-to-trust",
+        "pass": true,
+        "note": "clicked a:has-text('Trust')",
+        "path": "/govern/trust",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/21-govern-to-trust.png"
+      },
+      {
+        "name": "govern-to-registry",
+        "pass": true,
+        "note": "clicked a:has-text('Registry')",
+        "path": "/govern/registry",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/22-govern-to-registry.png"
+      },
+      {
+        "name": "govern-to-oversight",
+        "pass": true,
+        "note": "clicked a:has-text('Oversight')",
+        "path": "/govern/oversight",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/23-govern-to-oversight.png"
+      },
+      {
+        "name": "govern-to-policy",
+        "pass": true,
+        "note": "clicked a:has-text('Policy')",
+        "path": "/govern/policy",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/24-govern-to-policy.png"
+      },
+      {
+        "name": "nav-to-settings",
+        "pass": true,
+        "note": "clicked a:has-text('Settings')",
+        "path": "/settings",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/25-nav-to-settings.png"
+      },
+      {
+        "name": "settings-to-ai",
+        "pass": true,
+        "note": "clicked a:has-text('AI')",
+        "path": "/settings/ai",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/26-settings-to-ai.png"
+      },
+      {
+        "name": "settings-to-integrations",
+        "pass": true,
+        "note": "clicked a:has-text('Integrations')",
+        "path": "/settings/integrations",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/27-settings-to-integrations.png"
+      },
+      {
+        "name": "settings-to-rights",
+        "pass": true,
+        "note": "clicked a:has-text('Rights')",
+        "path": "/settings/rights",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/28-settings-to-rights.png"
+      },
+      {
+        "name": "nav-to-help",
+        "pass": true,
+        "note": "clicked a:has-text('Help')",
+        "path": "/help",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/29-nav-to-help.png"
+      },
+      {
+        "name": "direct-404",
+        "pass": true,
+        "note": "404 copy visible",
+        "path": "/definitely-not-a-real-route-12345",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/30-direct-404.png"
+      },
+      {
+        "name": "404-recovery",
+        "pass": true,
+        "note": "clicked a:has-text('Back to dashboard')",
+        "path": "/",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/31-404-recovery.png"
+      },
+      {
+        "name": "dashboard-command-palette",
+        "pass": false,
+        "note": "dialog not detected",
+        "path": "/dashboard",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/live/32-dashboard-command-palette.png"
+      }
+    ]
+  },
+  {
+    "env": "local",
+    "total": 32,
+    "passed": 22,
+    "failed": 10,
+    "steps": [
+      {
+        "name": "landing-open",
+        "pass": true,
+        "note": "",
+        "path": "/",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/01-landing-open.png"
+      },
+      {
+        "name": "landing-to-signup",
+        "pass": true,
+        "note": "clicked a:has-text('Get Started')",
+        "path": "/signup",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/02-landing-to-signup.png"
+      },
+      {
+        "name": "signup-to-onboarding",
+        "pass": true,
+        "note": "clicked a:has-text('Continue onboarding')",
+        "path": "/onboarding/connect",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/03-signup-to-onboarding.png"
+      },
+      {
+        "name": "onboarding-connect-to-goals",
+        "pass": false,
+        "note": "continue to goals missing/disabled",
+        "path": "/onboarding/connect",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/04-onboarding-connect-to-goals.png"
+      },
+      {
+        "name": "onboarding-goals-to-consent",
+        "pass": true,
+        "note": "clicked a:has-text('Continue to consent')",
+        "path": "/onboarding/consent",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/05-onboarding-goals-to-consent.png"
+      },
+      {
+        "name": "onboarding-consent-to-complete",
+        "pass": false,
+        "note": "activate missing/disabled",
+        "path": "/onboarding/consent",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/06-onboarding-consent-to-complete.png"
+      },
+      {
+        "name": "onboarding-complete-to-dashboard",
+        "pass": true,
+        "note": "clicked a:has-text('Enter dashboard')",
+        "path": "/dashboard",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/07-onboarding-complete-to-dashboard.png"
+      },
+      {
+        "name": "dashboard-to-protect",
+        "pass": false,
+        "note": "protect nav missing",
+        "path": "/dashboard",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/08-dashboard-to-protect.png"
+      },
+      {
+        "name": "protect-to-alert-detail",
+        "pass": true,
+        "note": "clicked a:has-text('Investigate')",
+        "path": "/protect/alert-detail",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/09-protect-to-alert-detail.png"
+      },
+      {
+        "name": "alert-detail-to-dispute",
+        "pass": false,
+        "note": "block & investigate missing",
+        "path": "/protect/alert-detail",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/10-alert-detail-to-dispute.png"
+      },
+      {
+        "name": "dashboard-to-grow",
+        "pass": true,
+        "note": "clicked a:has-text('Grow')",
+        "path": "/grow",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/11-dashboard-to-grow.png"
+      },
+      {
+        "name": "grow-to-goal",
+        "pass": false,
+        "note": "review growth plan missing",
+        "path": "/grow",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/12-grow-to-goal.png"
+      },
+      {
+        "name": "goal-to-scenarios",
+        "pass": true,
+        "note": "clicked a:has-text('Scenarios')",
+        "path": "/grow/scenarios",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/13-goal-to-scenarios.png"
+      },
+      {
+        "name": "scenarios-to-recommendations",
+        "pass": true,
+        "note": "clicked a:has-text('Recommendations')",
+        "path": "/grow/recommendations",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/14-scenarios-to-recommendations.png"
+      },
+      {
+        "name": "dashboard-to-execute",
+        "pass": true,
+        "note": "clicked a:has-text('Execute')",
+        "path": "/execute",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/15-dashboard-to-execute.png"
+      },
+      {
+        "name": "execute-to-approval",
+        "pass": false,
+        "note": "approval tab missing",
+        "path": "/execute",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/16-execute-to-approval.png"
+      },
+      {
+        "name": "approval-to-history",
+        "pass": false,
+        "note": "history tab missing",
+        "path": "/execute",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/17-approval-to-history.png"
+      },
+      {
+        "name": "dashboard-to-govern",
+        "pass": true,
+        "note": "clicked a:has-text('Govern')",
+        "path": "/govern",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/18-dashboard-to-govern.png"
+      },
+      {
+        "name": "govern-to-audit",
+        "pass": false,
+        "note": "audit link missing",
+        "path": "/govern",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/19-govern-to-audit.png"
+      },
+      {
+        "name": "audit-to-audit-detail",
+        "pass": false,
+        "note": "audit-detail row link missing",
+        "path": "/govern/audit",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/20-audit-to-audit-detail.png"
+      },
+      {
+        "name": "govern-to-trust",
+        "pass": true,
+        "note": "clicked a:has-text('Trust')",
+        "path": "/govern/trust",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/21-govern-to-trust.png"
+      },
+      {
+        "name": "govern-to-registry",
+        "pass": true,
+        "note": "clicked a:has-text('Registry')",
+        "path": "/govern/registry",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/22-govern-to-registry.png"
+      },
+      {
+        "name": "govern-to-oversight",
+        "pass": true,
+        "note": "clicked a:has-text('Oversight')",
+        "path": "/govern/oversight",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/23-govern-to-oversight.png"
+      },
+      {
+        "name": "govern-to-policy",
+        "pass": true,
+        "note": "clicked a:has-text('Policy')",
+        "path": "/govern/policy",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/24-govern-to-policy.png"
+      },
+      {
+        "name": "nav-to-settings",
+        "pass": true,
+        "note": "clicked a:has-text('Settings')",
+        "path": "/settings",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/25-nav-to-settings.png"
+      },
+      {
+        "name": "settings-to-ai",
+        "pass": true,
+        "note": "clicked a:has-text('AI')",
+        "path": "/settings/ai",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/26-settings-to-ai.png"
+      },
+      {
+        "name": "settings-to-integrations",
+        "pass": true,
+        "note": "clicked a:has-text('Integrations')",
+        "path": "/settings/integrations",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/27-settings-to-integrations.png"
+      },
+      {
+        "name": "settings-to-rights",
+        "pass": true,
+        "note": "clicked a:has-text('Rights')",
+        "path": "/settings/rights",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/28-settings-to-rights.png"
+      },
+      {
+        "name": "nav-to-help",
+        "pass": true,
+        "note": "clicked a:has-text('Help')",
+        "path": "/help",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/29-nav-to-help.png"
+      },
+      {
+        "name": "direct-404",
+        "pass": true,
+        "note": "404 copy visible",
+        "path": "/definitely-not-a-real-route-12345",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/30-direct-404.png"
+      },
+      {
+        "name": "404-recovery",
+        "pass": true,
+        "note": "clicked a:has-text('Back to dashboard')",
+        "path": "/",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/31-404-recovery.png"
+      },
+      {
+        "name": "dashboard-command-palette",
+        "pass": false,
+        "note": "dialog not detected",
+        "path": "/dashboard",
+        "screenshot": "output/playwright/audit-current-2026-02-19T15-08-50-800Z/golden-v2/local/32-dashboard-command-palette.png"
+      }
+    ]
+  }
+]

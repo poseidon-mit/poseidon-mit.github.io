@@ -56,7 +56,7 @@ const overrideReasons = [
 export function GovernOversight() {
   usePageTitle('Oversight Queue');
   return (
-    <div className="relative min-h-screen w-full" style={{ background: '#0B1221' }}>
+    <div className="relative min-h-screen w-full">
       <AuroraPulse color="var(--engine-govern)" intensity="subtle" />
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: 'var(--engine-govern)', color: '#fff' }}>Skip to main content</a>
 

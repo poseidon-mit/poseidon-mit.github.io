@@ -4,7 +4,7 @@
  * Renders a segmented control with Glance / Detail / Deep buttons.
  * Uses engine accent color for active state.
  */
-import { Eye, LayoutGrid, Database } from 'lucide-react'
+import { Eye, LayoutGrid, Database, type LucideIcon } from 'lucide-react'
 import type { ViewMode } from '@/hooks/useViewMode'
 
 export interface ViewModeToggleProps {
@@ -13,7 +13,7 @@ export interface ViewModeToggleProps {
   accentColor?: string  // engine color for active state, default '#00F0FF'
 }
 
-const modes: { key: ViewMode; label: string; Icon: React.ElementType }[] = [
+const modes: { key: ViewMode; label: string; Icon: LucideIcon }[] = [
   { key: 'glance', label: 'Glance', Icon: Eye },
   { key: 'detail', label: 'Detail', Icon: LayoutGrid },
   { key: 'deep', label: 'Deep', Icon: Database },

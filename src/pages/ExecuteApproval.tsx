@@ -72,7 +72,7 @@ export function ExecuteApproval() {
   const visibleActions = queueActions.filter((a) => !processedIds.has(a.id));
 
   return (
-    <div className="relative min-h-screen w-full" style={{ background: '#0B1221' }}>
+    <div className="relative min-h-screen w-full">
       <AuroraPulse color="var(--engine-execute)" intensity="subtle" />
       <a
         href="#main-content"

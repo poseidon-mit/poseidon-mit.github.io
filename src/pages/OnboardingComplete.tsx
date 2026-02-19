@@ -1,130 +1,86 @@
-import { motion } from "framer-motion"
+import { motion } from 'framer-motion'
 import { Link } from '@/router'
-import { CheckCircle2, Shield, TrendingUp, Zap, Scale, ArrowRight } from "lucide-react"
-import { OnboardingProgress } from '@/components/onboarding/OnboardingProgress'
+import { CheckCircle2, Shield, TrendingUp, Zap, Scale, ArrowRight } from 'lucide-react'
+import { OnboardingShell } from '@/components/layout/OnboardingShell'
+import { fadeUp, staggerContainer } from '@/lib/motion-presets'
 
-const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: spring },
-}
-const staggerContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-}
+type ReadyTone = 'protect' | 'grow' | 'execute' | 'govern'
 
-const READY_ITEMS = [
-  { icon: Shield, label: "Protect engine", desc: "Monitoring for threats", color: "var(--engine-protect)" },
-  { icon: TrendingUp, label: "Grow engine", desc: "Tracking your goals", color: "var(--engine-grow)" },
-  { icon: Zap, label: "Execute engine", desc: "Ready for approvals", color: "var(--engine-execute)" },
-  { icon: Scale, label: "Govern engine", desc: "Audit trail active", color: "var(--engine-govern)" },
+const READY_ITEMS: ReadonlyArray<{ icon: typeof Shield; label: string; desc: string; tone: ReadyTone }> = [
+  { icon: Shield, label: 'Protect engine', desc: 'Monitoring for threats', tone: 'protect' },
+  { icon: TrendingUp, label: 'Grow engine', desc: 'Tracking goals', tone: 'grow' },
+  { icon: Zap, label: 'Execute engine', desc: 'Ready for approvals', tone: 'execute' },
+  { icon: Scale, label: 'Govern engine', desc: 'Audit trail active', tone: 'govern' },
 ]
+
+const TONE_CLASSES: Record<ReadyTone, { text: string; bg: string }> = {
+  protect: { text: 'text-[var(--engine-protect)]', bg: 'bg-[var(--engine-protect)]/14' },
+  grow: { text: 'text-[var(--engine-grow)]', bg: 'bg-[var(--engine-grow)]/14' },
+  execute: { text: 'text-[var(--engine-execute)]', bg: 'bg-[var(--engine-execute)]/14' },
+  govern: { text: 'text-[var(--engine-govern)]', bg: 'bg-[var(--engine-govern)]/14' },
+}
 
 export default function OnboardingCompletePage() {
   return (
-    <main id="main-content" className="relative">
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: "var(--engine-dashboard)", color: "#0B1221" }}
-      >
-        Skip to main content
-      </a>
-      <div
-        className="pointer-events-none absolute inset-0"
-        aria-hidden="true"
-        style={{
-          background: "radial-gradient(40% 30% at 50% 20%, rgba(16,185,129,0.06), transparent)",
-        }}
-      />
+    <OnboardingShell
+      step={4}
+      title="You're all set"
+      subtitle="Your engines are active and decisions now flow through explainable recommendations, consent-first execution, and governance proof."
+    >
+      <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
+        <motion.div variants={fadeUp} className="mb-6 flex justify-center">
+          <span className="inline-flex h-16 w-16 items-center justify-center rounded-full border border-[var(--state-healthy)]/30 bg-[var(--state-healthy)]/14 text-[var(--state-healthy)]">
+            <CheckCircle2 className="h-8 w-8" aria-hidden="true" />
+          </span>
+        </motion.div>
 
-      <div className="relative z-10 mx-auto max-w-2xl px-6 py-16 text-center">
-        <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
-          <OnboardingProgress step={4} className="text-left" />
-          {/* Success icon */}
-          <motion.div variants={fadeUp} className="flex justify-center mb-6">
-            <div
-              className="flex items-center justify-center w-16 h-16 rounded-full"
-              style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)" }}
-            >
-              <CheckCircle2 size={32} style={{ color: "var(--state-healthy)" }} />
-            </div>
-          </motion.div>
-
-          <motion.h1
-            variants={fadeUp}
-            className="text-3xl md:text-4xl font-bold leading-tight tracking-tight mb-3 text-balance"
-            style={{ color: "#F1F5F9" }}
-          >
-            {"You're all set"}
-          </motion.h1>
-
-          <motion.p variants={fadeUp} className="text-base mb-10" style={{ color: "#94A3B8" }}>
-            Your AI engines are now active and working on your behalf. Every decision is explainable, auditable, and reversible.
-          </motion.p>
-
-          {/* Readiness checklist */}
-          <motion.div variants={staggerContainer} className="grid grid-cols-2 gap-3 mb-10">
-            {READY_ITEMS.map((item) => (
-              <motion.div
-                key={item.label}
-                variants={fadeUp}
-                className="glass-surface rounded-xl p-4 flex items-center gap-3"
-              >
-                <div
-                  className="flex items-center justify-center w-9 h-9 rounded-lg flex-shrink-0"
-                  style={{ background: `${item.color}15` }}
-                >
-                  <item.icon size={18} style={{ color: item.color }} />
-                </div>
-                <div className="text-left">
-                  <p className="text-xs font-semibold" style={{ color: "#F1F5F9" }}>{item.label}</p>
-                  <p className="text-[10px]" style={{ color: "var(--state-healthy)" }}>{item.desc}</p>
+        <motion.div variants={staggerContainer} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {READY_ITEMS.map((item) => {
+            const tone = TONE_CLASSES[item.tone]
+            return (
+              <motion.div key={item.label} variants={fadeUp} className="glass-surface rounded-xl border border-white/10 p-4">
+                <div className="flex items-center gap-3">
+                  <span className={`inline-flex h-9 w-9 items-center justify-center rounded-lg ${tone.bg} ${tone.text}`}>
+                    <item.icon className="h-4.5 w-4.5" aria-hidden="true" />
+                  </span>
+                  <div>
+                    <p className="text-xs font-semibold text-slate-100">{item.label}</p>
+                    <p className="text-[10px] uppercase tracking-[0.12em] text-slate-400">{item.desc}</p>
+                  </div>
                 </div>
               </motion.div>
-            ))}
-          </motion.div>
-
-          {/* Setup summary */}
-          <motion.div
-            variants={fadeUp}
-            className="glass-surface rounded-xl p-4 mb-10 text-left"
-          >
-            <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "#64748B" }}>
-              Setup summary
-            </p>
-            <div className="flex flex-col gap-1.5">
-              <div className="flex items-center justify-between text-xs">
-                <span style={{ color: "#94A3B8" }}>Accounts connected</span>
-                <span className="font-mono font-semibold" style={{ color: "#F1F5F9" }}>3</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span style={{ color: "#94A3B8" }}>Goals selected</span>
-                <span className="font-mono font-semibold" style={{ color: "#F1F5F9" }}>2</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span style={{ color: "#94A3B8" }}>Consent boundaries</span>
-                <span className="font-mono font-semibold" style={{ color: "var(--state-healthy)" }}>All set</span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* CTA: Primary -> /dashboard */}
-          <motion.div variants={fadeUp}>
-            <Link
-              to="/dashboard"
-              className="inline-flex items-center gap-2 text-sm font-semibold px-8 py-3.5 rounded-xl transition-all"
-              style={{
-                background: "linear-gradient(135deg, #14B8A6, #06B6D4)",
-                color: "#0B1221",
-              }}
-            >
-              Enter dashboard
-              <ArrowRight size={16} />
-            </Link>
-          </motion.div>
+            )
+          })}
         </motion.div>
-      </div>
-    </main>
+
+        <motion.div variants={fadeUp} className="glass-surface mt-6 rounded-xl border border-white/10 p-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Setup summary</p>
+          <div className="mt-3 space-y-1.5 text-xs">
+            <div className="flex items-center justify-between text-slate-300">
+              <span>Accounts connected</span>
+              <span className="font-mono font-semibold text-slate-100">3</span>
+            </div>
+            <div className="flex items-center justify-between text-slate-300">
+              <span>Goals selected</span>
+              <span className="font-mono font-semibold text-slate-100">2</span>
+            </div>
+            <div className="flex items-center justify-between text-slate-300">
+              <span>Consent boundaries</span>
+              <span className="font-mono font-semibold text-[var(--state-healthy)]">All set</span>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div variants={fadeUp} className="mt-7">
+          <Link
+            to="/dashboard"
+            className="cta-primary-glow inline-flex min-h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-teal-400 to-cyan-300 px-8 py-3 text-sm font-semibold text-[#0B1221]"
+          >
+            Enter dashboard
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </motion.div>
+      </motion.div>
+    </OnboardingShell>
   )
 }

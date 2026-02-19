@@ -1,28 +1,22 @@
 import { motion } from 'framer-motion';
-import { useMemo, useRef } from 'react';
 import { Link } from '@/router';
 import { JETON_COPY } from '@/content/landing-copy-jeton';
 import { Footer } from './Footer';
 import { FeatureSection } from './FeatureSection';
 import { HeroSection } from './HeroSection';
 import { MenuOverlay } from './MenuOverlay';
-import { useJetonNavTheme } from './hooks/useJetonNavTheme';
 import { JETON_EASING } from './jeton-config';
 
 export function JetonLandingPage() {
-  const platformRef = useRef<HTMLElement>(null);
-  const lightSections = useMemo(() => [platformRef], []);
-  const navTheme = useJetonNavTheme(lightSections);
-
   return (
     <>
-      <MenuOverlay navTheme={navTheme} />
+      <MenuOverlay />
 
       <div className="overflow-x-clip bg-[#0B1221] text-white">
         <HeroSection />
 
         <div id="platform">
-          <FeatureSection lightSectionRef={platformRef} />
+          <FeatureSection />
         </div>
 
         <section id="governance" className="px-6 py-28 md:px-8 md:py-36">
@@ -82,15 +76,19 @@ export function JetonLandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-80px' }}
               transition={{ duration: 0.58, delay: 0.5, ease: JETON_EASING }}
-              className="mt-8 inline-flex rounded-full border border-white/14 bg-white/5 px-5 py-2 text-xs text-white/65"
+              className="mt-8 inline-flex flex-wrap items-center gap-2 rounded-full border border-white/14 bg-white/5 px-5 py-2 text-xs text-white/65"
             >
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--state-healthy)]/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--state-healthy)]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--state-healthy)] animate-pulse" aria-hidden="true" />
+                Live
+              </span>
               {JETON_COPY.governance.proof}
             </motion.p>
           </div>
         </section>
 
         <section id="cta" className="px-6 pb-24 pt-4 md:px-8 md:pb-32">
-          <div className="mx-auto w-full max-w-7xl rounded-[2rem] border border-white/12 bg-gradient-to-br from-white/8 to-white/[0.02] px-8 py-14 md:px-14 md:py-18">
+          <div className="mx-auto w-full max-w-7xl rounded-[2rem] border border-white/14 bg-[radial-gradient(ellipse_at_15%_20%,rgba(0,240,255,0.12),transparent_58%),radial-gradient(ellipse_at_85%_90%,rgba(56,189,248,0.12),transparent_62%),linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] px-8 py-14 md:px-14 md:py-20">
             <h2 className="max-w-4xl text-balance font-display text-4xl font-semibold leading-[1.06] tracking-[-0.03em] md:text-6xl">
               {JETON_COPY.cta.titleA}
               <br />
@@ -104,7 +102,7 @@ export function JetonLandingPage() {
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <Link
                 to="/signup"
-                className="inline-flex min-h-11 items-center justify-center rounded-full bg-gradient-to-r from-teal-400 to-cyan-300 px-8 py-3 text-sm font-semibold text-slate-950 shadow-[0_0_40px_rgba(0,240,255,0.22)] transition-all duration-200 hover:scale-[0.985]"
+                className="btn-liquid-glass inline-flex min-h-11 items-center justify-center rounded-full px-9 py-3 text-sm font-semibold text-white transition-all duration-200 hover:scale-[0.985]"
               >
                 {JETON_COPY.cta.button}
               </Link>

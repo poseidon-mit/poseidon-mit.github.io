@@ -19,6 +19,7 @@ import {
   Database,
   Mic,
   MicOff,
+  type LucideIcon,
 } from 'lucide-react';
 import { useVoiceInput } from '../../hooks/useVoiceInput';
 import {
@@ -51,7 +52,7 @@ interface Command {
   id: string;
   label: string;
   description?: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   color: string;
   path: string;
   shortcut?: string;
@@ -156,7 +157,7 @@ const PRESENTATION_COMMANDS: Command[] = [
   },
 ];
 
-const VIEW_MODE_COMMANDS: { id: string; label: string; description: string; icon: React.ElementType; color: string; viewMode: string }[] = [
+const VIEW_MODE_COMMANDS: { id: string; label: string; description: string; icon: LucideIcon; color: string; viewMode: string }[] = [
   {
     id: 'view-glance',
     label: 'Switch to Glance',

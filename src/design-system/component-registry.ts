@@ -35,6 +35,7 @@ const canonicalNames = [
   'AlertsHub',
   'AppNav',
   'AppShell',
+  'AuthShell',
   'AriaLiveAnnouncer',
   'AuditChip',
   'AuditLedgerTable',
@@ -78,7 +79,6 @@ const canonicalNames = [
   'JetonLandingPage',
   'KPIContractCard',
   'LandingExperience',
-  'LandingPage',
   'LoadingSpinner',
   'MilestonesTimeline',
   'MissionActionList',
@@ -95,6 +95,7 @@ const canonicalNames = [
   'NetWorthHero',
   'NotificationToast',
   'OfflineBanner',
+  'OnboardingShell',
   'OnboardingProgress',
   'OversightQueueTable',
   'PageShell',
@@ -147,7 +148,6 @@ const canonicalNames = [
   'SeverityBadge',
   'ShapWaterfall',
   'StatusBadge',
-  'useJetonNavTheme',
   'useJetonWebGLEnabled',
 ] as const;
 

@@ -13,67 +13,14 @@ import { ForecastBand } from "@/components/poseidon/forecast-band"
 import type { ForecastPoint } from "@/components/poseidon/forecast-band"
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
+import { AuroraPulse, GovernFooter } from '@/components/poseidon'
+import { fadeUp, staggerContainer } from '@/lib/motion-presets'
 
-/* ── Motion presets ── */
-const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: spring },
-}
-const staggerContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-}
 
 /* ── Cross-thread values ── */
 const EMERGENCY_FUND_PROGRESS = DEMO_THREAD.emergencyFund.percent
 const EMERGENCY_FUND_CURRENT = DEMO_THREAD.emergencyFund.current
 const EMERGENCY_FUND_TARGET = DEMO_THREAD.emergencyFund.target
-
-/* ── AuroraPulse ── */
-function AuroraPulse({ color }: { color: string }) {
-  return (
-    <div
-      className="pointer-events-none absolute inset-0"
-      aria-hidden="true"
-      style={{
-        background: `radial-gradient(70% 50% at 50% 0%, ${color}0F, transparent), radial-gradient(40% 40% at 80% 20%, ${color}08, transparent)`,
-        animation: "aurora-drift 8s ease-in-out infinite alternate",
-      }}
-    />
-  )
-}
-
-/* ── GovernFooter (inlined, same pattern as Tier A) ── */
-function GovernFooter({ auditId, pageContext }: { auditId: string; pageContext: string }) {
-  return (
-    <footer
-      className="mt-8 flex flex-col gap-3 md:flex-row md:items-center md:justify-between rounded-2xl border border-white/[0.06] px-4 py-3 md:px-6 md:py-4"
-      style={{ background: "rgba(255,255,255,0.03)" }}
-      role="contentinfo"
-      aria-label="Governance verification footer"
-    >
-      <div className="flex items-center gap-3">
-        <Scale size={14} style={{ color: "var(--engine-govern)" }} />
-        <span className="text-xs" style={{ color: "#94A3B8" }}>
-          Every decision on this page is logged to the immutable audit ledger.
-        </span>
-      </div>
-      <div className="flex items-center gap-3">
-        <span className="text-[10px] font-mono uppercase tracking-wider" style={{ color: "#64748B" }}>
-          {auditId}
-        </span>
-        <Link
-          to="/govern/audit"
-          className="text-[10px] font-semibold uppercase tracking-wider"
-          style={{ color: "var(--engine-govern)" }}
-        >
-          Open ledger
-        </Link>
-      </div>
-    </footer>
-  )
-}
 
 /* ── Forecast data ── */
 const FORECAST_DATA: ForecastPoint[] = Array.from({ length: 12 }, (_, i) => ({
@@ -93,7 +40,7 @@ const GOAL_KPIS = [
 export default function GrowPage() {
   return (
     <div className="relative">
-      <AuroraPulse color="var(--engine-grow)" />
+      <AuroraPulse engine="grow" />
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
@@ -132,7 +79,7 @@ export default function GrowPage() {
               to="/grow/goal"
               className="inline-flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-xl transition-all"
               style={{
-                background: "linear-gradient(135deg, #8B5CF6, #A78BFA)",
+                background: "linear-gradient(135deg, var(--engine-grow), #A78BFA)",
                 color: "#0B1221",
               }}
             >

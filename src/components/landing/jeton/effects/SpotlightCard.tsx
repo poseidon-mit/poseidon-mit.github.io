@@ -75,7 +75,7 @@ export default function SpotlightCard({
       ref={cardRef}
       onPointerMove={handlePointerMove}
       className={cn(
-        'group relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_-24px_rgba(15,23,42,0.5)]',
+        'group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] shadow-[0_20px_50px_-32px_rgba(2,6,23,0.8)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:shadow-[0_28px_56px_-28px_rgba(2,6,23,0.92)]',
         className,
       )}
     >

@@ -1,47 +1,61 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 
-interface JetonWebGLEnabledInput {
-  isDesktop: boolean;
+interface JetonHeroVideoEnabledInput {
   prefersReducedMotion: boolean;
   saveData: boolean;
   featureEnabled: boolean;
 }
 
-export function shouldEnableJetonWebGL({
-  isDesktop,
+export function shouldEnableJetonHeroVideo({
   prefersReducedMotion,
   saveData,
   featureEnabled,
-}: JetonWebGLEnabledInput): boolean {
+}: JetonHeroVideoEnabledInput): boolean {
   if (!featureEnabled) return false;
-  if (!isDesktop) return false;
   if (prefersReducedMotion) return false;
   if (saveData) return false;
   return true;
 }
 
-export function useJetonWebGLEnabled(): boolean {
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
+export function useJetonHeroVideoEnabled(): boolean {
   const prefersReducedMotion = useReducedMotionSafe();
   const [saveData, setSaveData] = useState(false);
 
   useEffect(() => {
-    const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
-    setSaveData(Boolean(nav.connection?.saveData));
+    interface ConnectionLike {
+      saveData?: boolean;
+      addEventListener?: (type: 'change', listener: () => void) => void;
+      removeEventListener?: (type: 'change', listener: () => void) => void;
+    }
+
+    const nav = navigator as Navigator & { connection?: ConnectionLike };
+    const connection = nav.connection;
+    const syncSaveData = () => {
+      setSaveData(Boolean(connection?.saveData));
+    };
+
+    syncSaveData();
+    connection?.addEventListener?.('change', syncSaveData);
+
+    return () => {
+      connection?.removeEventListener?.('change', syncSaveData);
+    };
   }, []);
 
-  const featureEnabled = import.meta.env.VITE_LANDING_WEBGL !== '0';
+  const featureEnabled = import.meta.env.VITE_LANDING_HERO_VIDEO !== '0';
 
   return useMemo(
     () =>
-      shouldEnableJetonWebGL({
-        isDesktop,
+      shouldEnableJetonHeroVideo({
         prefersReducedMotion,
         saveData,
         featureEnabled,
       }),
-    [featureEnabled, isDesktop, prefersReducedMotion, saveData],
+    [featureEnabled, prefersReducedMotion, saveData],
   );
 }
+
+// Backward-compat exports during migration of references.
+export const shouldEnableJetonWebGL = shouldEnableJetonHeroVideo;
+export const useJetonWebGLEnabled = useJetonHeroVideoEnabled;

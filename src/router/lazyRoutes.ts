@@ -7,6 +7,82 @@ import {
 
 type RouteLoader = () => Promise<{ default: ComponentType<any> }>;
 
+const CHUNK_RELOAD_KEY = 'poseidon:chunk-reload-attempted';
+const ROUTE_IMPORT_TIMEOUT_MS = 12000;
+
+function shouldForceReloadOnImportError(error: unknown): boolean {
+  if (!(error instanceof Error)) return false;
+  const message = error.message.toLowerCase();
+  return (
+    message.includes('failed to fetch dynamically imported module') ||
+    message.includes('importing a module script failed') ||
+    message.includes('loading chunk') ||
+    message.includes('chunkloaderror') ||
+    message.includes('route import timeout')
+  );
+}
+
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, reason: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => {
+      globalThis.setTimeout(() => reject(new Error(reason)), timeoutMs);
+    }),
+  ]);
+}
+
+function getReloadAttempted(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return sessionStorage.getItem(CHUNK_RELOAD_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function markReloadAttempted(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    sessionStorage.setItem(CHUNK_RELOAD_KEY, '1');
+  } catch {
+    // Ignore storage failures (private mode / restricted storage).
+  }
+}
+
+function clearReloadAttempted(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    sessionStorage.removeItem(CHUNK_RELOAD_KEY);
+  } catch {
+    // Ignore storage failures (private mode / restricted storage).
+  }
+}
+
+function withRouteImportRecovery(routePath: string, loader: RouteLoader): RouteLoader {
+  return async () => {
+    try {
+      const module = await withTimeout(loader(), ROUTE_IMPORT_TIMEOUT_MS, `Route import timeout: ${routePath}`);
+
+      clearReloadAttempted();
+
+      return module;
+    } catch (error) {
+      if (
+        typeof window !== 'undefined' &&
+        shouldForceReloadOnImportError(error) &&
+        !getReloadAttempted()
+      ) {
+        markReloadAttempted();
+        const url = new URL(window.location.href);
+        url.searchParams.set('__route_reload', String(Date.now()));
+        window.location.replace(url.toString());
+      }
+
+      throw error;
+    }
+  };
+}
+
 // Lazy load page components for code splitting
 export const routeLoaders = {
   // ─── Public ─────────────────────────────────────────────────────────────────
@@ -152,8 +228,8 @@ export async function prefetchRoute(path: RoutePath): Promise<void> {
 const comingSoonLoader = () => import('../pages/ComingSoon');
 
 export const routes = Object.fromEntries(
-  Object.entries(routeLoaders).map(([path, loader]) => [
-    path,
-    lazy((V0_READY_ROUTES.has(path as RoutePath) ? loader : comingSoonLoader) as RouteLoader),
-  ]),
+  Object.entries(routeLoaders).map(([path, loader]) => {
+    const resolvedLoader = (V0_READY_ROUTES.has(path as RoutePath) ? loader : comingSoonLoader) as RouteLoader;
+    return [path, lazy(withRouteImportRecovery(path, resolvedLoader))];
+  }),
 ) as unknown as Record<RoutePath, LazyExoticComponent<ComponentType<any>>>;

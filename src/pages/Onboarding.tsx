@@ -1,42 +1,31 @@
-import { useState } from "react"
-import { motion } from "framer-motion"
+import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { Link } from '@/router'
-import { Building2, CreditCard, PiggyBank, Check, Shield, ArrowRight, ArrowLeft } from "lucide-react"
-import { OnboardingProgress } from '@/components/onboarding/OnboardingProgress'
-
-const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: spring },
-}
-const staggerContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-}
+import { Building2, CreditCard, PiggyBank, Check, Shield, ArrowRight, ArrowLeft } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { OnboardingShell } from '@/components/layout/OnboardingShell'
+import { fadeUp, staggerContainer } from '@/lib/motion-presets'
 
 const CONNECTORS = [
   {
-    id: "bank",
+    id: 'bank',
     icon: Building2,
-    label: "Bank account",
-    desc: "Checking & savings accounts",
-    status: "available" as const,
+    label: 'Bank account',
+    desc: 'Checking and savings accounts',
   },
   {
-    id: "credit",
+    id: 'credit',
     icon: CreditCard,
-    label: "Credit cards",
-    desc: "Track spending and payments",
-    status: "available" as const,
+    label: 'Credit cards',
+    desc: 'Track spending and statement risk',
   },
   {
-    id: "investment",
+    id: 'investment',
     icon: PiggyBank,
-    label: "Investment accounts",
-    desc: "Brokerage & retirement",
-    status: "available" as const,
+    label: 'Investment accounts',
+    desc: 'Brokerage and retirement balances',
   },
-]
+] as const
 
 export default function OnboardingConnectPage() {
   const [connected, setConnected] = useState<Set<string>>(new Set())
@@ -51,118 +40,93 @@ export default function OnboardingConnectPage() {
   }
 
   return (
-    <main id="main-content" className="relative">
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: "var(--engine-dashboard)", color: "#0B1221" }}
-      >
-        Skip to main content
-      </a>
-      <div className="relative z-10 mx-auto max-w-2xl px-6 py-12">
-        <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
-          <OnboardingProgress step={1} />
-          <motion.h1
-            variants={fadeUp}
-            className="text-2xl md:text-3xl font-bold leading-tight tracking-tight mb-2 text-balance"
-            style={{ color: "#F1F5F9" }}
-          >
-            Connect your financial accounts
-          </motion.h1>
-          <motion.p variants={fadeUp} className="text-sm mb-8" style={{ color: "#94A3B8" }}>
-            We use read-only access. Poseidon never moves money or modifies your accounts.
-          </motion.p>
-
-          {/* Connection cards */}
-          <motion.div variants={staggerContainer} className="flex flex-col gap-3 mb-8">
-            {CONNECTORS.map((c) => {
-              const isConnected = connected.has(c.id)
-              return (
-                <motion.button
-                  key={c.id}
-                  variants={fadeUp}
-                  onClick={() => toggle(c.id)}
-                  className="glass-surface rounded-xl p-4 flex items-center gap-4 text-left transition-all w-full"
-                  style={{
-                    border: isConnected
-                      ? "1px solid rgba(16,185,129,0.4)"
-                      : "1px solid rgba(255,255,255,0.06)",
-                  }}
-                >
-                  <div
-                    className="flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0"
-                    style={{
-                      background: isConnected ? "rgba(16,185,129,0.1)" : "rgba(255,255,255,0.04)",
-                    }}
+    <OnboardingShell
+      step={1}
+      title="Connect your financial accounts"
+      subtitle="Poseidon uses read-only access. Money movement always requires explicit consent and leaves a full audit trail."
+    >
+      <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
+        <motion.div variants={staggerContainer} className="space-y-3">
+          {CONNECTORS.map((connector) => {
+            const isConnected = connected.has(connector.id)
+            return (
+              <motion.button
+                key={connector.id}
+                type="button"
+                variants={fadeUp}
+                onClick={() => toggle(connector.id)}
+                className={cn(
+                  'glass-surface w-full rounded-xl border p-4 text-left transition-colors',
+                  isConnected
+                    ? 'border-[var(--state-healthy)]/45 bg-[var(--state-healthy)]/10'
+                    : 'border-white/10 bg-white/[0.02] hover:border-white/20',
+                )}
+              >
+                <div className="flex items-center gap-4">
+                  <span
+                    className={cn(
+                      'inline-flex h-10 w-10 items-center justify-center rounded-lg border',
+                      isConnected
+                        ? 'border-[var(--state-healthy)]/40 bg-[var(--state-healthy)]/15 text-[var(--state-healthy)]'
+                        : 'border-white/10 bg-white/[0.03] text-slate-500',
+                    )}
                   >
-                    <c.icon size={20} style={{ color: isConnected ? "var(--state-healthy)" : "#64748B" }} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold" style={{ color: "#F1F5F9" }}>{c.label}</p>
-                    <p className="text-xs" style={{ color: "#64748B" }}>{c.desc}</p>
-                  </div>
-                  <div
-                    className="flex items-center justify-center w-6 h-6 rounded-full flex-shrink-0"
-                    style={{
-                      background: isConnected ? "var(--state-healthy)" : "rgba(255,255,255,0.06)",
-                      border: isConnected ? "none" : "1px solid rgba(255,255,255,0.1)",
-                    }}
-                  >
-                    {isConnected && <Check size={14} style={{ color: "#0B1221" }} />}
-                  </div>
-                </motion.button>
-              )
-            })}
-          </motion.div>
+                    <connector.icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
 
-          {/* Security note */}
-          <motion.div
-            variants={fadeUp}
-            className="glass-surface rounded-xl p-4 flex items-start gap-3 mb-8"
-          >
-            <Shield size={18} className="flex-shrink-0 mt-0.5" style={{ color: "var(--engine-dashboard)" }} />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-slate-100">{connector.label}</p>
+                    <p className="mt-0.5 text-xs text-slate-400">{connector.desc}</p>
+                  </div>
+
+                  <span
+                    className={cn(
+                      'inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border',
+                      isConnected
+                        ? 'border-[var(--state-healthy)] bg-[var(--state-healthy)] text-[#0B1221]'
+                        : 'border-white/15 bg-white/[0.03] text-transparent',
+                    )}
+                  >
+                    <Check className="h-3.5 w-3.5" aria-hidden="true" />
+                  </span>
+                </div>
+              </motion.button>
+            )
+          })}
+        </motion.div>
+
+        <motion.div variants={fadeUp} className="glass-surface mt-6 rounded-xl p-4">
+          <div className="flex items-start gap-3">
+            <Shield className="mt-0.5 h-4.5 w-4.5 text-[var(--engine-dashboard)]" aria-hidden="true" />
             <div>
-              <p className="text-xs font-semibold mb-0.5" style={{ color: "#F1F5F9" }}>Read-only access</p>
-              <p className="text-xs leading-relaxed" style={{ color: "#94A3B8" }}>
-                We use bank-level encryption and never store credentials. Your data is analyzed locally and every access is logged in the audit ledger.
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Security guarantee</p>
+              <p className="mt-1 text-xs leading-relaxed text-slate-300">
+                Credentials are never stored. Access is encrypted end-to-end and logged in the immutable governance ledger.
               </p>
             </div>
-          </motion.div>
-
-          {/* Actions */}
-          <motion.div variants={fadeUp} className="flex items-center justify-between">
-            <Link
-              to="/onboarding"
-              className="flex items-center gap-1.5 text-sm font-medium"
-              style={{ color: "#64748B" }}
-            >
-              <ArrowLeft size={16} />
-              Back
-            </Link>
-            <div className="flex items-center gap-3">
-              <Link
-                to="/onboarding/goals"
-                className="text-sm font-medium px-4 py-2 rounded-xl"
-                style={{ color: "#94A3B8" }}
-              >
-                Skip for now
-              </Link>
-              {/* CTA: Primary -> /onboarding/goals */}
-              <Link
-                to="/onboarding/goals"
-                className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-2.5 rounded-xl transition-all"
-                style={{
-                  background: "linear-gradient(135deg, #14B8A6, #06B6D4)",
-                  color: "#0B1221",
-                }}
-              >
-                Continue to goals
-                <ArrowRight size={16} />
-              </Link>
-            </div>
-          </motion.div>
+          </div>
         </motion.div>
-      </div>
-    </main>
+
+        <motion.div variants={fadeUp} className="mt-7 flex items-center justify-between gap-4">
+          <Link to="/onboarding" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-slate-200">
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            Back
+          </Link>
+
+          <div className="flex items-center gap-2">
+            <Link to="/onboarding/goals" className="rounded-lg px-3 py-2 text-sm font-medium text-slate-400 hover:text-slate-200">
+              Skip for now
+            </Link>
+            <Link
+              to="/onboarding/goals"
+              className="cta-primary-glow inline-flex min-h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-teal-400 to-cyan-300 px-6 py-2.5 text-sm font-semibold text-[#0B1221]"
+            >
+              Continue to goals
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </motion.div>
+      </motion.div>
+    </OnboardingShell>
   )
 }

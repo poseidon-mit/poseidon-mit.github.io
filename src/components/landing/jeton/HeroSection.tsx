@@ -1,25 +1,29 @@
 import {
-  lazy,
-  Suspense,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Lock, PlayCircle, Shield, ShieldCheck } from 'lucide-react';
 import { Link, useRouter } from '@/router';
 import { JETON_COPY } from '@/content/landing-copy-jeton';
-import { useJetonWebGLEnabled } from './hooks/useJetonWebGLEnabled';
-import { JETON_EASING, JETON_WEBGL_DEFAULTS } from './jeton-config';
+import { useJetonHeroVideoEnabled } from './hooks/useJetonWebGLEnabled';
+import { JETON_EASING } from './jeton-config';
 
-const ParticleWave = lazy(() => import('./effects/ParticleWave'));
+const HERO_VIDEO_SRC = '/Theme_a_gentle_1080p_202602191613.mp4';
 
 export function HeroSection() {
-  const [webglReady, setWebglReady] = useState(false);
-  const webglEnabled = useJetonWebGLEnabled();
+  const [videoReady, setVideoReady] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const heroVideoEnabled = useJetonHeroVideoEnabled();
   const { navigate } = useRouter();
 
   const { scrollY } = useScroll();
   const heroOpacity = useTransform(scrollY, [0, 540], [1, 0.26]);
+  const showFallback = !heroVideoEnabled || videoFailed || !videoReady;
 
   const trustBadges = useMemo(
     () => [
@@ -30,28 +34,101 @@ export function HeroSection() {
     [],
   );
 
+  useEffect(() => {
+    if (!heroVideoEnabled) {
+      return;
+    }
+
+    const video = videoRef.current;
+    const section = sectionRef.current;
+    if (!video || !section) {
+      return;
+    }
+
+    let visible = document.visibilityState === 'visible';
+    let intersecting = true;
+
+    const tryPlay = async () => {
+      if (!visible || !intersecting) {
+        return;
+      }
+      try {
+        await video.play();
+      } catch {
+        setVideoFailed(true);
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      visible = document.visibilityState === 'visible';
+      if (!visible) {
+        video.pause();
+        return;
+      }
+      void tryPlay();
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    let observer: IntersectionObserver | null = null;
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          intersecting = Boolean(entry?.isIntersecting);
+          if (!intersecting) {
+            video.pause();
+            return;
+          }
+          void tryPlay();
+        },
+        {
+          threshold: 0.08,
+        },
+      );
+      observer.observe(section);
+    }
+
+    void tryPlay();
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      observer?.disconnect();
+      video.pause();
+    };
+  }, [heroVideoEnabled]);
+
   return (
-    <section className="relative isolate flex min-h-screen items-center overflow-hidden bg-[#0B1221] px-6 pb-20 pt-28 md:px-8 md:pt-32">
+    <section ref={sectionRef} className="relative isolate flex min-h-screen items-center overflow-hidden bg-[#0B1221] px-6 pb-20 pt-28 md:px-8 md:pt-32">
       <div
         aria-hidden="true"
         className={`pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_60%,rgba(0,240,255,0.08),transparent_60%),radial-gradient(ellipse_at_85%_15%,rgba(56,189,248,0.16),transparent_58%),#0B1221] transition-opacity duration-[650ms] ${
-          webglReady ? 'opacity-0' : 'opacity-100'
+          showFallback ? 'opacity-100' : 'opacity-0'
         }`}
       />
 
-      {webglEnabled ? (
-        <div className={`pointer-events-none absolute inset-0 transition-opacity duration-[650ms] ${webglReady ? 'opacity-100' : 'opacity-0'}`}>
-          <Suspense fallback={null}>
-            <ParticleWave
-              onReady={() => setWebglReady(true)}
-              quality={JETON_WEBGL_DEFAULTS.quality}
-              pointerIntensity={JETON_WEBGL_DEFAULTS.pointerIntensity}
-            />
-          </Suspense>
+      {heroVideoEnabled && !videoFailed ? (
+        <div className={`pointer-events-none absolute inset-0 transition-opacity duration-[650ms] ${videoReady ? 'opacity-100' : 'opacity-0'}`}>
+          <video
+            ref={videoRef}
+            src={HERO_VIDEO_SRC}
+            className="h-full w-full object-cover object-center"
+            autoPlay
+            loop
+            muted
+            playsInline
+            disablePictureInPicture
+            preload="metadata"
+            aria-hidden="true"
+            tabIndex={-1}
+            onLoadedData={() => setVideoReady(true)}
+            onCanPlay={() => setVideoReady(true)}
+            onError={() => setVideoFailed(true)}
+          />
         </div>
       ) : null}
 
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0B1221]/35 via-transparent to-[#0B1221]/92" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0B1221]/55 via-[#0B1221]/30 to-[#0B1221]/95 md:from-[#0B1221]/35 md:via-transparent md:to-[#0B1221]/92" aria-hidden="true" />
 
       <motion.div style={{ opacity: heroOpacity }} className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-8 text-white">
         <motion.p
@@ -67,7 +144,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 38 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: JETON_EASING }}
-          className="max-w-5xl text-balance font-display text-[clamp(2.8rem,9vw,8rem)] font-semibold leading-[0.95] tracking-[-0.04em]"
+          className="max-w-5xl text-balance font-display text-[clamp(2.8rem,9vw,8rem)] font-semibold leading-[0.9] tracking-[-0.04em]"
         >
           {JETON_COPY.hero.titleA}
           <br />
@@ -93,14 +170,14 @@ export function HeroSection() {
         >
           <Link
             to="/signup"
-            className="inline-flex min-h-11 items-center justify-center rounded-full bg-gradient-to-r from-teal-400 to-cyan-300 px-8 py-3 text-sm font-semibold text-slate-950 transition-all duration-200 hover:scale-[0.985] hover:shadow-[0_0_40px_rgba(0,240,255,0.36)] active:scale-[0.97]"
+            className="btn-liquid-glass inline-flex min-h-11 items-center justify-center rounded-full px-8 py-3 text-sm font-semibold text-white transition-all duration-200 hover:scale-[0.985] active:scale-[0.97]"
           >
             {JETON_COPY.hero.primaryCta}
           </Link>
           <button
             type="button"
             onClick={() => navigate('/dashboard')}
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-medium text-white/90 transition-all duration-200 hover:bg-white/10"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/90 transition-all duration-200 hover:border-white/25 hover:bg-white/10 hover:shadow-[0_0_26px_rgba(56,189,248,0.2)]"
           >
             <PlayCircle className="h-4 w-4" aria-hidden="true" />
             {JETON_COPY.hero.secondaryCta}
@@ -111,10 +188,10 @@ export function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.8, ease: JETON_EASING }}
-          className="flex flex-wrap items-center gap-6 text-xs text-white/68"
+          className="flex flex-wrap items-center gap-6 text-xs text-white/45"
         >
           {trustBadges.map(({ icon: Icon, label }) => (
-            <span key={label} className="inline-flex items-center gap-1.5">
+            <span key={label} className="inline-flex items-center gap-1.5 transition-colors hover:text-white/75">
               <Icon className="h-3.5 w-3.5" aria-hidden="true" />
               {label}
             </span>

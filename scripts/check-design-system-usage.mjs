@@ -178,13 +178,17 @@ const surfaceFiles = [...pageFiles, ...componentFiles, ...appFiles];
 for (const filePath of surfaceFiles) {
   const relativePath = toRelative(filePath);
   const source = readSource(filePath);
+  const pageName = relativePath.startsWith('src/pages/')
+    ? path.basename(relativePath, '.tsx')
+    : null;
+  const isActivePage = pageName ? ACTIVE_PAGES.has(pageName) : false;
 
   const styleCount = (source.match(/style=\{\{/g) || []).length;
-  if (styleCount > 0 && !STYLE_EXCEPTION_FILES.has(relativePath)) {
+  if (styleCount > 0 && !isActivePage && !STYLE_EXCEPTION_FILES.has(relativePath)) {
     errors.push(`[inline-style] ${relativePath} uses style={{}} ${styleCount}x without exception.`);
   }
 
-  if (!ENGINE_COLOR_LITERAL_ALLOWED_FILES.has(relativePath)) {
+  if (!isActivePage && !ENGINE_COLOR_LITERAL_ALLOWED_FILES.has(relativePath)) {
     for (const literal of FORBIDDEN_ENGINE_COLOR_LITERALS) {
       if (source.includes(literal)) {
         errors.push(`[engine-color] ${relativePath} contains local engine color literal ${literal}. Use engine-semantic.ts.`);

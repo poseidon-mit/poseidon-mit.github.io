@@ -78,7 +78,7 @@ export function ActivityTimelinePage() {
   }, {});
 
   return (
-    <div className="relative min-h-screen w-full" style={{ background: '#0B1221' }}>
+    <div className="relative min-h-screen w-full">
       <AuroraPulse color="var(--engine-dashboard)" intensity="subtle" />
       <a
         href="#main-content"

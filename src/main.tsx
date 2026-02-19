@@ -2,6 +2,7 @@ import React, { Suspense, Component, useEffect, type ReactNode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, useRouter } from './router';
 import { routes, type RoutePath } from './router/lazyRoutes';
+import { isAppRoute } from './router/app-shell-routes';
 import { AppNavShell } from './components/layout/AppNavShell';
 import { usePresentationMode } from './hooks/usePresentationMode';
 import './styles/tailwind.css';
@@ -9,6 +10,8 @@ import './styles/app.css';
 import './styles/pages/dashboard-v3.css';
 import './styles/pages/engine-semantics.css';
 import './styles/colorblind-palettes.css';
+
+const ROUTE_LOADING_RECOVERY_KEY = 'poseidon:route-loading-recovery-attempted';
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state = { error: null };
@@ -48,6 +51,66 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
 }
 
 function RouteLoadingFallback() {
+  const [timedOut, setTimedOut] = React.useState(false);
+  const [recovering, setRecovering] = React.useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setTimedOut(true);
+    }, 8000);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!timedOut || typeof window === 'undefined') {
+      return;
+    }
+
+    let attempted = false;
+    try {
+      attempted = sessionStorage.getItem(ROUTE_LOADING_RECOVERY_KEY) === '1';
+    } catch {
+      attempted = false;
+    }
+
+    if (attempted) {
+      return;
+    }
+
+    try {
+      sessionStorage.setItem(ROUTE_LOADING_RECOVERY_KEY, '1');
+    } catch {
+      // Ignore storage failures and continue with best-effort recovery.
+    }
+
+    let cancelled = false;
+    setRecovering(true);
+
+    void (async () => {
+      try {
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map((registration) => registration.unregister().catch(() => false)));
+        }
+
+        if ('caches' in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map((key) => caches.delete(key).catch(() => false)));
+        }
+      } finally {
+        if (!cancelled) {
+          const url = new URL(window.location.href);
+          url.searchParams.set('__route_recovery', String(Date.now()));
+          window.location.replace(url.toString());
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [timedOut]);
+
   return (
     <div
       style={{
@@ -64,37 +127,59 @@ function RouteLoadingFallback() {
     >
       <div
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 10,
-          borderRadius: 12,
-          border: '1px solid rgba(255,255,255,0.08)',
-          background: 'rgba(255,255,255,0.03)',
-          color: '#cbd5e1',
-          padding: '10px 14px',
+          display: 'grid',
+          gap: 12,
+          justifyItems: 'center',
         }}
       >
-        <span
-          aria-hidden="true"
+        <div
           style={{
-            width: 10,
-            height: 10,
-            borderRadius: '999px',
-            background: '#14B8A6',
-            boxShadow: '0 0 16px rgba(20,184,166,0.55)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            borderRadius: 12,
+            border: '1px solid rgba(255,255,255,0.08)',
+            background: 'rgba(255,255,255,0.03)',
+            color: '#cbd5e1',
+            padding: '10px 14px',
           }}
-        />
-        <span style={{ fontSize: 13, fontWeight: 600 }}>Loading…</span>
+        >
+          <span
+            aria-hidden="true"
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: '999px',
+              background: '#14B8A6',
+              boxShadow: '0 0 16px rgba(20,184,166,0.55)',
+            }}
+          />
+          <span style={{ fontSize: 13, fontWeight: 600 }}>Loading…</span>
+        </div>
+
+        {timedOut ? (
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            disabled={recovering}
+            style={{
+              borderRadius: 10,
+              border: '1px solid rgba(255,255,255,0.16)',
+              background: recovering ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.06)',
+              color: '#e2e8f0',
+              padding: '8px 12px',
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: recovering ? 'progress' : 'pointer',
+              opacity: recovering ? 0.75 : 1,
+            }}
+          >
+            {recovering ? 'Recovering…' : 'Reload'}
+          </button>
+        ) : null}
       </div>
     </div>
   );
-}
-
-/** Routes that use the AppNavShell wrapper (authenticated app pages) */
-const APP_SHELL_PREFIXES = ['/dashboard', '/protect', '/grow', '/execute', '/govern', '/settings', '/help'];
-
-function isAppRoute(path: string): boolean {
-  return APP_SHELL_PREFIXES.some((prefix) => path === prefix || path.startsWith(prefix + '/'));
 }
 
 function RouterOutlet() {

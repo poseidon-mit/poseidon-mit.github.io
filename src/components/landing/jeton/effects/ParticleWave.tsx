@@ -22,8 +22,13 @@ void main() {
   float wavePrimary = sin(pos.x * 0.85 + uTime * 0.55) * cos(pos.z * 0.65 + uTime * 0.38);
   float waveSecondary = sin(pos.x * 1.4 + uTime * 0.22) * 0.35;
 
-  float dist = distance(pos.xz, uMouse * 5.8);
-  float ripple = exp(-dist * dist * 1.8) * sin(dist * 4.5 - uTime * 2.8) * uPointerIntensity;
+  // Map NDC to approximate world coordinates
+  vec2 mouseWorld = vec2(uMouse.x * 10.0, uMouse.y * 6.0);
+  float dist = distance(pos.xz, mouseWorld);
+  
+  // Broader, more pronounced ripple
+  float rippleRadius = 0.5;
+  float ripple = exp(-dist * dist * rippleRadius) * sin(dist * 3.5 - uTime * 2.8) * (uPointerIntensity * 3.5);
 
   float height = wavePrimary * 0.42 + waveSecondary + ripple;
   pos.y += height;
@@ -32,8 +37,9 @@ void main() {
   vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
   gl_Position = projectionMatrix * mvPosition;
 
-  float depthScale = clamp(2.4 / -mvPosition.z, 0.72, 2.2);
-  gl_PointSize = (2.0 + height * 0.8) * depthScale;
+  // Increase base size and make perspective scaling less harsh
+  float depthScale = clamp(4.0 / -mvPosition.z, 0.4, 3.0);
+  gl_PointSize = (2.2 + height * 1.2) * depthScale;
 }
 `;
 
@@ -58,12 +64,12 @@ void main() {
 `;
 
 function resolveGrid(quality: ParticleWaveProps['quality']): [number, number] {
-  if (quality === 'high') return [180, 110];
-  if (quality === 'balanced') return [150, 100];
+  if (quality === 'high') return [380, 240];
+  if (quality === 'balanced') return [300, 200];
   if (typeof window !== 'undefined' && window.innerWidth > 1440) {
-    return [170, 105];
+    return [340, 220];
   }
-  return [140, 90];
+  return [280, 180];
 }
 
 interface ParticleFieldProps {
@@ -75,8 +81,9 @@ interface ParticleFieldProps {
 function ParticleField({ onReady, quality, pointerIntensity }: ParticleFieldProps) {
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
   const readyRef = useRef(false);
-  const mouseTarget = useRef(new THREE.Vector2(0, 0));
-  const mouseCurrent = useRef(new THREE.Vector2(0, 0));
+  // Initialize far away to avoid a random bubble in the center on load
+  const mouseTarget = useRef(new THREE.Vector2(-999, -999));
+  const mouseCurrent = useRef(new THREE.Vector2(-999, -999));
 
   const [xCount, zCount] = useMemo(() => resolveGrid(quality), [quality]);
 
@@ -108,7 +115,7 @@ function ParticleField({ onReady, quality, pointerIntensity }: ParticleFieldProp
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uMouse: { value: new THREE.Vector2(0, 0) },
+      uMouse: { value: new THREE.Vector2(-999, -999) },
       uPointerIntensity: { value: pointerIntensity },
       uBaseColor: { value: new THREE.Color('#0A1628') },
       uCyanColor: { value: new THREE.Color('#00F0FF') },
@@ -125,6 +132,7 @@ function ParticleField({ onReady, quality, pointerIntensity }: ParticleFieldProp
 
   useEffect(() => {
     const onPointerMove = (event: PointerEvent) => {
+      // Avoid tracking outside of the hero area roughly (or leaving it stuck if mouse escapes)
       const x = (event.clientX / window.innerWidth) * 2 - 1;
       const y = (event.clientY / window.innerHeight) * 2 - 1;
       mouseTarget.current.set(x, -y);

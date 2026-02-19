@@ -119,7 +119,7 @@ export function GrowRecommendations() {
   const categoryOptions: Category[] = ['All', 'Savings', 'Debt', 'Income', 'Investment'];
 
   return (
-    <div className="relative min-h-screen w-full" style={{ background: '#0B1221' }}>
+    <div className="relative min-h-screen w-full">
       <AuroraPulse color="var(--engine-grow)" intensity="subtle" />
       <a
         href="#main-content"

@@ -5,6 +5,8 @@
  * Also includes types for the AI Credibility Layer (Phase 5).
  */
 
+import type { LucideIcon } from 'lucide-react'
+
 /* ── Protect ── */
 
 export type Severity = 'critical' | 'warning' | 'info'
@@ -27,7 +29,7 @@ export interface ShapFactor {
 export interface CategoryScore {
   name: string
   score: number
-  icon: React.ElementType
+  icon: LucideIcon
 }
 
 export interface Milestone {

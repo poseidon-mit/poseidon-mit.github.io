@@ -16,39 +16,13 @@ import {
   AlertTriangle,
 } from "lucide-react"
 import { DEMO_THREAD } from '@/lib/demo-thread'
-import { EmptyState } from '@/components/poseidon'
+import { AuroraPulse, EmptyState, GlassCard, GovernFooter } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
-
-/* ── Motion presets ── */
-const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
-const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: spring } }
-const staggerContainer = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }
+import { fadeUp, staggerContainer } from '@/lib/motion-presets'
 
 /* ── Cross-thread values ── */
 const PENDING_ACTIONS = DEMO_THREAD.pendingActions
 const MONTHLY_SAVINGS = DEMO_THREAD.monthlySavings
-
-/* ── Shared ── */
-function AuroraPulse({ color }: { color: string }) {
-  return <div className="pointer-events-none absolute inset-0" aria-hidden="true" style={{ background: `radial-gradient(70% 50% at 50% 0%, ${color}0F, transparent), radial-gradient(40% 40% at 80% 20%, ${color}08, transparent)`, animation: "aurora-drift 8s ease-in-out infinite alternate" }} />
-}
-
-function GovernFooter({ auditId, pageContext }: { auditId: string; pageContext: string }) {
-  return (
-    <footer className="mt-8 flex flex-col gap-3 md:flex-row md:items-center md:justify-between rounded-2xl border border-white/[0.06] px-4 py-3 md:px-6 md:py-4" style={{ background: "rgba(255,255,255,0.03)" }} role="contentinfo" aria-label="Governance verification footer">
-      <div className="flex items-center gap-2">
-        <div className="flex items-center justify-center rounded-full" style={{ width: 28, height: 28, background: "rgba(59,130,246,0.12)" }}><ShieldCheck size={14} style={{ color: "var(--engine-govern)" }} /></div>
-        <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider" style={{ background: "rgba(16,185,129,0.12)", color: "var(--state-healthy)" }}><Shield size={10} />Verified</span>
-      </div>
-      <span className="text-xs font-mono" style={{ color: "#64748B" }}>{auditId}</span>
-      <Link to="/govern/audit" className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-medium transition-all hover:bg-white/[0.04]" style={{ borderColor: "rgba(255,255,255,0.08)", color: "#CBD5E1", minHeight: "44px" }} aria-label={`Request human review of ${pageContext}`}><User size={14} />Request human review</Link>
-    </footer>
-  )
-}
-
-function GlassCard({ children, className = "", borderColor }: { children: React.ReactNode; className?: string; borderColor?: string }) {
-  return <div className={`rounded-2xl border border-white/[0.06] p-4 md:p-6 ${className}`} style={{ background: "rgba(255,255,255,0.03)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", boxShadow: "0 4px 16px rgba(0,0,0,0.2)", ...(borderColor ? { borderLeftWidth: "2px", borderLeftColor: borderColor } : {}) }}>{children}</div>
-}
 
 /* ── Data ── */
 type ActionStatus = "pending" | "approved" | "rejected" | "deferred"
@@ -93,8 +67,8 @@ export default function ExecutePage() {
   const deferred = actions.filter(a => a.status === "deferred")
 
   return (
-    <div className="relative min-h-screen w-full" style={{ background: "#0B1221" }}>
-      <AuroraPulse color="#EAB308" />
+    <div className="relative min-h-screen w-full">
+      <AuroraPulse engine="execute" />
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-execute)", color: "#0B1221" }}>Skip to main content</a>
 
       <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: "1280px" }} variants={staggerContainer} initial="hidden" animate="visible" role="main">
