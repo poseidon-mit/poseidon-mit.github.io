@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,12 +28,29 @@ jobs:
       - run: npm ci
       - run: npm run guard:vite-only
       - run: npm run build
+      - name: Build smoke check
+        run: |
+          test -f dist/index.html
+          npx vite preview --host 127.0.0.1 --port 4173 >/tmp/vite-preview.log 2>&1 &
+          for i in 1 2 3; do
+            npx wait-on http://127.0.0.1:4173 --timeout 15000 && break
+            if [ "$i" -eq 3 ]; then
+              echo "Preview server failed to start"
+              cat /tmp/vite-preview.log || true
+              exit 1
+            fi
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:4173/ >/tmp/deploy-smoke.html
+          grep -qi "<html" /tmp/deploy-smoke.html
+          pkill -f "vite preview --host 127.0.0.1 --port 4173" || true
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
   deploy:
+    if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     environment:

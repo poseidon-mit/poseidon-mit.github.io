@@ -2,9 +2,18 @@ name: UX Quality
 
 on:
   pull_request:
-    paths-ignore:
-      - '**/*.md'
-      - 'docs/**'
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'scripts/**'
+      - '.github/workflows/ux-quality.yml'
+      - '.github/workflows/ci.yml'
+      - '.github/workflows/deploy.yml'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - 'vitest.config.ts'
+      - 'tsconfig.json'
   workflow_dispatch:
   schedule:
     - cron: '0 16 * * *'
@@ -14,10 +23,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ux-pr:
+  ux-pr-fast:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -50,13 +59,88 @@ jobs:
       - name: UX verify
         run: npm run ux:verify
 
+      - name: Upload PR dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ux-pr-dist
+          retention-days: 2
+          path: dist
+
+      - name: Enforce P0 threshold
+        run: |
+          node -e "const fs=require('fs');const p='docs/baselines/ux-audit-latest.json';const d=JSON.parse(fs.readFileSync(p,'utf8'));const p0=(d.issues||[]).filter(i=>i.severity==='P0'&&i.status!=='done');if(p0.length){console.error('P0 issues found:',p0.length);process.exit(1)}console.log('No open P0 issues')"
+
+      - name: PR fast summary
+        if: always()
+        run: |
+          node -e "const fs=require('fs');const s=process.env.GITHUB_STEP_SUMMARY;const p='docs/baselines/ux-audit-latest.json';if(!s){process.exit(0);}if(!fs.existsSync(p)){fs.appendFileSync(s,'## UX Fast\\nNo UX audit JSON found\\n');process.exit(0);}const d=JSON.parse(fs.readFileSync(p,'utf8'));const issues=d.issues||[];const open=issues.filter(i=>i.status!=='done');const by=(sev)=>open.filter(i=>i.severity===sev).length;fs.appendFileSync(s,`## UX Fast\\nOpen issues: ${open.length}\\n- P0: ${by('P0')}\\n- P1: ${by('P1')}\\n- P2: ${by('P2')}\\n`);"
+
+      - name: Upload UX artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ux-pr-fast-artifacts
+          retention-days: 7
+          path: |
+            docs/baselines/ux-audit-latest.json
+            docs/baselines/ux-visual-capture-last-run.json
+            docs/baselines/ux-visual-diff-last-run.json
+            docs/baselines/ux-dom-heuristics-last-run.json
+            docs/baselines/screenshots/latest
+
+  ux-pr-visual:
+    if: github.event_name == 'pull_request'
+    needs: ux-pr-fast
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Guard Vite-only architecture
+        run: npm run guard:vite-only
+
+      - name: Download PR dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ux-pr-dist
+          path: dist
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
       - name: Start preview server
-        run: npx vite preview --port 4173 &
+        run: npx vite preview --port 4173 >/tmp/ux-preview.log 2>&1 &
         env:
           CI: true
 
-      - name: Wait for preview server
-        run: npx wait-on http://127.0.0.1:4173 --timeout 15000 || sleep 5
+      - name: Wait for preview server (retry)
+        run: |
+          for i in 1 2 3; do
+            npx wait-on http://127.0.0.1:4173 --timeout 15000 && exit 0
+            if [ "$i" -eq 3 ]; then
+              echo "Preview server failed to start"
+              cat /tmp/ux-preview.log || true
+              exit 1
+            fi
+            sleep 2
+          done
 
       - name: UX scan (strict — Playwright required)
         run: npm run ux:scan:strict
@@ -65,11 +149,16 @@ jobs:
         run: |
           node -e "const fs=require('fs');const p='docs/baselines/ux-audit-latest.json';const d=JSON.parse(fs.readFileSync(p,'utf8'));const p0=(d.issues||[]).filter(i=>i.severity==='P0'&&i.status!=='done');if(p0.length){console.error('P0 issues found:',p0.length);process.exit(1)}console.log('No open P0 issues')"
 
-      - name: Upload UX artifacts
+      - name: PR visual summary
+        if: always()
+        run: |
+          node -e "const fs=require('fs');const s=process.env.GITHUB_STEP_SUMMARY;const p='docs/baselines/ux-audit-latest.json';if(!s){process.exit(0);}if(!fs.existsSync(p)){fs.appendFileSync(s,'## UX Visual\\nNo UX audit JSON found\\n');process.exit(0);}const d=JSON.parse(fs.readFileSync(p,'utf8'));const issues=d.issues||[];const open=issues.filter(i=>i.status!=='done');const by=(sev)=>open.filter(i=>i.severity===sev).length;fs.appendFileSync(s,`## UX Visual\\nOpen issues: ${open.length}\\n- P0: ${by('P0')}\\n- P1: ${by('P1')}\\n- P2: ${by('P2')}\\n`);"
+
+      - name: Upload visual artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ux-pr-artifacts
+          name: ux-pr-visual-artifacts
           retention-days: 7
           path: |
             docs/baselines/ux-audit-latest.json
@@ -112,12 +201,21 @@ jobs:
         run: npm run build || true
 
       - name: Start preview server
-        run: npx vite preview --port 4173 &
+        run: npx vite preview --port 4173 >/tmp/ux-nightly-preview.log 2>&1 &
         env:
           CI: true
 
-      - name: Wait for preview server
-        run: npx wait-on http://127.0.0.1:4173 --timeout 15000 || sleep 5
+      - name: Wait for preview server (retry)
+        run: |
+          for i in 1 2 3; do
+            npx wait-on http://127.0.0.1:4173 --timeout 15000 && exit 0
+            if [ "$i" -eq 3 ]; then
+              echo "Preview server failed to start"
+              cat /tmp/ux-nightly-preview.log || true
+              exit 0
+            fi
+            sleep 2
+          done
 
       - name: UX scan (non-blocking)
         run: npm run ux:scan || true
@@ -127,7 +225,7 @@ jobs:
 
       - name: Nightly UX summary
         run: |
-          node -e "const fs=require('fs');const p='docs/baselines/ux-audit-latest.json';if(!fs.existsSync(p)){console.log('No UX audit JSON found');process.exit(0);}const d=JSON.parse(fs.readFileSync(p,'utf8'));const issues=d.issues||[];const open=issues.filter(i=>i.status!=='done');const by=(s)=>open.filter(i=>i.severity===s).length;console.log('Open issues:',open.length,'P0:',by('P0'),'P1:',by('P1'),'P2:',by('P2'));"
+          node -e "const fs=require('fs');const s=process.env.GITHUB_STEP_SUMMARY;const p='docs/baselines/ux-audit-latest.json';if(!fs.existsSync(p)){console.log('No UX audit JSON found');if(s)fs.appendFileSync(s,'## UX Nightly\\nNo UX audit JSON found\\n');process.exit(0);}const d=JSON.parse(fs.readFileSync(p,'utf8'));const issues=d.issues||[];const open=issues.filter(i=>i.status!=='done');const by=(sev)=>open.filter(i=>i.severity===sev).length;const p0=by('P0');console.log('Open issues:',open.length,'P0:',p0,'P1:',by('P1'),'P2:',by('P2'));if(s){fs.appendFileSync(s,`## UX Nightly\\nOpen issues: ${open.length}\\n- P0: ${p0}\\n- P1: ${by('P1')}\\n- P2: ${by('P2')}\\n`);if(p0>0){fs.appendFileSync(s,'\\nStatus: degraded (open P0 issues present)\\n');}}"
 
       - name: Upload nightly UX artifacts
         if: always()
