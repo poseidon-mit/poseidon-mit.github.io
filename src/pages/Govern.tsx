@@ -13,6 +13,7 @@ import {
   CircleDot,
 } from "lucide-react"
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { GOVERNANCE_META } from '@/lib/governance-meta'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -22,6 +23,10 @@ const staggerContainer = { hidden: {}, visible: { transition: { staggerChildren:
 /* ── Cross-thread values ── */
 const DECISIONS_AUDITED = DEMO_THREAD.decisionsAudited
 const COMPLIANCE_SCORE = DEMO_THREAD.complianceScore
+const VERIFIED_COUNT = 1189
+const PENDING_REVIEW_COUNT = 55
+const FLAGGED_COUNT = 3
+const VERIFIED_PERCENT = Math.round((VERIFIED_COUNT / DECISIONS_AUDITED) * 100)
 
 /* ── Shared ── */
 function AuroraPulse({ color }: { color: string }) {
@@ -110,9 +115,9 @@ export default function GovernPage() {
             <div className="flex-1 grid grid-cols-2 gap-4">
               {[
                 { label: "Decisions audited", value: DECISIONS_AUDITED.toLocaleString() },
-                { label: "Verified", value: "93%", color: "var(--state-healthy)" },
-                { label: "Pending review", value: "55", color: "var(--state-warning)" },
-                { label: "Flagged", value: "3", color: "var(--state-critical)" },
+                { label: "Verified", value: `${VERIFIED_PERCENT}%`, color: "var(--state-healthy)" },
+                { label: "Pending review", value: String(PENDING_REVIEW_COUNT), color: "var(--state-warning)" },
+                { label: "Flagged", value: String(FLAGGED_COUNT), color: "var(--state-critical)" },
               ].map(d => (
                 <div key={d.label} className="flex flex-col gap-1">
                   <span className="text-[10px] uppercase tracking-wider" style={{ color: "#64748B" }}>{d.label}</span>
@@ -184,7 +189,10 @@ export default function GovernPage() {
           </aside>
         </div>
 
-        <GovernFooter auditId="GV-2026-0216-GOV" pageContext="governance decisions" />
+        <GovernFooter
+          auditId={GOVERNANCE_META['/govern'].auditId}
+          pageContext={GOVERNANCE_META['/govern'].pageContext}
+        />
       </motion.div>
     </div>
   )

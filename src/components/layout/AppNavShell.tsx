@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import {
   LayoutDashboard,
   Shield,
@@ -164,6 +164,10 @@ export function AppNavShell({
   const { isOpen: isPaletteOpen, open: openPalette, close: closePalette } = useCommandPalette();
   const { isPresentation } = usePresentationMode();
   const { isOffline } = usePWA();
+
+  useEffect(() => {
+    closePalette();
+  }, [path, closePalette]);
 
   const handleBottomNavTap = useCallback(
     (itemPath: string) => {

@@ -54,22 +54,37 @@ function RouteLoadingFallback() {
         minHeight: '100vh',
         background: '#0B1221',
         fontFamily: 'Inter, system-ui, sans-serif',
-        padding: '80px 16px 16px',
+        display: 'grid',
+        placeItems: 'center',
+        padding: '24px 16px',
       }}
       role="status"
       aria-live="polite"
       aria-label="Loading page"
     >
-      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <div className="shimmer" style={{ height: 24, width: 120, borderRadius: 999 }} />
-        <div className="shimmer" style={{ height: 36, width: '70%', borderRadius: 8 }} />
-        <div className="shimmer" style={{ height: 16, width: '50%', borderRadius: 8 }} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, marginTop: 8 }}>
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="shimmer" style={{ height: 80, borderRadius: 16 }} />
-          ))}
-        </div>
-        <div className="shimmer" style={{ height: 200, borderRadius: 16, marginTop: 8 }} />
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          borderRadius: 12,
+          border: '1px solid rgba(255,255,255,0.08)',
+          background: 'rgba(255,255,255,0.03)',
+          color: '#cbd5e1',
+          padding: '10px 14px',
+        }}
+      >
+        <span
+          aria-hidden="true"
+          style={{
+            width: 10,
+            height: 10,
+            borderRadius: '999px',
+            background: '#14B8A6',
+            boxShadow: '0 0 16px rgba(20,184,166,0.55)',
+          }}
+        />
+        <span style={{ fontSize: 13, fontWeight: 600 }}>Loading…</span>
       </div>
     </div>
   );

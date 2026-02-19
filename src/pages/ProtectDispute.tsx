@@ -218,8 +218,8 @@ export function ProtectDispute() {
                 <h4 className="text-sm font-semibold text-white mb-3">AI-Generated Dispute Letter</h4>
                 <div className="rounded-lg bg-white/[0.02] border border-white/5 p-4 text-xs text-white/60 leading-relaxed font-mono">
                   <p>Dear Dispute Resolution Team,</p>
-                  <p className="mt-2">I am writing to dispute a charge of $4,200.00 made on February 16, 2026, to MerchantX on my card ending in 4821. I did not authorize this transaction.</p>
-                  <p className="mt-2">The AI analysis indicates this transaction has a 94% fraud confidence score based on merchant history anomaly, amount deviation (3x typical), and geographic mismatch.</p>
+                  <p className="mt-2">{`I am writing to dispute a charge of ${transaction.amount} made on February 16, 2026, to ${transaction.merchant} on my card ending in ${transaction.card.replace('****', '')}. I did not authorize this transaction.`}</p>
+                  <p className="mt-2">{`The AI analysis indicates this transaction has a ${transaction.confidence}% fraud confidence score based on merchant history anomaly, amount deviation (3x typical), and geographic mismatch.`}</p>
                   <p className="mt-2">I request that this charge be reversed and my account credited accordingly.</p>
                   <p className="mt-2">Sincerely,<br />Account Holder</p>
                 </div>

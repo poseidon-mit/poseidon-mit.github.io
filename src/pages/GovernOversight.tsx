@@ -6,11 +6,12 @@ import { usePageTitle } from '../hooks/use-page-title';
 import { GovernFooter, AuroraPulse } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 const reviewCards = [
   {
     id: 'RV-001', urgency: 'Critical' as const, urgencyColor: 'var(--state-critical)', engine: 'Protect', engineColor: 'var(--engine-protect)',
-    action: 'Block card', confidence: 0.71, reason: 'Amount $4,200 near threshold',
+    action: 'Block card', confidence: 0.71, reason: `Amount $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} near threshold`,
     aiRec: 'AI recommends blocking due to anomalous spending pattern. Transaction origin flagged.',
     auditId: 'GV-2026-0216-OVR-001',
   },

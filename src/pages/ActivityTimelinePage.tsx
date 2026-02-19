@@ -5,6 +5,7 @@ import { Link } from '../router';
 import { GovernFooter, AuroraPulse } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets'
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ═══════════════════════════════════════════
    DATA
@@ -25,8 +26,28 @@ interface TimelineEvent {
 const events: TimelineEvent[] = [
   { id: 'TE-001', engine: 'Protect', type: 'Alert', title: 'Suspicious login blocked', description: 'Login attempt from unrecognized device (IP 203.0.113.42) automatically blocked.', confidence: 0.96, time: '14:31', day: 'Today', auditId: 'GV-2026-0216-001' },
   { id: 'TE-002', engine: 'Execute', type: 'Action', title: 'Subscription cancelled — Netflix', description: 'Monthly $15.99 subscription cancelled per approved action ACT-003.', confidence: 0.92, time: '13:45', day: 'Today', auditId: 'GV-2026-0216-002' },
-  { id: 'TE-003', engine: 'Grow', type: 'Update', title: 'Emergency fund — $8,160 reached', description: '68% progress toward $12,000 goal. On track for May 2026 completion.', confidence: 0.87, time: '12:00', day: 'Today', auditId: 'GV-2026-0216-003' },
-  { id: 'TE-004', engine: 'Govern', type: 'Audit', title: 'Weekly audit report generated', description: '1,247 decisions audited. 100% coverage. 0 exceptions.', confidence: 0.99, time: '09:00', day: 'Today', auditId: 'GV-2026-0216-004' },
+  {
+    id: 'TE-003',
+    engine: 'Grow',
+    type: 'Update',
+    title: `Emergency fund — $${DEMO_THREAD.emergencyFund.current.toLocaleString()} reached`,
+    description: `${DEMO_THREAD.emergencyFund.percent}% progress toward $${DEMO_THREAD.emergencyFund.target.toLocaleString()} goal.`,
+    confidence: 0.87,
+    time: '12:00',
+    day: 'Today',
+    auditId: 'GV-2026-0216-003',
+  },
+  {
+    id: 'TE-004',
+    engine: 'Govern',
+    type: 'Audit',
+    title: 'Weekly audit report generated',
+    description: `${DEMO_THREAD.decisionsAudited.toLocaleString()} decisions audited. 100% coverage. 0 exceptions.`,
+    confidence: 0.99,
+    time: '09:00',
+    day: 'Today',
+    auditId: 'GV-2026-0216-004',
+  },
   { id: 'TE-005', engine: 'Execute', type: 'Action', title: 'Auto-save round-ups completed', description: '$127 in round-ups transferred to savings account.', confidence: 0.95, time: '23:55', day: 'Yesterday', auditId: 'GV-2026-0215-001' },
   { id: 'TE-006', engine: 'Protect', type: 'Resolution', title: 'Fraud alert resolved — Amazon charge', description: 'Charge confirmed legitimate by cardholder. Alert closed.', confidence: 0.88, time: '16:20', day: 'Yesterday', auditId: 'GV-2026-0215-002' },
   { id: 'TE-007', engine: 'Grow', type: 'Insight', title: 'Savings rate improved +2.3%', description: 'Spending optimization actions led to measurable savings rate increase.', confidence: 0.85, time: '10:00', day: 'Yesterday', auditId: 'GV-2026-0215-003' },

@@ -6,6 +6,7 @@ import { CheckCircle2, XCircle } from 'lucide-react'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
 import { GlassCard, CitationCard, CountUp } from '@/components/poseidon'
 import { executeCitations } from './execute-data'
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 export function ExecuteGlance() {
   return (
@@ -19,9 +20,9 @@ export function ExecuteGlance() {
       {/* Primary action card */}
       <motion.div variants={fadeUp}>
         <CitationCard
-          summary="Block wire transfer to MerchantX — fraud score 0.94, exceeds $5k threshold. Immediate action required."
+          summary={`Block wire transfer to ${DEMO_THREAD.criticalAlert.merchant} — fraud score ${DEMO_THREAD.criticalAlert.confidence.toFixed(2)}, elevated anomaly threshold exceeded. Immediate action required.`}
           sources={executeCitations}
-          confidence={0.94}
+          confidence={DEMO_THREAD.criticalAlert.confidence}
           accentColor="var(--engine-execute)"
           viewMode="glance"
         />
@@ -50,7 +51,7 @@ export function ExecuteGlance() {
         <GlassCard className="flex flex-col items-center gap-1 py-4 glass-hover-execute">
           <span className="text-xs uppercase tracking-wider" style={{ color: '#64748B' }}>Pending</span>
           <span className="text-2xl font-bold" style={{ color: 'var(--engine-execute)' }}>
-            <CountUp value={4} />
+            <CountUp value={DEMO_THREAD.pendingActions} />
           </span>
         </GlassCard>
         <GlassCard className="flex flex-col items-center gap-1 py-4 glass-hover-execute">

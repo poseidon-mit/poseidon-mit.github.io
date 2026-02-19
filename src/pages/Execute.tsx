@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Link } from '@/router'
+import { Link, useRouter } from '@/router'
 import {
   Zap,
   Shield,
@@ -16,6 +16,8 @@ import {
   AlertTriangle,
 } from "lucide-react"
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { EmptyState } from '@/components/poseidon'
+import { GOVERNANCE_META } from '@/lib/governance-meta'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -49,7 +51,7 @@ function GlassCard({ children, className = "", borderColor }: { children: React.
 }
 
 /* ── Data ── */
-type ActionStatus = "pending" | "approved" | "rejected"
+type ActionStatus = "pending" | "approved" | "rejected" | "deferred"
 interface QueueAction {
   id: string; title: string; engine: string; amount: string; confidence: number; status: ActionStatus; time: string; description: string
 }
@@ -75,14 +77,20 @@ const engineColorMap: Record<string, string> = {
    ═══════════════════════════════════════════════════════ */
 
 export default function ExecutePage() {
+  const { navigate } = useRouter()
   const [actions, setActions] = useState(queueActions)
 
   const handleApprove = (id: string) => {
     setActions(prev => prev.map(a => a.id === id ? { ...a, status: "approved" as ActionStatus } : a))
   }
 
+  const handleDefer = (id: string) => {
+    setActions(prev => prev.map(a => a.id === id ? { ...a, status: "deferred" as ActionStatus } : a))
+  }
+
   const pending = actions.filter(a => a.status === "pending")
-  const completed = actions.filter(a => a.status !== "pending")
+  const completed = actions.filter(a => a.status === "approved" || a.status === "rejected")
+  const deferred = actions.filter(a => a.status === "deferred")
 
   return (
     <div className="relative min-h-screen w-full" style={{ background: "#0B1221" }}>
@@ -112,6 +120,17 @@ export default function ExecutePage() {
             {/* Pending actions */}
             <motion.section variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-4">
               <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "#64748B" }}>Pending approval ({pending.length})</h2>
+              {pending.length === 0 && (
+                <GlassCard>
+                  <EmptyState
+                    icon={CheckCircle2}
+                    title="All pending actions are cleared"
+                    description="You can review completed and deferred items in execution history."
+                    accentColor="var(--state-healthy)"
+                    action={{ label: "Open execution history", onClick: () => navigate('/execute/history') }}
+                  />
+                </GlassCard>
+              )}
               {pending.map(action => (
                 <motion.div key={action.id} variants={fadeUp}>
                   <GlassCard borderColor={engineColorMap[action.engine]} className="flex flex-col gap-3">
@@ -135,13 +154,32 @@ export default function ExecutePage() {
                       <button onClick={() => handleApprove(action.id)} className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer" style={{ background: "linear-gradient(135deg, var(--engine-execute), #CA8A04)", color: "#0B1221", minHeight: "44px" }}>
                         <CheckCircle2 size={14} />Approve
                       </button>
-                      <button className="inline-flex items-center justify-center gap-1 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all hover:bg-white/[0.04] cursor-pointer" style={{ borderColor: "rgba(255,255,255,0.08)", color: "#94A3B8", background: "transparent", minHeight: "44px" }}>
+                      <button onClick={() => handleDefer(action.id)} className="inline-flex items-center justify-center gap-1 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all hover:bg-white/[0.04] cursor-pointer" style={{ borderColor: "rgba(255,255,255,0.08)", color: "#94A3B8", background: "transparent", minHeight: "44px" }}>
                         <Clock size={14} />Defer
                       </button>
                     </div>
                   </GlassCard>
                 </motion.div>
               ))}
+
+              {/* Deferred */}
+              {deferred.length > 0 && (
+                <>
+                  <h2 className="text-sm font-semibold uppercase tracking-wider mt-4" style={{ color: "#64748B" }}>Deferred ({deferred.length})</h2>
+                  {deferred.map(action => (
+                    <motion.div key={action.id} variants={fadeUp}>
+                      <GlassCard className="flex items-center gap-4 !py-3 opacity-80">
+                        <Clock size={16} style={{ color: "var(--state-warning)" }} />
+                        <div className="flex-1 min-w-0">
+                          <span className="text-sm font-medium" style={{ color: "#F1F5F9" }}>{action.title}</span>
+                          <span className="text-xs block" style={{ color: "#64748B" }}>{action.id}</span>
+                        </div>
+                        <span className="text-xs font-mono" style={{ color: "#64748B" }}>{action.time}</span>
+                      </GlassCard>
+                    </motion.div>
+                  ))}
+                </>
+              )}
 
               {/* Completed */}
               {completed.length > 0 && (
@@ -171,9 +209,9 @@ export default function ExecutePage() {
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Queue Summary</h3>
                 {[
                 { label: "Pending actions", value: String(pending.length), color: "var(--state-warning)" },
-                { label: "Completed today", value: "12", color: "var(--state-healthy)" },
+                { label: "Completed today", value: String(completed.length), color: "var(--state-healthy)" },
                 { label: "Auto-approved", value: "8" },
-                { label: "Rollbacks (24h)", value: "0", color: "var(--state-healthy)" },
+                { label: "Rollbacks (24h)", value: "2", color: "var(--state-healthy)" },
               ].map(d => (
                 <div key={d.label} className="flex items-center justify-between">
                   <span className="text-xs" style={{ color: "#64748B" }}>{d.label}</span>
@@ -199,7 +237,7 @@ export default function ExecutePage() {
             <GlassCard className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Rollback Safety</h3>
               <p className="text-xs leading-relaxed" style={{ color: "#94A3B8" }}>All actions are reversible within 24 hours. Rollback requests are processed immediately.</p>
-              <div className="flex items-center gap-2"><RotateCcw size={12} style={{ color: "var(--engine-govern)" }} /><span className="text-xs font-mono" style={{ color: "var(--engine-govern)" }}>{"0 active rollbacks"}</span></div>
+              <div className="flex items-center gap-2"><RotateCcw size={12} style={{ color: "var(--engine-govern)" }} /><span className="text-xs font-mono" style={{ color: "var(--engine-govern)" }}>{"2 active rollbacks"}</span></div>
             </GlassCard>
 
             {/* Primary CTA: Review execution history -> /execute/history */}
@@ -209,7 +247,10 @@ export default function ExecutePage() {
           </aside>
         </div>
 
-        <GovernFooter auditId="GV-2026-0216-EXEC" pageContext="this execution batch" />
+        <GovernFooter
+          auditId={GOVERNANCE_META['/execute'].auditId}
+          pageContext={GOVERNANCE_META['/execute'].pageContext}
+        />
       </motion.div>
     </div>
   )

@@ -5,6 +5,7 @@ import { TrendingUp, ArrowRight, ArrowLeft, Scale, Check, Zap } from "lucide-rea
 import { ForecastBand } from "@/components/poseidon/forecast-band"
 import type { ForecastPoint } from "@/components/poseidon/forecast-band"
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { GOVERNANCE_META } from '@/lib/governance-meta'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -270,7 +271,10 @@ export default function GrowScenariosPage() {
 
         {/* GovernFooter */}
         <div className="px-4 md:px-6 lg:px-8">
-          <GovernFooter auditId="GV-2026-0216-GROW-SC" pageContext="scenario analysis" />
+          <GovernFooter
+            auditId={GOVERNANCE_META['/grow/scenarios'].auditId}
+            pageContext={GOVERNANCE_META['/grow/scenarios'].pageContext}
+          />
         </div>
       </motion.main>
     </div>

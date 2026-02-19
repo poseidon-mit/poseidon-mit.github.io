@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Shield, ShieldCheck, Lock, Eye, Brain, ScrollText, UserCheck, CheckCircle, FileText, ArrowRight } from 'lucide-react';
 import { Link } from '../router';
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets'
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 const liveStats = [
   { label: 'System confidence', value: '0.92', spark: [0.88, 0.89, 0.90, 0.91, 0.91, 0.92, 0.92] },
@@ -144,9 +145,11 @@ export function TrustSecurity() {
             <span className="text-xs font-mono px-2 py-0.5 rounded" style={{ background: 'rgba(59,130,246,0.15)', color: 'var(--engine-govern)' }}>GV-2026-0216-001</span>
             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400">Protect</span>
           </div>
-          <p className="text-sm text-white font-medium mb-2">Blocked suspicious transaction $4,200</p>
+          <p className="text-sm text-white font-medium mb-2">
+            {`Blocked suspicious transaction $${DEMO_THREAD.criticalAlert.amount.toLocaleString()}`}
+          </p>
           <div className="flex flex-wrap gap-4 text-xs text-white/40 mb-3">
-            <span>Confidence: <span className="text-white/70 font-semibold">0.94</span></span>
+            <span>Confidence: <span className="text-white/70 font-semibold">{DEMO_THREAD.criticalAlert.confidence.toFixed(2)}</span></span>
             <span>Feb 16, 2026 14:28</span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -174,7 +177,7 @@ export function TrustSecurity() {
           </div>
           <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6">
             <p className="text-sm text-white/60 leading-relaxed">
-              Poseidon.AI is built on a zero-trust security architecture. Every data access is logged, every AI decision is explained, and every user action is auditable. We undergo annual third-party security audits and maintain compliance with international data protection regulations.
+              Poseidon.AI is built with a security-first, defense-in-depth architecture. Every data access is logged, every AI decision is explained, and every user action is auditable. We are committed to regular independent security reviews and maintain compliance with international data protection regulations.
             </p>
           </div>
         </motion.div>

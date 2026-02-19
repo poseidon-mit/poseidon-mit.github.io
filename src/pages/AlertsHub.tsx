@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Bell, CheckCircle2, Clock, TrendingDown, Shield } from 'lucide-react';
 import { Link } from '../router';
-import { GovernFooter, AuroraPulse } from '@/components/poseidon'
+import { GovernFooter, AuroraPulse, EmptyState } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { usePageTitle } from '../hooks/use-page-title';
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets'
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ═══════════════════════════════════════════
    TYPES & DATA
@@ -23,8 +24,26 @@ interface Alert {
 }
 
 const alerts: Alert[] = [
-  { id: 'ALT-001', severity: 'critical', engine: 'Protect', title: 'Unusual login from new device — IP 203.0.113.42', confidence: 0.96, time: '12m ago', status: 'unread', shapFactors: [{ label: 'Device fingerprint', value: 0.42 }, { label: 'Geo anomaly', value: 0.35 }, { label: 'Session timing', value: 0.23 }] },
-  { id: 'ALT-002', severity: 'critical', engine: 'Protect', title: 'Suspicious vendor charge — MerchantX $4,200', confidence: 0.94, time: '28m ago', status: 'unread', shapFactors: [{ label: 'Merchant history', value: 0.55 }, { label: 'Amount deviation', value: 0.30 }, { label: 'Category risk', value: 0.15 }] },
+  {
+    id: DEMO_THREAD.criticalAlert.id,
+    severity: 'critical',
+    engine: 'Protect',
+    title: `Suspicious vendor charge — ${DEMO_THREAD.criticalAlert.merchant} $${DEMO_THREAD.criticalAlert.amount.toLocaleString()}`,
+    confidence: DEMO_THREAD.criticalAlert.confidence,
+    time: '12m ago',
+    status: 'unread',
+    shapFactors: [{ label: 'Merchant history', value: 0.55 }, { label: 'Amount deviation', value: 0.30 }, { label: 'Category risk', value: 0.15 }],
+  },
+  {
+    id: 'ALT-002',
+    severity: 'warning',
+    engine: 'Protect',
+    title: 'Unusual login from new device — IP 203.0.113.42',
+    confidence: 0.86,
+    time: '28m ago',
+    status: 'unread',
+    shapFactors: [{ label: 'Device fingerprint', value: 0.42 }, { label: 'Geo anomaly', value: 0.35 }, { label: 'Session timing', value: 0.23 }],
+  },
   { id: 'ALT-003', severity: 'warning', engine: 'Grow', title: 'Budget threshold approaching — 87% utilized', confidence: 0.84, time: '1h ago', status: 'in-progress', shapFactors: [{ label: 'Spending rate', value: 0.50 }, { label: 'Budget remaining', value: 0.30 }] },
   { id: 'ALT-004', severity: 'warning', engine: 'Execute', title: '2 actions expire within 24 hours', confidence: 0.82, time: '3h ago', status: 'unread', shapFactors: [{ label: 'Time urgency', value: 0.45 }, { label: 'Impact', value: 0.35 }] },
   { id: 'ALT-005', severity: 'info', engine: 'Grow', title: 'New savings opportunity — surplus cash detected', confidence: 0.78, time: '6h ago', status: 'in-progress', shapFactors: [{ label: 'Cash surplus', value: 0.60 }, { label: 'Rate differential', value: 0.25 }] },
@@ -122,7 +141,7 @@ export function AlertsHub() {
           </div>
           <h1 className="text-2xl md:text-3xl font-bold text-white">Alerts Hub</h1>
           <p className="text-sm text-slate-400">
-            {sharedRootCauseAlerts} alerts share a common root cause: vendor payment anomaly.
+            {sharedRootCauseAlerts} {sharedRootCauseAlerts === 1 ? 'alert shares' : 'alerts share'} a common root cause: vendor payment anomaly.
           </p>
         </motion.div>
 
@@ -199,11 +218,19 @@ export function AlertsHub() {
             {/* Alert list */}
             <div className="space-y-2">
               {filtered.length === 0 && (
-                <div className="flex flex-col items-center gap-3 py-16">
-                  <Shield className="w-12 h-12 opacity-30" style={{ color: 'var(--engine-protect)' }} />
-                  <p className="text-sm text-white/50">No alerts match your filters.</p>
-                  <p className="text-xs text-white/30">System is operating normally.</p>
-                </div>
+                <EmptyState
+                  icon={Shield}
+                  title="No alerts match your filters"
+                  description="System is operating normally. Try resetting engine and severity filters."
+                  accentColor="var(--engine-protect)"
+                  action={{
+                    label: 'Reset filters',
+                    onClick: () => {
+                      setEngineFilter('all');
+                      setSeverityFilter('all');
+                    },
+                  }}
+                />
               )}
               {filtered.map((alert) => (
                 <div key={alert.id} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">

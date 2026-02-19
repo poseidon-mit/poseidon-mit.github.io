@@ -208,6 +208,21 @@ describe('onboarding flow contract', () => {
       '/onboarding/complete',
     ]);
   });
+
+  it('renders progress UI on every onboarding step route', () => {
+    const stepRoutes: RoutePath[] = [
+      '/onboarding/connect',
+      '/onboarding/goals',
+      '/onboarding/consent',
+      '/onboarding/complete',
+    ];
+
+    for (const route of stepRoutes) {
+      const source = readPageSource(route);
+      expect(source).toContain('OnboardingProgress');
+      expect(source).toContain('step={');
+    }
+  });
 });
 
 describe('target pages enforce minimum structure', () => {
@@ -251,6 +266,24 @@ describe('cross-thread consistency contract', () => {
         expect(CROSS_SCREEN_DATA_THREAD).toHaveProperty(key);
         expect(CROSS_SCREEN_DATA_THREAD[key].ownerRoutes).toContain(blueprint.route);
       }
+    }
+  });
+
+  it('keeps canonical critical alert references on golden-path pages', () => {
+    const routes: RoutePath[] = [
+      '/dashboard',
+      '/dashboard/alerts',
+      '/protect',
+      '/protect/alert-detail',
+      '/protect/dispute',
+      '/execute/approval',
+    ];
+
+    for (const route of routes) {
+      const source = readPageSource(route);
+      expect(source).toContain('DEMO_THREAD.criticalAlert');
+      expect(source).not.toContain('MerchantX');
+      expect(source).not.toContain('$4,200');
     }
   });
 });

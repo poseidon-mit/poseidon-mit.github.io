@@ -18,6 +18,7 @@ import {
 } from "lucide-react"
 import { AreaChart, Area, ResponsiveContainer } from "recharts"
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { GOVERNANCE_META } from '@/lib/governance-meta'
 
 /* ── Motion presets (same names/values as src/lib/motion-presets.ts) ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -183,7 +184,7 @@ function EngineHealthCard({
 
 /* ── Activity Feed ── */
 const activities = [
-  { icon: Shield, label: "Blocked suspicious transfer to MerchantX", time: "2m ago", color: "var(--engine-protect)" },
+  { icon: Shield, label: `Blocked suspicious transfer to ${DEMO_THREAD.criticalAlert.merchant}`, time: "2m ago", color: "var(--engine-protect)" },
   { icon: TrendingUp, label: "Savings goal projection updated", time: "15m ago", color: "var(--engine-grow)" },
   { icon: Zap, label: "Auto-paid electricity bill", time: "1h ago", color: "var(--engine-execute)" },
   { icon: Scale, label: `Compliance check passed (${COMPLIANCE_SCORE}/100)`, time: "2h ago", color: "var(--engine-govern)" },
@@ -368,7 +369,10 @@ export default function DashboardPage() {
 
         {/* ── GovernFooter ── */}
         <div className="px-4 md:px-6 lg:px-8">
-          <GovernFooter auditId="GV-2026-0216-DASH" pageContext="financial overview" />
+          <GovernFooter
+            auditId={GOVERNANCE_META['/dashboard'].auditId}
+            pageContext={GOVERNANCE_META['/dashboard'].pageContext}
+          />
         </div>
       </motion.main>
     </div>

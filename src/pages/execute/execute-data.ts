@@ -13,6 +13,7 @@ import type {
   CitationSource,
   ReasoningStep,
 } from '@/types/engine-data'
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ═══════════════════════════════════════════
    KPI DATA
@@ -28,7 +29,7 @@ export interface KpiCardData {
 export const kpiData: KpiCardData[] = [
   {
     label: 'Pending Actions',
-    value: '4',
+    value: String(DEMO_THREAD.pendingActions),
     badge: { text: 'pending', color: 'var(--engine-execute)', bg: 'rgba(234,179,8,0.12)' },
   },
   {
@@ -56,11 +57,11 @@ export const initialActions: ActionItem[] = [
   {
     id: 'act-1',
     priority: 'CRITICAL',
-    action: 'Block wire transfer to MerchantX',
+    action: `Block wire transfer to ${DEMO_THREAD.criticalAlert.merchant}`,
     detail: 'Unusual merchant + high-risk geography + amount deviation',
     engine: 'Protect',
-    confidence: 0.94,
-    amount: '$12,400',
+    confidence: DEMO_THREAD.criticalAlert.confidence,
+    amount: `$${DEMO_THREAD.criticalAlert.amount.toLocaleString()}`,
     timeAgo: '4 min ago',
     status: 'pending',
   },
@@ -94,6 +95,17 @@ export const initialActions: ActionItem[] = [
     engine: 'Govern',
     confidence: 0.78,
     amount: '142 items',
+    timeAgo: '3 hr ago',
+    status: 'pending',
+  },
+  {
+    id: 'act-5',
+    priority: 'MEDIUM',
+    action: 'Archive invoices',
+    detail: 'Batch archive completed invoices based on retention policy',
+    engine: 'Govern',
+    confidence: 0.78,
+    amount: '47 items',
     timeAgo: '3 hr ago',
     status: 'pending',
   },
@@ -165,14 +177,14 @@ export function getConfidenceColor(c: number): string {
    ═══════════════════════════════════════════ */
 
 export const executeCitations: CitationSource[] = [
-  { id: 'ec1', label: 'Protect Engine Signal', excerpt: 'Fraud detection model flagged $4,200 wire transfer with 0.94 confidence score.' },
+  { id: 'ec1', label: 'Protect Engine Signal', excerpt: `Fraud detection model flagged $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} transfer with ${DEMO_THREAD.criticalAlert.confidence.toFixed(2)} confidence score.` },
   { id: 'ec2', label: 'Risk Threshold Policy', excerpt: 'Transactions > $5k with fraud score > 0.85 require manual approval per policy GV-2026-001.' },
   { id: 'ec3', label: 'Saaty (1980) — Multi-Criteria Decision Analysis', excerpt: 'Weighted priority aggregation across engine signals. Analytic Hierarchy Process (AHP) for cross-engine action ranking.', url: 'https://doi.org/10.1016/0377-2217(90)90057-I' },
 ]
 
 export const executeReasoningSteps: ReasoningStep[] = [
-  { step: 1, label: 'Signal Reception', description: 'Protect engine flagged wire transfer with 0.94 fraud confidence.', confidence: 0.94 },
-  { step: 2, label: 'Priority Classification', description: 'Amount exceeds $5k threshold. Classified as CRITICAL priority.', confidence: 0.97 },
+  { step: 1, label: 'Signal Reception', description: `Protect engine flagged wire transfer with ${DEMO_THREAD.criticalAlert.confidence.toFixed(2)} fraud confidence.`, confidence: DEMO_THREAD.criticalAlert.confidence },
+  { step: 2, label: 'Priority Classification', description: 'Transaction exceeds anomaly threshold and crosses manual review policy. Classified as CRITICAL priority.', confidence: 0.97 },
   { step: 3, label: 'Engine Correlation', description: 'Cross-checked Grow impact (nil) and Govern compliance (requires approval).', confidence: 0.91 },
   { step: 4, label: 'Action Recommendation', description: 'Immediate block recommended. Auto-execute disabled for CRITICAL tier.', confidence: 0.91 },
 ]

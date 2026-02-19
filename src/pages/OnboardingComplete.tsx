@@ -1,6 +1,7 @@
 import { motion } from "framer-motion"
 import { Link } from '@/router'
 import { CheckCircle2, Shield, TrendingUp, Zap, Scale, ArrowRight } from "lucide-react"
+import { OnboardingProgress } from '@/components/onboarding/OnboardingProgress'
 
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
 const fadeUp = {
@@ -22,6 +23,13 @@ const READY_ITEMS = [
 export default function OnboardingCompletePage() {
   return (
     <main id="main-content" className="relative">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
+        style={{ background: "var(--engine-dashboard)", color: "#0B1221" }}
+      >
+        Skip to main content
+      </a>
       <div
         className="pointer-events-none absolute inset-0"
         aria-hidden="true"
@@ -32,6 +40,7 @@ export default function OnboardingCompletePage() {
 
       <div className="relative z-10 mx-auto max-w-2xl px-6 py-16 text-center">
         <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
+          <OnboardingProgress step={4} className="text-left" />
           {/* Success icon */}
           <motion.div variants={fadeUp} className="flex justify-center mb-6">
             <div

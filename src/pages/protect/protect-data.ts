@@ -12,6 +12,7 @@ import {
   Brain,
 } from 'lucide-react'
 import type { Signal, ShapFactor, CategoryScore, Milestone, CitationSource, ReasoningStep } from '@/types/engine-data'
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ── Re-export shared types for convenience ── */
 export type { Signal, ShapFactor, CategoryScore, Milestone, CitationSource, ReasoningStep }
@@ -39,9 +40,9 @@ export const signals: Signal[] = [
     id: 's1',
     severity: 'critical',
     title: 'Unusual high-value transaction',
-    merchant: 'MerchantX Electronics',
-    amount: '$4,200.00',
-    confidence: 0.94,
+    merchant: DEMO_THREAD.criticalAlert.merchant,
+    amount: `$${DEMO_THREAD.criticalAlert.amount.toLocaleString()}.00`,
+    confidence: DEMO_THREAD.criticalAlert.confidence,
     time: '14:28',
   },
   {
@@ -86,7 +87,7 @@ export const milestones: Milestone[] = [
 
 export const quickActions: QuickAction[] = [
   { title: 'Freeze card', priority: 'urgent', color: 'var(--state-critical)', route: '/protect/dispute' },
-  { title: 'Investigate MerchantX', priority: 'normal', color: 'var(--state-warning)', route: '/protect/alert-detail' },
+  { title: `Investigate ${DEMO_THREAD.criticalAlert.merchant}`, priority: 'normal', color: 'var(--state-warning)', route: '/protect/alert-detail' },
   { title: 'Update alert rules', priority: 'low', color: 'var(--state-healthy)', route: null },
 ]
 
@@ -101,14 +102,14 @@ export const kpis: Kpi[] = [
 
 export const protectCitations: CitationSource[] = [
   { id: 'c1', label: 'Transaction History Analysis', excerpt: '180-day behavioral baseline shows $1,300 avg in this category. Current transaction is 3.2\u00D7 deviation.', url: 'https://arxiv.org/abs/1705.07874' },
-  { id: 'c2', label: 'Merchant Risk Database', excerpt: 'MerchantX Electronics \u2014 newly registered (< 90 days), elevated risk tier.', url: 'https://doi.org/10.1145/3178876.3186066' },
+  { id: 'c2', label: 'Merchant Risk Database', excerpt: `${DEMO_THREAD.criticalAlert.merchant} \u2014 newly registered (< 90 days), elevated risk tier.`, url: 'https://doi.org/10.1145/3178876.3186066' },
   { id: 'c3', label: 'Lundberg & Lee (2017) — SHAP Values', excerpt: 'Feature attribution via SHAP (NeurIPS 2017). Unified approach to interpreting model predictions with guaranteed consistency.', url: 'https://arxiv.org/abs/1705.07874' },
 ]
 
 export const protectReasoningSteps: ReasoningStep[] = [
-  { step: 1, label: 'Transaction Ingestion', description: 'Wire transfer of $4,200 to MerchantX captured via real-time feed.', confidence: 0.99 },
+  { step: 1, label: 'Transaction Ingestion', description: `Wire transfer of $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} to ${DEMO_THREAD.criticalAlert.merchant} captured via real-time feed.`, confidence: 0.99 },
   { step: 2, label: 'Behavioral Analysis', description: '180-day baseline comparison: 3.2\u00D7 deviation from category average ($1,300).', confidence: 0.94 },
-  { step: 3, label: 'Merchant Risk Assessment', description: 'MerchantX registered < 90 days. Cross-referenced with risk database.', confidence: 0.87 },
+  { step: 3, label: 'Merchant Risk Assessment', description: `${DEMO_THREAD.criticalAlert.merchant} registered < 90 days. Cross-referenced with risk database.`, confidence: 0.87 },
   { step: 4, label: 'Signal Classification', description: 'Classified as CRITICAL based on amount, deviation, and merchant newness.', confidence: 0.94 },
 ]
 

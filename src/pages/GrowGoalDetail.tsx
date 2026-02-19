@@ -4,6 +4,7 @@ import { Target, ArrowRight, ArrowLeft, Scale, TrendingUp } from "lucide-react"
 import { ForecastBand } from "@/components/poseidon/forecast-band"
 import type { ForecastPoint } from "@/components/poseidon/forecast-band"
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { GOVERNANCE_META } from '@/lib/governance-meta'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -222,7 +223,10 @@ export default function GrowGoalPage() {
 
         {/* GovernFooter */}
         <div className="px-4 md:px-6 lg:px-8">
-          <GovernFooter auditId="GV-2026-0216-GROW-GL" pageContext="goal tracking" />
+          <GovernFooter
+            auditId={GOVERNANCE_META['/grow/goal'].auditId}
+            pageContext={GOVERNANCE_META['/grow/goal'].pageContext}
+          />
         </div>
       </motion.main>
     </div>

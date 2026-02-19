@@ -20,6 +20,7 @@ import { fadeUp, staggerContainer, staggerContainerDelayed } from '@/lib/motion-
 import { GlassCard, ViewModeToggle, CitationCard, CountUp } from '@/components/poseidon'
 import { kpiData, executeCitations } from './execute-data'
 import type { ViewMode } from '@/hooks/useViewMode'
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ═══════════════════════════════════════════
    HERO SECTION
@@ -63,7 +64,7 @@ function HeroSection({ navigate, viewMode, onViewModeChange }: HeroSectionProps)
           className="text-2xl md:text-4xl font-bold leading-tight tracking-tight text-balance neon-text-amber"
           style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}
         >
-          4 actions pending review. Confidence 0.91. 2 ready to execute.
+          {`${DEMO_THREAD.pendingActions} actions pending review. Confidence 0.91. 2 ready to execute.`}
         </h1>
         <p className="text-sm md:text-base leading-relaxed" style={{ color: '#CBD5E1' }}>
           AI-recommended actions across Protect, Grow, and Govern engines. Review threshold: 0.85+
@@ -73,9 +74,9 @@ function HeroSection({ navigate, viewMode, onViewModeChange }: HeroSectionProps)
       {/* Featured AI insight card */}
       <motion.div variants={fadeUp}>
         <CitationCard
-          summary="Block wire transfer to MerchantX — fraud score 0.94, exceeds $5k threshold. Multi-engine risk aggregation flags immediate action required."
+          summary={`Block wire transfer to ${DEMO_THREAD.criticalAlert.merchant} — fraud score ${DEMO_THREAD.criticalAlert.confidence.toFixed(2)}, elevated anomaly threshold exceeded. Multi-engine risk aggregation flags immediate action required.`}
           sources={executeCitations}
-          confidence={0.94}
+          confidence={DEMO_THREAD.criticalAlert.confidence}
           accentColor="var(--engine-execute)"
           viewMode={viewMode}
         />
@@ -86,7 +87,7 @@ function HeroSection({ navigate, viewMode, onViewModeChange }: HeroSectionProps)
               background: 'linear-gradient(135deg, #14B8A6, #0D9488)',
               color: '#04141a',
             }}
-            aria-label="Approve action: Block wire transfer to MerchantX"
+            aria-label={`Approve action: Block wire transfer to ${DEMO_THREAD.criticalAlert.merchant}`}
             onClick={() => navigate('/execute/approval')}
           >
             <CheckCircle2 size={16} />
@@ -95,7 +96,7 @@ function HeroSection({ navigate, viewMode, onViewModeChange }: HeroSectionProps)
           <button
             className="inline-flex items-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-semibold transition-all hover:shadow-[0_0_12px_rgba(var(--state-critical-rgb),0.3)] active:scale-[0.98] cursor-pointer"
             style={{ borderColor: 'rgba(var(--state-critical-rgb),0.4)', color: 'var(--state-critical)', background: 'transparent' }}
-            aria-label="Reject action: Block wire transfer to MerchantX"
+            aria-label={`Reject action: Block wire transfer to ${DEMO_THREAD.criticalAlert.merchant}`}
             onClick={() => navigate('/execute/approval')}
           >
             <XCircle size={16} />

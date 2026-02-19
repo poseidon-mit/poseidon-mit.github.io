@@ -19,6 +19,7 @@ import {
   ArrowLeft,
 } from "lucide-react"
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { GOVERNANCE_META } from '@/lib/governance-meta'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -28,6 +29,12 @@ const staggerContainer = { hidden: {}, visible: { transition: { staggerChildren:
 /* ── Cross-thread values ── */
 const DECISIONS_AUDITED = DEMO_THREAD.decisionsAudited
 const COMPLIANCE_SCORE = DEMO_THREAD.complianceScore
+const VERIFIED_COUNT = 1189
+const PENDING_REVIEW_COUNT = 55
+const FLAGGED_COUNT = 3
+const VERIFIED_PERCENT = Math.round((VERIFIED_COUNT / DECISIONS_AUDITED) * 100)
+const PENDING_REVIEW_PERCENT = Math.round((PENDING_REVIEW_COUNT / DECISIONS_AUDITED) * 100)
+const FLAGGED_PERCENT = Math.round((FLAGGED_COUNT / DECISIONS_AUDITED) * 100)
 
 /* ── Shared ── */
 function AuroraPulse({ color }: { color: string }) {
@@ -42,7 +49,7 @@ function GovernFooter({ auditId, pageContext }: { auditId: string; pageContext: 
         <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider" style={{ background: "rgba(16,185,129,0.12)", color: "var(--state-healthy)" }}><Shield size={10} />Verified</span>
       </div>
       <span className="text-xs font-mono" style={{ color: "#64748B" }}>{auditId}</span>
-      <Link to="/govern" className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-medium transition-all hover:bg-white/[0.04]" style={{ borderColor: "rgba(255,255,255,0.08)", color: "#CBD5E1", minHeight: "44px" }} aria-label={`Request human review of ${pageContext}`}><User size={14} />Request human review</Link>
+      <Link to="/govern/audit" className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-medium transition-all hover:bg-white/[0.04]" style={{ borderColor: "rgba(255,255,255,0.08)", color: "#CBD5E1", minHeight: "44px" }} aria-label={`Request human review of ${pageContext}`}><User size={14} />Request human review</Link>
     </footer>
   )
 }
@@ -61,7 +68,10 @@ type SortDir = "asc" | "desc"
 interface AuditEntry { id: string; timestamp: string; sortTime: number; type: DecisionType; action: string; confidence: number; evidence: number; status: DecisionStatus }
 
 const filterTabs: { label: FilterTab; count?: number }[] = [
-  { label: "All" }, { label: "Verified", count: 789 }, { label: "Pending review", count: 55 }, { label: "Flagged", count: 3 },
+  { label: "All" },
+  { label: "Verified", count: VERIFIED_COUNT },
+  { label: "Pending review", count: PENDING_REVIEW_COUNT },
+  { label: "Flagged", count: FLAGGED_COUNT },
 ]
 
 const auditEntries: AuditEntry[] = [
@@ -239,9 +249,9 @@ export default function GovernAuditPage() {
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Audit Summary</h3>
               {[
                 { label: "Total decisions", value: DECISIONS_AUDITED.toLocaleString() },
-                { label: "Verified", value: "789 (93%)", color: "var(--state-healthy)" },
-                { label: "Pending", value: "55 (6%)", color: "var(--state-warning)" },
-                { label: "Flagged", value: "3 (1%)", color: "var(--state-critical)" },
+                { label: "Verified", value: `${VERIFIED_COUNT.toLocaleString()} (${VERIFIED_PERCENT}%)`, color: "var(--state-healthy)" },
+                { label: "Pending", value: `${PENDING_REVIEW_COUNT.toLocaleString()} (${PENDING_REVIEW_PERCENT}%)`, color: "var(--state-warning)" },
+                { label: "Flagged", value: `${FLAGGED_COUNT.toLocaleString()} (${FLAGGED_PERCENT}%)`, color: "var(--state-critical)" },
                 { label: "Avg evidence", value: "8.4 pts" },
                 { label: "Compliance", value: `${COMPLIANCE_SCORE}%`, color: "var(--state-healthy)" },
               ].map(d => (
@@ -277,7 +287,10 @@ export default function GovernAuditPage() {
           </aside>
         </div>
 
-        <GovernFooter auditId="GV-2026-0216-GOV-AUD" pageContext="audit ledger" />
+        <GovernFooter
+          auditId={GOVERNANCE_META['/govern/audit'].auditId}
+          pageContext={GOVERNANCE_META['/govern/audit'].pageContext}
+        />
       </div>
     </div>
   )

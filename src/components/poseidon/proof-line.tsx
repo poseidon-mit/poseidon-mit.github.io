@@ -4,13 +4,14 @@
  * Shows a proof of reasoning with source, confidence, and timestamp.
  * Injected into data cards during "Poseidon化" step.
  */
-import { cn } from '@/lib/utils'
+import { cn, formatConfidence, type ConfidenceFormat } from '@/lib/utils'
 import type { EngineName } from '@/lib/engine-tokens'
 import { engineTokens } from '@/lib/engine-tokens'
 
 export interface ProofLineProps {
   source: string
   confidence?: number
+  confidenceMode?: ConfidenceFormat
   timestamp?: string
   engine?: EngineName
   className?: string
@@ -19,6 +20,7 @@ export interface ProofLineProps {
 export function ProofLine({
   source,
   confidence,
+  confidenceMode = 'percent',
   timestamp,
   engine,
   className,
@@ -36,7 +38,7 @@ export function ProofLine({
       <span className="truncate">{source}</span>
       {confidence != null && (
         <span className={cn('tabular-nums font-medium', token?.textClass ?? 'text-cyan-400')}>
-          {confidence}%
+          {formatConfidence(confidence, { mode: confidenceMode })}
         </span>
       )}
       {timestamp && (

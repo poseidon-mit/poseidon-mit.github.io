@@ -25,18 +25,19 @@ export function useCommandPalette(): UseCommandPaletteReturn {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.repeat) return;
       const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
       const isCommandKey = isMac ? e.metaKey : e.ctrlKey;
 
-      if (isCommandKey && e.key === 'k') {
+      if (isCommandKey && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        toggle();
+        open();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [toggle]);
+  }, [open]);
 
   return {
     isOpen,

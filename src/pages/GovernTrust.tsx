@@ -6,6 +6,7 @@ import { GovernFooter, AuroraPulse } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { usePageTitle } from '../hooks/use-page-title';
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ═══════════════════════════════════════════
    DATA
@@ -32,7 +33,7 @@ const engineCards: EngineCard[] = [
   {
     engine: 'Grow',
     color: 'var(--engine-grow)',
-    trustScore: 89,
+    trustScore: 87,
     riskTolerance: 55,
     autoApproval: 70,
     toggles: [{ label: 'Auto-save rules', enabled: true }, { label: 'Goal tracking', enabled: true }],
@@ -70,6 +71,7 @@ export function GovernTrust() {
   usePageTitle('Trust Index');
   const [cards, setCards] = useState(engineCards);
   const [dirty, setDirty] = useState(false);
+  const baselineSystemTrust = Math.round(DEMO_THREAD.systemConfidence * 100);
 
   const updateSlider = (idx: number, field: 'riskTolerance' | 'autoApproval', value: number) => {
     setCards((prev) => prev.map((c, i) => (i === idx ? { ...c, [field]: value } : c)));
@@ -171,7 +173,9 @@ export function GovernTrust() {
             </div>
             <div className="flex-1 w-full">
               <p className="text-lg font-semibold text-white">System Trust Score</p>
-              <p className="text-sm text-slate-400 mt-0.5">Weighted composite across all 4 engines</p>
+              <p className="text-sm text-slate-400 mt-0.5">
+                {`Weighted composite across all 4 engines (baseline ${baselineSystemTrust})`}
+              </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                 {cards.map((c) => (
                   <div key={c.engine} className="flex flex-col gap-1">

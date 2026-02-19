@@ -541,7 +541,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionPath: '/protect/alert-detail',
     first5sMessage: 'Catch financial threats before they escalate.',
     demoPriority: 'P0',
-    governance: { auditId: 'GV-2026-0215-PRT-SIG', pageContext: 'threat signals', engine: 'protect' },
+    governance: { auditId: 'GV-2026-0216-PRT-SIG', pageContext: 'threat signals', engine: 'protect' },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/protect/alert-detail': routeMeta({

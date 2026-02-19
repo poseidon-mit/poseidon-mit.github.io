@@ -57,12 +57,9 @@ export const RouterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       }
     };
 
-    // Progressive enhancement: View Transitions API
-    if ((document as { startViewTransition?: (cb: () => void) => void }).startViewTransition) {
-      (document as { startViewTransition: (cb: () => void) => void }).startViewTransition(update);
-    } else {
-      update();
-    }
+    // Keep routing deterministic for demo stability.
+    // View Transition API can leave transient overlays during lazy-route swaps.
+    update();
   };
 
   const prefetch = async (to: RoutePath) => prefetchRoute(to);

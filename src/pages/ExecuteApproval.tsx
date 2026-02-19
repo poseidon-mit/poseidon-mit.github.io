@@ -7,6 +7,7 @@ import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { Dialog, DialogContent } from '../components/ui/dialog';
 import { usePageTitle } from '../hooks/use-page-title';
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ═══════════════════════════════════════════
    DATA
@@ -27,7 +28,18 @@ interface QueueAction {
 
 const queueActions: QueueAction[] = [
   { id: 'ACT-001', engine: 'Execute', title: 'Consolidate streaming subscriptions', description: 'Cancel Netflix + Hulu, subscribe to YouTube Premium family plan.', urgency: 'high', confidence: 0.92, impact: { approved: 'Save $140/mo ($1,680/yr)', declined: 'Continue paying $167/mo for overlapping services' }, reversible: true, expiresIn: '18h', factors: [{ label: 'Cost reduction', value: 0.92 }, { label: 'Content overlap', value: 0.88 }, { label: 'Service parity', value: 0.82 }] },
-  { id: 'ACT-002', engine: 'Protect', title: 'Block suspicious card ending 4821', description: 'Temporary freeze on card used in unrecognized $4,200 transaction.', urgency: 'high', confidence: 0.94, impact: { approved: 'Card frozen, transaction disputed automatically', declined: 'Card remains active, potential additional fraud exposure' }, reversible: true, expiresIn: '6h', factors: [{ label: 'Merchant risk', value: 0.87 }, { label: 'Amount anomaly', value: 0.71 }, { label: 'Geo mismatch', value: 0.65 }] },
+  {
+    id: 'ACT-002',
+    engine: 'Protect',
+    title: `Block suspicious card ending ${DEMO_THREAD.criticalAlert.cardLast4}`,
+    description: `Temporary freeze on card used in unrecognized $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} transaction.`,
+    urgency: 'high',
+    confidence: DEMO_THREAD.criticalAlert.confidence,
+    impact: { approved: 'Card frozen, transaction disputed automatically', declined: 'Card remains active, potential additional fraud exposure' },
+    reversible: true,
+    expiresIn: '6h',
+    factors: [{ label: 'Merchant risk', value: 0.87 }, { label: 'Amount anomaly', value: 0.71 }, { label: 'Geo mismatch', value: 0.65 }],
+  },
   { id: 'ACT-003', engine: 'Grow', title: 'Transfer surplus to high-yield savings', description: 'Move $2,400 surplus from checking to savings account earning 4.8% APY.', urgency: 'medium', confidence: 0.88, impact: { approved: 'Earn additional $9.60/mo in interest', declined: 'Surplus remains idle in checking (0.01% APY)' }, reversible: true, expiresIn: null, factors: [{ label: 'Cash surplus', value: 0.90 }, { label: 'Rate differential', value: 0.78 }, { label: 'Liquidity safe', value: 0.85 }] },
   { id: 'ACT-004', engine: 'Execute', title: 'Negotiate internet bill renewal', description: 'Send auto-negotiation request to ISP before rate increase takes effect.', urgency: 'medium', confidence: 0.85, impact: { approved: 'Lock in current $65/mo rate for 12 months', declined: 'Rate increases to $89/mo next billing cycle' }, reversible: false, expiresIn: '3d', factors: [{ label: 'Rate lock opportunity', value: 0.85 }, { label: 'Timing window', value: 0.72 }, { label: 'Success likelihood', value: 0.68 }] },
   { id: 'ACT-005', engine: 'Grow', title: 'Increase emergency fund auto-save', description: 'Raise weekly auto-save from $50 to $75 based on increased income stability.', urgency: 'low', confidence: 0.81, impact: { approved: 'Reach emergency fund goal 3 weeks earlier', declined: 'Continue at current pace, May 2026 completion' }, reversible: true, expiresIn: null, factors: [{ label: 'Income stability', value: 0.94 }, { label: 'Budget headroom', value: 0.76 }, { label: 'Goal acceleration', value: 0.65 }] },

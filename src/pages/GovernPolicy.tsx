@@ -80,7 +80,7 @@ export function GovernPolicy() {
             { label: 'Active policies', value: String(activePolicies), color: 'var(--engine-govern)' },
             { label: 'Violations (30d)', value: '0', color: 'var(--engine-protect)' },
             { label: 'Pending review', value: String(pendingReview), color: 'var(--engine-execute)' },
-            { label: 'Compliance', value: '100%', color: 'var(--engine-protect)' },
+            { label: 'Compliance', value: '96%', color: 'var(--engine-protect)' },
           ].map((kpi) => (
             <div key={kpi.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
               <p className="text-xs text-white/40 mb-1">{kpi.label}</p>

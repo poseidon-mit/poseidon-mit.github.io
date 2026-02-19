@@ -8,6 +8,7 @@ import { GlassCard, ViewModeToggle, CitationCard, CountUp } from '@/components/p
 import type { ViewMode } from '@/hooks/useViewMode'
 import { fadeUp } from '@/lib/motion-presets'
 import { kpis, protectCitations } from './protect-data'
+import { DEMO_THREAD } from '@/lib/demo-thread'
 
 /* ─── KPI value mapping for CountUp ─────────────────────── */
 
@@ -69,9 +70,9 @@ export function ProtectHero({ viewMode, onViewModeChange }: ProtectHeroProps) {
 
         {/* AI Insight — CitationCard */}
         <CitationCard
-          summary="Unusual pattern detected at MerchantX — $4,200 charge deviates 3.2× from category average. Behavioral analysis flags merchant as new vendor with elevated risk profile."
+          summary={`Unusual pattern detected at ${DEMO_THREAD.criticalAlert.merchant} — $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} charge deviates 3.2× from category average. Behavioral analysis flags merchant as new vendor with elevated risk profile.`}
           sources={protectCitations}
-          confidence={0.94}
+          confidence={DEMO_THREAD.criticalAlert.confidence}
           accentColor="var(--engine-protect)"
           viewMode={viewMode}
         />

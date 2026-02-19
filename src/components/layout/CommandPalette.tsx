@@ -32,6 +32,7 @@ import {
   CommandShortcut,
 } from '@/components/ui/command';
 import { useRouter } from '../../router';
+import { DEMO_THREAD } from '@/lib/demo-thread';
 
 /* ── Helpers ──────────────────────────────────────────────── */
 
@@ -103,7 +104,7 @@ const ACTION_COMMANDS: Command[] = [
   {
     id: 'approve-pending',
     label: 'Approve Pending Actions',
-    description: 'Review 3 pending approvals',
+    description: `Review ${DEMO_THREAD.pendingActions} pending approvals`,
     icon: CheckSquare,
     color: '#EAB308',
     path: '/execute/approval',

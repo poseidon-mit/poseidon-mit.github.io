@@ -2,6 +2,7 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { Link } from '@/router'
 import { Building2, CreditCard, PiggyBank, Check, Shield, ArrowRight, ArrowLeft } from "lucide-react"
+import { OnboardingProgress } from '@/components/onboarding/OnboardingProgress'
 
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
 const fadeUp = {
@@ -51,8 +52,16 @@ export default function OnboardingConnectPage() {
 
   return (
     <main id="main-content" className="relative">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
+        style={{ background: "var(--engine-dashboard)", color: "#0B1221" }}
+      >
+        Skip to main content
+      </a>
       <div className="relative z-10 mx-auto max-w-2xl px-6 py-12">
         <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
+          <OnboardingProgress step={1} />
           <motion.h1
             variants={fadeUp}
             className="text-2xl md:text-3xl font-bold leading-tight tracking-tight mb-2 text-balance"

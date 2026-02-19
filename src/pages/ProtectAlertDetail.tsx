@@ -18,6 +18,7 @@ import {
   ArrowUpRight,
 } from "lucide-react"
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { GOVERNANCE_META } from '@/lib/governance-meta'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -234,7 +235,13 @@ export default function ProtectAlertDetailPage() {
             <GlassCard className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Recommended actions</h3>
               <Link to="/protect/dispute" className="w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]" style={{ background: "linear-gradient(135deg, #EF4444, #DC2626)", color: "#ffffff", minHeight: "48px" }} aria-label="Block and investigate this transaction"><XCircle size={16} />{"Block & investigate"}</Link>
-              <button className="w-full inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all cursor-pointer" style={{ borderColor: "rgba(245,158,11,0.4)", color: "var(--state-warning)", background: "transparent", minHeight: "44px" }}>Request verification</button>
+              <Link
+                to="/protect/dispute"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all hover:bg-white/[0.04]"
+                style={{ borderColor: "rgba(245,158,11,0.4)", color: "var(--state-warning)", background: "transparent", minHeight: "44px" }}
+              >
+                Request verification
+              </Link>
               <p className="text-[10px] text-center" style={{ color: "#64748B" }}>{`AI recommends blocking (${Math.round(criticalAlert.confidence * 100)}% confidence)`}</p>
             </GlassCard>
 
@@ -246,7 +253,7 @@ export default function ProtectAlertDetailPage() {
             {/* Similar incidents */}
             <GlassCard className="flex flex-col gap-4">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Similar Incidents</h3>
-              {[{ title: "MerchantX flagged", time: "2 weeks ago", result: "Blocked" }, { title: "Unusual pattern", time: "3 weeks ago", result: "Verified safe" }, { title: "High-risk geo", time: "1 month ago", result: "Blocked" }].map((item, i) => (
+              {[{ title: `${criticalAlert.merchant} flagged`, time: "2 weeks ago", result: "Blocked" }, { title: "Unusual pattern", time: "3 weeks ago", result: "Verified safe" }, { title: "High-risk geo", time: "1 month ago", result: "Blocked" }].map((item, i) => (
                 <div key={i} className="flex items-center justify-between py-2.5" style={{ borderBottom: i < 2 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
                   <div className="flex flex-col gap-0.5"><span className="text-xs font-medium" style={{ color: "#F1F5F9" }}>{item.title}</span><span className="text-[10px]" style={{ color: "#64748B" }}>{item.time}</span></div>
                   <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: item.result === "Blocked" ? "rgba(239,68,68,0.12)" : "rgba(16,185,129,0.12)", color: item.result === "Blocked" ? "var(--state-critical)" : "var(--state-healthy)" }}>{item.result}</span>
@@ -264,7 +271,10 @@ export default function ProtectAlertDetailPage() {
           </aside>
         </div>
 
-        <GovernFooter auditId="GV-2026-0216-PRT-DET" pageContext="alert investigation" />
+        <GovernFooter
+          auditId={GOVERNANCE_META['/protect/alert-detail'].auditId}
+          pageContext={GOVERNANCE_META['/protect/alert-detail'].pageContext}
+        />
       </div>
     </div>
   )

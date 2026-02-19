@@ -9,6 +9,7 @@ import {
   Scale,
   Monitor,
 } from "lucide-react"
+import { GOVERNANCE_META } from '@/lib/governance-meta'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -254,7 +255,10 @@ export default function SettingsPage() {
 
         {/* GovernFooter */}
         <div className="px-4 md:px-6 lg:px-8">
-          <GovernFooter auditId="GV-2026-0216-SETT" pageContext="settings overview" />
+          <GovernFooter
+            auditId={GOVERNANCE_META['/settings'].auditId}
+            pageContext={GOVERNANCE_META['/settings'].pageContext}
+          />
         </div>
       </motion.main>
     </div>

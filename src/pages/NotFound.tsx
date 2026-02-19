@@ -19,6 +19,13 @@ const staggerContainer = {
 export default function NotFound() {
   return (
     <main id="main-content" className="relative min-h-screen flex items-center justify-center">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
+        style={{ background: "var(--engine-dashboard)", color: "#0B1221" }}
+      >
+        Skip to main content
+      </a>
       <div
         className="pointer-events-none absolute inset-0"
         aria-hidden="true"
@@ -58,7 +65,7 @@ export default function NotFound() {
 
           <motion.div variants={fadeUp}>
             <Link
-              to="/"
+              to="/dashboard"
               className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl transition-all"
               style={{
                 background: "linear-gradient(135deg, #14B8A6, #06B6D4)",

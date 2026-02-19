@@ -13,6 +13,8 @@ import {
   ChevronRight,
 } from "lucide-react"
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { EmptyState } from '@/components/poseidon'
+import { GOVERNANCE_META } from '@/lib/governance-meta'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -144,6 +146,15 @@ export default function ProtectPage() {
             {/* Desktop table */}
             <div className="hidden md:block">
               <GlassCard className="overflow-hidden !p-0">
+                {sorted.length === 0 ? (
+                  <EmptyState
+                    icon={Shield}
+                    title="No threats match your current view"
+                    description="Try a different sort strategy or reopen top alert details."
+                    accentColor="var(--engine-protect)"
+                    action={{ label: "Open top alert", onClick: () => window.location.assign('/protect/alert-detail') }}
+                  />
+                ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left" role="table">
                     <thead>
@@ -189,11 +200,22 @@ export default function ProtectPage() {
                     </tbody>
                   </table>
                 </div>
+                )}
               </GlassCard>
             </div>
 
             {/* Mobile cards */}
             <div className="flex flex-col gap-3 md:hidden">
+              {sorted.length === 0 && (
+                <GlassCard>
+                  <EmptyState
+                    icon={Shield}
+                    title="No active threats"
+                    description="Threat feed is clear right now."
+                    accentColor="var(--engine-protect)"
+                  />
+                </GlassCard>
+              )}
               {sorted.map((t) => (
                 <motion.div key={t.id} variants={fadeUp}>
                   <GlassCard className="flex flex-col gap-3" borderColor={severityConfig[t.severity].color}>
@@ -250,7 +272,10 @@ export default function ProtectPage() {
           </aside>
         </div>
 
-        <GovernFooter auditId="GV-2026-0215-PRT-SIG" pageContext="threat signals" />
+        <GovernFooter
+          auditId={GOVERNANCE_META['/protect'].auditId}
+          pageContext={GOVERNANCE_META['/protect'].pageContext}
+        />
       </motion.main>
     </div>
   )

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Lightbulb, TrendingUp, Sparkles } from 'lucide-react';
 import { Link } from '../router';
-import { GovernFooter, AuroraPulse } from '@/components/poseidon'
+import { GovernFooter, AuroraPulse, EmptyState } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { usePageTitle } from '../hooks/use-page-title';
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets'
@@ -159,11 +159,13 @@ export function InsightsFeed() {
             {/* Insight cards */}
             <div className="flex flex-col gap-3">
               {filtered.length === 0 && (
-                <div className="flex flex-col items-center gap-3 py-16">
-                  <Sparkles className="w-12 h-12 opacity-30" style={{ color: 'var(--engine-grow)' }} />
-                  <p className="text-sm text-white/50">No insights match your filter.</p>
-                  <p className="text-xs text-white/30">Try selecting a different category.</p>
-                </div>
+                <EmptyState
+                  icon={Sparkles}
+                  title="No insights match your filter"
+                  description="Try selecting a different category."
+                  accentColor="var(--engine-grow)"
+                  action={{ label: 'Show all insights', onClick: () => setTab('all') }}
+                />
               )}
               {filtered.map((insight) => (
                 <div
