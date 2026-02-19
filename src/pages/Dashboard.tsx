@@ -321,7 +321,7 @@ export default function DashboardPage() {
           <motion.h1 variants={fadeUp} className="hero-headline">
             {"Welcome back. System confidence: "}
             <span className="hero-headline__accent">{SYSTEM_CONFIDENCE}</span>
-            {" across 5 engines."}
+            {" across 4 engines + command center."}
           </motion.h1>
 
           <motion.p variants={fadeUp} className="hero-subline">
