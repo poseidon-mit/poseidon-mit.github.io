@@ -25,6 +25,11 @@ jobs:
           node-version: 20
           cache: npm
           cache-dependency-path: package-lock.json
+      - name: Ensure GitHub Pages source is workflow-based
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node scripts/check-pages-mode.mjs
       - run: npm ci
       - run: npm run guard:vite-only
       - run: npm run build
@@ -66,3 +71,30 @@ jobs:
     steps:
       - uses: actions/deploy-pages@v4
         id: deployment
+      - name: Post-deploy smoke check (deployed URL)
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          base_url="${PAGE_URL%/}"
+          echo "Checking deployed URL: ${base_url}"
+          curl -fsSL "${base_url}/" >/tmp/pages-root.html
+
+          if grep -q '/src/main.tsx' /tmp/pages-root.html; then
+            echo "ERROR: deployed root still references /src/main.tsx"
+            exit 1
+          fi
+
+          js_path="$(grep -oE '/assets/index-[^"]+\.js' /tmp/pages-root.html | head -n1 || true)"
+          if [ -z "${js_path}" ]; then
+            echo "ERROR: no hashed Vite entry script found in deployed root HTML"
+            exit 1
+          fi
+          echo "Resolved entry JS: ${js_path}"
+
+          curl -fsSIL "${base_url}${js_path}" >/tmp/pages-js.headers
+          if ! grep -Eiq '^content-type: *(application|text)/(javascript|x-javascript)' /tmp/pages-js.headers; then
+            echo "ERROR: deployed JS asset has unexpected Content-Type"
+            cat /tmp/pages-js.headers
+            exit 1
+          fi

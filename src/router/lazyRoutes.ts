@@ -67,11 +67,30 @@ function withRouteImportRecovery(routePath: string, loader: RouteLoader): RouteL
 
       return module;
     } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (/route import timeout/i.test(message)) {
+        console.error('[telemetry] dynamic_import_timeout', {
+          route: routePath,
+          timeoutMs: ROUTE_IMPORT_TIMEOUT_MS,
+          message,
+        });
+      }
+      if (/(failed to fetch dynamically imported module|importing a module script failed|chunkloaderror)/i.test(message)) {
+        console.error('[telemetry] dynamic_import_failure', {
+          route: routePath,
+          message,
+        });
+      }
+
       if (
         typeof window !== 'undefined' &&
         shouldForceReloadOnImportError(error) &&
         !getReloadAttempted()
       ) {
+        console.warn('[telemetry] dynamic_import_retry_reload', {
+          route: routePath,
+          message,
+        });
         markReloadAttempted();
         const url = new URL(window.location.href);
         url.searchParams.set('__route_reload', String(Date.now()));

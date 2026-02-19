@@ -33,6 +33,7 @@
     "check:cta-hierarchy": "node scripts/check-cta-hierarchy.mjs",
     "check:prompt-completeness": "node scripts/check-prompt-completeness.mjs",
     "check:cross-thread-consistency": "node scripts/check-cross-thread-consistency.mjs",
+    "check:pages-mode": "node scripts/check-pages-mode.mjs",
     "check:inline-style-hex": "node scripts/check-inline-style-hex.mjs",
     "check:contrast-budget": "node scripts/check-contrast-budget.mjs",
     "test:lighthouse": "node scripts/lighthouse-ci.mjs",

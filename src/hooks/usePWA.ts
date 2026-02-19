@@ -19,6 +19,7 @@ export function usePWA(): PWAHookReturn {
     isOffline: false,
     hasUpdate: false,
   });
+  const swEnabled = import.meta.env.VITE_ENABLE_SW === '1';
 
   const deferredPromptRef = useRef<Event | null>(null);
   const swRegistrationRef = useRef<ServiceWorkerRegistration | null>(null);
@@ -92,7 +93,7 @@ export function usePWA(): PWAHookReturn {
 
   // Register service worker and monitor updates
   useEffect(() => {
-    if (!import.meta.env.PROD || !('serviceWorker' in navigator)) {
+    if (!import.meta.env.PROD || !swEnabled || !('serviceWorker' in navigator)) {
       return;
     }
 
@@ -151,7 +152,7 @@ export function usePWA(): PWAHookReturn {
         // Periodic update check (every 60 seconds)
         updateInterval = window.setInterval(() => checkForUpdates(activeRegistration), 60000);
       } catch (error) {
-        console.error('Service Worker registration failed:', error);
+        console.error('[telemetry] sw_registration_failed', error);
       }
     };
 
@@ -167,11 +168,11 @@ export function usePWA(): PWAHookReturn {
         window.clearInterval(updateInterval);
       }
     };
-  }, []);
+  }, [swEnabled]);
 
   // Handle skip waiting message
   useEffect(() => {
-    if (!import.meta.env.PROD) {
+    if (!import.meta.env.PROD || !swEnabled) {
       return;
     }
 
@@ -189,7 +190,7 @@ export function usePWA(): PWAHookReturn {
         navigator.serviceWorker.removeEventListener('controllerchange', handleControllerChange);
       }
     };
-  }, []);
+  }, [swEnabled]);
 
   // Prompt user to install app
   const promptInstall = useCallback(async () => {
