@@ -30,3 +30,5 @@ export default function RootLayout({
     </html>
   )
 }
+
+export { Inter, JetBrains_Mono }

@@ -4,8 +4,10 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "dev:vite": "vite",
+    "build:vite": "vite build",
     "typecheck": "tsc --noEmit",
     "verify:dashboard-artifacts": "node scripts/verify-dashboard-artifact-freshness.mjs",
     "deploy:verify-dashboard": "npm run build && npm run verify:dashboard-artifacts",

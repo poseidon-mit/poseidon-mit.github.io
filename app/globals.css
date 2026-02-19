@@ -4,7 +4,7 @@
   --font-sans: "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
 
-  /* Poseidon engine colors */
+  /* Poseidon engine colors (Tailwind theme) */
   --color-engine-protect: oklch(0.82 0.18 172);
   --color-engine-grow: oklch(0.58 0.22 285);
   --color-engine-execute: oklch(0.78 0.16 85);
@@ -38,9 +38,117 @@
   --shadow-glow-protect: 0 0 20px oklch(0.82 0.18 172 / 0.12);
 }
 
+/* ── Engine CSS vars (used by existing src/pages via style={{}} ) ── */
+:root {
+  --engine-dashboard: #00F0FF;
+  --engine-protect: #22C55E;
+  --engine-grow: #8B5CF6;
+  --engine-execute: #EAB308;
+  --engine-govern: #3B82F6;
+
+  --neon-cyan: 0 240 255;
+  --neon-teal: 34 197 94;
+  --neon-violet: 139 92 246;
+  --neon-amber: 234 179 8;
+  --neon-blue: 59 130 246;
+
+  --state-healthy: #10B981;
+  --state-warning: #F59E0B;
+  --state-critical: #EF4444;
+  --state-healthy-rgb: 16, 185, 129;
+  --state-warning-rgb: 245, 158, 11;
+  --state-critical-rgb: 239, 68, 68;
+
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --glass-inset: inset 0 1px 0 0 rgba(255,255,255,0.06), inset -1px 0 0 rgba(255,255,255,0.04);
+}
+
 body {
   background-color: #0B1221;
   color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ── Aurora drift animation ── */
+@keyframes aurora-drift {
+  0% { opacity: 0.8; transform: translateY(0) scale(1); }
+  100% { opacity: 1; transform: translateY(-8px) scale(1.02); }
+}
+
+/* ── Hero / command-center classes (matching existing src CSS) ── */
+.command-center { position: relative; min-height: 100vh; }
+.command-center__main {
+  position: relative; z-index: 10;
+  display: flex; flex-direction: column; gap: 1.5rem;
+  max-width: 1280px; margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+@media (min-width: 768px) { .command-center__main { gap: 2rem; padding: 2rem 1.5rem; } }
+@media (min-width: 1024px) { .command-center__main { padding: 2rem; } }
+
+.hero-section { display: flex; flex-direction: column; gap: 1rem; }
+.hero-kicker {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  border-radius: 9999px; border: 1px solid rgba(0,240,255,0.2);
+  background: rgba(0,240,255,0.06); padding: 0.375rem 0.75rem;
+  font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--engine-dashboard); width: fit-content;
+}
+.hero-kicker__icon { display: flex; }
+.hero-headline {
+  font-size: 1.5rem; font-weight: 700; line-height: 1.2;
+  letter-spacing: -0.02em; color: #F1F5F9;
+  font-family: var(--font-display); text-wrap: balance;
+}
+@media (min-width: 768px) { .hero-headline { font-size: 2.25rem; } }
+.hero-headline__accent { color: var(--engine-dashboard); }
+.hero-subline { font-size: 0.875rem; line-height: 1.6; color: #CBD5E1; }
+@media (min-width: 768px) { .hero-subline { font-size: 1rem; } }
+.hero-proof {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  font-size: 0.625rem; font-family: var(--font-mono);
+  letter-spacing: 0.05em; text-transform: uppercase; color: #64748B;
+}
+.hero-proof__label { font-weight: 600; }
+.hero-proof__sep { opacity: 0.3; }
+.hero-proof__info {
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 9999px; width: 20px; height: 20px;
+  background: rgba(255,255,255,0.04); border: none; cursor: pointer;
+  color: #64748B; transition: background 0.15s;
+}
+.hero-proof__info:hover { background: rgba(255,255,255,0.08); }
+
+/* ── KPI grid ── */
+.kpi-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;
+  padding: 0 1rem;
+}
+@media (min-width: 768px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); padding: 0 1.5rem; } }
+@media (min-width: 1024px) { .kpi-grid { padding: 0 2rem; } }
+
+.stat-card {
+  display: flex; flex-direction: column; gap: 0.5rem;
+  border-radius: 1rem; padding: 1rem;
+}
+.stat-card__header { display: flex; align-items: center; justify-content: space-between; }
+.stat-card__label { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B; }
+.stat-card__spark { width: 60px; height: 24px; }
+.stat-card__value { font-size: 1.25rem; font-weight: 700; font-family: var(--font-mono); color: #F1F5F9; font-variant-numeric: tabular-nums; }
+.stat-card__delta { font-size: 0.625rem; font-weight: 600; }
+.stat-card__delta--up { color: var(--state-healthy); }
+.stat-card__delta--down { color: var(--state-critical); }
+
+/* ── Glass surface ── */
+.glass-surface {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: var(--glass-inset), 0 4px 16px rgba(0,0,0,0.2);
+}
+
+/* ── Engine section base ── */
+.engine-section { position: relative; }
