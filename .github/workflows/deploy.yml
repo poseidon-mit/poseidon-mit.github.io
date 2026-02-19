@@ -28,9 +28,12 @@ jobs:
       - run: npm ci
       - run: npm run guard:vite-only
       - run: npm run build
+      - run: node scripts/emit-route-html.mjs
       - name: Build smoke check
         run: |
           test -f dist/index.html
+          test -f dist/dashboard/index.html
+          test -f dist/govern/audit/index.html
           npx vite preview --host 127.0.0.1 --port 4173 >/tmp/vite-preview.log 2>&1 &
           for i in 1 2 3; do
             npx wait-on http://127.0.0.1:4173 --timeout 15000 && break
@@ -42,7 +45,11 @@ jobs:
             sleep 2
           done
           curl -fsS http://127.0.0.1:4173/ >/tmp/deploy-smoke.html
+          curl -fsS http://127.0.0.1:4173/dashboard >/tmp/deploy-smoke-dashboard.html
+          curl -fsS http://127.0.0.1:4173/govern/audit >/tmp/deploy-smoke-govern-audit.html
           grep -qi "<html" /tmp/deploy-smoke.html
+          grep -qi "<html" /tmp/deploy-smoke-dashboard.html
+          grep -qi "<html" /tmp/deploy-smoke-govern-audit.html
           pkill -f "vite preview --host 127.0.0.1 --port 4173" || true
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
