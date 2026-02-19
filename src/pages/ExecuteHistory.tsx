@@ -14,6 +14,7 @@ import {
 } from "lucide-react"
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
+import { formatDemoTimestamp } from '@/lib/demo-date'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -86,11 +87,11 @@ interface HistoryEntry {
 }
 
 const HISTORY_DATA: HistoryEntry[] = [
-  { id: "EX-001", action: "Savings transfer", engine: "Grow", status: "completed", amount: "+$420", date: "Feb 15, 2026", auditRef: "GV-2026-0215-EXEC-001" },
-  { id: "EX-002", action: "Alert escalation", engine: "Protect", status: "completed", amount: "--", date: "Feb 14, 2026", auditRef: "GV-2026-0214-EXEC-002" },
-  { id: "EX-003", action: "Budget rebalance", engine: "Execute", status: "completed", amount: "-$85", date: "Feb 13, 2026", auditRef: "GV-2026-0213-EXEC-003" },
-  { id: "EX-004", action: "Investment realloc", engine: "Grow", status: "reversed", amount: "+$1,200", date: "Feb 12, 2026", auditRef: "GV-2026-0212-EXEC-004" },
-  { id: "EX-005", action: "Card freeze request", engine: "Protect", status: "completed", amount: "--", date: "Feb 11, 2026", auditRef: "GV-2026-0211-EXEC-005" },
+  { id: "EX-001", action: "Savings transfer", engine: "Grow", status: "completed", amount: "+$420", date: formatDemoTimestamp("2026-03-19T08:45:00-04:00"), auditRef: "GV-2026-0319-EXEC-001" },
+  { id: "EX-002", action: "Alert escalation", engine: "Protect", status: "completed", amount: "--", date: formatDemoTimestamp("2026-03-18T18:10:00-04:00"), auditRef: "GV-2026-0318-EXEC-002" },
+  { id: "EX-003", action: "Budget rebalance", engine: "Execute", status: "completed", amount: "-$85", date: formatDemoTimestamp("2026-03-18T11:30:00-04:00"), auditRef: "GV-2026-0318-EXEC-003" },
+  { id: "EX-004", action: "Investment realloc", engine: "Grow", status: "reversed", amount: "+$1,200", date: formatDemoTimestamp("2026-03-17T16:05:00-04:00"), auditRef: "GV-2026-0317-EXEC-004" },
+  { id: "EX-005", action: "Card freeze request", engine: "Protect", status: "completed", amount: "--", date: formatDemoTimestamp("2026-03-17T09:20:00-04:00"), auditRef: "GV-2026-0317-EXEC-005" },
 ]
 
 const statusConfig = {
@@ -111,6 +112,13 @@ export default function ExecuteHistoryPage() {
   return (
     <div className="relative">
       <AuroraPulse color="var(--engine-execute)" />
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
+        style={{ background: "var(--engine-execute)", color: "#0B1221" }}
+      >
+        Skip to main content
+      </a>
 
       <motion.main
         id="main-content"

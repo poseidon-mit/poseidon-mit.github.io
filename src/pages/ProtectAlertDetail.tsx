@@ -13,12 +13,12 @@ import {
   CircleDot,
   Shield,
   ShieldCheck,
-  ExternalLink,
   User,
   ArrowUpRight,
 } from "lucide-react"
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
+import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -78,6 +78,8 @@ const shapFactors = [
 ]
 
 const criticalAlert = DEMO_THREAD.criticalAlert
+const detectedAt = formatDemoTimestamp('2026-03-19T14:28:00-04:00')
+const updatedAt = formatDemoTimestamp('2026-03-19T14:30:00-04:00')
 
 function getScoreColor(s: number) { return s >= 0.9 ? "var(--state-critical)" : s >= 0.8 ? "var(--state-warning)" : "var(--engine-govern)" }
 function getScoreBg(s: number) { return s >= 0.9 ? "rgba(239,68,68,0.12)" : s >= 0.8 ? "rgba(245,158,11,0.12)" : "rgba(59,130,246,0.12)" }
@@ -133,7 +135,7 @@ export default function ProtectAlertDetailPage() {
           <motion.div variants={fadeUp} className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-col gap-1">
               <h1 className="text-xl md:text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>{`Signal #${criticalAlert.signalId}`}</h1>
-              <span className="text-xs" style={{ color: "#64748B" }}>{"Detected: Today 14:28 | Updated: 14:30"}</span>
+              <span className="text-xs" style={{ color: "#64748B" }}>{`Detected: ${detectedAt} | Updated: ${updatedAt}`}</span>
             </div>
             <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-wider self-start" style={{ background: "rgba(239,68,68,0.15)", color: "var(--state-critical)" }} aria-label="Alert status: Critical"><AlertTriangle size={12} />CRITICAL</span>
           </motion.div>
@@ -145,7 +147,7 @@ export default function ProtectAlertDetailPage() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div className="flex flex-col gap-1"><span className="text-[10px] uppercase tracking-wider" style={{ color: "#64748B" }}>Merchant</span><span className="text-sm font-semibold" style={{ color: "#F1F5F9" }}>{criticalAlert.merchant}</span></div>
               <div className="flex flex-col gap-1"><span className="text-[10px] uppercase tracking-wider" style={{ color: "#64748B" }}>Amount</span><span className="text-lg font-bold font-mono tabular-nums" style={{ color: "var(--state-critical)" }}>{`$${criticalAlert.amount.toLocaleString()}.00`}</span></div>
-              <div className="flex flex-col gap-1"><span className="text-[10px] uppercase tracking-wider" style={{ color: "#64748B" }}>Confidence</span><div className="flex items-center gap-2"><div className="h-1.5 w-20 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}><div className="h-full rounded-full" style={{ width: `${criticalAlert.confidence * 100}%`, background: "var(--state-critical)" }} /></div><span className="text-sm font-mono font-semibold" style={{ color: "var(--state-critical)" }}>{`${Math.round(criticalAlert.confidence * 100)}%`}</span></div></div>
+              <div className="flex flex-col gap-1"><span className="text-[10px] uppercase tracking-wider" style={{ color: "#64748B" }}>Confidence</span><div className="flex items-center gap-2"><div className="h-1.5 w-20 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}><div className="h-full rounded-full" style={{ width: `${criticalAlert.confidence * 100}%`, background: "var(--state-critical)" }} /></div><span className="text-sm font-mono font-semibold" style={{ color: "var(--state-critical)" }}>{formatConfidence(criticalAlert.confidence)}</span></div></div>
               <div className="flex flex-col gap-1"><span className="text-[10px] uppercase tracking-wider" style={{ color: "#64748B" }}>Alert type</span><span className="text-sm" style={{ color: "#CBD5E1" }}>Unusual transaction pattern</span></div>
               <div className="flex flex-col gap-1"><span className="text-[10px] uppercase tracking-wider" style={{ color: "#64748B" }}>Account</span><div className="flex items-center gap-1"><CreditCard size={12} style={{ color: "#64748B" }} /><span className="text-sm font-mono" style={{ color: "#CBD5E1" }}>{`Checking ****${criticalAlert.cardLast4}`}</span></div></div>
               <div className="flex flex-col gap-1"><span className="text-[10px] uppercase tracking-wider" style={{ color: "#64748B" }}>Location</span><div className="flex items-center gap-1"><MapPin size={12} style={{ color: "#64748B" }} /><span className="text-sm" style={{ color: "#CBD5E1" }}>{"Online | IP: 203.0.113.42"}</span></div><span className="text-[10px] font-semibold" style={{ color: "var(--state-critical)" }}>Flagged region</span></div>
@@ -242,7 +244,7 @@ export default function ProtectAlertDetailPage() {
               >
                 Request verification
               </Link>
-              <p className="text-[10px] text-center" style={{ color: "#64748B" }}>{`AI recommends blocking (${Math.round(criticalAlert.confidence * 100)}% confidence)`}</p>
+              <p className="text-[10px] text-center" style={{ color: "#64748B" }}>{`AI recommends blocking (${formatConfidence(criticalAlert.confidence)} confidence)`}</p>
             </GlassCard>
 
             {/* Primary CTA: Open execute queue -> /execute */}

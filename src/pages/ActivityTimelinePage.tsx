@@ -6,6 +6,7 @@ import { GovernFooter, AuroraPulse } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets'
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 
 /* ═══════════════════════════════════════════
    DATA
@@ -19,13 +20,18 @@ interface TimelineEvent {
   description: string;
   confidence: number;
   time: string;
-  day: 'Today' | 'Yesterday' | 'Feb 14';
+  day: string;
   auditId: string;
 }
 
+const formatDay = (value: string) =>
+  formatDemoTimestamp(value, { month: 'short', day: 'numeric', year: 'numeric', hour: undefined, minute: undefined })
+const formatTime = (value: string) =>
+  formatDemoTimestamp(value, { month: undefined, day: undefined, year: undefined, hour: '2-digit', minute: '2-digit', hour12: false })
+
 const events: TimelineEvent[] = [
-  { id: 'TE-001', engine: 'Protect', type: 'Alert', title: 'Suspicious login blocked', description: 'Login attempt from unrecognized device (IP 203.0.113.42) automatically blocked.', confidence: 0.96, time: '14:31', day: 'Today', auditId: 'GV-2026-0216-001' },
-  { id: 'TE-002', engine: 'Execute', type: 'Action', title: 'Subscription cancelled — Netflix', description: 'Monthly $15.99 subscription cancelled per approved action ACT-003.', confidence: 0.92, time: '13:45', day: 'Today', auditId: 'GV-2026-0216-002' },
+  { id: 'TE-001', engine: 'Protect', type: 'Alert', title: 'Suspicious login blocked', description: 'Login attempt from unrecognized device (IP 203.0.113.42) automatically blocked.', confidence: 0.96, time: formatTime('2026-03-19T14:31:00-04:00'), day: formatDay('2026-03-19T14:31:00-04:00'), auditId: 'GV-2026-0319-846' },
+  { id: 'TE-002', engine: 'Execute', type: 'Action', title: 'Subscription cancelled — Netflix', description: 'Monthly $15.99 subscription cancelled per approved action ACT-003.', confidence: 0.92, time: formatTime('2026-03-19T13:45:00-04:00'), day: formatDay('2026-03-19T13:45:00-04:00'), auditId: 'GV-2026-0319-847' },
   {
     id: 'TE-003',
     engine: 'Grow',
@@ -33,9 +39,9 @@ const events: TimelineEvent[] = [
     title: `Emergency fund — $${DEMO_THREAD.emergencyFund.current.toLocaleString()} reached`,
     description: `${DEMO_THREAD.emergencyFund.percent}% progress toward $${DEMO_THREAD.emergencyFund.target.toLocaleString()} goal.`,
     confidence: 0.87,
-    time: '12:00',
-    day: 'Today',
-    auditId: 'GV-2026-0216-003',
+    time: formatTime('2026-03-19T12:00:00-04:00'),
+    day: formatDay('2026-03-19T12:00:00-04:00'),
+    auditId: 'GV-2026-0319-845',
   },
   {
     id: 'TE-004',
@@ -44,14 +50,14 @@ const events: TimelineEvent[] = [
     title: 'Weekly audit report generated',
     description: `${DEMO_THREAD.decisionsAudited.toLocaleString()} decisions audited. 100% coverage. 0 exceptions.`,
     confidence: 0.99,
-    time: '09:00',
-    day: 'Today',
-    auditId: 'GV-2026-0216-004',
+    time: formatTime('2026-03-19T09:00:00-04:00'),
+    day: formatDay('2026-03-19T09:00:00-04:00'),
+    auditId: 'GV-2026-0319-844',
   },
-  { id: 'TE-005', engine: 'Execute', type: 'Action', title: 'Auto-save round-ups completed', description: '$127 in round-ups transferred to savings account.', confidence: 0.95, time: '23:55', day: 'Yesterday', auditId: 'GV-2026-0215-001' },
-  { id: 'TE-006', engine: 'Protect', type: 'Resolution', title: 'Fraud alert resolved — Amazon charge', description: 'Charge confirmed legitimate by cardholder. Alert closed.', confidence: 0.88, time: '16:20', day: 'Yesterday', auditId: 'GV-2026-0215-002' },
-  { id: 'TE-007', engine: 'Grow', type: 'Insight', title: 'Savings rate improved +2.3%', description: 'Spending optimization actions led to measurable savings rate increase.', confidence: 0.85, time: '10:00', day: 'Yesterday', auditId: 'GV-2026-0215-003' },
-  { id: 'TE-008', engine: 'Govern', type: 'Policy', title: 'Trust score updated to 92', description: 'System trust score recalculated after model accuracy improvement.', confidence: 0.97, time: '09:00', day: 'Feb 14', auditId: 'GV-2026-0214-001' },
+  { id: 'TE-005', engine: 'Execute', type: 'Action', title: 'Auto-save round-ups completed', description: '$127 in round-ups transferred to savings account.', confidence: 0.95, time: formatTime('2026-03-18T23:55:00-04:00'), day: formatDay('2026-03-18T23:55:00-04:00'), auditId: 'GV-2026-0318-842' },
+  { id: 'TE-006', engine: 'Protect', type: 'Resolution', title: 'Fraud alert resolved — Amazon charge', description: 'Charge confirmed legitimate by cardholder. Alert closed.', confidence: 0.88, time: formatTime('2026-03-18T16:20:00-04:00'), day: formatDay('2026-03-18T16:20:00-04:00'), auditId: 'GV-2026-0318-843' },
+  { id: 'TE-007', engine: 'Grow', type: 'Insight', title: 'Savings rate improved +2.3%', description: 'Spending optimization actions led to measurable savings rate increase.', confidence: 0.85, time: formatTime('2026-03-18T10:00:00-04:00'), day: formatDay('2026-03-18T10:00:00-04:00'), auditId: 'GV-2026-0318-842' },
+  { id: 'TE-008', engine: 'Govern', type: 'Policy', title: 'Trust score updated to 92', description: 'System trust score recalculated after model accuracy improvement.', confidence: 0.97, time: formatTime('2026-03-17T09:00:00-04:00'), day: formatDay('2026-03-17T09:00:00-04:00'), auditId: 'GV-2026-0317-840' },
 ];
 
 const engineDotColor: Record<string, string> = { Protect: 'var(--engine-protect)', Grow: 'var(--engine-grow)', Execute: 'var(--engine-execute)', Govern: 'var(--engine-govern)' };
@@ -188,11 +194,11 @@ export function ActivityTimelinePage() {
                           <span className="text-[10px] text-white/30">{ev.time}</span>
                           <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${engineBadgeCls[ev.engine]}`}>{ev.engine}</span>
                           <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${typeBadgeCls[ev.type] ?? 'bg-white/10 text-white/40'}`}>{ev.type}</span>
-                          <span className="text-[10px] text-white/30 ml-auto">conf. {ev.confidence}</span>
+                          <span className="text-[10px] text-white/30 ml-auto">conf. {formatConfidence(ev.confidence)}</span>
                         </div>
                         <h4 className="text-sm font-medium text-white">{ev.title}</h4>
                         <p className="text-xs text-white/50 mt-1">{ev.description}</p>
-                        <Link to="/govern/audit-detail" className="text-[10px] text-blue-400 hover:underline mt-1 inline-block">{ev.auditId}</Link>
+                        <Link to={`/govern/audit-detail?decision=${encodeURIComponent(ev.auditId)}`} className="text-[10px] text-blue-400 hover:underline mt-1 inline-block">{ev.auditId}</Link>
                       </div>
                     </div>
                   ))}
@@ -241,7 +247,7 @@ export function ActivityTimelinePage() {
               </div>
               <div className="space-y-3">
                 {[
-                  { label: '22 actions this week', date: 'Today', done: false },
+                  { label: '22 actions this week', date: 'Mar 19, 2026', done: false },
                   { label: 'All engines reporting', date: 'Ongoing', done: true },
                   { label: '100% audit coverage', date: 'Maintained', done: true },
                 ].map((m) => (

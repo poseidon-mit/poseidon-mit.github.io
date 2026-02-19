@@ -14,6 +14,7 @@ import {
 } from "lucide-react"
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
+import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 
 /* ── Motion presets ── */
 const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
@@ -62,12 +63,12 @@ const statusConfig: Record<DecisionStatus, { color: string; bg: string; icon: Re
 }
 
 const ledgerEntries = [
-  { id: "GV-847", type: "Execute" as DecisionType, action: "Portfolio rebalance", confidence: 0.97, status: "Verified" as DecisionStatus, time: "14:28 Today" },
-  { id: "GV-846", type: "Protect" as DecisionType, action: "Block wire transfer", confidence: 0.94, status: "Verified" as DecisionStatus, time: "14:15 Today" },
-  { id: "GV-845", type: "Grow" as DecisionType, action: "Subscription consolidation", confidence: 0.89, status: "Verified" as DecisionStatus, time: "13:52 Today" },
-  { id: "GV-844", type: "Execute" as DecisionType, action: "Archive invoices", confidence: 0.78, status: "Pending" as DecisionStatus, time: "11:20 Today" },
-  { id: "GV-843", type: "Protect" as DecisionType, action: "Unusual transaction", confidence: 0.92, status: "Verified" as DecisionStatus, time: "Yesterday" },
-  { id: "GV-842", type: "Govern" as DecisionType, action: "Policy update", confidence: 0.97, status: "Verified" as DecisionStatus, time: "Yesterday" },
+  { id: "GV-2026-0319-847", type: "Execute" as DecisionType, action: "Portfolio rebalance", confidence: 0.97, status: "Verified" as DecisionStatus, time: formatDemoTimestamp("2026-03-19T14:28:00-04:00") },
+  { id: "GV-2026-0319-846", type: "Protect" as DecisionType, action: "Block wire transfer", confidence: 0.94, status: "Verified" as DecisionStatus, time: formatDemoTimestamp("2026-03-19T14:15:00-04:00") },
+  { id: "GV-2026-0319-845", type: "Grow" as DecisionType, action: "Subscription consolidation", confidence: 0.89, status: "Verified" as DecisionStatus, time: formatDemoTimestamp("2026-03-19T13:52:00-04:00") },
+  { id: "GV-2026-0319-844", type: "Execute" as DecisionType, action: "Archive invoices", confidence: 0.78, status: "Pending" as DecisionStatus, time: formatDemoTimestamp("2026-03-19T11:20:00-04:00") },
+  { id: "GV-2026-0318-843", type: "Protect" as DecisionType, action: "Unusual transaction", confidence: 0.92, status: "Verified" as DecisionStatus, time: formatDemoTimestamp("2026-03-18T16:42:00-04:00") },
+  { id: "GV-2026-0318-842", type: "Govern" as DecisionType, action: "Policy update", confidence: 0.97, status: "Verified" as DecisionStatus, time: formatDemoTimestamp("2026-03-18T09:40:00-04:00") },
 ]
 
 /* ═══════════════════════════════════════════════════════
@@ -148,7 +149,7 @@ export default function GovernPage() {
                         <span className="text-[10px] font-mono" style={{ color: "#64748B" }}>{entry.id}</span>
                       </div>
                       <div className="flex items-center gap-4">
-                        <span className="text-xs font-mono tabular-nums" style={{ color: entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)" }}>{entry.confidence.toFixed(2)}</span>
+                        <span className="text-xs font-mono tabular-nums" style={{ color: entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)" }}>{formatConfidence(entry.confidence)}</span>
                         <span className="text-xs" style={{ color: "#64748B" }}>{entry.time}</span>
                       </div>
                     </GlassCard>
