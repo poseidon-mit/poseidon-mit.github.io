@@ -11,7 +11,9 @@ import { JETON_COPY } from '@/content/landing-copy-jeton';
 import { useJetonHeroVideoEnabled } from './hooks/useJetonWebGLEnabled';
 import { JETON_EASING } from './jeton-config';
 
-const HERO_VIDEO_SRC = '/Theme_a_gentle_1080p_202602191613.mp4';
+const HERO_VIDEO_DESKTOP_SRC = '/videos/hero-theme-desktop.mp4';
+const HERO_VIDEO_MOBILE_SRC = '/videos/hero-theme-mobile.mp4';
+const HERO_VIDEO_POSTER_SRC = '/videos/hero-theme-poster.jpg';
 
 export function HeroSection() {
   const [videoReady, setVideoReady] = useState(false);
@@ -111,24 +113,31 @@ export function HeroSection() {
         <div className={`pointer-events-none absolute inset-0 transition-opacity duration-[650ms] ${videoReady ? 'opacity-100' : 'opacity-0'}`}>
           <video
             ref={videoRef}
-            src={HERO_VIDEO_SRC}
-            className="h-full w-full object-cover object-center"
+            className="h-full w-full object-cover object-center brightness-[0.68] saturate-[0.86]"
             autoPlay
             loop
             muted
             playsInline
             disablePictureInPicture
             preload="metadata"
+            poster={HERO_VIDEO_POSTER_SRC}
             aria-hidden="true"
             tabIndex={-1}
+            onLoadedMetadata={() => setVideoReady(true)}
             onLoadedData={() => setVideoReady(true)}
             onCanPlay={() => setVideoReady(true)}
             onError={() => setVideoFailed(true)}
-          />
+          >
+            <source src={HERO_VIDEO_MOBILE_SRC} media="(max-width: 767px)" type="video/mp4" />
+            <source src={HERO_VIDEO_DESKTOP_SRC} type="video/mp4" />
+          </video>
         </div>
       ) : null}
 
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0B1221]/55 via-[#0B1221]/30 to-[#0B1221]/95 md:from-[#0B1221]/35 md:via-transparent md:to-[#0B1221]/92" aria-hidden="true" />
+      <div
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0B1221]/76 via-[#0B1221]/56 to-[#0B1221]/95 backdrop-blur-[2px] md:from-[#0B1221]/62 md:via-[#0B1221]/42 md:to-[#0B1221]/95"
+        aria-hidden="true"
+      />
 
       <motion.div style={{ opacity: heroOpacity }} className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-8 text-white">
         <motion.p
@@ -144,7 +153,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 38 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: JETON_EASING }}
-          className="max-w-5xl text-balance font-display text-[clamp(2.8rem,9vw,8rem)] font-semibold leading-[0.9] tracking-[-0.04em]"
+          className="max-w-5xl text-balance font-display text-[clamp(2.8rem,9vw,8rem)] font-semibold leading-[0.9] tracking-[-0.04em] drop-shadow-[0_12px_44px_rgba(2,6,23,0.88)]"
         >
           {JETON_COPY.hero.titleA}
           <br />
@@ -157,7 +166,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.82, delay: 0.2, ease: JETON_EASING }}
-          className="max-w-2xl text-pretty text-lg leading-[1.65] tracking-[0.01em] text-white/78 md:text-xl"
+          className="max-w-2xl text-pretty text-lg leading-[1.65] tracking-[0.01em] text-white/84 drop-shadow-[0_8px_28px_rgba(2,6,23,0.82)] md:text-xl"
         >
           {JETON_COPY.hero.body}
         </motion.p>

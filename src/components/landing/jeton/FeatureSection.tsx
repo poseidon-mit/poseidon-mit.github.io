@@ -22,22 +22,22 @@ const ICONS: Record<JetonFeatureItem['name'], LucideIcon> = {
 };
 
 const TONE_CLASS: Record<JetonFeatureItem['tone'], string> = {
-  protect: 'text-emerald-300',
-  grow: 'text-fuchsia-300',
-  execute: 'text-amber-300',
-  govern: 'text-sky-300',
+  protect: 'text-emerald-600',
+  grow: 'text-fuchsia-600',
+  execute: 'text-amber-600',
+  govern: 'text-sky-600',
 };
 
 export function FeatureSection() {
   return (
-    <section className="bg-[#0B1221] px-6 pb-32 pt-28 text-white md:px-8 md:pb-40 md:pt-36">
+    <section className="bg-[#F8FAFC] px-6 pb-32 pt-28 text-slate-900 md:px-8 md:pb-40 md:pt-36">
       <div className="mx-auto max-w-7xl">
         <motion.p
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.58, ease: JETON_EASING }}
-          className="text-xs font-medium tracking-[0.3em] text-white/55"
+          className="text-xs font-medium tracking-[0.3em] text-slate-500"
         >
           {JETON_COPY.valueProp.eyebrow}
         </motion.p>
@@ -47,7 +47,7 @@ export function FeatureSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, delay: 0.12, ease: JETON_EASING }}
-          className="mt-5 max-w-4xl text-balance font-display text-4xl font-semibold leading-[1.1] tracking-[-0.03em] md:text-6xl"
+          className="mt-5 max-w-4xl text-balance font-display text-4xl font-semibold leading-[1.1] tracking-[-0.03em] text-slate-900 md:text-6xl"
         >
           {JETON_COPY.valueProp.title}
         </motion.h2>
@@ -57,7 +57,7 @@ export function FeatureSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.62, delay: 0.24, ease: JETON_EASING }}
-          className="mt-6 max-w-3xl text-pretty text-base leading-[1.65] tracking-[0.01em] text-white/72 md:text-lg"
+          className="mt-6 max-w-3xl text-pretty text-base leading-[1.65] tracking-[0.01em] text-slate-600 md:text-lg"
         >
           {JETON_COPY.valueProp.body}
         </motion.p>
@@ -81,17 +81,17 @@ export function FeatureSection() {
                 <SpotlightCard glowTone={feature.tone} className="h-full p-8 md:p-10">
                   <div className="flex h-full flex-col gap-4">
                     <div className="flex items-center justify-between gap-4">
-                      <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-white/12 bg-white/[0.05]">
+                      <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200/70 bg-white">
                         <Icon className={`h-6 w-6 ${TONE_CLASS[feature.tone]}`} aria-hidden="true" />
                       </span>
-                      <span className="rounded-full border border-white/14 bg-white/[0.03] px-3 py-1 font-mono text-xs text-white/62">
+                      <span className="rounded-full border border-slate-200/80 bg-white/80 px-3 py-1 font-mono text-xs text-slate-500">
                         {feature.confidence}
                       </span>
                     </div>
-                    <h3 className="font-display text-2xl font-semibold tracking-[-0.02em] text-white">
+                    <h3 className="font-display text-2xl font-semibold tracking-[-0.02em] text-slate-900">
                       {feature.name}
                     </h3>
-                    <p className="text-sm leading-[1.65] tracking-[0.01em] text-white/68 md:text-base">
+                    <p className="text-sm leading-[1.65] tracking-[0.01em] text-slate-600 md:text-base">
                       {feature.description}
                     </p>
                   </div>
