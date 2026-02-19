@@ -42,6 +42,30 @@ npm run build      # Production build
 npm test           # Run tests
 ```
 
+Common quality gates:
+
+```bash
+npm run guard:vite-only
+npm run typecheck
+npm run test:run
+npm run check:contracts
+npm run check:target-contracts
+npm run check:design-system
+npm run check:a11y-structure
+npm run check:inline-style-hex
+```
+
+## CI/CD
+
+- Deploy workflow: `.github/workflows/deploy.yml`
+  - Builds Vite app and deploys `dist/` to GitHub Pages (main branch only)
+  - Includes Vite preview smoke check before artifact upload
+- CI workflow: `.github/workflows/ci.yml`
+  - PR/dispatch validation: guard, typecheck, tests, contract gates, design-system gates, build
+- UX workflow: `.github/workflows/ux-quality.yml`
+  - PR split jobs (`ux-pr-fast`, `ux-pr-visual`) for faster feedback
+  - Nightly non-blocking UX scan/report with summary output
+
 To include the pitch deck PDF on the site (e.g. for `/deck` and download), copy it into `public/` before building:
 
 ```bash
@@ -49,7 +73,7 @@ npm run copy:deck-pdf   # copies remotion/out/Poseidon_AI_MIT_CTO_V3_Visual_Firs
 npm run build
 ```
 
-**Tech stack:** React 18, Vite, Tailwind CSS v4, Framer Motion, Recharts, Lucide Icons
+**Tech stack:** React 19, Vite, Tailwind CSS v4, Framer Motion, Recharts, Lucide Icons
 
 ## Pitch Deck (Remotion)
 

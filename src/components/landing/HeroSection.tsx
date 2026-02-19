@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { Lock, Shield, ScrollText, Play } from "lucide-react"
+import { Lock, Shield, ScrollText, Play, Presentation } from "lucide-react"
 import { Link } from '@/router'
 
 const fadeUp = {
@@ -47,27 +47,38 @@ export function HeroSection() {
           auditable, and reversible.
         </motion.p>
 
-        {/* CTAs — Primary 1 + Secondary 1 only */}
+        {/* CTAs */}
         <motion.div
-          className="mt-8 flex items-center justify-center gap-4"
+          className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4"
           variants={fadeUp}
           initial="hidden"
           animate="visible"
           custom={2}
         >
           <Link
-            to="/dashboard"
-            className="rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 px-8 py-4 text-lg font-semibold text-slate-950 shadow-[0_0_30px_rgba(13,217,180,0.3)] transition-all hover:shadow-[0_0_40px_rgba(13,217,180,0.4)] hover:brightness-110"
+            to="/signup"
+            className="w-full rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 px-8 py-4 text-lg font-semibold text-slate-950 shadow-[0_0_30px_rgba(13,217,180,0.3)] transition-all hover:shadow-[0_0_40px_rgba(13,217,180,0.4)] hover:brightness-110 sm:w-auto"
           >
             Open Dashboard
           </Link>
-          <button
-            type="button"
-            className="flex items-center gap-2 rounded-xl border border-white/[0.1] px-8 py-4 text-text-primary transition-all hover:bg-white/[0.05]"
-          >
-            <Play className="h-4 w-4" />
-            Watch Demo
-          </button>
+          <div className="flex w-full gap-3 sm:w-auto sm:gap-4">
+            <button
+              type="button"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/[0.1] px-6 py-4 text-text-primary transition-all hover:bg-white/[0.05] sm:flex-none sm:px-8"
+            >
+              <Play className="h-4 w-4" />
+              Watch Demo
+            </button>
+            <a
+              href="/CTO-Group7-Poseidon.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/[0.1] px-6 py-4 text-text-primary transition-all hover:bg-white/[0.05] sm:flex-none sm:px-8"
+            >
+              <Presentation className="h-4 w-4" />
+              Presentation
+            </a>
+          </div>
         </motion.div>
 
         {/* Trust badges */}
