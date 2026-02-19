@@ -23,21 +23,22 @@ export function HeroSection() {
   return (
     <section className="relative pt-24 md:pt-32 pb-16 overflow-hidden">
       {/* Background video — clipped above CTAs */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 bottom-[120px] overflow-hidden" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-x-0 top-0 bottom-[64px] overflow-hidden" aria-hidden="true">
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="h-full w-full object-cover object-bottom opacity-20"
+          className="h-full w-full scale-[1.08] object-cover object-center opacity-45 saturate-[1.5] contrast-[1.2] brightness-[1.08]"
           src="/videos/hero-bg.mp4"
         />
       </div>
       {/* Fade overlay */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 bottom-[120px] bg-gradient-to-b from-[var(--color-surface-base)]/60 via-transparent to-[var(--color-surface-base)]" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 bottom-[64px] bg-gradient-to-b from-[var(--color-surface-base)]/35 via-[var(--color-surface-base)]/10 to-[var(--color-surface-base)]/90" aria-hidden="true" />
       {/* Radial glow */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[800px] rounded-full bg-teal-500/[0.07] blur-[120px]" />
+        <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 h-[520px] w-[1080px] rounded-full bg-cyan-400/[0.18] blur-[140px]" />
+        <div className="absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2 h-[340px] w-[760px] rounded-full bg-teal-400/[0.2] blur-[100px]" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 text-center">
