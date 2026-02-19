@@ -161,10 +161,28 @@
   "GovernVerifiedBadge": {
     "status": "canonical"
   },
+  "FeatureSection": {
+    "status": "canonical"
+  },
+  "Footer": {
+    "status": "canonical"
+  },
   "HumanReviewCTA": {
     "status": "canonical"
   },
+  "jeton-config": {
+    "status": "canonical"
+  },
+  "JetonLandingPage": {
+    "status": "canonical"
+  },
   "KPIContractCard": {
+    "status": "canonical"
+  },
+  "LandingExperience": {
+    "status": "canonical"
+  },
+  "LandingPage": {
     "status": "canonical"
   },
   "LoadingSpinner": {
@@ -200,6 +218,9 @@
   "MissionToggle": {
     "status": "canonical"
   },
+  "EmptyState": {
+    "status": "canonical"
+  },
   "MobileDisclosure": {
     "status": "canonical"
   },
@@ -210,6 +231,9 @@
     "status": "canonical"
   },
   "OfflineBanner": {
+    "status": "canonical"
+  },
+  "OnboardingProgress": {
     "status": "canonical"
   },
   "OversightQueueTable": {
@@ -344,7 +368,16 @@
   "MethodologyCard": {
     "status": "canonical"
   },
+  "MenuOverlay": {
+    "status": "canonical"
+  },
+  "ParticleWave": {
+    "status": "canonical"
+  },
   "PrimaryFeed": {
+    "status": "canonical"
+  },
+  "SpotlightCard": {
     "status": "canonical"
   },
   "SeverityBadge": {
@@ -354,6 +387,12 @@
     "status": "canonical"
   },
   "StatusBadge": {
+    "status": "canonical"
+  },
+  "useJetonNavTheme": {
+    "status": "canonical"
+  },
+  "useJetonWebGLEnabled": {
     "status": "canonical"
   },
   "CommandCenterShell": {

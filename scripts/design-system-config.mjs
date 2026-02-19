@@ -65,7 +65,16 @@ export const COMPONENT_REGISTRY = Object.freeze({
   EngineCards: { status: 'canonical' },
   HumanReviewCTA: { status: 'canonical' },
   KPIContractCard: { status: 'canonical' },
+  LandingExperience: { status: 'canonical' },
   LandingPage: { status: 'canonical' },
+  JetonLandingPage: { status: 'canonical' },
+  FeatureSection: { status: 'canonical' },
+  MenuOverlay: { status: 'canonical' },
+  ParticleWave: { status: 'canonical' },
+  SpotlightCard: { status: 'canonical' },
+  useJetonWebGLEnabled: { status: 'canonical' },
+  useJetonNavTheme: { status: 'canonical' },
+  'jeton-config': { status: 'canonical' },
   LoadingSpinner: { status: 'canonical' },
   MetricsStrip: { status: 'canonical' },
   MilestonesTimeline: { status: 'canonical' },
@@ -78,10 +87,12 @@ export const COMPONENT_REGISTRY = Object.freeze({
   MissionSectionHeader: { status: 'canonical' },
   MissionStatusChip: { status: 'canonical' },
   MissionToggle: { status: 'canonical' },
+  EmptyState: { status: 'canonical' },
   MobileDisclosure: { status: 'canonical' },
   NetWorthHero: { status: 'canonical' },
   NotificationToast: { status: 'canonical' },
   OfflineBanner: { status: 'canonical' },
+  OnboardingProgress: { status: 'canonical' },
   OversightQueueTable: { status: 'canonical' },
   PageShell: { status: 'canonical' },
   PWAInstallPrompt: { status: 'canonical' },
@@ -156,7 +167,19 @@ export const COMPONENT_REGISTRY = Object.freeze({
   },
 });
 
+// Jeton landing deliberately uses dynamic inline style values for
+// immersive motion and cursor-reactive gradients. Keep this list narrow
+// and remove entries once equivalent tokenized abstractions exist.
+export const JETON_STYLE_EXCEPTION_FILES = Object.freeze([
+  'src/components/landing/jeton/HeroSection.tsx',
+  'src/components/landing/jeton/FeatureSection.tsx',
+  'src/components/landing/jeton/MenuOverlay.tsx',
+  'src/components/landing/jeton/Footer.tsx',
+  'src/components/landing/jeton/JetonLandingPage.tsx',
+]);
+
 export const STYLE_EXCEPTION_FILES = new Set([
+  ...JETON_STYLE_EXCEPTION_FILES,
   'src/components/ProofLine.tsx',
   'src/components/SavingsGoalCard.tsx',
   'src/components/Sparkline.tsx',
@@ -217,7 +240,6 @@ export const STYLE_EXCEPTION_FILES = new Set([
   'src/pages/govern/govern-data.ts',
   'src/pages/HelpSupport.tsx',
   'src/pages/InsightsFeed.tsx',
-  'src/pages/Landing.tsx',
   'src/pages/Login.tsx',
   'src/pages/OnboardingWelcome.tsx',
   'src/pages/NotFound.tsx',

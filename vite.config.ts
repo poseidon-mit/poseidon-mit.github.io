@@ -46,6 +46,9 @@ export default defineConfig({
           const chartLibs = ['/recharts/', '/d3-', '/internmap/'];
           if (chartLibs.some((segment) => id.includes(segment))) return 'vendor-charts';
 
+          const threeLibs = ['/three/', '/@react-three/fiber/'];
+          if (threeLibs.some((segment) => id.includes(segment))) return 'vendor-three';
+
           if (id.includes('/framer-motion/') || id.includes('/motion-dom/')) return 'vendor-motion';
           if (id.includes('/lucide-react/')) return 'vendor-icons';
 

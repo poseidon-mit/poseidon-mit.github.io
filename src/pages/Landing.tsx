@@ -1,4 +1,4 @@
-import { LandingPage } from '@/components/landing/LandingPage';
+import { LandingExperience } from '@/components/landing/LandingExperience';
 
 export default function Landing() {
   return (
@@ -7,7 +7,7 @@ export default function Landing() {
         Skip to main content
       </a>
       <main id="main-content" role="main">
-        <LandingPage />
+        <LandingExperience />
       </main>
     </>
   );

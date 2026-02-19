@@ -30,7 +30,9 @@ describe('Settings rights exercise flow (SET04)', () => {
 
   it('has delete section', () => {
     renderSET04();
-    expect(screen.getByText(/Delete my data/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /Delete my data/i, level: 2 }),
+    ).toBeInTheDocument();
   });
 
   it('delete button requires DELETE confirmation', () => {

@@ -19,8 +19,15 @@ export function PublicTopBar() {
           className="flex items-center gap-1.5"
           aria-label="Poseidon.AI home"
         >
-          <img src="/logo.png" alt="" width="36" height="36" className="w-9 h-9 object-contain" style={{ filter: 'drop-shadow(0 0 3px rgba(0,240,255,0.3))' }} aria-hidden="true" />
-          <span className="text-xl font-light tracking-widest" style={{ color: '#f8fafc' }}>Poseidon</span>
+          <img
+            src="/logo.png"
+            alt=""
+            width="36"
+            height="36"
+            className="h-9 w-9 object-contain drop-shadow-[0_0_3px_rgba(0,240,255,0.3)]"
+            aria-hidden="true"
+          />
+          <span className="text-xl font-light tracking-widest text-slate-50">Poseidon</span>
         </Link>
 
         {/* Center: Desktop Links */}

@@ -16,10 +16,10 @@ export function OnboardingProgress({
   return (
     <div className={cn('mb-6', className)} data-testid="onboarding-progress">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#14B8A6' }}>
+        <span className="text-xs font-semibold uppercase tracking-widest text-teal-400">
           Setup progress
         </span>
-        <span className="text-xs font-mono" style={{ color: '#94A3B8' }}>
+        <span className="text-xs font-mono text-slate-400">
           Step {currentStep} of {total}
         </span>
       </div>
@@ -29,12 +29,10 @@ export function OnboardingProgress({
           return (
             <div
               key={idx}
-              className="h-1.5 flex-1 rounded-full transition-all"
-              style={{
-                background: isActive
-                  ? 'linear-gradient(135deg, #14B8A6, #06B6D4)'
-                  : 'rgba(255,255,255,0.1)',
-              }}
+              className={cn(
+                'h-1.5 flex-1 rounded-full transition-all',
+                isActive ? 'bg-gradient-to-r from-teal-500 to-cyan-500' : 'bg-white/10',
+              )}
             />
           )
         })}
@@ -42,4 +40,3 @@ export function OnboardingProgress({
     </div>
   )
 }
-

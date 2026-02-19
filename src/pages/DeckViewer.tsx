@@ -124,8 +124,7 @@ export default function DeckViewer() {
     <div className="flex flex-col min-h-[100dvh] w-full bg-slate-950">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: '#0EA5E9', color: '#0B1221' }}
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-sky-500 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-slate-950"
       >
         Skip to main content
       </a>

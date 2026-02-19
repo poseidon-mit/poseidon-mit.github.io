@@ -11,6 +11,8 @@ const budgets = {
   cssGzipMax: Number(process.env.BUDGET_CSS_GZIP_MAX ?? 34000),
   indexJsRawMax: Number(process.env.BUDGET_INDEX_JS_RAW_MAX ?? 130000),
   indexJsGzipMax: Number(process.env.BUDGET_INDEX_JS_GZIP_MAX ?? 45000),
+  threeRawMax: Number(process.env.BUDGET_THREE_RAW_MAX ?? 950000),
+  threeGzipMax: Number(process.env.BUDGET_THREE_GZIP_MAX ?? 240000),
 };
 
 if (!fs.existsSync(distAssets)) {
@@ -22,9 +24,10 @@ const assetNames = fs.readdirSync(distAssets);
 const cssFiles = assetNames.filter((name) => name.endsWith('.css'));
 const jsFiles = assetNames.filter((name) => name.endsWith('.js'));
 const indexJsFile = jsFiles.find((name) => /^index-.*\.js$/.test(name));
+const threeJsFile = jsFiles.find((name) => /^vendor-three-.*\.js$/.test(name));
 
-if (cssFiles.length === 0 || !indexJsFile) {
-  console.error('Missing CSS assets or index JS asset in dist/assets.');
+if (cssFiles.length === 0 || !indexJsFile || !threeJsFile) {
+  console.error('Missing CSS assets, index JS asset, or vendor-three chunk in dist/assets.');
   process.exit(1);
 }
 
@@ -46,6 +49,7 @@ const cssMetrics = cssFiles
   );
 
 const indexMetrics = measure(path.join(distAssets, indexJsFile));
+const threeMetrics = measure(path.join(distAssets, threeJsFile));
 
 const violations = [];
 if (cssMetrics.raw > budgets.cssRawMax) {
@@ -60,6 +64,12 @@ if (indexMetrics.raw > budgets.indexJsRawMax) {
 if (indexMetrics.gzip > budgets.indexJsGzipMax) {
   violations.push(`index JS gzip ${indexMetrics.gzip} > ${budgets.indexJsGzipMax}`);
 }
+if (threeMetrics.raw > budgets.threeRawMax) {
+  violations.push(`vendor-three raw ${threeMetrics.raw} > ${budgets.threeRawMax}`);
+}
+if (threeMetrics.gzip > budgets.threeGzipMax) {
+  violations.push(`vendor-three gzip ${threeMetrics.gzip} > ${budgets.threeGzipMax}`);
+}
 
 console.log(
   JSON.stringify(
@@ -68,6 +78,10 @@ console.log(
       indexJs: {
         file: indexJsFile,
         ...indexMetrics,
+      },
+      vendorThree: {
+        file: threeJsFile,
+        ...threeMetrics,
       },
       budgets,
     },

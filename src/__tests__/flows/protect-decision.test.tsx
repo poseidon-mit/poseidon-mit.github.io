@@ -3,6 +3,8 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { RouterProvider } from '../../router';
 import ProtectAlertDetail from '../../pages/ProtectAlertDetail';
+import { DEMO_THREAD } from '../../lib/demo-thread';
+import { formatConfidence } from '../../lib/demo-date';
 
 /**
  * Protect decision flow: PRT02 evidence → decision order enforcement.
@@ -42,7 +44,8 @@ describe('Protect decision flow (PRT02)', () => {
 
   it('shows confidence score', () => {
     renderPRT02();
-    expect(screen.getAllByText(/97%/).length).toBeGreaterThan(0);
+    const expected = formatConfidence(DEMO_THREAD.criticalAlert.confidence);
+    expect(screen.getAllByText(expected).length).toBeGreaterThan(0);
   });
 
   it('has governance contract set', () => {
