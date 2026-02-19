@@ -135,10 +135,12 @@ export default function SignupPage() {
               {/* Email form */}
               <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
                 <div>
-                  <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider" style={{ color: "#64748B" }}>
+                  <label htmlFor="signup-full-name" className="block text-xs font-medium mb-1.5 uppercase tracking-wider" style={{ color: "#64748B" }}>
                     Full name
                   </label>
                   <input
+                    id="signup-full-name"
+                    name="fullName"
                     type="text"
                     className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-colors"
                     style={{
@@ -150,10 +152,12 @@ export default function SignupPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider" style={{ color: "#64748B" }}>
+                  <label htmlFor="signup-email" className="block text-xs font-medium mb-1.5 uppercase tracking-wider" style={{ color: "#64748B" }}>
                     Email
                   </label>
                   <input
+                    id="signup-email"
+                    name="email"
                     type="email"
                     className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-colors"
                     style={{
@@ -165,11 +169,13 @@ export default function SignupPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider" style={{ color: "#64748B" }}>
+                  <label htmlFor="signup-password" className="block text-xs font-medium mb-1.5 uppercase tracking-wider" style={{ color: "#64748B" }}>
                     Password
                   </label>
                   <div className="relative">
                     <input
+                      id="signup-password"
+                      name="password"
                       type={showPass ? "text" : "password"}
                       className="w-full rounded-xl px-4 py-3 pr-10 text-sm outline-none transition-colors"
                       style={{

@@ -122,6 +122,13 @@ export default function DeckViewer() {
 
   return (
     <div className="flex flex-col min-h-[100dvh] w-full bg-slate-950">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
+        style={{ background: '#0EA5E9', color: '#0B1221' }}
+      >
+        Skip to main content
+      </a>
       <header className="flex-shrink-0 flex items-center justify-between gap-4 px-4 py-3 border-b border-white/10 bg-slate-900/80">
         <Link
           to="/"
@@ -142,6 +149,7 @@ export default function DeckViewer() {
       </header>
 
       <main id="main-content" role="main" ref={containerRef} className="flex-1 min-h-0 overflow-auto">
+        <h1 className="sr-only">Poseidon MIT Presentation Deck</h1>
         {(loading || (!ready && !error)) && (
           <div className="flex items-center justify-center min-h-[50vh] text-slate-400">
             Loading deck…

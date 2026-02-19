@@ -132,10 +132,12 @@ export default function LoginPage() {
               {/* Email form */}
               <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
                 <div>
-                  <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider" style={{ color: "#64748B" }}>
+                  <label htmlFor="login-email" className="block text-xs font-medium mb-1.5 uppercase tracking-wider" style={{ color: "#64748B" }}>
                     Email
                   </label>
                   <input
+                    id="login-email"
+                    name="email"
                     type="email"
                     className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-colors"
                     style={{
@@ -147,11 +149,13 @@ export default function LoginPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider" style={{ color: "#64748B" }}>
+                  <label htmlFor="login-password" className="block text-xs font-medium mb-1.5 uppercase tracking-wider" style={{ color: "#64748B" }}>
                     Password
                   </label>
                   <div className="relative">
                     <input
+                      id="login-password"
+                      name="password"
                       type={showPass ? "text" : "password"}
                       className="w-full rounded-xl px-4 py-3 pr-10 text-sm outline-none transition-colors"
                       style={{
@@ -189,10 +193,11 @@ export default function LoginPage() {
                       }}
                       aria-checked={rememberMe}
                       role="checkbox"
+                      aria-labelledby="remember-me-label"
                     >
                       {rememberMe && <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2 2 4-4" stroke="#0B1221" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
                     </button>
-                    <span className="text-xs" style={{ color: "#94A3B8" }}>Remember me</span>
+                    <span id="remember-me-label" className="text-xs" style={{ color: "#94A3B8" }}>Remember me</span>
                   </label>
                   <Link to="/recovery" className="text-xs font-medium" style={{ color: "var(--engine-dashboard)" }}>
                     Forgot password?

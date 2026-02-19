@@ -71,13 +71,17 @@ export function Recovery() {
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+                  <label htmlFor="recovery-email" className="sr-only">Email address</label>
                   <input
+                    id="recovery-email"
+                    name="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@company.com"
                     className="w-full rounded-xl bg-white/5 border border-white/10 pl-10 pr-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--engine-dashboard)]/50 transition-colors"
                     autoComplete="email"
+                    aria-label="Email address"
                   />
                 </div>
                 <button

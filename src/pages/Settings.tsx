@@ -108,6 +108,13 @@ export default function SettingsPage() {
   return (
     <div className="relative">
       <AuroraPulse color="var(--engine-dashboard)" />
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
+        style={{ background: "var(--engine-dashboard)", color: "#0B1221" }}
+      >
+        Skip to main content
+      </a>
 
       <motion.main
         id="main-content"

@@ -91,7 +91,8 @@ export function SettingsAI() {
             <h2 className="text-sm font-semibold text-white">Global Autonomy Level</h2>
             <span className="text-lg font-bold" style={{ color: 'var(--engine-grow)' }}>{globalAutonomy}%</span>
           </div>
-          <input type="range" min={0} max={100} value={globalAutonomy} onChange={(e) => { setGlobalAutonomy(Number(e.target.value)); setDirty(true); }} className="w-full accent-violet-500 cursor-pointer" />
+          <label htmlFor="settings-ai-global-autonomy" className="sr-only">Global autonomy level</label>
+          <input id="settings-ai-global-autonomy" type="range" min={0} max={100} value={globalAutonomy} onChange={(e) => { setGlobalAutonomy(Number(e.target.value)); setDirty(true); }} className="w-full accent-violet-500 cursor-pointer" />
           <div className="flex justify-between mt-2">
             {autonomyLabels.map((l) => (
               <span key={l} className="text-[10px] text-white/30">{l}</span>
@@ -115,7 +116,8 @@ export function SettingsAI() {
                   <span className="text-sm font-semibold text-white">{engine.name}</span>
                   <span className="ml-auto text-xs font-bold" style={{ color: engine.color }}>{engineStates[idx].autonomy}%</span>
                 </div>
-                <input type="range" min={0} max={100} value={engineStates[idx].autonomy} onChange={(e) => updateEngine(idx, { autonomy: Number(e.target.value) })} className="w-full cursor-pointer" style={{ accentColor: engine.color }} />
+                <label htmlFor={`${engine.name.toLowerCase()}-autonomy`} className="sr-only">{engine.name} autonomy level</label>
+                <input id={`${engine.name.toLowerCase()}-autonomy`} type="range" min={0} max={100} value={engineStates[idx].autonomy} onChange={(e) => updateEngine(idx, { autonomy: Number(e.target.value) })} className="w-full cursor-pointer" style={{ accentColor: engine.color }} />
                 <div className="h-1 rounded-full bg-white/10 mt-2 mb-4">
                   <div className="h-full rounded-full" style={{ width: `${engineStates[idx].autonomy}%`, background: engine.color }} />
                 </div>
@@ -132,14 +134,15 @@ export function SettingsAI() {
                       style={engineStates[idx][toggle.key] ? { background: engine.color } : {}}
                       role="switch"
                       aria-checked={engineStates[idx][toggle.key]}
+                      aria-label={`${engine.name}: ${toggle.label}`}
                     >
                       <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${engineStates[idx][toggle.key] ? 'translate-x-4' : 'translate-x-0.5'}`} />
                     </button>
                   </div>
                 ))}
                 <div className="flex items-center justify-between pt-2">
-                  <span className="text-xs text-white/50">Min confidence</span>
-                  <input type="number" min={0.70} max={0.99} step={0.01} value={engineStates[idx].minConf} onChange={(e) => updateEngine(idx, { minConf: Number(e.target.value) })} className="w-16 text-right rounded-lg bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none" />
+                  <label htmlFor={`${engine.name.toLowerCase()}-min-confidence`} className="text-xs text-white/50">Min confidence</label>
+                  <input id={`${engine.name.toLowerCase()}-min-confidence`} type="number" min={0.70} max={0.99} step={0.01} value={engineStates[idx].minConf} onChange={(e) => updateEngine(idx, { minConf: Number(e.target.value) })} className="w-16 text-right rounded-lg bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none" aria-label={`${engine.name} minimum confidence`} />
                 </div>
               </div>
             ))}
@@ -151,10 +154,10 @@ export function SettingsAI() {
           <h2 className="text-sm font-semibold text-white mb-4">Explanation Preferences</h2>
           <div className="flex flex-col gap-4">
             <div>
-              <span className="text-xs text-white/50 block mb-2">Verbosity</span>
+              <span id="settings-ai-verbosity-label" className="text-xs text-white/50 block mb-2">Verbosity</span>
               <div className="flex flex-wrap gap-2">
                 {(['Minimal', 'Standard', 'Detailed', 'Technical'] as const).map((v) => (
-                  <button key={v} onClick={() => { setVerbosity(v); setDirty(true); }} className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${verbosity === v ? 'text-cyan-300 border-cyan-500/40' : 'text-white/50 border-white/10 bg-white/5 hover:bg-white/10'}`} style={verbosity === v ? { background: 'rgba(0,240,255,0.15)' } : {}}>
+                  <button key={v} onClick={() => { setVerbosity(v); setDirty(true); }} className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${verbosity === v ? 'text-cyan-300 border-cyan-500/40' : 'text-white/50 border-white/10 bg-white/5 hover:bg-white/10'}`} style={verbosity === v ? { background: 'rgba(0,240,255,0.15)' } : {}} aria-pressed={verbosity === v} aria-label={`Set verbosity to ${v}`} aria-labelledby="settings-ai-verbosity-label">
                     {v}
                   </button>
                 ))}
@@ -168,15 +171,15 @@ export function SettingsAI() {
               ].map((t) => (
                 <div key={t.label} className="flex items-center justify-between py-1">
                   <span className="text-xs text-white/50">{t.label}</span>
-                  <button onClick={() => { t.setter(!t.state); setDirty(true); }} className={`w-9 h-5 rounded-full relative transition-colors ${t.state ? 'bg-cyan-500' : 'bg-white/10'}`} role="switch" aria-checked={t.state}>
+                  <button onClick={() => { t.setter(!t.state); setDirty(true); }} className={`w-9 h-5 rounded-full relative transition-colors ${t.state ? 'bg-cyan-500' : 'bg-white/10'}`} role="switch" aria-checked={t.state} aria-label={t.label}>
                     <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${t.state ? 'translate-x-4' : 'translate-x-0.5'}`} />
                   </button>
                 </div>
               ))}
             </div>
             <div>
-              <span className="text-xs text-white/50 block mb-1">Language</span>
-              <select value={language} onChange={(e) => { setLanguage(e.target.value); setDirty(true); }} className="w-full md:w-48 rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-xs text-white focus:outline-none">
+              <label htmlFor="settings-ai-language" className="text-xs text-white/50 block mb-1">Language</label>
+              <select id="settings-ai-language" value={language} onChange={(e) => { setLanguage(e.target.value); setDirty(true); }} className="w-full md:w-48 rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-xs text-white focus:outline-none">
                 <option>English</option><option>Japanese</option><option>Spanish</option>
               </select>
             </div>
