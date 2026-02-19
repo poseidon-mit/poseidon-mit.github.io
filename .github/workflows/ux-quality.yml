@@ -2,9 +2,16 @@ name: UX Quality
 
 on:
   pull_request:
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
   workflow_dispatch:
   schedule:
     - cron: '0 16 * * *'
+
+concurrency:
+  group: ux-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ux-pr:
@@ -18,12 +25,21 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
       - name: Guard Vite-only architecture
         run: npm run guard:vite-only
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install Playwright Chromium
         run: npx playwright install chromium --with-deps
@@ -54,6 +70,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ux-pr-artifacts
+          retention-days: 7
           path: |
             docs/baselines/ux-audit-latest.json
             docs/baselines/ux-visual-capture-last-run.json
@@ -72,12 +89,21 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
       - name: Guard Vite-only architecture
         run: npm run guard:vite-only || true
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install Playwright Chromium (best-effort)
         run: npx playwright install chromium --with-deps || true
@@ -99,11 +125,16 @@ jobs:
       - name: UX report (non-blocking)
         run: npm run ux:report || true
 
+      - name: Nightly UX summary
+        run: |
+          node -e "const fs=require('fs');const p='docs/baselines/ux-audit-latest.json';if(!fs.existsSync(p)){console.log('No UX audit JSON found');process.exit(0);}const d=JSON.parse(fs.readFileSync(p,'utf8'));const issues=d.issues||[];const open=issues.filter(i=>i.status!=='done');const by=(s)=>open.filter(i=>i.severity===s).length;console.log('Open issues:',open.length,'P0:',by('P0'),'P1:',by('P1'),'P2:',by('P2'));"
+
       - name: Upload nightly UX artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ux-nightly-artifacts
+          retention-days: 7
           path: |
             docs/baselines/ux-audit-latest.json
             docs/baselines/ux-audit-latest.md
