@@ -14,12 +14,12 @@ const quickLinks = [
 ];
 
 const faqItems = [
-  { q: 'How does Poseidon.AI protect my data?', a: 'All data is encrypted at rest (AES-256) and in transit (TLS 1.3). SOC 2 Type II is currently in progress, and sensitive data never leaves your control through our zero-knowledge architecture.' },
+  { q: 'How does Poseidon.AI protect my data?', a: 'All data is encrypted at rest (AES-256) and in transit (TLS 1.3). SOC 2 Type II in progress. Sensitive data never leaves your control through our zero-knowledge architecture.' },
   { q: 'What does "confidence score" mean?', a: 'A confidence score (0.0-1.0) represents how certain the AI model is about its recommendation. Higher scores indicate stronger evidence supporting the decision. Scores below 0.70 are always flagged for human review.' },
   { q: 'Can I undo an automated action?', a: 'Yes. All actions marked as reversible can be rolled back within 24 hours from the Execute > History page. Irreversible actions always require explicit human approval before execution.' },
   { q: 'How do I dispute a blocked transaction?', a: 'Navigate to Protect > Alert Detail for the blocked transaction and click "Dispute." Provide your reason and supporting information. Our team reviews disputes within 4 hours.' },
   { q: 'What AI models are used?', a: 'Poseidon uses 8 specialized models across 4 engines plus the dashboard command center: FraudDetection & BehavioralBaseline (Protect), GrowthForecast & GoalTracker (Grow), BillNegotiator & ExecuteEngine (Execute), GovernanceEngine & PolicyEngine (Govern).' },
-  { q: 'How is my financial data secured?', a: 'Bank-grade 256-bit encryption, read-only access to accounts, SOC 2 certified infrastructure, and zero-knowledge proofs ensure your data is never exposed.' },
+  { q: 'How is my financial data secured?', a: 'Bank-grade 256-bit encryption, read-only access to accounts, SOC 2 Type II in progress, plus zero-knowledge proofs to help ensure your data is never exposed.' },
   { q: 'Can I export my data?', a: 'Yes. Go to Settings > Data Rights to request a JSON or CSV export of all your data. Exports are typically ready within 24 hours.' },
   { q: 'How do I contact support?', a: 'Use the contact form on this page, or email support@poseidon.ai. Priority support is available for Pro and Enterprise plans with a 4-hour SLA.' },
 ];
@@ -69,7 +69,9 @@ export function HelpSupport() {
           <h1 className="text-2xl md:text-3xl font-bold text-white">How can we help?</h1>
           <div className="relative mt-2">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/30" />
+            <label htmlFor="help-search" className="sr-only">Search help articles</label>
             <input
+              id="help-search"
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -82,7 +84,7 @@ export function HelpSupport() {
         {/* Quick links 2x2 */}
         <motion.div variants={fadeUp} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {quickLinks.map((ql) => (
-            <button key={ql.title} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 text-left hover:bg-white/[0.06] hover:border-white/[0.15] transition-all">
+            <button key={ql.title} disabled className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 text-left opacity-60 cursor-not-allowed">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: ql.iconBg }}>
                   <ql.icon className="h-5 w-5" style={{ color: ql.iconColor }} />
@@ -92,6 +94,7 @@ export function HelpSupport() {
                   <p className="text-xs text-white/40 mt-0.5">{ql.desc}</p>
                 </div>
               </div>
+              <span className="inline-block mt-3 text-[10px] font-semibold uppercase tracking-wider text-white/40">Preview</span>
             </button>
           ))}
         </motion.div>
@@ -130,7 +133,7 @@ export function HelpSupport() {
           <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider mb-4">Documentation</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {docLinks.map((dl) => (
-              <button key={dl.title} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 text-left hover:bg-white/[0.06] hover:border-white/[0.15] transition-all">
+              <button key={dl.title} disabled className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 text-left opacity-60 cursor-not-allowed">
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
                     <dl.icon className="h-4 w-4" style={{ color: 'var(--engine-govern)' }} />
@@ -139,6 +142,7 @@ export function HelpSupport() {
                   <ExternalLink className="h-3 w-3 text-white/20" />
                 </div>
                 <p className="text-xs text-white/40">{dl.desc}</p>
+                <span className="inline-block mt-3 text-[10px] font-semibold uppercase tracking-wider text-white/40">Preview</span>
               </button>
             ))}
           </div>
@@ -149,13 +153,13 @@ export function HelpSupport() {
           <h2 className="text-sm font-semibold text-white mb-4">Submit a Ticket</h2>
           <div className="flex flex-col gap-4">
             <div>
-              <label className="text-xs text-white/50 block mb-1.5">Subject</label>
-              <input type="text" placeholder="Brief summary of your issue" className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--engine-govern)]/50 transition-colors" />
+              <label htmlFor="help-subject" className="text-xs text-white/50 block mb-1.5">Subject</label>
+              <input id="help-subject" type="text" placeholder="Brief summary of your issue" className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--engine-govern)]/50 transition-colors" />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs text-white/50 block mb-1.5">Category</label>
-                <select className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white/60 focus:outline-none focus:border-[var(--engine-govern)]/50">
+                <label htmlFor="help-category" className="text-xs text-white/50 block mb-1.5">Category</label>
+                <select id="help-category" className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white/60 focus:outline-none focus:border-[var(--engine-govern)]/50">
                   <option>Technical</option><option>Billing</option><option>Security</option><option>Other</option>
                 </select>
               </div>
@@ -171,13 +175,13 @@ export function HelpSupport() {
               </div>
             </div>
             <div>
-              <label className="text-xs text-white/50 block mb-1.5">Description</label>
-              <textarea rows={4} placeholder="Describe your issue in detail..." className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--engine-govern)]/50 resize-none transition-colors" />
+              <label htmlFor="help-description" className="text-xs text-white/50 block mb-1.5">Description</label>
+              <textarea id="help-description" rows={4} placeholder="Describe your issue in detail..." className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--engine-govern)]/50 resize-none transition-colors" />
             </div>
             <div className="flex items-center justify-between">
               <span className="text-xs text-white/30">Avg response time: 2 hours</span>
-              <button className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-opacity" style={{ background: 'var(--engine-govern)' }}>
-                <Send className="h-3.5 w-3.5" />Submit ticket
+              <button disabled className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold text-white opacity-60 cursor-not-allowed" style={{ background: 'var(--engine-govern)' }} aria-label="Submit ticket preview only">
+                <Send className="h-3.5 w-3.5" />Submit ticket · Preview
               </button>
             </div>
           </div>

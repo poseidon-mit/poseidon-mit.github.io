@@ -99,21 +99,36 @@ function ComplianceStatus() {
         Compliance Status
       </h3>
       <div className="flex flex-col gap-3">
-        {complianceItems.map((item) => (
-          <div key={item.label} className="flex items-center justify-between">
-            <span className="text-xs font-medium" style={{ color: '#CBD5E1' }}>{item.label}</span>
-            <span
-              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold"
-              style={{
-                background: item.compliant ? 'rgba(16,185,129,0.12)' : 'rgba(var(--state-critical-rgb),0.12)',
-                color: item.compliant ? 'var(--state-healthy)' : 'var(--state-critical)',
-              }}
-            >
-              <CheckCircle2 size={11} />
-              Compliant
-            </span>
-          </div>
-        ))}
+        {complianceItems.map((item) => {
+          const inProgress = /in progress/i.test(item.label);
+          const badgeBg = inProgress
+            ? 'rgba(245,158,11,0.12)'
+            : item.compliant
+              ? 'rgba(16,185,129,0.12)'
+              : 'rgba(var(--state-critical-rgb),0.12)';
+          const badgeColor = inProgress
+            ? 'var(--state-warning)'
+            : item.compliant
+              ? 'var(--state-healthy)'
+              : 'var(--state-critical)';
+          const badgeLabel = inProgress ? 'In progress' : item.compliant ? 'Compliant' : 'Non-compliant';
+
+          return (
+            <div key={item.label} className="flex items-center justify-between">
+              <span className="text-xs font-medium" style={{ color: '#CBD5E1' }}>{item.label}</span>
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold"
+                style={{
+                  background: badgeBg,
+                  color: badgeColor,
+                }}
+              >
+                <CheckCircle2 size={11} />
+                {badgeLabel}
+              </span>
+            </div>
+          );
+        })}
         <div className="flex items-center justify-between pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           <span className="text-xs" style={{ color: '#64748B' }}>Last audit</span>
           <span className="text-xs font-mono" style={{ color: '#94A3B8' }}>2026-02-10</span>

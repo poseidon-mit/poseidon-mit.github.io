@@ -118,7 +118,7 @@ export const evidenceTypes: EvidenceType[] = [
 
 export const complianceItems: ComplianceItem[] = [
   { label: 'GDPR', compliant: true },
-  { label: 'SOC 2', compliant: true },
+  { label: 'SOC 2 Type II in progress', compliant: true },
   { label: 'CCPA', compliant: true },
 ]
 
@@ -182,5 +182,5 @@ export const governMethodology = {
   modelName: 'GovernanceTracer',
   modelVersion: '3.1',
   accuracy: 0.989,
-  description: 'Multi-source evidence aggregation with cryptographic audit trail. Verifies decision provenance across all engine interactions. SOC 2 Type II compliant with real-time compliance monitoring.',
+  description: 'Multi-source evidence aggregation with cryptographic audit trail. Verifies decision provenance across all engine interactions. SOC 2 Type II in progress with real-time compliance monitoring.',
 }

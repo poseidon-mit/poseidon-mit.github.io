@@ -142,7 +142,7 @@ export function SettingsIntegrations() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {addTypes.map((t) => (
-                  <button key={t.id} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 text-left hover:bg-white/[0.06] hover:border-white/[0.15] transition-all">
+                  <button key={t.id} disabled className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 text-left opacity-60 cursor-not-allowed">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: t.iconBg }}>
                         <t.icon className="h-5 w-5" style={{ color: t.iconColor }} />
@@ -152,13 +152,13 @@ export function SettingsIntegrations() {
                         <p className="text-xs text-white/40">{t.desc}</p>
                       </div>
                     </div>
-                    <span className="inline-block mt-3 text-xs font-medium px-3 py-1 rounded-lg border border-white/10 text-white/60">Connect</span>
+                    <span className="inline-block mt-3 text-xs font-medium px-3 py-1 rounded-lg border border-white/10 text-white/60">Connect · Preview</span>
                   </button>
                 ))}
               </div>
               <div className="flex items-start gap-2 rounded-xl bg-white/[0.02] border border-white/[0.06] p-3">
                 <Lock className="h-4 w-4 text-white/30 shrink-0 mt-0.5" />
-                <p className="text-xs text-white/30">256-bit encryption · Read-only access · SOC 2 certified</p>
+                <p className="text-xs text-white/30">256-bit encryption · Read-only access · SOC 2 Type II in progress</p>
               </div>
             </motion.div>
           </div>
@@ -214,7 +214,7 @@ export function SettingsIntegrations() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Shield className="h-3.5 w-3.5 text-emerald-400" />
-                  <span className="text-xs text-white/50">SOC 2 certified</span>
+                  <span className="text-xs text-white/50">SOC 2 Type II in progress</span>
                 </div>
               </div>
             </motion.div>

@@ -51,7 +51,7 @@ export function TrustSecurity() {
           <h1 className="text-3xl md:text-4xl font-bold text-white text-balance">Trusted by design, not by chance</h1>
           <p className="text-sm text-slate-400 max-w-lg text-pretty">Every decision auditable. Every byte encrypted. Zero trust architecture.</p>
           <div className="flex flex-wrap justify-center gap-2 mt-2">
-            {['GDPR', 'CCPA', 'SOC 2 (In progress)'].map((b) => (
+            {['GDPR', 'CCPA', 'SOC 2 Type II in progress'].map((b) => (
               <span key={b} className="text-xs font-semibold px-3 py-1 rounded-full border" style={{ borderColor: 'var(--engine-protect)', color: 'var(--engine-protect)' }}>{b}</span>
             ))}
           </div>
@@ -166,7 +166,7 @@ export function TrustSecurity() {
               { badge: 'GDPR', label: 'General Data Protection Regulation' },
               { badge: 'CCPA', label: 'California Consumer Privacy Act' },
               { badge: 'ISO 27001', label: 'Information Security Management' },
-              { badge: 'SOC 2 Type II (In progress)', label: 'Service Organization Controls' },
+              { badge: 'SOC 2 Type II in progress', label: 'Service Organization Controls' },
             ].map((c) => (
               <div key={c.badge} className="flex items-center gap-3">
                 <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0" />
