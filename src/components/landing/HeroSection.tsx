@@ -29,16 +29,16 @@ export function HeroSection() {
           loop
           muted
           playsInline
-          className="h-full w-full scale-[1.08] object-cover object-center opacity-45 saturate-[1.5] contrast-[1.2] brightness-[1.08]"
+          className="h-full w-full scale-[1.05] object-cover object-center opacity-52 saturate-[0.2] contrast-[1.3] brightness-[1.06]"
           src="/videos/hero-bg.mp4"
         />
       </div>
       {/* Fade overlay */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 bottom-[64px] bg-gradient-to-b from-[var(--color-surface-base)]/35 via-[var(--color-surface-base)]/10 to-[var(--color-surface-base)]/90" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 bottom-[64px] bg-gradient-to-b from-[var(--color-surface-base)]/28 via-[var(--color-surface-base)]/8 to-[var(--color-surface-base)]/92" aria-hidden="true" />
       {/* Radial glow */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 h-[520px] w-[1080px] rounded-full bg-cyan-400/[0.18] blur-[140px]" />
-        <div className="absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2 h-[340px] w-[760px] rounded-full bg-teal-400/[0.2] blur-[100px]" />
+        <div className="absolute top-[46%] left-1/2 -translate-x-1/2 -translate-y-1/2 h-[440px] w-[980px] rounded-full bg-white/[0.08] blur-[140px]" />
+        <div className="absolute top-[43%] left-1/2 -translate-x-1/2 -translate-y-1/2 h-[280px] w-[680px] rounded-full bg-slate-200/[0.06] blur-[96px]" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 text-center">
