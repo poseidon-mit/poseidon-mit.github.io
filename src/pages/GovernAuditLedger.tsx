@@ -21,10 +21,11 @@ import {
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
-import { AuroraPulse, GovernFooter, PreviewBadge } from '@/components/poseidon'
+import { AuroraPulse, EmptyState, GovernFooter, PreviewBadge } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { Surface, Button, ButtonLink } from '@/design-system'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+import { useRouter } from '@/router'
 
 /* ── Cross-thread values ── */
 const DECISIONS_AUDITED = DEMO_THREAD.decisionsAudited
@@ -99,6 +100,7 @@ function getConfidenceColor(c: number) { return c >= 0.9 ? "var(--state-healthy)
 export default function GovernAuditPage() {
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
+  const { navigate } = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const [activeFilter, setActiveFilter] = useState<FilterTab>("All")
   const [sortField, setSortField] = useState<SortField>("timestamp")
@@ -190,6 +192,14 @@ export default function GovernAuditPage() {
             {/* Desktop table */}
             <div className="hidden md:block">
               <Surface variant="glass" padding="none" data-surface-role="structure" className="overflow-hidden !p-0">
+                {sorted.length === 0 ? (
+                  <EmptyState
+                    icon={Search}
+                    title="No matching decisions"
+                    description="Try adjusting filters or using a different search term."
+                    accentColor="var(--engine-govern)"
+                  />
+                ) : null}
                 <div className="overflow-x-auto">
                   <table className="w-full text-left" role="table">
                     <thead>
@@ -208,7 +218,21 @@ export default function GovernAuditPage() {
                         const sCfg = statusCfg[entry.status]
                         const SIcon = sCfg.icon
                         return (
-                          <motion.tr key={entry.id} variants={fadeUpVariant} className="group transition-colors hover:bg-white/[0.02]" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                          <motion.tr
+                            key={entry.id}
+                            variants={fadeUpVariant}
+                            className="group cursor-pointer transition-colors hover:bg-white/[0.02] focus-within:bg-white/[0.02]"
+                            style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+                            onClick={() => navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)}
+                            onKeyDown={(event) => {
+                              if (event.key === 'Enter' || event.key === ' ') {
+                                event.preventDefault()
+                                navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)
+                              }
+                            }}
+                            tabIndex={0}
+                            aria-label={`Open audit detail for ${entry.id}`}
+                          >
                             <td className="px-4 py-3.5">
                               <Link
                                 to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
@@ -236,6 +260,16 @@ export default function GovernAuditPage() {
 
             {/* Mobile cards */}
             <div className="flex flex-col gap-3 md:hidden">
+              {sorted.length === 0 ? (
+                <Surface variant="glass" padding="md">
+                  <EmptyState
+                    icon={Search}
+                    title="No matching decisions"
+                    description="Try adjusting filters or using a different search term."
+                    accentColor="var(--engine-govern)"
+                  />
+                </Surface>
+              ) : null}
               {sorted.map(entry => {
                 const sCfg = statusCfg[entry.status]
                 const SIcon = sCfg.icon
@@ -301,10 +335,10 @@ export default function GovernAuditPage() {
             {/* Export */}
             <Surface variant="glass" padding="md" className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Export Options</h3>
-              <Button disabled variant="secondary" engine="govern" fullWidth size="sm" className="rounded-xl text-xs cursor-not-allowed opacity-60" aria-label="Export full ledger preview only">
+              <Button disabled title="Export available in production release" variant="secondary" engine="govern" fullWidth size="sm" className="rounded-xl text-xs cursor-not-allowed opacity-60" aria-label="Export full ledger preview only">
                 <Download size={14} />Export full ledger (CSV)<PreviewBadge className="ml-2" />
               </Button>
-              <Button disabled variant="secondary" engine="govern" fullWidth size="sm" className="rounded-xl text-xs cursor-not-allowed opacity-60" aria-label="Generate compliance report preview only">
+              <Button disabled title="Export available in production release" variant="secondary" engine="govern" fullWidth size="sm" className="rounded-xl text-xs cursor-not-allowed opacity-60" aria-label="Generate compliance report preview only">
                 <FileText size={14} />Generate compliance report (PDF)<PreviewBadge className="ml-2" />
               </Button>
             </Surface>
