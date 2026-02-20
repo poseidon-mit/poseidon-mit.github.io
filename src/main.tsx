@@ -4,9 +4,12 @@ import { RouterProvider, useRouter } from './router';
 import { routes, type RoutePath } from './router/lazyRoutes';
 import { isAppRoute } from './router/app-shell-routes';
 import { AppNavShell } from './components/layout/AppNavShell';
+import { DemoModeBanner } from './components/layout/DemoModeBanner';
+import { ToastProvider } from './components/providers/ToastProvider';
 import { runServiceWorkerCleanupOnBoot } from './bootstrap/sw-cleanup';
 import { usePresentationMode } from './hooks/usePresentationMode';
 import { DesignSystemProvider } from './design-system';
+import { DemoStateProvider, useDemoState } from './lib/demo-state/provider';
 import './styles/tailwind.css';
 import './styles/app.css';
 
@@ -164,11 +167,20 @@ function installRuntimeTelemetry() {
 }
 
 function RouterOutlet() {
-  const { path } = useRouter();
+  const { path, search, navigate } = useRouter();
+  const { state } = useDemoState();
   const LazyComponent = routes[path as RoutePath];
   const PageComponent = LazyComponent || routes['/404'] || routes['/'];
+  const requiresSession = isAppRoute(path);
+
+  useEffect(() => {
+    if (!requiresSession || state.auth.sessionStarted) return;
+    const next = encodeURIComponent(`${path}${search}`);
+    navigate(`/login?next=${next}`);
+  }, [requiresSession, state.auth.sessionStarted, path, search, navigate]);
 
   if (!PageComponent) return <RouteLoadingFallback />;
+  if (requiresSession && !state.auth.sessionStarted) return <RouteLoadingFallback />;
 
   if (isAppRoute(path)) {
     return (
@@ -199,12 +211,17 @@ function MinimalApp() {
   return (
     <ErrorBoundary>
       <DesignSystemProvider effectPreset="creator-studio">
-        <RouterProvider>
-          <PresentationModeSync />
-          <Suspense fallback={<RouteLoadingFallback />}>
-            <RouterOutlet />
-          </Suspense>
-        </RouterProvider>
+        <DemoStateProvider>
+          <ToastProvider>
+            <RouterProvider>
+              <PresentationModeSync />
+              <DemoModeBanner />
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <RouterOutlet />
+              </Suspense>
+            </RouterProvider>
+          </ToastProvider>
+        </DemoStateProvider>
       </DesignSystemProvider>
       <div className="grain-overlay" aria-hidden="true" />
     </ErrorBoundary>

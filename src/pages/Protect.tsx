@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Link } from '@/router'
 import {
@@ -71,15 +71,19 @@ export default function ProtectPage() {
     else { setSortField(field); setSortDir("desc") }
   }
 
-  const sorted = [...threats].sort((a, b) => {
-    let cmp = 0
-    switch (sortField) {
-      case "severity": cmp = severityConfig[a.severity].order - severityConfig[b.severity].order; break
-      case "confidence": cmp = a.confidence - b.confidence; break
-      case "time": cmp = a.sortTime - b.sortTime; break
-    }
-    return sortDir === "asc" ? cmp : -cmp
-  })
+  const sorted = useMemo(
+    () =>
+      [...threats].sort((a, b) => {
+        let cmp = 0
+        switch (sortField) {
+          case "severity": cmp = severityConfig[a.severity].order - severityConfig[b.severity].order; break
+          case "confidence": cmp = a.confidence - b.confidence; break
+          case "time": cmp = a.sortTime - b.sortTime; break
+        }
+        return sortDir === "asc" ? cmp : -cmp
+      }),
+    [sortField, sortDir],
+  )
   const criticalCount = threats.filter((t) => t.severity === "Critical").length
   const highCount = threats.filter((t) => t.severity === "High").length
   const monitoringCount = threats.filter((t) => t.severity === "Medium" || t.severity === "Low").length
@@ -129,6 +133,7 @@ export default function ProtectPage() {
                 ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left" role="table">
+                    <caption className="sr-only">Threat alerts sorted by confidence, severity, or time</caption>
                     <thead>
                       <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                         <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold" style={{ color: "#64748B" }} scope="col">ID</th>
@@ -149,7 +154,13 @@ export default function ProtectPage() {
                     <tbody>
                       <AnimatePresence>
                         {sorted.map((t) => (
-                          <motion.tr key={t.id} variants={fadeUp} className="group transition-colors hover:bg-white/[0.02]" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                          <motion.tr
+                            key={t.id}
+                            variants={fadeUp}
+                            exit={{ opacity: 0, y: -8, transition: { duration: 0.18 } }}
+                            className="group transition-colors hover:bg-white/[0.02]"
+                            style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+                          >
                             <td className="px-4 py-3.5"><span className="text-xs font-mono font-medium" style={{ color: "var(--engine-protect)" }}>{t.id}</span></td>
                             <td className="px-4 py-3.5"><div className="flex flex-col gap-0.5"><span className="text-sm" style={{ color: "#F1F5F9" }}>{t.merchant}</span><span className="text-[10px]" style={{ color: "#64748B" }}>{t.description}</span></div></td>
                             <td className="px-4 py-3.5"><span className="text-sm font-mono font-semibold tabular-nums" style={{ color: "#F1F5F9" }}>{t.amount}</span></td>

@@ -102,6 +102,7 @@ const canonicalNames = [
   'PolicyModelCards',
   'PrivacyControlCard',
   'PriorityBadge',
+  'PreviewBadge',
   'ProofLine',
   'ReasoningChain',
   'RiskScoreDial',

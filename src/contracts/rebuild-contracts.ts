@@ -6,6 +6,7 @@ export type RouteIntent = 'monitor' | 'investigate' | 'approve' | 'audit' | 'con
 export type NavGroup = 'public' | 'core' | 'engine' | 'settings';
 export type CognitiveLoad = 'low' | 'medium' | 'high';
 export type ReadyScope = 'target16' | 'deferred' | 'internal';
+export type RouteVisibility = 'public' | 'internal';
 export type AudienceProfile = 'mit-faculty' | 'cto-peer' | 'industry-evaluator';
 export type DemoScenario = 'wow-30s' | 'engine-proof-120s' | 'activation-90s';
 export type PromptTier = 'A' | 'B' | 'C';
@@ -38,6 +39,7 @@ export interface EvidenceContract {
 
 export interface RouteMetaContract {
   route: string;
+  routeVisibility: RouteVisibility;
   screenType: ScreenType;
   navType: NavType;
   parentRoute: string | null;
@@ -186,11 +188,17 @@ function readyScope(route: string): ReadyScope {
   return TARGET_ROUTE_SET.has(route) ? 'target16' : 'deferred';
 }
 
-function routeMeta(meta: Omit<RouteMetaContract, 'ctaBudget' | 'demoPriority' | 'readyScope'> & {
+function routeMeta(meta: Omit<RouteMetaContract, 'ctaBudget' | 'demoPriority' | 'readyScope' | 'routeVisibility'> & {
   demoPriority?: RouteMetaContract['demoPriority'];
 }): RouteMetaContract {
+  const routeVisibility: RouteVisibility =
+    meta.screenType === 'design-system' || meta.route.startsWith('/test/')
+      ? 'internal'
+      : 'public';
+
   return {
     ...meta,
+    routeVisibility,
     ctaBudget: DEFAULT_CTA_BUDGET,
     demoPriority: meta.demoPriority ?? 'P2',
     readyScope: readyScope(meta.route),

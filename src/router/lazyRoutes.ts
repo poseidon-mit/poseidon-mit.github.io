@@ -248,10 +248,24 @@ export async function prefetchRoute(path: RoutePath): Promise<void> {
 }
 
 const comingSoonLoader = () => import('../pages/ComingSoon');
+const notFoundLoader = () => import('../pages/NotFound');
+const IS_PRODUCTION = import.meta.env.PROD;
+
+function resolveRouteLoader(path: string, loader: RouteLoader): RouteLoader {
+  const meta = getRouteMetaContract(path);
+  const isInternalInProd = IS_PRODUCTION && meta?.routeVisibility === 'internal';
+  if (isInternalInProd) {
+    return notFoundLoader;
+  }
+  if (V0_READY_ROUTES.has(path as RoutePath)) {
+    return loader;
+  }
+  return comingSoonLoader;
+}
 
 export const routes = Object.fromEntries(
   Object.entries(routeLoaders).map(([path, loader]) => {
-    const resolvedLoader = (V0_READY_ROUTES.has(path as RoutePath) ? loader : comingSoonLoader) as RouteLoader;
+    const resolvedLoader = resolveRouteLoader(path, loader);
     return [path, lazy(withRouteImportRecovery(path, resolvedLoader))];
   }),
 ) as unknown as Record<RoutePath, LazyExoticComponent<ComponentType<any>>>;

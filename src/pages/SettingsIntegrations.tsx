@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Link2, Building2, CreditCard, TrendingUp, Wallet, CheckCircle, AlertCircle, RefreshCw, Trash2, Lock, Plus, Shield } from 'lucide-react';
 import { Link } from '../router';
-import { GovernFooter } from '@/components/poseidon';
+import { GovernFooter, PreviewBadge } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
 import { Button, Surface } from '@/design-system';
@@ -153,7 +153,7 @@ export function SettingsIntegrations() {
                         <p className="text-xs text-white/40">{t.desc}</p>
                       </div>
                     </div>
-                    <span className="inline-block mt-3 text-xs font-medium px-3 py-1 rounded-lg border border-white/10 text-white/60">Connect · Preview</span>
+                    <PreviewBadge className="mt-3 inline-flex" label="Connect preview" hint="Connector setup is enabled in the production release." />
                   </Button>
                 )}
               </div>

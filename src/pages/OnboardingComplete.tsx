@@ -1,8 +1,12 @@
 import { motion } from 'framer-motion';
 import { CheckCircle2, Shield, TrendingUp, Zap, Scale, ArrowRight } from 'lucide-react';
+import { useEffect, useMemo } from 'react';
+import { useRouter } from '@/router';
 import { OnboardingShell } from '@/components/layout/OnboardingShell';
 import { fadeUp, staggerContainer } from '@/lib/motion-presets';
 import { ButtonLink, Surface } from '@/design-system';
+import { useDemoState } from '@/lib/demo-state/provider';
+import { getConnectedAccountsCount, getSelectedGoalsCount } from '@/lib/demo-state/selectors';
 
 type ReadyTone = 'protect' | 'grow' | 'execute' | 'govern';
 
@@ -21,6 +25,22 @@ const TONE_CLASSES: Record<ReadyTone, {text: string;bg: string;}> = {
 };
 
 export default function OnboardingCompletePage() {
+  const { state, markOnboardingCompleted } = useDemoState();
+  const { navigate } = useRouter();
+  const connectedCount = useMemo(() => getConnectedAccountsCount(state), [state]);
+  const selectedGoalsCount = useMemo(() => getSelectedGoalsCount(state), [state]);
+
+  useEffect(() => {
+    markOnboardingCompleted();
+  }, [markOnboardingCompleted]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      navigate('/dashboard');
+    }, 10000);
+    return () => window.clearTimeout(timer);
+  }, [navigate]);
+
   return (
     <OnboardingShell
       step={4}
@@ -58,11 +78,11 @@ export default function OnboardingCompletePage() {
           <div className="mt-3 space-y-1.5 text-xs">
             <div className="flex items-center justify-between text-slate-300">
               <span>Accounts connected</span>
-              <span className="font-mono font-semibold text-slate-100">3</span>
+              <span className="font-mono font-semibold text-slate-100">{connectedCount}</span>
             </div>
             <div className="flex items-center justify-between text-slate-300">
               <span>Goals selected</span>
-              <span className="font-mono font-semibold text-slate-100">2</span>
+              <span className="font-mono font-semibold text-slate-100">{selectedGoalsCount}</span>
             </div>
             <div className="flex items-center justify-between text-slate-300">
               <span>Consent boundaries</span>
@@ -74,6 +94,7 @@ export default function OnboardingCompletePage() {
         <motion.div variants={fadeUp} className="mt-7">
           <ButtonLink
             to="/dashboard"
+            onClick={() => markOnboardingCompleted()}
             variant="primary"
             engine="dashboard"
             className="rounded-xl">

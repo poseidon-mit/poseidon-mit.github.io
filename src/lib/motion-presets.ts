@@ -42,13 +42,14 @@ export const fadeIn: Variants = {
 }
 
 export const fadeUp: Variants = {
-  hidden: { y: 20, scale: 0.98 },
-  visible: { y: 0, scale: 1, transition: spring },
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: spring },
 }
 
 export const creatorStudioFadeUp: Variants = {
-  hidden: { y: 20, scale: 0.98 },
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
   visible: {
+    opacity: 1,
     y: 0,
     scale: 1,
     transition: spring,
@@ -68,28 +69,44 @@ export const slideRight: Variants = {
 /* ── Stagger Container ── */
 export const staggerContainer: Variants = {
   hidden: {},
-  visible: {},
+  visible: {
+    transition: {
+      delayChildren: 0.05,
+      staggerChildren: 0.05,
+    },
+  },
 }
 
 export const creatorStudioStaggerContainer: Variants = {
   hidden: {},
-  visible: {},
+  visible: {
+    transition: {
+      delayChildren: 0.05,
+      staggerChildren: 0.05,
+    },
+  },
 }
 
 /** Compatibility alias for old delayed-stagger API (now synced for simultaneous entry). */
 export const staggerContainerDelayed: Variants = {
   hidden: {},
-  visible: {},
+  visible: {
+    transition: {
+      delayChildren: 0.1,
+      staggerChildren: 0.08,
+    },
+  },
 }
 
 export const staggerItem: Variants = {
-  hidden: { y: 20, scale: 0.98 },
-  visible: { y: 0, scale: 1, transition: spring },
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: spring },
 }
 
 export const creatorStudioStaggerItem: Variants = {
-  hidden: { y: 20, scale: 0.98 },
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
   visible: {
+    opacity: 1,
     y: 0,
     scale: 1,
     transition: spring,
@@ -104,8 +121,8 @@ export const creatorStudioRouteSyncContainer: Variants = {
 
 /** Route-level card/item contract: spring movement without opacity fade (anti-flicker). */
 export const creatorStudioRouteSyncItem: Variants = {
-  hidden: { y: 20, scale: 0.98 },
-  visible: { y: 0, scale: 1, transition: spring },
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: spring },
 }
 
 /* ── Helper: stagger delay for index ── */

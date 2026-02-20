@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from '@/router';
 import { ArrowRight, ArrowLeft, Info } from 'lucide-react';
@@ -6,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { OnboardingShell } from '@/components/layout/OnboardingShell';
 import { fadeUp, staggerContainer } from '@/lib/motion-presets';
 import { ButtonLink, Toggle, Surface } from '@/design-system';
+import { useDemoState } from '@/lib/demo-state/provider';
 
 interface ConsentItem {
   id: string;
@@ -42,17 +42,18 @@ const CONSENT_ITEMS: ConsentItem[] = [
 
 
 export default function OnboardingConsentPage() {
-  const [consents, setConsents] = useState<Record<string, boolean>>({
-    analyze: true,
-    recommend: true,
-    approve: true,
-    notifications: true
-  });
+  const { state, updateOnboarding } = useDemoState();
+  const consents = state.onboarding.consentSelections;
 
   const toggle = (id: string) => {
     const item = CONSENT_ITEMS.find((entry) => entry.id === id);
     if (item?.required) return;
-    setConsents((prev) => ({ ...prev, [id]: !prev[id] }));
+    updateOnboarding({
+      consentSelections: {
+        ...consents,
+        [id]: !consents[id],
+      },
+    });
   };
 
   return (

@@ -134,6 +134,7 @@ export const COMPONENT_REGISTRY = Object.freeze({
   MethodologyCard: { status: 'canonical' },
   PrimaryFeed: { status: 'canonical' },
   PriorityBadge: { status: 'canonical' },
+  PreviewBadge: { status: 'canonical' },
   ReasoningChain: { status: 'canonical' },
   SeverityBadge: { status: 'canonical' },
   StatusBadge: { status: 'canonical' },

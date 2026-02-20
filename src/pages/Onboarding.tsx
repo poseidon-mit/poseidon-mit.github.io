@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from '@/router';
 import { Building2, CreditCard, PiggyBank, Check, Shield, ArrowRight, ArrowLeft } from 'lucide-react';
@@ -6,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { OnboardingShell } from '@/components/layout/OnboardingShell';
 import { fadeUp, staggerContainer } from '@/lib/motion-presets';
 import { Button, ButtonLink, Surface } from '@/design-system';
+import { useDemoState } from '@/lib/demo-state/provider';
 
 const CONNECTORS = [
 {
@@ -29,15 +29,17 @@ const CONNECTORS = [
 const;
 
 export default function OnboardingConnectPage() {
-  const [connected, setConnected] = useState<Set<string>>(new Set());
+  const { state, updateOnboarding } = useDemoState();
+  const connected = new Set(state.onboarding.connectedAccountIds);
 
   const toggle = (id: string) => {
-    setConnected((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);else
+    const next = new Set(connected);
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
       next.add(id);
-      return next;
-    });
+    }
+    updateOnboarding({ connectedAccountIds: Array.from(next) });
   };
 
   return (

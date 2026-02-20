@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from '@/router'
 import { Shield, TrendingUp, PiggyBank, Target, ArrowRight, ArrowLeft, Check } from 'lucide-react'
@@ -6,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { OnboardingShell } from '@/components/layout/OnboardingShell'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
 import { Button, ButtonLink } from '@/design-system'
+import { useDemoState } from '@/lib/demo-state/provider'
 
 type GoalTone = 'protect' | 'grow' | 'execute' | 'dashboard'
 
@@ -52,15 +52,14 @@ const TONE_CLASSES: Record<GoalTone, { icon: string; bg: string; border: string;
 }
 
 export default function OnboardingGoalsPage() {
-  const [selected, setSelected] = useState<Set<string>>(new Set(['protect']))
+  const { state, updateOnboarding } = useDemoState()
+  const selected = new Set(state.onboarding.selectedGoals)
 
   const toggle = (id: string) => {
-    setSelected((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
+    const next = new Set(selected)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+    updateOnboarding({ selectedGoals: Array.from(next) })
   }
 
   return (

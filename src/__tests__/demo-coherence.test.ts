@@ -15,7 +15,7 @@ describe('demo coherence invariants', () => {
     expect(DEMO_THREAD.pendingActions).toBe(CROSS_SCREEN_DATA_THREAD.pending_actions.value)
 
     const navShell = readSource('src/components/layout/AppNavShell.tsx')
-    expect(navShell).toContain('value: DEMO_THREAD.pendingActions')
+    expect(navShell).toMatch(/(DEMO_THREAD\.pendingActions|getPendingExecuteCount)/)
 
     const commandPalette = readSource('src/components/layout/CommandPalette.tsx')
     expect(commandPalette).toContain('DEMO_THREAD.pendingActions')

@@ -254,6 +254,9 @@
   "PriorityBadge": {
     "status": "canonical"
   },
+  "PreviewBadge": {
+    "status": "canonical"
+  },
   "ProofLine": {
     "status": "canonical"
   },

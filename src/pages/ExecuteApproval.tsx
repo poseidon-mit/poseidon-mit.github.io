@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Zap, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { Link } from '../router';
@@ -9,6 +9,8 @@ import { usePageTitle } from '../hooks/use-page-title';
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
 import { DEMO_THREAD } from '@/lib/demo-thread';
 import { Button, ButtonLink, Surface } from '@/design-system';
+import { useDemoState } from '@/lib/demo-state/provider';
+import { useToast } from '@/hooks/useToast';
 
 /* ═══════════════════════════════════════════
    DATA
@@ -21,29 +23,109 @@ interface QueueAction {
   description: string;
   urgency: 'high' | 'medium' | 'low';
   confidence: number;
-  impact: {approved: string;declined: string;};
+  impact: {approved: string;deferred: string;};
   reversible: boolean;
   expiresIn: string | null;
   factors: Array<{label: string;value: number;}>;
 }
 
 const queueActions: QueueAction[] = [
-{ id: 'ACT-001', engine: 'Execute', title: 'Consolidate streaming subscriptions', description: 'Cancel Netflix + Hulu, subscribe to YouTube Premium family plan.', urgency: 'high', confidence: 0.92, impact: { approved: 'Save $140/mo ($1,680/yr)', declined: 'Continue paying $167/mo for overlapping services' }, reversible: true, expiresIn: '18h', factors: [{ label: 'Cost reduction', value: 0.92 }, { label: 'Content overlap', value: 0.88 }, { label: 'Service parity', value: 0.82 }] },
-{
-  id: 'ACT-002',
-  engine: 'Protect',
-  title: `Block suspicious card ending ${DEMO_THREAD.criticalAlert.cardLast4}`,
-  description: `Temporary freeze on card used in unrecognized $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} transaction.`,
-  urgency: 'high',
-  confidence: DEMO_THREAD.criticalAlert.confidence,
-  impact: { approved: 'Card frozen, transaction disputed automatically', declined: 'Card remains active, potential additional fraud exposure' },
-  reversible: true,
-  expiresIn: '6h',
-  factors: [{ label: 'Merchant risk', value: 0.87 }, { label: 'Amount anomaly', value: 0.71 }, { label: 'Geo mismatch', value: 0.65 }]
-},
-{ id: 'ACT-003', engine: 'Grow', title: 'Transfer surplus to high-yield savings', description: 'Move $2,400 surplus from checking to savings account earning 4.8% APY.', urgency: 'medium', confidence: 0.88, impact: { approved: 'Earn additional $9.60/mo in interest', declined: 'Surplus remains idle in checking (0.01% APY)' }, reversible: true, expiresIn: null, factors: [{ label: 'Cash surplus', value: 0.90 }, { label: 'Rate differential', value: 0.78 }, { label: 'Liquidity safe', value: 0.85 }] },
-{ id: 'ACT-004', engine: 'Execute', title: 'Negotiate internet bill renewal', description: 'Send auto-negotiation request to ISP before rate increase takes effect.', urgency: 'medium', confidence: 0.85, impact: { approved: 'Lock in current $65/mo rate for 12 months', declined: 'Rate increases to $89/mo next billing cycle' }, reversible: false, expiresIn: '3d', factors: [{ label: 'Rate lock opportunity', value: 0.85 }, { label: 'Timing window', value: 0.72 }, { label: 'Success likelihood', value: 0.68 }] },
-{ id: 'ACT-005', engine: 'Grow', title: 'Increase emergency fund auto-save', description: 'Raise weekly auto-save from $50 to $75 based on increased income stability.', urgency: 'low', confidence: 0.81, impact: { approved: 'Reach emergency fund goal 3 weeks earlier', declined: 'Continue at current pace, May 2026 completion' }, reversible: true, expiresIn: null, factors: [{ label: 'Income stability', value: 0.94 }, { label: 'Budget headroom', value: 0.76 }, { label: 'Goal acceleration', value: 0.65 }] }];
+  {
+    id: 'EXE-001',
+    engine: 'Execute',
+    title: 'Portfolio rebalance',
+    description: 'Optimize allocation based on 90-day pattern.',
+    urgency: 'high',
+    confidence: 0.97,
+    impact: {
+      approved: 'Allocation adjusted and tracked in the govern audit trace.',
+      deferred: 'Portfolio keeps current drift and review is deferred to next cycle.',
+    },
+    reversible: true,
+    expiresIn: '14h',
+    factors: [
+      { label: 'Concentration risk', value: 0.91 },
+      { label: 'Cash allocation', value: 0.87 },
+      { label: 'Volatility outlook', value: 0.78 },
+    ],
+  },
+  {
+    id: 'EXE-002',
+    engine: 'Protect',
+    title: 'Block wire transfer',
+    description: `Suspicious transaction to ${DEMO_THREAD.criticalAlert.merchant}.`,
+    urgency: 'high',
+    confidence: DEMO_THREAD.criticalAlert.confidence,
+    impact: {
+      approved: 'Wire transfer is blocked and dispute workflow opens automatically.',
+      deferred: 'Transaction remains active and fraud exposure window extends.',
+    },
+    reversible: true,
+    expiresIn: '6h',
+    factors: [
+      { label: 'Merchant risk', value: 0.87 },
+      { label: 'Amount anomaly', value: 0.71 },
+      { label: 'Geo mismatch', value: 0.65 },
+    ],
+  },
+  {
+    id: 'EXE-003',
+    engine: 'Grow',
+    title: 'Subscription consolidation',
+    description: '3 overlapping subscriptions detected.',
+    urgency: 'medium',
+    confidence: 0.89,
+    impact: {
+      approved: 'Estimated savings of $140/mo are queued for execution.',
+      deferred: 'Current subscription stack remains unchanged.',
+    },
+    reversible: true,
+    expiresIn: null,
+    factors: [
+      { label: 'Cost reduction', value: 0.92 },
+      { label: 'Overlap confidence', value: 0.88 },
+      { label: 'Usage parity', value: 0.82 },
+    ],
+  },
+  {
+    id: 'EXE-004',
+    engine: 'Execute',
+    title: 'Archive invoices',
+    description: 'Batch archive of 47 paid invoices.',
+    urgency: 'medium',
+    confidence: 0.78,
+    impact: {
+      approved: 'Legacy invoices are archived and indexed for governance audit.',
+      deferred: 'Invoice archive remains unchanged and queue re-checks in 24h.',
+    },
+    reversible: false,
+    expiresIn: '3d',
+    factors: [
+      { label: 'Document age', value: 0.84 },
+      { label: 'Archive confidence', value: 0.77 },
+      { label: 'Policy fit', value: 0.73 },
+    ],
+  },
+  {
+    id: 'EXE-005',
+    engine: 'Execute',
+    title: 'Pay electricity bill',
+    description: 'Recurring auto-payment scheduled today.',
+    urgency: 'low',
+    confidence: 0.99,
+    impact: {
+      approved: 'Payment executes and receipt is logged in the audit ledger.',
+      deferred: 'Payment is deferred and reminder is raised to the queue.',
+    },
+    reversible: true,
+    expiresIn: '18h',
+    factors: [
+      { label: 'Payment confidence', value: 0.99 },
+      { label: 'Schedule consistency', value: 0.93 },
+      { label: 'Balance sufficiency', value: 0.95 },
+    ],
+  },
+];
 
 
 const urgencyBorderColor = { high: 'var(--state-critical)', medium: 'var(--engine-execute)', low: 'var(--engine-govern)' };
@@ -57,20 +139,43 @@ const engineBadgeCls = { Protect: 'bg-emerald-500/20 text-emerald-400', Grow: 'b
 
 export function ExecuteApproval() {
   usePageTitle('Action Approval');
+  const { state, setExecuteDecision } = useDemoState();
+  const { showToast } = useToast();
   const [expandedAction, setExpandedAction] = useState<string | null>(queueActions[0].id);
-  const [confirmAction, setConfirmAction] = useState<{id: string;type: 'approve' | 'decline';} | null>(null);
-  const [processedIds, setProcessedIds] = useState<Set<string>>(new Set());
+  const [confirmAction, setConfirmAction] = useState<{id: string;type: 'approve' | 'defer';} | null>(null);
   const [consentReviewed, setConsentReviewed] = useState(false);
 
   const handleConfirm = () => {
     if (confirmAction) {
-      setProcessedIds((prev) => new Set([...prev, confirmAction.id]));
+      const action = queueActions.find((a) => a.id === confirmAction.id);
+      if (action) {
+        const decision = confirmAction.type === 'approve' ? 'approved' : 'deferred';
+        setExecuteDecision({
+          actionId: action.id,
+          actionTitle: action.title,
+          decision,
+        });
+        showToast({
+          variant: decision === 'approved' ? 'success' : 'info',
+          message: decision === 'approved'
+            ? `${action.id} approved and logged.`
+            : `${action.id} deferred and queued for review.`,
+        });
+      }
       setExpandedAction(null);
       setConfirmAction(null);
     }
   };
 
-  const visibleActions = queueActions.filter((a) => !processedIds.has(a.id));
+  const actionStatus = (id: string) => state.execute.actionStates[id]?.status ?? 'pending';
+  const visibleActions = queueActions.filter((a) => actionStatus(a.id) === 'pending');
+  const approvedCount = queueActions.filter((a) => actionStatus(a.id) === 'approved').length;
+  const deferredCount = queueActions.filter((a) => actionStatus(a.id) === 'deferred').length;
+  const avgConfidence = useMemo(
+    () => (visibleActions.length > 0 ? visibleActions.reduce((sum, action) => sum + action.confidence, 0) / visibleActions.length : 0),
+    [visibleActions],
+  );
+  const queueHealthScore = Math.round(avgConfidence * 100);
 
   return (
     <div className="relative min-h-screen w-full">
@@ -129,10 +234,10 @@ export function ExecuteApproval() {
         <motion.div variants={fadeUp}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-            { label: 'Pending', value: '5', color: 'var(--engine-execute)' },
-            { label: 'Approved (24h)', value: '3', color: 'var(--engine-protect)' },
-            { label: 'Deferred', value: '1', color: 'var(--engine-govern)' },
-            { label: 'Avg confidence', value: '0.88', color: 'var(--engine-dashboard)' }].
+            { label: 'Pending', value: String(visibleActions.length), color: 'var(--engine-execute)' },
+            { label: 'Approved (24h)', value: String(approvedCount), color: 'var(--engine-protect)' },
+            { label: 'Deferred', value: String(deferredCount), color: 'var(--engine-govern)' },
+            { label: 'Avg confidence', value: avgConfidence.toFixed(2), color: 'var(--engine-dashboard)' }].
             map((kpi) => <Surface
               key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
@@ -172,6 +277,11 @@ export function ExecuteApproval() {
             {/* Primary approve action */}
             <Button
               disabled={!consentReviewed}
+              onClick={() => {
+                if (!consentReviewed) return;
+                const firstPending = visibleActions[0];
+                if (firstPending) setConfirmAction({ id: firstPending.id, type: 'approve' });
+              }}
               variant="glass"
               engine="execute"
               fullWidth
@@ -268,8 +378,8 @@ export function ExecuteApproval() {
                           <p className="text-xs text-white/70">{action.impact.approved}</p>
                         </div>
                         <div className="rounded-xl bg-amber-500/5 border border-amber-500/20 p-3">
-                          <p className="text-[10px] text-amber-400 uppercase tracking-wider mb-1">If declined</p>
-                          <p className="text-xs text-white/70">{action.impact.declined}</p>
+                          <p className="text-[10px] text-amber-400 uppercase tracking-wider mb-1">If deferred</p>
+                          <p className="text-xs text-white/70">{action.impact.deferred}</p>
                         </div>
                       </div>
 
@@ -291,9 +401,8 @@ export function ExecuteApproval() {
                       engine="execute"
                       size="sm"
                       className="rounded-lg text-xs"
-                      onClick={() => setConfirmAction({ id: action.id, type: 'decline' })}>
-                      Decline</Button>
-                        <Button variant="secondary" engine="execute" size="sm" className="rounded-lg text-xs">Defer</Button>
+                      onClick={() => setConfirmAction({ id: action.id, type: 'defer' })}>
+                      Defer</Button>
                         <ButtonLink to="/dashboard" variant="ghost" engine="execute" size="sm" className="rounded-lg text-xs text-white/30 hover:text-white/50">More info</ButtonLink>
                       </div>
                     </div>
@@ -306,28 +415,28 @@ export function ExecuteApproval() {
             <div className="flex flex-col items-center gap-3 py-16">
                 <CheckCircle2 className="w-12 h-12 opacity-30" style={{ color: 'var(--engine-protect)' }} />
                 <p className="text-sm text-white/50">All actions reviewed. Queue is clear.</p>
-                <p className="text-xs text-white/30">3 actions approved today.</p>
+                <p className="text-xs text-white/30">{approvedCount} actions approved today.</p>
               </div>
             }
-            <p className="text-xs text-white/30">Consent-first: no action executes without explicit approval · {visibleActions.length} pending · 3 approved today</p>
+            <p className="text-xs text-white/30">Consent-first: no action executes without explicit approval · {visibleActions.length} pending · {approvedCount} approved</p>
           </motion.div>
 
           {/* Side rail */}
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Approval queue sidebar">
             {/* Queue health ring */}
             <Surface className="rounded-2xl flex flex-col items-center" variant="glass" padding="md">
-              <div className="relative" aria-label="Queue health: 85">
+              <div className="relative" aria-label={`Queue health: ${queueHealthScore}`}>
                 <svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true">
                   <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
                   <circle
                     cx="40" cy="40" r="32" fill="none" stroke="var(--engine-execute)" strokeWidth="6"
                     strokeLinecap="round"
-                    strokeDasharray={`${0.85 * 2 * Math.PI * 32} ${2 * Math.PI * 32}`}
+                    strokeDasharray={`${(queueHealthScore / 100) * 2 * Math.PI * 32} ${2 * Math.PI * 32}`}
                     transform="rotate(-90 40 40)" />
                   
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-lg font-bold text-white">85</span>
+                  <span className="text-lg font-bold text-white">{queueHealthScore}</span>
                 </div>
               </div>
               <p className="text-xs text-white/50 mt-2">Queue health</p>
@@ -342,9 +451,9 @@ export function ExecuteApproval() {
               </div>
               <div className="space-y-3">
                 {[
-                { label: '3 approved today', date: '08:00', done: true },
-                { label: '5 pending review', date: 'Now', done: false, current: true },
-                { label: '1 deferred', date: 'Later', done: false }].
+                { label: `${approvedCount} approved today`, date: 'Now', done: approvedCount > 0 },
+                { label: `${visibleActions.length} pending review`, date: 'Now', done: false, current: true },
+                { label: `${deferredCount} deferred`, date: 'Later', done: false }].
                 map((m) =>
                 <div key={m.label} className="flex items-start gap-2">
                     <div className={`w-2 h-2 rounded-full mt-1 shrink-0 ${m.done ? 'bg-emerald-400' : m.current ? 'bg-amber-400 animate-pulse' : 'bg-white/20'}`} />
@@ -362,10 +471,10 @@ export function ExecuteApproval() {
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Queue Summary</h3>
               <div className="space-y-2.5">
                 {[
-                { label: 'Pending', value: '5', color: 'text-amber-400' },
-                { label: 'Approved today', value: '3', color: 'text-emerald-400' },
-                { label: 'Deferred', value: '1', color: 'text-blue-400' },
-                { label: 'Avg confidence', value: '0.88', color: 'text-white/70' }].
+                { label: 'Pending', value: String(visibleActions.length), color: 'text-amber-400' },
+                { label: 'Approved today', value: String(approvedCount), color: 'text-emerald-400' },
+                { label: 'Deferred', value: String(deferredCount), color: 'text-blue-400' },
+                { label: 'Avg confidence', value: avgConfidence.toFixed(2), color: 'text-white/70' }].
                 map((row) =>
                 <div key={row.label} className="flex justify-between">
                     <span className="text-xs text-white/50">{row.label}</span>
@@ -378,8 +487,8 @@ export function ExecuteApproval() {
             {/* Completed */}
             <Surface className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Completed</h3>
-              <p className="text-xs text-white/30">3 actions completed today. Expand to review.</p>
-              <Button variant="ghost" engine="execute" size="sm" className="text-xs mt-2 !px-0 hover:underline">Show completed</Button>
+              <p className="text-xs text-white/30">{approvedCount} actions completed today. Review history for full trace.</p>
+              <ButtonLink to="/execute/history" variant="ghost" engine="execute" size="sm" className="text-xs mt-2 !px-0 hover:underline">Open history</ButtonLink>
             </Surface>
           </aside>
         </div>
@@ -387,7 +496,7 @@ export function ExecuteApproval() {
         <GovernFooter auditId={GOVERNANCE_META['/execute/approval'].auditId} pageContext={GOVERNANCE_META['/execute/approval'].pageContext} />
       </motion.div>
 
-      {/* Confirm / Decline Dialog */}
+      {/* Confirm Dialog */}
       {confirmAction && (() => {
         const action = queueActions.find((a) => a.id === confirmAction.id)!;
         const isApprove = confirmAction.type === 'approve';
@@ -395,17 +504,20 @@ export function ExecuteApproval() {
           <Dialog open={true} onOpenChange={(open) => !open && setConfirmAction(null)}>
             <DialogContent
               className="max-w-md"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="execute-approval-confirm-title"
               style={{ background: '#0f1e35', border: '1px solid rgba(255,255,255,0.12)' }}>
               
               <div className="flex flex-col gap-4 p-2">
                 <div>
                   <p
                     className="text-xs font-semibold uppercase tracking-widest mb-1"
-                    style={{ color: isApprove ? 'var(--engine-execute)' : 'var(--state-critical)' }}>
+                    style={{ color: isApprove ? 'var(--engine-execute)' : 'var(--state-warning)' }}>
                     
-                    {isApprove ? 'Confirm Approval' : 'Confirm Decline'}
+                    {isApprove ? 'Confirm Approval' : 'Confirm Deferral'}
                   </p>
-                  <h3 className="text-base font-semibold text-white">{action.title}</h3>
+                  <h3 id="execute-approval-confirm-title" className="text-base font-semibold text-white">{action.title}</h3>
                   <p className="text-xs text-white/50 mt-1">{action.description}</p>
                 </div>
 
@@ -413,27 +525,27 @@ export function ExecuteApproval() {
                 <div
                   className="rounded-xl p-3"
                   style={{
-                    background: isApprove ? 'rgba(34,197,94,0.05)' : 'rgba(var(--state-critical-rgb),0.05)',
-                    border: `1px solid ${isApprove ? 'rgba(34,197,94,0.2)' : 'rgba(var(--state-critical-rgb),0.2)'}`
+                    background: isApprove ? 'rgba(34,197,94,0.05)' : 'rgba(251,191,36,0.08)',
+                    border: `1px solid ${isApprove ? 'rgba(34,197,94,0.2)' : 'rgba(251,191,36,0.22)'}`
                   }}>
                   
-                  <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: isApprove ? 'var(--engine-protect)' : 'var(--state-critical)' }}>
-                    {isApprove ? 'Expected outcome' : 'If declined'}
+                  <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: isApprove ? 'var(--engine-protect)' : 'var(--engine-execute)' }}>
+                    {isApprove ? 'Expected outcome' : 'If deferred'}
                   </p>
                   <p className="text-xs text-white/70">
-                    {isApprove ? action.impact.approved : action.impact.declined}
+                    {isApprove ? action.impact.approved : action.impact.deferred}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2 pt-1">
                   <Button
-                    variant={isApprove ? 'glass' : 'danger'}
-                    engine={isApprove ? 'execute' : undefined}
+                    variant={isApprove ? 'glass' : 'secondary'}
+                    engine="execute"
                     fullWidth
                     className="rounded-xl text-sm"
                     onClick={handleConfirm}>
                     
-                    {isApprove ? 'Approve' : 'Decline'}
+                    {isApprove ? 'Approve' : 'Defer'}
                   </Button>
                   <Button
                     variant="secondary"

@@ -25,6 +25,7 @@ import {
   creatorStudioStaggerItem,
 } from '@/lib/motion-presets'
 import { Surface, ButtonLink } from '@/design-system'
+import { ENGINE_COLOR_MAP } from '@/lib/engine-color-map'
 
 
 /* ── Cross-thread values (frozen from CROSS_SCREEN_DATA_THREAD) ── */
@@ -55,7 +56,7 @@ const StatCard = memo(function StatCard({
         <span className="stat-card__label">{label}</span>
         <div className="stat-card__spark" aria-hidden="true">
           <ResponsiveContainer width={60} height={24}>
-            <AreaChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+            <AreaChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 0 }} accessibilityLayer={false}>
               <defs>
                 <linearGradient id={`spark-${label.replace(/\s/g, "")}`} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor={sparkColor} stopOpacity={0.4} />
@@ -172,13 +173,6 @@ const decisions = [
   { label: "Policy update", engine: "Govern", status: "approved", confidence: 0.97 },
 ]
 
-const engineColorMap: Record<string, string> = {
-  Execute: "var(--engine-execute)",
-  Protect: "var(--engine-protect)",
-  Grow: "var(--engine-grow)",
-  Govern: "var(--engine-govern)",
-}
-
 function DecisionRail() {
   return (
     <Surface className="rounded-2xl p-4 md:p-6 flex flex-col gap-4">
@@ -196,7 +190,7 @@ function DecisionRail() {
             key={i}
             variants={itemVariants}
             className="flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-white/[0.02]"
-            style={{ borderLeft: `2px solid ${engineColorMap[d.engine]}` }}
+            style={{ borderLeft: `2px solid ${ENGINE_COLOR_MAP[d.engine as keyof typeof ENGINE_COLOR_MAP]}` }}
           >
             <div className="flex-1 min-w-0">
               <span className="text-xs font-medium block" style={{ color: "#F1F5F9" }}>{d.label}</span>

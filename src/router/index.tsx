@@ -28,14 +28,70 @@ const normalizePath = (value: string) => {
   return value;
 };
 
+interface ResolvedInitialLocation {
+  path: string;
+  search: string;
+}
+
+function decodeGithubPagesSegment(value: string): string {
+  try {
+    return decodeURIComponent(value.replace(/~and~/g, '&'));
+  } catch {
+    return value.replace(/~and~/g, '&');
+  }
+}
+
+function parseGithubPagesQueryRouting(search: string): ResolvedInitialLocation | null {
+  if (!search.startsWith('?/')) return null;
+  const encodedPayload = search.slice(2);
+  if (!encodedPayload) {
+    return { path: '/', search: '' };
+  }
+
+  const [rawPath = '', ...rawQueryParts] = encodedPayload.split('&');
+  const decodedPath = decodeGithubPagesSegment(rawPath).replace(/^\/+/, '');
+  const resolvedPath = normalizePath(`/${decodedPath}`);
+  const resolvedSearch = rawQueryParts.length > 0
+    ? `?${rawQueryParts.map((part) => decodeGithubPagesSegment(part)).join('&')}`
+    : '';
+
+  return {
+    path: resolvedPath,
+    search: resolvedSearch,
+  };
+}
+
+export function resolveInitialLocation(
+  locationLike: Pick<Location, 'pathname' | 'search'>,
+): ResolvedInitialLocation {
+  const pathname = normalizePath(locationLike.pathname);
+  if (pathname !== '/') {
+    return { path: pathname, search: locationLike.search };
+  }
+
+  const parsedFromSearch = parseGithubPagesQueryRouting(locationLike.search);
+  if (parsedFromSearch) return parsedFromSearch;
+
+  return { path: pathname, search: locationLike.search };
+}
+
+export function resolveInitialPath(locationLike: Pick<Location, 'pathname' | 'search'>): string {
+  return resolveInitialLocation(locationLike).path;
+}
+
+export function resolveInitialSearch(locationLike: Pick<Location, 'pathname' | 'search'>): string {
+  return resolveInitialLocation(locationLike).search;
+}
+
 export const RouterProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [path, setPath] = useState(() => normalizePath(window.location.pathname));
-  const [search, setSearch] = useState(() => window.location.search);
+  const [path, setPath] = useState(() => resolveInitialPath(window.location));
+  const [search, setSearch] = useState(() => resolveInitialSearch(window.location));
 
   useEffect(() => {
     const handlePopState = () => {
-      setPath(normalizePath(window.location.pathname));
-      setSearch(window.location.search);
+      const resolved = resolveInitialLocation(window.location);
+      setPath(resolved.path);
+      setSearch(resolved.search);
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);

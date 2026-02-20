@@ -7,6 +7,7 @@ import {
   Scale,
   Settings,
   HelpCircle,
+  MoreHorizontal,
   ChevronRight,
   Bell,
   Search,
@@ -22,7 +23,8 @@ import { CommandPalette } from './CommandPalette';
 import { AuroraPulse } from '@/components/poseidon';
 import { Button } from '@/design-system';
 import { type EngineName } from '../../lib/engine-tokens';
-import { DEMO_THREAD } from '@/lib/demo-thread';
+import { useDemoState } from '@/lib/demo-state/provider';
+import { getPendingExecuteCount } from '@/lib/demo-state/selectors';
 import { cn } from '@/lib/utils';
 
 type AccentTone = EngineName | 'system';
@@ -94,11 +96,13 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Help', path: '/help', icon: HelpCircle, group: 'system', tone: 'system' },
 ];
 
-/* ─── Live status badges (mock) ─────────────────────────────── */
-const NAV_BADGES: Record<string, { type: 'pulse' | 'count'; value?: number; tone: AccentTone }> = {
-  '/protect': { type: 'pulse', tone: 'protect' },
-  '/execute': { type: 'count', value: DEMO_THREAD.pendingActions, tone: 'execute' },
-};
+/* ─── Live status badges ───────────────────────────────────── */
+function buildNavBadges(pendingExecuteCount: number): Record<string, { type: 'pulse' | 'count'; value?: number; tone: AccentTone }> {
+  return {
+    '/protect': { type: 'pulse', tone: 'protect' },
+    '/execute': { type: 'count', value: pendingExecuteCount, tone: 'execute' },
+  };
+}
 
 const ENGINE_ITEMS = NAV_ITEMS.filter((i) => i.group === 'engine');
 const SYSTEM_ITEMS = NAV_ITEMS.filter((i) => i.group === 'system');
@@ -213,14 +217,30 @@ export function AppNavShell({
   const activeEngine = useMemo(() => getActiveEngine(path), [path]);
   const breadcrumbs = useMemo(() => BREADCRUMB_MAP[path] ?? ['Unknown'], [path]);
   const subNav = useMemo(() => getSubNav(path), [path]);
+  const { state } = useDemoState();
+  const [mobileMoreOpen, setMobileMoreOpen] = React.useState(false);
   const { isOpen: isPaletteOpen, open: openPalette, close: closePalette } = useCommandPalette();
   const { isPresentation } = usePresentationMode();
   const { isOffline } = usePWA();
   const activeTone = activeSection?.tone;
   const activeToneClasses = activeTone ? TONE_CLASSES[activeTone] : undefined;
+  const pendingExecuteCount = useMemo(() => getPendingExecuteCount(state), [state]);
+  const navBadges = useMemo(() => buildNavBadges(pendingExecuteCount), [pendingExecuteCount]);
+  const mobilePrimaryItems = useMemo(
+    () => ENGINE_ITEMS.filter((item) => item.path !== '/govern'),
+    [],
+  );
+  const mobileMoreItems = useMemo(
+    () => [
+      NAV_ITEMS.find((item) => item.path === '/govern'),
+      ...SYSTEM_ITEMS,
+    ].filter((item): item is NavItem => Boolean(item)),
+    [],
+  );
 
   useEffect(() => {
     closePalette();
+    setMobileMoreOpen(false);
   }, [path, closePalette]);
 
   const handleBottomNavTap = useCallback(
@@ -271,21 +291,21 @@ export function AppNavShell({
               >
                 <Icon className={cn('h-[18px] w-[18px]', isActive && tone.activeIcon)} aria-hidden="true" />
                 <span className="flex-1 text-sm font-medium">{item.label}</span>
-                {NAV_BADGES[item.path]?.type === 'pulse' && (
+                {navBadges[item.path]?.type === 'pulse' && (
                   <span
-                    className={cn('nav-badge-pulse h-2 w-2 flex-shrink-0 rounded-full', TONE_CLASSES[NAV_BADGES[item.path].tone].indicator)}
-                    aria-label="Active alerts"
+                    className={cn('nav-badge-pulse h-2 w-2 flex-shrink-0 rounded-full', TONE_CLASSES[navBadges[item.path].tone].indicator)}
+                    aria-hidden="true"
                   />
                 )}
-                {NAV_BADGES[item.path]?.type === 'count' && (
+                {navBadges[item.path]?.type === 'count' && (
                   <span
                     className={cn(
                       'flex h-[18px] min-w-[18px] flex-shrink-0 items-center justify-center rounded-full px-1 text-[10px] font-bold text-slate-950',
-                      TONE_CLASSES[NAV_BADGES[item.path].tone].indicator,
+                      TONE_CLASSES[navBadges[item.path].tone].indicator,
                     )}
-                    aria-label={`${NAV_BADGES[item.path].value} pending`}
+                    aria-hidden="true"
                   >
-                    {NAV_BADGES[item.path].value}
+                    {navBadges[item.path].value}
                   </span>
                 )}
               </Link>
@@ -323,9 +343,9 @@ export function AppNavShell({
             className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-semibold text-slate-400"
             aria-hidden="true"
           >
-            SF
+            {state.user.initials}
           </div>
-          <span className="text-sm text-slate-400">Shinji Fujiwara</span>
+          <span className="text-sm text-slate-400">{state.user.name}</span>
         </div>
       </aside>
 
@@ -415,7 +435,7 @@ export function AppNavShell({
             </Button>
             <Button
               className="relative !h-9 !min-h-9 !w-9 rounded-lg !px-0 text-slate-400 transition-colors duration-150 hover:bg-white/5"
-              aria-label="Notifications"
+              aria-label="Notifications (new)"
               variant="ghost"
               size="sm"
               springPress={false}
@@ -423,7 +443,7 @@ export function AppNavShell({
               <Bell className="h-5 w-5" aria-hidden="true" />
               <span
                 className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500"
-                aria-label="New notifications"
+                aria-hidden="true"
               />
             </Button>
             <Button
@@ -433,7 +453,7 @@ export function AppNavShell({
               size="sm"
               springPress={false}
             >
-              SF
+              {state.user.initials}
             </Button>
           </div>
         </header>
@@ -465,11 +485,11 @@ export function AppNavShell({
           </div>
 
           {/* Right: bell */}
-          <Button className="relative !h-9 !min-h-9 !w-9 rounded-lg !px-0 text-slate-400" aria-label="Notifications" variant="ghost" size="sm" springPress={false}>
+          <Button className="relative !h-9 !min-h-9 !w-9 rounded-lg !px-0 text-slate-400" aria-label="Notifications (new)" variant="ghost" size="sm" springPress={false}>
             <Bell className="h-5 w-5" aria-hidden="true" />
             <span
               className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500"
-              aria-label="New notifications"
+              aria-hidden="true"
             />
           </Button>
         </header>
@@ -510,11 +530,41 @@ export function AppNavShell({
       </div>
 
       {/* ── Mobile bottom navigation ── */}
+      {mobileMoreOpen ? (
+        <div className="fixed inset-x-0 bottom-16 z-40 rounded-t-2xl border-t border-white/10 bg-slate-950/96 px-4 py-3 backdrop-blur lg:hidden">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500">More</p>
+          <div className="grid grid-cols-3 gap-2">
+            {mobileMoreItems.map((item) => {
+              const isActive = path === item.path || path.startsWith(item.path + '/');
+              const Icon = item.icon;
+              const tone = TONE_CLASSES[item.tone];
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={cn(
+                    'flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl border px-2 py-2 text-[11px] font-medium',
+                    isActive
+                      ? `${tone.activeSubNav} border`
+                      : 'border-white/10 text-slate-300',
+                  )}
+                  onClick={() => setMobileMoreOpen(false)}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  <Icon className="h-4.5 w-4.5" aria-hidden="true" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+
       <nav
         className="glass-header fixed bottom-0 left-0 right-0 z-40 flex h-16 items-center justify-around border-t border-white/5 pb-[env(safe-area-inset-bottom,0px)] lg:hidden"
         aria-label="Mobile navigation"
       >
-        {ENGINE_ITEMS.map((item) => {
+        {mobilePrimaryItems.map((item) => {
           const isActive = path === item.path || path.startsWith(item.path + '/');
           const Icon = item.icon;
           const tone = TONE_CLASSES[item.tone];
@@ -541,24 +591,24 @@ export function AppNavShell({
               />
               <div className="relative">
                 <Icon className="h-5 w-5" aria-hidden="true" />
-                {NAV_BADGES[item.path]?.type === 'pulse' && (
+                {navBadges[item.path]?.type === 'pulse' && (
                   <span
                     className={cn(
                       'nav-badge-pulse absolute -top-1 -right-1 h-2 w-2 rounded-full',
-                      TONE_CLASSES[NAV_BADGES[item.path].tone].indicator,
+                      TONE_CLASSES[navBadges[item.path].tone].indicator,
                     )}
-                    aria-label="Active alerts"
+                    aria-hidden="true"
                   />
                 )}
-                {NAV_BADGES[item.path]?.type === 'count' && (
+                {navBadges[item.path]?.type === 'count' && (
                   <span
                     className={cn(
                       'absolute -top-1 -right-1 flex h-[14px] min-w-[14px] items-center justify-center rounded-full px-0.5 text-[9px] font-bold text-slate-950',
-                      TONE_CLASSES[NAV_BADGES[item.path].tone].indicator,
+                      TONE_CLASSES[navBadges[item.path].tone].indicator,
                     )}
-                    aria-label={`${NAV_BADGES[item.path].value} pending`}
+                    aria-hidden="true"
                   >
-                    {NAV_BADGES[item.path].value}
+                    {navBadges[item.path].value}
                   </span>
                 )}
               </div>
@@ -566,6 +616,32 @@ export function AppNavShell({
             </Link>
           );
         })}
+
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className={cn(
+            'flex min-h-12 flex-1 flex-col items-center justify-center gap-1 py-2 !h-auto !w-auto !min-w-0 !px-0 text-[10px] font-medium',
+            path.startsWith('/govern') || path.startsWith('/settings') || path.startsWith('/help')
+              ? 'text-slate-100'
+              : 'text-slate-500',
+          )}
+          onClick={() => setMobileMoreOpen((prev) => !prev)}
+          aria-expanded={mobileMoreOpen}
+          aria-label="Open more navigation"
+          springPress={false}
+        >
+          <span
+            className={cn(
+              'h-1 w-1 rounded-full transition-opacity duration-150',
+              mobileMoreOpen ? 'opacity-100 bg-slate-300' : 'opacity-0 bg-slate-300',
+            )}
+            aria-hidden="true"
+          />
+          <MoreHorizontal className="h-5 w-5" aria-hidden="true" />
+          <span>More</span>
+        </Button>
       </nav>
     </div>
   );

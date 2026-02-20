@@ -32,3 +32,4 @@ export { AuroraPulse, type AuroraPulseProps } from './aurora-pulse'
 
 /* ── Empty State ── */
 export { EmptyState, type EmptyStateProps } from './empty-state'
+export { PreviewBadge, type PreviewBadgeProps } from './preview-badge'

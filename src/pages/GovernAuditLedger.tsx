@@ -21,7 +21,7 @@ import {
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
-import { AuroraPulse, GovernFooter } from '@/components/poseidon'
+import { AuroraPulse, GovernFooter, PreviewBadge } from '@/components/poseidon'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
 import { Surface, Button, ButtonLink } from '@/design-system'
 
@@ -299,10 +299,10 @@ export default function GovernAuditPage() {
             <Surface variant="glass" padding="md" className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Export Options</h3>
               <Button disabled variant="secondary" engine="govern" fullWidth size="sm" className="rounded-xl text-xs cursor-not-allowed opacity-60" aria-label="Export full ledger preview only">
-                <Download size={14} />Export full ledger (CSV) · Preview
+                <Download size={14} />Export full ledger (CSV)<PreviewBadge className="ml-2" />
               </Button>
               <Button disabled variant="secondary" engine="govern" fullWidth size="sm" className="rounded-xl text-xs cursor-not-allowed opacity-60" aria-label="Generate compliance report preview only">
-                <FileText size={14} />Generate compliance report (PDF) · Preview
+                <FileText size={14} />Generate compliance report (PDF)<PreviewBadge className="ml-2" />
               </Button>
             </Surface>
 
