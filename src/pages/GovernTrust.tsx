@@ -5,11 +5,12 @@ import { Link } from '../router'
 import { GovernFooter, AuroraPulse } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { usePageTitle } from '../hooks/use-page-title'
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets'
+import { getMotionPreset } from '@/lib/motion-presets'
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { Button, Toggle, Surface } from '@/design-system'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { useToast } from '@/hooks/useToast'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import type { DemoGovernEngine } from '@/lib/demo-state/types'
 
 interface EngineCardDefinition {
@@ -89,6 +90,9 @@ function makeDraftFromState(config: ReturnType<typeof useDemoState>['state']['se
 }
 
 export function GovernTrust() {
+  const prefersReducedMotion = useReducedMotionSafe()
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
+
   usePageTitle('Trust Index')
   const { state, updateGovernTrust } = useDemoState()
   const { showToast } = useToast()
@@ -173,12 +177,12 @@ export function GovernTrust() {
         id="main-content"
         className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
         style={{ maxWidth: '1280px' }}
-        variants={stagger}
+        variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
         role="main"
       >
-        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <Shield className="h-5 w-5" style={{ color: 'var(--engine-govern)' }} />
             <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--engine-govern)' }}>
@@ -191,7 +195,7 @@ export function GovernTrust() {
           </p>
         </motion.div>
 
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUpVariant}>
           <Surface className="rounded-2xl flex flex-col md:flex-row items-center gap-6" variant="glass" padding="md">
             <div className="relative flex items-center justify-center shrink-0" aria-label={`System trust score: ${systemTrust} out of 100`}>
               <svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
@@ -234,7 +238,7 @@ export function GovernTrust() {
         </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-6">
-          <motion.div variants={fadeUp} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
+          <motion.div variants={fadeUpVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
             <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Per-Engine Configuration</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {draft.map((card, idx) => (

@@ -4,7 +4,8 @@ import { ArrowLeft, ScrollText, Clock, Eye as EyeIcon, Edit, ChevronDown, Plus }
 import { Link } from '../router';
 import { GovernFooter, AuroraPulse } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { getMotionPreset } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { Button, Surface } from '@/design-system';
 
 
@@ -40,6 +41,9 @@ const upcomingReviews = [
 
 
 export function GovernPolicy() {
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion);
+
   const [expanded, setExpanded] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
 
@@ -62,9 +66,9 @@ export function GovernPolicy() {
         </div>
       </nav>
 
-      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: '1280px' }} variants={stagger} initial="hidden" animate="visible" role="main">
+      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: '1280px' }} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
         {/* Hero */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(59,130,246,0.15)' }}>
               <ScrollText className="h-4 w-4" style={{ color: 'var(--engine-govern)' }} />
@@ -76,7 +80,7 @@ export function GovernPolicy() {
         </motion.div>
 
         {/* KPI bar */}
-        <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <motion.div variants={fadeUpVariant} className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
           { label: 'Active policies', value: String(activePolicies), color: 'var(--engine-govern)' },
           { label: 'Violations (30d)', value: '0', color: 'var(--engine-protect)' },
@@ -94,7 +98,7 @@ export function GovernPolicy() {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Policy list */}
           <div className="flex-1 lg:w-2/3 flex flex-col gap-4">
-            <motion.div variants={fadeUp} className="flex flex-col gap-3">
+            <motion.div variants={fadeUpVariant} className="flex flex-col gap-3">
               {displayed.map((p) => <Surface
                 key={p.name} className="rounded-2xl overflow-hidden" variant="glass" padding="none" data-surface-role="structure">
                   <div className="p-4 md:p-5">
@@ -151,7 +155,7 @@ export function GovernPolicy() {
           {/* Side rail */}
           <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4">
             {/* Policy health */}
-            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Policy Health</h3>
               <div className="flex flex-col gap-3">
                 {policyHealth.map((ph) =>
@@ -169,7 +173,7 @@ export function GovernPolicy() {
             </Surface>
 
             {/* Compliance calendar */}
-            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Upcoming Reviews</h3>
               <div className="flex flex-col gap-2.5">
                 {upcomingReviews.map((r, i) =>
@@ -183,7 +187,7 @@ export function GovernPolicy() {
             </Surface>
 
             {/* Quick add */}
-            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <Button variant="glass" engine="govern" fullWidth size="sm" className="rounded-xl text-xs">
                 <Plus className="h-3.5 w-3.5" />Draft new policy
               </Button>

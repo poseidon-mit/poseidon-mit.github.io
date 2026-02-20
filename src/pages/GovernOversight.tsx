@@ -5,7 +5,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { usePageTitle } from '../hooks/use-page-title';
 import { GovernFooter, AuroraPulse } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { getMotionPreset } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { DEMO_THREAD } from '@/lib/demo-thread';
 import { Button, Surface } from '@/design-system';
 
@@ -55,6 +56,9 @@ const overrideReasons = [
 
 
 export function GovernOversight() {
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion);
+
   usePageTitle('Oversight Queue');
   return (
     <div className="relative min-h-screen w-full">
@@ -71,9 +75,9 @@ export function GovernOversight() {
         </div>
       </nav>
 
-      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: '1280px' }} variants={stagger} initial="hidden" animate="visible" role="main">
+      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: '1280px' }} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
         {/* Hero */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(59,130,246,0.15)' }}>
               <Eye className="h-4 w-4" style={{ color: 'var(--engine-govern)' }} />
@@ -85,7 +89,7 @@ export function GovernOversight() {
         </motion.div>
 
         {/* KPI bar */}
-        <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <motion.div variants={fadeUpVariant} className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
           { label: 'Override rate', value: '3.2%', color: 'var(--engine-protect)' },
           { label: 'Human reviews', value: '41', color: 'var(--engine-govern)' },
@@ -104,7 +108,7 @@ export function GovernOversight() {
           {/* Main feed */}
           <div className="flex-1 lg:w-2/3 flex flex-col gap-6">
             {/* Review queue */}
-            <motion.div variants={fadeUp}>
+            <motion.div variants={fadeUpVariant}>
               <div className="flex items-center gap-2 mb-4">
                 <h2 className="text-sm font-semibold text-white">Flagged for human review</h2>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400">3</span>
@@ -140,7 +144,7 @@ export function GovernOversight() {
             </motion.div>
 
             {/* Recently resolved */}
-            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h2 className="text-sm font-semibold text-white mb-4">Recently Resolved</h2>
               <div className="overflow-x-auto">
                 <table className="w-full text-left min-w-[320px]">
@@ -173,7 +177,7 @@ export function GovernOversight() {
           {/* Side rail */}
           <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4">
             {/* Override trend chart */}
-            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Override Trend (7d)</h3>
               <div className="h-32">
                 <ResponsiveContainer width="100%" height="100%">
@@ -189,7 +193,7 @@ export function GovernOversight() {
             </Surface>
 
             {/* Decision accuracy */}
-            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Decision Accuracy</h3>
               <p className="text-xs text-white/50 mb-2">Post-override accuracy</p>
               <p className="text-lg font-bold text-emerald-400 mb-2">94.2%</p>
@@ -199,7 +203,7 @@ export function GovernOversight() {
             </Surface>
 
             {/* Top override reasons */}
-            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Top Override Reasons</h3>
               <div className="flex flex-col gap-3">
                 {overrideReasons.map((r) =>

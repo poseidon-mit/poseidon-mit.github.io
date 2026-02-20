@@ -3,9 +3,11 @@ import { ArrowLeft, FileText, CheckCircle2, AlertTriangle, User, ChevronDown } f
 import { Link, useRouter } from '../router';
 import { GovernFooter, AuroraPulse } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { getMotionPreset } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { DEMO_THREAD } from '@/lib/demo-thread';
-import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date';import { Surface } from "@/design-system";
+import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date';
+import { Surface } from '@/design-system';
 
 interface AuditDecision {
   id: string;
@@ -186,6 +188,9 @@ const AUDIT_DECISIONS: Record<string, AuditDecision> = {
 };
 
 export function GovernAuditDetail() {
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion);
+
   const { search } = useRouter();
   const decisionId = new URLSearchParams(search).get('decision');
   const auditEntry = decisionId && AUDIT_DECISIONS[decisionId] || AUDIT_DECISIONS[DEFAULT_DECISION_ID];
@@ -242,12 +247,12 @@ export function GovernAuditDetail() {
         id="main-content"
         className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
         style={{ maxWidth: '1280px' }}
-        variants={stagger}
+        variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
         role="main">
         
-        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <FileText className="h-5 w-5" style={{ color: 'var(--engine-govern)' }} />
             <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--engine-govern)' }}>
@@ -260,7 +265,7 @@ export function GovernAuditDetail() {
           </p>
         </motion.div>
 
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUpVariant}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
             { label: 'Confidence', value: resolvedConfidence, color: 'var(--engine-govern)' },
@@ -277,7 +282,7 @@ export function GovernAuditDetail() {
         </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-6">
-          <motion.div variants={fadeUp} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
+          <motion.div variants={fadeUpVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
             <Surface className="rounded-2xl" variant="glass" padding="md">
               <h2 className="text-sm font-semibold text-white mb-4">Decision Metadata</h2>
               <div className="space-y-3">

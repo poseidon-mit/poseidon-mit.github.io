@@ -5,7 +5,8 @@ import { Link } from '../router';
 import { GovernFooter, AuroraPulse, EmptyState } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
 import { usePageTitle } from '../hooks/use-page-title';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { getMotionPreset } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { DEMO_THREAD } from '@/lib/demo-thread';
 import { Button, Surface } from '@/design-system';
 
@@ -45,6 +46,9 @@ type TabFilter = 'all' | 'actionable' | 'informational' | 'warning';
    ═══════════════════════════════════════════ */
 
 export function InsightsFeed() {
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion);
+
   usePageTitle('Insights');
   const [tab, setTab] = useState<TabFilter>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -94,13 +98,13 @@ export function InsightsFeed() {
         id="main-content"
         className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
         style={{ maxWidth: '1280px' }}
-        variants={stagger}
+        variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
         role="main">
         
         {/* Hero */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <Lightbulb className="h-5 w-5" style={{ color: 'var(--engine-dashboard)' }} />
             <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--engine-dashboard)' }}>
@@ -114,7 +118,7 @@ export function InsightsFeed() {
         </motion.div>
 
         {/* KPI bar */}
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUpVariant}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
             { label: 'Today', value: String(insights.length), color: 'var(--engine-dashboard)' },
@@ -133,7 +137,7 @@ export function InsightsFeed() {
         {/* 2-column layout */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Main feed */}
-          <motion.div variants={fadeUp} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
+          <motion.div variants={fadeUpVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
             {/* Filter tabs */}
             <div className="flex gap-2 overflow-x-auto pb-1">
               {(['all', 'actionable', 'informational', 'warning'] as TabFilter[]).map((t) =>
@@ -160,7 +164,7 @@ export function InsightsFeed() {
             </div>
 
             {/* Insight cards */}
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3" aria-live="polite" aria-label="Filtered insights list">
               {filtered.length === 0 &&
               <EmptyState
                 icon={Sparkles}
@@ -234,7 +238,7 @@ export function InsightsFeed() {
           {/* Side rail */}
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Insights sidebar">
             {/* Avg confidence ring */}
-            <Surface as={motion.div} variants={fadeUp} className="rounded-2xl flex flex-col items-center" variant="glass" padding="md">
+            <Surface as={motion.div} variants={fadeUpVariant} className="rounded-2xl flex flex-col items-center" variant="glass" padding="md">
               <div className="relative" aria-label={`Average confidence: ${avgConfidence}`}>
                 <svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true">
                   <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
@@ -254,7 +258,7 @@ export function InsightsFeed() {
             </Surface>
 
             {/* Monthly impact */}
-            <Surface as={motion.div} variants={fadeUp} className="rounded-2xl" variant="glass" padding="md">
+            <Surface as={motion.div} variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <TrendingUp className="h-4 w-4" style={{ color: 'var(--engine-dashboard)' }} />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Monthly Impact</h3>
@@ -270,7 +274,7 @@ export function InsightsFeed() {
             </Surface>
 
             {/* Stats */}
-            <Surface as={motion.div} variants={fadeUp} className="rounded-2xl" variant="glass" padding="md">
+            <Surface as={motion.div} variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Stats</h3>
               <div className="space-y-2.5">
                 {[

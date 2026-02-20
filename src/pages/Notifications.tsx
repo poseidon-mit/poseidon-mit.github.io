@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, type KeyboardEvent } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Bell, Settings2 } from 'lucide-react';
 import { Link } from '../router';
-import { GovernFooter, AuroraPulse } from '@/components/poseidon';
+import { GovernFooter, AuroraPulse, EmptyState } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { getMotionPreset } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { DEMO_THREAD } from '@/lib/demo-thread';
 import { Button, Surface } from '@/design-system';
 
@@ -44,6 +45,9 @@ type CategoryFilter = 'all' | 'security' | 'growth' | 'actions' | 'system';
    ═══════════════════════════════════════════ */
 
 export function Notifications() {
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion);
+
   const [filter, setFilter] = useState<CategoryFilter>('all');
   const [readState, setReadState] = useState<Record<string, boolean>>(
     Object.fromEntries(notifications.map((n) => [n.id, n.read]))
@@ -61,6 +65,12 @@ export function Notifications() {
 
   const markAllRead = () => setReadState(Object.fromEntries(notifications.map((n) => [n.id, true])));
   const markRead = (id: string) => setReadState((prev) => ({ ...prev, [id]: true }));
+  const markReadByKeyboard = (event: KeyboardEvent<HTMLDivElement>, id: string) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      markRead(id);
+    }
+  };
 
   return (
     <div className="relative min-h-screen w-full">
@@ -96,13 +106,13 @@ export function Notifications() {
         id="main-content"
         className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
         style={{ maxWidth: '1280px' }}
-        variants={stagger}
+        variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
         role="main">
         
         {/* Hero */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <Bell className="h-5 w-5" style={{ color: 'var(--engine-dashboard)' }} />
             <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--engine-dashboard)' }}>
@@ -116,7 +126,7 @@ export function Notifications() {
         </motion.div>
 
         {/* KPI bar */}
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUpVariant}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
             { label: 'Unread', value: String(unreadCount), color: 'var(--engine-execute)' },
@@ -135,7 +145,7 @@ export function Notifications() {
         {/* 2-column layout */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Main feed */}
-          <motion.div variants={fadeUp} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
+          <motion.div variants={fadeUpVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
             {/* Header controls */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -162,12 +172,24 @@ export function Notifications() {
             </div>
 
             {/* Notification list */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" aria-live="polite" aria-label="Notifications list">
+              {sorted.length === 0 && (
+                <EmptyState
+                  title="No notifications found"
+                  description="Try another filter to view more updates."
+                  icon={Bell}
+                  accentColor="var(--engine-dashboard)"
+                />
+              )}
               {sorted.map((notif) =>
               <div
                 key={notif.id}
                 className={`rounded-2xl border border-white/[0.08] p-4 flex items-start gap-3 cursor-pointer transition-colors ${!readState[notif.id] ? 'bg-white/[0.05]' : 'bg-white/[0.02]'}`}
-                onClick={() => markRead(notif.id)}>
+                onClick={() => markRead(notif.id)}
+                onKeyDown={(event) => markReadByKeyboard(event, notif.id)}
+                tabIndex={0}
+                role="button"
+                aria-label={`${notif.title}. ${readState[notif.id] ? 'Read' : 'Unread'}. ${notif.time}`}>
                 
                   {/* Unread dot */}
                   <div className="pt-1.5 w-2 shrink-0">
