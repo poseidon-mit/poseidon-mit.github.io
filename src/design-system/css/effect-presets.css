@@ -1,21 +1,21 @@
 /* ── Poseidon Design System v2 — Effect Preset System ──
- * 5 switchable visual themes via CSS custom properties.
- * Toggle with: document.documentElement.dataset.effectPreset = 'neon'
+ * 6 switchable visual themes via CSS custom properties.
+ * Toggle with: document.documentElement.dataset.effectPreset = 'creator-studio'
  * Generated from: design-system/tokens/effect-presets.tokens.json
  */
 
-/* ── Default: neon (Poseidon signature style) ── */
+/* ── Default: creator-studio (Apple-style deep OLED + glass) ── */
 :root {
-  --ds-surface-bg: oklch(0.18 0.02 250 / 0.6);
-  --ds-surface-border: oklch(1 0 0 / 0.08);
-  --ds-surface-blur: 12px;
-  --ds-glow-opacity: 0.12;
-  --ds-glow-spread: 20px;
+  --ds-surface-bg: color-mix(in srgb, #050508 72%, #ffffff 3%);
+  --ds-surface-border: oklch(1 0 0 / 0.1);
+  --ds-surface-blur: 24px;
+  --ds-glow-opacity: 0.08;
+  --ds-glow-spread: 24px;
   --ds-animation-entry: fadeUp;
-  --ds-glass-inset: inset 0 1px 0 0 oklch(1 0 0 / 0.2), inset 0 -1px 0 0 oklch(1 0 0 / 0.08);
-  --ds-backdrop-filter: blur(12px) saturate(1.55) brightness(1.08);
+  --ds-glass-inset: inset 0 1px 0 0 oklch(1 0 0 / 0.14), inset 0 -1px 0 0 oklch(1 0 0 / 0.06);
+  --ds-backdrop-filter: blur(24px) saturate(1.45) brightness(1.05);
   --ds-border-radius-surface: var(--radius-md);
-  --ds-surface-shadow: 0 4px 16px oklch(0 0 0 / 0.2);
+  --ds-surface-shadow: 0 12px 48px oklch(0 0 0 / 0.55), 0 4px 14px oklch(0 0 0 / 0.3);
 }
 
 /* ── minimal — Clean professional ── */
@@ -82,6 +82,20 @@
   --ds-backdrop-filter: none;
   --ds-border-radius-surface: 4px;
   --ds-surface-shadow: 0 1px 3px oklch(0 0 0 / 0.3);
+}
+
+/* ── creator-studio — explicit selector for runtime toggles ── */
+[data-effect-preset="creator-studio"] {
+  --ds-surface-bg: color-mix(in srgb, #050508 72%, #ffffff 3%);
+  --ds-surface-border: oklch(1 0 0 / 0.1);
+  --ds-surface-blur: 24px;
+  --ds-glow-opacity: 0.08;
+  --ds-glow-spread: 24px;
+  --ds-animation-entry: fadeUp;
+  --ds-glass-inset: inset 0 1px 0 0 oklch(1 0 0 / 0.14), inset 0 -1px 0 0 oklch(1 0 0 / 0.06);
+  --ds-backdrop-filter: blur(24px) saturate(1.45) brightness(1.05);
+  --ds-border-radius-surface: var(--radius-md);
+  --ds-surface-shadow: 0 12px 48px oklch(0 0 0 / 0.55), 0 4px 14px oklch(0 0 0 / 0.3);
 }
 
 /* ── Glow utility per engine color ── */

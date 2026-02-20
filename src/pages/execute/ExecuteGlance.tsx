@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { CheckCircle2, XCircle } from 'lucide-react'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
 import { GlassCard, CitationCard, CountUp } from '@/components/poseidon'
+import { Button } from '@/design-system'
 import { executeCitations } from './execute-data'
 import { DEMO_THREAD } from '@/lib/demo-thread'
 
@@ -30,20 +31,24 @@ export function ExecuteGlance() {
 
       {/* Quick action buttons */}
       <motion.div variants={fadeUp} className="flex flex-wrap gap-3">
-        <button
-          className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-          style={{ background: 'linear-gradient(135deg, #14B8A6, #0D9488)', color: '#04141a', minHeight: '48px' }}
+        <Button
+          variant="primary"
+          engine="execute"
+          size="md"
+          className="rounded-xl"
+          icon={<CheckCircle2 size={18} />}
         >
-          <CheckCircle2 size={18} />
           Approve
-        </button>
-        <button
-          className="inline-flex items-center gap-2 rounded-xl border px-6 py-3 text-sm font-semibold transition-all hover:shadow-[0_0_12px_rgba(var(--state-critical-rgb),0.3)] active:scale-[0.98] cursor-pointer"
-          style={{ borderColor: 'rgba(var(--state-critical-rgb),0.4)', color: 'var(--state-critical)', background: 'transparent', minHeight: '48px' }}
+        </Button>
+        <Button
+          variant="secondary"
+          engine="execute"
+          size="md"
+          className="rounded-xl"
+          icon={<XCircle size={18} />}
         >
-          <XCircle size={18} />
           Reject
-        </button>
+        </Button>
       </motion.div>
 
       {/* Summary stats */}

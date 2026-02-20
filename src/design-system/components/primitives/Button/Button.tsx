@@ -1,23 +1,35 @@
 import { forwardRef, type ReactNode } from 'react'
+import { motion } from 'framer-motion'
 import clsx from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import type { ButtonProps } from './Button.schema'
+import { creatorStudioSpringPress } from '../../../../lib/motion-presets'
 
-/* ── Engine gradient map (oklch-based for P3 gamut) ────────────── */
-const engineGradient: Record<string, string> = {
-  protect:  'bg-gradient-to-r from-[oklch(0.70_0.18_155)] to-[oklch(0.78_0.16_160)]',
-  grow:     'bg-gradient-to-r from-[oklch(0.58_0.22_285)] to-[oklch(0.66_0.18_290)]',
-  execute:  'bg-gradient-to-r from-[oklch(0.80_0.16_95)]  to-[oklch(0.86_0.14_100)]',
-  govern:   'bg-gradient-to-r from-[oklch(0.62_0.18_250)] to-[oklch(0.70_0.16_255)]',
-  default:  'bg-gradient-to-r from-[oklch(0.85_0.18_195)] to-[oklch(0.88_0.14_195)]',
+const enginePrimary: Record<string, string> = {
+  dashboard: 'bg-gradient-to-r from-cyan-300 to-cyan-200 text-slate-950 hover:brightness-110',
+  protect: 'bg-gradient-to-r from-emerald-400 to-green-300 text-slate-950 hover:brightness-110',
+  grow: 'bg-gradient-to-r from-violet-400 to-fuchsia-300 text-slate-950 hover:brightness-110',
+  execute: 'bg-gradient-to-r from-amber-300 to-yellow-200 text-slate-950 hover:brightness-110',
+  govern: 'bg-gradient-to-r from-blue-400 to-sky-300 text-slate-950 hover:brightness-110',
+  default: 'bg-gradient-to-r from-cyan-300 to-cyan-200 text-slate-950 hover:brightness-110',
 }
 
-const engineAccent: Record<string, string> = {
-  protect:  'border-green-500/60 text-green-400',
-  grow:     'border-violet-500/60 text-violet-400',
-  execute:  'border-amber-500/60 text-amber-400',
-  govern:   'border-blue-500/60 text-blue-400',
-  default:  'border-cyan-400/60 text-cyan-300',
+const engineSecondary: Record<string, string> = {
+  dashboard: 'border-cyan-400/55 text-cyan-200',
+  protect: 'border-emerald-400/50 text-emerald-300',
+  grow: 'border-violet-400/50 text-violet-300',
+  execute: 'border-amber-400/50 text-amber-300',
+  govern: 'border-blue-400/50 text-blue-300',
+  default: 'border-cyan-400/55 text-cyan-200',
+}
+
+const engineGlass: Record<string, string> = {
+  dashboard: 'border-cyan-300/25 bg-cyan-400/12 hover:bg-cyan-300/20 hover:border-cyan-200/45 hover:shadow-[0_0_24px_rgba(34,211,238,0.2)]',
+  protect: 'border-emerald-300/25 bg-emerald-400/12 hover:bg-emerald-300/20 hover:border-emerald-200/45 hover:shadow-[0_0_24px_rgba(52,211,153,0.2)]',
+  grow: 'border-violet-300/25 bg-violet-400/12 hover:bg-violet-300/20 hover:border-violet-200/45 hover:shadow-[0_0_24px_rgba(167,139,250,0.2)]',
+  execute: 'border-amber-300/25 bg-amber-400/12 hover:bg-amber-300/20 hover:border-amber-200/45 hover:shadow-[0_0_24px_rgba(252,211,77,0.2)]',
+  govern: 'border-blue-300/25 bg-blue-400/12 hover:bg-blue-300/20 hover:border-blue-200/45 hover:shadow-[0_0_24px_rgba(96,165,250,0.2)]',
+  default: 'border-cyan-300/25 bg-cyan-400/12 hover:bg-cyan-300/20 hover:border-cyan-200/45 hover:shadow-[0_0_24px_rgba(34,211,238,0.2)]',
 }
 
 /* ── Size tokens ───────────────────────────────────────────────── */
@@ -49,6 +61,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     size = 'md',
     engine,
     loading = false,
+    springPress = true,
     fullWidth = false,
     icon,
     iconPosition = 'left',
@@ -60,21 +73,25 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   },
   ref,
 ) {
-  const key = engine ?? 'default'
+  const key = engine ?? 'dashboard'
   const isDisabled = disabled || loading
 
   const variantClass: Record<string, string> = {
-    primary:   clsx(engineGradient[key], 'text-gray-950 font-semibold hover:brightness-110'),
-    secondary: clsx('bg-transparent border', engineAccent[key], 'hover:bg-white/5'),
-    ghost:     clsx('bg-transparent border-none', engineAccent[key], 'hover:bg-white/5'),
+    primary: clsx(enginePrimary[key]),
+    secondary: clsx('bg-transparent border hover:bg-white/5', engineSecondary[key]),
+    ghost: clsx('bg-transparent border-none hover:bg-white/5', engineSecondary[key]),
     danger:    'bg-red-600 text-white hover:bg-red-500',
     outline:   'bg-transparent border border-white/20 text-white hover:bg-white/5',
+    glass: clsx(
+      'border text-white [backdrop-filter:var(--ds-backdrop-filter)]',
+      engineGlass[key],
+    ),
   }
 
   const classes = twMerge(
     clsx(
       /* base */
-      'inline-flex items-center justify-center rounded-lg font-medium',
+      'inline-flex items-center justify-center rounded-full font-medium',
       'transition-all duration-150 select-none',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950',
       /* variant + size */
@@ -91,10 +108,23 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   const hasIcon = !!iconEl
 
   return (
-    <button ref={ref} type={type} disabled={isDisabled} className={classes} {...rest}>
-      {hasIcon && iconPosition === 'left' && iconEl}
-      {children}
-      {hasIcon && iconPosition === 'right' && iconEl}
-    </button>
+    <motion.div
+      className={fullWidth ? 'w-full' : 'inline-block'}
+      whileHover={springPress && !isDisabled ? { scale: 1.02 } : undefined}
+      whileTap={springPress && !isDisabled ? { scale: 0.98 } : undefined}
+      transition={springPress ? creatorStudioSpringPress : undefined}
+    >
+      <button
+        ref={ref}
+        type={type}
+        disabled={isDisabled}
+        className={classes}
+        {...rest}
+      >
+        {hasIcon && iconPosition === 'left' && iconEl}
+        {children}
+        {hasIcon && iconPosition === 'right' && iconEl}
+      </button>
+    </motion.div>
   )
 })

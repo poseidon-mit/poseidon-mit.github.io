@@ -31,6 +31,9 @@ import { ProductDemo30s } from './ProductDemo30s';
 import { PoseidonHeroDemo } from './PoseidonHeroDemo';
 import { PoseidonProductDemo } from './PoseidonProductDemo';
 import { PoseidonScreenDemo } from './PoseidonScreenDemo';
+import { AppleCapabilitiesDemo } from './AppleCapabilitiesDemo';
+import { PoseidonMasterFilm } from './PoseidonMasterFilm';
+import { PoseidonMasterFilm3D } from './PoseidonMasterFilm3D';
 import { DEFAULT_AUDIO, VIDEO_DURATION_FRAMES } from './video/config';
 import { V5_VIDEO_DURATION_FRAMES } from './video/v5/config';
 import { VIDEO_DURATION_FRAMES as POSEIDON_INTRO_DURATION_FRAMES, DEFAULT_AUDIO as POSEIDON_INTRO_AUDIO } from './video/poseidon-intro/config';
@@ -231,6 +234,39 @@ const RemotionRoot: React.FC = () => {
           enableAudio: true,
           musicSrc: DEFAULT_AUDIO.musicSrc,
         }}
+      />
+
+      {/* Apple Capabilities Demo - Extreme technical showcase for scriptwriter/user */}
+      <Composition
+        id="AppleCapabilitiesDemo"
+        component={AppleCapabilitiesDemo}
+        durationInFrames={450}
+        fps={FPS}
+        width={WIDTH}
+        height={HEIGHT}
+        defaultProps={{}}
+      />
+
+      {/* POSEIDON MASTER FILM: 30s Capstone Director's Cut */}
+      <Composition
+        id="PoseidonMasterFilm"
+        component={PoseidonMasterFilm}
+        durationInFrames={900}
+        fps={FPS}
+        width={WIDTH}
+        height={HEIGHT}
+        defaultProps={{}}
+      />
+
+      {/* POSEIDON MASTER FILM 3D: True WWDC WebGL Implementation */}
+      <Composition
+        id="PoseidonMasterFilm3D"
+        component={PoseidonMasterFilm3D}
+        durationInFrames={900}
+        fps={FPS}
+        width={WIDTH}
+        height={HEIGHT}
+        defaultProps={{}}
       />
 
       {/* Poseidon Product Intro - 30s promotional video */}

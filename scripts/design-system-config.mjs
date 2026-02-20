@@ -162,6 +162,18 @@ export const COMPONENT_REGISTRY = Object.freeze({
     status: 'forbidden',
     replacement: 'CommandCenterShell hero contract',
   },
+  AppleGlassCard: {
+    status: 'forbidden',
+    replacement: 'Surface',
+  },
+  AppleSpringButton: {
+    status: 'forbidden',
+    replacement: 'Button',
+  },
+  DashboardShowcase: {
+    status: 'forbidden',
+    replacement: 'Surface/Button + motion presets',
+  },
 });
 
 // Jeton landing deliberately uses dynamic inline style values for

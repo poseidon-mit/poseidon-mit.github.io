@@ -23,6 +23,7 @@ import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { AuroraPulse, GlassCard, GovernFooter } from '@/components/poseidon'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+import { Button, ButtonLink } from '@/design-system'
 
 /* ── Cross-thread values ── */
 const DECISIONS_AUDITED = DEMO_THREAD.decisionsAudited
@@ -163,10 +164,10 @@ export default function GovernAuditPage() {
             {filterTabs.map(f => {
               const isActive = f.label === activeFilter
               return (
-                <button key={f.label} role="tab" aria-selected={isActive} onClick={() => setActiveFilter(f.label)} className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-all cursor-pointer" style={{ background: isActive ? "rgba(59,130,246,0.15)" : "rgba(255,255,255,0.05)", color: isActive ? "var(--engine-govern)" : "#94A3B8", border: isActive ? "1px solid rgba(59,130,246,0.3)" : "1px solid transparent", minHeight: "44px" }}>
+                <Button key={f.label} role="tab" aria-selected={isActive} onClick={() => setActiveFilter(f.label)} variant="glass" engine="govern" size="sm" className="rounded-full text-xs" springPress={false}>
                   {f.label}
                   {f.count != null && <span className="text-[10px]" style={{ color: isActive ? "var(--engine-govern)" : "#64748B" }}>({f.count})</span>}
-                </button>
+                </Button>
               )
             })}
           </motion.div>
@@ -289,18 +290,18 @@ export default function GovernAuditPage() {
             {/* Export */}
             <GlassCard className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Export Options</h3>
-              <button disabled className="w-full inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-medium cursor-not-allowed opacity-60" style={{ borderColor: "rgba(255,255,255,0.1)", color: "#CBD5E1", background: "transparent", minHeight: "44px" }} aria-label="Export full ledger preview only">
+              <Button disabled variant="secondary" engine="govern" fullWidth size="sm" className="rounded-xl text-xs cursor-not-allowed opacity-60" aria-label="Export full ledger preview only">
                 <Download size={14} />Export full ledger (CSV) · Preview
-              </button>
-              <button disabled className="w-full inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-medium cursor-not-allowed opacity-60" style={{ borderColor: "rgba(255,255,255,0.1)", color: "#CBD5E1", background: "transparent", minHeight: "44px" }} aria-label="Generate compliance report preview only">
+              </Button>
+              <Button disabled variant="secondary" engine="govern" fullWidth size="sm" className="rounded-xl text-xs cursor-not-allowed opacity-60" aria-label="Generate compliance report preview only">
                 <FileText size={14} />Generate compliance report (PDF) · Preview
-              </button>
+              </Button>
             </GlassCard>
 
             {/* Primary CTA: Back to govern overview -> /govern */}
-            <Link to="/govern" className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]" style={{ background: "linear-gradient(135deg, var(--engine-govern), #2563EB)", color: "#ffffff", minHeight: "48px" }}>
+            <ButtonLink to="/govern" variant="glass" engine="govern" className="rounded-xl text-sm">
               <ArrowLeft size={16} />Back to govern overview
-            </Link>
+            </ButtonLink>
           </aside>
         </div>
 

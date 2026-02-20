@@ -429,5 +429,20 @@
     "status": "forbidden",
     "replacement": "CommandCenterShell hero contract",
     "note": "Deprecated standalone hero implementation."
+  },
+  "AppleGlassCard": {
+    "status": "forbidden",
+    "replacement": "Surface",
+    "note": "Deprecated temporary glass card component from spectacular."
+  },
+  "AppleSpringButton": {
+    "status": "forbidden",
+    "replacement": "Button",
+    "note": "Deprecated temporary spring button component from spectacular."
+  },
+  "DashboardShowcase": {
+    "status": "forbidden",
+    "replacement": "Surface/Button + motion presets",
+    "note": "Deprecated showcase wrapper from spectacular."
   }
 }

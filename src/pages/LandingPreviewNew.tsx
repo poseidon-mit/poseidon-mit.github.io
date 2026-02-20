@@ -103,7 +103,7 @@ const governancePillars = [
 
 export default function LandingPreviewNew() {
   return (
-    <div className="min-h-screen bg-[#0B1221] text-slate-100">
+    <div className="app-bg-oled min-h-screen text-slate-100">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-lg focus:bg-teal-400 focus:px-4 focus:py-2 focus:text-slate-950"
@@ -111,7 +111,7 @@ export default function LandingPreviewNew() {
         Skip to main content
       </a>
 
-      <nav className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#0B1221]/85 backdrop-blur-xl" aria-label="Main navigation">
+      <nav className="glass-header sticky top-0 z-50 border-b border-white/[0.06]" aria-label="Main navigation">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <a href="/" className="flex items-center gap-2 text-lg font-bold text-slate-100">
             <Waves className="h-5 w-5 text-teal-400" />

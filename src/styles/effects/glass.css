@@ -37,28 +37,46 @@
   box-shadow: var(--glass-inset), var(--glass-shadow);
 }
 
+/* Design-system aligned glass utility for route pages and shared shells. */
+.surface-glass {
+  border: 1px solid var(--ds-surface-border);
+  background: var(--ds-surface-bg);
+  backdrop-filter: var(--ds-backdrop-filter);
+  -webkit-backdrop-filter: var(--ds-backdrop-filter);
+  box-shadow: var(--ds-glass-inset), var(--ds-surface-shadow);
+}
+
+.surface-elevated {
+  border: 1px solid var(--ds-surface-border);
+  background: var(--ds-surface-bg);
+  backdrop-filter: var(--ds-backdrop-filter);
+  -webkit-backdrop-filter: var(--ds-backdrop-filter);
+  box-shadow: var(--ds-surface-shadow);
+}
+
 /* App shell background with atmospheric depth */
+.app-bg-oled,
 .app-bg-depth {
-  background: #0B1221;
+  background: var(--bg-oled);
   background-image:
-    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,240,255,0.035), transparent),
-    radial-gradient(ellipse 40% 40% at 80% 20%, rgba(139,92,246,0.02), transparent);
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,240,255,0.02), transparent),
+    radial-gradient(ellipse 40% 40% at 80% 20%, rgba(139,92,246,0.015), transparent);
 }
 
 /* Glass panel variants for shell chrome */
 .glass-sidebar {
-  background: var(--glass-bg);
-  border-right: 1px solid var(--glass-border);
+  background: var(--glass-bg-apple);
+  border-right: 1px solid var(--glass-border-apple);
   backdrop-filter: var(--glass-backdrop);
   -webkit-backdrop-filter: var(--glass-backdrop);
-  box-shadow: inset -1px 0 0 0 rgba(255,255,255,0.04), 4px 0 24px rgba(0,0,0,0.3);
+  box-shadow: var(--glass-inner-highlight), 4px 0 24px rgba(0,0,0,0.3);
 }
 
 .glass-header {
-  background: rgba(11,18,33,0.72);
+  background: rgba(5, 5, 8, 0.72);
   border-bottom: 1px solid var(--glass-border);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(32px) saturate(1.5);
+  -webkit-backdrop-filter: blur(32px) saturate(1.5);
 }
 
 .cta-primary-glow {

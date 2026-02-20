@@ -188,6 +188,18 @@ const forbiddenEntries: Record<string, Pick<DesignSystemRegistryEntry, 'replacem
     replacement: 'CommandCenterShell hero contract',
     note: 'Deprecated standalone hero implementation.',
   },
+  AppleGlassCard: {
+    replacement: 'Surface',
+    note: 'Deprecated temporary glass card component from spectacular.',
+  },
+  AppleSpringButton: {
+    replacement: 'Button',
+    note: 'Deprecated temporary spring button component from spectacular.',
+  },
+  DashboardShowcase: {
+    replacement: 'Surface/Button + motion presets',
+    note: 'Deprecated showcase wrapper from spectacular.',
+  },
 };
 
 const entries: DesignSystemRegistryEntry[] = [

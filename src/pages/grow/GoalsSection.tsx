@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
 import { GlassCard, ConfidenceIndicator, CitationCard } from '@/components/poseidon'
+import { Button } from '@/design-system'
 import type { ViewMode } from '@/hooks/useViewMode'
 import { goals, statusConfig } from './grow-data'
 import type { Goal } from './grow-data'
@@ -119,26 +120,12 @@ function GoalCard({ goal, navigate, viewMode = 'detail' }: { goal: Goal; navigat
         {/* Actions */}
         <div className="flex flex-wrap gap-2">
           {goal.actions.map((action, i) => (
-            <button
+            <Button
               key={action}
-              className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer ${
-                i === 0 ? '' : ''
-              }`}
-              style={
-                i === 0
-                  ? {
-                      background: 'linear-gradient(135deg, var(--engine-grow), #7C3AED)',
-                      color: '#ffffff',
-                      minHeight: '44px',
-                    }
-                  : {
-                      borderWidth: '1px',
-                      borderColor: 'rgba(255,255,255,0.1)',
-                      color: '#CBD5E1',
-                      background: 'transparent',
-                      minHeight: '44px',
-                    }
-              }
+              variant={i === 0 ? 'glass' : 'secondary'}
+              engine="grow"
+              size="sm"
+              className="rounded-xl text-xs"
               aria-label={`${action} for ${goal.name}`}
               onClick={() => {
                 if (action === 'View scenarios') navigate('/grow/scenarios')
@@ -147,7 +134,7 @@ function GoalCard({ goal, navigate, viewMode = 'detail' }: { goal: Goal; navigat
               }}
             >
               {action}
-            </button>
+            </Button>
           ))}
         </div>
       </GlassCard>

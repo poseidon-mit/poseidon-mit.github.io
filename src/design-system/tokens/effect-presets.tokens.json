@@ -1,5 +1,5 @@
 {
-  "$description": "Effect Preset System — 5 switchable visual themes via CSS custom properties",
+  "$description": "Effect Preset System — 6 switchable visual themes via CSS custom properties",
   "effect-preset": {
     "minimal": {
       "surface-bg": { "$value": "oklch(0.18 0.02 250)", "$type": "color" },
@@ -55,6 +55,17 @@
       "border-style": { "$value": "solid", "$type": "string" },
       "glass-inset": { "$value": "none", "$type": "string" },
       "backdrop-filter": { "$value": "none", "$type": "string" }
+    },
+    "creator-studio": {
+      "surface-bg": { "$value": "color-mix(in srgb, #050508 72%, #ffffff 3%)", "$type": "color" },
+      "surface-border": { "$value": "oklch(1 0 0 / 0.1)", "$type": "color" },
+      "surface-blur": { "$value": "24px", "$type": "dimension" },
+      "glow-opacity": { "$value": "0.08", "$type": "number" },
+      "glow-spread": { "$value": "24px", "$type": "dimension" },
+      "animation-entry": { "$value": "fadeUp", "$type": "string" },
+      "border-style": { "$value": "glass", "$type": "string" },
+      "glass-inset": { "$value": "inset 0 1px 0 0 oklch(1 0 0 / 0.14), inset 0 -1px 0 0 oklch(1 0 0 / 0.06)", "$type": "string" },
+      "backdrop-filter": { "$value": "blur(24px) saturate(1.45) brightness(1.05)", "$type": "string" }
     }
   }
 }

@@ -16,6 +16,7 @@ import { DEMO_THREAD } from '@/lib/demo-thread'
 import { AuroraPulse, EmptyState, GlassCard, GovernFooter } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+import { ButtonLink } from '@/design-system'
 
 
 /* ── Types ── */
@@ -37,8 +38,8 @@ const threats: ThreatRow[] = [
 ]
 
 const severityConfig: Record<Severity, { color: string; bg: string; order: number }> = {
-  Critical: { color: "var(--state-critical)", bg: "rgba(239,68,68,0.12)", order: 4 },
-  High: { color: "var(--state-warning)", bg: "rgba(245,158,11,0.12)", order: 3 },
+  Critical: { color: "var(--state-critical)", bg: "rgba(var(--state-critical-rgb),0.12)", order: 4 },
+  High: { color: "var(--state-warning)", bg: "rgba(var(--state-warning-rgb),0.12)", order: 3 },
   Medium: { color: "var(--engine-govern)", bg: "rgba(59,130,246,0.12)", order: 2 },
   Low: { color: "#64748B", bg: "rgba(100,116,139,0.12)", order: 1 },
 }
@@ -50,6 +51,13 @@ const riskBreakdown = [
   { label: "Geo anomaly", pct: 20, color: "var(--engine-govern)" },
   { label: "Velocity", pct: 10, color: "#64748B" },
 ]
+
+const severityToneColor: Record<Severity, string> = {
+  Critical: "var(--state-critical)",
+  High: "var(--state-warning)",
+  Medium: "var(--engine-govern)",
+  Low: "#64748B",
+}
 
 /* ═══════════════════════════════════════════════════════
    PROTECT PAGE
@@ -85,7 +93,7 @@ export default function ProtectPage() {
   return (
     <div className="relative min-h-screen overflow-hidden">
       <AuroraPulse engine="protect" />
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-protect)", color: "#0B1221" }}>Skip to main content</a>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-protect)", color: 'var(--bg-oled)' }}>Skip to main content</a>
 
       <motion.main id="main-content" className="relative z-10 mx-auto flex max-w-[1280px] flex-col gap-6 px-4 py-8 md:gap-8 md:px-6 lg:px-8" variants={staggerContainer} initial="hidden" animate="visible" role="main" aria-label="Protect Engine - Threat Detection">
 
@@ -97,7 +105,7 @@ export default function ProtectPage() {
             </span>
           </motion.div>
           <motion.h1 variants={fadeUp} className="text-2xl md:text-4xl font-bold leading-tight tracking-tight text-balance" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>
-            Threat posture: <span style={{ color: "var(--state-warning)" }}>{criticalCount} critical</span>, {highCount} high, {monitoringCount} monitoring.
+            Threat posture: <span style={{ color: "var(--state-critical)" }}>{criticalCount} critical</span>, {highCount} high, {monitoringCount} monitoring.
           </motion.h1>
           <motion.p variants={fadeUp} className="text-sm md:text-base leading-relaxed" style={{ color: "#CBD5E1" }}>
             Real-time threat detection across all connected accounts. AI confidence scoring with full evidence chain.
@@ -148,16 +156,16 @@ export default function ProtectPage() {
                             <td className="px-4 py-3.5"><span className="text-sm font-mono font-semibold tabular-nums" style={{ color: "#F1F5F9" }}>{t.amount}</span></td>
                             <td className="px-4 py-3.5">
                               <div className="flex items-center gap-2">
-                                <div className="h-1.5 w-12 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}><div className="h-full rounded-full" style={{ width: `${t.confidence * 100}%`, background: t.confidence >= 0.9 ? "var(--state-critical)" : t.confidence >= 0.8 ? "var(--state-warning)" : "var(--engine-govern)" }} /></div>
-                                <span className="text-xs font-mono tabular-nums" style={{ color: t.confidence >= 0.9 ? "var(--state-critical)" : t.confidence >= 0.8 ? "var(--state-warning)" : "var(--engine-govern)" }}>{t.confidence.toFixed(2)}</span>
+                                <div className="h-1.5 w-12 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}><div className="h-full rounded-full" style={{ width: `${t.confidence * 100}%`, background: severityToneColor[t.severity] }} /></div>
+                                <span className="text-xs font-mono tabular-nums" style={{ color: severityToneColor[t.severity] }}>{t.confidence.toFixed(2)}</span>
                               </div>
                             </td>
                             <td className="px-4 py-3.5"><span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider" style={{ background: severityConfig[t.severity].bg, color: severityConfig[t.severity].color }}>{t.severity === "Critical" && <AlertTriangle size={10} />}{t.severity}</span></td>
                             <td className="px-4 py-3.5"><span className="text-xs" style={{ color: "#94A3B8" }}>{t.time}</span></td>
                             <td className="px-4 py-3.5">
-                              <Link to="/protect/alert-detail" className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]" style={{ background: "linear-gradient(135deg, var(--engine-protect), #16A34A)", color: "#ffffff", minHeight: "32px" }} aria-label={`Investigate ${t.id}`}>
-                                Investigate <ChevronRight size={12} />
-                              </Link>
+                              <ButtonLink to="/protect/alert-detail" variant="glass" engine="protect" size="sm" className="rounded-lg text-xs" icon={<ChevronRight size={12} />} iconPosition="right" aria-label={`Investigate ${t.id}`}>
+                                Investigate
+                              </ButtonLink>
                             </td>
                           </motion.tr>
                         ))}
@@ -192,9 +200,11 @@ export default function ProtectPage() {
                     <span className="text-sm font-medium" style={{ color: "#F1F5F9" }}>{t.merchant}</span>
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-mono font-semibold tabular-nums" style={{ color: "#F1F5F9" }}>{t.amount}</span>
-                      <span className="text-xs font-mono tabular-nums" style={{ color: t.confidence >= 0.9 ? "var(--state-critical)" : "var(--state-warning)" }}>{t.confidence.toFixed(2)}</span>
+                      <span className="text-xs font-mono tabular-nums" style={{ color: severityToneColor[t.severity] }}>{t.confidence.toFixed(2)}</span>
                     </div>
-                    <Link to="/protect/alert-detail" className="inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all" style={{ background: "linear-gradient(135deg, var(--engine-protect), #16A34A)", color: "#ffffff", minHeight: "44px" }}>Investigate <ChevronRight size={14} /></Link>
+                    <ButtonLink to="/protect/alert-detail" variant="glass" engine="protect" size="sm" fullWidth className="rounded-xl" icon={<ChevronRight size={14} />} iconPosition="right">
+                      Investigate
+                    </ButtonLink>
                   </GlassCard>
                 </motion.div>
               ))}
@@ -231,9 +241,9 @@ export default function ProtectPage() {
             </GlassCard>
 
             {/* Primary CTA */}
-            <Link to="/protect/alert-detail" className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]" style={{ background: "linear-gradient(135deg, var(--engine-protect), #16A34A)", color: "#ffffff", minHeight: "48px" }}>
-              <AlertTriangle size={16} />Open top alert
-            </Link>
+            <ButtonLink to="/protect/alert-detail" variant="glass" engine="protect" className="rounded-xl" icon={<AlertTriangle size={16} />}>
+              Open top alert
+            </ButtonLink>
           </aside>
         </div>
 

@@ -7,7 +7,7 @@ interface DesignSystemProviderProps {
 }
 
 export function DesignSystemProvider({
-  effectPreset = 'neon',
+  effectPreset = 'creator-studio',
   children,
 }: DesignSystemProviderProps) {
   return (

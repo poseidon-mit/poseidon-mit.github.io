@@ -5,6 +5,7 @@ import { Link } from '@/router'
 import { PublicTopBar } from '@/components/landing/PublicTopBar'
 import { AuthShell } from '@/components/layout/AuthShell'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+import { Button } from '@/design-system'
 
 export function Recovery() {
   const [email, setEmail] = useState('')
@@ -48,8 +49,6 @@ export function Recovery() {
       <AuthShell
         title="Recovery"
         subtitle={step === 1 ? 'Reset your password' : 'Check your email'}
-        heading="Recover access without losing governance history"
-        description="Reset links are short-lived and tracked in your security ledger for full accountability."
       >
         <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
           {step === 1 ? (
@@ -79,21 +78,20 @@ export function Recovery() {
                   />
                 </motion.div>
 
-                <motion.button
-                  variants={fadeUp}
-                  type="submit"
-                  disabled={loading}
-                  className="cta-primary-glow inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-400 to-cyan-300 px-5 py-3 text-sm font-semibold text-[#0B1221] disabled:cursor-not-allowed disabled:opacity-70"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                      Sending...
-                    </>
-                  ) : (
-                    'Send reset link'
-                  )}
-                </motion.button>
+                <motion.div variants={fadeUp}>
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    variant="glass"
+                    engine="protect"
+                    fullWidth
+                    className="rounded-xl disabled:cursor-not-allowed disabled:opacity-70"
+                    icon={loading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : undefined}
+                    iconPosition="left"
+                  >
+                    {loading ? 'Sending...' : 'Send reset link'}
+                  </Button>
+                </motion.div>
               </motion.form>
 
               <motion.div variants={fadeUp} className="mt-5 text-center">
@@ -115,19 +113,19 @@ export function Recovery() {
                 Reset link sent to <span className="font-semibold text-slate-100">{email}</span>. The link is valid for 15 minutes.
               </motion.p>
 
-              <motion.button
-                variants={fadeUp}
-                type="button"
-                onClick={handleResend}
-                disabled={!canResend}
-                className={`inline-flex min-h-11 w-full items-center justify-center rounded-xl border px-5 py-3 text-sm font-medium transition-colors ${
-                  canResend
-                    ? 'border-white/15 bg-white/[0.03] text-slate-200 hover:bg-white/[0.08]'
-                    : 'cursor-not-allowed border-white/10 bg-white/[0.02] text-slate-500'
-                }`}
-              >
-                {canResend ? 'Resend email' : `Resend in ${countdown}s`}
-              </motion.button>
+              <motion.div variants={fadeUp}>
+                <Button
+                  type="button"
+                  onClick={handleResend}
+                  disabled={!canResend}
+                  variant="glass"
+                  engine="protect"
+                  fullWidth
+                  className={`rounded-xl ${canResend ? '' : 'cursor-not-allowed border-white/10 bg-white/[0.02] text-slate-500'}`}
+                >
+                  {canResend ? 'Resend email' : `Resend in ${countdown}s`}
+                </Button>
+              </motion.div>
 
               <motion.div variants={fadeUp} className="mt-5 text-center">
                 <Link to="/login" className="inline-flex items-center gap-1 text-sm text-[var(--engine-dashboard)] hover:text-cyan-200">

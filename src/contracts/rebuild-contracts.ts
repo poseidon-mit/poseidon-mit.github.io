@@ -172,6 +172,7 @@ export const TARGET_SCOPE_READY_ROUTES = [
   '/settings/integrations',
   '/settings/rights',
   '/help',
+  '/test/spectacular',
   '/404',
 ] as const;
 
@@ -848,6 +849,19 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     evidence: EVIDENCE_NONE,
   }),
 
+  '/test/spectacular': routeMeta({
+    route: '/test/spectacular',
+    screenType: 'system',
+    navType: 'none',
+    parentRoute: null,
+    intent: 'monitor',
+    navGroup: 'settings',
+    cognitiveLoad: 'low',
+    primaryActionLabel: 'Return home',
+    primaryActionPath: '/',
+    first5sMessage: 'Isolated UI testing environment.',
+    evidence: EVIDENCE_NONE,
+  }),
   '/404': routeMeta({
     route: '/404',
     screenType: 'system',

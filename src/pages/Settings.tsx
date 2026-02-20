@@ -1,53 +1,39 @@
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Link } from '@/router'
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Link } from '@/router';
 import {
   Settings,
   User,
   Bell,
   Shield,
   Scale,
-  Monitor,
-} from "lucide-react"
-import { GOVERNANCE_META } from '@/lib/governance-meta'
-import { AuroraPulse, GovernFooter } from '@/components/poseidon'
-import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+  Monitor } from
+"lucide-react";
+import { GOVERNANCE_META } from '@/lib/governance-meta';
+import { AuroraPulse, GovernFooter } from '@/components/poseidon';
+import { fadeUp, staggerContainer } from '@/lib/motion-presets';
+import { Button, ButtonLink, Toggle, Surface } from '@/design-system';
 
 /* ── Toggle component ── */
 function SettingToggle({
   label,
   desc,
-  defaultOn = true,
-}: {
-  label: string
-  desc: string
-  defaultOn?: boolean
-}) {
-  const [on, setOn] = useState(defaultOn)
+  defaultOn = true
+
+
+
+
+}: {label: string;desc: string;defaultOn?: boolean;}) {
+  const [on, setOn] = useState(defaultOn);
   return (
     <div className="flex items-start justify-between gap-4 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
       <div>
         <p className="text-sm font-medium" style={{ color: "#F1F5F9" }}>{label}</p>
         <p className="text-xs" style={{ color: "#94A3B8" }}>{desc}</p>
       </div>
-      <button
-        onClick={() => setOn(!on)}
-        className="relative w-11 h-6 rounded-full flex-shrink-0 transition-colors"
-        style={{ background: on ? "var(--engine-dashboard)" : "rgba(255,255,255,0.1)" }}
-        role="switch"
-        aria-checked={on}
-        aria-label={label}
-      >
-        <span
-          className="absolute top-0.5 w-5 h-5 rounded-full transition-all"
-          style={{
-            background: "#0B1221",
-            left: on ? "calc(100% - 22px)" : "2px",
-          }}
-        />
-      </button>
-    </div>
-  )
+      <Toggle checked={on} onChange={setOn} ariaLabel={label} />
+    </div>);
+
 }
 
 export default function SettingsPage() {
@@ -57,8 +43,8 @@ export default function SettingsPage() {
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: "var(--engine-dashboard)", color: "#0B1221" }}
-      >
+        style={{ background: "var(--engine-dashboard)", color: 'var(--bg-oled)' }}>
+        
         Skip to main content
       </a>
 
@@ -67,8 +53,8 @@ export default function SettingsPage() {
         className="command-center__main"
         initial="hidden"
         animate="visible"
-        variants={staggerContainer}
-      >
+        variants={staggerContainer}>
+        
         {/* ── P1: Settings Summary ── */}
         <motion.section variants={staggerContainer} className="hero-section">
           <motion.div variants={fadeUp} className="hero-kicker">
@@ -89,12 +75,12 @@ export default function SettingsPage() {
         {/* ── P2: Control Cards ── */}
         <div className="flex flex-col lg:flex-row gap-4 px-4 md:px-6 lg:px-8">
           {/* Profile card */}
-          <motion.div variants={fadeUp} className="flex-1 glass-surface rounded-2xl p-5">
+          <Surface variants={fadeUp} className="flex-1 rounded-2xl p-5" variant="glass" padding="none" as={motion.div}>
             <div className="flex items-center gap-3 mb-4">
               <div
                 className="flex items-center justify-center w-10 h-10 rounded-xl"
-                style={{ background: "rgba(0,240,255,0.08)" }}
-              >
+                style={{ background: "rgba(0,240,255,0.08)" }}>
+                
                 <User size={20} style={{ color: "var(--engine-dashboard)" }} />
               </div>
               <div>
@@ -105,26 +91,26 @@ export default function SettingsPage() {
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs" style={{ color: "#94A3B8" }}>Name</span>
-                <span className="text-sm font-medium" style={{ color: "#F1F5F9" }}>Jane Doe</span>
+                <span className="text-sm font-medium" style={{ color: "#F1F5F9" }}>Shinji Fujiwara</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-xs" style={{ color: "#94A3B8" }}>Email</span>
-                <span className="text-sm font-medium" style={{ color: "#F1F5F9" }}>jane@example.com</span>
+                <span className="text-sm font-medium" style={{ color: "#F1F5F9" }}>shinji@example.com</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-xs" style={{ color: "#94A3B8" }}>Plan</span>
                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: "rgba(0,240,255,0.1)", color: "var(--engine-dashboard)" }}>Pro</span>
               </div>
             </div>
-          </motion.div>
+          </Surface>
 
           {/* Notification preferences */}
-          <motion.div variants={fadeUp} className="flex-1 glass-surface rounded-2xl p-5">
+          <Surface variants={fadeUp} className="flex-1 rounded-2xl p-5" variant="glass" padding="none" as={motion.div}>
             <div className="flex items-center gap-3 mb-4">
               <div
                 className="flex items-center justify-center w-10 h-10 rounded-xl"
-                style={{ background: "rgba(234,179,8,0.08)" }}
-              >
+                style={{ background: "rgba(234,179,8,0.08)" }}>
+                
                 <Bell size={20} style={{ color: "var(--engine-execute)" }} />
               </div>
               <div>
@@ -135,17 +121,17 @@ export default function SettingsPage() {
             <SettingToggle label="Threat alerts" desc="Immediate notification for critical threats" defaultOn={true} />
             <SettingToggle label="Weekly digest" desc="Summary of activity and recommendations" defaultOn={true} />
             <SettingToggle label="Execution alerts" desc="Notify when actions are auto-queued" defaultOn={false} />
-          </motion.div>
+          </Surface>
         </div>
 
         {/* Security section */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
-          <div className="glass-surface rounded-2xl p-5">
+          <Surface className="rounded-2xl p-5" variant="glass" padding="none">
             <div className="flex items-center gap-3 mb-4">
               <div
                 className="flex items-center justify-center w-10 h-10 rounded-xl"
-                style={{ background: "rgba(34,197,94,0.08)" }}
-              >
+                style={{ background: "rgba(34,197,94,0.08)" }}>
+                
                 <Shield size={20} style={{ color: "var(--engine-protect)" }} />
               </div>
               <div>
@@ -175,45 +161,46 @@ export default function SettingsPage() {
                   <p className="text-sm font-medium" style={{ color: "#F1F5F9" }}>Data export</p>
                   <p className="text-xs" style={{ color: "#94A3B8" }}>Download all your data</p>
                 </div>
-                <button
-                  className="text-xs font-semibold px-3 py-1.5 rounded-lg"
-                  style={{ background: "rgba(255,255,255,0.06)", color: "#CBD5E1" }}
-                >
+                <Button
+                  variant="glass"
+                  engine="dashboard"
+                  size="sm"
+                  className="rounded-lg text-xs">
+                  
                   Export
-                </button>
+                </Button>
               </div>
             </div>
-          </div>
+          </Surface>
         </motion.section>
 
         {/* ── P3: Review action bar ── */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
-          <div className="glass-surface rounded-2xl p-5 flex items-center justify-between">
+          <Surface className="rounded-2xl p-5 flex items-center justify-between" variant="glass" padding="none">
             <p className="text-sm" style={{ color: "#94A3B8" }}>
               All settings changes are recorded in the audit ledger.
             </p>
             {/* CTA: Primary -> /settings (self) */}
-            <Link
+            <ButtonLink
               to="/settings"
-              className="inline-flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-xl"
-              style={{
-                background: "linear-gradient(135deg, #14B8A6, #06B6D4)",
-                color: "#0B1221",
-              }}
-            >
+              variant="glass"
+              engine="dashboard"
+              size="md"
+              className="rounded-xl">
+              
               Review settings controls
-            </Link>
-          </div>
+            </ButtonLink>
+          </Surface>
         </motion.section>
 
         {/* GovernFooter */}
         <div className="px-4 md:px-6 lg:px-8">
           <GovernFooter
             auditId={GOVERNANCE_META['/settings'].auditId}
-            pageContext={GOVERNANCE_META['/settings'].pageContext}
-          />
+            pageContext={GOVERNANCE_META['/settings'].pageContext} />
+          
         </div>
       </motion.main>
-    </div>
-  )
+    </div>);
+
 }

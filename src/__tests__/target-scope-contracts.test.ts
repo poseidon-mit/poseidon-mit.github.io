@@ -63,6 +63,7 @@ const ROUTE_PAGE_FILES: Record<RoutePath, string | null> = {
   '/help': 'src/pages/HelpSupport.tsx',
   '/onboarding': 'src/pages/Onboarding.tsx',
   '/404': 'src/pages/NotFound.tsx',
+  '/test/spectacular': 'src/pages/TestSpectacular.tsx',
 };
 
 function getPageFile(route: RoutePath): string | null {

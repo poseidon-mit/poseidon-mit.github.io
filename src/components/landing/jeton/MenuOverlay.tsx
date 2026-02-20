@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Link } from '@/router';
+import { Button, ButtonLink } from '@/design-system';
 import { JETON_EASING } from './jeton-config';
 
 export function MenuOverlay() {
@@ -9,7 +10,7 @@ export function MenuOverlay() {
 
   return (
     <nav
-      className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#0B1221]/42 text-white backdrop-blur-xl transition-colors duration-300"
+      className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[rgba(5,5,8,0.52)] text-white backdrop-blur-xl transition-colors duration-300"
       aria-label="Main navigation"
       data-nav-theme="dark"
     >
@@ -36,23 +37,29 @@ export function MenuOverlay() {
         </div>
 
         <div className="hidden md:block">
-          <Link
+          <ButtonLink
             to="/signup"
-            className="btn-liquid-glass inline-flex min-h-11 items-center justify-center rounded-full px-5 py-2 text-sm font-semibold text-white transition-all duration-200 hover:scale-[0.985]"
+            variant="glass"
+            engine="dashboard"
+            size="sm"
+            className="rounded-full"
           >
             Get Started
-          </Link>
+          </ButtonLink>
         </div>
 
-        <button
+        <Button
           type="button"
           onClick={() => setMobileOpen((value) => !value)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-current/20 md:hidden"
+          className="inline-flex !h-10 !min-h-10 !w-10 items-center justify-center rounded-full border border-current/20 !px-0 md:hidden"
           aria-expanded={mobileOpen}
           aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          variant="ghost"
+          size="sm"
+          springPress={false}
         >
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        </Button>
       </div>
 
       <AnimatePresence>
@@ -62,7 +69,7 @@ export function MenuOverlay() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.35, ease: JETON_EASING }}
-            className="overflow-hidden border-t border-white/10 bg-[#0B1221]/96 md:hidden"
+            className="overflow-hidden border-t border-white/10 bg-[rgba(5,5,8,0.96)] md:hidden"
           >
             <div className="flex flex-col gap-4 px-6 py-5 text-sm">
               <a href="#platform" onClick={() => setMobileOpen(false)}>
@@ -74,13 +81,16 @@ export function MenuOverlay() {
               <a href="#cta" onClick={() => setMobileOpen(false)}>
                 Start
               </a>
-              <Link
+              <ButtonLink
                 to="/signup"
-                className="btn-liquid-glass inline-flex min-h-11 items-center justify-center rounded-full px-5 py-2 text-sm font-semibold text-white"
+                variant="glass"
+                engine="dashboard"
+                size="sm"
+                className="rounded-full"
                 onClick={() => setMobileOpen(false)}
               >
                 Get Started
-              </Link>
+              </ButtonLink>
             </div>
           </motion.div>
         ) : null}

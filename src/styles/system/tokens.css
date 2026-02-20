@@ -8,14 +8,18 @@
   /* ── Colors — Background ── */
   --bg: #0B1221;
   --bg-deep: #020410;
+  --bg-oled: #050508;
+  --bg-vantablack: #020202;
   --bg-surface: #1E293B;
 
   /* ── Colors — Glass ── */
   --glass-bg: rgba(8,12,24,0.62);
+  --glass-bg-apple: rgba(255, 255, 255, 0.03);
   --glass-bg-strong: rgba(8,12,24,0.72);
   --glass-bg-soft: rgba(10,16,28,0.6);
   --glass-bg-subtle: rgba(255, 255, 255, 0.04);
   --glass-border: rgba(255,255,255,0.08);
+  --glass-border-apple: rgba(255, 255, 255, 0.1);
   --glass-border-strong: rgba(255,255,255,0.16);
 
   /* ── Glass — Page-level blue-tinted (engine/mission cards) ── */
@@ -25,6 +29,9 @@
   --glass-bg-card-section: rgba(11, 24, 45, 0.68);
 
   --glass-shadow: 0 24px 70px rgba(0,0,0,0.62), 0 0 28px rgba(0,240,255,0.12);
+  --glass-shadow-apple-base: 0 4px 24px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.2);
+  --glass-shadow-apple-elevated: 0 12px 48px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.3);
+  --glass-inner-highlight: inset 0 1px 0 0 rgba(255,255,255,0.1);
   --glass-inset: inset 0 1px 0 0 rgba(255,255,255,0.26), inset 0 -1px 0 0 rgba(255,255,255,0.1), inset 0 0 20px rgba(255,255,255,0.06);
   --glass-edge: inset 0 0 0 1px rgba(255,255,255,0.18), inset 0 -16px 30px rgba(0,0,0,0.35);
   --glass-backdrop: blur(44px) saturate(1.55) brightness(1.08);

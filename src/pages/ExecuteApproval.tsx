@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Zap, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { Link } from '../router';
-import { GovernFooter, ShapWaterfall, AuroraPulse } from '@/components/poseidon'
-import { GOVERNANCE_META } from '@/lib/governance-meta'
+import { GovernFooter, ShapWaterfall, AuroraPulse } from '@/components/poseidon';
+import { GOVERNANCE_META } from '@/lib/governance-meta';
 import { Dialog, DialogContent } from '../components/ui/dialog';
 import { usePageTitle } from '../hooks/use-page-title';
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
-import { DEMO_THREAD } from '@/lib/demo-thread'
+import { DEMO_THREAD } from '@/lib/demo-thread';
+import { Button, ButtonLink, Surface } from '@/design-system';
 
 /* ═══════════════════════════════════════════
    DATA
@@ -20,30 +21,30 @@ interface QueueAction {
   description: string;
   urgency: 'high' | 'medium' | 'low';
   confidence: number;
-  impact: { approved: string; declined: string };
+  impact: {approved: string;declined: string;};
   reversible: boolean;
   expiresIn: string | null;
-  factors: Array<{ label: string; value: number }>;
+  factors: Array<{label: string;value: number;}>;
 }
 
 const queueActions: QueueAction[] = [
-  { id: 'ACT-001', engine: 'Execute', title: 'Consolidate streaming subscriptions', description: 'Cancel Netflix + Hulu, subscribe to YouTube Premium family plan.', urgency: 'high', confidence: 0.92, impact: { approved: 'Save $140/mo ($1,680/yr)', declined: 'Continue paying $167/mo for overlapping services' }, reversible: true, expiresIn: '18h', factors: [{ label: 'Cost reduction', value: 0.92 }, { label: 'Content overlap', value: 0.88 }, { label: 'Service parity', value: 0.82 }] },
-  {
-    id: 'ACT-002',
-    engine: 'Protect',
-    title: `Block suspicious card ending ${DEMO_THREAD.criticalAlert.cardLast4}`,
-    description: `Temporary freeze on card used in unrecognized $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} transaction.`,
-    urgency: 'high',
-    confidence: DEMO_THREAD.criticalAlert.confidence,
-    impact: { approved: 'Card frozen, transaction disputed automatically', declined: 'Card remains active, potential additional fraud exposure' },
-    reversible: true,
-    expiresIn: '6h',
-    factors: [{ label: 'Merchant risk', value: 0.87 }, { label: 'Amount anomaly', value: 0.71 }, { label: 'Geo mismatch', value: 0.65 }],
-  },
-  { id: 'ACT-003', engine: 'Grow', title: 'Transfer surplus to high-yield savings', description: 'Move $2,400 surplus from checking to savings account earning 4.8% APY.', urgency: 'medium', confidence: 0.88, impact: { approved: 'Earn additional $9.60/mo in interest', declined: 'Surplus remains idle in checking (0.01% APY)' }, reversible: true, expiresIn: null, factors: [{ label: 'Cash surplus', value: 0.90 }, { label: 'Rate differential', value: 0.78 }, { label: 'Liquidity safe', value: 0.85 }] },
-  { id: 'ACT-004', engine: 'Execute', title: 'Negotiate internet bill renewal', description: 'Send auto-negotiation request to ISP before rate increase takes effect.', urgency: 'medium', confidence: 0.85, impact: { approved: 'Lock in current $65/mo rate for 12 months', declined: 'Rate increases to $89/mo next billing cycle' }, reversible: false, expiresIn: '3d', factors: [{ label: 'Rate lock opportunity', value: 0.85 }, { label: 'Timing window', value: 0.72 }, { label: 'Success likelihood', value: 0.68 }] },
-  { id: 'ACT-005', engine: 'Grow', title: 'Increase emergency fund auto-save', description: 'Raise weekly auto-save from $50 to $75 based on increased income stability.', urgency: 'low', confidence: 0.81, impact: { approved: 'Reach emergency fund goal 3 weeks earlier', declined: 'Continue at current pace, May 2026 completion' }, reversible: true, expiresIn: null, factors: [{ label: 'Income stability', value: 0.94 }, { label: 'Budget headroom', value: 0.76 }, { label: 'Goal acceleration', value: 0.65 }] },
-];
+{ id: 'ACT-001', engine: 'Execute', title: 'Consolidate streaming subscriptions', description: 'Cancel Netflix + Hulu, subscribe to YouTube Premium family plan.', urgency: 'high', confidence: 0.92, impact: { approved: 'Save $140/mo ($1,680/yr)', declined: 'Continue paying $167/mo for overlapping services' }, reversible: true, expiresIn: '18h', factors: [{ label: 'Cost reduction', value: 0.92 }, { label: 'Content overlap', value: 0.88 }, { label: 'Service parity', value: 0.82 }] },
+{
+  id: 'ACT-002',
+  engine: 'Protect',
+  title: `Block suspicious card ending ${DEMO_THREAD.criticalAlert.cardLast4}`,
+  description: `Temporary freeze on card used in unrecognized $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} transaction.`,
+  urgency: 'high',
+  confidence: DEMO_THREAD.criticalAlert.confidence,
+  impact: { approved: 'Card frozen, transaction disputed automatically', declined: 'Card remains active, potential additional fraud exposure' },
+  reversible: true,
+  expiresIn: '6h',
+  factors: [{ label: 'Merchant risk', value: 0.87 }, { label: 'Amount anomaly', value: 0.71 }, { label: 'Geo mismatch', value: 0.65 }]
+},
+{ id: 'ACT-003', engine: 'Grow', title: 'Transfer surplus to high-yield savings', description: 'Move $2,400 surplus from checking to savings account earning 4.8% APY.', urgency: 'medium', confidence: 0.88, impact: { approved: 'Earn additional $9.60/mo in interest', declined: 'Surplus remains idle in checking (0.01% APY)' }, reversible: true, expiresIn: null, factors: [{ label: 'Cash surplus', value: 0.90 }, { label: 'Rate differential', value: 0.78 }, { label: 'Liquidity safe', value: 0.85 }] },
+{ id: 'ACT-004', engine: 'Execute', title: 'Negotiate internet bill renewal', description: 'Send auto-negotiation request to ISP before rate increase takes effect.', urgency: 'medium', confidence: 0.85, impact: { approved: 'Lock in current $65/mo rate for 12 months', declined: 'Rate increases to $89/mo next billing cycle' }, reversible: false, expiresIn: '3d', factors: [{ label: 'Rate lock opportunity', value: 0.85 }, { label: 'Timing window', value: 0.72 }, { label: 'Success likelihood', value: 0.68 }] },
+{ id: 'ACT-005', engine: 'Grow', title: 'Increase emergency fund auto-save', description: 'Raise weekly auto-save from $50 to $75 based on increased income stability.', urgency: 'low', confidence: 0.81, impact: { approved: 'Reach emergency fund goal 3 weeks earlier', declined: 'Continue at current pace, May 2026 completion' }, reversible: true, expiresIn: null, factors: [{ label: 'Income stability', value: 0.94 }, { label: 'Budget headroom', value: 0.76 }, { label: 'Goal acceleration', value: 0.65 }] }];
+
 
 const urgencyBorderColor = { high: 'var(--state-critical)', medium: 'var(--engine-execute)', low: 'var(--engine-govern)' };
 const urgencyBadgeCls = { high: 'bg-red-500/20 text-red-400', medium: 'bg-amber-500/20 text-amber-400', low: 'bg-blue-500/20 text-blue-400' };
@@ -57,7 +58,7 @@ const engineBadgeCls = { Protect: 'bg-emerald-500/20 text-emerald-400', Grow: 'b
 export function ExecuteApproval() {
   usePageTitle('Action Approval');
   const [expandedAction, setExpandedAction] = useState<string | null>(queueActions[0].id);
-  const [confirmAction, setConfirmAction] = useState<{ id: string; type: 'approve' | 'decline' } | null>(null);
+  const [confirmAction, setConfirmAction] = useState<{id: string;type: 'approve' | 'decline';} | null>(null);
   const [processedIds, setProcessedIds] = useState<Set<string>>(new Set());
   const [consentReviewed, setConsentReviewed] = useState(false);
 
@@ -77,22 +78,22 @@ export function ExecuteApproval() {
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: 'var(--engine-execute)', color: '#0B1221' }}
-      >
+        style={{ background: 'var(--engine-execute)', color: 'var(--bg-oled)' }}>
+        
         Skip to main content
       </a>
 
       <nav
         className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/[0.06]"
-        style={{ background: 'rgba(11,18,33,0.8)' }}
-        aria-label="Breadcrumb"
-      >
+
+        aria-label="Breadcrumb">
+        
         <div className="mx-auto px-4 md:px-6 lg:px-8 h-14 flex items-center gap-2" style={{ maxWidth: '1280px' }}>
           <Link
             to="/execute"
             className="flex items-center gap-1.5 text-sm font-medium hover:opacity-80 transition-opacity"
-            style={{ color: 'var(--engine-execute)' }}
-          >
+            style={{ color: 'var(--engine-execute)' }}>
+            
             <ArrowLeft className="h-4 w-4" />
             Execute
           </Link>
@@ -108,8 +109,8 @@ export function ExecuteApproval() {
         variants={stagger}
         initial="hidden"
         animate="visible"
-        role="main"
-      >
+        role="main">
+        
         {/* Hero */}
         <motion.div variants={fadeUp} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
@@ -128,16 +129,16 @@ export function ExecuteApproval() {
         <motion.div variants={fadeUp}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: 'Pending', value: '5', color: 'var(--engine-execute)' },
-              { label: 'Approved (24h)', value: '3', color: 'var(--engine-protect)' },
-              { label: 'Deferred', value: '1', color: 'var(--engine-govern)' },
-              { label: 'Avg confidence', value: '0.88', color: 'var(--engine-dashboard)' },
-            ].map((kpi) => (
-              <div key={kpi.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+            { label: 'Pending', value: '5', color: 'var(--engine-execute)' },
+            { label: 'Approved (24h)', value: '3', color: 'var(--engine-protect)' },
+            { label: 'Deferred', value: '1', color: 'var(--engine-govern)' },
+            { label: 'Avg confidence', value: '0.88', color: 'var(--engine-dashboard)' }].
+            map((kpi) => <Surface
+              key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
                 <p className="text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
-              </div>
-            ))}
+              </Surface>
+            )}
           </div>
         </motion.div>
 
@@ -153,29 +154,31 @@ export function ExecuteApproval() {
               role="button"
               tabIndex={0}
               onKeyDown={(e) => e.key === 'Enter' && setConsentReviewed(true)}
-              aria-label="Review consent scope"
-            >
+              aria-label="Review consent scope">
+              
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wider mb-0.5" style={{ color: 'var(--engine-execute)' }}>Consent scope</p>
                   <p className="text-sm text-white/70">Click to review the data access scope for these actions.</p>
                 </div>
-                {consentReviewed ? (
-                  <span className="text-xs font-semibold text-emerald-400 shrink-0">Reviewed</span>
-                ) : (
-                  <span className="text-xs text-white/30 shrink-0">Tap to review</span>
-                )}
+                {consentReviewed ?
+                <span className="text-xs font-semibold text-emerald-400 shrink-0">Reviewed</span> :
+
+                <span className="text-xs text-white/30 shrink-0">Tap to review</span>
+                }
               </div>
             </div>
 
             {/* Primary approve action */}
-            <button
+            <Button
               disabled={!consentReviewed}
-              className="w-full py-3 rounded-xl text-sm font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ background: consentReviewed ? 'var(--engine-execute)' : 'rgba(234,179,8,0.15)', color: consentReviewed ? '#0B1221' : 'var(--engine-execute)' }}
-            >
+              variant="glass"
+              engine="execute"
+              fullWidth
+              className="rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+              
               {consentReviewed ? 'Approve & execute' : 'Review consent scope first'}
-            </button>
+            </Button>
 
             {/* Urgency banner */}
             <div className="rounded-2xl border border-red-500/30 bg-red-500/5 p-4" style={{ borderLeftWidth: 2, borderLeftColor: 'var(--state-critical)' }}>
@@ -190,12 +193,12 @@ export function ExecuteApproval() {
 
             {/* Action queue */}
             <div className="flex flex-col gap-3">
-              {visibleActions.map((action) => (
-                <div
-                  key={action.id}
-                  className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 md:p-5"
-                  style={{ borderLeftWidth: 3, borderLeftColor: urgencyBorderColor[action.urgency] }}
-                >
+              {visibleActions.map((action) => <Surface
+
+                key={action.id} className="rounded-2xl p-4 md:p-5"
+
+                style={{ borderLeftWidth: 3, borderLeftColor: urgencyBorderColor[action.urgency] }} variant="glass" padding="none">
+                
                   <div className="flex items-start gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-2">
@@ -204,12 +207,14 @@ export function ExecuteApproval() {
                         {action.expiresIn && <span className="text-[10px] text-white/30">Expires in {action.expiresIn}</span>}
                         {action.reversible && <span className="text-[10px] text-emerald-400/60">Reversible</span>}
                       </div>
-                      <button
-                        onClick={() => setExpandedAction(expandedAction === action.id ? null : action.id)}
-                        className="text-sm font-medium text-white hover:text-amber-300 transition-colors text-left"
-                      >
+                      <Button
+                      onClick={() => setExpandedAction(expandedAction === action.id ? null : action.id)}
+                      variant="ghost"
+                      engine="execute"
+                      className="text-sm font-medium text-white hover:text-amber-300 transition-colors text-left !px-0 !h-auto !min-h-0">
+                      
                         {action.title}
-                      </button>
+                      </Button>
                       <p className="text-xs text-white/50 mt-1">{action.description}</p>
                     </div>
 
@@ -218,11 +223,11 @@ export function ExecuteApproval() {
                       <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
                         <circle cx="20" cy="20" r="16" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
                         <circle
-                          cx="20" cy="20" r="16" fill="none" stroke="var(--engine-execute)" strokeWidth="4"
-                          strokeLinecap="round"
-                          strokeDasharray={`${action.confidence * 2 * Math.PI * 16} ${2 * Math.PI * 16}`}
-                          transform="rotate(-90 20 20)"
-                        />
+                        cx="20" cy="20" r="16" fill="none" stroke="var(--engine-execute)" strokeWidth="4"
+                        strokeLinecap="round"
+                        strokeDasharray={`${action.confidence * 2 * Math.PI * 16} ${2 * Math.PI * 16}`}
+                        transform="rotate(-90 20 20)" />
+                      
                       </svg>
                       <div className="absolute inset-0 flex items-center justify-center">
                         <span className="text-[9px] font-bold text-amber-400">{Math.round(action.confidence * 100)}</span>
@@ -231,29 +236,29 @@ export function ExecuteApproval() {
                   </div>
 
                   {/* Expanded evidence */}
-                  {expandedAction === action.id && (
-                    <div className="mt-4 pt-3 border-t border-white/[0.06] space-y-3">
+                  {expandedAction === action.id &&
+                <div className="mt-4 pt-3 border-t border-white/[0.06] space-y-3">
                       {/* Action evidence */}
                       <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--engine-execute)' }}>Action evidence</p>
                       <div className="space-y-2">
-                        {action.factors.map((f) => (
-                          <div key={f.label} className="flex items-center gap-2">
+                        {action.factors.map((f) =>
+                    <div key={f.label} className="flex items-center gap-2">
                             <span className="text-xs text-white/50 w-36 shrink-0">{f.label}</span>
                             <div className="flex-1 h-1.5 rounded-full bg-white/10">
                               <div className="h-full rounded-full bg-amber-500/60" style={{ width: `${f.value * 100}%` }} />
                             </div>
                             <span className="text-xs text-white/40 w-8 text-right">{f.value.toFixed(2)}</span>
                           </div>
-                        ))}
+                    )}
                       </div>
 
                       {/* SHAP attribution waterfall */}
                       <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--engine-execute)' }}>SHAP attribution</p>
                       <ShapWaterfall
-                        factors={action.factors.map(f => ({ name: f.label, value: f.value }))}
-                        baseValue={50}
-                        className="mt-1"
-                      />
+                    factors={action.factors.map((f) => ({ name: f.label, value: f.value }))}
+                    baseValue={50}
+                    className="mt-1" />
+                  
 
                       {/* Expected outcome */}
                       <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--engine-execute)' }}>Expected outcome</p>
@@ -272,40 +277,45 @@ export function ExecuteApproval() {
 
                       {/* Action buttons */}
                       <div className="flex gap-2 pt-1">
-                        <button
-                          className="px-4 py-2 rounded-lg text-white text-xs font-semibold hover:opacity-90 transition-opacity"
-                          style={{ background: 'var(--engine-execute)', color: '#0B1221' }}
-                          onClick={() => setConfirmAction({ id: action.id, type: 'approve' })}
-                        >
+                        <Button
+                      variant="glass"
+                      engine="execute"
+                      size="sm"
+                      className="rounded-lg text-xs"
+                      onClick={() => setConfirmAction({ id: action.id, type: 'approve' })}>
+                      
                           Approve
-                        </button>
-                        <button
-                          className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs hover:bg-white/10 transition-colors"
-                          onClick={() => setConfirmAction({ id: action.id, type: 'decline' })}
-                        >Decline</button>
-                        <button className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/40 text-xs hover:bg-white/10 transition-colors">Defer</button>
-                        <Link to="/dashboard" className="px-4 py-2 rounded-lg text-white/30 text-xs hover:text-white/50 transition-colors">More info</Link>
+                        </Button>
+                        <Button
+                      variant="secondary"
+                      engine="execute"
+                      size="sm"
+                      className="rounded-lg text-xs"
+                      onClick={() => setConfirmAction({ id: action.id, type: 'decline' })}>
+                      Decline</Button>
+                        <Button variant="secondary" engine="execute" size="sm" className="rounded-lg text-xs">Defer</Button>
+                        <ButtonLink to="/dashboard" variant="ghost" engine="execute" size="sm" className="rounded-lg text-xs text-white/30 hover:text-white/50">More info</ButtonLink>
                       </div>
                     </div>
-                  )}
-                </div>
-              ))}
+                }
+                </Surface>
+              )}
             </div>
 
-            {visibleActions.length === 0 && (
-              <div className="flex flex-col items-center gap-3 py-16">
+            {visibleActions.length === 0 &&
+            <div className="flex flex-col items-center gap-3 py-16">
                 <CheckCircle2 className="w-12 h-12 opacity-30" style={{ color: 'var(--engine-protect)' }} />
                 <p className="text-sm text-white/50">All actions reviewed. Queue is clear.</p>
                 <p className="text-xs text-white/30">3 actions approved today.</p>
               </div>
-            )}
+            }
             <p className="text-xs text-white/30">Consent-first: no action executes without explicit approval · {visibleActions.length} pending · 3 approved today</p>
           </motion.div>
 
           {/* Side rail */}
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Approval queue sidebar">
             {/* Queue health ring */}
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 flex flex-col items-center">
+            <Surface className="rounded-2xl p-4 flex flex-col items-center" variant="glass" padding="none">
               <div className="relative" aria-label="Queue health: 85">
                 <svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true">
                   <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
@@ -313,8 +323,8 @@ export function ExecuteApproval() {
                     cx="40" cy="40" r="32" fill="none" stroke="var(--engine-execute)" strokeWidth="6"
                     strokeLinecap="round"
                     strokeDasharray={`${0.85 * 2 * Math.PI * 32} ${2 * Math.PI * 32}`}
-                    transform="rotate(-90 40 40)"
-                  />
+                    transform="rotate(-90 40 40)" />
+                  
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-lg font-bold text-white">85</span>
@@ -322,55 +332,55 @@ export function ExecuteApproval() {
               </div>
               <p className="text-xs text-white/50 mt-2">Queue health</p>
               <p className="text-[10px] text-white/30">Composite urgency score</p>
-            </div>
+            </Surface>
 
             {/* Approval activity */}
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle2 className="h-4 w-4 text-amber-400" />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Approval Activity</h3>
               </div>
               <div className="space-y-3">
                 {[
-                  { label: '3 approved today', date: '08:00', done: true },
-                  { label: '5 pending review', date: 'Now', done: false, current: true },
-                  { label: '1 deferred', date: 'Later', done: false },
-                ].map((m) => (
-                  <div key={m.label} className="flex items-start gap-2">
+                { label: '3 approved today', date: '08:00', done: true },
+                { label: '5 pending review', date: 'Now', done: false, current: true },
+                { label: '1 deferred', date: 'Later', done: false }].
+                map((m) =>
+                <div key={m.label} className="flex items-start gap-2">
                     <div className={`w-2 h-2 rounded-full mt-1 shrink-0 ${m.done ? 'bg-emerald-400' : m.current ? 'bg-amber-400 animate-pulse' : 'bg-white/20'}`} />
                     <div>
                       <p className="text-xs text-white/70">{m.label}</p>
                       <p className="text-[10px] text-white/30">{m.date}</p>
                     </div>
                   </div>
-                ))}
+                )}
               </div>
-            </div>
+            </Surface>
 
             {/* Queue summary */}
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Queue Summary</h3>
               <div className="space-y-2.5">
                 {[
-                  { label: 'Pending', value: '5', color: 'text-amber-400' },
-                  { label: 'Approved today', value: '3', color: 'text-emerald-400' },
-                  { label: 'Deferred', value: '1', color: 'text-blue-400' },
-                  { label: 'Avg confidence', value: '0.88', color: 'text-white/70' },
-                ].map((row) => (
-                  <div key={row.label} className="flex justify-between">
+                { label: 'Pending', value: '5', color: 'text-amber-400' },
+                { label: 'Approved today', value: '3', color: 'text-emerald-400' },
+                { label: 'Deferred', value: '1', color: 'text-blue-400' },
+                { label: 'Avg confidence', value: '0.88', color: 'text-white/70' }].
+                map((row) =>
+                <div key={row.label} className="flex justify-between">
                     <span className="text-xs text-white/50">{row.label}</span>
                     <span className={`text-xs font-medium ${row.color}`}>{row.value}</span>
                   </div>
-                ))}
+                )}
               </div>
-            </div>
+            </Surface>
 
             {/* Completed */}
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Completed</h3>
               <p className="text-xs text-white/30">3 actions completed today. Expand to review.</p>
-              <button className="text-xs mt-2 hover:underline" style={{ color: 'var(--engine-execute)' }}>Show completed</button>
-            </div>
+              <Button variant="ghost" engine="execute" size="sm" className="text-xs mt-2 !px-0 hover:underline">Show completed</Button>
+            </Surface>
           </aside>
         </div>
 
@@ -385,14 +395,14 @@ export function ExecuteApproval() {
           <Dialog open={true} onOpenChange={(open) => !open && setConfirmAction(null)}>
             <DialogContent
               className="max-w-md"
-              style={{ background: '#0f1e35', border: '1px solid rgba(255,255,255,0.12)' }}
-            >
+              style={{ background: '#0f1e35', border: '1px solid rgba(255,255,255,0.12)' }}>
+              
               <div className="flex flex-col gap-4 p-2">
                 <div>
                   <p
                     className="text-xs font-semibold uppercase tracking-widest mb-1"
-                    style={{ color: isApprove ? 'var(--engine-execute)' : 'var(--state-critical)' }}
-                  >
+                    style={{ color: isApprove ? 'var(--engine-execute)' : 'var(--state-critical)' }}>
+                    
                     {isApprove ? 'Confirm Approval' : 'Confirm Decline'}
                   </p>
                   <h3 className="text-base font-semibold text-white">{action.title}</h3>
@@ -404,9 +414,9 @@ export function ExecuteApproval() {
                   className="rounded-xl p-3"
                   style={{
                     background: isApprove ? 'rgba(34,197,94,0.05)' : 'rgba(var(--state-critical-rgb),0.05)',
-                    border: `1px solid ${isApprove ? 'rgba(34,197,94,0.2)' : 'rgba(var(--state-critical-rgb),0.2)'}`,
-                  }}
-                >
+                    border: `1px solid ${isApprove ? 'rgba(34,197,94,0.2)' : 'rgba(var(--state-critical-rgb),0.2)'}`
+                  }}>
+                  
                   <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: isApprove ? 'var(--engine-protect)' : 'var(--state-critical)' }}>
                     {isApprove ? 'Expected outcome' : 'If declined'}
                   </p>
@@ -416,22 +426,24 @@ export function ExecuteApproval() {
                 </div>
 
                 <div className="flex items-center gap-2 pt-1">
-                  <button
-                    className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-90"
-                    style={{
-                      background: isApprove ? 'var(--engine-execute)' : 'var(--state-critical)',
-                      color: isApprove ? '#0B1221' : '#ffffff',
-                    }}
-                    onClick={handleConfirm}
-                  >
+                  <Button
+                    variant={isApprove ? 'glass' : 'danger'}
+                    engine={isApprove ? 'execute' : undefined}
+                    fullWidth
+                    className="rounded-xl text-sm"
+                    onClick={handleConfirm}>
+                    
                     {isApprove ? 'Approve' : 'Decline'}
-                  </button>
-                  <button
-                    className="flex-1 px-4 py-2.5 rounded-xl text-sm bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 transition-colors"
-                    onClick={() => setConfirmAction(null)}
-                  >
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    engine="execute"
+                    fullWidth
+                    className="rounded-xl text-sm"
+                    onClick={() => setConfirmAction(null)}>
+                    
                     Cancel
-                  </button>
+                  </Button>
                 </div>
 
                 <p className="text-[10px] text-white/25 text-center">
@@ -439,11 +451,11 @@ export function ExecuteApproval() {
                 </p>
               </div>
             </DialogContent>
-          </Dialog>
-        );
+          </Dialog>);
+
       })()}
-    </div>
-  );
+    </div>);
+
 }
 
 export default ExecuteApproval;

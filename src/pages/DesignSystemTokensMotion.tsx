@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from '../router';
+import { Button } from '@/design-system';
 
 const durations = [
   { label: 'Fast', token: '--motion-fast', value: '120ms' },
@@ -49,10 +50,9 @@ export const DesignSystemTokensMotion: React.FC = () => {
                     }}
                   />
                 </div>
-                <button type="button" onClick={() => play(d.label)}
-                  style={{ padding: '4px 12px', fontSize: 12, border: '1px solid rgba(255,255,255,0.15)', borderRadius: 6, background: 'transparent', color: 'inherit', cursor: 'pointer' }}>
+                <Button type="button" onClick={() => play(d.label)} variant="glass" engine="dashboard" size="sm" className="rounded-md text-xs">
                   Play
-                </button>
+                </Button>
               </div>
             ))}
           </div>

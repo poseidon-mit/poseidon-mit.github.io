@@ -9,6 +9,7 @@ import { fadeUp, staggerContainer } from '@/lib/motion-presets';
 import { GlassCard, StatusBadge, ConfidenceIndicator, CitationCard, ReasoningChain } from '@/components/poseidon';
 import type { ViewMode } from '@/hooks/useViewMode';
 import { decisions, typeColor, typeBg, governCitations, governReasoningSteps, type DecisionType } from './govern-data';
+import { Button } from '@/design-system'
 
 /* ═══════════════════════════════════════════
    GOVERN-SPECIFIC: TypeBadge
@@ -79,14 +80,17 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
                     style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
                   >
                     <td className="px-4 py-3.5">
-                      <button
+                      <Button
                         className="text-sm font-mono font-medium transition-colors hover:underline cursor-pointer"
-                        style={{ color: 'var(--engine-govern)', background: 'transparent', border: 'none' }}
+                        variant="ghost"
+                        engine="govern"
+                        size="sm"
+                        style={{ color: 'var(--engine-govern)' }}
                         aria-label={`View details for decision ${d.id}`}
                         onClick={() => navigate('/govern/audit-detail')}
                       >
                         {d.id}
-                      </button>
+                      </Button>
                       <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>{d.description}</p>
                       {d.hash && (
                         <p className="text-[10px] mt-0.5 font-mono" style={{ color: '#475569' }}>{d.hash}</p>
@@ -110,19 +114,17 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
                       <StatusBadge status={d.status} />
                     </td>
                     <td className="px-4 py-3.5">
-                      <button
+                      <Button
                         className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-                        style={{
-                          background: 'linear-gradient(135deg, var(--engine-govern), #2563EB)',
-                          color: '#ffffff',
-                          minHeight: '36px',
-                        }}
+                        variant="glass"
+                        engine="govern"
+                        size="sm"
                         aria-label={`View audit trail for decision ${d.id}`}
                         onClick={() => navigate('/govern/audit-detail')}
                       >
                         <Eye size={13} />
                         View trail
-                      </button>
+                      </Button>
                     </td>
                   </motion.tr>
                 ))}
@@ -142,9 +144,12 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
                 <StatusBadge status={d.status} />
                 <span className="ml-auto text-xs" style={{ color: '#64748B' }}>{d.timestamp}</span>
               </div>
-              <button
+              <Button
                 className="text-sm font-mono font-medium text-left transition-colors hover:underline cursor-pointer"
-                style={{ color: 'var(--engine-govern)', background: 'transparent', border: 'none', padding: 0 }}
+                variant="ghost"
+                engine="govern"
+                size="sm"
+                style={{ color: 'var(--engine-govern)', padding: 0 }}
                 aria-label={`View details for decision ${d.id}`}
                 onClick={() => {
                   if (viewMode === 'deep') {
@@ -155,7 +160,7 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
                 }}
               >
                 {d.id}
-              </button>
+              </Button>
               <p className="text-xs leading-relaxed" style={{ color: '#94A3B8' }}>{d.description}</p>
               {d.hash && (
                 <p className="text-[10px] font-mono" style={{ color: '#475569' }}>{d.hash}</p>
@@ -176,19 +181,17 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
                   className="mt-2"
                 />
               )}
-              <button
+              <Button
                 className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-                style={{
-                  background: 'linear-gradient(135deg, var(--engine-govern), #2563EB)',
-                  color: '#ffffff',
-                  minHeight: '44px',
-                }}
+                variant="glass"
+                engine="govern"
+                fullWidth
                 aria-label={`View audit trail for decision ${d.id}`}
                 onClick={() => navigate('/govern/audit-detail')}
               >
                 <Eye size={16} />
                 View trail
-              </button>
+              </Button>
             </GlassCard>
           </motion.div>
         ))}

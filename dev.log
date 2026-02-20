@@ -1,0 +1,12 @@
+
+> poseidon-prototype@0.1.0 dev
+> vite
+
+Port 5173 is in use, trying another one...
+
+  VITE v7.3.1  ready in 129 ms
+
+  ➜  Local:   http://localhost:5174/
+  ➜  Network: http://192.168.68.63:5174/
+  ➜  Network: http://192.168.64.1:5174/
+  ➜  press h + enter to show help

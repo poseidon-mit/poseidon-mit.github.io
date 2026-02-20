@@ -140,7 +140,11 @@ function getEntryFiles() {
     .filter((name) => name.endsWith('.tsx') && !name.includes('__tests__'))
     .map((name) => path.join(PAGES_ROOT, name));
 
-  return [path.join(SRC_ROOT, 'App.tsx'), ...pageFiles];
+  return [
+    path.join(SRC_ROOT, 'main.tsx'),
+    path.join(SRC_ROOT, 'App.tsx'),
+    ...pageFiles,
+  ];
 }
 
 function buildReachableGraph() {
@@ -174,6 +178,28 @@ const componentFiles = [...reachable].filter((filePath) => toRelative(filePath).
 const pageFiles = [...reachable].filter((filePath) => toRelative(filePath).startsWith('src/pages/'));
 const appFiles = [...reachable].filter((filePath) => toRelative(filePath) === 'src/App.tsx');
 const surfaceFiles = [...pageFiles, ...componentFiles, ...appFiles];
+const BANNED_GLASS_PATTERNS = [
+  {
+    name: 'surface-glass-class',
+    pattern: /\bsurface-glass\b/,
+    message: 'surface-glass is deprecated. Use <Surface variant=\"glass\">.',
+  },
+  {
+    name: 'legacy-glass-class',
+    pattern: /(?:className|class)\s*=\s*["'`][^"'`]*\bglass-surface(?:-card)?\b/,
+    message: 'Do not use legacy glass-surface classes. Use <Surface variant=\"glass\">.',
+  },
+  {
+    name: 'raw-glass-card-class',
+    pattern: /rounded-2xl\s+border\s+border-white\/\[0\.08\]\s+bg-white\/\[0\.03\]/,
+    message: 'Raw glass card class is forbidden. Use <Surface variant=\"glass\">.',
+  },
+  {
+    name: 'inline-nav-rgba',
+    pattern: /rgba\(11,18,33,0\.(?:8|95)\)/,
+    message: 'Inline nav rgba background is forbidden. Use glass-header class.',
+  },
+];
 
 for (const filePath of surfaceFiles) {
   const relativePath = toRelative(filePath);
@@ -193,6 +219,12 @@ for (const filePath of surfaceFiles) {
       if (source.includes(literal)) {
         errors.push(`[engine-color] ${relativePath} contains local engine color literal ${literal}. Use engine-semantic.ts.`);
       }
+    }
+  }
+
+  for (const rule of BANNED_GLASS_PATTERNS) {
+    if (rule.pattern.test(source)) {
+      errors.push(`[glass-policy] ${relativePath} violates ${rule.name}. ${rule.message}`);
     }
   }
 }
@@ -219,6 +251,13 @@ for (const filePath of surfaceFiles) {
   const imports = parseImports(filePath);
 
   for (const item of imports) {
+    if (item.moduleSpecifier.includes('/components/spectacular/')) {
+      errors.push(
+        `[forbidden-import] ${relativePath} imports ${item.moduleSpecifier}. Use design-system primitives instead.`,
+      );
+      continue;
+    }
+
     const resolvedRel = toRelative(item.resolved);
     if (!resolvedRel.startsWith('src/components/')) {
       continue;

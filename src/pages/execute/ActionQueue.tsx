@@ -19,6 +19,7 @@ import { GlassCard, PriorityBadge, ConfidenceIndicator, ReasoningChain } from '@
 import { initialActions, engineColor, engineBg, executeReasoningSteps } from './execute-data'
 import type { ActionItem, ActionStatus, Engine } from '@/types/engine-data'
 import type { ViewMode } from '@/hooks/useViewMode'
+import { Button } from '@/design-system'
 
 /* ── Local EngineBadge (Execute-specific inline style) ── */
 
@@ -150,37 +151,33 @@ export function ActionQueue({ viewMode = 'detail' }: ActionQueueProps) {
                         </td>
                         <td className="px-4 py-3.5">
                           <div className="flex items-center gap-2">
-                            <button
+                            <Button
                               onClick={(e) => {
                                 e.stopPropagation()
                                 handleApprove(item.id)
                               }}
-                              className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-                              style={{
-                                background: 'linear-gradient(135deg, #14B8A6, #0D9488)',
-                                color: '#04141a',
-                              }}
+                              variant="glass"
+                              engine="execute"
+                              size="sm"
+                              className="inline-flex items-center gap-1.5 rounded-lg text-xs font-semibold"
                               aria-label={`Approve: ${item.action}`}
                             >
                               <CheckCircle2 size={13} />
                               Approve
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                               onClick={(e) => {
                                 e.stopPropagation()
                                 handleReject(item.id)
                               }}
-                              className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all hover:shadow-[0_0_8px_rgba(var(--state-critical-rgb),0.3)] active:scale-[0.98] cursor-pointer"
-                              style={{
-                                borderColor: 'rgba(var(--state-critical-rgb),0.3)',
-                                color: 'var(--state-critical)',
-                                background: 'transparent',
-                              }}
+                              variant="danger"
+                              size="sm"
+                              className="inline-flex items-center gap-1.5 rounded-lg text-xs font-semibold"
                               aria-label={`Reject: ${item.action}`}
                             >
                               <XCircle size={13} />
                               Reject
-                            </button>
+                            </Button>
                           </div>
                         </td>
                       </motion.tr>
@@ -230,33 +227,27 @@ export function ActionQueue({ viewMode = 'detail' }: ActionQueueProps) {
                 <ConfidenceIndicator value={item.confidence} accentColor="#14B8A6" />
               </div>
               <div className="flex items-center gap-2">
-                <button
+                <Button
                   onClick={() => handleApprove(item.id)}
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-                  style={{
-                    background: 'linear-gradient(135deg, #14B8A6, #0D9488)',
-                    color: '#04141a',
-                    minHeight: '44px',
-                  }}
+                  variant="glass"
+                  engine="execute"
+                  fullWidth
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl text-sm font-semibold"
                   aria-label={`Approve: ${item.action}`}
                 >
                   <CheckCircle2 size={16} />
                   Approve
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => handleReject(item.id)}
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all hover:shadow-[0_0_8px_rgba(var(--state-critical-rgb),0.3)] active:scale-[0.98] cursor-pointer"
-                  style={{
-                    borderColor: 'rgba(var(--state-critical-rgb),0.3)',
-                    color: 'var(--state-critical)',
-                    background: 'transparent',
-                    minHeight: '44px',
-                  }}
+                  variant="danger"
+                  fullWidth
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl text-sm font-semibold"
                   aria-label={`Reject: ${item.action}`}
                 >
                   <XCircle size={16} />
                   Reject
-                </button>
+                </Button>
               </div>
             </GlassCard>
           </motion.div>

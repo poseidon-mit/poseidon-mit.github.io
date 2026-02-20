@@ -171,6 +171,9 @@ export const routeLoaders = {
 
   '/onboarding': () => import('../pages/OnboardingWelcome'),
   '/404': () => import('../pages/NotFound'),
+
+  // --- Test / Showcase ---
+  '/test/spectacular': () => import('../pages/TestSpectacular'),
 } satisfies Record<string, RouteLoader>;
 
 export type RoutePath = keyof typeof routeLoaders;

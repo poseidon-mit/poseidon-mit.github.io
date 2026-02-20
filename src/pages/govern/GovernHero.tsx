@@ -17,6 +17,7 @@ import { fadeUp, staggerContainer, staggerContainerDelayed } from '@/lib/motion-
 import { GlassCard, ViewModeToggle, CitationCard, CountUp } from '@/components/poseidon';
 import type { ViewMode } from '@/hooks/useViewMode';
 import { kpiData, governCitations } from './govern-data';
+import { Button } from '@/design-system'
 
 interface GovernHeroProps {
   navigate: (path: string) => void;
@@ -79,27 +80,25 @@ function HeroSection({ navigate, viewMode = 'detail', onViewModeChange }: Govern
           viewMode={viewMode}
         />
         <div className="flex flex-wrap gap-2 mt-4">
-          <button
+          <Button
             className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-            style={{
-              background: 'linear-gradient(135deg, var(--engine-govern), #2563EB)',
-              color: '#ffffff',
-              minHeight: '44px',
-            }}
+            variant="glass"
+            engine="govern"
             aria-label="View audit trail for decision GV-2026-0214-42"
             onClick={() => navigate('/govern/audit-detail')}
           >
             <Eye size={16} />
             View audit trail
-          </button>
-          <button
+          </Button>
+          <Button
             className="inline-flex items-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-medium transition-all hover:bg-white/[0.04] active:scale-[0.98] cursor-pointer"
-            style={{ borderColor: 'rgba(255,255,255,0.1)', color: '#CBD5E1', background: 'transparent', minHeight: '44px' }}
+            variant="secondary"
+            engine="govern"
             onClick={() => navigate('/govern/audit')}
           >
             <FileText size={16} />
             Export report
-          </button>
+          </Button>
         </div>
       </motion.div>
     </motion.section>

@@ -10,6 +10,7 @@ import { fadeUp, staggerContainer, staggerContainerDelayed } from '@/lib/motion-
 import { GlassCard, ViewModeToggle, CitationCard, CountUp } from '@/components/poseidon'
 import type { ViewMode } from '@/hooks/useViewMode'
 import { kpiData, growCitations } from './grow-data'
+import { Button } from '@/design-system'
 
 /* ── Props ── */
 
@@ -72,26 +73,24 @@ export function HeroSection({ navigate, viewMode = 'detail', onViewModeChange }:
           viewMode={viewMode}
         />
         <div className="flex flex-wrap gap-2">
-          <button
+          <Button
             className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-            style={{
-              background: 'linear-gradient(135deg, var(--engine-grow), #7C3AED)',
-              color: '#ffffff',
-              minHeight: '44px',
-            }}
+            variant="glass"
+            engine="grow"
             aria-label="Review growth scenarios"
             onClick={() => navigate('/grow/scenarios')}
           >
             <Target size={16} />
             Review scenarios
-          </button>
-          <button
+          </Button>
+          <Button
             className="inline-flex items-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-medium transition-all hover:bg-white/[0.04] active:scale-[0.98] cursor-pointer"
-            style={{ borderColor: 'rgba(255,255,255,0.1)', color: '#CBD5E1', background: 'transparent', minHeight: '44px' }}
+            variant="secondary"
+            engine="grow"
             onClick={() => navigate('/grow/goal')}
           >
             Adjust goal
-          </button>
+          </Button>
         </div>
       </motion.div>
     </motion.section>

@@ -2,13 +2,14 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X } from "lucide-react"
 import { Link } from '@/router'
+import { Button, ButtonLink } from '@/design-system'
 
 export function PublicTopBar() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
     <nav
-      className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/[0.06]"
+      className="glass-header sticky top-0 z-50 border-b border-white/[0.06]"
       role="navigation"
       aria-label="Main navigation"
     >
@@ -54,23 +55,29 @@ export function PublicTopBar() {
           >
             Sign in
           </Link>
-          <Link
+          <ButtonLink
             to="/signup"
-            className="text-sm font-medium px-5 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-950 transition-all hover:brightness-110"
+            variant="glass"
+            engine="dashboard"
+            size="sm"
+            className="rounded-xl"
           >
             Get Started
-          </Link>
+          </ButtonLink>
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button
-          className="md:hidden text-text-muted hover:text-text-primary transition-colors"
+        <Button
+          variant="ghost"
+          engine="dashboard"
+          size="sm"
+          className="md:hidden text-text-muted hover:text-text-primary transition-colors !h-9 !min-h-9 !w-9 !px-0"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
         >
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        </Button>
       </div>
 
       {/* Mobile Menu */}
@@ -104,13 +111,16 @@ export function PublicTopBar() {
               >
                 Sign in
               </Link>
-              <Link
+              <ButtonLink
                 to="/signup"
-                className="text-sm font-medium px-5 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-950 text-center transition-all hover:brightness-110"
+                variant="glass"
+                engine="dashboard"
+                size="sm"
+                className="rounded-xl text-center"
                 onClick={() => setMobileOpen(false)}
               >
                 Get Started
-              </Link>
+              </ButtonLink>
             </div>
           </motion.div>
         )}

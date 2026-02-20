@@ -16,6 +16,12 @@ export const easings = {
 
 /* ── Spring config (natural premium feel) ── */
 const spring = { type: 'spring' as const, stiffness: 380, damping: 30 }
+export const creatorStudioSpringPress = {
+  type: 'spring' as const,
+  stiffness: 400,
+  damping: 25,
+  mass: 0.8,
+}
 
 /* ── Page Transition ── */
 export const pageTransition: Variants = {
@@ -40,6 +46,16 @@ export const fadeUp: Variants = {
   visible: { opacity: 1, y: 0, transition: spring },
 }
 
+export const creatorStudioFadeUp: Variants = {
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 300, damping: 24 },
+  },
+}
+
 export const fadeScale: Variants = {
   hidden: { opacity: 0, scale: 0.96 },
   visible: { opacity: 1, scale: 1, transition: spring },
@@ -60,6 +76,17 @@ export const staggerContainer: Variants = {
   },
 }
 
+export const creatorStudioStaggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+}
+
 /** Delayed stagger — use on KPI grids so they animate after the hero section */
 export const staggerContainerDelayed: Variants = {
   hidden: {},
@@ -74,6 +101,16 @@ export const staggerContainerDelayed: Variants = {
 export const staggerItem: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: spring },
+}
+
+export const creatorStudioStaggerItem: Variants = {
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 300, damping: 24 },
+  },
 }
 
 /* ── Helper: stagger delay for index ── */
@@ -117,11 +154,14 @@ export const pageTransitionReduced: Variants = {
 export function getMotionPreset(prefersReduced: boolean) {
   return {
     fadeUp: prefersReduced ? staticVariants : fadeUp,
+    creatorStudioFadeUp: prefersReduced ? staticVariants : creatorStudioFadeUp,
     fadeIn: prefersReduced ? staticVariants : fadeIn,
     fadeScale: prefersReduced ? staticVariants : fadeScale,
     staggerContainer: prefersReduced ? staticContainer : staggerContainer,
+    creatorStudioStaggerContainer: prefersReduced ? staticContainer : creatorStudioStaggerContainer,
     staggerContainerDelayed: prefersReduced ? staticContainer : staggerContainerDelayed,
     staggerItem: prefersReduced ? staticVariants : staggerItem,
+    creatorStudioStaggerItem: prefersReduced ? staticVariants : creatorStudioStaggerItem,
     pageTransition: prefersReduced ? pageTransitionReduced : pageTransition,
   }
 }

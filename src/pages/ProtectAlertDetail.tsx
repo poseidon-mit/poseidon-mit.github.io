@@ -21,6 +21,7 @@ import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { AuroraPulse, GlassCard, GovernFooter } from '@/components/poseidon'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+import { Button, ButtonLink } from '@/design-system'
 
 /* ── Data ── */
 interface EvidenceItem { id: string; title: string; score: number; details: string; model?: string }
@@ -55,7 +56,7 @@ const detectedAt = formatDemoTimestamp('2026-03-19T14:28:00-04:00')
 const updatedAt = formatDemoTimestamp('2026-03-19T14:30:00-04:00')
 
 function getScoreColor(s: number) { return s >= 0.9 ? "var(--state-critical)" : s >= 0.8 ? "var(--state-warning)" : "var(--engine-govern)" }
-function getScoreBg(s: number) { return s >= 0.9 ? "rgba(239,68,68,0.12)" : s >= 0.8 ? "rgba(245,158,11,0.12)" : "rgba(59,130,246,0.12)" }
+function getScoreBg(s: number) { return s >= 0.9 ? "rgba(var(--state-critical-rgb),0.12)" : s >= 0.8 ? "rgba(var(--state-warning-rgb),0.12)" : "rgba(59,130,246,0.12)" }
 
 /* ── SHAP Waterfall (inlined from poseidon/shap-waterfall) ── */
 function ShapWaterfall({ factors }: { factors: { name: string; value: number }[] }) {
@@ -96,7 +97,7 @@ export default function ProtectAlertDetailPage() {
   return (
     <div className="relative min-h-screen w-full">
       <AuroraPulse engine="protect" />
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-protect)", color: "#0B1221" }}>Skip to main content</a>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-protect)", color: 'var(--bg-oled)' }}>Skip to main content</a>
 
       <div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: "1280px" }} role="main">
 
@@ -170,13 +171,13 @@ export default function ProtectAlertDetailPage() {
                   return (
                     <motion.div key={item.id} variants={fadeUp}>
                       <GlassCard className="!p-0">
-                        <button className="w-full flex items-center justify-between p-4 cursor-pointer text-left" style={{ background: "transparent", border: "none" }} onClick={() => setExpandedId(expanded ? null : item.id)} aria-expanded={expanded} aria-label={`${item.title}: score ${(item.score * 100).toFixed(0)}%`}>
+                        <Button className="w-full justify-between rounded-none !p-4 text-left" variant="ghost" engine="protect" size="sm" springPress={false} onClick={() => setExpandedId(expanded ? null : item.id)} aria-expanded={expanded} aria-label={`${item.title}: score ${(item.score * 100).toFixed(0)}%`}>
                           <div className="flex items-center gap-3">
                             <span className="inline-flex items-center justify-center rounded-lg text-xs font-bold font-mono tabular-nums" style={{ background: getScoreBg(item.score), color: getScoreColor(item.score), width: 44, height: 28 }}>{item.score.toFixed(2)}</span>
                             <span className="text-sm font-medium" style={{ color: "#F1F5F9" }}>{item.title}</span>
                           </div>
                           {expanded ? <ChevronUp size={16} style={{ color: "#64748B" }} /> : <ChevronDown size={16} style={{ color: "#64748B" }} />}
-                        </button>
+                        </Button>
                         <AnimatePresence>
                           {expanded && (
                             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
@@ -209,21 +210,23 @@ export default function ProtectAlertDetailPage() {
             {/* Recommended actions */}
             <GlassCard className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Recommended actions</h3>
-              <Link to="/protect/dispute" className="w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]" style={{ background: "linear-gradient(135deg, #EF4444, #DC2626)", color: "#ffffff", minHeight: "48px" }} aria-label="Block and investigate this transaction"><XCircle size={16} />{"Block & investigate"}</Link>
-              <Link
+              <ButtonLink to="/protect/dispute" variant="primary" engine="protect" fullWidth className="rounded-xl" icon={<XCircle size={16} />} aria-label="Block and investigate this transaction">{"Block & investigate"}</ButtonLink>
+              <ButtonLink
                 to="/protect/dispute"
-                className="w-full inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all hover:bg-white/[0.04]"
-                style={{ borderColor: "rgba(245,158,11,0.4)", color: "var(--state-warning)", background: "transparent", minHeight: "44px" }}
+                variant="glass"
+                engine="protect"
+                fullWidth
+                className="rounded-xl"
               >
                 Request verification
-              </Link>
+              </ButtonLink>
               <p className="text-[10px] text-center" style={{ color: "#64748B" }}>{`AI recommends blocking (${formatConfidence(criticalAlert.confidence)} confidence)`}</p>
             </GlassCard>
 
             {/* Primary CTA: Open execute queue -> /execute */}
-            <Link to="/execute" className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]" style={{ background: "linear-gradient(135deg, var(--engine-protect), #16A34A)", color: "#ffffff", minHeight: "48px" }}>
-              Open execute queue <ArrowUpRight size={16} />
-            </Link>
+            <ButtonLink to="/execute" variant="glass" engine="protect" className="rounded-xl" icon={<ArrowUpRight size={16} />} iconPosition="right">
+              Open execute queue
+            </ButtonLink>
 
             {/* Similar incidents */}
             <GlassCard className="flex flex-col gap-4">

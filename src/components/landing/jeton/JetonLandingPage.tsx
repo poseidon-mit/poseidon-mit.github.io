@@ -12,7 +12,7 @@ export function JetonLandingPage() {
     <>
       <MenuOverlay />
 
-      <div className="overflow-x-clip bg-[#0B1221] text-white">
+      <div className="overflow-x-clip bg-[var(--bg-oled)] text-white">
         <HeroSection />
 
         <div id="platform">

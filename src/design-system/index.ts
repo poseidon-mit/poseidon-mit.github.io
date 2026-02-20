@@ -11,7 +11,7 @@ export { EffectProvider, useEffectPreset, EFFECT_PRESETS, EFFECT_PRESET_META, ty
 
 // Primitives
 export { Surface, type SurfaceProps } from './components/primitives/Surface'
-export { Button, type ButtonProps } from './components/primitives/Button'
+export { Button, ButtonLink, type ButtonProps, type ButtonLinkProps } from './components/primitives/Button'
 export { Badge, type BadgeProps } from './components/primitives/Badge'
 export { Input, type InputProps } from './components/primitives/Input'
 export { Toggle, type ToggleProps } from './components/primitives/Toggle'

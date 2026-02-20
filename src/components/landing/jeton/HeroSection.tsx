@@ -152,10 +152,10 @@ export function HeroSection() {
   }, [heroVideoEnabled, heroVideoSrc]);
 
   return (
-    <section ref={sectionRef} className="relative isolate flex min-h-screen items-center overflow-hidden bg-[#0B1221] px-6 pb-20 pt-28 md:px-8 md:pt-32">
+    <section ref={sectionRef} className="relative isolate flex min-h-screen items-center overflow-hidden bg-[var(--bg-oled)] px-6 pb-20 pt-28 md:px-8 md:pt-32">
       <div
         aria-hidden="true"
-        className={`pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_60%,rgba(0,240,255,0.08),transparent_60%),radial-gradient(ellipse_at_85%_15%,rgba(56,189,248,0.16),transparent_58%),#0B1221] transition-opacity duration-[650ms] ${showFallback ? 'opacity-100' : 'opacity-0'
+        className={`pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_60%,rgba(0,240,255,0.08),transparent_60%),radial-gradient(ellipse_at_85%_15%,rgba(56,189,248,0.16),transparent_58%),var(--bg-oled)] transition-opacity duration-[650ms] ${showFallback ? 'opacity-100' : 'opacity-0'
           }`}
       />
 
@@ -180,7 +180,7 @@ export function HeroSection() {
       ) : null}
 
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0B1221]/76 via-[#0B1221]/56 to-[#0B1221]/95 backdrop-blur-[2px] md:from-[#0B1221]/62 md:via-[#0B1221]/42 md:to-[#0B1221]/95"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[rgba(5,5,8,0.76)] via-[rgba(5,5,8,0.56)] to-[rgba(5,5,8,0.95)] backdrop-blur-[2px] md:from-[rgba(5,5,8,0.62)] md:via-[rgba(5,5,8,0.42)] md:to-[rgba(5,5,8,0.95)]"
         aria-hidden="true"
       />
 
@@ -224,14 +224,14 @@ export function HeroSection() {
         >
           <Link
             to="/signup"
-            className="btn-liquid-glass inline-flex min-h-11 items-center justify-center rounded-full px-8 py-3 text-sm font-semibold text-white transition-all duration-200 hover:scale-[0.985] active:scale-[0.97]"
+            className="btn-liquid-glass inline-flex w-full min-h-11 items-center justify-center rounded-full px-8 py-3 text-sm font-semibold text-white transition-all duration-200 hover:scale-[0.985] active:scale-[0.97] sm:w-auto"
           >
             {JETON_COPY.hero.primaryCta}
           </Link>
           <button
             type="button"
             onClick={() => navigate('/dashboard')}
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/90 transition-all duration-200 hover:border-white/25 hover:bg-white/10 hover:shadow-[0_0_26px_rgba(56,189,248,0.2)]"
+            className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-400/12 px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-cyan-300/20 hover:shadow-[0_0_26px_rgba(56,189,248,0.2)] sm:w-auto"
           >
             <PlayCircle className="h-4 w-4" aria-hidden="true" />
             {JETON_COPY.hero.secondaryCta}
@@ -240,7 +240,7 @@ export function HeroSection() {
             href="/CTO-Group7-Poseidon.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white/90 transition-all duration-200 hover:border-white/25 hover:bg-white/10 hover:shadow-[0_0_26px_rgba(56,189,248,0.2)]"
+            className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-400/12 px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-cyan-300/20 hover:shadow-[0_0_26px_rgba(56,189,248,0.2)] sm:w-auto"
           >
             <FileText className="h-4 w-4" aria-hidden="true" />
             Presentation

@@ -23,6 +23,7 @@ import type { ViewMode } from '@/hooks/useViewMode'
 import { fadeUp } from '@/lib/motion-presets'
 import { signals, shapFactors, quickActions, protectReasoningSteps } from './protect-data'
 import type { Signal } from './protect-data'
+import { Button } from '@/design-system'
 
 /* ─── Props ───────────────────────────────────────────────── */
 
@@ -171,18 +172,16 @@ export function ThreatTable({ navigate, viewMode = 'detail' }: ThreatTableProps)
                       </div>
                     </td>
                     <td className="py-3">
-                      <button
+                      <Button
                         className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors"
-                        style={{
-                          background: 'rgba(34,197,94,0.1)',
-                          border: '1px solid rgba(34,197,94,0.3)',
-                          color: 'var(--engine-protect)',
-                        }}
+                        variant="glass"
+                        engine="protect"
+                        size="sm"
                         onClick={(e) => { e.stopPropagation(); navigate('/protect/alert-detail'); }}
                       >
                         <Eye className="h-3.5 w-3.5" />
                         View
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                   {/* Expanded row */}
@@ -240,14 +239,16 @@ export function ThreatTable({ navigate, viewMode = 'detail' }: ThreatTableProps)
                   <MiniScoreRing value={s.confidence} />
                 </div>
                 <div className="flex items-center justify-between">
-                  <button
+                  <Button
                     className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold"
-                    style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', color: 'var(--engine-protect)' }}
+                    variant="glass"
+                    engine="protect"
+                    size="sm"
                     onClick={(e) => { e.stopPropagation(); navigate('/protect/alert-detail'); }}
                   >
                     <Eye className="h-3.5 w-3.5" />
                     View
-                  </button>
+                  </Button>
                   <ChevronDown
                     className="h-4 w-4 transition-transform"
                     style={{

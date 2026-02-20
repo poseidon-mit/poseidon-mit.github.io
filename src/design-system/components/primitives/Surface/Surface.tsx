@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { createElement, forwardRef, type ElementType } from 'react'
 import { cn } from '../../../../lib/utils'
 import type { SurfaceProps } from './Surface.schema'
 
@@ -31,7 +31,9 @@ export const Surface = forwardRef<HTMLElement, SurfaceProps>(
     },
     ref,
   ) => {
-    const glowColor = glow && engine ? ENGINE_GLOW_COLORS[engine] : null
+    const typedEngine = engine as keyof typeof ENGINE_GLOW_COLORS | undefined
+    const typedPadding = padding as keyof typeof PADDING_MAP
+    const glowColor = glow && typedEngine ? ENGINE_GLOW_COLORS[typedEngine] : null
 
     const glowShadow = glowColor
       ? `0 0 var(--ds-glow-spread) ${glowColor}`
@@ -52,14 +54,24 @@ export const Surface = forwardRef<HTMLElement, SurfaceProps>(
       // Elevated variant
       variant === 'elevated' && [
         'border border-[var(--ds-surface-border)]',
-        'bg-[oklch(0.20_0.02_250)]',
+        'bg-[var(--ds-surface-bg)]',
+        '[backdrop-filter:var(--ds-backdrop-filter)]',
         'shadow-[var(--ds-surface-shadow)]',
+      ],
+
+      // Sunken variant
+      variant === 'sunken' && [
+        'border border-[var(--ds-surface-border)]',
+        'bg-[var(--ds-surface-bg)]',
+        '[backdrop-filter:var(--ds-backdrop-filter)]',
+        'shadow-[inset_0_1px_0_oklch(1_0_0_/_0.08),inset_0_-1px_0_oklch(1_0_0_/_0.06)]',
       ],
 
       // Inset variant
       variant === 'inset' && [
         'border border-[var(--ds-surface-border)]',
-        'bg-[oklch(0.14_0.02_250_/_0.8)]',
+        'bg-[var(--ds-surface-bg)]',
+        '[backdrop-filter:var(--ds-backdrop-filter)]',
         'shadow-[inset_0_2px_4px_oklch(0_0_0_/_0.2)]',
       ],
 
@@ -67,25 +79,27 @@ export const Surface = forwardRef<HTMLElement, SurfaceProps>(
       variant === 'transparent' && '',
 
       // Padding
-      PADDING_MAP[padding],
+      PADDING_MAP[typedPadding],
 
       // Interactive states
       interactive && [
         'cursor-pointer',
-        'hover:brightness-110 hover:border-[oklch(1_0_0_/_0.14)]',
+        'hover:brightness-110 hover:border-[oklch(1_0_0_/_0.14)] hover:scale-[1.01] hover:-translate-y-[2px]',
         'active:scale-[0.985] active:brightness-95',
       ],
     )
 
-    return (
-      <Tag
-        ref={ref as React.Ref<never>}
-        className={cn(variantClasses, className)}
-        style={glowShadow ? { boxShadow: glowShadow } : undefined}
-        {...rest}
-      >
-        {children}
-      </Tag>
+    const Component = Tag as ElementType
+
+    return createElement(
+      Component as any,
+      {
+        ...(rest as Record<string, unknown>),
+        ref,
+        className: cn(variantClasses, className),
+        style: glowShadow ? { boxShadow: glowShadow } : undefined,
+      },
+      children,
     )
   },
 )

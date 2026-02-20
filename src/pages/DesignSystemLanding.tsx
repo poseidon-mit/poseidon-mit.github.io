@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from '../router';
+import { Button } from '@/design-system';
 
 const PRESETS = ['minimal', 'glass', 'neon', 'aurora', 'terminal'] as const;
 const PRESET_META: Record<string, { label: string; description: string }> = {
@@ -45,22 +46,16 @@ export const DesignSystemLanding: React.FC = () => {
         </h2>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 24 }}>
           {PRESETS.map((p) => (
-            <button
+            <Button
               key={p}
-              type="button"
               onClick={() => setPreset(p)}
-              style={{
-                padding: '8px 16px',
-                borderRadius: 8,
-                border: preset === p ? '2px solid var(--accent-cyan)' : '1px solid rgba(255,255,255,0.15)',
-                background: preset === p ? 'rgba(0,240,255,0.12)' : 'rgba(255,255,255,0.05)',
-                color: 'inherit',
-                cursor: 'pointer',
-                fontSize: 14,
-              }}
+              variant="glass"
+              engine="dashboard"
+              size="sm"
+              className={preset === p ? 'border-cyan-300/50 text-cyan-100' : 'text-white/80'}
             >
               {PRESET_META[p].label}
-            </button>
+            </Button>
           ))}
         </div>
         <p style={{ fontSize: 13, opacity: 0.6, marginBottom: 24 }}>

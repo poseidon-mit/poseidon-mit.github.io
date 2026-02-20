@@ -56,6 +56,7 @@
   "dependencies": {
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.17.14",
+    "@react-three/postprocessing": "^2.16.0",
     "@remotion/light-leaks": "4.0.416",
     "@remotion/media": "4.0.416",
     "@remotion/three": "^4.0.416",
@@ -68,7 +69,7 @@
     "recharts": "^3.7.0",
     "remotion": "^4.0.0",
     "tailwind-merge": "^3.4.1",
-    "three": "^0.171.0"
+    "three": "^0.160.0"
   },
   "devDependencies": {
     "@remotion/bundler": "^4.0.0",

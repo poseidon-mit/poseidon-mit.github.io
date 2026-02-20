@@ -19,6 +19,7 @@ import { DEMO_THREAD } from '@/lib/demo-thread'
 import { AuroraPulse, EmptyState, GlassCard, GovernFooter } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+import { Button, ButtonLink } from '@/design-system'
 
 /* ── Cross-thread values ── */
 const PENDING_ACTIONS = DEMO_THREAD.pendingActions
@@ -69,7 +70,7 @@ export default function ExecutePage() {
   return (
     <div className="relative min-h-screen w-full">
       <AuroraPulse engine="execute" />
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-execute)", color: "#0B1221" }}>Skip to main content</a>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-execute)", color: 'var(--bg-oled)' }}>Skip to main content</a>
 
       <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: "1280px" }} variants={staggerContainer} initial="hidden" animate="visible" role="main">
 
@@ -125,12 +126,12 @@ export default function ExecutePage() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button onClick={() => handleApprove(action.id)} className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer" style={{ background: "linear-gradient(135deg, var(--engine-execute), #CA8A04)", color: "#0B1221", minHeight: "44px" }}>
+                      <Button onClick={() => handleApprove(action.id)} variant="glass" engine="execute" fullWidth className="rounded-xl text-sm">
                         <CheckCircle2 size={14} />Approve
-                      </button>
-                      <button onClick={() => handleDefer(action.id)} className="inline-flex items-center justify-center gap-1 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all hover:bg-white/[0.04] cursor-pointer" style={{ borderColor: "rgba(255,255,255,0.08)", color: "#94A3B8", background: "transparent", minHeight: "44px" }}>
+                      </Button>
+                      <Button onClick={() => handleDefer(action.id)} variant="secondary" engine="execute" className="rounded-xl text-sm">
                         <Clock size={14} />Defer
-                      </button>
+                      </Button>
                     </div>
                   </GlassCard>
                 </motion.div>
@@ -215,9 +216,9 @@ export default function ExecutePage() {
             </GlassCard>
 
             {/* Primary CTA: Review execution history -> /execute/history */}
-            <Link to="/execute/history" className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]" style={{ background: "linear-gradient(135deg, var(--engine-execute), #CA8A04)", color: "#0B1221", minHeight: "48px" }}>
+            <ButtonLink to="/execute/history" variant="glass" engine="execute" className="rounded-xl text-sm">
               Review execution history <ArrowUpRight size={16} />
-            </Link>
+            </ButtonLink>
           </aside>
         </div>
 

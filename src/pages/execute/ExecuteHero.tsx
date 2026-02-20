@@ -21,6 +21,7 @@ import { GlassCard, ViewModeToggle, CitationCard, CountUp } from '@/components/p
 import { kpiData, executeCitations } from './execute-data'
 import type { ViewMode } from '@/hooks/useViewMode'
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { Button } from '@/design-system'
 
 /* ═══════════════════════════════════════════
    HERO SECTION
@@ -81,34 +82,33 @@ function HeroSection({ navigate, viewMode, onViewModeChange }: HeroSectionProps)
           viewMode={viewMode}
         />
         <div className="flex flex-wrap gap-2 mt-3">
-          <button
+          <Button
             className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-            style={{
-              background: 'linear-gradient(135deg, #14B8A6, #0D9488)',
-              color: '#04141a',
-            }}
+            variant="glass"
+            engine="execute"
             aria-label={`Approve action: Block wire transfer to ${DEMO_THREAD.criticalAlert.merchant}`}
             onClick={() => navigate('/execute/approval')}
           >
             <CheckCircle2 size={16} />
             Approve
-          </button>
-          <button
+          </Button>
+          <Button
             className="inline-flex items-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-semibold transition-all hover:shadow-[0_0_12px_rgba(var(--state-critical-rgb),0.3)] active:scale-[0.98] cursor-pointer"
-            style={{ borderColor: 'rgba(var(--state-critical-rgb),0.4)', color: 'var(--state-critical)', background: 'transparent' }}
+            variant="danger"
             aria-label={`Reject action: Block wire transfer to ${DEMO_THREAD.criticalAlert.merchant}`}
             onClick={() => navigate('/execute/approval')}
           >
             <XCircle size={16} />
             Reject
-          </button>
-          <button
+          </Button>
+          <Button
             className="inline-flex items-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-medium transition-all hover:bg-white/[0.04] active:scale-[0.98] cursor-pointer"
-            style={{ borderColor: 'rgba(255,255,255,0.1)', color: '#CBD5E1', background: 'transparent' }}
+            variant="secondary"
+            engine="execute"
             onClick={() => navigate('/execute/approval')}
           >
             Review details
-          </button>
+          </Button>
         </div>
       </motion.div>
     </motion.section>

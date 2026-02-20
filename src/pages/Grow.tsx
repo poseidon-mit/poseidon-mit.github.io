@@ -1,5 +1,5 @@
-import { motion } from "framer-motion"
-import { Link } from '@/router'
+import { motion } from "framer-motion";
+import { Link } from '@/router';
 import {
   TrendingUp,
   Target,
@@ -7,35 +7,36 @@ import {
   PiggyBank,
   DollarSign,
   Scale,
-  Zap,
-} from "lucide-react"
-import { ForecastBand } from "@/components/poseidon/forecast-band"
-import type { ForecastPoint } from "@/components/poseidon/forecast-band"
-import { DEMO_THREAD } from '@/lib/demo-thread'
-import { GOVERNANCE_META } from '@/lib/governance-meta'
-import { AuroraPulse, GovernFooter } from '@/components/poseidon'
-import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+  Zap } from
+"lucide-react";
+import { ForecastBand } from "@/components/poseidon/forecast-band";
+import type { ForecastPoint } from "@/components/poseidon/forecast-band";
+import { DEMO_THREAD } from '@/lib/demo-thread';
+import { GOVERNANCE_META } from '@/lib/governance-meta';
+import { AuroraPulse, GovernFooter } from '@/components/poseidon';
+import { fadeUp, staggerContainer } from '@/lib/motion-presets';
+import { ButtonLink, Surface } from '@/design-system';
 
 
 /* ── Cross-thread values ── */
-const EMERGENCY_FUND_PROGRESS = DEMO_THREAD.emergencyFund.percent
-const EMERGENCY_FUND_CURRENT = DEMO_THREAD.emergencyFund.current
-const EMERGENCY_FUND_TARGET = DEMO_THREAD.emergencyFund.target
+const EMERGENCY_FUND_PROGRESS = DEMO_THREAD.emergencyFund.percent;
+const EMERGENCY_FUND_CURRENT = DEMO_THREAD.emergencyFund.current;
+const EMERGENCY_FUND_TARGET = DEMO_THREAD.emergencyFund.target;
 
 /* ── Forecast data ── */
 const FORECAST_DATA: ForecastPoint[] = Array.from({ length: 12 }, (_, i) => ({
   x: i,
   median: EMERGENCY_FUND_CURRENT + i * 250,
   low: EMERGENCY_FUND_CURRENT + i * 180,
-  high: EMERGENCY_FUND_CURRENT + i * 320,
-}))
+  high: EMERGENCY_FUND_CURRENT + i * 320
+}));
 
 /* ── Goal KPIs ── */
 const GOAL_KPIS = [
-  { label: "Emergency fund", value: `${EMERGENCY_FUND_PROGRESS}%`, delta: "+5% this month", icon: PiggyBank, color: "var(--engine-grow)" },
-  { label: "Monthly savings", value: "$420", delta: "+$60 vs plan", icon: DollarSign, color: "var(--engine-execute)" },
-  { label: "Invest target", value: "On track", delta: "Q3 milestone", icon: Target, color: "var(--engine-dashboard)" },
-]
+{ label: "Emergency fund", value: `${EMERGENCY_FUND_PROGRESS}%`, delta: "+5% this month", icon: PiggyBank, color: "var(--engine-grow)" },
+{ label: "Monthly savings", value: "$420", delta: "+$60 vs plan", icon: DollarSign, color: "var(--engine-execute)" },
+{ label: "Invest target", value: "On track", delta: "Q3 milestone", icon: Target, color: "var(--engine-dashboard)" }];
+
 
 export default function GrowPage() {
   return (
@@ -44,8 +45,8 @@ export default function GrowPage() {
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: "var(--engine-grow)", color: "#0B1221" }}
-      >
+        style={{ background: "var(--engine-grow)", color: 'var(--bg-oled)' }}>
+        
         Skip to main content
       </a>
 
@@ -54,8 +55,8 @@ export default function GrowPage() {
         className="command-center__main"
         initial="hidden"
         animate="visible"
-        variants={staggerContainer}
-      >
+        variants={staggerContainer}>
+        
         {/* ── P1: Growth Summary + CTA ── */}
         <motion.section variants={staggerContainer} className="hero-section">
           <motion.div variants={fadeUp} className="hero-kicker" style={{ borderColor: "rgba(139,92,246,0.2)", background: "rgba(139,92,246,0.06)", color: "var(--engine-grow)" }}>
@@ -75,28 +76,26 @@ export default function GrowPage() {
 
           <motion.div variants={fadeUp} className="flex gap-3 mt-2">
             {/* CTA: Primary -> /grow/goal */}
-            <Link
+            <ButtonLink
               to="/grow/goal"
-              className="inline-flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-xl transition-all"
-              style={{
-                background: "linear-gradient(135deg, var(--engine-grow), #A78BFA)",
-                color: "#0B1221",
-              }}
-            >
+              variant="glass"
+              engine="grow"
+              size="md"
+              className="rounded-xl"
+              icon={<ArrowRight size={16} />}
+              iconPosition="right">
+              
               Review growth plan
-              <ArrowRight size={16} />
-            </Link>
-            <Link
+            </ButtonLink>
+            <ButtonLink
               to="/grow/scenarios"
-              className="inline-flex items-center gap-2 text-sm font-medium px-4 py-2.5 rounded-xl"
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                color: "#CBD5E1",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
+              variant="glass"
+              engine="grow"
+              size="md"
+              className="rounded-xl">
+              
               Open scenarios
-            </Link>
+            </ButtonLink>
           </motion.div>
         </motion.section>
 
@@ -104,18 +103,18 @@ export default function GrowPage() {
         <motion.section
           className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-4 md:px-6 lg:px-8"
           variants={staggerContainer}
-          aria-label="Growth KPIs"
-        >
-          {GOAL_KPIS.map((kpi) => (
-            <motion.div
-              key={kpi.label}
-              variants={fadeUp}
-              className="glass-surface rounded-2xl p-4 flex items-start gap-3"
-            >
+          aria-label="Growth KPIs">
+          
+          {GOAL_KPIS.map((kpi) => <Surface
+
+            key={kpi.label}
+            variants={fadeUp} className="rounded-2xl p-4 flex items-start gap-3" variant="glass" padding="none" as={motion.div}>
+
+            
               <div
-                className="flex items-center justify-center w-9 h-9 rounded-lg flex-shrink-0"
-                style={{ background: `${kpi.color}15` }}
-              >
+              className="flex items-center justify-center w-9 h-9 rounded-lg flex-shrink-0"
+              style={{ background: `${kpi.color}15` }}>
+              
                 <kpi.icon size={18} style={{ color: kpi.color }} />
               </div>
               <div>
@@ -123,14 +122,14 @@ export default function GrowPage() {
                 <p className="text-xl font-bold font-mono" style={{ color: "#F1F5F9" }}>{kpi.value}</p>
                 <p className="text-[10px] font-semibold" style={{ color: "var(--state-healthy)" }}>{kpi.delta}</p>
               </div>
-            </motion.div>
-          ))}
+            </Surface>
+          )}
         </motion.section>
 
         {/* ── P3: Forecast Preview + Recommendation ── */}
         <div className="flex flex-col lg:flex-row gap-4 px-4 md:px-6 lg:px-8">
           {/* Forecast visualization */}
-          <motion.div variants={fadeUp} className="flex-1 glass-surface rounded-2xl p-5">
+          <Surface variants={fadeUp} className="flex-1 rounded-2xl p-5" variant="glass" padding="none" as={motion.div}>
             <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "#64748B" }}>
               12-month forecast
             </p>
@@ -139,10 +138,10 @@ export default function GrowPage() {
               <span className="text-[10px] font-mono" style={{ color: "#94A3B8" }}>Now</span>
               <span className="text-[10px] font-mono" style={{ color: "#94A3B8" }}>+12 months</span>
             </div>
-          </motion.div>
+          </Surface>
 
           {/* Top recommendation */}
-          <motion.div variants={fadeUp} className="lg:w-80 glass-surface rounded-2xl p-5 flex flex-col justify-between">
+          <Surface variants={fadeUp} className="lg:w-80 rounded-2xl p-5 flex flex-col justify-between" variant="glass" padding="none" as={motion.div}>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "#64748B" }}>
                 Top recommendation
@@ -157,21 +156,21 @@ export default function GrowPage() {
             <Link
               to="/grow/scenarios"
               className="inline-flex items-center gap-1 text-xs font-semibold mt-4"
-              style={{ color: "var(--engine-grow)" }}
-            >
+              style={{ color: "var(--engine-grow)" }}>
+              
               Compare scenarios <ArrowRight size={12} />
             </Link>
-          </motion.div>
+          </Surface>
         </div>
 
         {/* GovernFooter */}
         <div className="px-4 md:px-6 lg:px-8">
           <GovernFooter
             auditId={GOVERNANCE_META['/grow'].auditId}
-            pageContext={GOVERNANCE_META['/grow'].pageContext}
-          />
+            pageContext={GOVERNANCE_META['/grow'].pageContext} />
+          
         </div>
       </motion.main>
-    </div>
-  )
+    </div>);
+
 }

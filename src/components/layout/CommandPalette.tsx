@@ -32,8 +32,10 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from '@/components/ui/command';
+import { Button } from '@/design-system';
 import { useRouter } from '../../router';
 import { DEMO_THREAD } from '@/lib/demo-thread';
+import { cn } from '@/lib/utils';
 
 /* ── Helpers ──────────────────────────────────────────────── */
 
@@ -46,6 +48,17 @@ function resolveViewModePath(currentPath: string, viewMode: string): string {
   return currentPath;
 }
 
+type CommandTone = 'dashboard' | 'protect' | 'grow' | 'execute' | 'govern' | 'view';
+
+const TONE_CLASSES: Record<CommandTone, { chip: string; icon: string }> = {
+  dashboard: { chip: 'bg-cyan-500/15', icon: 'text-cyan-300' },
+  protect: { chip: 'bg-green-500/15', icon: 'text-green-300' },
+  grow: { chip: 'bg-violet-500/15', icon: 'text-violet-300' },
+  execute: { chip: 'bg-amber-500/15', icon: 'text-amber-300' },
+  govern: { chip: 'bg-blue-500/15', icon: 'text-blue-300' },
+  view: { chip: 'bg-teal-500/15', icon: 'text-teal-300' },
+};
+
 /* ── Command definitions ─────────────────────────────────── */
 
 interface Command {
@@ -53,7 +66,7 @@ interface Command {
   label: string;
   description?: string;
   icon: LucideIcon;
-  color: string;
+  tone: CommandTone;
   path: string;
   shortcut?: string;
 }
@@ -64,7 +77,7 @@ const ENGINE_COMMANDS: Command[] = [
     label: 'Dashboard',
     description: 'System overview',
     icon: LayoutDashboard,
-    color: '#00F0FF',
+    tone: 'dashboard',
     path: '/dashboard',
   },
   {
@@ -72,7 +85,7 @@ const ENGINE_COMMANDS: Command[] = [
     label: 'Protect',
     description: 'Risk & threat detection',
     icon: Shield,
-    color: '#22C55E',
+    tone: 'protect',
     path: '/protect',
   },
   {
@@ -80,7 +93,7 @@ const ENGINE_COMMANDS: Command[] = [
     label: 'Grow',
     description: 'Goals & forecasts',
     icon: TrendingUp,
-    color: '#8B5CF6',
+    tone: 'grow',
     path: '/grow',
   },
   {
@@ -88,7 +101,7 @@ const ENGINE_COMMANDS: Command[] = [
     label: 'Execute',
     description: 'Approval queue',
     icon: Zap,
-    color: '#EAB308',
+    tone: 'execute',
     path: '/execute',
   },
   {
@@ -96,7 +109,7 @@ const ENGINE_COMMANDS: Command[] = [
     label: 'Govern',
     description: 'Audit & compliance',
     icon: Scale,
-    color: '#3B82F6',
+    tone: 'govern',
     path: '/govern',
   },
 ];
@@ -107,7 +120,7 @@ const ACTION_COMMANDS: Command[] = [
     label: 'Approve Pending Actions',
     description: `Review ${DEMO_THREAD.pendingActions} pending approvals`,
     icon: CheckSquare,
-    color: '#EAB308',
+    tone: 'execute',
     path: '/execute/approval',
     shortcut: '⌘E',
   },
@@ -116,7 +129,7 @@ const ACTION_COMMANDS: Command[] = [
     label: 'View Audit Ledger',
     description: 'Review recent audit entries',
     icon: FileText,
-    color: '#3B82F6',
+    tone: 'govern',
     path: '/govern/audit',
     shortcut: '⌘G',
   },
@@ -128,7 +141,7 @@ const PRESENTATION_COMMANDS: Command[] = [
     label: 'Present: Protect',
     description: 'Start presentation at Protect engine',
     icon: Presentation,
-    color: '#22C55E',
+    tone: 'protect',
     path: '/protect?view=glance&mode=present',
   },
   {
@@ -136,7 +149,7 @@ const PRESENTATION_COMMANDS: Command[] = [
     label: 'Present: Grow',
     description: 'Start presentation at Grow engine',
     icon: Presentation,
-    color: '#8B5CF6',
+    tone: 'grow',
     path: '/grow?view=glance&mode=present',
   },
   {
@@ -144,7 +157,7 @@ const PRESENTATION_COMMANDS: Command[] = [
     label: 'Present: Execute',
     description: 'Start presentation at Execute engine',
     icon: Presentation,
-    color: '#EAB308',
+    tone: 'execute',
     path: '/execute?view=glance&mode=present',
   },
   {
@@ -152,18 +165,18 @@ const PRESENTATION_COMMANDS: Command[] = [
     label: 'Present: Govern',
     description: 'Start presentation at Govern engine',
     icon: Presentation,
-    color: '#3B82F6',
+    tone: 'govern',
     path: '/govern?view=glance&mode=present',
   },
 ];
 
-const VIEW_MODE_COMMANDS: { id: string; label: string; description: string; icon: LucideIcon; color: string; viewMode: string }[] = [
+const VIEW_MODE_COMMANDS: { id: string; label: string; description: string; icon: LucideIcon; tone: CommandTone; viewMode: string }[] = [
   {
     id: 'view-glance',
     label: 'Switch to Glance',
     description: 'Minimal KPI overview',
     icon: Eye,
-    color: '#14B8A6',
+    tone: 'view',
     viewMode: 'glance',
   },
   {
@@ -171,7 +184,7 @@ const VIEW_MODE_COMMANDS: { id: string; label: string; description: string; icon
     label: 'Switch to Detail',
     description: 'Standard working view',
     icon: LayoutGrid,
-    color: '#14B8A6',
+    tone: 'view',
     viewMode: 'detail',
   },
   {
@@ -179,7 +192,7 @@ const VIEW_MODE_COMMANDS: { id: string; label: string; description: string; icon
     label: 'Switch to Deep',
     description: 'Full analysis with methodology',
     icon: Database,
-    color: '#14B8A6',
+    tone: 'view',
     viewMode: 'deep',
   },
 ];
@@ -208,6 +221,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   const renderCommandGroup = (commands: Command[]) =>
     commands.map((cmd) => {
       const Icon = cmd.icon;
+      const tone = TONE_CLASSES[cmd.tone];
       return (
         <CommandItem
           key={cmd.id}
@@ -215,11 +229,8 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           onSelect={() => handleSelect(cmd.path)}
           className="gap-3"
         >
-          <span
-            className="flex items-center justify-center w-7 h-7 rounded-lg flex-shrink-0"
-            style={{ background: `${cmd.color}1a` }}
-          >
-            <Icon className="w-4 h-4" style={{ color: cmd.color }} aria-hidden="true" />
+          <span className={cn('flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg', tone.chip)}>
+            <Icon className={cn('h-4 w-4', tone.icon)} aria-hidden="true" />
           </span>
           <span className="flex-1">
             <span className="block text-sm font-medium">{cmd.label}</span>
@@ -241,17 +252,21 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           onValueChange={setSearchValue}
         />
         {isSupported && (
-          <button
+          <Button
             onClick={isListening ? stopListening : startListening}
-            className="mr-3 flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg transition-colors"
-            style={{
-              background: isListening ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.05)',
-              color: isListening ? '#EF4444' : '#64748B',
-            }}
+            className={cn(
+              'mr-3 !h-8 !min-h-8 !w-8 !rounded-lg !px-0',
+              isListening
+                ? 'border border-red-400/40 bg-red-500/20 text-red-300'
+                : 'bg-white/5 text-slate-500 hover:bg-white/10 hover:text-slate-300',
+            )}
             aria-label={isListening ? 'Stop voice input' : 'Start voice input'}
+            variant="ghost"
+            size="sm"
+            springPress={false}
           >
-            {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-          </button>
+            {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+          </Button>
         )}
       </div>
       <CommandList>
@@ -278,6 +293,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
         <CommandGroup heading="View Mode">
           {VIEW_MODE_COMMANDS.map((cmd) => {
             const Icon = cmd.icon;
+            const tone = TONE_CLASSES[cmd.tone];
             return (
               <CommandItem
                 key={cmd.id}
@@ -285,11 +301,8 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                 onSelect={() => handleSelect(resolveViewModePath(path, cmd.viewMode))}
                 className="gap-3"
               >
-                <span
-                  className="flex items-center justify-center w-7 h-7 rounded-lg flex-shrink-0"
-                  style={{ background: `${cmd.color}1a` }}
-                >
-                  <Icon className="w-4 h-4" style={{ color: cmd.color }} aria-hidden="true" />
+                <span className={cn('flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg', tone.chip)}>
+                  <Icon className={cn('h-4 w-4', tone.icon)} aria-hidden="true" />
                 </span>
                 <span className="flex-1">
                   <span className="block text-sm font-medium">{cmd.label}</span>

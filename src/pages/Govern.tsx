@@ -18,6 +18,7 @@ import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { AuroraPulse, GlassCard, GovernFooter } from '@/components/poseidon'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+import { ButtonLink } from '@/design-system'
 
 /* ── Cross-thread values ── */
 const DECISIONS_AUDITED = DEMO_THREAD.decisionsAudited
@@ -160,9 +161,9 @@ export default function GovernPage() {
             </GlassCard>
 
             {/* Primary CTA: Open audit ledger -> /govern/audit */}
-            <Link to="/govern/audit" className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]" style={{ background: "linear-gradient(135deg, var(--engine-govern), #2563EB)", color: "#ffffff", minHeight: "48px" }}>
-              Open audit ledger <ArrowUpRight size={16} />
-            </Link>
+            <ButtonLink to="/govern/audit" variant="glass" engine="govern" className="rounded-xl" icon={<ArrowUpRight size={16} />} iconPosition="right">
+              Open audit ledger
+            </ButtonLink>
           </aside>
         </div>
 

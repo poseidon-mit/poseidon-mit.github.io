@@ -1,8 +1,15 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 
-export type EffectPreset = 'minimal' | 'glass' | 'neon' | 'aurora' | 'terminal'
+export type EffectPreset = 'minimal' | 'glass' | 'neon' | 'aurora' | 'terminal' | 'creator-studio'
 
-export const EFFECT_PRESETS: readonly EffectPreset[] = ['minimal', 'glass', 'neon', 'aurora', 'terminal'] as const
+export const EFFECT_PRESETS: readonly EffectPreset[] = [
+  'minimal',
+  'glass',
+  'neon',
+  'aurora',
+  'terminal',
+  'creator-studio',
+] as const
 
 export const EFFECT_PRESET_META: Record<EffectPreset, { label: string; description: string }> = {
   minimal:  { label: 'Minimal',  description: 'Clean professional — no blur, no glow' },
@@ -10,6 +17,7 @@ export const EFFECT_PRESET_META: Record<EffectPreset, { label: string; descripti
   neon:     { label: 'Neon',     description: 'Poseidon signature glow style' },
   aurora:   { label: 'Aurora',   description: 'Maximum visual impact with stagger' },
   terminal: { label: 'Terminal', description: 'Bloomberg-style dense data' },
+  'creator-studio': { label: 'Creator Studio', description: 'Apple-style deep OLED glass and cinematic motion' },
 }
 
 interface EffectContextValue {
@@ -18,12 +26,12 @@ interface EffectContextValue {
 }
 
 const EffectContext = createContext<EffectContextValue>({
-  preset: 'neon',
+  preset: 'creator-studio',
   setPreset: () => {},
 })
 
 export function EffectProvider({
-  preset: initialPreset = 'neon',
+  preset: initialPreset = 'creator-studio',
   children,
 }: {
   preset?: EffectPreset

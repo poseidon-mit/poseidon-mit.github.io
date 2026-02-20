@@ -6,11 +6,13 @@ import { isAppRoute } from './router/app-shell-routes';
 import { AppNavShell } from './components/layout/AppNavShell';
 import { runServiceWorkerCleanupOnBoot } from './bootstrap/sw-cleanup';
 import { usePresentationMode } from './hooks/usePresentationMode';
+import { DesignSystemProvider } from './design-system';
 import './styles/tailwind.css';
 import './styles/app.css';
 import './styles/pages/dashboard-v3.css';
 import './styles/pages/engine-semantics.css';
 import './styles/colorblind-palettes.css';
+import './design-system/css/effect-presets.css';
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state = { error: null };
@@ -200,12 +202,14 @@ function MinimalApp() {
 
   return (
     <ErrorBoundary>
-      <RouterProvider>
-        <PresentationModeSync />
-        <Suspense fallback={<RouteLoadingFallback />}>
-          <RouterOutlet />
-        </Suspense>
-      </RouterProvider>
+      <DesignSystemProvider effectPreset="creator-studio">
+        <RouterProvider>
+          <PresentationModeSync />
+          <Suspense fallback={<RouteLoadingFallback />}>
+            <RouterOutlet />
+          </Suspense>
+        </RouterProvider>
+      </DesignSystemProvider>
       <div className="grain-overlay" aria-hidden="true" />
     </ErrorBoundary>
   );

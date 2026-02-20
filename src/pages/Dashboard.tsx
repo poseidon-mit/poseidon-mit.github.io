@@ -1,6 +1,5 @@
 import { useMemo, memo } from "react"
 import { motion } from "framer-motion"
-import { Link } from '@/router'
 import {
   LayoutDashboard,
   Info,
@@ -20,8 +19,12 @@ import {
 import { AreaChart, Area, ResponsiveContainer } from "recharts"
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
-import { AuroraPulse, GovernFooter } from '@/components/poseidon'
-import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+import { GovernFooter } from '@/components/poseidon'
+import {
+  creatorStudioStaggerContainer,
+  creatorStudioStaggerItem,
+} from '@/lib/motion-presets'
+import { Surface, ButtonLink } from '@/design-system'
 
 
 /* ── Cross-thread values (frozen from CROSS_SCREEN_DATA_THREAD) ── */
@@ -47,7 +50,7 @@ const StatCard = memo(function StatCard({
 }) {
   const data = useMemo(() => sparkData.map((v, i) => ({ i, v })), [sparkData])
   return (
-    <motion.div variants={fadeUp} className="stat-card glass-surface">
+    <Surface interactive className="stat-card" variant="elevated">
       <div className="stat-card__header">
         <span className="stat-card__label">{label}</span>
         <div className="stat-card__spark" aria-hidden="true">
@@ -75,7 +78,7 @@ const StatCard = memo(function StatCard({
       <span className={`stat-card__delta ${deltaPositive ? "stat-card__delta--up" : "stat-card__delta--down"}`}>
         {delta}
       </span>
-    </motion.div>
+    </Surface>
   )
 })
 
@@ -94,9 +97,9 @@ function EngineHealthCard({
   color: string
 }) {
   return (
-    <motion.div
-      variants={fadeUp}
-      className="glass-surface rounded-2xl p-4 flex flex-col gap-3"
+    <Surface
+      interactive
+      className="rounded-2xl p-4 flex flex-col gap-3"
     >
       <div className="flex items-center gap-2">
         <div
@@ -116,7 +119,7 @@ function EngineHealthCard({
           {status}
         </span>
       </div>
-    </motion.div>
+    </Surface>
   )
 }
 
@@ -131,14 +134,15 @@ const activities = [
 
 function ActivityFeed() {
   return (
-    <motion.div variants={fadeUp} className="glass-surface rounded-2xl p-4 md:p-6 flex flex-col gap-4">
+    <Surface className="rounded-2xl p-4 md:p-6 flex flex-col gap-4">
       <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "#64748B" }}>
         Recent Activity
       </h2>
       <div className="flex flex-col gap-0">
         {activities.map((item, i) => (
-          <div
+          <motion.div
             key={i}
+            variants={itemVariants}
             className="flex items-start gap-3 py-3"
             style={{ borderBottom: i < activities.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none" }}
           >
@@ -152,10 +156,10 @@ function ActivityFeed() {
               <span className="text-xs font-medium" style={{ color: "#F1F5F9" }}>{item.label}</span>
               <span className="text-[10px]" style={{ color: "#64748B" }}>{item.time}</span>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-    </motion.div>
+    </Surface>
   )
 }
 
@@ -177,7 +181,7 @@ const engineColorMap: Record<string, string> = {
 
 function DecisionRail() {
   return (
-    <motion.div variants={fadeUp} className="glass-surface rounded-2xl p-4 md:p-6 flex flex-col gap-4">
+    <Surface className="rounded-2xl p-4 md:p-6 flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "#64748B" }}>
           Decision Queue
@@ -188,8 +192,9 @@ function DecisionRail() {
       </div>
       <div className="flex flex-col gap-2">
         {decisions.map((d, i) => (
-          <div
+          <motion.div
             key={i}
+            variants={itemVariants}
             className="flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-white/[0.02]"
             style={{ borderLeft: `2px solid ${engineColorMap[d.engine]}` }}
           >
@@ -208,22 +213,19 @@ function DecisionRail() {
             ) : (
               <CheckCircle2 size={12} style={{ color: "var(--state-healthy)" }} />
             )}
-          </div>
+          </motion.div>
         ))}
       </div>
-      <Link
+      <ButtonLink
         to="/execute"
-        className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
-        style={{
-          background: "linear-gradient(135deg, var(--engine-dashboard), #0891B2)",
-          color: "#0B1221",
-          minHeight: "44px",
-        }}
+        variant="glass"
+        engine="dashboard"
+        className="mt-2 w-full rounded-full"
       >
         Review plan
         <ArrowUpRight size={16} />
-      </Link>
-    </motion.div>
+      </ButtonLink>
+    </Surface>
   )
 }
 
@@ -231,79 +233,82 @@ function DecisionRail() {
    DASHBOARD PAGE
    ═══════════════════════════════════════════════════════ */
 
+export const itemVariants = creatorStudioStaggerItem
+
 export default function DashboardPage() {
   const alertCount = 1
   const alertSpark = [6, 5, 4, 4, 3, 2, 2, 1]
 
   return (
-    <div className="command-center relative overflow-hidden">
-      <AuroraPulse engine="dashboard" />
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-dashboard)", color: "#0B1221" }}>
+    <div className="command-center relative overflow-hidden bg-[var(--bg-oled)]">
+      {/* Remove previous AuroraPulse since the Apple theme relies on deep Vantablack/hardware feel */}
+
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold bg-white text-black">
         Skip to main content
       </a>
 
       <motion.main
         id="main-content"
-        className="command-center__main"
-        variants={staggerContainer}
+        className="command-center__main py-8 max-w-7xl mx-auto"
+        variants={creatorStudioStaggerContainer}
         initial="hidden"
         animate="visible"
       >
         {/* ── Hero Section ── */}
-        <motion.section variants={staggerContainer} initial="hidden" animate="visible" className="hero-section" aria-label="Dashboard overview">
-          <motion.div variants={fadeUp} className="hero-kicker">
-            <span className="hero-kicker__icon"><LayoutDashboard size={14} /></span>
+        <motion.section variants={itemVariants} className="hero-section mb-10 px-4 md:px-6 lg:px-8" aria-label="Dashboard overview">
+          <div className="hero-kicker text-white/50 text-sm font-semibold tracking-wide uppercase mb-2">
+            <span className="hero-kicker__icon"><LayoutDashboard size={14} className="inline mr-2" /></span>
             <span>Dashboard</span>
-          </motion.div>
+          </div>
 
-          <motion.h1 variants={fadeUp} className="hero-headline">
+          <h1 className="text-4xl lg:text-5xl font-semibold tracking-tight text-white m-0 mb-4 drop-shadow-md">
             {"Welcome back. System confidence: "}
-            <span className="hero-headline__accent">{SYSTEM_CONFIDENCE}</span>
+            <span className="text-teal-400">{SYSTEM_CONFIDENCE}</span>
             {" across 4 engines + command center."}
-          </motion.h1>
+          </h1>
 
-          <motion.p variants={fadeUp} className="hero-subline">
+          <p className="text-xl text-white/70 tracking-wide font-light max-w-3xl mb-6">
             One unresolved alert. Five actions queued. Cash buffer at 14 days.
-          </motion.p>
+          </p>
 
-          <motion.div variants={fadeUp} className="hero-proof" role="status" aria-label="Engine confidence scores">
-            <span className="hero-proof__label">{`System confidence ${SYSTEM_CONFIDENCE.toFixed(2)}`}</span>
-            <span className="hero-proof__sep" aria-hidden="true">|</span>
-            <span style={{ color: "var(--engine-protect)" }}>Protect 0.94</span>
-            <span className="hero-proof__sep" aria-hidden="true">|</span>
-            <span style={{ color: "var(--engine-grow)" }}>Grow 0.89</span>
-            <span className="hero-proof__sep" aria-hidden="true">|</span>
-            <span style={{ color: "var(--engine-execute)" }}>Execute 0.91</span>
-            <span className="hero-proof__sep" aria-hidden="true">|</span>
-            <span style={{ color: "var(--engine-govern)" }}>Govern 0.97</span>
-          </motion.div>
+          <div className="flex flex-wrap items-center gap-4 text-sm font-medium" role="status" aria-label="Engine confidence scores">
+            <span className="text-white/60">{`Overall ${SYSTEM_CONFIDENCE.toFixed(2)}`}</span>
+            <span className="text-white/30" aria-hidden="true">|</span>
+            <span className="text-green-400">Protect 0.94</span>
+            <span className="text-white/30" aria-hidden="true">|</span>
+            <span className="text-blue-400">Grow 0.89</span>
+            <span className="text-white/30" aria-hidden="true">|</span>
+            <span className="text-yellow-400">Execute 0.91</span>
+            <span className="text-white/30" aria-hidden="true">|</span>
+            <span className="text-purple-400">Govern 0.97</span>
+          </div>
         </motion.section>
 
         {/* ── KPI Grid ── */}
-        <motion.section className="kpi-grid" variants={staggerContainer} initial="hidden" animate="visible" aria-label="Key performance indicators">
+        <motion.section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-4 md:px-6 lg:px-8 mb-6" variants={itemVariants} aria-label="Key performance indicators">
           <StatCard label="Net position" value="$847k" delta="+8.2%" deltaPositive sparkData={[30, 35, 28, 40, 38, 50, 55, 60]} sparkColor="#14B8A6" />
-          <StatCard label="Cash flow" value="+$4.1k" delta="+12%" deltaPositive sparkData={[10, 20, 15, 30, 25, 35, 40, 42]} sparkColor="var(--engine-dashboard)" />
-          <StatCard label="Risk" value="Low" delta="Down from Med" deltaPositive sparkData={[60, 55, 50, 45, 35, 30, 25, 20]} sparkColor="var(--engine-govern)" />
+          <StatCard label="Cash flow" value="+$4.1k" delta="+12%" deltaPositive sparkData={[10, 20, 15, 30, 25, 35, 40, 42]} sparkColor="#38BDF8" />
+          <StatCard label="Risk" value="Low" delta="Down from Med" deltaPositive sparkData={[60, 55, 50, 45, 35, 30, 25, 20]} sparkColor="#A855F7" />
           <StatCard label="Alerts" value={String(alertCount)} delta={alertCount <= 2 ? "-3 resolved" : `+${alertCount - 2} new`} deltaPositive={alertCount <= 2} sparkData={alertSpark} sparkColor="#F59E0B" />
         </motion.section>
 
         {/* ── Engine Health Strip ── */}
-        <motion.section variants={staggerContainer} initial="hidden" animate="visible" className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4 md:px-6 lg:px-8" aria-label="Engine health">
-          <EngineHealthCard name="Protect" icon={Shield} score="0.94" status="Active" color="var(--engine-protect)" />
-          <EngineHealthCard name="Grow" icon={TrendingUp} score="0.89" status="Active" color="var(--engine-grow)" />
-          <EngineHealthCard name="Execute" icon={Zap} score="0.91" status="Active" color="var(--engine-execute)" />
-          <EngineHealthCard name="Govern" icon={Scale} score="0.97" status="Active" color="var(--engine-govern)" />
+        <motion.section variants={itemVariants} className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4 md:px-6 lg:px-8 mb-6" aria-label="Engine health">
+          <EngineHealthCard name="Protect" icon={Shield} score="0.94" status="Active" color="#4ADE80" />
+          <EngineHealthCard name="Grow" icon={TrendingUp} score="0.89" status="Active" color="#60A5FA" />
+          <EngineHealthCard name="Execute" icon={Zap} score="0.91" status="Active" color="#FACC15" />
+          <EngineHealthCard name="Govern" icon={Scale} score="0.97" status="Active" color="#C084FC" />
         </motion.section>
 
         {/* ── Activity Feed + Decision Rail ── */}
-        <div className="flex flex-col lg:flex-row gap-4 px-4 md:px-6 lg:px-8">
+        <motion.div variants={itemVariants} className="flex flex-col lg:flex-row gap-6 px-4 md:px-6 lg:px-8">
           <div className="flex-1 min-w-0 lg:w-2/3">
             <ActivityFeed />
           </div>
           <div className="w-full lg:w-80 shrink-0">
             <DecisionRail />
           </div>
-        </div>
+        </motion.div>
 
         {/* ── GovernFooter ── */}
         <div className="px-4 md:px-6 lg:px-8">

@@ -1,156 +1,156 @@
 {
   "ok": true,
-  "strict": true,
+  "strict": false,
   "bootstrap": false,
   "summary": {
     "total": 24,
-    "ok": 24,
-    "warn": 0,
-    "error": 0
+    "ok": 4,
+    "warn": 12,
+    "error": 8
   },
   "diffs": [
     {
       "file": "dashboard__desktop.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.0309,
+      "level": "warn",
       "method": "buffer"
     },
     {
       "file": "dashboard__mobile.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.0303,
+      "level": "warn",
       "method": "buffer"
     },
     {
       "file": "dashboard__tablet.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.0385,
+      "level": "warn",
       "method": "buffer"
     },
     {
       "file": "dashboard__wide.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.0369,
+      "level": "warn",
       "method": "buffer"
     },
     {
       "file": "execute__desktop.png",
-      "changeRatio": 0,
+      "changeRatio": 0.009,
       "level": "ok",
       "method": "buffer"
     },
     {
       "file": "execute__mobile.png",
-      "changeRatio": 0,
+      "changeRatio": 0.0246,
       "level": "ok",
       "method": "buffer"
     },
     {
       "file": "execute__tablet.png",
-      "changeRatio": 0,
+      "changeRatio": 0.0161,
       "level": "ok",
       "method": "buffer"
     },
     {
       "file": "execute__wide.png",
-      "changeRatio": 0,
+      "changeRatio": 0.0211,
       "level": "ok",
       "method": "buffer"
     },
     {
       "file": "govern__desktop.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.5632,
+      "level": "error",
       "method": "buffer"
     },
     {
       "file": "govern__mobile.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.9004,
+      "level": "error",
       "method": "buffer"
     },
     {
       "file": "govern__tablet.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.5591,
+      "level": "error",
       "method": "buffer"
     },
     {
       "file": "govern__wide.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.3775,
+      "level": "error",
       "method": "buffer"
     },
     {
       "file": "protect__desktop.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.3938,
+      "level": "error",
       "method": "buffer"
     },
     {
       "file": "protect__mobile.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.4284,
+      "level": "error",
       "method": "buffer"
     },
     {
       "file": "protect__tablet.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.4014,
+      "level": "error",
       "method": "buffer"
     },
     {
       "file": "protect__wide.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.1373,
+      "level": "error",
       "method": "buffer"
     },
     {
       "file": "root__desktop.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.0332,
+      "level": "warn",
       "method": "buffer"
     },
     {
       "file": "root__mobile.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.0643,
+      "level": "warn",
       "method": "buffer"
     },
     {
       "file": "root__tablet.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.0441,
+      "level": "warn",
       "method": "buffer"
     },
     {
       "file": "root__wide.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.0471,
+      "level": "warn",
       "method": "buffer"
     },
     {
       "file": "settings__desktop.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.0351,
+      "level": "warn",
       "method": "buffer"
     },
     {
       "file": "settings__mobile.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.0327,
+      "level": "warn",
       "method": "buffer"
     },
     {
       "file": "settings__tablet.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.0467,
+      "level": "warn",
       "method": "buffer"
     },
     {
       "file": "settings__wide.png",
-      "changeRatio": 0,
-      "level": "ok",
+      "changeRatio": 0.0361,
+      "level": "warn",
       "method": "buffer"
     }
   ]

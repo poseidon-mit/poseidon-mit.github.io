@@ -1,16 +1,10 @@
-import { motion } from "framer-motion"
+import { motion } from 'framer-motion'
 import { Link } from '@/router'
-import { Waves, ArrowRight, HelpCircle } from "lucide-react"
-
-const spring = { type: "spring" as const, stiffness: 380, damping: 30 }
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: spring },
-}
-const staggerContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-}
+import { Waves, ArrowRight, HelpCircle } from 'lucide-react'
+import {
+  creatorStudioFadeUp,
+  creatorStudioStaggerContainer,
+} from '@/lib/motion-presets'
 
 /**
  * Vite SPA catch-all not-found page.
@@ -18,67 +12,59 @@ const staggerContainer = {
  */
 export default function NotFound() {
   return (
-    <main id="main-content" className="relative min-h-screen flex items-center justify-center">
+    <main
+      id="main-content"
+      role="main"
+      className="relative flex min-h-screen items-center justify-center bg-[var(--bg-oled)]"
+    >
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: "var(--engine-dashboard)", color: "#0B1221" }}
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:bg-[var(--engine-dashboard)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-slate-950"
       >
         Skip to main content
       </a>
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(40%_30%_at_50%_40%,rgba(0,240,255,0.04),transparent)]"
         aria-hidden="true"
-        style={{
-          background: "radial-gradient(40% 30% at 50% 40%, rgba(0,240,255,0.04), transparent)",
-        }}
       />
 
-      <div className="relative z-10 text-center px-6 max-w-md">
-        <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
-          <motion.div variants={fadeUp} className="flex justify-center mb-6">
-            <div
-              className="flex items-center justify-center w-16 h-16 rounded-2xl"
-              style={{ background: "rgba(0,240,255,0.06)", border: "1px solid rgba(0,240,255,0.12)" }}
-            >
-              <Waves size={28} style={{ color: "var(--engine-dashboard)" }} />
+      <div className="relative z-10 max-w-md px-6 text-center">
+        <motion.div
+          initial="hidden"
+          animate="show"
+          variants={creatorStudioStaggerContainer}
+        >
+          <motion.div variants={creatorStudioFadeUp} className="mb-6 flex justify-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-500/10">
+              <Waves size={28} className="text-[var(--engine-dashboard)]" />
             </div>
           </motion.div>
 
-          <motion.p
-            variants={fadeUp}
-            className="text-6xl font-bold font-mono mb-4"
-            style={{ color: "rgba(255,255,255,0.08)" }}
-          >
+          <motion.p variants={creatorStudioFadeUp} className="mb-4 font-mono text-6xl font-bold text-white/10">
             404
           </motion.p>
           <motion.h1
-            variants={fadeUp}
-            className="text-2xl md:text-3xl font-bold tracking-tight mb-3 text-balance"
-            style={{ color: "#F1F5F9" }}
+            variants={creatorStudioFadeUp}
+            className="mb-3 text-balance text-2xl font-bold tracking-tight text-slate-100 md:text-3xl"
           >
             Page not found
           </motion.h1>
-          <motion.p variants={fadeUp} className="text-sm mb-8" style={{ color: "#94A3B8" }}>
+          <motion.p variants={creatorStudioFadeUp} className="mb-8 text-sm text-slate-400">
             This route does not exist. Return safely to the command center where your engines are waiting.
           </motion.p>
 
-          <motion.div variants={fadeUp}>
+          <motion.div variants={creatorStudioFadeUp}>
             <Link
               to="/dashboard"
-              className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl transition-all"
-              style={{
-                background: "linear-gradient(135deg, #14B8A6, #06B6D4)",
-                color: "#0B1221",
-              }}
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-300 px-6 py-3 text-sm font-semibold text-slate-950 transition-all hover:brightness-110"
             >
               Back to dashboard
               <ArrowRight size={16} />
             </Link>
           </motion.div>
 
-          <motion.div variants={fadeUp} className="mt-8">
-            <p className="flex items-center justify-center gap-1.5 text-xs" style={{ color: "#64748B" }}>
+          <motion.div variants={creatorStudioFadeUp} className="mt-8">
+            <p className="flex items-center justify-center gap-1.5 text-xs text-slate-500">
               <HelpCircle size={12} />
               If you expected this page to exist, contact support.
             </p>

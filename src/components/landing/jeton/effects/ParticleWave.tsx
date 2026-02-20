@@ -117,7 +117,7 @@ function ParticleField({ onReady, quality, pointerIntensity }: ParticleFieldProp
       uTime: { value: 0 },
       uMouse: { value: new THREE.Vector2(-999, -999) },
       uPointerIntensity: { value: pointerIntensity },
-      uBaseColor: { value: new THREE.Color('#0A1628') },
+      uBaseColor: { value: new THREE.Color('#050508') },
       uCyanColor: { value: new THREE.Color('#00F0FF') },
     }),
     [pointerIntensity],
