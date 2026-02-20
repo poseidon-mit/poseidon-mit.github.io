@@ -20,8 +20,9 @@ import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { AuroraPulse, GovernFooter } from '@/components/poseidon'
-import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+import { getMotionPreset } from '@/lib/motion-presets'
 import { Surface, Button, ButtonLink } from '@/design-system'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 /* ── Data ── */
 interface EvidenceItem { id: string; title: string; score: number; details: string; model?: string }
@@ -92,6 +93,9 @@ function ShapWaterfall({ factors }: { factors: { name: string; value: number }[]
    ═══════════════════════════════════════════════════════ */
 
 export default function ProtectAlertDetailPage() {
+  const prefersReducedMotion = useReducedMotionSafe()
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
+
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
   return (
@@ -103,18 +107,18 @@ export default function ProtectAlertDetailPage() {
         id="main-content"
         className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
         style={{ maxWidth: "1280px" }}
-        variants={staggerContainer}
+        variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
         role="main"
       >
 
         {/* ── Header ── */}
-        <motion.section variants={staggerContainer} className="flex flex-col gap-4">
-          <motion.div variants={fadeUp}>
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-4">
+          <motion.div variants={fadeUpVariant}>
             <Link to="/protect" className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-all hover:bg-white/[0.04]" style={{ color: "#94A3B8" }}><ArrowLeft size={16} />Back to Protect</Link>
           </motion.div>
-          <motion.div variants={fadeUp} className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <motion.div variants={fadeUpVariant} className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-col gap-1">
               <h1 className="text-xl md:text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>{`Signal #${criticalAlert.signalId}`}</h1>
               <span className="text-xs" style={{ color: "#64748B" }}>{`Detected: ${detectedAt} | Updated: ${updatedAt}`}</span>
@@ -124,7 +128,7 @@ export default function ProtectAlertDetailPage() {
         </motion.section>
 
         {/* ── Alert Summary ── */}
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUpVariant}>
           <Surface variant="glass" padding="md" borderColor="var(--state-critical)" className="flex flex-col gap-4">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div className="flex flex-col gap-1"><span className="text-[10px] uppercase tracking-wider" style={{ color: "#64748B" }}>Merchant</span><span className="text-sm font-semibold" style={{ color: "#F1F5F9" }}>{criticalAlert.merchant}</span></div>
@@ -138,7 +142,7 @@ export default function ProtectAlertDetailPage() {
         </motion.div>
 
         {/* ── Timeline ── */}
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUpVariant}>
           <Surface variant="glass" padding="md" className="flex flex-col gap-4">
             <div className="hidden md:flex items-center justify-between" role="list" aria-label="Alert timeline">
               {timelineSteps.map((step, i) => (
@@ -171,13 +175,13 @@ export default function ProtectAlertDetailPage() {
         {/* ── Evidence + Sidebar ── */}
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1 min-w-0 lg:w-2/3">
-            <motion.section variants={staggerContainer} className="flex flex-col gap-4">
+            <motion.section variants={staggerContainerVariant} className="flex flex-col gap-4">
               <h2 className="text-lg md:text-xl font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Evidence analysis</h2>
               <div className="flex flex-col gap-3">
                 {evidenceItems.map(item => {
                   const expanded = expandedId === item.id
                   return (
-                    <motion.div key={item.id} variants={fadeUp}>
+                    <motion.div key={item.id} variants={fadeUpVariant}>
                       <Surface variant="glass" padding="none" data-surface-role="structure" className="!p-0">
                         <Button className="w-full justify-between rounded-none !p-4 text-left" variant="ghost" engine="protect" size="sm" springPress={false} onClick={() => setExpandedId(expanded ? null : item.id)} aria-expanded={expanded} aria-label={`${item.title}: score ${(item.score * 100).toFixed(0)}%`}>
                           <div className="flex items-center gap-3">
@@ -203,7 +207,7 @@ export default function ProtectAlertDetailPage() {
               </div>
 
               {/* SHAP attribution waterfall */}
-              <motion.div variants={fadeUp}>
+              <motion.div variants={fadeUpVariant}>
                 <Surface variant="glass" padding="md" className="flex flex-col gap-3">
                   <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>SHAP attribution</h3>
                   <p className="text-[10px]" style={{ color: "#64748B" }}>Feature contribution to threat score</p>

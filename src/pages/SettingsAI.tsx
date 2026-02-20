@@ -4,7 +4,8 @@ import { ArrowLeft, Brain, Shield, TrendingUp, Zap, Scale, Save, RotateCcw } fro
 import { Link } from '../router';
 import { GovernFooter } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { getMotionPreset } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { Button, Toggle, Surface } from '@/design-system';
 
 const autonomyLabels = ['Manual', 'Guided', 'Balanced', 'Delegated', 'Autonomous'];
@@ -24,6 +25,9 @@ const engines = [
 
 
 export function SettingsAI() {
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion);
+
   const [globalAutonomy, setGlobalAutonomy] = useState(65);
   const [engineStates, setEngineStates] = useState(
     engines.map((e) => ({ autonomy: e.autonomy, autoApprove: e.autoApprove, notify: e.notify, minConf: e.minConf }))
@@ -56,9 +60,9 @@ export function SettingsAI() {
         </div>
       </nav>
 
-      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: '1280px' }} variants={stagger} initial="hidden" animate="visible" role="main">
+      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: '1280px' }} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
         {/* Hero */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(148,163,184,0.15)' }}>
               <Brain className="h-4 w-4" style={{ color: '#94A3B8' }} />
@@ -70,7 +74,7 @@ export function SettingsAI() {
         </motion.div>
 
         {/* KPI bar */}
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUpVariant}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
             { label: 'Global autonomy', value: `${globalAutonomy}%`, color: 'var(--engine-grow)' },
@@ -87,7 +91,7 @@ export function SettingsAI() {
         </motion.div>
 
         {/* Global autonomy */}
-        <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+        <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-white">Global Autonomy Level</h2>
             <span className="text-lg font-bold" style={{ color: 'var(--engine-grow)' }}>{globalAutonomy}%</span>
@@ -106,7 +110,7 @@ export function SettingsAI() {
         </Surface>
 
         {/* Per-engine autonomy */}
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUpVariant}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {engines.map((engine, idx) => <Surface
               key={engine.name} className="rounded-2xl" style={{ borderLeftWidth: 3, borderLeftColor: engine.color }} variant="glass" padding="md">
@@ -146,7 +150,7 @@ export function SettingsAI() {
         </motion.div>
 
         {/* Explanation preferences */}
-        <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+        <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
           <h2 className="text-sm font-semibold text-white mb-4">Explanation Preferences</h2>
           <div className="flex flex-col gap-4">
             <div>

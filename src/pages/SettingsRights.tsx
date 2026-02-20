@@ -4,7 +4,8 @@ import { ArrowLeft, Shield, Download, PauseCircle, Trash2, Lock, FileText, Datab
 import { Link } from '../router';
 import { GovernFooter } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { getMotionPreset } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { Button, Toggle, Surface } from '@/design-system';
 
 const dataInventory = [
@@ -23,6 +24,9 @@ const consentItems = [
 
 
 export function SettingsRights() {
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion);
+
   const [deleteInput, setDeleteInput] = useState('');
   const [expandedInventory, setExpandedInventory] = useState<string | null>(null);
   const [consents, setConsents] = useState(consentItems);
@@ -46,9 +50,9 @@ export function SettingsRights() {
         </div>
       </nav>
 
-      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: '1280px' }} variants={stagger} initial="hidden" animate="visible" role="main">
+      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: '1280px' }} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
         {/* Hero */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(59,130,246,0.15)' }}>
               <Shield className="h-4 w-4" style={{ color: 'var(--engine-govern)' }} />
@@ -64,7 +68,7 @@ export function SettingsRights() {
         </motion.div>
 
         {/* KPI bar */}
-        <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <motion.div variants={fadeUpVariant} className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
           { label: 'Data stored', value: '847 MB', color: 'var(--engine-govern)' },
           { label: 'Active requests', value: '0', color: 'var(--engine-protect)' },
@@ -79,7 +83,7 @@ export function SettingsRights() {
         </motion.div>
 
         {/* Rights actions 3-col */}
-        <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <motion.div variants={fadeUpVariant} className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Surface className="rounded-2xl flex flex-col gap-3" variant="glass" padding="md">
             <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'rgba(59,130,246,0.15)' }}>
               <Download className="h-5 w-5" style={{ color: 'var(--engine-govern)' }} />
@@ -112,7 +116,7 @@ export function SettingsRights() {
         </motion.div>
 
         {/* Delete my data — inline confirmation with typed DELETE required */}
-        <motion.div variants={fadeUp} className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4 md:p-6 flex flex-col gap-4">
+        <motion.div variants={fadeUpVariant} className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4 md:p-6 flex flex-col gap-4">
           <div>
             <h2 className="text-sm font-semibold text-red-400 mb-1">Delete my data</h2>
             <p className="text-xs text-white/50">This action is irreversible. All your personal data and AI decisions will be permanently removed.</p>
@@ -142,7 +146,7 @@ export function SettingsRights() {
         </motion.div>
 
         {/* Active requests table */}
-        <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+        <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
           <h2 className="text-sm font-semibold text-white mb-4">Active Requests</h2>
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <FileText className="h-8 w-8 text-white/20 mb-2" />
@@ -152,7 +156,7 @@ export function SettingsRights() {
         </Surface>
 
         {/* Data inventory accordion */}
-        <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+        <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
           <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
             <Database className="h-4 w-4 text-white/40" />Data Inventory
           </h2>
@@ -193,7 +197,7 @@ export function SettingsRights() {
         </Surface>
 
         {/* Consent management */}
-        <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+        <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
           <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
             <Lock className="h-4 w-4 text-white/40" />Data consent scopes
           </h2>

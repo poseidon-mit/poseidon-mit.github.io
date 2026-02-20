@@ -5,7 +5,8 @@ import { Link } from '../router';
 import { GovernFooter, AuroraPulse, EmptyState } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
 import { usePageTitle } from '../hooks/use-page-title';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { getMotionPreset } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { DEMO_THREAD } from '@/lib/demo-thread';
 import { Button, ButtonLink, Surface } from '@/design-system';
 
@@ -69,6 +70,9 @@ type EngineFilter = 'all' | 'Protect' | 'Grow' | 'Execute' | 'Govern';
    ═══════════════════════════════════════════ */
 
 export function AlertsHub() {
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion);
+
   usePageTitle('Alerts');
   const [severityFilter, setSeverityFilter] = useState<SeverityFilter>('all');
   const [engineFilter, setEngineFilter] = useState<EngineFilter>('all');
@@ -127,13 +131,13 @@ export function AlertsHub() {
         id="main-content"
         className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
         style={{ maxWidth: '1280px' }}
-        variants={stagger}
+        variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
         role="main">
         
         {/* Hero */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <Bell className="h-5 w-5" style={{ color: 'var(--engine-dashboard)' }} />
             <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--engine-dashboard)' }}>
@@ -147,7 +151,7 @@ export function AlertsHub() {
         </motion.div>
 
         {/* KPI bar */}
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUpVariant}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
             { label: 'Active', value: String(activeAlerts), color: 'var(--engine-execute)' },
@@ -166,7 +170,7 @@ export function AlertsHub() {
         {/* 2-column layout */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Main feed */}
-          <motion.div variants={fadeUp} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
+          <motion.div variants={fadeUpVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
             {/* AI root cause insight */}
             <div className="rounded-2xl border border-violet-500/30 bg-violet-500/[0.06] p-4">
               <div className="flex items-start gap-3">
@@ -223,7 +227,7 @@ export function AlertsHub() {
             }
 
             {/* Alert list */}
-            <div className="space-y-2">
+            <div className="space-y-2" aria-live="polite" aria-label="Filtered alerts list">
               {filtered.length === 0 &&
               <EmptyState
                 icon={Shield}
@@ -295,7 +299,7 @@ export function AlertsHub() {
           {/* Side rail */}
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Alert statistics">
             {/* MTTR */}
-            <Surface as={motion.div} variants={fadeUp} className="rounded-2xl" variant="glass" padding="md">
+            <Surface as={motion.div} variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <Clock className="h-4 w-4 text-cyan-400" />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Mean Time to Resolve</h3>
@@ -305,7 +309,7 @@ export function AlertsHub() {
             </Surface>
 
             {/* By engine */}
-            <Surface as={motion.div} variants={fadeUp} className="rounded-2xl" variant="glass" padding="md">
+            <Surface as={motion.div} variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">By Engine</h3>
               <div className="space-y-2.5">
                 {(['Protect', 'Grow', 'Execute', 'Govern'] as Alert['engine'][]).map((eng) => {
@@ -325,7 +329,7 @@ export function AlertsHub() {
             </Surface>
 
             {/* Alert stats */}
-            <Surface as={motion.div} variants={fadeUp} className="rounded-2xl" variant="glass" padding="md">
+            <Surface as={motion.div} variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <TrendingDown className="h-4 w-4 text-emerald-400" />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Alert Stats</h3>
@@ -345,7 +349,7 @@ export function AlertsHub() {
             </Surface>
 
             {/* Resolution timeline */}
-            <Surface as={motion.div} variants={fadeUp} className="rounded-2xl" variant="glass" padding="md">
+            <Surface as={motion.div} variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle2 className="h-4 w-4 text-cyan-400" />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Resolution Timeline</h3>

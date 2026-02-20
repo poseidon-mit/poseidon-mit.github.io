@@ -4,7 +4,8 @@ import { ArrowLeft, Link2, Building2, CreditCard, TrendingUp, Wallet, CheckCircl
 import { Link } from '../router';
 import { GovernFooter, PreviewBadge } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { getMotionPreset } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { Button, Surface } from '@/design-system';
 
 const connectedAccounts = [
@@ -28,6 +29,9 @@ const permissions = [
 
 
 export function SettingsIntegrations() {
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion);
+
   const [disconnecting, setDisconnecting] = useState<string | null>(null);
   const [syncing, setSyncing] = useState<string | null>(null);
 
@@ -50,9 +54,9 @@ export function SettingsIntegrations() {
         </div>
       </nav>
 
-      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: '1280px' }} variants={stagger} initial="hidden" animate="visible" role="main">
+      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: '1280px' }} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
         {/* Hero */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(148,163,184,0.15)' }}>
               <Link2 className="h-4 w-4" style={{ color: '#94A3B8' }} />
@@ -64,7 +68,7 @@ export function SettingsIntegrations() {
         </motion.div>
 
         {/* KPI bar */}
-        <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <motion.div variants={fadeUpVariant} className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
           { label: 'Connected', value: '3', color: 'var(--engine-protect)' },
           { label: 'Last sync', value: '2m ago', color: 'var(--engine-dashboard)' },
@@ -83,7 +87,7 @@ export function SettingsIntegrations() {
           {/* Left main feed */}
           <div className="flex-1 lg:w-2/3 flex flex-col gap-6">
             {/* Connected accounts */}
-            <motion.div variants={fadeUp} className="flex flex-col gap-4">
+            <motion.div variants={fadeUpVariant} className="flex flex-col gap-4">
               <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Connected Accounts</h2>
               {connectedAccounts.map((acct) => <Surface
                 key={acct.id} className="rounded-2xl" variant="glass" padding="md">
@@ -137,7 +141,7 @@ export function SettingsIntegrations() {
             </motion.div>
 
             {/* Add account grid */}
-            <motion.div variants={fadeUp} className="flex flex-col gap-4">
+            <motion.div variants={fadeUpVariant} className="flex flex-col gap-4">
               <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider flex items-center gap-1.5">
                 <Plus className="h-3.5 w-3.5" />Add Account
               </h2>
@@ -167,7 +171,7 @@ export function SettingsIntegrations() {
           {/* Side rail */}
           <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4">
             {/* Sync status */}
-            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Sync Status</h3>
               <div className="mb-3">
                 <div className="flex justify-between text-xs mb-1">
@@ -189,7 +193,7 @@ export function SettingsIntegrations() {
             </Surface>
 
             {/* Permissions */}
-            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Permissions</h3>
               <div className="flex flex-col gap-2">
                 {permissions.map((p) =>
@@ -206,7 +210,7 @@ export function SettingsIntegrations() {
             </Surface>
 
             {/* Security */}
-            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Security</h3>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">

@@ -4,7 +4,8 @@ import { ArrowLeft, Database, Bot, ChevronDown, ExternalLink } from 'lucide-reac
 import { Link } from '../router';
 import { GovernFooter, AuroraPulse } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { getMotionPreset } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { Button, Surface } from '@/design-system';
 
 const engineColors: Record<string, string> = {
@@ -34,7 +35,17 @@ const recentUpdates = [
 
 
 export function GovernRegistry() {
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion);
+
   const [expanded, setExpanded] = useState<string | null>(null);
+  const toggleExpanded = (name: string) => setExpanded((prev) => prev === name ? null : name);
+  const handleRowKeyDown = (event: React.KeyboardEvent<HTMLTableRowElement>, name: string) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggleExpanded(name);
+    }
+  };
 
   return (
     <div className="relative min-h-screen w-full">
@@ -51,9 +62,9 @@ export function GovernRegistry() {
         </div>
       </nav>
 
-      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: '1280px' }} variants={stagger} initial="hidden" animate="visible" role="main">
+      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: '1280px' }} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
         {/* Hero */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(59,130,246,0.15)' }}>
               <Database className="h-4 w-4" style={{ color: 'var(--engine-govern)' }} />
@@ -65,7 +76,7 @@ export function GovernRegistry() {
         </motion.div>
 
         {/* KPI bar */}
-        <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <motion.div variants={fadeUpVariant} className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
           { label: 'Active models', value: '8', color: 'var(--engine-govern)' },
           { label: 'Avg accuracy', value: '96.2%', color: 'var(--engine-protect)' },
@@ -83,7 +94,7 @@ export function GovernRegistry() {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Model table / cards */}
           <div className="flex-1 lg:w-2/3 flex flex-col gap-4">
-            <motion.div variants={fadeUp}>
+            <motion.div variants={fadeUpVariant}>
               {/* Desktop table */}
               <Surface className="hidden md:block rounded-2xl overflow-hidden" variant="glass" padding="none" data-surface-role="structure">
                 <table className="w-full text-left">
@@ -97,7 +108,12 @@ export function GovernRegistry() {
                   <tbody>
                     {models.map((m) =>
                     <React.Fragment key={m.name}>
-                        <tr className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors cursor-pointer" onClick={() => setExpanded(expanded === m.name ? null : m.name)}>
+                        <tr
+                          className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                          onClick={() => toggleExpanded(m.name)}
+                          onKeyDown={(event) => handleRowKeyDown(event, m.name)}
+                          tabIndex={0}
+                          aria-label={`${m.name} model row`}>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2">
                               <Bot className="h-3.5 w-3.5 text-white/30" />
@@ -177,7 +193,7 @@ export function GovernRegistry() {
           {/* Side rail */}
           <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4">
             {/* Registry health */}
-            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Registry Health</h3>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between text-xs">
@@ -196,7 +212,7 @@ export function GovernRegistry() {
             </Surface>
 
             {/* Accuracy distribution */}
-            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Accuracy by Engine</h3>
               <div className="flex flex-col gap-3">
                 {[
@@ -219,7 +235,7 @@ export function GovernRegistry() {
             </Surface>
 
             {/* Recent updates */}
-            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
+            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Recent Updates</h3>
               <div className="flex flex-col gap-3">
                 {recentUpdates.map((u, i) =>
