@@ -17,8 +17,9 @@ import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { AuroraPulse, GovernFooter } from '@/components/poseidon'
-import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+import { getMotionPreset } from '@/lib/motion-presets'
 import { Surface, ButtonLink } from '@/design-system'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 /* ── Cross-thread values ── */
 const DECISIONS_AUDITED = DEMO_THREAD.decisionsAudited
@@ -54,30 +55,33 @@ const ledgerEntries = [
    ═══════════════════════════════════════════════════════ */
 
 export default function GovernPage() {
+  const prefersReducedMotion = useReducedMotionSafe()
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
+
   return (
     <div className="relative min-h-screen w-full">
       <AuroraPulse engine="govern" />
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-govern)", color: "#ffffff" }}>Skip to main content</a>
 
-      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: "1280px" }} variants={staggerContainer} initial="hidden" animate="visible" role="main">
+      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: "1280px" }} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
 
         {/* ── Hero ── */}
-        <motion.section variants={staggerContainer} className="flex flex-col gap-4">
-          <motion.div variants={fadeUp}>
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-4">
+          <motion.div variants={fadeUpVariant}>
             <span className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider uppercase" style={{ borderColor: "rgba(59,130,246,0.3)", background: "rgba(59,130,246,0.08)", color: "var(--engine-govern)" }}>
               <Scale size={12} />Govern Engine
             </span>
           </motion.div>
-          <motion.h1 variants={fadeUp} className="text-2xl md:text-4xl font-bold leading-tight tracking-tight text-balance" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>
+          <motion.h1 variants={fadeUpVariant} className="text-2xl md:text-4xl font-bold leading-tight tracking-tight text-balance" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>
             Compliance score: <span style={{ color: "var(--engine-govern)" }}>{COMPLIANCE_SCORE}/100</span>. {DECISIONS_AUDITED.toLocaleString()} decisions audited.
           </motion.h1>
-          <motion.p variants={fadeUp} className="text-sm md:text-base leading-relaxed" style={{ color: "#CBD5E1" }}>
+          <motion.p variants={fadeUpVariant} className="text-sm md:text-base leading-relaxed" style={{ color: "#CBD5E1" }}>
             Full governance transparency. Every AI decision is explainable, auditable, and reversible.
           </motion.p>
         </motion.section>
 
         {/* ── Compliance score ring + stats ── */}
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUpVariant}>
           <Surface variant="glass" padding="md" className="flex flex-col md:flex-row gap-6 items-center">
             {/* SVG ring */}
             <div className="relative w-32 h-32 shrink-0">
@@ -109,13 +113,13 @@ export default function GovernPage() {
         {/* ── Decision Ledger + Sidebar ── */}
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1 min-w-0 lg:w-2/3">
-            <motion.section variants={staggerContainer} className="flex flex-col gap-4">
+            <motion.section variants={staggerContainerVariant} className="flex flex-col gap-4">
               <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "#64748B" }}>Recent Decisions</h2>
               {ledgerEntries.map(entry => {
                 const sCfg = statusConfig[entry.status]
                 const SIcon = sCfg.icon
                 return (
-                  <motion.div key={entry.id} variants={fadeUp}>
+                  <motion.div key={entry.id} variants={fadeUpVariant}>
                     <Surface variant="glass" padding="md" borderColor={typeColor[entry.type]} className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
                       <div className="flex items-center gap-2">
                         <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: `${typeColor[entry.type]}15`, color: typeColor[entry.type] }}><CircleDot size={10} />{entry.type}</span>

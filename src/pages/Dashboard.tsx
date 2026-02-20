@@ -1,5 +1,5 @@
 import { useMemo, memo } from "react"
-import { motion } from "framer-motion"
+import { motion, type Variants } from "framer-motion"
 import {
   LayoutDashboard,
   Info,
@@ -21,11 +21,11 @@ import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { GovernFooter } from '@/components/poseidon'
 import {
-  creatorStudioStaggerContainer,
-  creatorStudioStaggerItem,
+  getMotionPreset,
 } from '@/lib/motion-presets'
 import { Surface, ButtonLink } from '@/design-system'
 import { ENGINE_COLOR_MAP } from '@/lib/engine-color-map'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 
 /* ── Cross-thread values (frozen from CROSS_SCREEN_DATA_THREAD) ── */
@@ -133,7 +133,7 @@ const activities = [
   { icon: AlertTriangle, label: "New alert: unusual pattern detected", time: "3h ago", color: "var(--state-warning)" },
 ]
 
-function ActivityFeed() {
+function ActivityFeed({ itemVariants }: { itemVariants: Variants }) {
   return (
     <Surface className="rounded-2xl p-4 md:p-6 flex flex-col gap-4">
       <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "#64748B" }}>
@@ -173,7 +173,7 @@ const decisions = [
   { label: "Policy update", engine: "Govern", status: "approved", confidence: 0.97 },
 ]
 
-function DecisionRail() {
+function DecisionRail({ itemVariants }: { itemVariants: Variants }) {
   return (
     <Surface className="rounded-2xl p-4 md:p-6 flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -227,9 +227,12 @@ function DecisionRail() {
    DASHBOARD PAGE
    ═══════════════════════════════════════════════════════ */
 
-export const itemVariants = creatorStudioStaggerItem
-
 export default function DashboardPage() {
+  const prefersReducedMotion = useReducedMotionSafe()
+  const motionPreset = getMotionPreset(prefersReducedMotion)
+  const containerVariants = motionPreset.creatorStudioStaggerContainer
+  const itemVariants = motionPreset.creatorStudioStaggerItem
+
   const alertCount = 1
   const alertSpark = [6, 5, 4, 4, 3, 2, 2, 1]
 
@@ -244,7 +247,7 @@ export default function DashboardPage() {
       <motion.main
         id="main-content"
         className="command-center__main py-8 max-w-7xl mx-auto"
-        variants={creatorStudioStaggerContainer}
+        variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
@@ -297,10 +300,10 @@ export default function DashboardPage() {
         {/* ── Activity Feed + Decision Rail ── */}
         <motion.div variants={itemVariants} className="flex flex-col lg:flex-row gap-6 px-4 md:px-6 lg:px-8">
           <div className="flex-1 min-w-0 lg:w-2/3">
-            <ActivityFeed />
+            <ActivityFeed itemVariants={itemVariants} />
           </div>
           <div className="w-full lg:w-80 shrink-0">
-            <DecisionRail />
+            <DecisionRail itemVariants={itemVariants} />
           </div>
         </motion.div>
 

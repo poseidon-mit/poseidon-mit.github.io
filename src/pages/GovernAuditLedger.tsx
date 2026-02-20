@@ -22,8 +22,9 @@ import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { AuroraPulse, GovernFooter, PreviewBadge } from '@/components/poseidon'
-import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+import { getMotionPreset } from '@/lib/motion-presets'
 import { Surface, Button, ButtonLink } from '@/design-system'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 /* ── Cross-thread values ── */
 const DECISIONS_AUDITED = DEMO_THREAD.decisionsAudited
@@ -96,6 +97,8 @@ function getConfidenceColor(c: number) { return c >= 0.9 ? "var(--state-healthy)
    ═══════════════════════════════════════════════════════ */
 
 export default function GovernAuditPage() {
+  const prefersReducedMotion = useReducedMotionSafe()
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const [searchQuery, setSearchQuery] = useState("")
   const [activeFilter, setActiveFilter] = useState<FilterTab>("All")
   const [sortField, setSortField] = useState<SortField>("timestamp")
@@ -138,29 +141,29 @@ export default function GovernAuditPage() {
         id="main-content"
         className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
         style={{ maxWidth: "1280px" }}
-        variants={staggerContainer}
+        variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
         role="main"
       >
 
         {/* ── Hero ── */}
-        <motion.section variants={staggerContainer} className="flex flex-col gap-6">
-          <motion.div variants={fadeUp}>
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
+          <motion.div variants={fadeUpVariant}>
             <Link to="/govern" className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-all hover:bg-white/[0.04]" style={{ color: "#94A3B8" }}>
               <ArrowLeft size={16} />Back to Govern
             </Link>
           </motion.div>
-          <motion.div variants={fadeUp}>
+          <motion.div variants={fadeUpVariant}>
             <span className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider uppercase" style={{ borderColor: "rgba(59,130,246,0.3)", background: "rgba(59,130,246,0.08)", color: "var(--engine-govern)" }}><ShieldCheck size={12} />Audit Ledger</span>
           </motion.div>
-          <motion.div variants={fadeUp} className="flex flex-col gap-2">
+          <motion.div variants={fadeUpVariant} className="flex flex-col gap-2">
             <h1 className="text-2xl md:text-4xl font-bold leading-tight tracking-tight text-balance" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Audit Ledger</h1>
             <p className="text-sm md:text-base leading-relaxed" style={{ color: "#CBD5E1" }}>Immutable record of {DECISIONS_AUDITED.toLocaleString()} decisions with full evidence chain</p>
           </motion.div>
 
           {/* Search */}
-          <motion.div variants={fadeUp}>
+          <motion.div variants={fadeUpVariant}>
             <div className="flex items-center gap-3 rounded-xl border px-4 py-3" style={{ borderColor: "rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.03)" }}>
               <Search size={16} style={{ color: "#64748B" }} aria-hidden="true" />
               <input type="search" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search by decision ID, type, or date..." className="flex-1 bg-transparent text-sm outline-none placeholder:text-[#475569]" style={{ color: "#F1F5F9" }} aria-label="Search audit ledger" />
@@ -168,7 +171,7 @@ export default function GovernAuditPage() {
           </motion.div>
 
           {/* Filter pills */}
-          <motion.div variants={fadeUp} className="flex flex-wrap gap-2" role="tablist" aria-label="Filter decisions">
+          <motion.div variants={fadeUpVariant} className="flex flex-wrap gap-2" role="tablist" aria-label="Filter decisions">
             {filterTabs.map(f => {
               const isActive = f.label === activeFilter
               return (
@@ -205,7 +208,7 @@ export default function GovernAuditPage() {
                         const sCfg = statusCfg[entry.status]
                         const SIcon = sCfg.icon
                         return (
-                          <motion.tr key={entry.id} variants={fadeUp} className="group transition-colors hover:bg-white/[0.02]" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                          <motion.tr key={entry.id} variants={fadeUpVariant} className="group transition-colors hover:bg-white/[0.02]" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
                             <td className="px-4 py-3.5">
                               <Link
                                 to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
@@ -237,7 +240,7 @@ export default function GovernAuditPage() {
                 const sCfg = statusCfg[entry.status]
                 const SIcon = sCfg.icon
                 return (
-                  <motion.div key={entry.id} variants={fadeUp}>
+                  <motion.div key={entry.id} variants={fadeUpVariant}>
                     <Surface variant="glass" padding="md" className="flex flex-col gap-3">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium" style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}><CircleDot size={10} />{entry.type}</span>

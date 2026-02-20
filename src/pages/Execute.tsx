@@ -14,7 +14,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { AuroraPulse, EmptyState, GovernFooter } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { DEMO_THREAD } from '@/lib/demo-thread'
-import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+import { getMotionPreset } from '@/lib/motion-presets'
 import { ENGINE_BADGE_CLASS, ENGINE_COLOR_MAP } from '@/lib/engine-color-map'
 import { useDemoState } from '@/lib/demo-state/provider'
 import type { DemoExecuteDecision } from '@/lib/demo-state/types'
@@ -26,6 +26,7 @@ import {
 import { Button, ButtonLink, Surface } from '@/design-system'
 import { useToast } from '@/hooks/useToast'
 import { usePageTitle } from '@/hooks/use-page-title'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 type ActionStatus = 'pending' | 'approved' | 'deferred'
 
@@ -109,6 +110,8 @@ function statusTone(status: ActionStatus): string {
 
 export default function ExecutePage() {
   usePageTitle('Execute')
+  const prefersReducedMotion = useReducedMotionSafe()
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const { navigate } = useRouter()
   const { state, setExecuteDecision } = useDemoState()
   const { showToast } = useToast()
@@ -174,13 +177,13 @@ export default function ExecutePage() {
         id="main-content"
         className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
         style={{ maxWidth: '1280px' }}
-        variants={staggerContainer}
+        variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
         role="main"
       >
-        <motion.section variants={staggerContainer} className="flex flex-col gap-4">
-          <motion.div variants={fadeUp}>
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-4">
+          <motion.div variants={fadeUpVariant}>
             <span
               className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider uppercase"
               style={{
@@ -193,18 +196,18 @@ export default function ExecutePage() {
               Execute Engine
             </span>
           </motion.div>
-          <motion.h1 variants={fadeUp} className="text-2xl md:text-4xl font-bold leading-tight tracking-tight text-balance text-slate-100">
+          <motion.h1 variants={fadeUpVariant} className="text-2xl md:text-4xl font-bold leading-tight tracking-tight text-balance text-slate-100">
             {pendingCount} actions queued. Projected savings:{' '}
             <span style={{ color: 'var(--engine-execute)' }}>${DEMO_THREAD.monthlySavings}/mo</span>.
           </motion.h1>
-          <motion.p variants={fadeUp} className="text-sm md:text-base leading-relaxed text-slate-300">
+          <motion.p variants={fadeUpVariant} className="text-sm md:text-base leading-relaxed text-slate-300">
             AI-optimized execution queue. Every action is auditable and reversible within 24 hours.
           </motion.p>
         </motion.section>
 
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1 min-w-0 lg:w-2/3">
-            <motion.section variants={staggerContainer} className="flex flex-col gap-4">
+            <motion.section variants={staggerContainerVariant} className="flex flex-col gap-4">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500">Pending approval ({pendingActions.length})</h2>
 
               {pendingActions.length === 0 ? (
@@ -220,7 +223,7 @@ export default function ExecutePage() {
               ) : null}
 
               {pendingActions.map((action) => (
-                <motion.div key={action.id} variants={fadeUp}>
+                <motion.div key={action.id} variants={fadeUpVariant}>
                   <Surface
                     variant="glass"
                     padding="md"
@@ -291,7 +294,7 @@ export default function ExecutePage() {
                 <>
                   <h2 className="text-sm font-semibold uppercase tracking-wider mt-4 text-slate-500">Deferred ({deferredActions.length})</h2>
                   {deferredActions.map((action) => (
-                    <motion.div key={action.id} variants={fadeUp}>
+                    <motion.div key={action.id} variants={fadeUpVariant}>
                       <Surface variant="glass" padding="md" className="flex items-center gap-4 opacity-80">
                         <Clock size={16} style={{ color: 'var(--state-warning)' }} />
                         <div className="flex-1 min-w-0">
@@ -309,7 +312,7 @@ export default function ExecutePage() {
                 <>
                   <h2 className="text-sm font-semibold uppercase tracking-wider mt-4 text-slate-500">Completed ({completedActions.length})</h2>
                   {completedActions.map((action) => (
-                    <motion.div key={action.id} variants={fadeUp}>
+                    <motion.div key={action.id} variants={fadeUpVariant}>
                       <Surface variant="glass" padding="md" className="flex items-center gap-4 opacity-60">
                         <CheckCircle2 size={16} style={{ color: 'var(--state-healthy)' }} />
                         <div className="flex-1 min-w-0">
@@ -325,8 +328,8 @@ export default function ExecutePage() {
             </motion.section>
           </div>
 
-          <motion.aside className="w-full lg:w-80 shrink-0 flex flex-col gap-4" aria-label="Execute sidebar" variants={staggerContainer}>
-            <motion.div variants={fadeUp}>
+          <motion.aside className="w-full lg:w-80 shrink-0 flex flex-col gap-4" aria-label="Execute sidebar" variants={staggerContainerVariant}>
+            <motion.div variants={fadeUpVariant}>
               <Surface variant="glass" padding="md" className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-slate-100">Queue Summary</h3>
                 {[
@@ -345,7 +348,7 @@ export default function ExecutePage() {
               </Surface>
             </motion.div>
 
-            <motion.div variants={fadeUp}>
+            <motion.div variants={fadeUpVariant}>
               <Surface variant="glass" padding="md" className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-slate-100">Savings Tracker</h3>
                 <div className="flex items-center gap-2">
@@ -361,7 +364,7 @@ export default function ExecutePage() {
               </Surface>
             </motion.div>
 
-            <motion.div variants={fadeUp}>
+            <motion.div variants={fadeUpVariant}>
               <Surface variant="glass" padding="md" className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-slate-100">Rollback Safety</h3>
                 <p className="text-xs leading-relaxed text-slate-400">
@@ -376,7 +379,7 @@ export default function ExecutePage() {
               </Surface>
             </motion.div>
 
-            <motion.div variants={fadeUp}>
+            <motion.div variants={fadeUpVariant}>
               <ButtonLink to="/execute/history" variant="glass" engine="execute" className="rounded-xl text-sm">
                 Review execution history <ArrowUpRight size={16} />
               </ButtonLink>

@@ -4,9 +4,10 @@ import { ArrowLeft, Shield, CheckCircle2 } from 'lucide-react';
 import { Link } from '../router';
 import { GovernFooter, AuroraPulse } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { getMotionPreset } from '@/lib/motion-presets';
 import { DEMO_THREAD } from '@/lib/demo-thread';
 import { Button, ButtonLink, Surface } from '@/design-system';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 
 /* ═══════════════════════════════════════════
    DATA
@@ -49,6 +50,8 @@ const milestones = [
    ═══════════════════════════════════════════ */
 
 export function ProtectDispute() {
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: stagger } = getMotionPreset(prefersReducedMotion);
   const [currentStep, setCurrentStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
 
@@ -101,7 +104,7 @@ export function ProtectDispute() {
         role="main">
         
         {/* Hero */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <Shield className="h-5 w-5" style={{ color: 'var(--engine-protect)' }} />
             <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--engine-protect)' }}>
@@ -115,7 +118,7 @@ export function ProtectDispute() {
         </motion.div>
 
         {/* KPI bar */}
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUpVariant}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
             { label: 'Confidence', value: `${transaction.confidence}%`, color: 'var(--engine-protect)' },
@@ -134,7 +137,7 @@ export function ProtectDispute() {
         {/* 2-column layout */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Main feed */}
-          <motion.div variants={fadeUp} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
+          <motion.div variants={fadeUpVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
             {/* Progress stepper */}
             <div className="flex items-center gap-2 overflow-x-auto pb-2">
               {disputeSteps.map((step, idx) =>

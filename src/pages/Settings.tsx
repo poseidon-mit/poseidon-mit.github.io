@@ -8,11 +8,12 @@ import {
 } from 'lucide-react'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { AuroraPulse, GovernFooter } from '@/components/poseidon'
-import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+import { getMotionPreset } from '@/lib/motion-presets'
 import { Button, Surface, Toggle } from '@/design-system'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { useToast } from '@/hooks/useToast'
 import { usePageTitle } from '@/hooks/use-page-title'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 function SettingToggle({
   label,
@@ -38,6 +39,8 @@ function SettingToggle({
 
 export default function SettingsPage() {
   usePageTitle('Settings')
+  const prefersReducedMotion = useReducedMotionSafe()
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const { state, updateSettings } = useDemoState()
   const { showToast } = useToast()
 
@@ -73,24 +76,24 @@ export default function SettingsPage() {
         Skip to main content
       </a>
 
-      <motion.main id="main-content" className="command-center__main" initial="hidden" animate="visible" variants={staggerContainer}>
-        <motion.section variants={staggerContainer} className="hero-section">
-          <motion.div variants={fadeUp} className="hero-kicker">
+      <motion.main id="main-content" className="command-center__main" initial="hidden" animate="visible" variants={staggerContainerVariant}>
+        <motion.section variants={staggerContainerVariant} className="hero-section">
+          <motion.div variants={fadeUpVariant} className="hero-kicker">
             <span className="hero-kicker__icon"><Settings size={14} /></span>
             Settings
           </motion.div>
 
-          <motion.h1 variants={fadeUp} className="hero-headline">
+          <motion.h1 variants={fadeUpVariant} className="hero-headline">
             Control your <span style={{ color: 'var(--engine-dashboard)' }}>experience</span>
           </motion.h1>
 
-          <motion.p variants={fadeUp} className="hero-subline">
+          <motion.p variants={fadeUpVariant} className="hero-subline">
             Manage your profile, notifications, and security preferences. All changes are logged.
           </motion.p>
         </motion.section>
 
         <div className="flex flex-col lg:flex-row gap-4 px-4 md:px-6 lg:px-8">
-          <Surface variants={fadeUp} className="flex-1 rounded-2xl" variant="glass" padding="md" as={motion.div}>
+          <Surface variants={fadeUpVariant} className="flex-1 rounded-2xl" variant="glass" padding="md" as={motion.div}>
             <div className="flex items-center gap-3 mb-4">
               <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-cyan-400/10">
                 <User size={20} style={{ color: 'var(--engine-dashboard)' }} />
@@ -116,7 +119,7 @@ export default function SettingsPage() {
             </div>
           </Surface>
 
-          <Surface variants={fadeUp} className="flex-1 rounded-2xl" variant="glass" padding="md" as={motion.div}>
+          <Surface variants={fadeUpVariant} className="flex-1 rounded-2xl" variant="glass" padding="md" as={motion.div}>
             <div className="flex items-center gap-3 mb-4">
               <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-400/10">
                 <Bell size={20} style={{ color: 'var(--engine-execute)' }} />
@@ -147,7 +150,7 @@ export default function SettingsPage() {
           </Surface>
         </div>
 
-        <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
+        <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
           <Surface className="rounded-2xl" variant="glass" padding="md">
             <div className="flex items-center gap-3 mb-4">
               <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-400/10">
@@ -177,7 +180,7 @@ export default function SettingsPage() {
           </Surface>
         </motion.section>
 
-        <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
+        <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
           <Surface className="rounded-2xl flex items-center justify-between gap-3" variant="glass" padding="md">
             <p className="text-sm text-slate-400">All settings changes are recorded in the audit ledger.</p>
             <div className="flex items-center gap-2">
