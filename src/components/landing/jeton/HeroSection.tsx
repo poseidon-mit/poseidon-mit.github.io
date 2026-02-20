@@ -35,7 +35,7 @@ function useHeroVideoSrc() {
 }
 
 export function HeroSection() {
-  const [videoReady, setVideoReady] = useState(true);
+  const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -74,18 +74,35 @@ export function HeroSection() {
 
     let visible = document.visibilityState === 'visible';
     let intersecting = true;
+    let disposed = false;
+    let abortRetryScheduled = false;
 
     const tryPlay = async () => {
-      if (!visible || !intersecting) {
+      if (!visible || !intersecting || disposed) {
         return;
       }
       try {
         await video.play();
       } catch (err: any) {
-        if (err.name !== 'NotAllowedError' && err.name !== 'AbortError') {
+        if (disposed) return;
+        if (err.name === 'AbortError') {
+          // Retry at most once after a short delay — AbortError is transient.
+          if (!abortRetryScheduled) {
+            abortRetryScheduled = true;
+            setTimeout(() => {
+              abortRetryScheduled = false;
+              void tryPlay();
+            }, 200);
+          }
+        } else if (err.name !== 'NotAllowedError') {
           setVideoFailed(true);
         }
       }
+    };
+
+    const handleCanPlay = () => {
+      setVideoReady(true);
+      void tryPlay();
     };
 
     const handleVisibilityChange = () => {
@@ -97,6 +114,7 @@ export function HeroSection() {
       void tryPlay();
     };
 
+    video.addEventListener('canplay', handleCanPlay);
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     let observer: IntersectionObserver | null = null;
@@ -118,19 +136,20 @@ export function HeroSection() {
       observer.observe(section);
     }
 
-    void tryPlay();
-
-    // Ensure we handle case where video is already ready before events attach
+    // If the video is already loaded, play immediately
     if (video.readyState >= 3) {
       setVideoReady(true);
+      void tryPlay();
     }
 
     return () => {
+      disposed = true;
+      video.removeEventListener('canplay', handleCanPlay);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       observer?.disconnect();
       video.pause();
     };
-  }, [heroVideoEnabled]);
+  }, [heroVideoEnabled, heroVideoSrc]);
 
   return (
     <section ref={sectionRef} className="relative isolate flex min-h-screen items-center overflow-hidden bg-[#0B1221] px-6 pb-20 pt-28 md:px-8 md:pt-32">
@@ -147,7 +166,6 @@ export function HeroSection() {
             key={heroVideoSrc}
             src={heroVideoSrc}
             className="h-full w-full object-cover object-center brightness-[0.68] saturate-[0.86]"
-            autoPlay
             loop
             muted
             playsInline
@@ -156,9 +174,6 @@ export function HeroSection() {
             poster={HERO_VIDEO_POSTER_SRC}
             aria-hidden="true"
             tabIndex={-1}
-            onLoadedMetadata={() => setVideoReady(true)}
-            onLoadedData={() => setVideoReady(true)}
-            onCanPlay={() => setVideoReady(true)}
             onError={() => setVideoFailed(true)}
           />
         </div>
