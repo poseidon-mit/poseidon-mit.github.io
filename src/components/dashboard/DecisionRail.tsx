@@ -186,8 +186,6 @@ export function DecisionRail() {
       className="decision-rail"
       data-slot="decision_rail"
       variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
     >
       <NetWorthHero />
       <RiskGauge />

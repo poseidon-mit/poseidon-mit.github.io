@@ -1,20 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from '@/router';
-import { Check, Zap, Shield, TrendingUp, HelpCircle, ChevronDown } from "lucide-react";
+import { Check, Zap, Shield, TrendingUp, ChevronDown } from "lucide-react";
 import { PublicTopBar } from '@/components/landing/PublicTopBar';
 import { Button, ButtonLink, Toggle, Surface } from '@/design-system';
-
-/* ── Motion presets ── */
-const spring = { type: "spring" as const, stiffness: 380, damping: 30 };
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: spring }
-};
-const staggerContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } }
-};
+import {
+  creatorStudioFadeUp as fadeUp,
+  creatorStudioStaggerContainer as staggerContainer,
+} from '@/lib/motion-presets';
 
 /* ── Plan data ── */
 const PLANS = [
@@ -92,7 +84,14 @@ export default function PricingPage() {
   return (
     <>
       <PublicTopBar />
-      <main id="main-content" role="main" className="app-bg-oled relative min-h-screen text-slate-100">
+      <motion.main
+        id="main-content"
+        role="main"
+        className="app-bg-oled relative min-h-screen text-slate-100"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
       <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:bg-[var(--engine-dashboard)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-slate-950">
@@ -109,8 +108,6 @@ export default function PricingPage() {
         {/* ── P1: Hero ── */}
         <motion.section
             className="text-center mb-16"
-            initial="hidden"
-            animate="visible"
             variants={staggerContainer}>
             
           <motion.p
@@ -148,21 +145,18 @@ export default function PricingPage() {
         {/* ── P2: Plan cards ── */}
         <motion.section
             className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
             variants={staggerContainer}>
             
           {PLANS.map((plan) => <Surface
 
               key={plan.name}
-              variants={fadeUp} className="rounded-2xl p-6 flex flex-col relative"
+              variants={fadeUp} className="rounded-2xl flex flex-col relative"
 
               style={{
                 border: plan.highlight ?
                 "1px solid rgba(0,240,255,0.3)" :
                 "1px solid rgba(255,255,255,0.06)"
-              }} variant="glass" padding="none" as={motion.div}>
+              }} variant="glass" padding="md" as={motion.div}>
               
               {plan.highlight &&
               <span
@@ -216,9 +210,6 @@ export default function PricingPage() {
         {/* ── P3: FAQ ── */}
         <motion.section
             className="max-w-3xl mx-auto mb-16"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
             variants={staggerContainer}>
             
           <motion.h2
@@ -233,7 +224,7 @@ export default function PricingPage() {
             {FAQ_ITEMS.map((item, i) => <Surface
 
                 key={i}
-                variants={fadeUp} className="rounded-xl overflow-hidden" variant="glass" padding="none" as={motion.div}>
+                variants={fadeUp} className="rounded-xl overflow-hidden" variant="glass" padding="none" data-surface-role="structure" as={motion.div}>
 
                 
                 <Button
@@ -265,7 +256,7 @@ export default function PricingPage() {
         </motion.section>
 
         {/* Trust badges */}
-        <div className="flex items-center justify-center gap-6 flex-wrap text-[10px] font-mono uppercase tracking-widest" style={{ color: "#475569" }}>
+      <div className="flex items-center justify-center gap-6 flex-wrap text-[10px] font-mono uppercase tracking-widest" style={{ color: "#475569" }}>
           <span className="flex items-center gap-1.5"><Shield size={12} /> Bank-level encryption</span>
           <span style={{ opacity: 0.3 }}>|</span>
           <span className="flex items-center gap-1.5"><TrendingUp size={12} /> Explainable AI</span>
@@ -273,7 +264,7 @@ export default function PricingPage() {
           <span className="flex items-center gap-1.5"><Zap size={12} /> Reversible actions</span>
         </div>
       </div>
-      </main>
+      </motion.main>
     </>);
 
 }

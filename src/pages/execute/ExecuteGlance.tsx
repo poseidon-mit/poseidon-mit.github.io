@@ -51,19 +51,19 @@ export function ExecuteGlance() {
 
       {/* Summary stats */}
       <motion.div variants={fadeUp} className="grid grid-cols-3 gap-3">
-        <Surface variant="glass" padding="none" className="flex flex-col items-center gap-1 py-4 glass-hover-execute">
+        <Surface variant="glass" padding="md" className="flex flex-col items-center gap-1 glass-hover-execute">
           <span className="text-xs uppercase tracking-wider" style={{ color: '#64748B' }}>Pending</span>
           <span className="text-2xl font-bold" style={{ color: 'var(--engine-execute)' }}>
             <CountUp value={DEMO_THREAD.pendingActions} />
           </span>
         </Surface>
-        <Surface variant="glass" padding="none" className="flex flex-col items-center gap-1 py-4 glass-hover-execute">
+        <Surface variant="glass" padding="md" className="flex flex-col items-center gap-1 glass-hover-execute">
           <span className="text-xs uppercase tracking-wider" style={{ color: '#64748B' }}>Approved Today</span>
           <span className="text-2xl font-bold" style={{ color: 'var(--state-healthy)' }}>
             <CountUp value={7} />
           </span>
         </Surface>
-        <Surface variant="glass" padding="none" className="flex flex-col items-center gap-1 py-4 glass-hover-execute">
+        <Surface variant="glass" padding="md" className="flex flex-col items-center gap-1 glass-hover-execute">
           <span className="text-xs uppercase tracking-wider" style={{ color: '#64748B' }}>Auto-executed</span>
           <span className="text-2xl font-bold" style={{ color: 'var(--engine-govern)' }}>
             <CountUp value={12} />

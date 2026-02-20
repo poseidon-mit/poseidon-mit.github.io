@@ -73,7 +73,7 @@ export function ActionQueue({ viewMode = 'detail' }: ActionQueueProps) {
 
       {/* Desktop table */}
       <div className="hidden md:block">
-        <Surface variant="glass" padding="none" className="overflow-hidden !p-0">
+        <Surface variant="glass" padding="none" data-surface-role="structure" className="overflow-hidden !p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-left" role="table">
               <thead>
@@ -203,7 +203,7 @@ export function ActionQueue({ viewMode = 'detail' }: ActionQueueProps) {
       <div className="flex flex-col gap-3 md:hidden">
         {pendingActions.map((item) => (
           <motion.div key={item.id} variants={fadeUp}>
-            <Surface variant="glass" padding="none"
+            <Surface variant="glass" padding="md"
               borderColor={item.priority === 'CRITICAL' ? 'rgba(234,179,8,0.5)' : undefined}
               className="flex flex-col gap-3"
             >

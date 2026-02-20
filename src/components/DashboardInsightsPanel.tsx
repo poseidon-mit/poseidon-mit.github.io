@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer } from '@/lib/motion-presets';
+import { Surface } from '@/design-system';
 
 export type InsightVariant = 'morning' | 'evening';
 
@@ -44,11 +45,12 @@ export function DashboardInsightsPanel({ variant }: DashboardInsightsPanelProps)
       className="dashboard-insights-panel"
     >
       {variant === 'morning' ? (
-        <motion.div
-          className="dashboard-insights-card dashboard-insights-card--activity glass-surface"
+        <Surface
+          as={motion.div}
+          variant="glass"
+          padding="md"
+          className="dashboard-insights-card dashboard-insights-card--activity"
           variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
         >
           <motion.h2 variants={fadeUp} className="dashboard-insights-heading">Good morning</motion.h2>
           <motion.div variants={fadeUp} className="dashboard-insights-activity-rail">
@@ -66,13 +68,14 @@ export function DashboardInsightsPanel({ variant }: DashboardInsightsPanelProps)
             <li>Top-up emergency fund</li>
             <li>Approve queued transfers</li>
           </motion.ul>
-        </motion.div>
+        </Surface>
       ) : (
-        <motion.div
-          className="dashboard-insights-card glass-surface"
+        <Surface
+          as={motion.div}
+          variant="glass"
+          padding="md"
+          className="dashboard-insights-card"
           variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
         >
           <motion.h2 variants={fadeUp} className="dashboard-insights-heading">Day in review</motion.h2>
           <motion.div variants={fadeUp} className="dashboard-insights-metrics">
@@ -90,7 +93,7 @@ export function DashboardInsightsPanel({ variant }: DashboardInsightsPanelProps)
             <span className="dashboard-insights-signal-label">engines active today</span>
           </motion.div>
           <motion.p variants={fadeUp} className="dashboard-insights-proof">AI recommendations</motion.p>
-        </motion.div>
+        </Surface>
       )}
     </div>
   );

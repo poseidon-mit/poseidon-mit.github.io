@@ -155,7 +155,7 @@ export function AlertsHub() {
             { label: 'MTTR', value: '25m', color: 'var(--engine-dashboard)' },
             { label: 'False positive', value: `${falsePositiveRate}%`, color: 'var(--engine-govern)' }].
             map((kpi) => <Surface
-              key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
+              key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
                 <p className="text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
               </Surface>
@@ -240,7 +240,7 @@ export function AlertsHub() {
 
               }
               {filtered.map((alert) => <Surface
-                key={alert.id} className="rounded-2xl p-4" variant="glass" padding="none">
+                key={alert.id} className="rounded-2xl" variant="glass" padding="md">
                   <div className="flex items-start gap-3">
                     <input
                     type="checkbox"
@@ -295,7 +295,7 @@ export function AlertsHub() {
           {/* Side rail */}
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Alert statistics">
             {/* MTTR */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface as={motion.div} variants={fadeUp} className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <Clock className="h-4 w-4 text-cyan-400" />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Mean Time to Resolve</h3>
@@ -305,7 +305,7 @@ export function AlertsHub() {
             </Surface>
 
             {/* By engine */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface as={motion.div} variants={fadeUp} className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">By Engine</h3>
               <div className="space-y-2.5">
                 {(['Protect', 'Grow', 'Execute', 'Govern'] as Alert['engine'][]).map((eng) => {
@@ -325,7 +325,7 @@ export function AlertsHub() {
             </Surface>
 
             {/* Alert stats */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface as={motion.div} variants={fadeUp} className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <TrendingDown className="h-4 w-4 text-emerald-400" />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Alert Stats</h3>
@@ -345,7 +345,7 @@ export function AlertsHub() {
             </Surface>
 
             {/* Resolution timeline */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface as={motion.div} variants={fadeUp} className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle2 className="h-4 w-4 text-cyan-400" />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Resolution Timeline</h3>

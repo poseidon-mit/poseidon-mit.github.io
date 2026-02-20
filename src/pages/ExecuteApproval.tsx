@@ -134,7 +134,7 @@ export function ExecuteApproval() {
             { label: 'Deferred', value: '1', color: 'var(--engine-govern)' },
             { label: 'Avg confidence', value: '0.88', color: 'var(--engine-dashboard)' }].
             map((kpi) => <Surface
-              key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
+              key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
                 <p className="text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
               </Surface>
@@ -195,9 +195,9 @@ export function ExecuteApproval() {
             <div className="flex flex-col gap-3">
               {visibleActions.map((action) => <Surface
 
-                key={action.id} className="rounded-2xl p-4 md:p-5"
+                key={action.id} className="rounded-2xl"
 
-                style={{ borderLeftWidth: 3, borderLeftColor: urgencyBorderColor[action.urgency] }} variant="glass" padding="none">
+                style={{ borderLeftWidth: 3, borderLeftColor: urgencyBorderColor[action.urgency] }} variant="glass" padding="md">
                 
                   <div className="flex items-start gap-3">
                     <div className="flex-1 min-w-0">
@@ -315,7 +315,7 @@ export function ExecuteApproval() {
           {/* Side rail */}
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Approval queue sidebar">
             {/* Queue health ring */}
-            <Surface className="rounded-2xl p-4 flex flex-col items-center" variant="glass" padding="none">
+            <Surface className="rounded-2xl flex flex-col items-center" variant="glass" padding="md">
               <div className="relative" aria-label="Queue health: 85">
                 <svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true">
                   <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
@@ -335,7 +335,7 @@ export function ExecuteApproval() {
             </Surface>
 
             {/* Approval activity */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle2 className="h-4 w-4 text-amber-400" />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Approval Activity</h3>
@@ -358,7 +358,7 @@ export function ExecuteApproval() {
             </Surface>
 
             {/* Queue summary */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Queue Summary</h3>
               <div className="space-y-2.5">
                 {[
@@ -376,7 +376,7 @@ export function ExecuteApproval() {
             </Surface>
 
             {/* Completed */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Completed</h3>
               <p className="text-xs text-white/30">3 actions completed today. Expand to review.</p>
               <Button variant="ghost" engine="execute" size="sm" className="text-xs mt-2 !px-0 hover:underline">Show completed</Button>

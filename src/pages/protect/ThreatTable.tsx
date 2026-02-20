@@ -102,7 +102,7 @@ export function ThreatTable({ navigate, viewMode = 'detail' }: ThreatTableProps)
   return (
     <motion.div variants={fadeUp} className="flex min-w-0 flex-[2] flex-col gap-5">
       {/* Threat Table */}
-      <Surface variant="glass" padding="none"
+      <Surface variant="glass" padding="md"
         borderColor="var(--engine-protect)"
         style={{
           background: 'rgba(255,255,255,0.05)',
@@ -287,7 +287,7 @@ export function ThreatTable({ navigate, viewMode = 'detail' }: ThreatTableProps)
       </div>
 
       {/* Quick Actions */}
-      <Surface variant="glass" padding="none"
+      <Surface variant="glass" padding="md"
         borderColor="var(--engine-protect)"
         style={{
           background: 'rgba(255,255,255,0.05)',

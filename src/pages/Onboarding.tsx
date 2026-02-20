@@ -102,7 +102,7 @@ export default function OnboardingConnectPage() {
           })}
         </motion.div>
 
-        <Surface variants={fadeUp} className="mt-6 rounded-xl p-4" variant="glass" padding="none" as={motion.div}>
+        <Surface variants={fadeUp} className="mt-6 rounded-xl" variant="glass" padding="md" as={motion.div}>
           <div className="flex items-start gap-3">
             <Shield className="mt-0.5 h-4.5 w-4.5 text-[var(--engine-dashboard)]" aria-hidden="true" />
             <div>

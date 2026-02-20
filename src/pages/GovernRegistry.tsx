@@ -72,7 +72,7 @@ export function GovernRegistry() {
           { label: 'Last retrained', value: '2d ago', color: 'var(--engine-dashboard)' },
           { label: 'Coverage', value: '100%', color: 'var(--engine-grow)' }].
           map((kpi) => <Surface
-            key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
+            key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
               <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
               <p className="text-lg font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
             </Surface>
@@ -85,7 +85,7 @@ export function GovernRegistry() {
           <div className="flex-1 lg:w-2/3 flex flex-col gap-4">
             <motion.div variants={fadeUp}>
               {/* Desktop table */}
-              <Surface className="hidden md:block rounded-2xl overflow-hidden" variant="glass" padding="none">
+              <Surface className="hidden md:block rounded-2xl overflow-hidden" variant="glass" padding="none" data-surface-role="structure">
                 <table className="w-full text-left">
                   <thead>
                     <tr className="border-b border-white/[0.06]">
@@ -157,7 +157,7 @@ export function GovernRegistry() {
               {/* Mobile cards */}
               <div className="md:hidden flex flex-col gap-3">
                 {models.map((m) => <Surface
-                  key={m.name} className="rounded-2xl p-4" variant="glass" padding="none">
+                  key={m.name} className="rounded-2xl" variant="glass" padding="md">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-semibold text-white">{m.name}</span>
                       <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: `${engineColors[m.engine]}20`, color: engineColors[m.engine] }}>{m.engine}</span>
@@ -177,7 +177,7 @@ export function GovernRegistry() {
           {/* Side rail */}
           <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4">
             {/* Registry health */}
-            <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Registry Health</h3>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between text-xs">
@@ -196,7 +196,7 @@ export function GovernRegistry() {
             </Surface>
 
             {/* Accuracy distribution */}
-            <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Accuracy by Engine</h3>
               <div className="flex flex-col gap-3">
                 {[
@@ -219,7 +219,7 @@ export function GovernRegistry() {
             </Surface>
 
             {/* Recent updates */}
-            <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Recent Updates</h3>
               <div className="flex flex-col gap-3">
                 {recentUpdates.map((u, i) =>

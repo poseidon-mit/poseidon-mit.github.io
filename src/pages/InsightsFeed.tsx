@@ -122,7 +122,7 @@ export function InsightsFeed() {
             { label: 'Avg confidence', value: avgConfidence, color: 'var(--engine-grow)' },
             { label: 'Est. impact', value: `+$${estMonthlyImpact}/mo`, color: 'var(--engine-execute)' }].
             map((kpi) => <Surface
-              key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
+              key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
                 <p className="text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
               </Surface>
@@ -172,9 +172,9 @@ export function InsightsFeed() {
               }
               {filtered.map((insight) => <Surface
 
-                key={insight.id} className="rounded-2xl p-4"
+                key={insight.id} className="rounded-2xl"
 
-                style={{ borderTopWidth: 2, borderTopColor: engineColor[insight.engine] }} variant="glass" padding="none">
+                style={{ borderTopWidth: 2, borderTopColor: engineColor[insight.engine] }} variant="glass" padding="md">
                 
                   <div className="flex items-center gap-2 flex-wrap mb-2">
                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${engineBadgeCls[insight.engine]}`}>{insight.engine}</span>
@@ -234,7 +234,7 @@ export function InsightsFeed() {
           {/* Side rail */}
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Insights sidebar">
             {/* Avg confidence ring */}
-            <Surface className="rounded-2xl p-4 flex flex-col items-center" variant="glass" padding="none">
+            <Surface as={motion.div} variants={fadeUp} className="rounded-2xl flex flex-col items-center" variant="glass" padding="md">
               <div className="relative" aria-label={`Average confidence: ${avgConfidence}`}>
                 <svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true">
                   <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
@@ -254,7 +254,7 @@ export function InsightsFeed() {
             </Surface>
 
             {/* Monthly impact */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface as={motion.div} variants={fadeUp} className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <TrendingUp className="h-4 w-4" style={{ color: 'var(--engine-dashboard)' }} />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Monthly Impact</h3>
@@ -270,7 +270,7 @@ export function InsightsFeed() {
             </Surface>
 
             {/* Stats */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface as={motion.div} variants={fadeUp} className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Stats</h3>
               <div className="space-y-2.5">
                 {[

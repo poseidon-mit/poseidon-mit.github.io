@@ -43,7 +43,7 @@ export interface BentoItemProps {
 
 export function BentoItem({ children, colSpan = 1, rowSpan = 1, className }: BentoItemProps) {
   return (
-    <Surface variant="glass" padding="none" className={cn(colSpanClasses[colSpan], rowSpanClasses[rowSpan], className)}>
+    <Surface variant="glass" padding="md" className={cn(colSpanClasses[colSpan], rowSpanClasses[rowSpan], className)}>
       {children}
     </Surface>
   )

@@ -177,7 +177,7 @@ function Timeline() {
 
 function EvidenceSummary() {
   return (
-    <Surface variant="glass" padding="none"
+    <Surface variant="glass" padding="md"
       borderColor="var(--engine-protect)"
       style={{
         background: 'rgba(255,255,255,0.05)',
@@ -207,7 +207,7 @@ export function ProtectSidebar({ viewMode = 'detail' }: ProtectSidebarProps) {
   return (
     <motion.aside variants={fadeUp} className="flex min-w-0 flex-1 flex-col gap-5" aria-label="Decision rail">
       {/* Score Ring */}
-      <Surface variant="glass" padding="none"
+      <Surface variant="glass" padding="md"
         style={{
           background: 'rgba(255,255,255,0.05)',
           border: '1px solid rgba(255,255,255,0.1)',
@@ -217,7 +217,7 @@ export function ProtectSidebar({ viewMode = 'detail' }: ProtectSidebarProps) {
       </Surface>
 
       {/* Category Score Bars */}
-      <Surface variant="glass" padding="none"
+      <Surface variant="glass" padding="md"
         style={{
           background: 'rgba(255,255,255,0.05)',
           border: '1px solid rgba(255,255,255,0.1)',
@@ -231,7 +231,7 @@ export function ProtectSidebar({ viewMode = 'detail' }: ProtectSidebarProps) {
       </Surface>
 
       {/* Milestones Timeline */}
-      <Surface variant="glass" padding="none"
+      <Surface variant="glass" padding="md"
         style={{
           background: 'rgba(255,255,255,0.05)',
           border: '1px solid rgba(255,255,255,0.1)',

@@ -59,7 +59,7 @@ export function TrustSecurity() {
         {/* Live stats */}
         <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {liveStats.map((stat) => <Surface
-            key={stat.label} className="rounded-2xl p-4" variant="glass" padding="none">
+            key={stat.label} className="rounded-2xl" variant="glass" padding="md">
               <p className="text-xs text-white/40 mb-1">{stat.label}</p>
               <p className="text-lg font-bold" style={{ color: 'var(--engine-protect)' }}>{stat.value}</p>
               <div className="flex items-end gap-0.5 h-6 mt-2">
@@ -82,7 +82,7 @@ export function TrustSecurity() {
           { icon: Eye, color: 'var(--engine-govern)', title: 'Read-only data access', desc: 'We see, never touch. Read-only connections to your financial accounts. No write permissions ever.' },
           { icon: ShieldCheck, color: 'var(--engine-grow)', title: 'Zero-knowledge architecture', desc: 'OAuth 2.0 authentication. No credentials stored. Your secrets remain yours.' }].
           map((pillar) => <Surface
-            key={pillar.title} className="rounded-2xl p-6" variant="glass" padding="none">
+            key={pillar.title} className="rounded-2xl" variant="glass" padding="md">
               <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ background: `${pillar.color}15` }}>
                 <pillar.icon className="h-6 w-6" style={{ color: pillar.color }} />
               </div>
@@ -101,7 +101,7 @@ export function TrustSecurity() {
             { icon: ScrollText, title: 'Audit trail', desc: 'Every decision timestamped, versioned, and traceable to its source model.' },
             { icon: UserCheck, title: 'Human override', desc: 'Override any AI decision at any time. Your judgment always takes priority.' }].
             map((col) => <Surface
-              key={col.title} className="rounded-2xl p-6 text-center" variant="glass" padding="none">
+              key={col.title} className="rounded-2xl text-center" variant="glass" padding="md">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: 'rgba(34,197,94,0.15)' }}>
                   <col.icon className="h-5 w-5" style={{ color: 'var(--engine-protect)' }} />
                 </div>
@@ -135,7 +135,7 @@ export function TrustSecurity() {
         </motion.div>
 
         {/* Audit proof card */}
-        <Surface variants={fadeUp} className="rounded-2xl p-6 max-w-2xl mx-auto w-full" variant="glass" padding="none" as={motion.div}>
+        <Surface variants={fadeUp} className="rounded-2xl max-w-2xl mx-auto w-full" variant="glass" padding="md" as={motion.div}>
           <div className="flex items-center gap-2 mb-4">
             <FileText className="h-4 w-4 text-white/30" />
             <span className="text-xs text-white/30 uppercase tracking-wider">Sample Audit Record</span>
@@ -174,7 +174,7 @@ export function TrustSecurity() {
               </div>
             )}
           </div>
-          <Surface className="rounded-2xl p-6" variant="glass" padding="none">
+          <Surface className="rounded-2xl" variant="glass" padding="md">
             <p className="text-sm text-white/60 leading-relaxed">
               Poseidon.AI is built with a security-first, defense-in-depth architecture. Every data access is logged, every AI decision is explained, and every user action is auditable. We are committed to regular independent security reviews and maintain compliance with international data protection regulations.
             </p>

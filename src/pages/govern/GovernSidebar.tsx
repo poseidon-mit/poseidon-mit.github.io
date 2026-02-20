@@ -20,7 +20,7 @@ import { Surface } from '@/design-system'
 
 function EvidenceDistribution() {
   return (
-    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
+    <Surface variant="glass" padding="md" className="flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <Database size={14} style={{ color: 'var(--engine-govern)' }} aria-hidden="true" />
         Evidence Types
@@ -51,7 +51,7 @@ function EvidenceDistribution() {
 
 function ConfidenceTrend() {
   return (
-    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
+    <Surface variant="glass" padding="md" className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
           <TrendingUp size={14} style={{ color: 'var(--engine-govern)' }} aria-hidden="true" />
@@ -94,7 +94,7 @@ function ConfidenceTrend() {
 
 function ComplianceStatus() {
   return (
-    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
+    <Surface variant="glass" padding="md" className="flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <ShieldCheck size={14} style={{ color: 'var(--engine-govern)' }} aria-hidden="true" />
         Compliance Status

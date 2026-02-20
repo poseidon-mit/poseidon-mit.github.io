@@ -147,7 +147,7 @@ function KpiGrid({ viewMode: _viewMode }: { viewMode: ViewMode }) {
         const KpiIcon = kpiIcons[kpi.label]
         return (
           <motion.div key={kpi.label} variants={fadeUp} className="h-full">
-            <Surface variant="glass" padding="none" className="flex flex-col gap-2 h-full">
+            <Surface variant="glass" padding="md" className="flex flex-col gap-2 h-full">
               <span className="text-xs uppercase tracking-wider font-medium flex items-center gap-1.5" style={{ color: '#64748B' }}>
                 {KpiIcon && <KpiIcon size={12} aria-hidden="true" />}
                 {kpi.label}

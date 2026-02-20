@@ -2,6 +2,7 @@ import type React from 'react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/motion-presets';
+import { Surface } from '@/design-system';
 
 interface EngineChip {
   name: string;
@@ -24,22 +25,23 @@ export function EngineHealthStrip() {
   return (
     <motion.section
       className="engine-strip"
-      initial="hidden"
-      animate="visible"
       variants={fadeUp}
       aria-label="Engine health status"
     >
       {engines.map((engine, i) => (
-        <button
+        <Surface
           key={engine.name}
-          className={`engine-chip glass-surface ${i === selected ? 'engine-chip--active' : ''}`}
+          as="button"
+          variant="glass"
+          padding="md"
+          className={`engine-chip ${i === selected ? 'engine-chip--active' : ''}`}
           onClick={() => setSelected(i)}
           aria-pressed={i === selected}
+          type="button"
           style={{
             '--chip-color': engine.color,
             boxShadow: i === selected ? `0 0 16px ${engine.color}33, 0 0 4px ${engine.color}66` : undefined,
           } as React.CSSProperties}
-          type="button"
         >
           <span className="engine-chip__dot" style={{ background: engine.color }} aria-hidden="true" />
           <span className="engine-chip__name">{engine.name}</span>
@@ -47,7 +49,7 @@ export function EngineHealthStrip() {
           <span className="engine-chip__status">{engine.status}</span>
           <span className="engine-chip__sep" aria-hidden="true">|</span>
           <span className="engine-chip__score" style={{ color: engine.color }}>{engine.confidence.toFixed(2)}</span>
-        </button>
+        </Surface>
       ))}
     </motion.section>
   );

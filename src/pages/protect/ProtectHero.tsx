@@ -97,7 +97,7 @@ export function ProtectHero({ viewMode, onViewModeChange }: ProtectHeroProps) {
             const cu = kpiCountUp[kpi.label]
             const KpiIcon = kpiIcons[kpi.label]
             return (
-              <Surface variant="glass" padding="none"
+              <Surface variant="glass" padding="md"
                 key={kpi.label}
                 style={{
                   background: 'rgba(255,255,255,0.05)',

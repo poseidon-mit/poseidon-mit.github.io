@@ -117,7 +117,7 @@ export default function ProtectPage() {
           <div className="flex-1 min-w-0 lg:w-2/3">
             {/* Desktop table */}
             <div className="hidden md:block">
-              <Surface variant="glass" padding="none" className="overflow-hidden !p-0">
+              <Surface variant="glass" padding="none" data-surface-role="structure" className="overflow-hidden !p-0">
                 {sorted.length === 0 ? (
                   <EmptyState
                     icon={Shield}
@@ -179,7 +179,7 @@ export default function ProtectPage() {
             {/* Mobile cards */}
             <div className="flex flex-col gap-3 md:hidden">
               {sorted.length === 0 && (
-                <Surface variant="glass" padding="none">
+                <Surface variant="glass" padding="md">
                   <EmptyState
                     icon={Shield}
                     title="No active threats"
@@ -190,7 +190,7 @@ export default function ProtectPage() {
               )}
               {sorted.map((t) => (
                 <motion.div key={t.id} variants={fadeUp}>
-                  <Surface variant="glass" padding="none" className="flex flex-col gap-3" borderColor={severityConfig[t.severity].color}>
+                  <Surface variant="glass" padding="md" className="flex flex-col gap-3" borderColor={severityConfig[t.severity].color}>
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs font-mono font-medium" style={{ color: "var(--engine-protect)" }}>{t.id}</span>
                       <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: severityConfig[t.severity].bg, color: severityConfig[t.severity].color }}>{t.severity}</span>
@@ -214,7 +214,7 @@ export default function ProtectPage() {
           <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-4" aria-label="Protect sidebar">
             {/* Threat summary */}
             <motion.div variants={fadeUp}>
-              <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+              <Surface variant="glass" padding="md" className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Threat Summary</h3>
                 {[{ label: "Active threats", value: String(threats.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Blocked today", value: "3", color: "var(--state-healthy)" }, { label: "Avg response", value: "<200ms" }].map(d => (
                   <div key={d.label} className="flex items-center justify-between">
@@ -227,7 +227,7 @@ export default function ProtectPage() {
 
             {/* Risk breakdown */}
             <motion.div variants={fadeUp}>
-              <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+              <Surface variant="glass" padding="md" className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Risk Breakdown</h3>
                 {riskBreakdown.map(r => (
                   <div key={r.label} className="flex flex-col gap-1.5">

@@ -151,7 +151,7 @@ export function GovernTrust() {
 
         {/* System trust KPI */}
         <motion.div variants={fadeUp}>
-          <Surface className="rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6" variant="glass" padding="none">
+          <Surface className="rounded-2xl flex flex-col md:flex-row items-center gap-6" variant="glass" padding="md">
             <div className="relative flex items-center justify-center shrink-0" aria-label={`System trust score: ${systemTrust} out of 100`}>
               <svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
                 <circle cx="48" cy="48" r="40" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
@@ -200,9 +200,9 @@ export function GovernTrust() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {cards.map((card, idx) => <Surface
 
-                key={card.engine} className="rounded-2xl p-4"
+                key={card.engine} className="rounded-2xl"
 
-                style={{ borderLeftWidth: 3, borderLeftColor: card.color }} variant="glass" padding="none">
+                style={{ borderLeftWidth: 3, borderLeftColor: card.color }} variant="glass" padding="md">
                 
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-sm font-semibold text-white">{card.engine}</span>
@@ -282,7 +282,7 @@ export function GovernTrust() {
 
           {/* Side rail */}
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Trust statistics">
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <TrendingUp className="h-4 w-4 text-blue-400" />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Trust Trend</h3>
@@ -297,7 +297,7 @@ export function GovernTrust() {
               </div>
             </Surface>
 
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">System Status</h3>
@@ -311,7 +311,7 @@ export function GovernTrust() {
               </p>
             </Surface>
 
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <AlertTriangle className="h-4 w-4 text-amber-400" />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Policy Notes</h3>

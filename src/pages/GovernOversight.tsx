@@ -92,7 +92,7 @@ export function GovernOversight() {
           { label: 'Avg review time', value: '4.2m', color: 'var(--engine-dashboard)' },
           { label: 'Escalations', value: '0', color: 'var(--engine-protect)' }].
           map((kpi) => <Surface
-            key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
+            key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
               <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
               <p className="text-lg font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
             </Surface>
@@ -111,7 +111,7 @@ export function GovernOversight() {
               </div>
               <div className="flex flex-col gap-4">
                 {reviewCards.map((card) => <Surface
-                  key={card.id} className="rounded-2xl p-4 md:p-6" style={{ borderLeftWidth: 3, borderLeftColor: card.urgencyColor }} variant="glass" padding="none">
+                  key={card.id} className="rounded-2xl" style={{ borderLeftWidth: 3, borderLeftColor: card.urgencyColor }} variant="glass" padding="md">
                     <div className="flex flex-wrap items-center gap-2 mb-3">
                       <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: `${card.urgencyColor}20`, color: card.urgencyColor }}>{card.urgency}</span>
                       <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: `${card.engineColor}20`, color: card.engineColor }}>{card.engine}</span>
@@ -140,7 +140,7 @@ export function GovernOversight() {
             </motion.div>
 
             {/* Recently resolved */}
-            <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h2 className="text-sm font-semibold text-white mb-4">Recently Resolved</h2>
               <div className="overflow-x-auto">
                 <table className="w-full text-left min-w-[320px]">
@@ -173,7 +173,7 @@ export function GovernOversight() {
           {/* Side rail */}
           <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4">
             {/* Override trend chart */}
-            <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Override Trend (7d)</h3>
               <div className="h-32">
                 <ResponsiveContainer width="100%" height="100%">
@@ -189,7 +189,7 @@ export function GovernOversight() {
             </Surface>
 
             {/* Decision accuracy */}
-            <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Decision Accuracy</h3>
               <p className="text-xs text-white/50 mb-2">Post-override accuracy</p>
               <p className="text-lg font-bold text-emerald-400 mb-2">94.2%</p>
@@ -199,7 +199,7 @@ export function GovernOversight() {
             </Surface>
 
             {/* Top override reasons */}
-            <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Top Override Reasons</h3>
               <div className="flex flex-col gap-3">
                 {overrideReasons.map((r) =>

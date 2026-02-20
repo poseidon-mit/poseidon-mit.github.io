@@ -123,7 +123,7 @@ export function ProtectDispute() {
             { label: 'Success rate', value: '96%', color: 'var(--engine-dashboard)' },
             { label: 'SLA', value: '48h', color: 'var(--engine-govern)' }].
             map((kpi) => <Surface
-              key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
+              key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
                 <p className="text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
               </Surface>
@@ -156,7 +156,7 @@ export function ProtectDispute() {
             {/* Step 0: Review */}
             {!submitted && currentStep === 0 &&
             <div className="flex flex-col gap-4">
-                <Surface className="rounded-2xl p-4 md:p-6" style={{ borderLeftWidth: 2, borderLeftColor: 'var(--engine-protect)' }} variant="glass" padding="none">
+                <Surface className="rounded-2xl" style={{ borderLeftWidth: 2, borderLeftColor: 'var(--engine-protect)' }} variant="glass" padding="md">
                   <h4 className="text-sm font-semibold text-white mb-3">Transaction Details</h4>
                   <div className="grid grid-cols-2 gap-3 text-xs">
                     <div><span className="text-white/40 block">Merchant</span><span className="text-white">{transaction.merchant}</span></div>
@@ -168,7 +168,7 @@ export function ProtectDispute() {
                   </div>
                 </Surface>
 
-                <Surface className="rounded-2xl p-4 md:p-6" variant="glass" padding="none">
+                <Surface className="rounded-2xl" variant="glass" padding="md">
                   <h4 className="text-sm font-semibold text-white mb-3">AI Analysis — SHAP Factors</h4>
                   <div className="space-y-2">
                     {shapFactors.map((f) =>
@@ -192,14 +192,14 @@ export function ProtectDispute() {
             {/* Step 1: Evidence */}
             {!submitted && currentStep === 1 &&
             <div className="flex flex-col gap-4">
-                <Surface className="rounded-2xl p-4 md:p-6" variant="glass" padding="none">
+                <Surface className="rounded-2xl" variant="glass" padding="md">
                   <h4 className="text-sm font-semibold text-white mb-3">Upload Evidence</h4>
                   <div className="border-2 border-dashed border-white/10 rounded-xl p-8 text-center">
                     <p className="text-sm text-white/40">Drag & drop files or click to upload</p>
                     <p className="text-xs text-white/25 mt-1">PDF, PNG, JPG up to 10MB</p>
                   </div>
                 </Surface>
-                <Surface className="rounded-2xl p-4" style={{ borderLeftWidth: 2, borderLeftColor: 'var(--engine-grow)' }} variant="glass" padding="none">
+                <Surface className="rounded-2xl" style={{ borderLeftWidth: 2, borderLeftColor: 'var(--engine-grow)' }} variant="glass" padding="md">
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-lg bg-violet-500/20 flex items-center justify-center shrink-0">
                       <span className="text-violet-400 text-sm">AI</span>
@@ -214,7 +214,7 @@ export function ProtectDispute() {
             }
 
             {/* Step 2: Letter */}
-            {!submitted && currentStep === 2 && <Surface className="rounded-2xl p-4 md:p-6" variant="glass" padding="none">
+            {!submitted && currentStep === 2 && <Surface className="rounded-2xl" variant="glass" padding="md">
               
                 <h4 className="text-sm font-semibold text-white mb-3">AI-Generated Dispute Letter</h4>
                 <div className="rounded-lg bg-white/[0.02] border border-white/5 p-4 text-xs text-white/60 leading-relaxed font-mono">
@@ -232,7 +232,7 @@ export function ProtectDispute() {
             }
 
             {/* Step 3: Summary */}
-            {!submitted && currentStep === 3 && <Surface className="rounded-2xl p-4 md:p-6" variant="glass" padding="none">
+            {!submitted && currentStep === 3 && <Surface className="rounded-2xl" variant="glass" padding="md">
               
                 <h4 className="text-sm font-semibold text-white mb-3">Review Summary</h4>
                 <div className="space-y-2 text-xs">
@@ -255,7 +255,7 @@ export function ProtectDispute() {
                   <p className="text-sm text-white/50 mt-2">Case DIS-2026-0216-001 has been filed and assigned to a reviewer.</p>
                   <p className="text-xs text-white/30 mt-3">SLA: 48h provisional credit · Investigation completes within 10 business days</p>
                 </div>
-                <Surface className="rounded-2xl p-4 md:p-6" variant="glass" padding="none">
+                <Surface className="rounded-2xl" variant="glass" padding="md">
                   <h4 className="text-sm font-semibold text-white mb-3">Resolution Timeline</h4>
                   <div className="space-y-3">
                     {milestones.map((m) =>
@@ -300,7 +300,7 @@ export function ProtectDispute() {
           {/* Side rail */}
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Dispute sidebar">
             {/* Confidence ring */}
-            <Surface className="rounded-2xl p-4 flex flex-col items-center" variant="glass" padding="none">
+            <Surface className="rounded-2xl flex flex-col items-center" variant="glass" padding="md">
               <div className="relative" aria-label={`Fraud confidence: ${transaction.confidence}%`}>
                 <svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
                   <circle cx="48" cy="48" r="40" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
@@ -320,7 +320,7 @@ export function ProtectDispute() {
             </Surface>
 
             {/* Resolution timeline */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Resolution Timeline</h3>
               <div className="space-y-3">
                 {milestones.map((m) =>
@@ -334,7 +334,7 @@ export function ProtectDispute() {
             </Surface>
 
             {/* Dispute stats */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Dispute Stats</h3>
               <div className="space-y-2.5">
                 {[

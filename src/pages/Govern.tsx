@@ -78,7 +78,7 @@ export default function GovernPage() {
 
         {/* ── Compliance score ring + stats ── */}
         <motion.div variants={fadeUp}>
-          <Surface variant="glass" padding="none" className="flex flex-col md:flex-row gap-6 items-center">
+          <Surface variant="glass" padding="md" className="flex flex-col md:flex-row gap-6 items-center">
             {/* SVG ring */}
             <div className="relative w-32 h-32 shrink-0">
               <svg viewBox="0 0 120 120" className="w-full h-full" aria-label={`Compliance score: ${COMPLIANCE_SCORE}%`}>
@@ -116,7 +116,7 @@ export default function GovernPage() {
                 const SIcon = sCfg.icon
                 return (
                   <motion.div key={entry.id} variants={fadeUp}>
-                    <Surface variant="glass" padding="none" borderColor={typeColor[entry.type]} className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
+                    <Surface variant="glass" padding="md" borderColor={typeColor[entry.type]} className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
                       <div className="flex items-center gap-2">
                         <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: `${typeColor[entry.type]}15`, color: typeColor[entry.type] }}><CircleDot size={10} />{entry.type}</span>
                         <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: sCfg.bg, color: sCfg.color }}><SIcon size={10} />{entry.status}</span>
@@ -138,7 +138,7 @@ export default function GovernPage() {
 
           {/* Sidebar */}
           <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-4" aria-label="Governance sidebar">
-            <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+            <Surface variant="glass" padding="md" className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Compliance Breakdown</h3>
               {[
                 { label: "Transparency", pct: 98, color: "var(--state-healthy)" },
@@ -153,7 +153,7 @@ export default function GovernPage() {
               ))}
             </Surface>
 
-            <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+            <Surface variant="glass" padding="md" className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Policy Status</h3>
               {[{ label: "Active policies", value: "12" }, { label: "Last updated", value: "2h ago" }, { label: "Auto-enforce", value: "Enabled", color: "var(--state-healthy)" }].map(d => (
                 <div key={d.label} className="flex items-center justify-between"><span className="text-xs" style={{ color: "#64748B" }}>{d.label}</span><span className="text-sm font-mono font-semibold" style={{ color: d.color || "#F1F5F9" }}>{d.value}</span></div>

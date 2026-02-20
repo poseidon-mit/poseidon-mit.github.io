@@ -7,6 +7,7 @@
 import { motion } from 'framer-motion';
 import { TrendingUp, DollarSign, Bell, Activity } from 'lucide-react';
 import { CountUp, ConfidenceIndicator } from '@/components/poseidon';
+import { Surface } from '@/design-system';
 import { fadeUp, staggerContainer } from '@/lib/motion-presets';
 
 const glanceKpis = [
@@ -26,8 +27,6 @@ export function DashboardGlance() {
   return (
     <motion.div
       variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
       className="flex flex-col gap-4"
       aria-label="Dashboard glance view"
     >
@@ -38,11 +37,15 @@ export function DashboardGlance() {
         aria-label="Key financial metrics"
       >
         {glanceKpis.map(({ id, label, Icon, value, prefix, suffix, decimals, accent, trend }) => (
-          <motion.div
+          <Surface
+            as={motion.div}
+            variant="glass"
+            padding="md"
             key={id}
             variants={fadeUp}
-            className="flex flex-col gap-3 glass-surface p-4"
-            style={{ borderLeft: `2px solid ${accent}` }}
+            className="flex flex-col gap-3"
+            borderColor={accent}
+            borderWidth={2}
           >
             <div className="flex items-center justify-between">
               <span
@@ -58,15 +61,18 @@ export function DashboardGlance() {
               <CountUp value={value} decimals={decimals} prefix={prefix} suffix={suffix} />
             </p>
             <span className="text-xs" style={{ color: '#64748B' }}>{trend}</span>
-          </motion.div>
+          </Surface>
         ))}
       </motion.section>
 
       {/* Engine Health Row */}
       <motion.section variants={fadeUp} aria-label="Engine health summary">
-        <div
-          className="flex flex-col gap-3 glass-surface p-4"
-          style={{ borderLeft: '2px solid #00F0FF' }}
+        <Surface
+          variant="glass"
+          padding="md"
+          className="flex flex-col gap-3"
+          borderColor="#00F0FF"
+          borderWidth={2}
         >
           <div className="flex items-center gap-2">
             <Activity size={14} style={{ color: '#00F0FF' }} />
@@ -85,7 +91,7 @@ export function DashboardGlance() {
               </div>
             ))}
           </div>
-        </div>
+        </Surface>
       </motion.section>
     </motion.div>
   );

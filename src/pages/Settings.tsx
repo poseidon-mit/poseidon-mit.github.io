@@ -75,7 +75,7 @@ export default function SettingsPage() {
         {/* ── P2: Control Cards ── */}
         <div className="flex flex-col lg:flex-row gap-4 px-4 md:px-6 lg:px-8">
           {/* Profile card */}
-          <Surface variants={fadeUp} className="flex-1 rounded-2xl p-5" variant="glass" padding="none" as={motion.div}>
+          <Surface variants={fadeUp} className="flex-1 rounded-2xl" variant="glass" padding="md" as={motion.div}>
             <div className="flex items-center gap-3 mb-4">
               <div
                 className="flex items-center justify-center w-10 h-10 rounded-xl"
@@ -105,7 +105,7 @@ export default function SettingsPage() {
           </Surface>
 
           {/* Notification preferences */}
-          <Surface variants={fadeUp} className="flex-1 rounded-2xl p-5" variant="glass" padding="none" as={motion.div}>
+          <Surface variants={fadeUp} className="flex-1 rounded-2xl" variant="glass" padding="md" as={motion.div}>
             <div className="flex items-center gap-3 mb-4">
               <div
                 className="flex items-center justify-center w-10 h-10 rounded-xl"
@@ -126,7 +126,7 @@ export default function SettingsPage() {
 
         {/* Security section */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
-          <Surface className="rounded-2xl p-5" variant="glass" padding="none">
+          <Surface className="rounded-2xl" variant="glass" padding="md">
             <div className="flex items-center gap-3 mb-4">
               <div
                 className="flex items-center justify-center w-10 h-10 rounded-xl"
@@ -176,7 +176,7 @@ export default function SettingsPage() {
 
         {/* ── P3: Review action bar ── */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
-          <Surface className="rounded-2xl p-5 flex items-center justify-between" variant="glass" padding="none">
+          <Surface className="rounded-2xl flex items-center justify-between" variant="glass" padding="md">
             <p className="text-sm" style={{ color: "#94A3B8" }}>
               All settings changes are recorded in the audit ledger.
             </p>

@@ -96,7 +96,7 @@ export default function ExecutePage() {
             <motion.section variants={staggerContainer} className="flex flex-col gap-4">
               <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "#64748B" }}>Pending approval ({pending.length})</h2>
               {pending.length === 0 && (
-                <Surface variant="glass" padding="none">
+                <Surface variant="glass" padding="md">
                   <EmptyState
                     icon={CheckCircle2}
                     title="All pending actions are cleared"
@@ -108,7 +108,7 @@ export default function ExecutePage() {
               )}
               {pending.map(action => (
                 <motion.div key={action.id} variants={fadeUp}>
-                  <Surface variant="glass" padding="none" borderColor={engineColorMap[action.engine]} className="flex flex-col gap-3">
+                  <Surface variant="glass" padding="md" borderColor={engineColorMap[action.engine]} className="flex flex-col gap-3">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs font-mono font-medium" style={{ color: "var(--engine-execute)" }}>{action.id}</span>
                       <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: `${engineColorMap[action.engine]}15`, color: engineColorMap[action.engine] }}>{action.engine}</span>
@@ -143,7 +143,7 @@ export default function ExecutePage() {
                   <h2 className="text-sm font-semibold uppercase tracking-wider mt-4" style={{ color: "#64748B" }}>Deferred ({deferred.length})</h2>
                   {deferred.map(action => (
                     <motion.div key={action.id} variants={fadeUp}>
-                      <Surface variant="glass" padding="none" className="flex items-center gap-4 !py-3 opacity-80">
+                      <Surface variant="glass" padding="md" className="flex items-center gap-4 opacity-80">
                         <Clock size={16} style={{ color: "var(--state-warning)" }} />
                         <div className="flex-1 min-w-0">
                           <span className="text-sm font-medium" style={{ color: "#F1F5F9" }}>{action.title}</span>
@@ -162,7 +162,7 @@ export default function ExecutePage() {
                   <h2 className="text-sm font-semibold uppercase tracking-wider mt-4" style={{ color: "#64748B" }}>Completed ({completed.length})</h2>
                   {completed.map(action => (
                     <motion.div key={action.id} variants={fadeUp}>
-                      <Surface variant="glass" padding="none" className="flex items-center gap-4 !py-3 opacity-60">
+                      <Surface variant="glass" padding="md" className="flex items-center gap-4 opacity-60">
                         <CheckCircle2 size={16} style={{ color: "var(--state-healthy)" }} />
                         <div className="flex-1 min-w-0">
                           <span className="text-sm font-medium" style={{ color: "#F1F5F9" }}>{action.title}</span>
@@ -185,7 +185,7 @@ export default function ExecutePage() {
           >
             {/* Queue summary */}
             <motion.div variants={fadeUp}>
-              <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+              <Surface variant="glass" padding="md" className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Queue Summary</h3>
                   {[
                   { label: "Pending actions", value: String(pending.length), color: "var(--state-warning)" },
@@ -203,7 +203,7 @@ export default function ExecutePage() {
 
             {/* Savings tracker */}
             <motion.div variants={fadeUp}>
-              <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+              <Surface variant="glass" padding="md" className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Savings Tracker</h3>
                 <div className="flex items-center gap-2">
                   <DollarSign size={20} style={{ color: "var(--engine-execute)" }} />
@@ -218,7 +218,7 @@ export default function ExecutePage() {
 
             {/* Rollback info */}
             <motion.div variants={fadeUp}>
-              <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+              <Surface variant="glass" padding="md" className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Rollback Safety</h3>
                 <p className="text-xs leading-relaxed" style={{ color: "#94A3B8" }}>All actions are reversible within 24 hours. Rollback requests are processed immediately.</p>
                 <div className="flex items-center gap-2"><RotateCcw size={12} style={{ color: "var(--engine-govern)" }} /><span className="text-xs font-mono" style={{ color: "var(--engine-govern)" }}>{"2 active rollbacks"}</span></div>

@@ -124,7 +124,7 @@ export function Notifications() {
             { label: 'Growth', value: String(categoryCounts.growth), color: 'var(--engine-grow)' },
             { label: 'Actions', value: String(categoryCounts.actions), color: 'var(--engine-dashboard)' }].
             map((kpi) => <Surface
-              key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
+              key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
                 <p className="text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
               </Surface>
@@ -201,7 +201,7 @@ export function Notifications() {
           {/* Side rail */}
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Notification preferences">
             {/* Preferences */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <Settings2 className="h-4 w-4" style={{ color: 'var(--engine-dashboard)' }} />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Preferences</h3>
@@ -236,7 +236,7 @@ export function Notifications() {
             </Surface>
 
             {/* Stats */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Stats</h3>
               <div className="space-y-2.5">
                 {[

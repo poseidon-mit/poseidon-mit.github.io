@@ -16,7 +16,7 @@ export function GrowGlance() {
     >
       {/* Big number hero */}
       <motion.div variants={fadeUp}>
-        <Surface variant="glass" padding="none" className="flex flex-col items-center gap-2 py-8 glass-hover-grow">
+        <Surface variant="glass" padding="md" className="flex flex-col items-center gap-2 glass-hover-grow">
           <span className="text-xs uppercase tracking-wider font-medium" style={{ color: '#64748B' }}>
             Target Net Worth
           </span>
@@ -31,7 +31,7 @@ export function GrowGlance() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {goals.map((goal) => (
           <motion.div key={goal.id} variants={fadeUp}>
-            <Surface variant="glass" padding="none" className="flex flex-col gap-3 glass-hover-grow">
+            <Surface variant="glass" padding="md" className="flex flex-col gap-3 glass-hover-grow">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold" style={{ color: '#F1F5F9' }}>{goal.name}</h3>
                 <span
