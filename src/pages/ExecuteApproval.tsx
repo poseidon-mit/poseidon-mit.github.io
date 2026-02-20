@@ -6,11 +6,12 @@ import { GovernFooter, ShapWaterfall, AuroraPulse } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta';
 import { Dialog, DialogContent } from '../components/ui/dialog';
 import { usePageTitle } from '../hooks/use-page-title';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { getMotionPreset } from '@/lib/motion-presets';
 import { DEMO_THREAD } from '@/lib/demo-thread';
 import { Button, ButtonLink, Surface } from '@/design-system';
 import { useDemoState } from '@/lib/demo-state/provider';
 import { useToast } from '@/hooks/useToast';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 
 /* ═══════════════════════════════════════════
    DATA
@@ -139,6 +140,8 @@ const engineBadgeCls = { Protect: 'bg-emerald-500/20 text-emerald-400', Grow: 'b
 
 export function ExecuteApproval() {
   usePageTitle('Action Approval');
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: stagger } = getMotionPreset(prefersReducedMotion);
   const { state, setExecuteDecision } = useDemoState();
   const { showToast } = useToast();
   const [expandedAction, setExpandedAction] = useState<string | null>(queueActions[0].id);
@@ -217,7 +220,7 @@ export function ExecuteApproval() {
         role="main">
         
         {/* Hero */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <Zap className="h-5 w-5" style={{ color: 'var(--engine-execute)' }} />
             <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--engine-execute)' }}>
@@ -231,7 +234,7 @@ export function ExecuteApproval() {
         </motion.div>
 
         {/* KPI bar */}
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUpVariant}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
             { label: 'Pending', value: String(visibleActions.length), color: 'var(--engine-execute)' },
@@ -250,7 +253,7 @@ export function ExecuteApproval() {
         {/* 2-column layout */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Main feed */}
-          <motion.div variants={fadeUp} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
+          <motion.div variants={fadeUpVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
             {/* Consent scope card — must be reviewed before approving */}
             <div
               data-slot="consent_scope"

@@ -4,10 +4,11 @@ import { ArrowLeft, Activity, CheckCircle2 } from 'lucide-react';
 import { Link } from '../router';
 import { GovernFooter, AuroraPulse } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { getMotionPreset } from '@/lib/motion-presets';
 import { DEMO_THREAD } from '@/lib/demo-thread';
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date';
 import { Button, Surface } from '@/design-system';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 
 /* ═══════════════════════════════════════════
    DATA
@@ -70,6 +71,8 @@ const typeBadgeCls: Record<string, string> = { Alert: 'bg-red-500/20 text-red-40
    ═══════════════════════════════════════════ */
 
 export function ActivityTimelinePage() {
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: stagger } = getMotionPreset(prefersReducedMotion);
   const [engineFilter, setEngineFilter] = useState('all');
 
   const filtered = engineFilter === 'all' ? events : events.filter((e) => e.engine === engineFilter);
@@ -118,7 +121,7 @@ export function ActivityTimelinePage() {
         role="main">
         
         {/* Hero */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <Activity className="h-5 w-5" style={{ color: 'var(--engine-dashboard)' }} />
             <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--engine-dashboard)' }}>
@@ -130,7 +133,7 @@ export function ActivityTimelinePage() {
         </motion.div>
 
         {/* KPI bar */}
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUpVariant}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
             { label: 'Events (7d)', value: '22', color: 'var(--engine-dashboard)' },
@@ -149,7 +152,7 @@ export function ActivityTimelinePage() {
         {/* 2-column layout */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Main feed */}
-          <motion.div variants={fadeUp} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
+          <motion.div variants={fadeUpVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
             {/* Live indicator + filters */}
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex items-center gap-2">

@@ -15,8 +15,9 @@ import {
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { AuroraPulse, EmptyState, GovernFooter } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
-import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+import { getMotionPreset } from '@/lib/motion-presets'
 import { Surface, ButtonLink } from '@/design-system'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 /* ── Types ── */
 type Severity = "Critical" | "High" | "Medium" | "Low"
@@ -63,6 +64,8 @@ const severityToneColor: Record<Severity, string> = {
    ═══════════════════════════════════════════════════════ */
 
 export default function ProtectPage() {
+  const prefersReducedMotion = useReducedMotionSafe()
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const [sortField, setSortField] = useState<SortField>("severity")
   const [sortDir, setSortDir] = useState<SortDir>("desc")
 
@@ -98,19 +101,19 @@ export default function ProtectPage() {
       <AuroraPulse engine="protect" />
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-protect)", color: 'var(--bg-oled)' }}>Skip to main content</a>
 
-      <motion.main id="main-content" className="relative z-10 mx-auto flex max-w-[1280px] flex-col gap-6 px-4 py-8 md:gap-8 md:px-6 lg:px-8" variants={staggerContainer} initial="hidden" animate="visible" role="main" aria-label="Protect Engine - Threat Detection">
+      <motion.main id="main-content" className="relative z-10 mx-auto flex max-w-[1280px] flex-col gap-6 px-4 py-8 md:gap-8 md:px-6 lg:px-8" variants={staggerContainerVariant} initial="hidden" animate="visible" role="main" aria-label="Protect Engine - Threat Detection">
 
         {/* ── Hero ── */}
-        <motion.section variants={staggerContainer} className="flex flex-col gap-4">
-          <motion.div variants={fadeUp}>
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-4">
+          <motion.div variants={fadeUpVariant}>
             <span className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider uppercase" style={{ borderColor: "rgba(34,197,94,0.3)", background: "rgba(34,197,94,0.08)", color: "var(--engine-protect)" }}>
               <Shield size={12} />Protect Engine
             </span>
           </motion.div>
-          <motion.h1 variants={fadeUp} className="text-2xl md:text-4xl font-bold leading-tight tracking-tight text-balance" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>
+          <motion.h1 variants={fadeUpVariant} className="text-2xl md:text-4xl font-bold leading-tight tracking-tight text-balance" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>
             Threat posture: <span style={{ color: "var(--state-critical)" }}>{criticalCount} critical</span>, {highCount} high, {monitoringCount} monitoring.
           </motion.h1>
-          <motion.p variants={fadeUp} className="text-sm md:text-base leading-relaxed" style={{ color: "#CBD5E1" }}>
+          <motion.p variants={fadeUpVariant} className="text-sm md:text-base leading-relaxed" style={{ color: "#CBD5E1" }}>
             Real-time threat detection across all connected accounts. AI confidence scoring with full evidence chain.
           </motion.p>
         </motion.section>
@@ -156,7 +159,7 @@ export default function ProtectPage() {
                         {sorted.map((t) => (
                           <motion.tr
                             key={t.id}
-                            variants={fadeUp}
+                            variants={fadeUpVariant}
                             exit={{ opacity: 0, y: -8, transition: { duration: 0.18 } }}
                             className="group transition-colors hover:bg-white/[0.02]"
                             style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
@@ -200,7 +203,7 @@ export default function ProtectPage() {
                 </Surface>
               )}
               {sorted.map((t) => (
-                <motion.div key={t.id} variants={fadeUp}>
+                <motion.div key={t.id} variants={fadeUpVariant}>
                   <Surface variant="glass" padding="md" className="flex flex-col gap-3" borderColor={severityConfig[t.severity].color}>
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs font-mono font-medium" style={{ color: "var(--engine-protect)" }}>{t.id}</span>
@@ -224,7 +227,7 @@ export default function ProtectPage() {
           {/* Sidebar */}
           <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-4" aria-label="Protect sidebar">
             {/* Threat summary */}
-            <motion.div variants={fadeUp}>
+            <motion.div variants={fadeUpVariant}>
               <Surface variant="glass" padding="md" className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Threat Summary</h3>
                 {[{ label: "Active threats", value: String(threats.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Blocked today", value: "3", color: "var(--state-healthy)" }, { label: "Avg response", value: "<200ms" }].map(d => (
@@ -237,7 +240,7 @@ export default function ProtectPage() {
             </motion.div>
 
             {/* Risk breakdown */}
-            <motion.div variants={fadeUp}>
+            <motion.div variants={fadeUpVariant}>
               <Surface variant="glass" padding="md" className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Risk Breakdown</h3>
                 {riskBreakdown.map(r => (
@@ -255,7 +258,7 @@ export default function ProtectPage() {
             </motion.div>
 
             {/* Primary CTA */}
-            <motion.div variants={fadeUp}>
+            <motion.div variants={fadeUpVariant}>
               <ButtonLink to="/protect/alert-detail" variant="glass" engine="protect" className="rounded-xl" icon={<AlertTriangle size={16} />}>
                 Open top alert
               </ButtonLink>
