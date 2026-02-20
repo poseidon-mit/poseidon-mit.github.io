@@ -145,10 +145,10 @@ export default function GovernPage() {
             <Surface variant="glass" padding="md" className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Compliance Breakdown</h3>
               {[
-                { label: "Transparency", pct: 98, color: "var(--state-healthy)" },
-                { label: "Auditability", pct: 100, color: "var(--state-healthy)" },
-                { label: "Reversibility", pct: 95, color: "var(--state-healthy)" },
-                { label: "Human oversight", pct: 88, color: "var(--engine-govern)" },
+                { label: "Transparency", pct: 92, color: "var(--state-healthy)" },
+                { label: "Auditability", pct: 96, color: "var(--state-healthy)" },
+                { label: "Reversibility", pct: 89, color: "var(--state-healthy)" },
+                { label: "Human oversight", pct: 84, color: "var(--engine-govern)" },
               ].map(r => (
                 <div key={r.label} className="flex flex-col gap-1.5">
                   <div className="flex items-center justify-between"><span className="text-xs" style={{ color: "#94A3B8" }}>{r.label}</span><span className="text-xs font-mono tabular-nums" style={{ color: r.color }}>{r.pct}%</span></div>
