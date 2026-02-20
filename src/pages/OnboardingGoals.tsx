@@ -69,7 +69,8 @@ export default function OnboardingGoalsPage() {
       title="What matters most to you?"
       subtitle="Pick your priorities. Poseidon tunes recommendations and guardrails around these goals, and you can edit anytime."
     >
-      <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
+      <main id="main-content">
+        <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
         <motion.div variants={staggerContainer} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {GOALS.map((goal) => {
             const isSelected = selected.has(goal.id)
@@ -126,7 +127,8 @@ export default function OnboardingGoalsPage() {
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </ButtonLink>
         </motion.div>
-      </motion.div>
+        </motion.div>
+      </main>
     </OnboardingShell>
   )
 }

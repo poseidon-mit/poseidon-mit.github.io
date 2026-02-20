@@ -686,6 +686,735 @@ All route prompts must preserve these canonical values.
 #### Technical constraints
 - Shared imports, a11y baseline, no inline style, no hardcoded hex
 
+### Route `/deck`
+#### Context
+- Intent: present concise investor/demo narrative
+- Previous: `/` or `/pricing`
+- Next: `/signup`
+#### Section Map
+- [P1] Deck viewer header (`full`)
+- [P2] Slide/content stage (`full`)
+- [P3] Convert action (`full`)
+#### Representative Data
+- MIT demo deck sections and navigation state
+#### Signature Visual
+- Focused content viewport with simple controls
+#### Must-build components
+- `PublicTopBar`, `DeckViewerFrame`, `PrimaryActionBar`
+#### Should-build components
+- `ProgressDots`
+#### Decision Point
+- Continue exploring or start activation
+#### CTA budget
+- Primary: `Create account`
+- Secondary: `Back to landing`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/trust`
+#### Context
+- Intent: validate security and governance confidence
+- Previous: `/` or `/pricing`
+- Next: `/signup`
+#### Section Map
+- [P1] Trust summary (`full`)
+- [P2] Controls/certifications (`grid`)
+- [P3] Conversion action (`full`)
+#### Representative Data
+- Security controls, compliance statements, audit guarantees
+#### Signature Visual
+- Calm trust panels with high readability
+#### Must-build components
+- `PublicTopBar`, `TrustPanels`, `PrimaryActionBar`
+#### Should-build components
+- `ProofLine`
+#### Decision Point
+- Proceed to account creation
+#### CTA budget
+- Primary: `Create account`
+- Secondary: `View pricing`
+#### Collapse policy
+- Tier B: 4 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/design-system`
+#### Context
+- Intent: provide system overview and navigation
+- Previous: internal QA routes
+- Next: `/design-system/components`
+#### Section Map
+- [P1] System intro (`full`)
+- [P2] Token/component index (`grid`)
+- [P3] Quick links (`full`)
+#### Representative Data
+- Current token groups and primitive coverage
+#### Signature Visual
+- Documentation-first overview board
+#### Must-build components
+- `DesignSystemNav`, `TokenIndex`, `ComponentIndex`
+#### Should-build components
+- `UsageNotes`
+#### Decision Point
+- Choose next DS area to inspect
+#### CTA budget
+- Primary: `Open components`
+- Secondary: `Open tokens`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/design-system/tokens`
+#### Context
+- Intent: inspect token architecture quickly
+- Previous: `/design-system`
+- Next: token detail routes
+#### Section Map
+- [P1] Token taxonomy summary (`full`)
+- [P2] Token families (`grid`)
+- [P3] Reference links (`full`)
+#### Representative Data
+- Color/type/spacing/motion token summaries
+#### Signature Visual
+- Compact token catalog
+#### Must-build components
+- `TokenFamilyGrid`, `DesignSystemNav`
+#### Should-build components
+- `TokenUsageExamples`
+#### Decision Point
+- Open specific token family
+#### CTA budget
+- Primary: `Open colors`
+- Secondary: `Open motion`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/design-system/tokens/colors`
+#### Context
+- Intent: validate semantic color system
+- Previous: `/design-system/tokens`
+- Next: `/design-system/tokens/typography`
+#### Section Map
+- [P1] Color role overview (`full`)
+- [P2] Palette and semantics (`grid`)
+- [P3] Usage samples (`full`)
+#### Representative Data
+- Engine colors, state colors, neutral ramps
+#### Signature Visual
+- Semantic swatch matrix
+#### Must-build components
+- `ColorTokenTable`, `SwatchGrid`
+#### Should-build components
+- `ContrastNotes`
+#### Decision Point
+- Confirm semantic color coverage
+#### CTA budget
+- Primary: `Open typography`
+- Secondary: `Back to tokens`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/design-system/tokens/typography`
+#### Context
+- Intent: validate type scale and hierarchy
+- Previous: `/design-system/tokens`
+- Next: `/design-system/tokens/spacing`
+#### Section Map
+- [P1] Scale summary (`full`)
+- [P2] Roles and examples (`grid`)
+- [P3] Guidance links (`full`)
+#### Representative Data
+- Heading/body/caption tokens and usage
+#### Signature Visual
+- Readable type ladder presentation
+#### Must-build components
+- `TypographyScale`, `TypeRoleExamples`
+#### Should-build components
+- `AccessibilityNotes`
+#### Decision Point
+- Confirm typography consistency
+#### CTA budget
+- Primary: `Open spacing`
+- Secondary: `Back to tokens`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/design-system/tokens/spacing`
+#### Context
+- Intent: validate spacing rhythm contracts
+- Previous: `/design-system/tokens`
+- Next: `/design-system/tokens/motion`
+#### Section Map
+- [P1] Spacing scale summary (`full`)
+- [P2] Layout rhythm examples (`grid`)
+- [P3] Rules (`full`)
+#### Representative Data
+- Spacing increments and component density rules
+#### Signature Visual
+- Rhythm grid and spacing ladders
+#### Must-build components
+- `SpacingScale`, `LayoutRhythmGrid`
+#### Should-build components
+- `DoDontExamples`
+#### Decision Point
+- Confirm layout density consistency
+#### CTA budget
+- Primary: `Open motion`
+- Secondary: `Back to tokens`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/design-system/tokens/motion`
+#### Context
+- Intent: verify motion presets and policy
+- Previous: `/design-system/tokens`
+- Next: `/design-system/components`
+#### Section Map
+- [P1] Motion contract summary (`full`)
+- [P2] Preset examples (`grid`)
+- [P3] Policy links (`full`)
+#### Representative Data
+- Entry/exit/spring presets used by route pages
+#### Signature Visual
+- Side-by-side motion preset playground
+#### Must-build components
+- `MotionPresetTable`, `MotionExamples`
+#### Should-build components
+- `ReducedMotionNotes`
+#### Decision Point
+- Validate app-wide motion coherence
+#### CTA budget
+- Primary: `Open components`
+- Secondary: `Back to tokens`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/design-system/components`
+#### Context
+- Intent: inspect primitives and composition patterns
+- Previous: `/design-system`
+- Next: n/a
+#### Section Map
+- [P1] Primitive catalog (`full`)
+- [P2] Composition examples (`grid`)
+- [P3] Constraints and links (`full`)
+#### Representative Data
+- `Surface`, `Button`, `ButtonLink` canonical usage
+#### Signature Visual
+- Interactive component showcase
+#### Must-build components
+- `ComponentCatalog`, `CompositionSamples`
+#### Should-build components
+- `AntiPatternList`
+#### Decision Point
+- Confirm component API coverage
+#### CTA budget
+- Primary: `Back to design system`
+- Secondary: none
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/recovery`
+#### Context
+- Intent: recover account access with low friction
+- Previous: `/login`
+- Next: `/login`
+#### Section Map
+- [P1] Recovery explanation (`full`)
+- [P2] Recovery form (`full`)
+- [P3] Return action (`full`)
+#### Representative Data
+- Email-based recovery flow
+#### Signature Visual
+- Minimal recovery panel
+#### Must-build components
+- `PublicTopBar`, `RecoveryForm`, `PrimaryActionBar`
+#### Should-build components
+- `SupportHint`
+#### Decision Point
+- Send recovery link now
+#### CTA budget
+- Primary: `Send recovery link`
+- Secondary: `Back to login`
+#### Collapse policy
+- Tier B: 4 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/dashboard/alerts`
+#### Context
+- Intent: triage active alerts quickly
+- Previous: `/dashboard`
+- Next: `/protect/alert-detail`
+#### Section Map
+- [P1] Alert KPIs (`grid`)
+- [P2] Active alert list (`full`)
+- [P3] Resolution timeline (`full`)
+#### Representative Data
+- Alert counts and MTTR with engine breakdown
+#### Signature Visual
+- Alerts-focused dashboard rail
+#### Must-build components
+- `EnginePageFrame`, `AlertsKpiGrid`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `ResolutionTimeline`
+#### Decision Point
+- Open highest-risk alert
+#### CTA budget
+- Primary: `Open protect alerts`
+- Secondary: `Back to dashboard`
+#### Collapse policy
+- Tier A: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/dashboard/insights`
+#### Context
+- Intent: review actionable insights
+- Previous: `/dashboard`
+- Next: `/execute`
+#### Section Map
+- [P1] Insight confidence summary (`full`)
+- [P2] Insight feed (`full`)
+- [P3] Action rail (`full`)
+#### Representative Data
+- `system_confidence=0.92`, actionable insights count
+#### Signature Visual
+- Confidence-first insight cards
+#### Must-build components
+- `EnginePageFrame`, `InsightsFeed`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `ConfidenceIndicator`
+#### Decision Point
+- Send top recommendation to execute
+#### CTA budget
+- Primary: `Review execution queue`
+- Secondary: `Back to dashboard`
+#### Collapse policy
+- Tier A: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/dashboard/timeline`
+#### Context
+- Intent: inspect recent activity chronology
+- Previous: `/dashboard`
+- Next: `/dashboard`
+#### Section Map
+- [P1] Timeline summary (`full`)
+- [P2] Activity stream (`full`)
+- [P3] Next action (`full`)
+#### Representative Data
+- Recent cross-engine actions and timestamps
+#### Signature Visual
+- Chronological event rail
+#### Must-build components
+- `EnginePageFrame`, `ActivityTimeline`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `FilterBar`
+#### Decision Point
+- Return to command center or inspect event
+#### CTA budget
+- Primary: `Back to dashboard`
+- Secondary: `Open notifications`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/dashboard/notifications`
+#### Context
+- Intent: clear or route pending notifications
+- Previous: `/dashboard`
+- Next: relevant engine route
+#### Section Map
+- [P1] Notification summary (`full`)
+- [P2] Notification list (`full`)
+- [P3] Batch actions (`full`)
+#### Representative Data
+- Unread counts and severity tags
+#### Signature Visual
+- Priority-aware notification list
+#### Must-build components
+- `EnginePageFrame`, `NotificationsList`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `FilterChips`
+#### Decision Point
+- Resolve now or defer with clear state
+#### CTA budget
+- Primary: `Mark all reviewed`
+- Secondary: `Back to dashboard`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/protect/dispute`
+#### Context
+- Intent: contest flagged event with evidence
+- Previous: `/protect/alert-detail`
+- Next: `/govern/audit`
+#### Section Map
+- [P1] Dispute summary (`full`)
+- [P2] Evidence upload/review (`full`)
+- [P3] Submit action (`full`)
+#### Representative Data
+- Selected alert context and dispute reason
+#### Signature Visual
+- High-clarity dispute workflow
+#### Must-build components
+- `EnginePageFrame`, `DisputeForm`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `EvidenceChecklist`
+#### Decision Point
+- Submit dispute with traceability
+#### CTA budget
+- Primary: `Submit dispute`
+- Secondary: `Back to alert detail`
+#### Collapse policy
+- Tier B: 4 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/grow/recommendations`
+#### Context
+- Intent: review personalized growth recommendations
+- Previous: `/grow`
+- Next: `/grow/scenarios`
+#### Section Map
+- [P1] Recommendation summary (`full`)
+- [P2] Ranked recommendations (`full`)
+- [P3] Apply action (`full`)
+#### Representative Data
+- Priority-ranked recommended actions with expected impact
+#### Signature Visual
+- Ranked recommendation cards
+#### Must-build components
+- `EnginePageFrame`, `RecommendationList`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `ImpactPreview`
+#### Decision Point
+- Apply recommendation or compare scenarios
+#### CTA budget
+- Primary: `Open scenarios`
+- Secondary: `Back to grow`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/execute/approval`
+#### Context
+- Intent: approve a single action safely
+- Previous: `/execute`
+- Next: `/execute/history`
+#### Section Map
+- [P1] Approval context (`full`)
+- [P2] Risk/explainability details (`full`)
+- [P3] Approve/decline controls (`full`)
+#### Representative Data
+- Action amount, risk score, rollback window
+#### Signature Visual
+- Focused single-approval panel
+#### Must-build components
+- `EnginePageFrame`, `ApprovalDetail`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `RollbackHint`
+#### Decision Point
+- Approve now or decline with rationale
+#### CTA budget
+- Primary: `Approve action`
+- Secondary: `Decline`
+#### Collapse policy
+- Tier B: 4 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/govern/trust`
+#### Context
+- Intent: inspect trust controls and policy posture
+- Previous: `/govern`
+- Next: `/govern/audit`
+#### Section Map
+- [P1] Trust posture summary (`full`)
+- [P2] Control matrix (`grid`)
+- [P3] Audit handoff action (`full`)
+#### Representative Data
+- Compliance controls and policy coverage status
+#### Signature Visual
+- Trust-control matrix with status chips
+#### Must-build components
+- `EnginePageFrame`, `TrustControlsMatrix`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `ProofLine`
+#### Decision Point
+- Proceed to immutable audit review
+#### CTA budget
+- Primary: `Open audit ledger`
+- Secondary: `Back to govern`
+#### Collapse policy
+- Tier B: 4 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/govern/audit-detail`
+#### Context
+- Intent: inspect a single audit record deeply
+- Previous: `/govern/audit`
+- Next: `/govern/audit`
+#### Section Map
+- [P1] Record summary (`full`)
+- [P2] Event lineage (`full`)
+- [P3] Export action (`full`)
+#### Representative Data
+- Immutable event chain and actor metadata
+#### Signature Visual
+- Event lineage timeline with integrity markers
+#### Must-build components
+- `EnginePageFrame`, `AuditRecordDetail`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `ExportPanel`
+#### Decision Point
+- Validate and return to ledger
+#### CTA budget
+- Primary: `Back to audit ledger`
+- Secondary: `Export record`
+#### Collapse policy
+- Tier B: 4 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/govern/registry`
+#### Context
+- Intent: review governed registry entries
+- Previous: `/govern`
+- Next: `/govern/policy`
+#### Section Map
+- [P1] Registry summary (`full`)
+- [P2] Registry table (`full`)
+- [P3] Actions (`full`)
+#### Representative Data
+- Registry items with verification status
+#### Signature Visual
+- Structured registry table
+#### Must-build components
+- `EnginePageFrame`, `RegistryTable`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `FilterControls`
+#### Decision Point
+- Inspect or update policy linkage
+#### CTA budget
+- Primary: `Open policy`
+- Secondary: `Back to govern`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/govern/oversight`
+#### Context
+- Intent: track oversight status and exceptions
+- Previous: `/govern`
+- Next: `/govern/audit`
+#### Section Map
+- [P1] Oversight summary (`full`)
+- [P2] Exception queue (`full`)
+- [P3] Resolve actions (`full`)
+#### Representative Data
+- Pending oversight items and SLA statuses
+#### Signature Visual
+- Exception-focused oversight rail
+#### Must-build components
+- `EnginePageFrame`, `OversightQueue`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `SlaChips`
+#### Decision Point
+- Resolve or escalate exception
+#### CTA budget
+- Primary: `Open audit ledger`
+- Secondary: `Back to govern`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/govern/policy`
+#### Context
+- Intent: review and approve policy boundaries
+- Previous: `/govern`
+- Next: `/settings/rights`
+#### Section Map
+- [P1] Policy summary (`full`)
+- [P2] Policy rules (`full`)
+- [P3] Apply action (`full`)
+#### Representative Data
+- Policy states for approve/alert/rollback
+#### Signature Visual
+- Clear policy rule matrix
+#### Must-build components
+- `EnginePageFrame`, `PolicyMatrix`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `ChangeLogPreview`
+#### Decision Point
+- Keep or adjust policy defaults
+#### CTA budget
+- Primary: `Review access rights`
+- Secondary: `Back to govern`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/settings/ai`
+#### Context
+- Intent: configure AI behavior boundaries
+- Previous: `/settings`
+- Next: `/settings`
+#### Section Map
+- [P1] AI settings summary (`full`)
+- [P2] Model/guardrail controls (`full`)
+- [P3] Save action (`full`)
+#### Representative Data
+- Model mode, explainability level, guardrail toggles
+#### Signature Visual
+- Compact control card stack
+#### Must-build components
+- `EnginePageFrame`, `AiSettingsPanel`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `PolicyReference`
+#### Decision Point
+- Save or revert AI settings
+#### CTA budget
+- Primary: `Save AI settings`
+- Secondary: `Back to settings`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/settings/integrations`
+#### Context
+- Intent: manage connected services
+- Previous: `/settings`
+- Next: `/settings`
+#### Section Map
+- [P1] Integration summary (`full`)
+- [P2] Connected providers (`full`)
+- [P3] Connect/disconnect actions (`full`)
+#### Representative Data
+- Connected institutions/providers and status
+#### Signature Visual
+- Provider list with trust indicators
+#### Must-build components
+- `EnginePageFrame`, `IntegrationList`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `ConnectionStatusBadges`
+#### Decision Point
+- Add or remove integration safely
+#### CTA budget
+- Primary: `Save integrations`
+- Secondary: `Back to settings`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/settings/rights`
+#### Context
+- Intent: define consent and access rights
+- Previous: `/settings`
+- Next: `/govern/policy`
+#### Section Map
+- [P1] Rights summary (`full`)
+- [P2] Access matrix (`full`)
+- [P3] Review action (`full`)
+#### Representative Data
+- Consent scope and actor permissions
+#### Signature Visual
+- Rights matrix with explicit scopes
+#### Must-build components
+- `EnginePageFrame`, `AccessRightsMatrix`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `PolicyReference`
+#### Decision Point
+- Confirm rights boundary updates
+#### CTA budget
+- Primary: `Review policy`
+- Secondary: `Back to settings`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/help`
+#### Context
+- Intent: unblock user quickly
+- Previous: any app route
+- Next: originating route
+#### Section Map
+- [P1] Help summary (`full`)
+- [P2] FAQ and support options (`full`)
+- [P3] Escalation action (`full`)
+#### Representative Data
+- Top support intents and response channels
+#### Signature Visual
+- Search-first support layout
+#### Must-build components
+- `EnginePageFrame`, `HelpSupportPanel`, `PrimaryActionBar`, `GovernFooter`
+#### Should-build components
+- `FaqAccordion`
+#### Decision Point
+- Resolve via self-service or escalate
+#### CTA budget
+- Primary: `Contact support`
+- Secondary: `Back`
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
+### Route `/test/spectacular`
+#### Context
+- Intent: internal visual/motion verification
+- Previous: internal QA routes
+- Next: n/a
+#### Section Map
+- [P1] Showcase summary (`full`)
+- [P2] Surface/button/motion samples (`grid`)
+- [P3] Test actions (`full`)
+#### Representative Data
+- Creator-studio visual and motion primitives
+#### Signature Visual
+- Controlled showcase sandbox
+#### Must-build components
+- `TestHarness`, `SurfaceShowcase`, `MotionShowcase`
+#### Should-build components
+- `TokenReadout`
+#### Decision Point
+- Validate visual contract or exit
+#### CTA budget
+- Primary: `Back to dashboard`
+- Secondary: none
+#### Collapse policy
+- Tier C: 3 block cap
+#### Technical constraints
+- Shared imports, a11y baseline, no inline style, no hardcoded hex
+
 ---
 
 ## 8. Anti-overload Rules

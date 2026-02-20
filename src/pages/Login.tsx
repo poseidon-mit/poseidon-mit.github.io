@@ -19,7 +19,8 @@ export default function LoginPage() {
         title="Access"
         subtitle="Welcome back"
       >
-        <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
+        <main id="main-content">
+          <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
           <motion.div variants={fadeUp} className="space-y-3">
             <Button
               type="button"
@@ -144,7 +145,8 @@ export default function LoginPage() {
               Create one
             </Link>
           </motion.p>
-        </motion.div>
+          </motion.div>
+        </main>
       </AuthShell>
     </>
   )

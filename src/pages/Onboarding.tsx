@@ -45,8 +45,8 @@ export default function OnboardingConnectPage() {
       step={1}
       title="Connect your financial accounts"
       subtitle="Poseidon uses read-only access. Money movement always requires explicit consent and leaves a full audit trail.">
-      
-      <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
+      <main id="main-content">
+        <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
         <motion.div variants={staggerContainer} className="space-y-3">
           {CONNECTORS.map((connector) => {
             const isConnected = connected.has(connector.id);
@@ -135,7 +135,8 @@ export default function OnboardingConnectPage() {
             </ButtonLink>
           </div>
         </motion.div>
-      </motion.div>
+        </motion.div>
+      </main>
     </OnboardingShell>);
 
 }

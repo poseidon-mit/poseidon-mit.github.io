@@ -26,7 +26,8 @@ export default function SignupPage() {
         title="Onboarding"
         subtitle="Create your account"
       >
-        <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
+        <main id="main-content">
+          <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
           <motion.ul variants={staggerContainer} className="mb-6 space-y-2 rounded-xl border border-white/10 bg-white/[0.02] p-4">
             {TRUST_POINTS.map((point) => (
               <motion.li key={point} variants={fadeUp} className="flex items-start gap-2 text-xs text-slate-300">
@@ -145,7 +146,8 @@ export default function SignupPage() {
               Sign in
             </Link>
           </motion.p>
-        </motion.div>
+          </motion.div>
+        </main>
       </AuthShell>
     </>
   )
