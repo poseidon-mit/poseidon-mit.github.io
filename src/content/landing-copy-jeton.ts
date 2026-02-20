@@ -5,7 +5,7 @@ export const JETON_COPY = {
     titleB: 'AI-Governed.',
     body: 'Four engines. One command center. Every decision explainable, auditable, and reversible.',
     primaryCta: 'Start Now',
-    secondaryCta: 'Watch Demo',
+    secondaryCta: 'Explore Product',
     trustLine: 'Bank-grade encryption · GDPR ready · SOC 2 Type II in progress',
   },
   valueProp: {

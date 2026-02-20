@@ -83,6 +83,10 @@ export default function ExecuteHistoryPage() {
           </Link>
         </motion.div>
 
+        <motion.div variants={fadeUp} className="px-4 md:px-6 lg:px-8">
+          <h1 className="text-3xl font-semibold tracking-[var(--tracking-h2)] text-slate-100">Execution History</h1>
+        </motion.div>
+
         {/* ── P1: Outcome Summary Metrics ── */}
         <motion.section
           variants={staggerContainer}

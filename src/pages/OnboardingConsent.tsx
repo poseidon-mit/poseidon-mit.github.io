@@ -61,7 +61,7 @@ export default function OnboardingConsentPage() {
       step={3}
       title="Set your consent boundaries"
       subtitle="Control exactly what Poseidon can do. All decisions remain explainable, auditable, and reversible.">
-      <main id="main-content">
+      <div>
         <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
         <motion.div variants={staggerContainer} className="space-y-3">
           {CONSENT_ITEMS.map((item) => {
@@ -120,7 +120,7 @@ export default function OnboardingConsentPage() {
           </ButtonLink>
         </motion.div>
         </motion.div>
-      </main>
+      </div>
     </OnboardingShell>);
 
 }

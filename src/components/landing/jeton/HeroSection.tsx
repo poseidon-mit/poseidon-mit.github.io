@@ -8,6 +8,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { FileText, Lock, PlayCircle, Shield, ShieldCheck } from 'lucide-react';
 import { Link, useRouter } from '@/router';
 import { JETON_COPY } from '@/content/landing-copy-jeton';
+import { useDemoState } from '@/lib/demo-state/provider';
 import { useJetonHeroVideoEnabled } from './hooks/useJetonWebGLEnabled';
 import { JETON_EASING } from './jeton-config';
 
@@ -42,6 +43,7 @@ export function HeroSection() {
   const heroVideoEnabled = useJetonHeroVideoEnabled();
   const heroVideoSrc = useHeroVideoSrc();
   const { navigate } = useRouter();
+  const { beginDemoSession } = useDemoState();
 
   const { scrollY } = useScroll();
   const heroOpacity = useTransform(scrollY, [0, 540], [1, 0.26]);
@@ -230,7 +232,10 @@ export function HeroSection() {
           </Link>
           <button
             type="button"
-            onClick={() => navigate('/dashboard')}
+            onClick={() => {
+              beginDemoSession({ method: 'skip' });
+              navigate('/dashboard');
+            }}
             className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-400/12 px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-cyan-300/20 hover:shadow-[0_0_26px_rgba(56,189,248,0.2)] sm:w-auto"
           >
             <PlayCircle className="h-4 w-4" aria-hidden="true" />

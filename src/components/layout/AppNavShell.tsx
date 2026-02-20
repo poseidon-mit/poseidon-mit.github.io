@@ -523,7 +523,7 @@ export function AppNavShell({
         )}
 
         {/* ── Main content ── */}
-        <main className="flex-1">{children}</main>
+        <div className="flex-1">{children}</div>
 
         {/* Spacer for mobile bottom nav */}
         <div className="h-16 lg:hidden" aria-hidden="true" />

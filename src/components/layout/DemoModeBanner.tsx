@@ -10,18 +10,18 @@ export function DemoModeBanner() {
 
   const meta = useMemo(() => getRouteUXMeta(path), [path])
 
-  if (HIDDEN_ROUTES.has(path)) return null
+  if (HIDDEN_ROUTES.has(path) || path.startsWith('/design-system') || path.startsWith('/test/')) return null
 
   return (
     <aside
-      className="pointer-events-none fixed bottom-3 left-3 z-[var(--z-toast)] max-w-[min(92vw,460px)] rounded-xl border border-cyan-400/35 bg-[rgba(2,6,23,0.78)] px-3 py-2 text-cyan-100 backdrop-blur"
+      className="pointer-events-none fixed bottom-20 left-3 z-[var(--z-toast)] max-w-[min(92vw,460px)] rounded-xl border border-cyan-400/35 bg-[rgba(2,6,23,0.78)] px-3 py-2 text-cyan-100 backdrop-blur md:bottom-3"
       role="status"
       aria-live="polite"
-      aria-label="Demo mode active"
+      aria-label="Prototype mode active"
     >
       <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
         <FlaskConical className="h-3.5 w-3.5" aria-hidden="true" />
-        Demo Mode · Simulated Data
+        Prototype · Simulated Data
       </div>
       {meta?.first5sMessage ? (
         <p className="mt-1 hidden text-[11px] text-cyan-100/85 md:block">{meta.first5sMessage}</p>

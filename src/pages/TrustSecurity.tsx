@@ -16,6 +16,7 @@ import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets'
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { Surface } from '@/design-system'
 import { usePageTitle } from '@/hooks/use-page-title'
+import { PublicTopBar } from '@/components/landing/PublicTopBar'
 
 const snapshotStats = [
   {
@@ -58,25 +59,7 @@ export function TrustSecurity() {
         Skip to main content
       </a>
 
-      <nav className="glass-header border-b border-white/[0.06]">
-        <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between px-4 md:px-6 lg:px-8">
-          <div className="flex items-center gap-2">
-            <Shield className="h-5 w-5" style={{ color: 'var(--engine-dashboard)' }} />
-            <span className="text-base font-bold text-white">Poseidon.AI</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link to="/login" className="text-sm text-white/60 hover:text-white/80 transition-colors">
-              Sign in
-            </Link>
-            <Link
-              to="/signup"
-              className="rounded-xl bg-[var(--engine-protect)] px-4 py-2 text-xs font-semibold text-slate-950 transition-opacity hover:opacity-90"
-            >
-              Get started
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicTopBar />
 
       <motion.div
         id="main-content"

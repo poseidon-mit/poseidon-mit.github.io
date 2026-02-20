@@ -170,7 +170,7 @@ export default function PricingPage() {
                 </span>
               }
 
-              <h3 className="text-lg font-bold mb-1" style={{ color: "#F1F5F9" }}>{plan.name}</h3>
+              <h2 className="text-lg font-bold mb-1" style={{ color: "#F1F5F9" }}>{plan.name}</h2>
               <p className="text-sm mb-4" style={{ color: "#64748B" }}>{plan.description}</p>
 
               <div className="mb-6">

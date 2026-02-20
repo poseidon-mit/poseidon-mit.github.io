@@ -31,7 +31,7 @@ export default function NotFound() {
       <div className="relative z-10 max-w-md px-6 text-center">
         <motion.div
           initial="hidden"
-          animate="show"
+          animate="visible"
           variants={creatorStudioStaggerContainer}
         >
           <motion.div variants={creatorStudioFadeUp} className="mb-6 flex justify-center">

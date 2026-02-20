@@ -168,16 +168,21 @@ function installRuntimeTelemetry() {
 
 function RouterOutlet() {
   const { path, search, navigate } = useRouter();
-  const { state } = useDemoState();
+  const { state, beginDemoSession } = useDemoState();
   const LazyComponent = routes[path as RoutePath];
   const PageComponent = LazyComponent || routes['/404'] || routes['/'];
   const requiresSession = isAppRoute(path);
+  const SELF_GUIDED_QR_MODE = true;
 
   useEffect(() => {
     if (!requiresSession || state.auth.sessionStarted) return;
+    if (SELF_GUIDED_QR_MODE) {
+      beginDemoSession({ method: 'skip' });
+      return;
+    }
     const next = encodeURIComponent(`${path}${search}`);
     navigate(`/login?next=${next}`);
-  }, [requiresSession, state.auth.sessionStarted, path, search, navigate]);
+  }, [requiresSession, state.auth.sessionStarted, path, search, navigate, beginDemoSession]);
 
   if (!PageComponent) return <RouteLoadingFallback />;
   if (requiresSession && !state.auth.sessionStarted) return <RouteLoadingFallback />;

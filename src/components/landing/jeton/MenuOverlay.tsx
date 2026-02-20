@@ -26,14 +26,14 @@ export function MenuOverlay() {
 
         <div className="hidden items-center gap-8 text-sm text-white/76 md:flex">
           <a href="#platform" className="transition-colors hover:text-inherit">
-            Platform
+            Product
           </a>
-          <a href="#governance" className="transition-colors hover:text-inherit">
-            Governance
-          </a>
-          <a href="#cta" className="transition-colors hover:text-inherit">
-            Start
-          </a>
+          <Link to="/pricing" className="transition-colors hover:text-inherit">
+            Pricing
+          </Link>
+          <Link to="/login" className="transition-colors hover:text-inherit">
+            Sign in
+          </Link>
         </div>
 
         <div className="hidden md:block">
@@ -73,14 +73,14 @@ export function MenuOverlay() {
           >
             <div className="flex flex-col gap-4 px-6 py-5 text-sm">
               <a href="#platform" onClick={() => setMobileOpen(false)}>
-                Platform
+                Product
               </a>
-              <a href="#governance" onClick={() => setMobileOpen(false)}>
-                Governance
-              </a>
-              <a href="#cta" onClick={() => setMobileOpen(false)}>
-                Start
-              </a>
+              <Link to="/pricing" onClick={() => setMobileOpen(false)}>
+                Pricing
+              </Link>
+              <Link to="/login" onClick={() => setMobileOpen(false)}>
+                Sign in
+              </Link>
               <ButtonLink
                 to="/signup"
                 variant="glass"

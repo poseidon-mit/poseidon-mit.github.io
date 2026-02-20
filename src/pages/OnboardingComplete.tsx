@@ -46,7 +46,7 @@ export default function OnboardingCompletePage() {
       step={4}
       title="You're all set"
       subtitle="Your engines are active and decisions now flow through explainable recommendations, consent-first execution, and governance proof.">
-      <main id="main-content">
+      <div>
         <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
         <motion.div variants={fadeUp} className="mb-6 flex justify-center">
           <span className="inline-flex h-16 w-16 items-center justify-center rounded-full border border-[var(--state-healthy)]/30 bg-[var(--state-healthy)]/14 text-[var(--state-healthy)]">
@@ -104,7 +104,7 @@ export default function OnboardingCompletePage() {
           </ButtonLink>
         </motion.div>
         </motion.div>
-      </main>
+      </div>
     </OnboardingShell>);
 
 }

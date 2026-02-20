@@ -23,7 +23,14 @@ export function OnboardingProgress({
           Step {currentStep} of {total}
         </span>
       </div>
-      <div className="flex items-center gap-2" aria-label={`Onboarding step ${currentStep} of ${total}`}>
+      <div
+        className="flex items-center gap-2"
+        role="progressbar"
+        aria-label="Onboarding progress"
+        aria-valuemin={1}
+        aria-valuemax={total}
+        aria-valuenow={currentStep}
+      >
         {Array.from({ length: total }).map((_, idx) => {
           const isActive = idx + 1 <= currentStep
           return (
