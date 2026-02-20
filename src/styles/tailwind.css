@@ -13,7 +13,7 @@
   --color-engine-govern: #3B82F6;
 
   /* Surface colors */
-  --color-surface-base: #0B1221;
+  --color-surface-base: #050508;
   --color-surface-card: #0F1D32;
   --color-surface-elevated: #132237;
 
@@ -72,7 +72,7 @@
 
   body {
     font-family: var(--font-sans);
-    background: var(--color-surface-base);
+    background: var(--bg-oled, var(--color-surface-base));
     color: var(--color-text-primary);
     line-height: 1.5;
     overflow-x: hidden;

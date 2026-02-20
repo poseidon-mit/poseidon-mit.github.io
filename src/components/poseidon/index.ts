@@ -5,7 +5,6 @@
  * Import from '@/components/poseidon' in engine pages and v0 adaptations.
  */
 
-export { GlassCard, type GlassCardProps } from './glass-card'
 export { GovernFooter, type GovernFooterProps } from './govern-footer'
 export { ProofLine, type ProofLineProps } from './proof-line'
 export { NeonText, type NeonTextProps } from './neon-text'

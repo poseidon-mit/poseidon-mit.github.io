@@ -56,7 +56,6 @@ export const COMPONENT_REGISTRY = Object.freeze({
   ForecastBandChart: { status: 'canonical' },
   ForecastBand: { status: 'canonical' },
   FreshnessIndicator: { status: 'canonical' },
-  GlassCard: { status: 'canonical' },
   Grid: { status: 'canonical' },
   Footer: { status: 'canonical' },
   GovernContractSet: { status: 'canonical' },
@@ -163,6 +162,10 @@ export const COMPONENT_REGISTRY = Object.freeze({
     replacement: 'CommandCenterShell hero contract',
   },
   AppleGlassCard: {
+    status: 'forbidden',
+    replacement: 'Surface',
+  },
+  GlassCard: {
     status: 'forbidden',
     replacement: 'Surface',
   },

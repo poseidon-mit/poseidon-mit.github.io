@@ -1,4 +1,4 @@
-import { createElement, forwardRef, type ElementType } from 'react'
+import { createElement, forwardRef, type CSSProperties, type ElementType } from 'react'
 import { cn } from '../../../../lib/utils'
 import type { SurfaceProps } from './Surface.schema'
 
@@ -24,6 +24,8 @@ export const Surface = forwardRef<HTMLElement, SurfaceProps>(
       glow = false,
       interactive = false,
       padding = 'md',
+      borderColor,
+      borderWidth = 2,
       as: Tag = 'div',
       className,
       children,
@@ -90,6 +92,19 @@ export const Surface = forwardRef<HTMLElement, SurfaceProps>(
     )
 
     const Component = Tag as ElementType
+    const inlineStyle = ((rest as Record<string, unknown>).style as CSSProperties | undefined) ?? undefined
+
+    const mergedStyle: CSSProperties | undefined = (() => {
+      const style: CSSProperties = { ...(inlineStyle ?? {}) }
+      if (glowShadow) {
+        style.boxShadow = glowShadow
+      }
+      if (borderColor) {
+        style.borderLeftColor = borderColor
+        style.borderLeftWidth = `${borderWidth}px`
+      }
+      return Object.keys(style).length > 0 ? style : undefined
+    })()
 
     return createElement(
       Component as any,
@@ -97,7 +112,7 @@ export const Surface = forwardRef<HTMLElement, SurfaceProps>(
         ...(rest as Record<string, unknown>),
         ref,
         className: cn(variantClasses, className),
-        style: glowShadow ? { boxShadow: glowShadow } : undefined,
+        style: mergedStyle,
       },
       children,
     )

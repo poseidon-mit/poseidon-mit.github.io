@@ -19,7 +19,7 @@
     "check:design-system:usage": "node scripts/check-design-system-usage.mjs",
     "check:design-system:tokens": "node scripts/check-design-token-hygiene.mjs",
     "check:design-system": "npm run check:design-system:strict",
-    "check:design-system:strict": "node scripts/check-design-system-usage.mjs --strict && node scripts/check-design-token-hygiene.mjs --strict",
+    "check:design-system:strict": "node scripts/check-design-system-usage.mjs --strict && node scripts/check-motion-contract.mjs && node scripts/check-design-token-hygiene.mjs --strict",
     "generate:registry": "node scripts/generate-registry-json.mjs",
     "check:registry-sync": "node scripts/generate-registry-json.mjs --check",
     "copy:deck-pdf": "node scripts/copy-deck-pdf.mjs",

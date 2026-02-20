@@ -7,10 +7,10 @@
 import { motion } from 'framer-motion'
 import { TrendingUp, Target, ArrowUpRight, Wallet, Gauge, type LucideIcon } from 'lucide-react'
 import { fadeUp, staggerContainer, staggerContainerDelayed } from '@/lib/motion-presets'
-import { GlassCard, ViewModeToggle, CitationCard, CountUp } from '@/components/poseidon'
+import { ViewModeToggle, CitationCard, CountUp } from '@/components/poseidon'
 import type { ViewMode } from '@/hooks/useViewMode'
 import { kpiData, growCitations } from './grow-data'
-import { Button } from '@/design-system'
+import { Surface, Button } from '@/design-system'
 
 /* ── Props ── */
 
@@ -26,8 +26,6 @@ export function HeroSection({ navigate, viewMode = 'detail', onViewModeChange }:
   return (
     <motion.section
       variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
       className="flex flex-col gap-6"
     >
       {/* Engine badge + view mode toggle */}
@@ -114,8 +112,6 @@ export function KpiGrid({ viewMode = 'detail' }: KpiGridProps) {
   return (
     <motion.section
       variants={staggerContainerDelayed}
-      initial="hidden"
-      animate="visible"
       className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4"
       aria-label="Key performance indicators"
     >
@@ -123,7 +119,7 @@ export function KpiGrid({ viewMode = 'detail' }: KpiGridProps) {
         const KpiIcon = kpiIcons[kpi.label]
         return (
           <motion.div key={kpi.label} variants={fadeUp} className="h-full">
-            <GlassCard className="flex flex-col gap-2 h-full">
+            <Surface variant="glass" padding="none" className="flex flex-col gap-2 h-full">
               <span className="text-xs uppercase tracking-wider font-medium flex items-center gap-1.5" style={{ color: '#64748B' }}>
                 {KpiIcon && <KpiIcon size={12} aria-hidden="true" />}
                 {kpi.label}
@@ -159,7 +155,7 @@ export function KpiGrid({ viewMode = 'detail' }: KpiGridProps) {
                   {kpi.trend.text}
                 </span>
               )}
-            </GlassCard>
+            </Surface>
           </motion.div>
         )
       })}

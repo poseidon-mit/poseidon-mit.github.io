@@ -199,6 +199,11 @@ const BANNED_GLASS_PATTERNS = [
     pattern: /rgba\(11,18,33,0\.(?:8|95)\)/,
     message: 'Inline nav rgba background is forbidden. Use glass-header class.',
   },
+  {
+    name: 'legacy-glasscard-component',
+    pattern: /<\s*GlassCard\b|import\s*\{[^}]*\bGlassCard\b[^}]*\}\s*from/,
+    message: 'GlassCard is deprecated. Use <Surface variant=\"glass\">.',
+  },
 ];
 
 for (const filePath of surfaceFiles) {

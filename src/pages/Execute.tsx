@@ -16,10 +16,10 @@ import {
   AlertTriangle,
 } from "lucide-react"
 import { DEMO_THREAD } from '@/lib/demo-thread'
-import { AuroraPulse, EmptyState, GlassCard, GovernFooter } from '@/components/poseidon'
+import { AuroraPulse, EmptyState, GovernFooter } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
-import { Button, ButtonLink } from '@/design-system'
+import { Surface, Button, ButtonLink } from '@/design-system'
 
 /* ── Cross-thread values ── */
 const PENDING_ACTIONS = DEMO_THREAD.pendingActions
@@ -75,7 +75,7 @@ export default function ExecutePage() {
       <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: "1280px" }} variants={staggerContainer} initial="hidden" animate="visible" role="main">
 
         {/* ── Hero ── */}
-        <motion.section variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-4">
+        <motion.section variants={staggerContainer} className="flex flex-col gap-4">
           <motion.div variants={fadeUp}>
             <span className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider uppercase" style={{ borderColor: "rgba(234,179,8,0.3)", background: "rgba(234,179,8,0.08)", color: "var(--engine-execute)" }}>
               <Zap size={12} />Execute Engine
@@ -93,10 +93,10 @@ export default function ExecutePage() {
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1 min-w-0 lg:w-2/3">
             {/* Pending actions */}
-            <motion.section variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-4">
+            <motion.section variants={staggerContainer} className="flex flex-col gap-4">
               <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "#64748B" }}>Pending approval ({pending.length})</h2>
               {pending.length === 0 && (
-                <GlassCard>
+                <Surface variant="glass" padding="none">
                   <EmptyState
                     icon={CheckCircle2}
                     title="All pending actions are cleared"
@@ -104,11 +104,11 @@ export default function ExecutePage() {
                     accentColor="var(--state-healthy)"
                     action={{ label: "Open execution history", onClick: () => navigate('/execute/history') }}
                   />
-                </GlassCard>
+                </Surface>
               )}
               {pending.map(action => (
                 <motion.div key={action.id} variants={fadeUp}>
-                  <GlassCard borderColor={engineColorMap[action.engine]} className="flex flex-col gap-3">
+                  <Surface variant="glass" padding="none" borderColor={engineColorMap[action.engine]} className="flex flex-col gap-3">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs font-mono font-medium" style={{ color: "var(--engine-execute)" }}>{action.id}</span>
                       <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: `${engineColorMap[action.engine]}15`, color: engineColorMap[action.engine] }}>{action.engine}</span>
@@ -133,7 +133,7 @@ export default function ExecutePage() {
                         <Clock size={14} />Defer
                       </Button>
                     </div>
-                  </GlassCard>
+                  </Surface>
                 </motion.div>
               ))}
 
@@ -143,14 +143,14 @@ export default function ExecutePage() {
                   <h2 className="text-sm font-semibold uppercase tracking-wider mt-4" style={{ color: "#64748B" }}>Deferred ({deferred.length})</h2>
                   {deferred.map(action => (
                     <motion.div key={action.id} variants={fadeUp}>
-                      <GlassCard className="flex items-center gap-4 !py-3 opacity-80">
+                      <Surface variant="glass" padding="none" className="flex items-center gap-4 !py-3 opacity-80">
                         <Clock size={16} style={{ color: "var(--state-warning)" }} />
                         <div className="flex-1 min-w-0">
                           <span className="text-sm font-medium" style={{ color: "#F1F5F9" }}>{action.title}</span>
                           <span className="text-xs block" style={{ color: "#64748B" }}>{action.id}</span>
                         </div>
                         <span className="text-xs font-mono" style={{ color: "#64748B" }}>{action.time}</span>
-                      </GlassCard>
+                      </Surface>
                     </motion.div>
                   ))}
                 </>
@@ -162,14 +162,14 @@ export default function ExecutePage() {
                   <h2 className="text-sm font-semibold uppercase tracking-wider mt-4" style={{ color: "#64748B" }}>Completed ({completed.length})</h2>
                   {completed.map(action => (
                     <motion.div key={action.id} variants={fadeUp}>
-                      <GlassCard className="flex items-center gap-4 !py-3 opacity-60">
+                      <Surface variant="glass" padding="none" className="flex items-center gap-4 !py-3 opacity-60">
                         <CheckCircle2 size={16} style={{ color: "var(--state-healthy)" }} />
                         <div className="flex-1 min-w-0">
                           <span className="text-sm font-medium" style={{ color: "#F1F5F9" }}>{action.title}</span>
                           <span className="text-xs block" style={{ color: "#64748B" }}>{action.id}</span>
                         </div>
                         <span className="text-xs font-mono" style={{ color: "#64748B" }}>{action.time}</span>
-                      </GlassCard>
+                      </Surface>
                     </motion.div>
                   ))}
                 </>
@@ -178,48 +178,60 @@ export default function ExecutePage() {
           </div>
 
           {/* Sidebar */}
-          <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-4" aria-label="Execute sidebar">
+          <motion.aside
+            className="w-full lg:w-80 shrink-0 flex flex-col gap-4"
+            aria-label="Execute sidebar"
+            variants={staggerContainer}
+          >
             {/* Queue summary */}
-            <GlassCard className="flex flex-col gap-3">
-              <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Queue Summary</h3>
-                {[
-                { label: "Pending actions", value: String(pending.length), color: "var(--state-warning)" },
-                { label: "Completed today", value: String(completed.length), color: "var(--state-healthy)" },
-                { label: "Auto-approved", value: "8" },
-                { label: "Rollbacks (24h)", value: "2", color: "var(--state-healthy)" },
-              ].map(d => (
-                <div key={d.label} className="flex items-center justify-between">
-                  <span className="text-xs" style={{ color: "#64748B" }}>{d.label}</span>
-                  <span className="text-sm font-mono font-semibold tabular-nums" style={{ color: d.color || "#F1F5F9" }}>{d.value}</span>
-                </div>
-              ))}
-            </GlassCard>
+            <motion.div variants={fadeUp}>
+              <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+                <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Queue Summary</h3>
+                  {[
+                  { label: "Pending actions", value: String(pending.length), color: "var(--state-warning)" },
+                  { label: "Completed today", value: String(completed.length), color: "var(--state-healthy)" },
+                  { label: "Auto-approved", value: "8" },
+                  { label: "Rollbacks (24h)", value: "2", color: "var(--state-healthy)" },
+                ].map(d => (
+                  <div key={d.label} className="flex items-center justify-between">
+                    <span className="text-xs" style={{ color: "#64748B" }}>{d.label}</span>
+                    <span className="text-sm font-mono font-semibold tabular-nums" style={{ color: d.color || "#F1F5F9" }}>{d.value}</span>
+                  </div>
+                ))}
+              </Surface>
+            </motion.div>
 
             {/* Savings tracker */}
-            <GlassCard className="flex flex-col gap-3">
-              <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Savings Tracker</h3>
-              <div className="flex items-center gap-2">
-                <DollarSign size={20} style={{ color: "var(--engine-execute)" }} />
-                <span className="text-2xl font-bold font-mono tabular-nums" style={{ color: "var(--engine-execute)" }}>${MONTHLY_SAVINGS}/mo</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <TrendingUp size={12} style={{ color: "var(--state-healthy)" }} />
-                <span className="text-xs" style={{ color: "var(--state-healthy)" }}>+12% vs last month</span>
-              </div>
-            </GlassCard>
+            <motion.div variants={fadeUp}>
+              <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+                <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Savings Tracker</h3>
+                <div className="flex items-center gap-2">
+                  <DollarSign size={20} style={{ color: "var(--engine-execute)" }} />
+                  <span className="text-2xl font-bold font-mono tabular-nums" style={{ color: "var(--engine-execute)" }}>${MONTHLY_SAVINGS}/mo</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <TrendingUp size={12} style={{ color: "var(--state-healthy)" }} />
+                  <span className="text-xs" style={{ color: "var(--state-healthy)" }}>+12% vs last month</span>
+                </div>
+              </Surface>
+            </motion.div>
 
             {/* Rollback info */}
-            <GlassCard className="flex flex-col gap-3">
-              <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Rollback Safety</h3>
-              <p className="text-xs leading-relaxed" style={{ color: "#94A3B8" }}>All actions are reversible within 24 hours. Rollback requests are processed immediately.</p>
-              <div className="flex items-center gap-2"><RotateCcw size={12} style={{ color: "var(--engine-govern)" }} /><span className="text-xs font-mono" style={{ color: "var(--engine-govern)" }}>{"2 active rollbacks"}</span></div>
-            </GlassCard>
+            <motion.div variants={fadeUp}>
+              <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+                <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Rollback Safety</h3>
+                <p className="text-xs leading-relaxed" style={{ color: "#94A3B8" }}>All actions are reversible within 24 hours. Rollback requests are processed immediately.</p>
+                <div className="flex items-center gap-2"><RotateCcw size={12} style={{ color: "var(--engine-govern)" }} /><span className="text-xs font-mono" style={{ color: "var(--engine-govern)" }}>{"2 active rollbacks"}</span></div>
+              </Surface>
+            </motion.div>
 
             {/* Primary CTA: Review execution history -> /execute/history */}
-            <ButtonLink to="/execute/history" variant="glass" engine="execute" className="rounded-xl text-sm">
-              Review execution history <ArrowUpRight size={16} />
-            </ButtonLink>
-          </aside>
+            <motion.div variants={fadeUp}>
+              <ButtonLink to="/execute/history" variant="glass" engine="execute" className="rounded-xl text-sm">
+                Review execution history <ArrowUpRight size={16} />
+              </ButtonLink>
+            </motion.div>
+          </motion.aside>
         </div>
 
         <GovernFooter

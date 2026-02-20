@@ -4,8 +4,8 @@
 import { motion } from 'framer-motion'
 import { CheckCircle2, XCircle } from 'lucide-react'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
-import { GlassCard, CitationCard, CountUp } from '@/components/poseidon'
-import { Button } from '@/design-system'
+import { CitationCard, CountUp } from '@/components/poseidon'
+import { Surface, Button } from '@/design-system'
 import { executeCitations } from './execute-data'
 import { DEMO_THREAD } from '@/lib/demo-thread'
 
@@ -13,8 +13,6 @@ export function ExecuteGlance() {
   return (
     <motion.section
       variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
       className="flex flex-col gap-4"
       aria-label="Critical actions overview"
     >
@@ -53,24 +51,24 @@ export function ExecuteGlance() {
 
       {/* Summary stats */}
       <motion.div variants={fadeUp} className="grid grid-cols-3 gap-3">
-        <GlassCard className="flex flex-col items-center gap-1 py-4 glass-hover-execute">
+        <Surface variant="glass" padding="none" className="flex flex-col items-center gap-1 py-4 glass-hover-execute">
           <span className="text-xs uppercase tracking-wider" style={{ color: '#64748B' }}>Pending</span>
           <span className="text-2xl font-bold" style={{ color: 'var(--engine-execute)' }}>
             <CountUp value={DEMO_THREAD.pendingActions} />
           </span>
-        </GlassCard>
-        <GlassCard className="flex flex-col items-center gap-1 py-4 glass-hover-execute">
+        </Surface>
+        <Surface variant="glass" padding="none" className="flex flex-col items-center gap-1 py-4 glass-hover-execute">
           <span className="text-xs uppercase tracking-wider" style={{ color: '#64748B' }}>Approved Today</span>
           <span className="text-2xl font-bold" style={{ color: 'var(--state-healthy)' }}>
             <CountUp value={7} />
           </span>
-        </GlassCard>
-        <GlassCard className="flex flex-col items-center gap-1 py-4 glass-hover-execute">
+        </Surface>
+        <Surface variant="glass" padding="none" className="flex flex-col items-center gap-1 py-4 glass-hover-execute">
           <span className="text-xs uppercase tracking-wider" style={{ color: '#64748B' }}>Auto-executed</span>
           <span className="text-2xl font-bold" style={{ color: 'var(--engine-govern)' }}>
             <CountUp value={12} />
           </span>
-        </GlassCard>
+        </Surface>
       </motion.div>
     </motion.section>
   )

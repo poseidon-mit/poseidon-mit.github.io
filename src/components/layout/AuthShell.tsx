@@ -37,7 +37,7 @@ export function AuthShell({
       </a>
 
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_18%,rgba(0,240,255,0.1),transparent_56%),radial-gradient(ellipse_at_82%_82%,rgba(139,92,246,0.09),transparent_60%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_18%,rgba(0,240,255,0.05),transparent_56%),radial-gradient(ellipse_at_82%_82%,rgba(139,92,246,0.035),transparent_60%)]"
         aria-hidden="true"
       />
 

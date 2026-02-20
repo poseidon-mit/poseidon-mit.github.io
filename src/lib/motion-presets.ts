@@ -14,8 +14,8 @@ export const easings = {
   decelerate: [0, 0, 0.2, 1] as const,
 }
 
-/* ── Spring config (natural premium feel) ── */
-const spring = { type: 'spring' as const, stiffness: 380, damping: 30 }
+/* ── Spring config (Apple creator-studio baseline) ── */
+const spring = { type: 'spring' as const, stiffness: 100, damping: 20 }
 export const creatorStudioSpringPress = {
   type: 'spring' as const,
   stiffness: 400,
@@ -52,7 +52,7 @@ export const creatorStudioFadeUp: Variants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: 'spring', stiffness: 300, damping: 24 },
+    transition: spring,
   },
 }
 
@@ -109,7 +109,7 @@ export const creatorStudioStaggerItem: Variants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: 'spring', stiffness: 300, damping: 24 },
+    transition: spring,
   },
 }
 

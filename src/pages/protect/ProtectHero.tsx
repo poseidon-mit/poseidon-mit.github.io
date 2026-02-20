@@ -4,11 +4,12 @@
 
 import { motion } from 'framer-motion'
 import { Shield, Activity, ShieldOff, AlertTriangle, Gauge, Cpu, Calendar, type LucideIcon } from 'lucide-react'
-import { GlassCard, ViewModeToggle, CitationCard, CountUp } from '@/components/poseidon'
+import { ViewModeToggle, CitationCard, CountUp } from '@/components/poseidon'
 import type { ViewMode } from '@/hooks/useViewMode'
 import { fadeUp } from '@/lib/motion-presets'
 import { kpis, protectCitations } from './protect-data'
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { Surface } from '@/design-system'
 
 /* ─── KPI value mapping for CountUp ─────────────────────── */
 
@@ -96,7 +97,7 @@ export function ProtectHero({ viewMode, onViewModeChange }: ProtectHeroProps) {
             const cu = kpiCountUp[kpi.label]
             const KpiIcon = kpiIcons[kpi.label]
             return (
-              <GlassCard
+              <Surface variant="glass" padding="none"
                 key={kpi.label}
                 style={{
                   background: 'rgba(255,255,255,0.05)',
@@ -125,7 +126,7 @@ export function ProtectHero({ viewMode, onViewModeChange }: ProtectHeroProps) {
                     kpi.value
                   )}
                 </p>
-              </GlassCard>
+              </Surface>
             )
           })}
         </div>

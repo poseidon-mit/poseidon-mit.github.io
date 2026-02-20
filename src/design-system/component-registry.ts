@@ -67,7 +67,6 @@ const canonicalNames = [
   'ForecastBand',
   'ForecastBandChart',
   'FreshnessIndicator',
-  'GlassCard',
   'Grid',
   'GovernContractSet',
   'GovernFooter',
@@ -191,6 +190,10 @@ const forbiddenEntries: Record<string, Pick<DesignSystemRegistryEntry, 'replacem
   AppleGlassCard: {
     replacement: 'Surface',
     note: 'Deprecated temporary glass card component from spectacular.',
+  },
+  GlassCard: {
+    replacement: 'Surface',
+    note: 'Deprecated legacy glass card. Use Surface primitive.',
   },
   AppleSpringButton: {
     replacement: 'Button',

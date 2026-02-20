@@ -17,13 +17,13 @@
     },
     {
       "file": "dashboard__mobile.png",
-      "changeRatio": 0.0303,
+      "changeRatio": 0.0302,
       "level": "warn",
       "method": "buffer"
     },
     {
       "file": "dashboard__tablet.png",
-      "changeRatio": 0.0385,
+      "changeRatio": 0.0384,
       "level": "warn",
       "method": "buffer"
     },
@@ -41,7 +41,7 @@
     },
     {
       "file": "execute__mobile.png",
-      "changeRatio": 0.0246,
+      "changeRatio": 0.025,
       "level": "ok",
       "method": "buffer"
     },
@@ -59,37 +59,37 @@
     },
     {
       "file": "govern__desktop.png",
-      "changeRatio": 0.5632,
+      "changeRatio": 0.5633,
       "level": "error",
       "method": "buffer"
     },
     {
       "file": "govern__mobile.png",
-      "changeRatio": 0.9004,
+      "changeRatio": 0.5364,
       "level": "error",
       "method": "buffer"
     },
     {
       "file": "govern__tablet.png",
-      "changeRatio": 0.5591,
+      "changeRatio": 0.5592,
       "level": "error",
       "method": "buffer"
     },
     {
       "file": "govern__wide.png",
-      "changeRatio": 0.3775,
+      "changeRatio": 0.3774,
       "level": "error",
       "method": "buffer"
     },
     {
       "file": "protect__desktop.png",
-      "changeRatio": 0.3938,
+      "changeRatio": 0.3991,
       "level": "error",
       "method": "buffer"
     },
     {
       "file": "protect__mobile.png",
-      "changeRatio": 0.4284,
+      "changeRatio": 0.4021,
       "level": "error",
       "method": "buffer"
     },
@@ -101,7 +101,7 @@
     },
     {
       "file": "protect__wide.png",
-      "changeRatio": 0.1373,
+      "changeRatio": 0.1376,
       "level": "error",
       "method": "buffer"
     },
@@ -137,19 +137,19 @@
     },
     {
       "file": "settings__mobile.png",
-      "changeRatio": 0.0327,
+      "changeRatio": 0.0424,
       "level": "warn",
       "method": "buffer"
     },
     {
       "file": "settings__tablet.png",
-      "changeRatio": 0.0467,
+      "changeRatio": 0.0327,
       "level": "warn",
       "method": "buffer"
     },
     {
       "file": "settings__wide.png",
-      "changeRatio": 0.0361,
+      "changeRatio": 0.0362,
       "level": "warn",
       "method": "buffer"
     }

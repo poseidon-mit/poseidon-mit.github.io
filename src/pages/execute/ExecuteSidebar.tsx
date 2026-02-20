@@ -23,7 +23,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts'
-import { GlassCard, MethodologyCard } from '@/components/poseidon'
+import { MethodologyCard } from '@/components/poseidon'
 import {
   recentExecutions,
   confidenceData,
@@ -34,6 +34,7 @@ import {
 } from './execute-data'
 import type { Engine } from '@/types/engine-data'
 import type { ViewMode } from '@/hooks/useViewMode'
+import { Surface } from '@/design-system'
 
 /* ── Local EngineBadge (Execute-specific inline style) ── */
 
@@ -62,7 +63,7 @@ function ExecutionStats() {
   ]
 
   return (
-    <GlassCard className="flex flex-col gap-4">
+    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <Calendar size={14} style={{ color: 'var(--engine-execute)' }} aria-hidden="true" />
         {"Today's Activity"}
@@ -91,7 +92,7 @@ function ExecutionStats() {
           </div>
         ))}
       </div>
-    </GlassCard>
+    </Surface>
   )
 }
 
@@ -101,7 +102,7 @@ function ExecutionStats() {
 
 function ConfidenceChart() {
   return (
-    <GlassCard className="flex flex-col gap-4">
+    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <Gauge size={14} style={{ color: 'var(--engine-execute)' }} aria-hidden="true" />
         Confidence Scores
@@ -141,7 +142,7 @@ function ConfidenceChart() {
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </GlassCard>
+    </Surface>
   )
 }
 
@@ -151,7 +152,7 @@ function ConfidenceChart() {
 
 function RecentExecutionsTimeline() {
   return (
-    <GlassCard className="flex flex-col gap-4">
+    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <History size={14} style={{ color: 'var(--engine-execute)' }} aria-hidden="true" />
         Recent Executions
@@ -194,7 +195,7 @@ function RecentExecutionsTimeline() {
           )
         })}
       </div>
-    </GlassCard>
+    </Surface>
   )
 }
 

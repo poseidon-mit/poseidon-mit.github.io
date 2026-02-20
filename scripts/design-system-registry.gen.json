@@ -149,9 +149,6 @@
   "FreshnessIndicator": {
     "status": "canonical"
   },
-  "GlassCard": {
-    "status": "canonical"
-  },
   "Grid": {
     "status": "canonical"
   },
@@ -434,6 +431,11 @@
     "status": "forbidden",
     "replacement": "Surface",
     "note": "Deprecated temporary glass card component from spectacular."
+  },
+  "GlassCard": {
+    "status": "forbidden",
+    "replacement": "Surface",
+    "note": "Deprecated legacy glass card. Use Surface primitive."
   },
   "AppleSpringButton": {
     "status": "forbidden",

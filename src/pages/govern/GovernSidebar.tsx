@@ -9,9 +9,10 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
-import { GlassCard, MethodologyCard } from '@/components/poseidon';
+import { MethodologyCard } from '@/components/poseidon';
 import type { ViewMode } from '@/hooks/useViewMode';
 import { confidenceTrendData, evidenceTypes, complianceItems, governMethodology } from './govern-data';
+import { Surface } from '@/design-system'
 
 /* ═══════════════════════════════════════════
    EVIDENCE DISTRIBUTION
@@ -19,7 +20,7 @@ import { confidenceTrendData, evidenceTypes, complianceItems, governMethodology 
 
 function EvidenceDistribution() {
   return (
-    <GlassCard className="flex flex-col gap-4">
+    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <Database size={14} style={{ color: 'var(--engine-govern)' }} aria-hidden="true" />
         Evidence Types
@@ -40,7 +41,7 @@ function EvidenceDistribution() {
           </div>
         ))}
       </div>
-    </GlassCard>
+    </Surface>
   );
 }
 
@@ -50,7 +51,7 @@ function EvidenceDistribution() {
 
 function ConfidenceTrend() {
   return (
-    <GlassCard className="flex flex-col gap-4">
+    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
           <TrendingUp size={14} style={{ color: 'var(--engine-govern)' }} aria-hidden="true" />
@@ -83,7 +84,7 @@ function ConfidenceTrend() {
           </LineChart>
         </ResponsiveContainer>
       </div>
-    </GlassCard>
+    </Surface>
   );
 }
 
@@ -93,7 +94,7 @@ function ConfidenceTrend() {
 
 function ComplianceStatus() {
   return (
-    <GlassCard className="flex flex-col gap-4">
+    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <ShieldCheck size={14} style={{ color: 'var(--engine-govern)' }} aria-hidden="true" />
         Compliance Status
@@ -134,7 +135,7 @@ function ComplianceStatus() {
           <span className="text-xs font-mono" style={{ color: '#94A3B8' }}>2026-02-10</span>
         </div>
       </div>
-    </GlassCard>
+    </Surface>
   );
 }
 

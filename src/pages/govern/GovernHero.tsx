@@ -14,10 +14,10 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { fadeUp, staggerContainer, staggerContainerDelayed } from '@/lib/motion-presets';
-import { GlassCard, ViewModeToggle, CitationCard, CountUp } from '@/components/poseidon';
+import { ViewModeToggle, CitationCard, CountUp } from '@/components/poseidon';
 import type { ViewMode } from '@/hooks/useViewMode';
 import { kpiData, governCitations } from './govern-data';
-import { Button } from '@/design-system'
+import { Surface, Button } from '@/design-system'
 
 interface GovernHeroProps {
   navigate: (path: string) => void;
@@ -33,8 +33,6 @@ function HeroSection({ navigate, viewMode = 'detail', onViewModeChange }: Govern
   return (
     <motion.section
       variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
       className="flex flex-col gap-6"
     >
       {/* Engine badge + ViewModeToggle */}
@@ -142,8 +140,6 @@ function KpiGrid({ viewMode: _viewMode = 'detail' }: KpiGridProps) {
   return (
     <motion.section
       variants={staggerContainerDelayed}
-      initial="hidden"
-      animate="visible"
       className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4"
       aria-label="Key performance indicators"
     >
@@ -151,7 +147,7 @@ function KpiGrid({ viewMode: _viewMode = 'detail' }: KpiGridProps) {
         const KpiIcon = kpiIcons[kpi.label]
         return (
           <motion.div key={kpi.label} variants={fadeUp}>
-            <GlassCard className="flex flex-col gap-2 h-full">
+            <Surface variant="glass" padding="none" className="flex flex-col gap-2 h-full">
               <span className="text-xs uppercase tracking-wider font-medium flex items-center gap-1.5" style={{ color: '#64748B' }}>
                 {KpiIcon && <KpiIcon size={12} aria-hidden="true" />}
                 {kpi.label}
@@ -178,7 +174,7 @@ function KpiGrid({ viewMode: _viewMode = 'detail' }: KpiGridProps) {
                   {kpi.trend.text}
                 </span>
               )}
-            </GlassCard>
+            </Surface>
           </motion.div>
         )
       })}

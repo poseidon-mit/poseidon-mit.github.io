@@ -10,8 +10,9 @@ import { ChevronDown, ExternalLink, BookOpen } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { CitationSource } from '@/types/engine-data'
 import type { ViewMode } from '@/hooks/useViewMode'
-import { GlassCard } from './glass-card'
+
 import { ConfidenceIndicator } from './confidence-indicator'
+import { Surface } from '@/design-system'
 
 export interface CitationCardProps {
   summary: string
@@ -33,7 +34,7 @@ export function CitationCard({
   const [expanded, setExpanded] = useState(viewMode === 'deep')
 
   return (
-    <GlassCard className={cn('flex flex-col gap-3', className)} borderColor={accentColor}>
+    <Surface variant="glass" padding="none" className={cn('flex flex-col gap-3', className)} borderColor={accentColor}>
       {/* Header */}
       <div className="flex items-center gap-2">
         <BookOpen size={14} style={{ color: accentColor }} />
@@ -119,7 +120,7 @@ export function CitationCard({
           </AnimatePresence>
         </>
       )}
-    </GlassCard>
+    </Surface>
   )
 }
 

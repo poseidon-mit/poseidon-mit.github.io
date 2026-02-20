@@ -15,9 +15,9 @@ export interface AuroraPulseProps {
 }
 
 const opacityMap = {
-  subtle: { primary: 0.04, secondary: 0.02 },
-  normal: { primary: 0.06, secondary: 0.03 },
-  vivid: { primary: 0.1, secondary: 0.05 },
+  subtle: { primary: 0.018, secondary: 0.009 },
+  normal: { primary: 0.026, secondary: 0.013 },
+  vivid: { primary: 0.04, secondary: 0.02 },
 }
 
 const variableColorMap: Record<string, string> = {

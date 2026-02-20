@@ -15,11 +15,11 @@ import {
   ListTodo,
 } from 'lucide-react'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
-import { GlassCard, PriorityBadge, ConfidenceIndicator, ReasoningChain } from '@/components/poseidon'
+import { PriorityBadge, ConfidenceIndicator, ReasoningChain } from '@/components/poseidon'
 import { initialActions, engineColor, engineBg, executeReasoningSteps } from './execute-data'
 import type { ActionItem, ActionStatus, Engine } from '@/types/engine-data'
 import type { ViewMode } from '@/hooks/useViewMode'
-import { Button } from '@/design-system'
+import { Surface, Button } from '@/design-system'
 
 /* ── Local EngineBadge (Execute-specific inline style) ── */
 
@@ -62,7 +62,7 @@ export function ActionQueue({ viewMode = 'detail' }: ActionQueueProps) {
   const pendingActions = actions.filter((a) => a.status === 'pending')
 
   return (
-    <motion.section variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-4">
+    <motion.section variants={staggerContainer} className="flex flex-col gap-4">
       <h2
         className="text-lg md:text-xl font-semibold flex items-center gap-2"
         style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}
@@ -73,7 +73,7 @@ export function ActionQueue({ viewMode = 'detail' }: ActionQueueProps) {
 
       {/* Desktop table */}
       <div className="hidden md:block">
-        <GlassCard className="overflow-hidden !p-0">
+        <Surface variant="glass" padding="none" className="overflow-hidden !p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-left" role="table">
               <thead>
@@ -196,14 +196,14 @@ export function ActionQueue({ viewMode = 'detail' }: ActionQueueProps) {
               </tbody>
             </table>
           </div>
-        </GlassCard>
+        </Surface>
       </div>
 
       {/* Mobile cards */}
       <div className="flex flex-col gap-3 md:hidden">
         {pendingActions.map((item) => (
           <motion.div key={item.id} variants={fadeUp}>
-            <GlassCard
+            <Surface variant="glass" padding="none"
               borderColor={item.priority === 'CRITICAL' ? 'rgba(234,179,8,0.5)' : undefined}
               className="flex flex-col gap-3"
             >
@@ -249,7 +249,7 @@ export function ActionQueue({ viewMode = 'detail' }: ActionQueueProps) {
                   Reject
                 </Button>
               </div>
-            </GlassCard>
+            </Surface>
           </motion.div>
         ))}
       </div>

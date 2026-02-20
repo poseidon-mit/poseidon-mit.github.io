@@ -1,10 +1,10 @@
 /**
- * BentoGrid — Responsive CSS Grid with GlassCard items for dashboard layouts.
+ * BentoGrid — Responsive CSS Grid with Surface items for dashboard layouts.
  *
  * Provides variable-width cells via colSpan/rowSpan on BentoItem.
  */
 import { cn } from '@/lib/utils'
-import { GlassCard } from './glass-card'
+import { Surface } from '@/design-system'
 
 export interface BentoGridProps {
   children: React.ReactNode
@@ -43,9 +43,9 @@ export interface BentoItemProps {
 
 export function BentoItem({ children, colSpan = 1, rowSpan = 1, className }: BentoItemProps) {
   return (
-    <GlassCard className={cn(colSpanClasses[colSpan], rowSpanClasses[rowSpan], className)}>
+    <Surface variant="glass" padding="none" className={cn(colSpanClasses[colSpan], rowSpanClasses[rowSpan], className)}>
       {children}
-    </GlassCard>
+    </Surface>
   )
 }
 

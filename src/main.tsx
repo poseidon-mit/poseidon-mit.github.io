@@ -9,10 +9,6 @@ import { usePresentationMode } from './hooks/usePresentationMode';
 import { DesignSystemProvider } from './design-system';
 import './styles/tailwind.css';
 import './styles/app.css';
-import './styles/pages/dashboard-v3.css';
-import './styles/pages/engine-semantics.css';
-import './styles/colorblind-palettes.css';
-import './design-system/css/effect-presets.css';
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state = { error: null };
@@ -218,11 +214,7 @@ function MinimalApp() {
 async function bootstrap() {
   await runServiceWorkerCleanupOnBoot();
 
-  ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-      <MinimalApp />
-    </React.StrictMode>
-  );
+  ReactDOM.createRoot(document.getElementById('root')!).render(<MinimalApp />);
 }
 
 void bootstrap();

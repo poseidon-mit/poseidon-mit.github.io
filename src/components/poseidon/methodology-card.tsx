@@ -9,8 +9,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, Cpu, FlaskConical } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { CitationSource } from '@/types/engine-data'
-import { GlassCard } from './glass-card'
+
 import { CitationCard } from './citation-card'
+import { Surface } from '@/design-system'
 
 export interface MethodologyCardProps {
   modelName: string
@@ -34,7 +35,7 @@ export function MethodologyCard({
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <GlassCard className={cn('flex flex-col gap-3', className)}>
+    <Surface variant="glass" padding="none" className={cn('flex flex-col gap-3', className)}>
       {/* Header */}
       <button
         className="flex items-center gap-2 w-full cursor-pointer"
@@ -103,7 +104,7 @@ export function MethodologyCard({
           </motion.div>
         )}
       </AnimatePresence>
-    </GlassCard>
+    </Surface>
   )
 }
 

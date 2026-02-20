@@ -18,12 +18,12 @@ import {
   ArrowDown,
   Zap,
 } from 'lucide-react'
-import { GlassCard, SeverityBadge, ReasoningChain } from '@/components/poseidon'
+import { SeverityBadge, ReasoningChain } from '@/components/poseidon'
 import type { ViewMode } from '@/hooks/useViewMode'
 import { fadeUp } from '@/lib/motion-presets'
 import { signals, shapFactors, quickActions, protectReasoningSteps } from './protect-data'
 import type { Signal } from './protect-data'
-import { Button } from '@/design-system'
+import { Surface, Button } from '@/design-system'
 
 /* ─── Props ───────────────────────────────────────────────── */
 
@@ -102,7 +102,7 @@ export function ThreatTable({ navigate, viewMode = 'detail' }: ThreatTableProps)
   return (
     <motion.div variants={fadeUp} className="flex min-w-0 flex-[2] flex-col gap-5">
       {/* Threat Table */}
-      <GlassCard
+      <Surface variant="glass" padding="none"
         borderColor="var(--engine-protect)"
         style={{
           background: 'rgba(255,255,255,0.05)',
@@ -274,7 +274,7 @@ export function ThreatTable({ navigate, viewMode = 'detail' }: ThreatTableProps)
             </div>
           ))}
         </div>
-      </GlassCard>
+      </Surface>
 
       {/* DefinitionLine */}
       <div
@@ -287,7 +287,7 @@ export function ThreatTable({ navigate, viewMode = 'detail' }: ThreatTableProps)
       </div>
 
       {/* Quick Actions */}
-      <GlassCard
+      <Surface variant="glass" padding="none"
         borderColor="var(--engine-protect)"
         style={{
           background: 'rgba(255,255,255,0.05)',
@@ -331,7 +331,7 @@ export function ThreatTable({ navigate, viewMode = 'detail' }: ThreatTableProps)
             </div>
           ))}
         </div>
-      </GlassCard>
+      </Surface>
     </motion.div>
   )
 }

@@ -13,8 +13,8 @@ import {
   CircleDot,
 } from 'lucide-react'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
-import { GlassCard, ConfidenceIndicator, CitationCard } from '@/components/poseidon'
-import { Button } from '@/design-system'
+import { ConfidenceIndicator, CitationCard } from '@/components/poseidon'
+import { Surface, Button } from '@/design-system'
 import type { ViewMode } from '@/hooks/useViewMode'
 import { goals, statusConfig } from './grow-data'
 import type { Goal } from './grow-data'
@@ -32,7 +32,7 @@ function GoalCard({ goal, navigate, viewMode = 'detail' }: { goal: Goal; navigat
   const sc = statusConfig[goal.status]
   return (
     <motion.div variants={fadeUp}>
-      <GlassCard borderColor={goal.status === 'Behind' ? 'var(--state-warning)' : 'rgba(139,92,246,0.3)'} className="flex flex-col gap-4">
+      <Surface variant="glass" padding="none" borderColor={goal.status === 'Behind' ? 'var(--state-warning)' : 'rgba(139,92,246,0.3)'} className="flex flex-col gap-4">
         <div className="flex items-start justify-between flex-wrap gap-2">
           <h3 className="text-base font-semibold" style={{ color: '#F1F5F9' }}>{goal.name}</h3>
           <span
@@ -137,7 +137,7 @@ function GoalCard({ goal, navigate, viewMode = 'detail' }: { goal: Goal; navigat
             </Button>
           ))}
         </div>
-      </GlassCard>
+      </Surface>
     </motion.div>
   )
 }
@@ -146,7 +146,7 @@ function GoalCard({ goal, navigate, viewMode = 'detail' }: { goal: Goal; navigat
 
 export function GoalsSection({ navigate, viewMode = 'detail' }: GoalsSectionProps) {
   return (
-    <motion.section variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-4">
+    <motion.section variants={staggerContainer} className="flex flex-col gap-4">
       <h2
         className="text-lg md:text-xl font-semibold"
         style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}

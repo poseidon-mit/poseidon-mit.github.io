@@ -16,9 +16,9 @@ import {
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
-import { AuroraPulse, GlassCard, GovernFooter } from '@/components/poseidon'
+import { AuroraPulse, GovernFooter } from '@/components/poseidon'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
-import { ButtonLink } from '@/design-system'
+import { Surface, ButtonLink } from '@/design-system'
 
 /* ── Cross-thread values ── */
 const DECISIONS_AUDITED = DEMO_THREAD.decisionsAudited
@@ -62,7 +62,7 @@ export default function GovernPage() {
       <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: "1280px" }} variants={staggerContainer} initial="hidden" animate="visible" role="main">
 
         {/* ── Hero ── */}
-        <motion.section variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-4">
+        <motion.section variants={staggerContainer} className="flex flex-col gap-4">
           <motion.div variants={fadeUp}>
             <span className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider uppercase" style={{ borderColor: "rgba(59,130,246,0.3)", background: "rgba(59,130,246,0.08)", color: "var(--engine-govern)" }}>
               <Scale size={12} />Govern Engine
@@ -77,8 +77,8 @@ export default function GovernPage() {
         </motion.section>
 
         {/* ── Compliance score ring + stats ── */}
-        <motion.div variants={fadeUp} initial="hidden" animate="visible">
-          <GlassCard className="flex flex-col md:flex-row gap-6 items-center">
+        <motion.div variants={fadeUp}>
+          <Surface variant="glass" padding="none" className="flex flex-col md:flex-row gap-6 items-center">
             {/* SVG ring */}
             <div className="relative w-32 h-32 shrink-0">
               <svg viewBox="0 0 120 120" className="w-full h-full" aria-label={`Compliance score: ${COMPLIANCE_SCORE}%`}>
@@ -103,20 +103,20 @@ export default function GovernPage() {
                 </div>
               ))}
             </div>
-          </GlassCard>
+          </Surface>
         </motion.div>
 
         {/* ── Decision Ledger + Sidebar ── */}
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1 min-w-0 lg:w-2/3">
-            <motion.section variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-4">
+            <motion.section variants={staggerContainer} className="flex flex-col gap-4">
               <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "#64748B" }}>Recent Decisions</h2>
               {ledgerEntries.map(entry => {
                 const sCfg = statusConfig[entry.status]
                 const SIcon = sCfg.icon
                 return (
                   <motion.div key={entry.id} variants={fadeUp}>
-                    <GlassCard borderColor={typeColor[entry.type]} className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
+                    <Surface variant="glass" padding="none" borderColor={typeColor[entry.type]} className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
                       <div className="flex items-center gap-2">
                         <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: `${typeColor[entry.type]}15`, color: typeColor[entry.type] }}><CircleDot size={10} />{entry.type}</span>
                         <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: sCfg.bg, color: sCfg.color }}><SIcon size={10} />{entry.status}</span>
@@ -129,7 +129,7 @@ export default function GovernPage() {
                         <span className="text-xs font-mono tabular-nums" style={{ color: entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)" }}>{formatConfidence(entry.confidence)}</span>
                         <span className="text-xs" style={{ color: "#64748B" }}>{entry.time}</span>
                       </div>
-                    </GlassCard>
+                    </Surface>
                   </motion.div>
                 )
               })}
@@ -138,7 +138,7 @@ export default function GovernPage() {
 
           {/* Sidebar */}
           <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-4" aria-label="Governance sidebar">
-            <GlassCard className="flex flex-col gap-3">
+            <Surface variant="glass" padding="none" className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Compliance Breakdown</h3>
               {[
                 { label: "Transparency", pct: 98, color: "var(--state-healthy)" },
@@ -151,14 +151,14 @@ export default function GovernPage() {
                   <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}><div className="h-full rounded-full transition-all duration-500" style={{ width: `${r.pct}%`, background: r.color }} /></div>
                 </div>
               ))}
-            </GlassCard>
+            </Surface>
 
-            <GlassCard className="flex flex-col gap-3">
+            <Surface variant="glass" padding="none" className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Policy Status</h3>
               {[{ label: "Active policies", value: "12" }, { label: "Last updated", value: "2h ago" }, { label: "Auto-enforce", value: "Enabled", color: "var(--state-healthy)" }].map(d => (
                 <div key={d.label} className="flex items-center justify-between"><span className="text-xs" style={{ color: "#64748B" }}>{d.label}</span><span className="text-sm font-mono font-semibold" style={{ color: d.color || "#F1F5F9" }}>{d.value}</span></div>
               ))}
-            </GlassCard>
+            </Surface>
 
             {/* Primary CTA: Open audit ledger -> /govern/audit */}
             <ButtonLink to="/govern/audit" variant="glass" engine="govern" className="rounded-xl" icon={<ArrowUpRight size={16} />} iconPosition="right">

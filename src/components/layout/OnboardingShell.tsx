@@ -38,7 +38,7 @@ export function OnboardingShell({
       </a>
 
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_14%_15%,rgba(0,240,255,0.12),transparent_56%),radial-gradient(ellipse_at_84%_72%,rgba(139,92,246,0.08),transparent_62%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_14%_15%,rgba(0,240,255,0.05),transparent_56%),radial-gradient(ellipse_at_84%_72%,rgba(139,92,246,0.035),transparent_62%)]"
         aria-hidden="true" />
       
 

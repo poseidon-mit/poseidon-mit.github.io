@@ -4,21 +4,20 @@
  */
 import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
-import { GlassCard, SeverityBadge, ConfidenceIndicator } from '@/components/poseidon'
+import { SeverityBadge, ConfidenceIndicator } from '@/components/poseidon'
 import { signals } from './protect-data'
+import { Surface } from '@/design-system'
 
 export function ProtectGlance() {
   return (
     <motion.section
       variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
       className="grid grid-cols-1 md:grid-cols-3 gap-4"
       aria-label="Signal overview"
     >
       {signals.map((signal) => (
         <motion.div key={signal.id} variants={fadeUp}>
-          <GlassCard className="flex flex-col gap-4 glass-hover-protect">
+          <Surface variant="glass" padding="none" className="flex flex-col gap-4 glass-hover-protect">
             <div className="flex items-center justify-between">
               <SeverityBadge severity={signal.severity} />
               <ConfidenceIndicator value={signal.confidence} accentColor="var(--engine-protect)" />
@@ -32,7 +31,7 @@ export function ProtectGlance() {
               </span>
               <span className="text-xs" style={{ color: '#64748B' }}>{signal.merchant}</span>
             </div>
-          </GlassCard>
+          </Surface>
         </motion.div>
       ))}
     </motion.section>

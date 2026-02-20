@@ -6,10 +6,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Eye, CircleDot, FileText } from 'lucide-react';
 import { fadeUp, staggerContainer } from '@/lib/motion-presets';
-import { GlassCard, StatusBadge, ConfidenceIndicator, CitationCard, ReasoningChain } from '@/components/poseidon';
+import { StatusBadge, ConfidenceIndicator, CitationCard, ReasoningChain } from '@/components/poseidon';
 import type { ViewMode } from '@/hooks/useViewMode';
 import { decisions, typeColor, typeBg, governCitations, governReasoningSteps, type DecisionType } from './govern-data';
-import { Button } from '@/design-system'
+import { Surface, Button } from '@/design-system'
 
 /* ═══════════════════════════════════════════
    GOVERN-SPECIFIC: TypeBadge
@@ -41,7 +41,7 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
   const [expandedDecision, setExpandedDecision] = React.useState<string | null>(null);
 
   return (
-    <motion.section variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-4">
+    <motion.section variants={staggerContainer} className="flex flex-col gap-4">
       <h2
         className="text-lg md:text-xl font-semibold flex items-center gap-2"
         style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}
@@ -52,7 +52,7 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
 
       {/* Desktop table */}
       <div className="hidden md:block">
-        <GlassCard className="overflow-hidden !p-0">
+        <Surface variant="glass" padding="none" className="overflow-hidden !p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-left" role="table">
               <thead>
@@ -131,14 +131,14 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
               </tbody>
             </table>
           </div>
-        </GlassCard>
+        </Surface>
       </div>
 
       {/* Mobile cards */}
       <div className="flex flex-col gap-3 md:hidden">
         {decisions.map((d) => (
           <motion.div key={d.id} variants={fadeUp}>
-            <GlassCard className="flex flex-col gap-3">
+            <Surface variant="glass" padding="none" className="flex flex-col gap-3">
               <div className="flex items-center gap-2 flex-wrap">
                 <TypeBadge type={d.type} />
                 <StatusBadge status={d.status} />
@@ -192,7 +192,7 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
                 <Eye size={16} />
                 View trail
               </Button>
-            </GlassCard>
+            </Surface>
           </motion.div>
         ))}
       </div>

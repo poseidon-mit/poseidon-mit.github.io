@@ -21,9 +21,9 @@ import {
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
-import { AuroraPulse, GlassCard, GovernFooter } from '@/components/poseidon'
+import { AuroraPulse, GovernFooter } from '@/components/poseidon'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
-import { Button, ButtonLink } from '@/design-system'
+import { Surface, Button, ButtonLink } from '@/design-system'
 
 /* ── Cross-thread values ── */
 const DECISIONS_AUDITED = DEMO_THREAD.decisionsAudited
@@ -134,10 +134,18 @@ export default function GovernAuditPage() {
       <AuroraPulse engine="govern" />
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-govern)", color: "#ffffff" }}>Skip to main content</a>
 
-      <div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: "1280px" }} role="main">
+      <motion.div
+        id="main-content"
+        className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
+        style={{ maxWidth: "1280px" }}
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        role="main"
+      >
 
         {/* ── Hero ── */}
-        <motion.section variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-6">
+        <motion.section variants={staggerContainer} className="flex flex-col gap-6">
           <motion.div variants={fadeUp}>
             <Link to="/govern" className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-all hover:bg-white/[0.04]" style={{ color: "#94A3B8" }}>
               <ArrowLeft size={16} />Back to Govern
@@ -178,7 +186,7 @@ export default function GovernAuditPage() {
           <div className="flex-1 min-w-0 lg:w-2/3">
             {/* Desktop table */}
             <div className="hidden md:block">
-              <GlassCard className="overflow-hidden !p-0">
+              <Surface variant="glass" padding="none" className="overflow-hidden !p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left" role="table">
                     <thead>
@@ -220,7 +228,7 @@ export default function GovernAuditPage() {
                     </tbody>
                   </table>
                 </div>
-              </GlassCard>
+              </Surface>
             </div>
 
             {/* Mobile cards */}
@@ -230,7 +238,7 @@ export default function GovernAuditPage() {
                 const SIcon = sCfg.icon
                 return (
                   <motion.div key={entry.id} variants={fadeUp}>
-                    <GlassCard className="flex flex-col gap-3">
+                    <Surface variant="glass" padding="none" className="flex flex-col gap-3">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium" style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}><CircleDot size={10} />{entry.type}</span>
                         <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: sCfg.bg, color: sCfg.color }}><SIcon size={10} />{entry.status}</span>
@@ -249,7 +257,7 @@ export default function GovernAuditPage() {
                         <span className="text-xs" style={{ color: "#64748B" }}>{entry.evidence} evidence pts</span>
                         <span className="text-xs font-mono tabular-nums" style={{ color: getConfidenceColor(entry.confidence) }}>Conf: {formatConfidence(entry.confidence)}</span>
                       </div>
-                    </GlassCard>
+                    </Surface>
                   </motion.div>
                 )
               })}
@@ -259,7 +267,7 @@ export default function GovernAuditPage() {
           {/* Sidebar */}
           <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-4" aria-label="Audit sidebar">
             {/* Summary */}
-            <GlassCard className="flex flex-col gap-3">
+            <Surface variant="glass" padding="none" className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Audit Summary</h3>
               {[
                 { label: "Total decisions", value: DECISIONS_AUDITED.toLocaleString() },
@@ -274,10 +282,10 @@ export default function GovernAuditPage() {
                   <span className="text-sm font-mono font-semibold tabular-nums" style={{ color: d.color || "#F1F5F9" }}>{d.value}</span>
                 </div>
               ))}
-            </GlassCard>
+            </Surface>
 
             {/* Evidence flow */}
-            <GlassCard className="flex flex-col gap-4">
+            <Surface variant="glass" padding="none" className="flex flex-col gap-4">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Evidence Flow</h3>
               {["Data Source", "AI Analysis", "Evidence Aggregation", "Confidence Score", "Audit Record"].map((step, i, arr) => (
                 <React.Fragment key={step}>
@@ -285,10 +293,10 @@ export default function GovernAuditPage() {
                   {i < arr.length - 1 && <div className="flex items-center justify-center" aria-hidden="true"><ArrowDown size={14} style={{ color: "var(--engine-govern)" }} /></div>}
                 </React.Fragment>
               ))}
-            </GlassCard>
+            </Surface>
 
             {/* Export */}
-            <GlassCard className="flex flex-col gap-3">
+            <Surface variant="glass" padding="none" className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Export Options</h3>
               <Button disabled variant="secondary" engine="govern" fullWidth size="sm" className="rounded-xl text-xs cursor-not-allowed opacity-60" aria-label="Export full ledger preview only">
                 <Download size={14} />Export full ledger (CSV) · Preview
@@ -296,7 +304,7 @@ export default function GovernAuditPage() {
               <Button disabled variant="secondary" engine="govern" fullWidth size="sm" className="rounded-xl text-xs cursor-not-allowed opacity-60" aria-label="Generate compliance report preview only">
                 <FileText size={14} />Generate compliance report (PDF) · Preview
               </Button>
-            </GlassCard>
+            </Surface>
 
             {/* Primary CTA: Back to govern overview -> /govern */}
             <ButtonLink to="/govern" variant="glass" engine="govern" className="rounded-xl text-sm">
@@ -309,7 +317,7 @@ export default function GovernAuditPage() {
           auditId={GOVERNANCE_META['/govern/audit'].auditId}
           pageContext={GOVERNANCE_META['/govern/audit'].pageContext}
         />
-      </div>
+      </motion.div>
     </div>
   )
 }

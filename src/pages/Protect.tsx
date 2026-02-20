@@ -13,11 +13,10 @@ import {
   ChevronRight,
 } from "lucide-react"
 import { DEMO_THREAD } from '@/lib/demo-thread'
-import { AuroraPulse, EmptyState, GlassCard, GovernFooter } from '@/components/poseidon'
+import { AuroraPulse, EmptyState, GovernFooter } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
-import { ButtonLink } from '@/design-system'
-
+import { Surface, ButtonLink } from '@/design-system'
 
 /* ── Types ── */
 type Severity = "Critical" | "High" | "Medium" | "Low"
@@ -98,7 +97,7 @@ export default function ProtectPage() {
       <motion.main id="main-content" className="relative z-10 mx-auto flex max-w-[1280px] flex-col gap-6 px-4 py-8 md:gap-8 md:px-6 lg:px-8" variants={staggerContainer} initial="hidden" animate="visible" role="main" aria-label="Protect Engine - Threat Detection">
 
         {/* ── Hero ── */}
-        <motion.section variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-4">
+        <motion.section variants={staggerContainer} className="flex flex-col gap-4">
           <motion.div variants={fadeUp}>
             <span className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider uppercase" style={{ borderColor: "rgba(34,197,94,0.3)", background: "rgba(34,197,94,0.08)", color: "var(--engine-protect)" }}>
               <Shield size={12} />Protect Engine
@@ -118,7 +117,7 @@ export default function ProtectPage() {
           <div className="flex-1 min-w-0 lg:w-2/3">
             {/* Desktop table */}
             <div className="hidden md:block">
-              <GlassCard className="overflow-hidden !p-0">
+              <Surface variant="glass" padding="none" className="overflow-hidden !p-0">
                 {sorted.length === 0 ? (
                   <EmptyState
                     icon={Shield}
@@ -174,24 +173,24 @@ export default function ProtectPage() {
                   </table>
                 </div>
                 )}
-              </GlassCard>
+              </Surface>
             </div>
 
             {/* Mobile cards */}
             <div className="flex flex-col gap-3 md:hidden">
               {sorted.length === 0 && (
-                <GlassCard>
+                <Surface variant="glass" padding="none">
                   <EmptyState
                     icon={Shield}
                     title="No active threats"
                     description="Threat feed is clear right now."
                     accentColor="var(--engine-protect)"
                   />
-                </GlassCard>
+                </Surface>
               )}
               {sorted.map((t) => (
                 <motion.div key={t.id} variants={fadeUp}>
-                  <GlassCard className="flex flex-col gap-3" borderColor={severityConfig[t.severity].color}>
+                  <Surface variant="glass" padding="none" className="flex flex-col gap-3" borderColor={severityConfig[t.severity].color}>
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs font-mono font-medium" style={{ color: "var(--engine-protect)" }}>{t.id}</span>
                       <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: severityConfig[t.severity].bg, color: severityConfig[t.severity].color }}>{t.severity}</span>
@@ -205,7 +204,7 @@ export default function ProtectPage() {
                     <ButtonLink to="/protect/alert-detail" variant="glass" engine="protect" size="sm" fullWidth className="rounded-xl" icon={<ChevronRight size={14} />} iconPosition="right">
                       Investigate
                     </ButtonLink>
-                  </GlassCard>
+                  </Surface>
                 </motion.div>
               ))}
             </div>
@@ -214,36 +213,42 @@ export default function ProtectPage() {
           {/* Sidebar */}
           <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-4" aria-label="Protect sidebar">
             {/* Threat summary */}
-            <GlassCard className="flex flex-col gap-3">
-              <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Threat Summary</h3>
-              {[{ label: "Active threats", value: String(threats.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Blocked today", value: "3", color: "var(--state-healthy)" }, { label: "Avg response", value: "<200ms" }].map(d => (
-                <div key={d.label} className="flex items-center justify-between">
-                  <span className="text-xs" style={{ color: "#64748B" }}>{d.label}</span>
-                  <span className="text-sm font-mono font-semibold tabular-nums" style={{ color: d.color || "#F1F5F9" }}>{d.value}</span>
-                </div>
-              ))}
-            </GlassCard>
+            <motion.div variants={fadeUp}>
+              <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+                <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Threat Summary</h3>
+                {[{ label: "Active threats", value: String(threats.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Blocked today", value: "3", color: "var(--state-healthy)" }, { label: "Avg response", value: "<200ms" }].map(d => (
+                  <div key={d.label} className="flex items-center justify-between">
+                    <span className="text-xs" style={{ color: "#64748B" }}>{d.label}</span>
+                    <span className="text-sm font-mono font-semibold tabular-nums" style={{ color: d.color || "#F1F5F9" }}>{d.value}</span>
+                  </div>
+                ))}
+              </Surface>
+            </motion.div>
 
             {/* Risk breakdown */}
-            <GlassCard className="flex flex-col gap-3">
-              <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Risk Breakdown</h3>
-              {riskBreakdown.map(r => (
-                <div key={r.label} className="flex flex-col gap-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs" style={{ color: "#94A3B8" }}>{r.label}</span>
-                    <span className="text-xs font-mono tabular-nums" style={{ color: r.color }}>{r.pct}%</span>
+            <motion.div variants={fadeUp}>
+              <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+                <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Risk Breakdown</h3>
+                {riskBreakdown.map(r => (
+                  <div key={r.label} className="flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs" style={{ color: "#94A3B8" }}>{r.label}</span>
+                      <span className="text-xs font-mono tabular-nums" style={{ color: r.color }}>{r.pct}%</span>
+                    </div>
+                    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+                      <div className="h-full rounded-full transition-all duration-500" style={{ width: `${r.pct}%`, background: r.color }} />
+                    </div>
                   </div>
-                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
-                    <div className="h-full rounded-full transition-all duration-500" style={{ width: `${r.pct}%`, background: r.color }} />
-                  </div>
-                </div>
-              ))}
-            </GlassCard>
+                ))}
+              </Surface>
+            </motion.div>
 
             {/* Primary CTA */}
-            <ButtonLink to="/protect/alert-detail" variant="glass" engine="protect" className="rounded-xl" icon={<AlertTriangle size={16} />}>
-              Open top alert
-            </ButtonLink>
+            <motion.div variants={fadeUp}>
+              <ButtonLink to="/protect/alert-detail" variant="glass" engine="protect" className="rounded-xl" icon={<AlertTriangle size={16} />}>
+                Open top alert
+              </ButtonLink>
+            </motion.div>
           </aside>
         </div>
 

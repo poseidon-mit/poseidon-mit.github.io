@@ -3,21 +3,20 @@
  */
 import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
-import { GlassCard, CountUp, ConfidenceIndicator } from '@/components/poseidon'
+import { CountUp, ConfidenceIndicator } from '@/components/poseidon'
 import { goals } from './grow-data'
+import { Surface } from '@/design-system'
 
 export function GrowGlance() {
   return (
     <motion.section
       variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
       className="flex flex-col gap-4"
       aria-label="Growth overview"
     >
       {/* Big number hero */}
       <motion.div variants={fadeUp}>
-        <GlassCard className="flex flex-col items-center gap-2 py-8 glass-hover-grow">
+        <Surface variant="glass" padding="none" className="flex flex-col items-center gap-2 py-8 glass-hover-grow">
           <span className="text-xs uppercase tracking-wider font-medium" style={{ color: '#64748B' }}>
             Target Net Worth
           </span>
@@ -25,14 +24,14 @@ export function GrowGlance() {
             <CountUp value={2.4} decimals={1} prefix="$" suffix="M" />
           </span>
           <span className="text-sm" style={{ color: 'var(--engine-grow)' }}>On track for 2 of 3 goals</span>
-        </GlassCard>
+        </Surface>
       </motion.div>
 
       {/* Goal progress bars */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {goals.map((goal) => (
           <motion.div key={goal.id} variants={fadeUp}>
-            <GlassCard className="flex flex-col gap-3 glass-hover-grow">
+            <Surface variant="glass" padding="none" className="flex flex-col gap-3 glass-hover-grow">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold" style={{ color: '#F1F5F9' }}>{goal.name}</h3>
                 <span
@@ -55,7 +54,7 @@ export function GrowGlance() {
                 <span>{goal.current} / {goal.target}</span>
                 <ConfidenceIndicator value={goal.confidence} accentColor="var(--engine-grow)" />
               </div>
-            </GlassCard>
+            </Surface>
           </motion.div>
         ))}
       </div>

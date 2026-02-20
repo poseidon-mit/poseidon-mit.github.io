@@ -1,107 +1,17 @@
 /* Poseidon.AI — Dashboard Styles (loaded after tailwind.css) */
 
+/* ── Single app style entry ── */
+@import '../design-system/css/effect-presets.css';
+@import './pages/dashboard-v3.css';
+@import './pages/engine-semantics.css';
+@import './colorblind-palettes.css';
+
+/* ── System tokens (single source of truth) ── */
+@import './system/tokens.css';
+
 /* ── Effects: glass morphism + neon glow utilities ── */
 @import './effects/glass.css';
 @import './effects/neon.css';
-
-/* ══════════════════════════════════════════════════════
- * Layer 1: CSS Variables & Design Tokens
- * ══════════════════════════════════════════════════════ */
-
-@layer base {
-  :root {
-    color-scheme: dark;
-
-    /* ── Fonts ── */
-    --font-display: 'Space Grotesk', system-ui, sans-serif;
-    --font-body: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-
-    /* ── Background ── */
-    --bg: #0B1221;
-    --bg-deep: #020410;
-    --bg-surface: #1E293B;
-
-    /* ── Engine Accents ── */
-    --engine-dashboard: #00F0FF;
-    --engine-protect: #22C55E;
-    --engine-grow: #8B5CF6;
-    --engine-execute: #EAB308;
-    --engine-govern: #3B82F6;
-    --accent-cyan: #00F0FF;
-    --accent-teal: #14B8A6;
-    --accent-violet: #8B5CF6;
-    --accent-amber: #F59E0B;
-    --accent-blue: #3B82F6;
-
-    /* ── Text ── */
-    --text: #f8fafc;
-    --muted: rgba(255,255,255,0.72);
-
-    /* ── States ── */
-    --state-healthy: #14B8A6;
-    --state-active: #00F0FF;
-    --state-primary: #3B82F6;
-    --state-warning: #F59E0B;
-    --state-critical: #EF4444;
-    --state-healthy-rgb: 20, 184, 166;
-    --state-active-rgb: 0, 240, 255;
-    --state-primary-rgb: 59, 130, 246;
-    --state-warning-rgb: 245, 158, 11;
-    --state-critical-rgb: 239, 68, 68;
-
-    /* ── Glass Morphism ── */
-    --glass-bg: rgba(8, 12, 24, 0.62);
-    --glass-bg-strong: rgba(8, 12, 24, 0.72);
-    --glass-bg-soft: rgba(10, 16, 28, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-border-strong: rgba(255, 255, 255, 0.16);
-    --glass-border-page: rgba(155, 195, 238, 0.24);
-    --glass-bg-card-inner: rgba(12, 27, 52, 0.72);
-    --glass-blur: 16px;
-    --glass-blur-mobile: 10px;
-    --glass-shadow: 0 24px 70px rgba(0,0,0,0.62), 0 0 28px rgba(0,240,255,0.12);
-    --glass-inset: inset 0 1px 0 0 rgba(255,255,255,0.26), inset 0 -1px 0 0 rgba(255,255,255,0.1), inset 0 0 20px rgba(255,255,255,0.06);
-
-    /* ── Radius ── */
-    --radius-lg: 24px;
-    --radius-md: 16px;
-    --radius-sm: 12px;
-    --radius-card: 18px;
-
-    /* ── Layout ── */
-    --container-max: 1600px;
-    --section-gap: 24px;
-    --page-padding: 16px;
-    --space-2-5: 10px;
-    --space-3: 12px;
-    --space-3-5: 14px;
-    --space-4: 16px;
-
-    /* ── Typography Scale ── */
-    --font-size-ui-16-8: 16.8px;
-  }
-
-  @media (min-width: 640px) {
-    :root {
-      --page-padding: 20px;
-      --section-gap: 32px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    :root {
-      --page-padding: 24px;
-      --section-gap: 40px;
-    }
-  }
-
-  @media (min-width: 1280px) {
-    :root {
-      --page-padding: 32px;
-    }
-  }
-}
 
 /* ── Aurora keyframes (used by .command-center) ── */
 

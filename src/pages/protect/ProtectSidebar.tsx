@@ -17,10 +17,11 @@ import {
   RadialBar,
   PolarAngleAxis,
 } from 'recharts'
-import { GlassCard, MethodologyCard } from '@/components/poseidon'
+import { MethodologyCard } from '@/components/poseidon'
 import type { ViewMode } from '@/hooks/useViewMode'
 import { fadeUp } from '@/lib/motion-presets'
 import { categoryScores, milestones, protectMethodology } from './protect-data'
+import { Surface } from '@/design-system'
 
 /* ─── Score Ring (large, for Decision Rail) ────────────────── */
 
@@ -176,7 +177,7 @@ function Timeline() {
 
 function EvidenceSummary() {
   return (
-    <GlassCard
+    <Surface variant="glass" padding="none"
       borderColor="var(--engine-protect)"
       style={{
         background: 'rgba(255,255,255,0.05)',
@@ -190,7 +191,7 @@ function EvidenceSummary() {
       <p className="text-sm leading-relaxed" style={{ color: '#CBD5E1' }}>
         AI identified 3 correlated signals across 2 accounts in the last 6 hours.
       </p>
-    </GlassCard>
+    </Surface>
   )
 }
 
@@ -206,17 +207,17 @@ export function ProtectSidebar({ viewMode = 'detail' }: ProtectSidebarProps) {
   return (
     <motion.aside variants={fadeUp} className="flex min-w-0 flex-1 flex-col gap-5" aria-label="Decision rail">
       {/* Score Ring */}
-      <GlassCard
+      <Surface variant="glass" padding="none"
         style={{
           background: 'rgba(255,255,255,0.05)',
           border: '1px solid rgba(255,255,255,0.1)',
         }}
       >
         <ScoreRingLarge score={94} />
-      </GlassCard>
+      </Surface>
 
       {/* Category Score Bars */}
-      <GlassCard
+      <Surface variant="glass" padding="none"
         style={{
           background: 'rgba(255,255,255,0.05)',
           border: '1px solid rgba(255,255,255,0.1)',
@@ -227,10 +228,10 @@ export function ProtectSidebar({ viewMode = 'detail' }: ProtectSidebarProps) {
           Category Breakdown
         </h3>
         <CategoryScoreBars />
-      </GlassCard>
+      </Surface>
 
       {/* Milestones Timeline */}
-      <GlassCard
+      <Surface variant="glass" padding="none"
         style={{
           background: 'rgba(255,255,255,0.05)',
           border: '1px solid rgba(255,255,255,0.1)',
@@ -241,7 +242,7 @@ export function ProtectSidebar({ viewMode = 'detail' }: ProtectSidebarProps) {
           Signal Timeline
         </h3>
         <Timeline />
-      </GlassCard>
+      </Surface>
 
       {/* Evidence Summary */}
       <EvidenceSummary />
