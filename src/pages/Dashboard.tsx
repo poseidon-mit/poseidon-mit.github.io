@@ -211,7 +211,7 @@ function DecisionRail({ itemVariants }: { itemVariants: Variants }) {
         ))}
       </div>
       <ButtonLink
-        to="/execute"
+        to="/execute/approval"
         variant="glass"
         engine="dashboard"
         className="mt-2 w-full rounded-full"
