@@ -254,8 +254,12 @@ const IS_PRODUCTION = import.meta.env.PROD;
 function resolveRouteLoader(path: string, loader: RouteLoader): RouteLoader {
   const meta = getRouteMetaContract(path);
   const allowPublicDesignSystem = path.startsWith('/design-system');
+  const forceHiddenTestRoute = path === '/test/spectacular';
   if (allowPublicDesignSystem) {
     return loader;
+  }
+  if (forceHiddenTestRoute) {
+    return notFoundLoader;
   }
   const isInternalInProd =
     IS_PRODUCTION &&
