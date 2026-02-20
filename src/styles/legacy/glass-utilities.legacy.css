@@ -1,0 +1,13 @@
+/* Legacy glass utility classes were retired on 2026-02-20.
+ * Runtime routes must use the Surface primitive instead:
+ *   <Surface variant="glass" ... />
+ *
+ * This file is intentionally not imported by app.css.
+ * Keep only for migration reference during historical debugging.
+ */
+
+.glass-surface {}
+.glass-surface-strong {}
+.glass-surface-soft {}
+.glass-surface-card {}
+.surface-glass {}

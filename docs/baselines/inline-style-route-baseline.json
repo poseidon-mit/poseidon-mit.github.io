@@ -1,0 +1,199 @@
+{
+  "version": 1,
+  "generatedAt": "2026-02-20T14:34:00.217Z",
+  "source": "src/router/lazyRoutes.ts",
+  "routes": {
+    "/": {
+      "pageFile": "src/pages/Landing.tsx",
+      "inlineStyleCount": 0
+    },
+    "/deck": {
+      "pageFile": "src/pages/DeckViewer.tsx",
+      "inlineStyleCount": 0
+    },
+    "/trust": {
+      "pageFile": "src/pages/TrustSecurity.tsx",
+      "inlineStyleCount": 16
+    },
+    "/pricing": {
+      "pageFile": "src/pages/Pricing.tsx",
+      "inlineStyleCount": 23
+    },
+    "/design-system": {
+      "pageFile": "src/pages/DesignSystemLanding.tsx",
+      "inlineStyleCount": 13
+    },
+    "/design-system/tokens": {
+      "pageFile": "src/pages/DesignSystemTokens.tsx",
+      "inlineStyleCount": 11
+    },
+    "/design-system/tokens/colors": {
+      "pageFile": "src/pages/DesignSystemTokensColors.tsx",
+      "inlineStyleCount": 11
+    },
+    "/design-system/tokens/typography": {
+      "pageFile": "src/pages/DesignSystemTokensTypography.tsx",
+      "inlineStyleCount": 11
+    },
+    "/design-system/tokens/spacing": {
+      "pageFile": "src/pages/DesignSystemTokensSpacing.tsx",
+      "inlineStyleCount": 16
+    },
+    "/design-system/tokens/motion": {
+      "pageFile": "src/pages/DesignSystemTokensMotion.tsx",
+      "inlineStyleCount": 23
+    },
+    "/design-system/components": {
+      "pageFile": "src/pages/DesignSystemComponents.tsx",
+      "inlineStyleCount": 13
+    },
+    "/signup": {
+      "pageFile": "src/pages/Signup.tsx",
+      "inlineStyleCount": 0
+    },
+    "/login": {
+      "pageFile": "src/pages/Login.tsx",
+      "inlineStyleCount": 0
+    },
+    "/recovery": {
+      "pageFile": "src/pages/Recovery.tsx",
+      "inlineStyleCount": 0
+    },
+    "/onboarding/connect": {
+      "pageFile": "src/pages/Onboarding.tsx",
+      "inlineStyleCount": 0
+    },
+    "/onboarding/goals": {
+      "pageFile": "src/pages/OnboardingGoals.tsx",
+      "inlineStyleCount": 0
+    },
+    "/onboarding/consent": {
+      "pageFile": "src/pages/OnboardingConsent.tsx",
+      "inlineStyleCount": 0
+    },
+    "/onboarding/complete": {
+      "pageFile": "src/pages/OnboardingComplete.tsx",
+      "inlineStyleCount": 0
+    },
+    "/dashboard": {
+      "pageFile": "src/pages/Dashboard.tsx",
+      "inlineStyleCount": 19
+    },
+    "/dashboard/alerts": {
+      "pageFile": "src/pages/AlertsHub.tsx",
+      "inlineStyleCount": 9
+    },
+    "/dashboard/insights": {
+      "pageFile": "src/pages/InsightsFeed.tsx",
+      "inlineStyleCount": 12
+    },
+    "/dashboard/timeline": {
+      "pageFile": "src/pages/ActivityTimelinePage.tsx",
+      "inlineStyleCount": 9
+    },
+    "/dashboard/notifications": {
+      "pageFile": "src/pages/Notifications.tsx",
+      "inlineStyleCount": 8
+    },
+    "/protect": {
+      "pageFile": "src/pages/Protect.tsx",
+      "inlineStyleCount": 40
+    },
+    "/protect/alert-detail": {
+      "pageFile": "src/pages/ProtectAlertDetail.tsx",
+      "inlineStyleCount": 59
+    },
+    "/protect/dispute": {
+      "pageFile": "src/pages/ProtectDispute.tsx",
+      "inlineStyleCount": 13
+    },
+    "/grow": {
+      "pageFile": "src/pages/Grow.tsx",
+      "inlineStyleCount": 15
+    },
+    "/grow/goal": {
+      "pageFile": "src/pages/GrowGoalDetail.tsx",
+      "inlineStyleCount": 19
+    },
+    "/grow/scenarios": {
+      "pageFile": "src/pages/GrowScenarios.tsx",
+      "inlineStyleCount": 23
+    },
+    "/grow/recommendations": {
+      "pageFile": "src/pages/GrowRecommendations.tsx",
+      "inlineStyleCount": 21
+    },
+    "/execute": {
+      "pageFile": "src/pages/Execute.tsx",
+      "inlineStyleCount": 38
+    },
+    "/execute/approval": {
+      "pageFile": "src/pages/ExecuteApproval.tsx",
+      "inlineStyleCount": 19
+    },
+    "/execute/history": {
+      "pageFile": "src/pages/ExecuteHistory.tsx",
+      "inlineStyleCount": 29
+    },
+    "/govern": {
+      "pageFile": "src/pages/Govern.tsx",
+      "inlineStyleCount": 25
+    },
+    "/govern/trust": {
+      "pageFile": "src/pages/GovernTrust.tsx",
+      "inlineStyleCount": 10
+    },
+    "/govern/audit": {
+      "pageFile": "src/pages/GovernAuditLedger.tsx",
+      "inlineStyleCount": 43
+    },
+    "/govern/audit-detail": {
+      "pageFile": "src/pages/GovernAuditDetail.tsx",
+      "inlineStyleCount": 11
+    },
+    "/govern/registry": {
+      "pageFile": "src/pages/GovernRegistry.tsx",
+      "inlineStyleCount": 16
+    },
+    "/govern/oversight": {
+      "pageFile": "src/pages/GovernOversight.tsx",
+      "inlineStyleCount": 13
+    },
+    "/govern/policy": {
+      "pageFile": "src/pages/GovernPolicy.tsx",
+      "inlineStyleCount": 11
+    },
+    "/settings": {
+      "pageFile": "src/pages/Settings.tsx",
+      "inlineStyleCount": 34
+    },
+    "/settings/ai": {
+      "pageFile": "src/pages/SettingsAI.tsx",
+      "inlineStyleCount": 17
+    },
+    "/settings/integrations": {
+      "pageFile": "src/pages/SettingsIntegrations.tsx",
+      "inlineStyleCount": 13
+    },
+    "/settings/rights": {
+      "pageFile": "src/pages/SettingsRights.tsx",
+      "inlineStyleCount": 14
+    },
+    "/help": {
+      "pageFile": "src/pages/HelpSupport.tsx",
+      "inlineStyleCount": 10
+    },
+    "/onboarding": {
+      "pageFile": "src/pages/OnboardingWelcome.tsx",
+      "inlineStyleCount": 0
+    },
+    "/404": {
+      "pageFile": "src/pages/NotFound.tsx",
+      "inlineStyleCount": 0
+    },
+    "/test/spectacular": {
+      "pageFile": "src/pages/TestSpectacular.tsx",
+      "inlineStyleCount": 0
+    }
+  }
+}

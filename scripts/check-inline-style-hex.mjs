@@ -5,20 +5,12 @@ import path from 'node:path'
 
 const ROOT = process.cwd()
 const ROUTES_FILE = path.join(ROOT, 'src', 'router', 'lazyRoutes.ts')
-const APP_ROUTES_FILE = path.join(ROOT, 'src', 'router', 'app-shell-routes.ts')
 const EXCEPTIONS_FILE = path.join(ROOT, 'docs', 'baselines', 'inline-style-hex-exceptions.json')
 
 const FORBIDDEN_ENGINE_HEX = ['#00F0FF', '#22C55E', '#8B5CF6', '#EAB308', '#3B82F6']
 
 function read(filePath) {
   return fs.readFileSync(filePath, 'utf8')
-}
-
-function parseAppPrefixes(source) {
-  const blockMatch = source.match(/APP_SHELL_PREFIXES\s*=\s*\[([\s\S]*?)\]/)
-  if (!blockMatch) return []
-  const quoted = blockMatch[1].match(/'\/[^']*'/g) ?? []
-  return [...new Set(quoted.map((item) => item.slice(1, -1)))]
 }
 
 function parseRouteLoaders(source) {
@@ -29,10 +21,6 @@ function parseRouteLoaders(source) {
     route: match[1],
     pageFile: `src/pages/${match[2]}.tsx`,
   }))
-}
-
-function isAppRoute(route, prefixes) {
-  return prefixes.some((prefix) => route === prefix || route.startsWith(`${prefix}/`))
 }
 
 function checkExceptionContract() {
@@ -62,16 +50,18 @@ function checkExceptionContract() {
 }
 
 const routeSource = read(ROUTES_FILE)
-const appRouteSource = read(APP_ROUTES_FILE)
-const appPrefixes = parseAppPrefixes(appRouteSource)
-const routeEntries = parseRouteLoaders(routeSource).filter((entry) => isAppRoute(entry.route, appPrefixes))
+const routeEntries = parseRouteLoaders(routeSource)
 
 const failures = [...checkExceptionContract()]
 let filesChecked = 0
 let inlineRootCount = 0
 let forbiddenHexCount = 0
 
+const seenFiles = new Set()
 for (const { pageFile } of routeEntries) {
+  if (seenFiles.has(pageFile)) continue
+  seenFiles.add(pageFile)
+
   const absolutePath = path.join(ROOT, pageFile)
   if (!fs.existsSync(absolutePath)) {
     failures.push(`${pageFile}: missing page file.`)

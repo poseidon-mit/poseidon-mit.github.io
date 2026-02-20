@@ -1,40 +1,39 @@
-# TECH DEBT
+# TECH_DEBT
 
-## 2026-02-20 — Apple Glass: `surface-glass` から `Surface` への完全移行（後回し）
+Last updated: 2026-02-20
 
-### ステータス
-- `POSTPONED`
-- 優先度: `HIGH`
+## Closed
 
-### 背景
-- 48ルート + 共通部品で見た目統一のため、`glass-surface*` / raw glass class を `surface-glass` に置換済み。
-- ただし実装レイヤーとしては、まだ `Surface` コンポーネント呼び出しへ完全移行できていない。
+### TD-2026-02-20-A
+- status: `CLOSED`
+- title: `surface-glass` class usage in active routes
+- summary:
+  - All active route pages and shared route-level components moved away from `.surface-glass`.
+  - Runtime usage is now blocked by strict checks.
+- evidence:
+  - `rg -n "surface-glass" src/pages src/components/layout src/components/landing` => `0`
 
-### Tech Debt 内容
-- 残課題: `className="surface-glass ..."` を `Surface` コンポーネントへ段階的ではなく完全移行する。
-- 特に `motion.div` を使う箇所は `as={motion.div}` など安全な変換設計が必要。
+## Open
 
-### 対象（検出方法）
-- 現在の残件は以下で検索できる:
+### TD-2026-02-20-B
+- status: `OPEN`
+- owner: `frontend-platform`
+- risk: `MEDIUM`
+- title: Route page inline-style debt (legacy presentation blocks)
+- scope:
+  - Active `lazyRoutes` pages still contain inline `style={{...}}` in legacy sections.
+  - New debt is blocked, but existing debt remains until route-by-route refactor.
+- acceptance:
+  1. `style={{...}}` count in `src/pages` reaches 0 for active routes, or is reduced to approved exception set.
+  2. `npm run check:design-system:strict` stays green.
 
-```bash
-rg -n "surface-glass" src/pages src/components/layout src/components/landing
-```
-
-### Done 条件
-1. `surface-glass` の使用が 0 件になる。
-2. glass カード表現は `Surface` へ統一される。
-3. 既存導線・文言・URLに変更なし。
-4. 以下コマンドが Green:
-
-```bash
-npm run typecheck
-npm run test:run
-npm run check:design-system:strict
-npm run build
-npm run check:motion-policy
-npm run check:inline-style-hex
-```
-
-### 注意
-- 対象外は従来通り: `src/pages/v2/*`, `src/pages/v3/*`, `src/pages/LandingPreviewNew.tsx`。
+### TD-2026-02-20-C
+- status: `OPEN`
+- owner: `frontend-platform`
+- risk: `LOW`
+- title: Legacy reference stylesheet retained for historical debugging
+- scope:
+  - `src/styles/legacy/glass-utilities.legacy.css` intentionally remains as non-imported reference.
+- acceptance:
+  1. Remove file once migration period closes and no rollback need remains.
+  2. Keep it non-imported in runtime entrypoints.

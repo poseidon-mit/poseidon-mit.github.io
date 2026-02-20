@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "lockRoutes": [
+    "/",
+    "/signup",
+    "/login",
+    "/onboarding/connect",
+    "/dashboard",
+    "/protect",
+    "/grow",
+    "/execute",
+    "/govern",
+    "/settings",
+    "/help"
+  ],
+  "routes": {
+    "/": {
+      "maxInlineStyles": 0,
+      "reason": "No inline styles allowed."
+    },
+    "/signup": {
+      "maxInlineStyles": 0,
+      "reason": "No inline styles allowed."
+    },
+    "/login": {
+      "maxInlineStyles": 0,
+      "reason": "No inline styles allowed."
+    },
+    "/onboarding/connect": {
+      "maxInlineStyles": 0,
+      "reason": "No inline styles allowed."
+    },
+    "/dashboard": {
+      "maxInlineStyles": 19,
+      "reason": "Temporary lock until refactor removes inline styles."
+    },
+    "/protect": {
+      "maxInlineStyles": 40,
+      "reason": "Temporary lock until refactor removes inline styles."
+    },
+    "/grow": {
+      "maxInlineStyles": 15,
+      "reason": "Temporary lock until refactor removes inline styles."
+    },
+    "/execute": {
+      "maxInlineStyles": 38,
+      "reason": "Temporary lock until refactor removes inline styles."
+    },
+    "/govern": {
+      "maxInlineStyles": 25,
+      "reason": "Temporary lock until refactor removes inline styles."
+    },
+    "/settings": {
+      "maxInlineStyles": 34,
+      "reason": "Temporary lock until refactor removes inline styles."
+    },
+    "/help": {
+      "maxInlineStyles": 10,
+      "reason": "Temporary lock until refactor removes inline styles."
+    }
+  }
+}

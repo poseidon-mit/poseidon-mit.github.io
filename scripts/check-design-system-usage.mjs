@@ -186,7 +186,7 @@ const BANNED_GLASS_PATTERNS = [
   },
   {
     name: 'legacy-glass-class',
-    pattern: /(?:className|class)\s*=\s*["'`][^"'`]*\bglass-surface(?:-card)?\b/,
+    pattern: /(?:className|class)\s*=\s*["'`][^"'`]*\bglass-surface(?:-(?:card|strong|soft))?\b/,
     message: 'Do not use legacy glass-surface classes. Use <Surface variant=\"glass\">.',
   },
   {
