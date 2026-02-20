@@ -66,7 +66,7 @@ export default function OnboardingConsentPage() {
           {CONSENT_ITEMS.map((item) => {
             const enabled = consents[item.id];
             return <Surface
-              key={item.id} variants={fadeUp} className="rounded-xl border border-white/10 p-4" variant="glass" padding="none" as={motion.div}>
+              key={item.id} variants={fadeUp} className="rounded-xl border border-white/10" variant="glass" padding="md" as={motion.div}>
                 <div className="flex items-start gap-4">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
@@ -93,7 +93,7 @@ export default function OnboardingConsentPage() {
           })}
         </motion.div>
 
-        <Surface variants={fadeUp} className="mt-6 rounded-xl border border-white/10 p-4" variant="glass" padding="none" as={motion.div}>
+        <Surface variants={fadeUp} className="mt-6 rounded-xl border border-white/10" variant="glass" padding="md" as={motion.div}>
           <div className="flex items-start gap-3">
             <Info className="mt-0.5 h-4.5 w-4.5 text-[var(--engine-dashboard)]" aria-hidden="true" />
             <p className="text-xs leading-relaxed text-slate-300">

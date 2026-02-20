@@ -35,7 +35,7 @@ export function MethodologyCard({
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <Surface variant="glass" padding="none" className={cn('flex flex-col gap-3', className)}>
+    <Surface variant="glass" padding="md" className={cn('flex flex-col gap-3', className)}>
       {/* Header */}
       <button
         className="flex items-center gap-2 w-full cursor-pointer"

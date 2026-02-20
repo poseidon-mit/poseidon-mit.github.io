@@ -125,7 +125,7 @@ export default function ProtectAlertDetailPage() {
 
         {/* ── Alert Summary ── */}
         <motion.div variants={fadeUp}>
-          <Surface variant="glass" padding="none" borderColor="var(--state-critical)" className="flex flex-col gap-4">
+          <Surface variant="glass" padding="md" borderColor="var(--state-critical)" className="flex flex-col gap-4">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div className="flex flex-col gap-1"><span className="text-[10px] uppercase tracking-wider" style={{ color: "#64748B" }}>Merchant</span><span className="text-sm font-semibold" style={{ color: "#F1F5F9" }}>{criticalAlert.merchant}</span></div>
               <div className="flex flex-col gap-1"><span className="text-[10px] uppercase tracking-wider" style={{ color: "#64748B" }}>Amount</span><span className="text-lg font-bold font-mono tabular-nums" style={{ color: "var(--state-critical)" }}>{`$${criticalAlert.amount.toLocaleString()}.00`}</span></div>
@@ -139,7 +139,7 @@ export default function ProtectAlertDetailPage() {
 
         {/* ── Timeline ── */}
         <motion.div variants={fadeUp}>
-          <Surface variant="glass" padding="none" className="flex flex-col gap-4">
+          <Surface variant="glass" padding="md" className="flex flex-col gap-4">
             <div className="hidden md:flex items-center justify-between" role="list" aria-label="Alert timeline">
               {timelineSteps.map((step, i) => (
                 <div key={step.label} className="flex flex-col items-center gap-2 flex-1" role="listitem">
@@ -178,7 +178,7 @@ export default function ProtectAlertDetailPage() {
                   const expanded = expandedId === item.id
                   return (
                     <motion.div key={item.id} variants={fadeUp}>
-                      <Surface variant="glass" padding="none" className="!p-0">
+                      <Surface variant="glass" padding="none" data-surface-role="structure" className="!p-0">
                         <Button className="w-full justify-between rounded-none !p-4 text-left" variant="ghost" engine="protect" size="sm" springPress={false} onClick={() => setExpandedId(expanded ? null : item.id)} aria-expanded={expanded} aria-label={`${item.title}: score ${(item.score * 100).toFixed(0)}%`}>
                           <div className="flex items-center gap-3">
                             <span className="inline-flex items-center justify-center rounded-lg text-xs font-bold font-mono tabular-nums" style={{ background: getScoreBg(item.score), color: getScoreColor(item.score), width: 44, height: 28 }}>{item.score.toFixed(2)}</span>
@@ -204,7 +204,7 @@ export default function ProtectAlertDetailPage() {
 
               {/* SHAP attribution waterfall */}
               <motion.div variants={fadeUp}>
-                <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+                <Surface variant="glass" padding="md" className="flex flex-col gap-3">
                   <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>SHAP attribution</h3>
                   <p className="text-[10px]" style={{ color: "#64748B" }}>Feature contribution to threat score</p>
                   <ShapWaterfall factors={shapFactors} />
@@ -216,7 +216,7 @@ export default function ProtectAlertDetailPage() {
           {/* Sidebar */}
           <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-4" aria-label="Alert actions sidebar">
             {/* Recommended actions */}
-            <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+            <Surface variant="glass" padding="md" className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Recommended actions</h3>
               <ButtonLink to="/protect/dispute" variant="primary" engine="protect" fullWidth className="rounded-xl" icon={<XCircle size={16} />} aria-label="Block and investigate this transaction">{"Block & investigate"}</ButtonLink>
               <ButtonLink
@@ -237,7 +237,7 @@ export default function ProtectAlertDetailPage() {
             </ButtonLink>
 
             {/* Similar incidents */}
-            <Surface variant="glass" padding="none" className="flex flex-col gap-4">
+            <Surface variant="glass" padding="md" className="flex flex-col gap-4">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Similar Incidents</h3>
               {[{ title: `${criticalAlert.merchant} flagged`, time: "2 weeks ago", result: "Blocked" }, { title: "Unusual pattern", time: "3 weeks ago", result: "Verified safe" }, { title: "High-risk geo", time: "1 month ago", result: "Blocked" }].map((item, i) => (
                 <div key={i} className="flex items-center justify-between py-2.5" style={{ borderBottom: i < 2 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
@@ -248,7 +248,7 @@ export default function ProtectAlertDetailPage() {
             </Surface>
 
             {/* Account context */}
-            <Surface variant="glass" padding="none" className="flex flex-col gap-4">
+            <Surface variant="glass" padding="md" className="flex flex-col gap-4">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Account Context</h3>
               {[{ label: "Account balance", value: "$12,847" }, { label: "Avg monthly spend", value: "$3,200" }, { label: "Risk score", value: "Low (0.12)", color: "var(--state-healthy)" }, { label: "Alerts this month", value: "2" }].map(d => (
                 <div key={d.label} className="flex items-center justify-between"><span className="text-xs" style={{ color: "#64748B" }}>{d.label}</span><span className="text-sm font-mono font-semibold tabular-nums" style={{ color: d.color || "#F1F5F9" }}>{d.value}</span></div>

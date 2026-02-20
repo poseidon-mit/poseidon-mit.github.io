@@ -186,7 +186,7 @@ export default function GovernAuditPage() {
           <div className="flex-1 min-w-0 lg:w-2/3">
             {/* Desktop table */}
             <div className="hidden md:block">
-              <Surface variant="glass" padding="none" className="overflow-hidden !p-0">
+              <Surface variant="glass" padding="none" data-surface-role="structure" className="overflow-hidden !p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left" role="table">
                     <thead>
@@ -238,7 +238,7 @@ export default function GovernAuditPage() {
                 const SIcon = sCfg.icon
                 return (
                   <motion.div key={entry.id} variants={fadeUp}>
-                    <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+                    <Surface variant="glass" padding="md" className="flex flex-col gap-3">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium" style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}><CircleDot size={10} />{entry.type}</span>
                         <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: sCfg.bg, color: sCfg.color }}><SIcon size={10} />{entry.status}</span>
@@ -267,7 +267,7 @@ export default function GovernAuditPage() {
           {/* Sidebar */}
           <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-4" aria-label="Audit sidebar">
             {/* Summary */}
-            <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+            <Surface variant="glass" padding="md" className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Audit Summary</h3>
               {[
                 { label: "Total decisions", value: DECISIONS_AUDITED.toLocaleString() },
@@ -285,7 +285,7 @@ export default function GovernAuditPage() {
             </Surface>
 
             {/* Evidence flow */}
-            <Surface variant="glass" padding="none" className="flex flex-col gap-4">
+            <Surface variant="glass" padding="md" className="flex flex-col gap-4">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Evidence Flow</h3>
               {["Data Source", "AI Analysis", "Evidence Aggregation", "Confidence Score", "Audit Record"].map((step, i, arr) => (
                 <React.Fragment key={step}>
@@ -296,7 +296,7 @@ export default function GovernAuditPage() {
             </Surface>
 
             {/* Export */}
-            <Surface variant="glass" padding="none" className="flex flex-col gap-3">
+            <Surface variant="glass" padding="md" className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Export Options</h3>
               <Button disabled variant="secondary" engine="govern" fullWidth size="sm" className="rounded-xl text-xs cursor-not-allowed opacity-60" aria-label="Export full ledger preview only">
                 <Download size={14} />Export full ledger (CSV) · Preview

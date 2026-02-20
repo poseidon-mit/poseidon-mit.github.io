@@ -83,7 +83,7 @@ export function GovernPolicy() {
           { label: 'Pending review', value: String(pendingReview), color: 'var(--engine-execute)' },
           { label: 'Compliance', value: '96%', color: 'var(--engine-protect)' }].
           map((kpi) => <Surface
-            key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
+            key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
               <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
               <p className="text-lg font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
             </Surface>
@@ -96,7 +96,7 @@ export function GovernPolicy() {
           <div className="flex-1 lg:w-2/3 flex flex-col gap-4">
             <motion.div variants={fadeUp} className="flex flex-col gap-3">
               {displayed.map((p) => <Surface
-                key={p.name} className="rounded-2xl overflow-hidden" variant="glass" padding="none">
+                key={p.name} className="rounded-2xl overflow-hidden" variant="glass" padding="none" data-surface-role="structure">
                   <div className="p-4 md:p-5">
                     <div className="flex flex-wrap items-center gap-2 mb-2">
                       <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: `${categoryColors[p.category]}20`, color: categoryColors[p.category] }}>{p.category}</span>
@@ -151,7 +151,7 @@ export function GovernPolicy() {
           {/* Side rail */}
           <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4">
             {/* Policy health */}
-            <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Policy Health</h3>
               <div className="flex flex-col gap-3">
                 {policyHealth.map((ph) =>
@@ -169,7 +169,7 @@ export function GovernPolicy() {
             </Surface>
 
             {/* Compliance calendar */}
-            <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Upcoming Reviews</h3>
               <div className="flex flex-col gap-2.5">
                 {upcomingReviews.map((r, i) =>
@@ -183,7 +183,7 @@ export function GovernPolicy() {
             </Surface>
 
             {/* Quick add */}
-            <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <Button variant="glass" engine="govern" fullWidth size="sm" className="rounded-xl text-xs">
                 <Plus className="h-3.5 w-3.5" />Draft new policy
               </Button>

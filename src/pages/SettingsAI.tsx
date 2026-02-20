@@ -78,7 +78,7 @@ export function SettingsAI() {
             { label: 'Overrides', value: '3', color: 'var(--engine-execute)' },
             { label: 'Explanation level', value: verbosity, color: 'var(--engine-dashboard)' }].
             map((kpi) => <Surface
-              key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
+              key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
                 <p className="text-lg font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
               </Surface>
@@ -87,7 +87,7 @@ export function SettingsAI() {
         </motion.div>
 
         {/* Global autonomy */}
-        <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+        <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-white">Global Autonomy Level</h2>
             <span className="text-lg font-bold" style={{ color: 'var(--engine-grow)' }}>{globalAutonomy}%</span>
@@ -109,7 +109,7 @@ export function SettingsAI() {
         <motion.div variants={fadeUp}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {engines.map((engine, idx) => <Surface
-              key={engine.name} className="rounded-2xl p-4 md:p-6" style={{ borderLeftWidth: 3, borderLeftColor: engine.color }} variant="glass" padding="none">
+              key={engine.name} className="rounded-2xl" style={{ borderLeftWidth: 3, borderLeftColor: engine.color }} variant="glass" padding="md">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: `${engine.color}20` }}>
                     <engine.icon className="h-3.5 w-3.5" style={{ color: engine.color }} />
@@ -146,7 +146,7 @@ export function SettingsAI() {
         </motion.div>
 
         {/* Explanation preferences */}
-        <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+        <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
           <h2 className="text-sm font-semibold text-white mb-4">Explanation Preferences</h2>
           <div className="flex flex-col gap-4">
             <div>

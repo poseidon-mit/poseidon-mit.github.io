@@ -105,7 +105,7 @@ export function HelpSupport() {
           <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider mb-4">Frequently Asked Questions</h2>
           <div className="flex flex-col gap-2">
             {filteredFaqs.map((faq, idx) => <Surface
-              key={idx} className="rounded-2xl overflow-hidden" variant="glass" padding="none">
+              key={idx} className="rounded-2xl overflow-hidden" variant="glass" padding="none" data-surface-role="structure">
                 <Button onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)} variant="ghost" engine="govern" fullWidth className="text-left flex items-center justify-between p-4 !h-auto !min-h-0">
                   <span className="text-sm font-medium text-white pr-4">{faq.q}</span>
                   <ChevronDown className={`h-4 w-4 text-white/30 shrink-0 transition-transform ${expandedFaq === idx ? 'rotate-180' : ''}`} />
@@ -150,7 +150,7 @@ export function HelpSupport() {
         </motion.div>
 
         {/* Contact form */}
-        <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+        <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
           <h2 className="text-sm font-semibold text-white mb-4">Submit a Ticket</h2>
           <div className="flex flex-col gap-4">
             <div>

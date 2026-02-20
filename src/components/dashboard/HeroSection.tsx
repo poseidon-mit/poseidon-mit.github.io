@@ -32,8 +32,6 @@ export function HeroSection({ viewMode, onViewModeChange }: HeroSectionProps) {
     <motion.section
       className="hero-section"
       variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
       aria-label="Dashboard overview"
     >
       {/* Kicker badge + ViewModeToggle */}

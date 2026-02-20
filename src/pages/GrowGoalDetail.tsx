@@ -62,7 +62,7 @@ export default function GrowGoalPage() {
             </Link>
           </motion.div>
 
-          <Surface variants={fadeUp} className="rounded-2xl p-6 flex flex-col md:flex-row items-center gap-8" variant="glass" padding="none" as={motion.div}>
+          <Surface variants={fadeUp} className="rounded-2xl flex flex-col md:flex-row items-center gap-8" variant="glass" padding="md" as={motion.div}>
             {/* Progress ring */}
             <div className="relative flex-shrink-0">
               <svg width={100} height={100} className="-rotate-90">
@@ -100,7 +100,7 @@ export default function GrowGoalPage() {
         {/* ── P2: Contribution Timeline + Forecast ── */}
         <div className="flex flex-col lg:flex-row gap-4 px-4 md:px-6 lg:px-8">
           {/* Contribution timeline */}
-          <Surface variants={fadeUp} className="flex-1 rounded-2xl p-5" variant="glass" padding="none" as={motion.div}>
+          <Surface variants={fadeUp} className="flex-1 rounded-2xl" variant="glass" padding="md" as={motion.div}>
             <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "#64748B" }}>
               Recent contributions
             </p>
@@ -128,7 +128,7 @@ export default function GrowGoalPage() {
           </Surface>
 
           {/* Forecast */}
-          <Surface variants={fadeUp} className="lg:w-80 rounded-2xl p-5" variant="glass" padding="none" as={motion.div}>
+          <Surface variants={fadeUp} className="lg:w-80 rounded-2xl" variant="glass" padding="md" as={motion.div}>
             <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "#64748B" }}>
               Projected path
             </p>
@@ -142,7 +142,7 @@ export default function GrowGoalPage() {
 
         {/* ── P3: Goal Adjustment Action ── */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
-          <Surface className="rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4" variant="glass" padding="none">
+          <Surface className="rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4" variant="glass" padding="md">
             <div>
               <p className="text-sm font-semibold mb-1" style={{ color: "#F1F5F9" }}>
                 Adjust your savings pace

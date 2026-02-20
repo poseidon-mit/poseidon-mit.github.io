@@ -19,8 +19,6 @@ export function ReasoningChain({ steps, accentColor = '#00F0FF', className }: Re
   return (
     <motion.div
       variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
       className={className}
       role="list"
       aria-label="AI reasoning steps"

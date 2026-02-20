@@ -89,19 +89,19 @@ export default function ExecuteHistoryPage() {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 px-4 md:px-6 lg:px-8"
           aria-label="Execution metrics">
           
-          <Surface variants={fadeUp} className="rounded-2xl p-4" variant="glass" padding="none" as={motion.div}>
+          <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
             <p className="text-[10px] uppercase tracking-widest font-semibold mb-1" style={{ color: "#64748B" }}>Total executed</p>
             <p className="text-2xl font-bold font-mono" style={{ color: "#F1F5F9" }}>23</p>
           </Surface>
-          <Surface variants={fadeUp} className="rounded-2xl p-4" variant="glass" padding="none" as={motion.div}>
+          <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
             <p className="text-[10px] uppercase tracking-widest font-semibold mb-1" style={{ color: "#64748B" }}>Reversed</p>
             <p className="text-2xl font-bold font-mono" style={{ color: "var(--state-critical)" }}>2</p>
           </Surface>
-          <Surface variants={fadeUp} className="rounded-2xl p-4" variant="glass" padding="none" as={motion.div}>
+          <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
             <p className="text-[10px] uppercase tracking-widest font-semibold mb-1" style={{ color: "#64748B" }}>Monthly savings</p>
             <p className="text-2xl font-bold font-mono" style={{ color: "var(--state-healthy)" }}>{MONTHLY_SAVINGS}</p>
           </Surface>
-          <Surface variants={fadeUp} className="rounded-2xl p-4" variant="glass" padding="none" as={motion.div}>
+          <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
             <p className="text-[10px] uppercase tracking-widest font-semibold mb-1" style={{ color: "#64748B" }}>Success rate</p>
             <p className="text-2xl font-bold font-mono" style={{ color: "#F1F5F9" }}>91%</p>
           </Surface>
@@ -109,7 +109,7 @@ export default function ExecuteHistoryPage() {
 
         {/* ── P2: History Table ── */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
-          <Surface className="rounded-2xl overflow-hidden" variant="glass" padding="none">
+          <Surface className="rounded-2xl overflow-hidden" variant="glass" padding="none" data-surface-role="structure">
             {/* Filter tabs */}
             <div className="flex items-center gap-1 p-3 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
               <Filter size={14} style={{ color: "#64748B" }} className="mr-2" />
@@ -171,7 +171,7 @@ export default function ExecuteHistoryPage() {
 
         {/* ── P3: Open Govern Trace ── */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
-          <Surface className="rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4" variant="glass" padding="none">
+          <Surface className="rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4" variant="glass" padding="md">
             <div className="flex items-center gap-3">
               <div
                 className="flex items-center justify-center w-10 h-10 rounded-lg"

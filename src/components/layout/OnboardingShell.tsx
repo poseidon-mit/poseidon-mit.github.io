@@ -43,7 +43,7 @@ export function OnboardingShell({
       
 
       <div id="onboarding-shell-content" className="relative z-10 mx-auto max-w-6xl px-6 py-12 lg:py-16">
-        <Surface className="rounded-3xl p-7 md:p-9" variant="glass" padding="none" as="section">
+        <Surface className="rounded-3xl" variant="glass" padding="md" as="section">
           {showProgress ? <OnboardingProgress step={activeStep} /> : null}
           <h2 className="font-display text-3xl font-semibold tracking-[var(--tracking-h2)] text-slate-100 md:text-4xl">{title}</h2>
           <p className="mt-3 text-sm leading-6 text-slate-300 md:text-base">{subtitle}</p>

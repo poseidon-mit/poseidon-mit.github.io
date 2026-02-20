@@ -71,7 +71,7 @@ export function SettingsRights() {
           { label: 'Retention', value: '2 years', color: '#94A3B8' },
           { label: 'Last export', value: 'Never', color: 'var(--engine-execute)' }].
           map((kpi) => <Surface
-            key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
+            key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
               <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
               <p className="text-lg font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
             </Surface>
@@ -80,7 +80,7 @@ export function SettingsRights() {
 
         {/* Rights actions 3-col */}
         <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Surface className="rounded-2xl p-4 md:p-6 flex flex-col gap-3" variant="glass" padding="none">
+          <Surface className="rounded-2xl flex flex-col gap-3" variant="glass" padding="md">
             <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'rgba(59,130,246,0.15)' }}>
               <Download className="h-5 w-5" style={{ color: 'var(--engine-govern)' }} />
             </div>
@@ -91,7 +91,7 @@ export function SettingsRights() {
               <Button variant="secondary" engine="govern" size="sm" fullWidth className="rounded-xl text-xs">Export as CSV</Button>
             </div>
           </Surface>
-          <Surface className="rounded-2xl p-4 md:p-6 flex flex-col gap-3" variant="glass" padding="none">
+          <Surface className="rounded-2xl flex flex-col gap-3" variant="glass" padding="md">
             <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'rgba(234,179,8,0.15)' }}>
               <PauseCircle className="h-5 w-5" style={{ color: 'var(--engine-execute)' }} />
             </div>
@@ -99,7 +99,7 @@ export function SettingsRights() {
             <p className="text-xs text-slate-400">Pause AI analysis</p>
             <Button variant="secondary" engine="execute" size="sm" className="mt-auto rounded-xl text-xs">Restrict processing</Button>
           </Surface>
-          <Surface className="rounded-2xl p-4 md:p-6 flex flex-col gap-3" variant="glass" padding="none">
+          <Surface className="rounded-2xl flex flex-col gap-3" variant="glass" padding="md">
             <div className="w-10 h-10 rounded-full flex items-center justify-center bg-red-500/10">
               <Trash2 className="h-5 w-5 text-red-400" />
             </div>
@@ -142,7 +142,7 @@ export function SettingsRights() {
         </motion.div>
 
         {/* Active requests table */}
-        <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+        <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
           <h2 className="text-sm font-semibold text-white mb-4">Active Requests</h2>
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <FileText className="h-8 w-8 text-white/20 mb-2" />
@@ -152,7 +152,7 @@ export function SettingsRights() {
         </Surface>
 
         {/* Data inventory accordion */}
-        <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+        <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
           <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
             <Database className="h-4 w-4 text-white/40" />Data Inventory
           </h2>
@@ -193,7 +193,7 @@ export function SettingsRights() {
         </Surface>
 
         {/* Consent management */}
-        <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+        <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
           <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
             <Lock className="h-4 w-4 text-white/40" />Data consent scopes
           </h2>

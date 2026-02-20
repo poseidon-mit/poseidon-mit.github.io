@@ -22,7 +22,7 @@ export default function OnboardingWelcomePage() {
       <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
         <motion.div variants={staggerContainer} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {STEPS_PREVIEW.map((step, index) => <Surface
-            key={step.label} variants={fadeUp} className="rounded-xl p-4" variant="glass" padding="none" as={motion.div}>
+            key={step.label} variants={fadeUp} className="rounded-xl" variant="glass" padding="md" as={motion.div}>
               <div className="flex items-start gap-3">
                 <span className="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-[var(--engine-dashboard)]">
                   <step.icon className="h-4.5 w-4.5" aria-hidden="true" />

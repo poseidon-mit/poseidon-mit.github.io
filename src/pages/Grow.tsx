@@ -108,7 +108,7 @@ export default function GrowPage() {
           {GOAL_KPIS.map((kpi) => <Surface
 
             key={kpi.label}
-            variants={fadeUp} className="rounded-2xl p-4 flex items-start gap-3" variant="glass" padding="none" as={motion.div}>
+            variants={fadeUp} className="rounded-2xl flex items-start gap-3" variant="glass" padding="md" as={motion.div}>
 
             
               <div
@@ -129,7 +129,7 @@ export default function GrowPage() {
         {/* ── P3: Forecast Preview + Recommendation ── */}
         <div className="flex flex-col lg:flex-row gap-4 px-4 md:px-6 lg:px-8">
           {/* Forecast visualization */}
-          <Surface variants={fadeUp} className="flex-1 rounded-2xl p-5" variant="glass" padding="none" as={motion.div}>
+          <Surface variants={fadeUp} className="flex-1 rounded-2xl" variant="glass" padding="md" as={motion.div}>
             <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "#64748B" }}>
               12-month forecast
             </p>
@@ -141,7 +141,7 @@ export default function GrowPage() {
           </Surface>
 
           {/* Top recommendation */}
-          <Surface variants={fadeUp} className="lg:w-80 rounded-2xl p-5 flex flex-col justify-between" variant="glass" padding="none" as={motion.div}>
+          <Surface variants={fadeUp} className="lg:w-80 rounded-2xl flex flex-col justify-between" variant="glass" padding="md" as={motion.div}>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "#64748B" }}>
                 Top recommendation

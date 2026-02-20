@@ -1,5 +1,17 @@
 {
-  "routes": ["/", "/dashboard", "/protect", "/execute", "/govern", "/settings"],
+  "routes": [
+    "/",
+    "/signup",
+    "/login",
+    "/onboarding/connect",
+    "/dashboard",
+    "/protect",
+    "/grow",
+    "/execute",
+    "/govern",
+    "/settings",
+    "/help"
+  ],
   "viewports": [
     { "name": "mobile", "width": 375, "height": 812 },
     { "name": "tablet", "width": 768, "height": 1024 },
@@ -7,8 +19,8 @@
     { "name": "wide", "width": 1440, "height": 900 }
   ],
   "diffThresholds": {
-    "warn": 0.03,
-    "error": 0.08
+    "warn": 0.015,
+    "error": 0.035
   },
   "ignoreSelectors": [
     ".dashboard-signal-point",

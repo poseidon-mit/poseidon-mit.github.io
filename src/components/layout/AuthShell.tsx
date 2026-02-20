@@ -42,7 +42,7 @@ export function AuthShell({
       />
 
       <div id="auth-shell-content" className="relative z-10 mx-auto max-w-6xl px-6 py-16 lg:py-20">
-        <Surface as="section" variant="glass" padding="none" className={cn('rounded-3xl p-7 md:p-9', formClassName)}>
+        <Surface as="section" variant="glass" padding="md" className={cn('rounded-3xl', formClassName)}>
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">{title}</p>
           <h2 className="mt-3 font-display text-3xl font-semibold tracking-[var(--tracking-h2)] text-slate-100">
             {subtitle}

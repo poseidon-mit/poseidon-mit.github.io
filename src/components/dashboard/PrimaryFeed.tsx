@@ -273,8 +273,6 @@ export function PrimaryFeed() {
       className="primary-feed"
       data-slot="primary_feed"
       variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
     >
       <ScoreRing />
       <InsightPanel />

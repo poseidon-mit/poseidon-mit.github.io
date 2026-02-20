@@ -42,14 +42,13 @@ export const fadeIn: Variants = {
 }
 
 export const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: spring },
+  hidden: { y: 20, scale: 0.98 },
+  visible: { y: 0, scale: 1, transition: spring },
 }
 
 export const creatorStudioFadeUp: Variants = {
-  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  hidden: { y: 20, scale: 0.98 },
   visible: {
-    opacity: 1,
     y: 0,
     scale: 1,
     transition: spring,
@@ -69,48 +68,44 @@ export const slideRight: Variants = {
 /* ── Stagger Container ── */
 export const staggerContainer: Variants = {
   hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
+  visible: {},
 }
 
 export const creatorStudioStaggerContainer: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
+  hidden: {},
+  visible: {},
 }
 
-/** Delayed stagger — use on KPI grids so they animate after the hero section */
+/** Compatibility alias for old delayed-stagger API (now synced for simultaneous entry). */
 export const staggerContainerDelayed: Variants = {
   hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.3,
-    },
-  },
+  visible: {},
 }
 
 export const staggerItem: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: spring },
+  hidden: { y: 20, scale: 0.98 },
+  visible: { y: 0, scale: 1, transition: spring },
 }
 
 export const creatorStudioStaggerItem: Variants = {
-  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  hidden: { y: 20, scale: 0.98 },
   visible: {
-    opacity: 1,
     y: 0,
     scale: 1,
     transition: spring,
   },
+}
+
+/** Route-level contract: all children enter at the same time (no staggering). */
+export const creatorStudioRouteSyncContainer: Variants = {
+  hidden: {},
+  visible: {},
+}
+
+/** Route-level card/item contract: spring movement without opacity fade (anti-flicker). */
+export const creatorStudioRouteSyncItem: Variants = {
+  hidden: { y: 20, scale: 0.98 },
+  visible: { y: 0, scale: 1, transition: spring },
 }
 
 /* ── Helper: stagger delay for index ── */
@@ -121,12 +116,7 @@ export function staggerDelay(i: number, base = 0.1): Transition {
 /* ── Presentation mode variants (slower for readability) ── */
 export const staggerContainerPresentation: Variants = {
   hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.15,
-    },
-  },
+  visible: {},
 }
 
 /* ── Reduced motion variants (instant, no animation) ── */
@@ -162,6 +152,8 @@ export function getMotionPreset(prefersReduced: boolean) {
     staggerContainerDelayed: prefersReduced ? staticContainer : staggerContainerDelayed,
     staggerItem: prefersReduced ? staticVariants : staggerItem,
     creatorStudioStaggerItem: prefersReduced ? staticVariants : creatorStudioStaggerItem,
+    creatorStudioRouteSyncContainer: prefersReduced ? staticContainer : creatorStudioRouteSyncContainer,
+    creatorStudioRouteSyncItem: prefersReduced ? staticVariants : creatorStudioRouteSyncItem,
     pageTransition: prefersReduced ? pageTransitionReduced : pageTransition,
   }
 }

@@ -1,5 +1,5 @@
 import { useState, type KeyboardEvent } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Link } from '@/router';
 import { TrendingUp, ArrowRight, ArrowLeft, Scale, Check, Zap } from "lucide-react";
 import { ForecastBand } from "@/components/poseidon/forecast-band";
@@ -66,6 +66,7 @@ const SCENARIOS: Scenario[] = [
 
 export default function GrowScenariosPage() {
   const [selected, setSelected] = useState("moderate");
+  const prefersReducedMotion = useReducedMotion();
   const activeScenario = SCENARIOS.find((s) => s.id === selected) ?? SCENARIOS[1];
 
   return (
@@ -117,13 +118,17 @@ export default function GrowScenariosPage() {
 
             key={s.id}
             variants={fadeUp}
+            animate={prefersReducedMotion ? undefined : { scale: selected === s.id ? 1.015 : 1, y: 0 }}
+            whileHover={prefersReducedMotion ? undefined : { scale: selected === s.id ? 1.02 : 1.01 }}
+            whileTap={prefersReducedMotion ? undefined : { scale: selected === s.id ? 1.005 : 0.995 }}
+            transition={prefersReducedMotion ? undefined : { type: "spring", stiffness: 280, damping: 24, mass: 0.8 }}
             onClick={() => setSelected(s.id)}
             onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
               if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
                 setSelected(s.id);
               }
-            }} className="rounded-2xl p-5 text-left transition-all relative"
+            }} className="rounded-2xl p-5 text-left transition-colors will-change-transform relative"
 
             style={{
               border: selected === s.id ?
@@ -132,7 +137,7 @@ export default function GrowScenariosPage() {
             }}
             role="button"
             tabIndex={0}
-            aria-pressed={selected === s.id} variant="glass" padding="none" as={motion.div}>
+            aria-pressed={selected === s.id} variant="glass" padding="md" as={motion.div}>
             
               {selected === s.id &&
             <div
@@ -166,7 +171,7 @@ export default function GrowScenariosPage() {
 
         {/* ── P2: Comparative Forecast with ForecastBand ── */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
-          <Surface className="rounded-2xl p-6" variant="glass" padding="none">
+          <Surface className="rounded-2xl" variant="glass" padding="md">
             <div className="flex items-center justify-between mb-4">
               <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#64748B" }}>
                 {activeScenario.name} forecast
@@ -187,7 +192,7 @@ export default function GrowScenariosPage() {
 
         {/* ── P3: Impact Summary + Send to Execute ── */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
-          <Surface className="rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4" variant="glass" padding="none">
+          <Surface className="rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4" variant="glass" padding="md">
             <div>
               <p className="text-sm font-semibold mb-1" style={{ color: "#F1F5F9" }}>
                 Ready to commit to {activeScenario.name.toLowerCase()}?
@@ -222,7 +227,7 @@ export default function GrowScenariosPage() {
 
         {/* ── P4: Sensitivity notes (Tier B: 4 block cap) ── */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
-          <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+          <Surface className="rounded-2xl" variant="glass" padding="md">
             <p className="text-[10px] font-mono uppercase tracking-wider mb-1" style={{ color: "#64748B" }}>
               Sensitivity notes
             </p>

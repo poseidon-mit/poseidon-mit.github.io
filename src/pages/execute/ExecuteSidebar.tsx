@@ -63,7 +63,7 @@ function ExecutionStats() {
   ]
 
   return (
-    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
+    <Surface variant="glass" padding="md" className="flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <Calendar size={14} style={{ color: 'var(--engine-execute)' }} aria-hidden="true" />
         {"Today's Activity"}
@@ -102,7 +102,7 @@ function ExecutionStats() {
 
 function ConfidenceChart() {
   return (
-    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
+    <Surface variant="glass" padding="md" className="flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <Gauge size={14} style={{ color: 'var(--engine-execute)' }} aria-hidden="true" />
         Confidence Scores
@@ -152,7 +152,7 @@ function ConfidenceChart() {
 
 function RecentExecutionsTimeline() {
   return (
-    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
+    <Surface variant="glass" padding="md" className="flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <History size={14} style={{ color: 'var(--engine-execute)' }} aria-hidden="true" />
         Recent Executions

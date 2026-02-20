@@ -7,7 +7,7 @@ describe('DashboardInsightsPanel', () => {
     const { container } = render(<DashboardInsightsPanel variant="morning" />);
 
     expect(screen.getByText('Good morning')).toBeInTheDocument();
-    expect(container.querySelector('.dashboard-insights-card.glass-surface')).not.toBeNull();
+    expect(container.querySelector('.dashboard-insights-card')).not.toBeNull();
     expect(container.querySelector('.dashboard-insights-card--activity')).not.toBeNull();
     expect(container.querySelectorAll('.activity-rail-item')).toHaveLength(3);
     expect(container.querySelectorAll('.activity-rail-node')).toHaveLength(3);

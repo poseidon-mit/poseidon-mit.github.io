@@ -38,7 +38,7 @@ export default function OnboardingCompletePage() {
           {READY_ITEMS.map((item) => {
             const tone = TONE_CLASSES[item.tone];
             return <Surface
-              key={item.label} variants={fadeUp} className="rounded-xl border border-white/10 p-4" variant="glass" padding="none" as={motion.div}>
+              key={item.label} variants={fadeUp} className="rounded-xl border border-white/10" variant="glass" padding="md" as={motion.div}>
                 <div className="flex items-center gap-3">
                   <span className={`inline-flex h-9 w-9 items-center justify-center rounded-lg ${tone.bg} ${tone.text}`}>
                     <item.icon className="h-4.5 w-4.5" aria-hidden="true" />
@@ -53,7 +53,7 @@ export default function OnboardingCompletePage() {
           })}
         </motion.div>
 
-        <Surface variants={fadeUp} className="mt-6 rounded-xl border border-white/10 p-4" variant="glass" padding="none" as={motion.div}>
+        <Surface variants={fadeUp} className="mt-6 rounded-xl border border-white/10" variant="glass" padding="md" as={motion.div}>
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Setup summary</p>
           <div className="mt-3 space-y-1.5 text-xs">
             <div className="flex items-center justify-between text-slate-300">

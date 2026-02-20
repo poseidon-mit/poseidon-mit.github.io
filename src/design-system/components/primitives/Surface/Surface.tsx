@@ -36,6 +36,7 @@ export const Surface = forwardRef<HTMLElement, SurfaceProps>(
     const typedEngine = engine as keyof typeof ENGINE_GLOW_COLORS | undefined
     const typedPadding = padding as keyof typeof PADDING_MAP
     const glowColor = glow && typedEngine ? ENGINE_GLOW_COLORS[typedEngine] : null
+    const isMotionTag = typeof Tag !== 'string'
 
     const glowShadow = glowColor
       ? `0 0 var(--ds-glow-spread) ${glowColor}`
@@ -43,7 +44,8 @@ export const Surface = forwardRef<HTMLElement, SurfaceProps>(
 
     const variantClasses = cn(
       // Base shared styles
-      'rounded-[var(--ds-border-radius-surface)] transition-all duration-200',
+      'rounded-[var(--ds-border-radius-surface)] transition-[background-color,border-color,box-shadow,filter,backdrop-filter] duration-200',
+      isMotionTag && 'transform-gpu [backface-visibility:hidden] will-change-[transform,opacity]',
 
       // Glass variant
       variant === 'glass' && [

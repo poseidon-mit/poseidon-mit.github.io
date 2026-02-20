@@ -138,7 +138,7 @@ export function ActivityTimelinePage() {
             { label: 'Success rate', value: '99%', color: 'var(--engine-protect)' },
             { label: 'Audit coverage', value: '100%', color: 'var(--engine-execute)' }].
             map((kpi) => <Surface
-              key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
+              key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
                 <p className="text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
               </Surface>
@@ -192,7 +192,7 @@ export function ActivityTimelinePage() {
                       boxShadow: '0 0 0 2px #0B1221'
                     }} />
                   
-                      <Surface className="rounded-2xl p-3 ml-2" variant="glass" padding="none">
+                      <Surface className="rounded-2xl ml-2" variant="glass" padding="md">
                         <div className="flex items-center gap-2 flex-wrap mb-1">
                           <span className="text-[10px] text-white/30">{ev.time}</span>
                           <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${engineBadgeCls[ev.engine]}`}>{ev.engine}</span>
@@ -215,7 +215,7 @@ export function ActivityTimelinePage() {
           {/* Side rail */}
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Timeline sidebar">
             {/* Today's summary */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Today's Summary</h3>
               <div className="space-y-2.5">
                 {[
@@ -243,7 +243,7 @@ export function ActivityTimelinePage() {
             </Surface>
 
             {/* Key milestones */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle2 className="h-4 w-4" style={{ color: 'var(--engine-dashboard)' }} />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Key Milestones</h3>
@@ -266,7 +266,7 @@ export function ActivityTimelinePage() {
             </Surface>
 
             {/* Navigation */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Related</h3>
               <div className="flex flex-col gap-2">
                 <Link to="/govern/audit" className="text-sm text-blue-400 hover:text-blue-300 transition-colors">Audit Ledger →</Link>

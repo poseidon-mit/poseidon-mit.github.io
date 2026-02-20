@@ -268,7 +268,7 @@ export function GovernAuditDetail() {
             { label: 'Model accuracy', value: `${auditEntry.model.accuracy}%`, color: 'var(--engine-protect)' },
             { label: 'Card', value: `••••${DEMO_THREAD.criticalAlert.cardLast4}`, color: 'var(--engine-execute)' }].
             map((kpi) => <Surface
-              key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
+              key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
                 <p className="text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
               </Surface>
@@ -278,7 +278,7 @@ export function GovernAuditDetail() {
 
         <div className="flex flex-col lg:flex-row gap-6">
           <motion.div variants={fadeUp} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
-            <Surface className="rounded-2xl p-4 md:p-6" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <h2 className="text-sm font-semibold text-white mb-4">Decision Metadata</h2>
               <div className="space-y-3">
                 {metaRows.map((row) =>
@@ -290,7 +290,7 @@ export function GovernAuditDetail() {
               </div>
             </Surface>
 
-            <Surface className="rounded-2xl p-4 md:p-6" style={{ borderLeftWidth: 3, borderLeftColor: 'var(--engine-govern)' }} variant="glass" padding="none">
+            <Surface className="rounded-2xl" style={{ borderLeftWidth: 3, borderLeftColor: 'var(--engine-govern)' }} variant="glass" padding="md">
               <h2 className="text-sm font-semibold text-white mb-3">Decision Reconstruction</h2>
               <p className="text-sm text-slate-300 leading-relaxed mb-4">{auditEntry.explanation.summary}</p>
               <div className="flex items-center gap-3 mb-4">
@@ -315,7 +315,7 @@ export function GovernAuditDetail() {
               </div>
             </Surface>
 
-            <Surface className="rounded-2xl p-4 md:p-6" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <h2 className="text-sm font-semibold text-white mb-4">Compliance Flags</h2>
               <div className="space-y-2.5">
                 {complianceFlags.map((flag) =>
@@ -333,7 +333,7 @@ export function GovernAuditDetail() {
           </motion.div>
 
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Audit detail sidebar">
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <ChevronDown className="h-4 w-4 text-blue-400" />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Contributing Factors</h3>
@@ -351,7 +351,7 @@ export function GovernAuditDetail() {
               </div>
             </Surface>
 
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-3">
                 <User className="h-4 w-4 text-blue-400" />
                 <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">User Feedback</h3>
@@ -371,7 +371,7 @@ export function GovernAuditDetail() {
               <p className="text-xs text-white/30 mt-3">Human-validated · Source: Feedback system</p>
             </Surface>
 
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Related</h3>
               <div className="flex flex-col gap-2">
                 <Link to="/govern/audit" className="text-sm text-blue-400 hover:text-blue-300 transition-colors">← Back to Audit Ledger</Link>

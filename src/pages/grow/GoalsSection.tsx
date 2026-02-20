@@ -32,7 +32,7 @@ function GoalCard({ goal, navigate, viewMode = 'detail' }: { goal: Goal; navigat
   const sc = statusConfig[goal.status]
   return (
     <motion.div variants={fadeUp}>
-      <Surface variant="glass" padding="none" borderColor={goal.status === 'Behind' ? 'var(--state-warning)' : 'rgba(139,92,246,0.3)'} className="flex flex-col gap-4">
+      <Surface variant="glass" padding="md" borderColor={goal.status === 'Behind' ? 'var(--state-warning)' : 'rgba(139,92,246,0.3)'} className="flex flex-col gap-4">
         <div className="flex items-start justify-between flex-wrap gap-2">
           <h3 className="text-base font-semibold" style={{ color: '#F1F5F9' }}>{goal.name}</h3>
           <span

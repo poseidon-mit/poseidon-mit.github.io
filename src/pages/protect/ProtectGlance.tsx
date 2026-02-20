@@ -17,7 +17,7 @@ export function ProtectGlance() {
     >
       {signals.map((signal) => (
         <motion.div key={signal.id} variants={fadeUp}>
-          <Surface variant="glass" padding="none" className="flex flex-col gap-4 glass-hover-protect">
+          <Surface variant="glass" padding="md" className="flex flex-col gap-4 glass-hover-protect">
             <div className="flex items-center justify-between">
               <SeverityBadge severity={signal.severity} />
               <ConfidenceIndicator value={signal.confidence} accentColor="var(--engine-protect)" />

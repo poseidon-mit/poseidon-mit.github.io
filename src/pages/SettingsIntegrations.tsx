@@ -71,7 +71,7 @@ export function SettingsIntegrations() {
           { label: 'Data coverage', value: '94%', color: 'var(--engine-grow)' },
           { label: 'Security', value: '256-bit', color: 'var(--engine-execute)' }].
           map((kpi) => <Surface
-            key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
+            key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
               <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
               <p className="text-lg font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
             </Surface>
@@ -86,7 +86,7 @@ export function SettingsIntegrations() {
             <motion.div variants={fadeUp} className="flex flex-col gap-4">
               <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Connected Accounts</h2>
               {connectedAccounts.map((acct) => <Surface
-                key={acct.id} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none">
+                key={acct.id} className="rounded-2xl" variant="glass" padding="md">
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: acct.iconBg }}>
                       <acct.icon className="h-5 w-5" style={{ color: acct.iconColor }} />
@@ -167,7 +167,7 @@ export function SettingsIntegrations() {
           {/* Side rail */}
           <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4">
             {/* Sync status */}
-            <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Sync Status</h3>
               <div className="mb-3">
                 <div className="flex justify-between text-xs mb-1">
@@ -189,7 +189,7 @@ export function SettingsIntegrations() {
             </Surface>
 
             {/* Permissions */}
-            <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Permissions</h3>
               <div className="flex flex-col gap-2">
                 {permissions.map((p) =>
@@ -206,7 +206,7 @@ export function SettingsIntegrations() {
             </Surface>
 
             {/* Security */}
-            <Surface variants={fadeUp} className="rounded-2xl p-4 md:p-6" variant="glass" padding="none" as={motion.div}>
+            <Surface variants={fadeUp} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
               <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Security</h3>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">

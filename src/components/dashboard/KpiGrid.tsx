@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer } from '@/lib/motion-presets';
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 import { CountUp } from '@/components/poseidon';
+import { Surface } from '@/design-system';
 
 
 interface StatCardProps {
@@ -21,7 +22,7 @@ interface StatCardProps {
 const StatCard = memo(function StatCard({ label, value, countUpValue, countUpDecimals, countUpPrefix, countUpSuffix, delta, deltaPositive, sparkData, sparkColor }: StatCardProps) {
   const data = useMemo(() => sparkData.map((v, i) => ({ i, v })), [sparkData]);
   return (
-    <motion.div variants={fadeUp} className="stat-card glass-surface">
+    <Surface as={motion.div} variant="glass" padding="md" variants={fadeUp} className="stat-card">
       <div className="stat-card__header">
         <span className="stat-card__label">{label}</span>
         <div className="stat-card__spark" aria-hidden="true">
@@ -60,7 +61,7 @@ const StatCard = memo(function StatCard({ label, value, countUpValue, countUpDec
       <span className={`stat-card__delta ${deltaPositive ? 'stat-card__delta--up' : 'stat-card__delta--down'}`}>
         {delta}
       </span>
-    </motion.div>
+    </Surface>
   );
 });
 
@@ -98,8 +99,6 @@ export function KpiGrid() {
     <motion.section
       className="kpi-grid"
       variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
       aria-label="Key performance indicators"
     >
       <StatCard

@@ -26,7 +26,7 @@ import { Surface } from '@/design-system'
 
 function GrowthProjection() {
   return (
-    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
+    <Surface variant="glass" padding="md" className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
           <TrendingUpIcon size={14} style={{ color: 'var(--engine-grow)' }} aria-hidden="true" />
@@ -80,7 +80,7 @@ function GrowthProjection() {
 
 function AssetAllocation() {
   return (
-    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
+    <Surface variant="glass" padding="md" className="flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <PieChartIcon size={14} style={{ color: 'var(--engine-grow)' }} aria-hidden="true" />
         Asset Allocation
@@ -131,7 +131,7 @@ function AssetAllocation() {
 
 function RecentActivity() {
   return (
-    <Surface variant="glass" padding="none" className="flex flex-col gap-4">
+    <Surface variant="glass" padding="md" className="flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <Activity size={14} style={{ color: 'var(--engine-grow)' }} aria-hidden="true" />
         Recent Activity

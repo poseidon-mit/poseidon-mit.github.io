@@ -180,7 +180,7 @@ export function GrowRecommendations() {
             { label: 'Actionable now', value: String(actionableNowCount), color: 'var(--engine-dashboard)' },
             { label: 'Avg confidence', value: avgConfidence, color: 'var(--engine-execute)' }].
             map((kpi) => <Surface
-              key={kpi.label} className="rounded-2xl p-4" variant="glass" padding="none">
+              key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
                 <p className="text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
               </Surface>
@@ -228,9 +228,9 @@ export function GrowRecommendations() {
             {filtered.map((rec) => <Surface
 
               key={rec.rank}
-              variants={fadeUp} className="rounded-2xl p-4 md:p-6"
+              variants={fadeUp} className="rounded-2xl"
 
-              style={{ borderLeftWidth: 3, borderLeftColor: 'var(--engine-grow)' }} variant="glass" padding="none" as={motion.div}>
+              style={{ borderLeftWidth: 3, borderLeftColor: 'var(--engine-grow)' }} variant="glass" padding="md" as={motion.div}>
               
                 {/* Top row */}
                 <div className="flex flex-wrap items-center gap-2 mb-3">
@@ -325,7 +325,7 @@ export function GrowRecommendations() {
           {/* Side rail */}
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Recommendations sidebar">
             {/* Summary */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Summary</h3>
               <div className="space-y-3">
                 {[
@@ -343,7 +343,7 @@ export function GrowRecommendations() {
             </Surface>
 
             {/* Impact breakdown */}
-            <Surface className="rounded-2xl p-4" variant="glass" padding="none">
+            <Surface className="rounded-2xl" variant="glass" padding="md">
               <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Impact Breakdown</h3>
               <div className="space-y-3">
                 {[
@@ -366,7 +366,7 @@ export function GrowRecommendations() {
             </Surface>
 
             {/* AI Analysis */}
-            <Surface className="rounded-2xl p-4" style={{ borderLeftWidth: 3, borderLeftColor: 'var(--engine-grow)' }} variant="glass" padding="none">
+            <Surface className="rounded-2xl" style={{ borderLeftWidth: 3, borderLeftColor: 'var(--engine-grow)' }} variant="glass" padding="md">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-bold" style={{ background: 'rgba(139,92,246,0.2)', color: 'var(--engine-grow)' }}>AI</div>
                 <Sparkles className="h-3.5 w-3.5" style={{ color: 'var(--engine-grow)' }} />
