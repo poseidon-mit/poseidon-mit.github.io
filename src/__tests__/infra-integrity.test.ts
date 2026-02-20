@@ -8,6 +8,7 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { describe, expect, it } from 'vitest';
 import { routeLoaders, V0_READY_ROUTES } from '../router/lazyRoutes';
+import { getRouteMetaContract } from '@/contracts/rebuild-contracts';
 
 const root = resolve(__dirname, '../..');
 const read = (rel: string) => readFileSync(resolve(root, rel), 'utf-8');
@@ -74,6 +75,24 @@ describe('Infrastructure integrity', () => {
 
   it('V0_READY_ROUTES includes the landing page', () => {
     expect(V0_READY_ROUTES.has('/')).toBe(true);
+  });
+
+  it('keeps design-system routes publicly resolvable', () => {
+    expect(routeLoaders).toHaveProperty('/design-system');
+    const lazyRoutesSource = read('src/router/lazyRoutes.ts');
+    expect(lazyRoutesSource).toContain("const allowPublicDesignSystem = path.startsWith('/design-system');");
+  });
+
+  it('keeps test/spectacular internal-only', () => {
+    const meta = getRouteMetaContract('/test/spectacular');
+    expect(meta?.routeVisibility).toBe('internal');
+    const lazyRoutesSource = read('src/router/lazyRoutes.ts');
+    expect(lazyRoutesSource).toContain("const forceHiddenTestRoute = path === '/test/spectacular';");
+  });
+
+  it('self-guided QR mode bootstraps demo session', () => {
+    expect(mainSrc).toContain('const SELF_GUIDED_QR_MODE = true;');
+    expect(mainSrc).toContain("beginDemoSession({ method: 'skip' });");
   });
 
   it('govern audit ledger links to audit detail route with decision query', () => {
