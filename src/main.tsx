@@ -23,8 +23,8 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
             minHeight: '100vh',
             display: 'grid',
             placeItems: 'center',
-            background: '#0B1221',
-            color: '#94a3b8',
+            background: 'var(--bg-oled)',
+            color: 'rgba(241,245,249,0.72)',
             fontFamily: 'Inter, system-ui, sans-serif',
             textAlign: 'center',
             gap: '16px',
@@ -35,7 +35,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
             <p style={{ color: '#e2e8f0', fontWeight: 600, marginBottom: '4px' }}>Something went wrong</p>
             <button
               onClick={() => window.location.replace('/')}
-              style={{ marginTop: '16px', padding: '8px 20px', borderRadius: '8px', background: '#1ae3c7', color: '#0B1221', fontWeight: 600, border: 'none', cursor: 'pointer' }}
+              style={{ marginTop: '16px', padding: '8px 20px', borderRadius: '8px', background: 'var(--accent-cyan)', color: 'var(--bg-oled)', fontWeight: 600, border: 'none', cursor: 'pointer' }}
             >
               Return to Home
             </button>
@@ -67,7 +67,7 @@ function RouteLoadingFallback() {
     <div
       style={{
         minHeight: '100vh',
-        background: '#0B1221',
+        background: 'var(--bg-oled)',
         fontFamily: 'Inter, system-ui, sans-serif',
         display: 'grid',
         placeItems: 'center',

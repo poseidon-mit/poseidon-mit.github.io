@@ -78,6 +78,11 @@
     overflow-x: hidden;
   }
 
+  ::selection {
+    background: color-mix(in srgb, var(--accent-cyan, #00F0FF) 30%, transparent);
+    color: var(--color-text-primary);
+  }
+
   #root {
     min-height: 100vh;
     width: 100%;
