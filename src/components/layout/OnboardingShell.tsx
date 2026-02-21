@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { OnboardingProgress } from '@/components/onboarding/OnboardingProgress';
-import { Surface } from '@/design-system';
+import { Surface, AuroraGradient } from '@/design-system';
 
 const STEP_ITEMS = [
   { id: 1, label: 'Connect sources' },
@@ -38,17 +38,20 @@ export function OnboardingShell({
         Skip to main content
       </a>
 
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_14%_15%,rgba(0,240,255,0.05),transparent_56%),radial-gradient(ellipse_at_84%_72%,rgba(139,92,246,0.035),transparent_62%)]"
-        aria-hidden="true"
+      <AuroraGradient
+        engine="grow"
+        intensity="vivid"
+        className="fixed inset-0 pointer-events-none z-0"
       />
 
-      <div id="onboarding-shell-content" className="relative z-10 mx-auto max-w-6xl px-6 py-12 lg:py-16">
-        <Surface className="rounded-3xl" variant="glass" padding="md" as="section">
+      <div id="onboarding-shell-content" className="relative z-10 mx-auto max-w-4xl px-6 py-12 lg:py-24">
+        <Surface className="rounded-[32px] p-8 md:p-12 border-white/[0.08] bg-black/40 backdrop-blur-2xl" variant="glass" as="section">
           {showProgress ? <OnboardingProgress step={activeStep} /> : null}
-          <h1 className="font-display text-3xl font-semibold tracking-[var(--tracking-h2)] text-slate-100 md:text-4xl">{title}</h1>
-          <p className="mt-3 text-sm leading-6 text-slate-300 md:text-base">{subtitle}</p>
-          <div className="mt-8">{children}</div>
+          <div className="text-center mt-12 mb-10">
+            <h1 className="font-display text-4xl md:text-5xl font-semibold tracking-tighter text-white">{title}</h1>
+            <p className="mt-4 text-base leading-relaxed text-white/50 max-w-2xl mx-auto">{subtitle}</p>
+          </div>
+          <div className="mt-12">{children}</div>
         </Surface>
       </div>
     </main>

@@ -104,18 +104,20 @@ export default function ProtectPage() {
       <motion.main id="main-content" className="relative z-10 mx-auto flex max-w-[1280px] flex-col gap-6 px-4 py-8 md:gap-8 md:px-6 lg:px-8" variants={staggerContainerVariant} initial="hidden" animate="visible" role="main" aria-label="Protect Engine - Threat Detection">
 
         {/* ── Hero ── */}
-        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-4">
-          <motion.div variants={fadeUpVariant}>
-            <span className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider uppercase" style={{ borderColor: "rgba(34,197,94,0.3)", background: "rgba(34,197,94,0.08)", color: "var(--engine-protect)" }}>
-              <Shield size={12} />Protect Engine
-            </span>
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 mb-8 mt-4">
+          <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[var(--engine-protect)]/20 bg-[var(--engine-protect)]/10 px-3 py-1.5 text-xs font-bold tracking-widest uppercase text-[var(--engine-protect)] shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+                <Shield size={12} /> Protect Engine
+              </span>
+            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white max-w-4xl leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+              Threat posture: <span className="text-[var(--state-critical)] font-semibold drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">{criticalCount} critical</span>, {highCount} high, {monitoringCount} monitoring.
+            </h1>
+            <p className="text-lg md:text-xl leading-relaxed text-white/50 font-light max-w-2xl tracking-wide mt-2">
+              Real-time threat detection across all connected accounts. AI confidence scoring with full evidence chain.
+            </p>
           </motion.div>
-          <motion.h1 variants={fadeUpVariant} className="text-2xl md:text-4xl font-bold leading-tight tracking-tight text-balance" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>
-            Threat posture: <span style={{ color: "var(--state-critical)" }}>{criticalCount} critical</span>, {highCount} high, {monitoringCount} monitoring.
-          </motion.h1>
-          <motion.p variants={fadeUpVariant} className="text-sm md:text-base leading-relaxed" style={{ color: "#CBD5E1" }}>
-            Real-time threat detection across all connected accounts. AI confidence scoring with full evidence chain.
-          </motion.p>
         </motion.section>
 
         {/* ── Content: Table + Sidebar ── */}
@@ -124,68 +126,73 @@ export default function ProtectPage() {
           <div className="flex-1 min-w-0 lg:w-2/3">
             {/* Desktop table */}
             <div className="hidden md:block">
-              <Surface variant="glass" padding="none" data-surface-role="structure" className="overflow-hidden !p-0">
+              <Surface interactive className="relative h-full overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl transition-all hover:bg-white/[0.02]" padding="none">
+                <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
+
                 {sorted.length === 0 ? (
-                  <EmptyState
-                    icon={Shield}
-                    title="No threats match your current view"
-                    description="Try a different sort strategy or reopen top alert details."
-                    accentColor="var(--engine-protect)"
-                    action={{ label: "Open top alert", onClick: () => window.location.assign('/protect/alert-detail') }}
-                  />
+                  <div className="p-8">
+                    <EmptyState
+                      icon={Shield}
+                      title="No threats match your current view"
+                      description="Try a different sort strategy or reopen top alert details."
+                      accentColor="var(--engine-protect)"
+                      action={{ label: "Open top alert", onClick: () => window.location.assign('/protect/alert-detail') }}
+                    />
+                  </div>
                 ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left" role="table">
-                    <caption className="sr-only">Threat alerts sorted by confidence, severity, or time</caption>
-                    <thead>
-                      <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                        <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold" style={{ color: "#64748B" }} scope="col">ID</th>
-                        <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold" style={{ color: "#64748B" }} scope="col">Merchant</th>
-                        <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold" style={{ color: "#64748B" }} scope="col">Amount</th>
-                        <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("confidence")} aria-sort={sortField === "confidence" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                          <div className="flex items-center gap-1">Confidence <SortIndicator field="confidence" /></div>
-                        </th>
-                        <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("severity")} aria-sort={sortField === "severity" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                          <div className="flex items-center gap-1">Severity <SortIndicator field="severity" /></div>
-                        </th>
-                        <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("time")} aria-sort={sortField === "time" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                          <div className="flex items-center gap-1">Time <SortIndicator field="time" /></div>
-                        </th>
-                        <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold" style={{ color: "#64748B" }} scope="col">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <AnimatePresence>
-                        {sorted.map((t) => (
-                          <motion.tr
-                            key={t.id}
-                            variants={fadeUpVariant}
-                            exit={{ opacity: 0, y: -8, transition: { duration: 0.18 } }}
-                            className="group transition-colors hover:bg-white/[0.02]"
-                            style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
-                          >
-                            <td className="px-4 py-3.5"><span className="text-xs font-mono font-medium" style={{ color: "var(--engine-protect)" }}>{t.id}</span></td>
-                            <td className="px-4 py-3.5"><div className="flex flex-col gap-0.5"><span className="text-sm" style={{ color: "#F1F5F9" }}>{t.merchant}</span><span className="text-[10px]" style={{ color: "#64748B" }}>{t.description}</span></div></td>
-                            <td className="px-4 py-3.5"><span className="text-sm font-mono font-semibold tabular-nums" style={{ color: "#F1F5F9" }}>{t.amount}</span></td>
-                            <td className="px-4 py-3.5">
-                              <div className="flex items-center gap-2">
-                                <div className="h-1.5 w-12 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}><div className="h-full rounded-full" style={{ width: `${t.confidence * 100}%`, background: severityToneColor[t.severity] }} /></div>
-                                <span className="text-xs font-mono tabular-nums" style={{ color: severityToneColor[t.severity] }}>{t.confidence.toFixed(2)}</span>
-                              </div>
-                            </td>
-                            <td className="px-4 py-3.5"><span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider" style={{ background: severityConfig[t.severity].bg, color: severityConfig[t.severity].color }}>{t.severity === "Critical" && <AlertTriangle size={10} />}{t.severity}</span></td>
-                            <td className="px-4 py-3.5"><span className="text-xs" style={{ color: "#94A3B8" }}>{t.time}</span></td>
-                            <td className="px-4 py-3.5">
-                              <ButtonLink to="/protect/alert-detail" variant="glass" engine="protect" size="sm" className="rounded-lg text-xs" icon={<ChevronRight size={12} />} iconPosition="right" aria-label={`Investigate ${t.id}`}>
-                                Investigate
-                              </ButtonLink>
-                            </td>
-                          </motion.tr>
-                        ))}
-                      </AnimatePresence>
-                    </tbody>
-                  </table>
-                </div>
+                  <div className="overflow-x-auto relative z-10 w-full rounded-[24px] bg-white/[0.02] border border-white/[0.05]">
+                    <table className="w-full text-left border-collapse" role="table">
+                      <caption className="sr-only">Threat alerts sorted by confidence, severity, or time</caption>
+                      <thead>
+                        <tr className="border-b border-white/[0.08] bg-black/40 backdrop-blur-md">
+                          <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold" style={{ color: "#64748B" }} scope="col">ID</th>
+                          <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold" style={{ color: "#64748B" }} scope="col">Merchant</th>
+                          <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold" style={{ color: "#64748B" }} scope="col">Amount</th>
+                          <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("confidence")} aria-sort={sortField === "confidence" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                            <div className="flex items-center gap-2 hover:text-white/70 transition-colors">Confidence <SortIndicator field="confidence" /></div>
+                          </th>
+                          <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("severity")} aria-sort={sortField === "severity" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                            <div className="flex items-center gap-2 hover:text-white/70 transition-colors">Severity <SortIndicator field="severity" /></div>
+                          </th>
+                          <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("time")} aria-sort={sortField === "time" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                            <div className="flex items-center gap-2 hover:text-white/70 transition-colors">Time <SortIndicator field="time" /></div>
+                          </th>
+                          <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold" style={{ color: "#64748B" }} scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <AnimatePresence>
+                          {sorted.map((t) => (
+                            <motion.tr
+                              key={t.id}
+                              variants={fadeUpVariant}
+                              exit={{ opacity: 0, y: -8, transition: { duration: 0.18 } }}
+                              className="group transition-all hover:bg-white/[0.06] cursor-pointer"
+                              style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+                              onClick={() => window.location.assign('/protect/alert-detail')}
+                            >
+                              <td className="px-6 py-5"><span className="text-xs font-mono font-medium drop-shadow-[0_0_8px_rgba(239,68,68,0.4)]" style={{ color: "var(--engine-protect)" }}>{t.id}</span></td>
+                              <td className="px-6 py-5"><div className="flex flex-col gap-1.5"><span className="text-base font-medium text-white/90 group-hover:text-white transition-colors tracking-wide">{t.merchant}</span><span className="text-xs text-white/40 tracking-wide">{t.description}</span></div></td>
+                              <td className="px-6 py-5"><span className="text-base font-mono font-bold text-white/80 group-hover:text-white">{t.amount}</span></td>
+                              <td className="px-6 py-5">
+                                <div className="flex items-center gap-3">
+                                  <div className="h-1.5 w-16 rounded-full overflow-hidden bg-white/[0.05] border border-white/[0.02]"><div className="h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_currentColor]" style={{ width: `${t.confidence * 100}%`, background: severityToneColor[t.severity], color: severityToneColor[t.severity] }} /></div>
+                                  <span className="text-xs font-mono font-medium drop-shadow-[0_0_5px_currentColor]" style={{ color: severityToneColor[t.severity] }}>{t.confidence.toFixed(2)}</span>
+                                </div>
+                              </td>
+                              <td className="px-6 py-5"><span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest shadow-[0_0_10px_rgba(0,0,0,0.5)]" style={{ background: severityConfig[t.severity].bg, color: severityConfig[t.severity].color, border: `1px solid rgba(255,255,255,0.05)` }}>{t.severity === "Critical" && <AlertTriangle size={12} />}{t.severity}</span></td>
+                              <td className="px-6 py-5"><span className="text-xs font-mono text-white/40 group-hover:text-white/60 transition-colors uppercase tracking-widest">{t.time}</span></td>
+                              <td className="px-6 py-5">
+                                <div className="w-8 h-8 rounded-full flex items-center justify-center border border-white/[0.05] bg-white/[0.05] group-hover:bg-white/[0.15] group-hover:border-white/[0.2] transition-all shadow-inner">
+                                  <ChevronRight size={14} className="text-white/60 group-hover:text-white" />
+                                </div>
+                              </td>
+                            </motion.tr>
+                          ))}
+                        </AnimatePresence>
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </Surface>
             </div>
@@ -225,42 +232,58 @@ export default function ProtectPage() {
           </div>
 
           {/* Sidebar */}
-          <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-4" aria-label="Protect sidebar">
+          <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-6" aria-label="Protect sidebar">
             {/* Threat summary */}
-            <motion.div variants={fadeUpVariant}>
-              <Surface variant="glass" padding="md" className="flex flex-col gap-3">
-                <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Threat Summary</h3>
-                {[{ label: "Active threats", value: String(threats.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Blocked today", value: "3", color: "var(--state-healthy)" }, { label: "Avg response", value: "<200ms" }].map(d => (
-                  <div key={d.label} className="flex items-center justify-between">
-                    <span className="text-xs" style={{ color: "#64748B" }}>{d.label}</span>
-                    <span className="text-sm font-mono font-semibold tabular-nums" style={{ color: d.color || "#F1F5F9" }}>{d.value}</span>
-                  </div>
-                ))}
+            <motion.div variants={fadeUpVariant} className="h-full">
+              <Surface interactive className="relative h-full overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]" padding="none">
+                <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/10 to-transparent pointer-events-none" />
+
+                <div className="relative z-10 flex items-center justify-between">
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Threat Summary</h3>
+                  <Shield size={16} className="text-white/20" />
+                </div>
+
+                <div className="flex flex-col gap-4 relative z-10">
+                  {[{ label: "Active threats", value: String(threats.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Blocked today", value: "3", color: "var(--state-healthy)" }, { label: "Avg response", value: "<200ms" }].map((d, i) => (
+                    <div key={d.label} className={`flex items-center justify-between ${i !== 0 ? 'pt-4 border-t border-white/[0.04]' : ''}`}>
+                      <span className="text-sm font-medium text-white/60 tracking-wide">{d.label}</span>
+                      <span className="text-base font-mono font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" style={{ color: d.color || "rgba(255,255,255,0.9)" }}>{d.value}</span>
+                    </div>
+                  ))}
+                </div>
               </Surface>
             </motion.div>
 
             {/* Risk breakdown */}
             <motion.div variants={fadeUpVariant}>
-              <Surface variant="glass" padding="md" className="flex flex-col gap-3">
-                <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Risk Breakdown</h3>
-                {riskBreakdown.map(r => (
-                  <div key={r.label} className="flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs" style={{ color: "#94A3B8" }}>{r.label}</span>
-                      <span className="text-xs font-mono tabular-nums" style={{ color: r.color }}>{r.pct}%</span>
+              <Surface interactive className="relative h-full overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]" padding="none">
+                <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
+
+                <div className="relative z-10 flex items-center justify-between">
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Risk Breakdown</h3>
+                </div>
+
+                <div className="flex flex-col gap-5 relative z-10">
+                  {riskBreakdown.map(r => (
+                    <div key={r.label} className="flex flex-col gap-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-white/70 tracking-wide">{r.label}</span>
+                        <span className="text-xs font-mono font-bold drop-shadow-[0_0_5px_currentColor]" style={{ color: r.color }}>{r.pct}%</span>
+                      </div>
+                      <div className="h-2 rounded-full overflow-hidden bg-white/[0.04] border border-white/[0.02]">
+                        <div className="h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_currentColor]" style={{ width: `${r.pct}%`, background: r.color, color: r.color }} />
+                      </div>
                     </div>
-                    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
-                      <div className="h-full rounded-full transition-all duration-500" style={{ width: `${r.pct}%`, background: r.color }} />
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </Surface>
             </motion.div>
 
             {/* Primary CTA */}
             <motion.div variants={fadeUpVariant}>
-              <ButtonLink to="/protect/alert-detail" variant="glass" engine="protect" className="rounded-xl" icon={<AlertTriangle size={16} />}>
-                Open top alert
+              <ButtonLink to="/protect/alert-detail" variant="primary" engine="protect" className="w-full rounded-[24px] py-4 shadow-[0_0_30px_rgba(239,68,68,0.3)] hover:shadow-[0_0_50px_rgba(239,68,68,0.5)] transition-all font-bold tracking-wide border-none bg-gradient-to-r from-[var(--engine-protect)] to-red-400 text-white">
+                Open Top Alert
+                <ChevronRight size={18} className="ml-2" />
               </ButtonLink>
             </motion.div>
           </aside>

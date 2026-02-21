@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Surface } from '@/design-system'
+import { Surface, AuroraGradient } from '@/design-system'
 
 export interface AuthShellFeature {
   icon: LucideIcon
@@ -36,18 +36,25 @@ export function AuthShell({
         Skip to main content
       </a>
 
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_18%,rgba(0,240,255,0.05),transparent_56%),radial-gradient(ellipse_at_82%_82%,rgba(139,92,246,0.035),transparent_60%)]"
-        aria-hidden="true"
+      <AuroraGradient
+        engine="govern"
+        intensity="vivid"
+        className="fixed inset-0 pointer-events-none z-0"
       />
 
-      <div id="auth-shell-content" className="relative z-10 mx-auto max-w-6xl px-6 py-16 lg:py-20">
-        <Surface as="section" variant="glass" padding="md" className={cn('rounded-3xl', formClassName)}>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">{title}</p>
-          <h1 className="mt-3 font-display text-3xl font-semibold tracking-[var(--tracking-h2)] text-slate-100">
-            {subtitle}
-          </h1>
-          <div className="mt-7">{children}</div>
+      <div id="auth-shell-content" className="relative z-10 mx-auto max-w-lg px-6 py-16 lg:py-32 flex flex-col items-center">
+        <div className="w-16 h-16 rounded-3xl bg-black/40 border border-white/10 flex items-center justify-center mb-10 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-3xl">
+          <img src="/logo.png" alt="Poseidon" className="w-8 h-8 opacity-90 drop-shadow-[0_0_10px_rgba(0,240,255,0.3)]" />
+        </div>
+
+        <Surface as="section" variant="glass" className={cn('w-full rounded-[32px] p-8 md:p-10 border-white/[0.08] bg-black/40 backdrop-blur-2xl', formClassName)}>
+          <div className="text-center mb-8">
+            <h1 className="font-display text-2xl md:text-3xl font-semibold tracking-tight text-white mb-2">
+              {subtitle}
+            </h1>
+            <p className="text-sm font-medium uppercase tracking-widest text-white/50">{title}</p>
+          </div>
+          <div className="mt-8">{children}</div>
         </Surface>
       </div>
     </main>

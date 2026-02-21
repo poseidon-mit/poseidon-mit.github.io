@@ -24,10 +24,10 @@ interface QueueAction {
   description: string;
   urgency: 'high' | 'medium' | 'low';
   confidence: number;
-  impact: {approved: string;deferred: string;};
+  impact: { approved: string; deferred: string; };
   reversible: boolean;
   expiresIn: string | null;
-  factors: Array<{label: string;value: number;}>;
+  factors: Array<{ label: string; value: number; }>;
 }
 
 const queueActions: QueueAction[] = [
@@ -145,7 +145,7 @@ export function ExecuteApproval() {
   const { state, setExecuteDecision } = useDemoState();
   const { showToast } = useToast();
   const [expandedAction, setExpandedAction] = useState<string | null>(queueActions[0].id);
-  const [confirmAction, setConfirmAction] = useState<{id: string;type: 'approve' | 'defer';} | null>(null);
+  const [confirmAction, setConfirmAction] = useState<{ id: string; type: 'approve' | 'defer'; } | null>(null);
   const [consentReviewed, setConsentReviewed] = useState(false);
 
   const handleConfirm = () => {
@@ -187,7 +187,7 @@ export function ExecuteApproval() {
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
         style={{ background: 'var(--engine-execute)', color: 'var(--bg-oled)' }}>
-        
+
         Skip to main content
       </a>
 
@@ -195,13 +195,13 @@ export function ExecuteApproval() {
         className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/[0.06]"
 
         aria-label="Breadcrumb">
-        
-        <div className="mx-auto px-4 md:px-6 lg:px-8 h-14 flex items-center gap-2" style={{ maxWidth: '1280px' }}>
+
+        <div className="mx-auto px-4 md:px-6 lg:px-8 h-14 flex items-center gap-2" style={{ maxWidth: '1440px' }}>
           <Link
             to="/execute"
             className="flex items-center gap-1.5 text-sm font-medium hover:opacity-80 transition-opacity"
             style={{ color: 'var(--engine-execute)' }}>
-            
+
             <ArrowLeft className="h-4 w-4" />
             Execute
           </Link>
@@ -212,70 +212,72 @@ export function ExecuteApproval() {
 
       <motion.div
         id="main-content"
-        className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
-        style={{ maxWidth: '1280px' }}
+        className="mx-auto flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12 w-full pt-8 lg:pt-12"
+        style={{ maxWidth: '1440px' }}
         variants={stagger}
         initial="hidden"
         animate="visible"
         role="main">
-        
+
         {/* Hero */}
-        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 mb-1">
-            <Zap className="h-5 w-5" style={{ color: 'var(--engine-execute)' }} />
-            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--engine-execute)' }}>
-              Execute · Approval Queue
-            </span>
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-6 px-4 md:px-6 lg:px-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-execute)]/20 bg-[var(--engine-execute)]/10 text-[var(--engine-execute)] text-xs font-bold tracking-widest uppercase self-start shadow-[0_0_15px_rgba(251,191,36,0.2)]">
+            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[var(--engine-execute)]/20"><Zap size={12} /></span>
+            Execute · Approval Queue
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-white">Approval Queue</h1>
-          <p className="text-sm text-slate-400">
-            Consent-first: no action executes without your approval · 2 actions expire within 24 hours
-          </p>
+          <div className="flex flex-col gap-2">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-white leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+              Approval <span className="text-[var(--engine-execute)] drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]">Queue</span>
+            </h1>
+            <p className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide mb-2">
+              Consent-first: no action executes without your approval · 2 actions expire within 24 hours
+            </p>
+          </div>
         </motion.div>
 
         {/* KPI bar */}
-        <motion.div variants={fadeUpVariant}>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <motion.div variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
             {[
-            { label: 'Pending', value: String(visibleActions.length), color: 'var(--engine-execute)' },
-            { label: 'Approved (24h)', value: String(approvedCount), color: 'var(--engine-protect)' },
-            { label: 'Deferred', value: String(deferredCount), color: 'var(--engine-govern)' },
-            { label: 'Avg confidence', value: avgConfidence.toFixed(2), color: 'var(--engine-dashboard)' }].
-            map((kpi) => <Surface
-              key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
-                <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
-                <p className="text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
+              { label: 'Pending', value: String(visibleActions.length), color: 'var(--engine-execute)' },
+              { label: 'Approved (24h)', value: String(approvedCount), color: 'var(--engine-protect)' },
+              { label: 'Deferred', value: String(deferredCount), color: 'var(--engine-govern)' },
+              { label: 'Avg confidence', value: avgConfidence.toFixed(2), color: 'var(--engine-dashboard)' }].
+              map((kpi) => <Surface
+                key={kpi.label} className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-2 border border-white/[0.08]" as={motion.div}>
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <p className="relative z-10 text-[10px] uppercase tracking-widest font-semibold text-white/40 mb-1">{kpi.label}</p>
+                <p className="relative z-10 text-3xl font-light font-mono" style={{ color: kpi.color, textShadow: `0 0 10px ${kpi.color}60` }}>{kpi.value}</p>
               </Surface>
-            )}
+              )}
           </div>
         </motion.div>
 
         {/* 2-column layout */}
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex flex-col lg:flex-row gap-8 px-4 md:px-6 lg:px-8">
           {/* Main feed */}
-          <motion.div variants={fadeUpVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
+          <motion.div variants={fadeUpVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-6">
             {/* Consent scope card — must be reviewed before approving */}
-            <div
-              data-slot="consent_scope"
+            <Surface
+              data-surface-role="glass"
               onClick={() => setConsentReviewed(true)}
-              className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 cursor-pointer hover:bg-amber-500/10 transition-colors"
+              className="relative overflow-hidden rounded-[32px] border border-[var(--engine-execute)]/30 backdrop-blur-3xl bg-[var(--engine-execute)]/5 p-6 lg:p-8 cursor-pointer hover:bg-[var(--engine-execute)]/10 transition-colors shadow-[0_0_30px_rgba(251,191,36,0.1)]"
               role="button"
               tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && setConsentReviewed(true)}
+              onKeyDown={(e: React.KeyboardEvent) => e.key === 'Enter' && setConsentReviewed(true)}
               aria-label="Review consent scope">
-              
-              <div className="flex items-center justify-between">
+              <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+              <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider mb-0.5" style={{ color: 'var(--engine-execute)' }}>Consent scope</p>
-                  <p className="text-sm text-white/70">Click to review the data access scope for these actions.</p>
+                  <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--engine-execute)' }}>Consent scope</p>
+                  <p className="text-base text-white/70 tracking-wide font-light">Click to review the data access scope for these actions.</p>
                 </div>
                 {consentReviewed ?
-                <span className="text-xs font-semibold text-emerald-400 shrink-0">Reviewed</span> :
-
-                <span className="text-xs text-white/30 shrink-0">Tap to review</span>
+                  <span className="text-xs font-semibold text-[var(--state-healthy)] shrink-0 px-3 py-1.5 rounded-full border border-[var(--state-healthy)]/20 bg-[var(--state-healthy)]/10">Reviewed</span> :
+                  <span className="text-xs text-white/30 shrink-0 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 uppercase tracking-widest font-semibold flex items-center gap-2">Tap to review <Zap size={14} className="text-amber-500/50" /></span>
                 }
               </div>
-            </div>
+            </Surface>
 
             {/* Primary approve action */}
             <Button
@@ -285,214 +287,215 @@ export function ExecuteApproval() {
                 const firstPending = visibleActions[0];
                 if (firstPending) setConfirmAction({ id: firstPending.id, type: 'approve' });
               }}
-              variant="glass"
+              variant="primary"
               engine="execute"
-              fullWidth
-              className="rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed">
-              
-              {consentReviewed ? 'Approve & execute' : 'Review consent scope first'}
+              className="rounded-2xl text-base px-6 py-4 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.5)] transition-all bg-[var(--engine-execute)] text-black border-none font-semibold w-full">
+
+              {consentReviewed ? 'Approve & execute first' : 'Review consent scope to proceed'}
             </Button>
 
             {/* Urgency banner */}
-            <div className="rounded-2xl border border-red-500/30 bg-red-500/5 p-4" style={{ borderLeftWidth: 2, borderLeftColor: 'var(--state-critical)' }}>
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-red-400 shrink-0" />
-                <p className="text-sm text-white">
-                  <span className="text-red-400 font-semibold">2 actions expire within 24 hours.</span>
-                  {' '}Review them before the window closes.
+            <Surface className="relative overflow-hidden rounded-[24px] border border-[var(--state-critical)]/30 backdrop-blur-2xl bg-[var(--state-critical)]/5 p-5" style={{ borderLeftWidth: 4, borderLeftColor: 'var(--state-critical)' }}>
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="h-5 w-5 text-[var(--state-critical)] shrink-0 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+                <p className="text-sm text-white font-light tracking-wide">
+                  <span className="text-[var(--state-critical)] font-medium mr-1">2 actions expire within 24 hours.</span>
+                  Review them before the window closes.
                 </p>
               </div>
-            </div>
+            </Surface>
 
             {/* Action queue */}
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-6 mt-4">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 px-2 -mb-2">Pending ({visibleActions.length})</h2>
               {visibleActions.map((action) => <Surface
 
-                key={action.id} className="rounded-2xl"
+                key={action.id} className="relative overflow-hidden rounded-[32px] border border-white/[0.08] hover:border-white/[0.15] backdrop-blur-3xl bg-black/60 shadow-2xl transition-all"
 
-                style={{ borderLeftWidth: 3, borderLeftColor: urgencyBorderColor[action.urgency] }} variant="glass" padding="md">
-                
-                  <div className="flex items-start gap-3">
+                style={{ borderLeftWidth: 4, borderLeftColor: urgencyBorderColor[action.urgency] }}>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+                <div className="relative z-10 p-6 lg:p-8 flex flex-col gap-4">
+                  <div className="flex items-start justify-between gap-4 w-full">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-2">
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${engineBadgeCls[action.engine]}`}>{action.engine}</span>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium uppercase ${urgencyBadgeCls[action.urgency]}`}>{action.urgency}</span>
-                        {action.expiresIn && <span className="text-[10px] text-white/30">Expires in {action.expiresIn}</span>}
-                        {action.reversible && <span className="text-[10px] text-emerald-400/60">Reversible</span>}
+                      <div className="flex items-center gap-2 flex-wrap mb-3">
+                        <span className={`text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest border border-white/[0.05] ${engineBadgeCls[action.engine]}`}>{action.engine}</span>
+                        <span className={`text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest border border-white/[0.05] ${urgencyBadgeCls[action.urgency]}`}>{action.urgency}</span>
+                        {action.expiresIn && <span className="text-[10px] text-white/40 tracking-widest uppercase font-semibold ml-2">Expires in <span className="text-amber-500 px-1">{action.expiresIn}</span></span>}
+                        {action.reversible && <span className="text-[10px] text-[var(--state-healthy)] drop-shadow-[0_0_8px_rgba(34,197,94,0.4)] font-semibold tracking-widest uppercase ml-auto border border-[var(--state-healthy)]/20 px-3 py-1 bg-[var(--state-healthy)]/10 rounded-full">Reversible</span>}
                       </div>
+
                       <Button
-                      onClick={() => setExpandedAction(expandedAction === action.id ? null : action.id)}
-                      variant="ghost"
-                      engine="execute"
-                      className="text-sm font-medium text-white hover:text-amber-300 transition-colors text-left !px-0 !h-auto !min-h-0">
-                      
+                        onClick={() => setExpandedAction(expandedAction === action.id ? null : action.id)}
+                        variant="ghost"
+                        engine="execute"
+                        className="text-xl md:text-3xl font-light text-white hover:text-[var(--engine-execute)] transition-colors text-left !px-0 !h-auto !min-h-0 block w-full tracking-wide">
+
                         {action.title}
                       </Button>
-                      <p className="text-xs text-white/50 mt-1">{action.description}</p>
+                      <p className="text-[15px] text-white/50 leading-relaxed mt-2 tracking-wide font-light">{action.description}</p>
                     </div>
 
                     {/* Confidence ring (small) */}
-                    <div className="shrink-0 relative" aria-label={`Confidence: ${Math.round(action.confidence * 100)}%`}>
-                      <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
-                        <circle cx="20" cy="20" r="16" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
+                    <div className="shrink-0 relative hidden sm:flex items-center justify-center translate-y-2 pr-2" aria-label={`Confidence: ${Math.round(action.confidence * 100)}%`}>
+                      <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">
+                        <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
                         <circle
-                        cx="20" cy="20" r="16" fill="none" stroke="var(--engine-execute)" strokeWidth="4"
-                        strokeLinecap="round"
-                        strokeDasharray={`${action.confidence * 2 * Math.PI * 16} ${2 * Math.PI * 16}`}
-                        transform="rotate(-90 20 20)" />
-                      
+                          cx="32" cy="32" r="28" fill="none" stroke="var(--engine-execute)" strokeWidth="4"
+                          strokeLinecap="round"
+                          strokeDasharray={`${action.confidence * 2 * Math.PI * 28} ${2 * Math.PI * 28}`}
+                          transform="rotate(-90 32 32)" />
                       </svg>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[9px] font-bold text-amber-400">{Math.round(action.confidence * 100)}</span>
+                        <span className="text-sm font-mono font-bold text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]">{Math.round(action.confidence * 100)}%</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Expanded evidence */}
                   {expandedAction === action.id &&
-                <div className="mt-4 pt-3 border-t border-white/[0.06] space-y-3">
-                      {/* Action evidence */}
-                      <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--engine-execute)' }}>Action evidence</p>
-                      <div className="space-y-2">
-                        {action.factors.map((f) =>
-                    <div key={f.label} className="flex items-center gap-2">
-                            <span className="text-xs text-white/50 w-36 shrink-0">{f.label}</span>
-                            <div className="flex-1 h-1.5 rounded-full bg-white/10">
-                              <div className="h-full rounded-full bg-amber-500/60" style={{ width: `${f.value * 100}%` }} />
-                            </div>
-                            <span className="text-xs text-white/40 w-8 text-right">{f.value.toFixed(2)}</span>
-                          </div>
-                    )}
-                      </div>
-
-                      {/* SHAP attribution waterfall */}
-                      <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--engine-execute)' }}>SHAP attribution</p>
-                      <ShapWaterfall
-                    factors={action.factors.map((f) => ({ name: f.label, value: f.value }))}
-                    baseValue={50}
-                    className="mt-1" />
-                  
-
+                    <div className="mt-4 pt-6 border-t border-white/[0.06] flex flex-col gap-6">
                       {/* Expected outcome */}
-                      <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--engine-execute)' }}>Expected outcome</p>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/20 p-3">
-                          <p className="text-[10px] text-emerald-400 uppercase tracking-wider mb-1">If approved</p>
-                          <p className="text-xs text-white/70">{action.impact.approved}</p>
-                        </div>
-                        <div className="rounded-xl bg-amber-500/5 border border-amber-500/20 p-3">
-                          <p className="text-[10px] text-amber-400 uppercase tracking-wider mb-1">If deferred</p>
-                          <p className="text-xs text-white/70">{action.impact.deferred}</p>
+                      <div>
+                        <p className="text-[10px] font-semibold uppercase tracking-widest mb-3 flex items-center gap-2" style={{ color: 'var(--engine-execute)' }}><Zap size={10} />Expected outcome</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="rounded-[24px] bg-emerald-500/5 border border-emerald-500/20 p-5 shadow-[0_0_15px_rgba(16,185,129,0.05)]">
+                            <p className="text-xs font-semibold text-emerald-400 uppercase tracking-widest mb-2">If approved</p>
+                            <p className="text-sm text-white/70 font-light tracking-wide leading-relaxed">{action.impact.approved}</p>
+                          </div>
+                          <div className="rounded-[24px] bg-amber-500/5 border border-amber-500/20 p-5 shadow-[0_0_15px_rgba(245,158,11,0.05)]">
+                            <p className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-2">If deferred</p>
+                            <p className="text-sm text-white/70 font-light tracking-wide leading-relaxed">{action.impact.deferred}</p>
+                          </div>
                         </div>
                       </div>
 
-                      <p className="text-xs text-white/30">Confidence {action.confidence} · {action.factors.length} factors · {action.reversible ? 'Reversible' : 'Irreversible'} · Execute engine</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-t border-white/[0.06] pt-6">
+                        {/* Action evidence */}
+                        <div className="order-2 md:order-1">
+                          <p className="text-[10px] font-semibold uppercase tracking-widest mb-4 flex items-center gap-2 text-white/50">Action evidence</p>
+                          <div className="space-y-4">
+                            {action.factors.map((f) =>
+                              <div key={f.label} className="flex items-center gap-4">
+                                <span className="text-xs font-medium tracking-wide text-white/70 w-36 shrink-0">{f.label}</span>
+                                <div className="flex-1 h-2 rounded-full overflow-hidden bg-white/10 shadow-inner">
+                                  <div className="h-full rounded-full shadow-[0_0_10px_currentColor] bg-amber-500/80" style={{ width: `${f.value * 100}%` }} />
+                                </div>
+                                <span className="text-xs font-mono text-white/70 w-10 text-right">{f.value.toFixed(2)}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
 
-                      {/* Action buttons */}
-                      <div className="flex gap-2 pt-1">
-                        <Button
-                      variant="glass"
-                      engine="execute"
-                      size="sm"
-                      className="rounded-lg text-xs"
-                      onClick={() => setConfirmAction({ id: action.id, type: 'approve' })}>
-                      
-                          Approve
-                        </Button>
-                        <Button
-                      variant="secondary"
-                      engine="execute"
-                      size="sm"
-                      className="rounded-lg text-xs"
-                      onClick={() => setConfirmAction({ id: action.id, type: 'defer' })}>
-                      Defer</Button>
-                        <ButtonLink to="/dashboard" variant="ghost" engine="execute" size="sm" className="rounded-lg text-xs text-white/30 hover:text-white/50">More info</ButtonLink>
+                        {/* SHAP attribution waterfall */}
+                        <div className="order-1 md:order-2 bg-black/20 p-4 rounded-xl border border-white/5">
+                          <p className="text-[10px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--engine-protect)' }}>SHAP attribution</p>
+                          <ShapWaterfall
+                            factors={action.factors.map((f) => ({ name: f.label, value: f.value }))}
+                            baseValue={50}
+                            className="mt-1" />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap items-center justify-between gap-4 mt-6 pt-6 border-t border-white/[0.06]">
+                        <div className="flex gap-3">
+                          <Button
+                            variant="glass"
+                            engine="execute"
+                            className="rounded-2xl text-sm px-8 py-3 bg-[var(--engine-execute)]/10 border border-[var(--engine-execute)]/30 hover:bg-[var(--engine-execute)] hover:text-black transition-colors"
+                            onClick={() => setConfirmAction({ id: action.id, type: 'approve' })}>
+
+                            Approve
+                          </Button>
+                          <Button
+                            variant="glass"
+                            engine="execute"
+                            className="rounded-2xl text-sm px-8 py-3 border border-white/10 hover:bg-white/10 transition-colors"
+                            onClick={() => setConfirmAction({ id: action.id, type: 'defer' })}>
+                            Defer</Button>
+                        </div>
+                        <ButtonLink to="/dashboard" variant="ghost" engine="execute" className="rounded-2xl text-xs text-white/40 hover:text-white pb-0 pt-0">Review details</ButtonLink>
                       </div>
                     </div>
-                }
-                </Surface>
+                  }
+                </div>
+              </Surface>
               )}
             </div>
 
             {visibleActions.length === 0 &&
-            <div className="flex flex-col items-center gap-3 py-16">
-                <CheckCircle2 className="w-12 h-12 opacity-30" style={{ color: 'var(--engine-protect)' }} />
-                <p className="text-sm text-white/50">All actions reviewed. Queue is clear.</p>
-                <p className="text-xs text-white/30">{approvedCount} actions approved today.</p>
-              </div>
+              <Surface className="relative overflow-hidden rounded-[32px] p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col items-center justify-center gap-4 mt-4 text-center">
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
+                <div className="w-20 h-20 rounded-full bg-[var(--engine-protect)]/10 flex items-center justify-center border border-[var(--engine-protect)]/20 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
+                  <CheckCircle2 className="w-10 h-10 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" style={{ color: 'var(--engine-protect)' }} />
+                </div>
+                <h3 className="text-2xl font-light text-white tracking-wide mt-2">All actions reviewed</h3>
+                <p className="text-base font-light text-white/50 tracking-wide">The approval queue is clear. {approvedCount} actions were approved today.</p>
+              </Surface>
             }
-            <p className="text-xs text-white/30">Consent-first: no action executes without explicit approval · {visibleActions.length} pending · {approvedCount} approved</p>
           </motion.div>
 
           {/* Side rail */}
-          <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Approval queue sidebar">
-            {/* Queue health ring */}
-            <Surface className="rounded-2xl flex flex-col items-center" variant="glass" padding="md">
-              <div className="relative" aria-label={`Queue health: ${queueHealthScore}`}>
-                <svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true">
-                  <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
-                  <circle
-                    cx="40" cy="40" r="32" fill="none" stroke="var(--engine-execute)" strokeWidth="6"
-                    strokeLinecap="round"
-                    strokeDasharray={`${(queueHealthScore / 100) * 2 * Math.PI * 32} ${2 * Math.PI * 32}`}
-                    transform="rotate(-90 40 40)" />
-                  
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-lg font-bold text-white">{queueHealthScore}</span>
+          <aside className="w-full lg:w-[320px] shrink-0 flex flex-col gap-6" aria-label="Approval queue sidebar">
+            <div className="sticky top-24 flex flex-col gap-6">
+              {/* Queue health ring */}
+              <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col items-center gap-4 border border-white/[0.08]">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="relative z-10" aria-label={`Queue health: ${queueHealthScore}`}>
+                  <svg width="100" height="100" viewBox="0 0 100 100" aria-hidden="true">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
+                    <circle
+                      cx="50" cy="50" r="40" fill="none" stroke="var(--engine-execute)" strokeWidth="8"
+                      strokeLinecap="round"
+                      strokeDasharray={`${(queueHealthScore / 100) * 2 * Math.PI * 40} ${2 * Math.PI * 40}`}
+                      transform="rotate(-90 50 50)" />
+
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pt-1">
+                    <span className="text-3xl font-light font-mono text-white drop-shadow-[0_0_10px_rgba(251,191,36,0.3)]">{queueHealthScore}</span>
+                  </div>
                 </div>
-              </div>
-              <p className="text-xs text-white/50 mt-2">Queue health</p>
-              <p className="text-[10px] text-white/30">Composite urgency score</p>
-            </Surface>
+                <div className="relative z-10 flex flex-col items-center gap-1 text-center">
+                  <p className="text-sm font-semibold tracking-wide text-white/90 uppercase tracking-widest mt-2">Queue health</p>
+                  <p className="text-xs font-light text-white/50">Composite urgency score</p>
+                </div>
+              </Surface>
 
-            {/* Approval activity */}
-            <Surface className="rounded-2xl" variant="glass" padding="md">
-              <div className="flex items-center gap-2 mb-3">
-                <CheckCircle2 className="h-4 w-4 text-amber-400" />
-                <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Approval Activity</h3>
-              </div>
-              <div className="space-y-3">
-                {[
-                { label: `${approvedCount} approved today`, date: 'Now', done: approvedCount > 0 },
-                { label: `${visibleActions.length} pending review`, date: 'Now', done: false, current: true },
-                { label: `${deferredCount} deferred`, date: 'Later', done: false }].
-                map((m) =>
-                <div key={m.label} className="flex items-start gap-2">
-                    <div className={`w-2 h-2 rounded-full mt-1 shrink-0 ${m.done ? 'bg-emerald-400' : m.current ? 'bg-amber-400 animate-pulse' : 'bg-white/20'}`} />
-                    <div>
-                      <p className="text-xs text-white/70">{m.label}</p>
-                      <p className="text-[10px] text-white/30">{m.date}</p>
-                    </div>
+              {/* Approval activity */}
+              <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 border border-white/[0.08]">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="relative z-10 flex items-center justify-between border-b border-white/[0.06] pb-4">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[var(--engine-execute)]" />
+                    <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest">Approval Activity</h3>
                   </div>
-                )}
-              </div>
-            </Surface>
+                </div>
+                <div className="relative z-10 space-y-4">
+                  {[
+                    { label: `${approvedCount} approved today`, date: 'Now', done: approvedCount > 0 },
+                    { label: `${visibleActions.length} pending review`, date: 'Now', done: false, current: true },
+                    { label: `${deferredCount} deferred`, date: 'Later', done: false }].
+                    map((m) =>
+                      <div key={m.label} className="flex items-start gap-4 p-2 -mx-2 rounded-xl hover:bg-white/[0.02] transition-colors">
+                        <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${m.done ? 'bg-[var(--state-healthy)] drop-shadow-[0_0_5px_rgba(34,197,94,0.5)]' : m.current ? 'bg-[var(--engine-execute)] animate-pulse drop-shadow-[0_0_5px_rgba(251,191,36,0.5)]' : 'bg-white/20'}`} />
+                        <div className="flex-1">
+                          <p className={`text-sm tracking-wide ${m.current ? 'text-white font-medium' : 'text-white/60 font-light'}`}>{m.label}</p>
+                          <p className="text-[10px] font-mono tracking-widest text-white/40 mt-1 uppercase">{m.date}</p>
+                        </div>
+                      </div>
+                    )}
+                </div>
+              </Surface>
 
-            {/* Queue summary */}
-            <Surface className="rounded-2xl" variant="glass" padding="md">
-              <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Queue Summary</h3>
-              <div className="space-y-2.5">
-                {[
-                { label: 'Pending', value: String(visibleActions.length), color: 'text-amber-400' },
-                { label: 'Approved today', value: String(approvedCount), color: 'text-emerald-400' },
-                { label: 'Deferred', value: String(deferredCount), color: 'text-blue-400' },
-                { label: 'Avg confidence', value: avgConfidence.toFixed(2), color: 'text-white/70' }].
-                map((row) =>
-                <div key={row.label} className="flex justify-between">
-                    <span className="text-xs text-white/50">{row.label}</span>
-                    <span className={`text-xs font-medium ${row.color}`}>{row.value}</span>
-                  </div>
-                )}
-              </div>
-            </Surface>
-
-            {/* Completed */}
-            <Surface className="rounded-2xl" variant="glass" padding="md">
-              <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Completed</h3>
-              <p className="text-xs text-white/30">{approvedCount} actions completed today. Review history for full trace.</p>
-              <ButtonLink to="/execute/history" variant="ghost" engine="execute" size="sm" className="text-xs mt-2 !px-0 hover:underline">Open history</ButtonLink>
-            </Surface>
+              {/* Completed */}
+              <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4 border border-white/[0.08]">
+                <div className="absolute inset-0 bg-gradient-to-br from-[var(--state-healthy)]/10 to-transparent pointer-events-none" />
+                <h3 className="relative z-10 text-xs font-semibold text-white/50 uppercase tracking-widest border-b border-white/[0.06] pb-4">Completed</h3>
+                <p className="relative z-10 text-sm font-light text-white/70 tracking-wide leading-relaxed">{approvedCount} actions completed today. Review history for full traceability.</p>
+                <div className="relative z-10 mt-2">
+                  <ButtonLink to="/execute/history" variant="glass" engine="execute" className="w-full rounded-xl text-sm py-3 justify-center text-white/80 hover:bg-white/10 transition-colors">Open history</ButtonLink>
+                </div>
+              </Surface>
+            </div>
           </aside>
         </div>
 
@@ -511,13 +514,13 @@ export function ExecuteApproval() {
               aria-modal="true"
               aria-labelledby="execute-approval-confirm-title"
               style={{ background: '#0f1e35', border: '1px solid rgba(255,255,255,0.12)' }}>
-              
+
               <div className="flex flex-col gap-4 p-2">
                 <div>
                   <p
                     className="text-xs font-semibold uppercase tracking-widest mb-1"
                     style={{ color: isApprove ? 'var(--engine-execute)' : 'var(--state-warning)' }}>
-                    
+
                     {isApprove ? 'Confirm Approval' : 'Confirm Deferral'}
                   </p>
                   <h3 id="execute-approval-confirm-title" className="text-base font-semibold text-white">{action.title}</h3>
@@ -531,7 +534,7 @@ export function ExecuteApproval() {
                     background: isApprove ? 'rgba(34,197,94,0.05)' : 'rgba(251,191,36,0.08)',
                     border: `1px solid ${isApprove ? 'rgba(34,197,94,0.2)' : 'rgba(251,191,36,0.22)'}`
                   }}>
-                  
+
                   <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: isApprove ? 'var(--engine-protect)' : 'var(--engine-execute)' }}>
                     {isApprove ? 'Expected outcome' : 'If deferred'}
                   </p>
@@ -547,7 +550,7 @@ export function ExecuteApproval() {
                     fullWidth
                     className="rounded-xl text-sm"
                     onClick={handleConfirm}>
-                    
+
                     {isApprove ? 'Approve' : 'Defer'}
                   </Button>
                   <Button
@@ -556,7 +559,7 @@ export function ExecuteApproval() {
                     fullWidth
                     className="rounded-xl text-sm"
                     onClick={() => setConfirmAction(null)}>
-                    
+
                     Cancel
                   </Button>
                 </div>

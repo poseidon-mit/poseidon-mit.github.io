@@ -175,197 +175,220 @@ export function GovernTrust() {
 
       <motion.div
         id="main-content"
-        className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
-        style={{ maxWidth: '1280px' }}
+        className="mx-auto flex flex-col gap-8 w-full font-sans pb-8"
+        style={{ maxWidth: '1440px' }}
         variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
         role="main"
       >
-        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 mb-1">
-            <Shield className="h-5 w-5" style={{ color: 'var(--engine-govern)' }} />
-            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--engine-govern)' }}>
-              Govern · Trust
-            </span>
-          </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-white">Trust Dashboard</h1>
-          <p className="text-sm text-slate-400">
-            Per-engine trust scores, threshold configuration, and auto-approval settings.
-          </p>
-        </motion.div>
-
-        <motion.div variants={fadeUpVariant}>
-          <Surface className="rounded-2xl flex flex-col md:flex-row items-center gap-6" variant="glass" padding="md">
-            <div className="relative flex items-center justify-center shrink-0" aria-label={`System trust score: ${systemTrust} out of 100`}>
-              <svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
-                <circle cx="48" cy="48" r="40" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
-                <circle
-                  cx="48"
-                  cy="48"
-                  r="40"
-                  fill="none"
-                  stroke="var(--engine-govern)"
-                  strokeWidth="8"
-                  strokeLinecap="round"
-                  strokeDasharray={`${(systemTrust / 100) * circumference} ${circumference}`}
-                  transform="rotate(-90 48 48)"
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-2xl font-bold text-white">{systemTrust}</span>
-                <span className="text-xs text-white/40">/100</span>
-              </div>
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 px-4 md:px-6 lg:px-8 pt-8 lg:pt-12">
+          <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-govern)]/20 bg-[var(--engine-govern)]/10 text-[var(--engine-govern)] text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(20,184,166,0.2)]">
+                <Shield size={12} /> Govern · Trust
+              </span>
             </div>
-            <div className="flex-1 w-full">
-              <p className="text-lg font-semibold text-white">System Trust Score</p>
-              <p className="text-sm text-slate-400 mt-0.5">
-                {`Weighted composite across all 4 engines (baseline ${baselineSystemTrust})`}
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-                {draft.map((card) => (
-                  <div key={card.engine} className="flex flex-col gap-1">
-                    <span className="text-xs text-white/40">{card.engine}</span>
-                    <span className="text-xl font-bold" style={{ color: card.color }}>{card.trustScore}</span>
-                    <div className="h-1 rounded-full bg-white/10">
-                      <div className="h-full rounded-full transition-all" style={{ width: `${card.trustScore}%`, background: card.color }} />
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>Trust Dashboard</h1>
+            <p className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide">
+              Per-engine trust scores, threshold configuration, and auto-approval settings.
+            </p>
+          </motion.div>
+
+          <motion.div variants={fadeUpVariant}>
+            <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col md:flex-row items-center gap-8 lg:gap-12 p-8 lg:p-12 mt-4" variant="glass" padding="none">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+              <div className="relative z-10 flex items-center justify-center shrink-0" aria-label={`System trust score: ${systemTrust} out of 100`}>
+                <svg width="140" height="140" viewBox="0 0 140 140" aria-hidden="true" className="drop-shadow-[0_0_20px_rgba(20,184,166,0.3)]">
+                  <circle cx="70" cy="70" r="60" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
+                  <circle
+                    cx="70"
+                    cy="70"
+                    r="60"
+                    fill="none"
+                    stroke="var(--engine-govern)"
+                    strokeWidth="10"
+                    strokeLinecap="round"
+                    strokeDasharray={`${(systemTrust / 100) * (2 * Math.PI * 60)} ${2 * Math.PI * 60}`}
+                    transform="rotate(-90 70 70)"
+                    style={{ transition: 'stroke-dasharray 1s ease-in-out' }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-4xl font-light font-mono text-white tracking-tighter" style={{ textShadow: '0 0 20px rgba(255,255,255,0.5)' }}>{systemTrust}</span>
+                  <span className="text-xs uppercase tracking-widest font-semibold text-white/40 mt-1">/100</span>
+                </div>
+              </div>
+              <div className="relative z-10 flex-1 w-full flex flex-col gap-6">
+                <div>
+                  <h2 className="text-2xl font-light text-white tracking-wide mb-2">System Trust Score</h2>
+                  <p className="text-sm font-mono text-white/50 tracking-wide">
+                    Weighted composite across all 4 engines (baseline <span className="text-[var(--engine-govern)]">{baselineSystemTrust}</span>)
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6 border-t border-white/[0.06]">
+                  {draft.map((card) => (
+                    <div key={card.engine} className="flex flex-col justify-between gap-3 group">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] uppercase font-bold tracking-widest" style={{ color: card.color }}>{card.engine}</span>
+                        <span className="text-xl font-mono text-white/90 group-hover:text-white transition-colors">{card.trustScore}</span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-black/40 overflow-hidden shadow-inner border border-white/[0.03]">
+                        <div className="h-full rounded-full transition-all duration-700 opacity-80 group-hover:opacity-100" style={{ width: `${card.trustScore}%`, background: card.color, boxShadow: `0 0 10px ${card.color}80` }} />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          </Surface>
-        </motion.div>
+            </Surface>
+          </motion.div>
+        </motion.section>
 
-        <div className="flex flex-col lg:flex-row gap-6">
-          <motion.div variants={fadeUpVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
-            <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Per-Engine Configuration</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col lg:flex-row gap-8 px-4 md:px-6 lg:px-8 pb-12 w-full">
+          <motion.div variants={fadeUpVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-6">
+            <h2 className="text-xs font-semibold text-white/50 uppercase tracking-widest pl-2">Per-Engine Configuration</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {draft.map((card, idx) => (
                 <Surface
                   key={card.engine}
-                  className="rounded-2xl"
-                  style={{ borderLeftWidth: 3, borderLeftColor: card.color }}
+                  className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl transition-all hover:bg-white/[0.02]"
                   variant="glass"
-                  padding="md"
+                  padding="none"
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm font-semibold text-white">{card.engine}</span>
-                    <span className="text-base font-bold" style={{ color: card.color }}>{card.trustScore}</span>
-                  </div>
-
-                  <div className="mb-3">
-                    <div className="flex justify-between text-xs mb-1.5">
-                      <span className="text-white/50">Risk tolerance</span>
-                      <span className="text-white/70">{card.riskTolerance}%</span>
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+                  <div className="absolute left-0 top-0 bottom-0 w-1 opacity-50" style={{ background: card.color }} />
+                  <div className="relative z-10 p-6 lg:p-8">
+                    <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/[0.06]">
+                      <span className="text-xl font-light text-white tracking-wide">{card.engine}</span>
+                      <span className="text-2xl font-mono font-bold" style={{ color: card.color, textShadow: `0 0 15px ${card.color}60` }}>{card.trustScore}</span>
                     </div>
-                    <input
-                      type="range"
-                      min={0}
-                      max={100}
-                      value={card.riskTolerance}
-                      onChange={(event) => updateSlider(idx, 'riskTolerance', Number(event.target.value))}
-                      className="w-full accent-blue-500 cursor-pointer"
-                      aria-label={`${card.engine} risk tolerance`}
-                    />
-                  </div>
 
-                  <div className="mb-4">
-                    <div className="flex justify-between text-xs mb-1.5">
-                      <span className="text-white/50">Auto-approval threshold</span>
-                      <span className="text-white/70">{card.autoApproval}%</span>
-                    </div>
-                    <input
-                      type="range"
-                      min={50}
-                      max={100}
-                      value={card.autoApproval}
-                      onChange={(event) => updateSlider(idx, 'autoApproval', Number(event.target.value))}
-                      className="w-full accent-blue-500 cursor-pointer"
-                      aria-label={`${card.engine} auto-approval threshold`}
-                    />
-                  </div>
-
-                  <div className="space-y-2.5 border-t border-white/[0.06] pt-3">
-                    {card.toggles.map((toggle, toggleIdx) => (
-                      <div key={toggle.label} className="flex items-center justify-between">
-                        <span className="text-xs text-white/50">{toggle.label}</span>
-                        <Toggle
-                          checked={toggle.enabled}
-                          onChange={() => toggleSwitch(idx, toggleIdx)}
-                          ariaLabel={toggle.label}
+                    <div className="flex flex-col gap-8">
+                      <div className="flex flex-col gap-3">
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="uppercase tracking-widest text-white/40 font-semibold">Risk tolerance</span>
+                          <span className="font-mono text-white/70 bg-white/[0.05] px-2 py-0.5 rounded border border-white/[0.05]">{card.riskTolerance}%</span>
+                        </div>
+                        <input
+                          type="range"
+                          min={0}
+                          max={100}
+                          value={card.riskTolerance}
+                          onChange={(event) => updateSlider(idx, 'riskTolerance', Number(event.target.value))}
+                          className="w-full accent-[var(--engine-govern)] cursor-pointer h-1.5 bg-white/10 rounded-full appearance-none outline-none focus-visible:ring-2 focus-visible:ring-[var(--engine-govern)]/50"
+                          aria-label={`${card.engine} risk tolerance`}
                         />
                       </div>
-                    ))}
+
+                      <div className="flex flex-col gap-3">
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="uppercase tracking-widest text-white/40 font-semibold">Auto-approval</span>
+                          <span className="font-mono text-white/70 bg-white/[0.05] px-2 py-0.5 rounded border border-white/[0.05]">{card.autoApproval}%</span>
+                        </div>
+                        <input
+                          type="range"
+                          min={50}
+                          max={100}
+                          value={card.autoApproval}
+                          onChange={(event) => updateSlider(idx, 'autoApproval', Number(event.target.value))}
+                          className="w-full accent-[var(--engine-govern)] cursor-pointer h-1.5 bg-white/10 rounded-full appearance-none outline-none focus-visible:ring-2 focus-visible:ring-[var(--engine-govern)]/50"
+                          aria-label={`${card.engine} auto-approval threshold`}
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-4 mt-2 pt-6 border-t border-white/[0.06]">
+                        {card.toggles.map((toggle, toggleIdx) => (
+                          <div key={toggle.label} className="flex items-center justify-between group">
+                            <span className="text-xs font-mono text-white/60 group-hover:text-white/80 transition-colors tracking-wide">{toggle.label}</span>
+                            <Toggle
+                              checked={toggle.enabled}
+                              onChange={() => toggleSwitch(idx, toggleIdx)}
+                              ariaLabel={toggle.label}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </Surface>
               ))}
             </div>
 
-            <div className="flex gap-3 mt-1">
-              <Button
+            <div className="flex items-center gap-4 mt-4 bg-white/[0.02] p-4 rounded-2xl border border-white/[0.04]">
+              <button
                 disabled={!dirty}
                 onClick={handleSave}
-                variant="glass"
-                engine="govern"
-                size="sm"
-                className={`rounded-xl text-sm font-semibold transition-all ${dirty ? '' : 'bg-white/5 text-white/30 cursor-not-allowed'}`}
+                className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:shadow-[0_0_30px_rgba(20,184,166,0.5)] ${dirty ? 'bg-[var(--engine-govern)] text-black cursor-pointer' : 'bg-white/5 text-white/30 cursor-not-allowed shadow-none hover:shadow-none'}`}
               >
-                Save changes
-              </Button>
-              <Button
+                Save Changes
+              </button>
+              <button
                 disabled={!dirty}
                 onClick={handleReset}
-                variant="secondary"
-                engine="govern"
-                size="sm"
-                className="rounded-xl text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all border ${dirty ? 'border-white/20 text-white hover:bg-white/[0.05] cursor-pointer' : 'border-white/5 text-white/20 cursor-not-allowed hidden'}`}
               >
                 Reset
-              </Button>
+              </button>
             </div>
           </motion.div>
 
-          <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Trust statistics">
-            <Surface className="rounded-2xl" variant="glass" padding="md">
-              <div className="flex items-center gap-2 mb-3">
-                <TrendingUp className="h-4 w-4 text-blue-400" />
-                <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Trust Trend</h3>
-              </div>
-              <div className="space-y-2.5">
-                {trustTrend.map((row) => (
-                  <div key={row.label} className="flex justify-between">
-                    <span className="text-xs text-white/50">{row.label}</span>
-                    <span className={`text-xs font-medium ${row.positive ? 'text-emerald-400' : 'text-white/70'}`}>{row.value}</span>
+          <motion.aside className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6" aria-label="Trust statistics" variants={staggerContainerVariant}>
+            <motion.div variants={fadeUpVariant}>
+              <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6 lg:p-8" padding="none">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="relative z-10 flex items-center gap-3 mb-6 pb-4 border-b border-white/[0.06]">
+                  <div className="p-2 rounded-lg bg-[var(--state-info)]/10 border border-[var(--state-info)]/20">
+                    <TrendingUp className="h-4 w-4 text-[var(--state-info)]" />
                   </div>
-                ))}
-              </div>
-            </Surface>
+                  <h3 className="text-xs font-semibold text-white/70 uppercase tracking-widest">Trust Trend</h3>
+                </div>
+                <div className="relative z-10 flex flex-col gap-4 text-sm font-mono tracking-wide border border-white/[0.04] bg-white/[0.02] rounded-2xl p-4">
+                  {trustTrend.map((row, index) => (
+                    <div key={row.label} className={`flex justify-between items-center ${index !== trustTrend.length - 1 ? 'border-b border-white/[0.04] pb-3' : ''}`}>
+                      <span className="text-[10px] uppercase font-sans tracking-widest text-white/40">{row.label}</span>
+                      <span className={`font-semibold ${row.positive ? 'text-[var(--state-healthy)] drop-shadow-[0_0_8px_rgba(34,197,94,0.3)]' : 'text-white/80'}`}>{row.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </Surface>
+            </motion.div>
 
-            <Surface className="rounded-2xl" variant="glass" padding="md">
-              <div className="flex items-center gap-2 mb-3">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">System Status</h3>
-              </div>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-sm text-emerald-400 font-medium">All engines healthy</span>
-              </div>
-              <p className="text-xs text-white/40">
-                Trust scores recalculated every 15 min based on accuracy, transparency, fairness, and compliance.
-              </p>
-            </Surface>
+            <motion.div variants={fadeUpVariant}>
+              <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6 lg:p-8" padding="none">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="relative z-10 flex items-center gap-3 mb-6 pb-4 border-b border-white/[0.06]">
+                  <div className="p-2 rounded-lg bg-[var(--state-healthy)]/10 border border-[var(--state-healthy)]/20">
+                    <CheckCircle2 className="h-4 w-4 text-[var(--state-healthy)]" />
+                  </div>
+                  <h3 className="text-xs font-semibold text-white/70 uppercase tracking-widest">System Status</h3>
+                </div>
+                <div className="relative z-10 flex flex-col gap-4">
+                  <div className="flex items-center gap-3 p-4 rounded-2xl bg-[var(--state-healthy)]/5 border border-[var(--state-healthy)]/10">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[var(--state-healthy)] shadow-[0_0_10px_rgba(34,197,94,0.6)] animate-pulse" />
+                    <span className="text-sm text-[var(--state-healthy)] font-medium tracking-wide">All engines healthy</span>
+                  </div>
+                  <p className="text-xs text-white/40 leading-relaxed font-light">
+                    Trust scores recalculated every <span className="text-white/70 font-mono">15 min</span> based on accuracy, transparency, fairness, and compliance.
+                  </p>
+                </div>
+              </Surface>
+            </motion.div>
 
-            <Surface className="rounded-2xl" variant="glass" padding="md">
-              <div className="flex items-center gap-2 mb-3">
-                <AlertTriangle className="h-4 w-4 text-amber-400" />
-                <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Policy Notes</h3>
-              </div>
-              <p className="text-xs text-white/40">
-                Threshold changes are logged in the audit ledger. Requires Govern-level authorization.
-              </p>
-            </Surface>
-          </aside>
+            <motion.div variants={fadeUpVariant}>
+              <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6 lg:p-8" padding="none">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="relative z-10 flex items-center gap-3 mb-4 pb-4 border-b border-white/[0.06]">
+                  <div className="p-2 rounded-lg bg-[var(--state-warning)]/10 border border-[var(--state-warning)]/20">
+                    <AlertTriangle className="h-4 w-4 text-[var(--state-warning)]" />
+                  </div>
+                  <h3 className="text-xs font-semibold text-white/70 uppercase tracking-widest">Policy Notes</h3>
+                </div>
+                <p className="relative z-10 text-xs text-white/40 leading-relaxed font-light">
+                  Threshold changes are logged in the audit ledger. Requires <span className="text-[var(--engine-govern)] font-semibold tracking-wide">Govern-level authorization</span>.
+                </p>
+              </Surface>
+            </motion.div>
+          </motion.aside>
         </div>
 
         <GovernFooter auditId={GOVERNANCE_META['/govern/trust'].auditId} pageContext={GOVERNANCE_META['/govern/trust'].pageContext} />

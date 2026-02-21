@@ -141,8 +141,8 @@ export default function GovernAuditPage() {
 
       <motion.div
         id="main-content"
-        className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
-        style={{ maxWidth: "1280px" }}
+        className="mx-auto flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12 w-full pt-8 lg:pt-12"
+        style={{ maxWidth: "1440px" }}
         variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
@@ -150,70 +150,74 @@ export default function GovernAuditPage() {
       >
 
         {/* ── Hero ── */}
-        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
-          <motion.div variants={fadeUpVariant}>
-            <Link to="/govern" className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-all hover:bg-white/[0.04]" style={{ color: "#94A3B8" }}>
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 px-4 md:px-6 lg:px-8">
+          <motion.div variants={fadeUpVariant} className="flex items-center justify-between">
+            <Link to="/govern" className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] text-white/70 hover:text-white backdrop-blur-md">
               <ArrowLeft size={16} />Back to Govern
             </Link>
-          </motion.div>
-          <motion.div variants={fadeUpVariant}>
-            <span className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider uppercase" style={{ borderColor: "rgba(59,130,246,0.3)", background: "rgba(59,130,246,0.08)", color: "var(--engine-govern)" }}><ShieldCheck size={12} />Audit Ledger</span>
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-govern)]/20 bg-[var(--engine-govern)]/10 text-[var(--engine-govern)] text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(20,184,166,0.2)]">
+              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[var(--engine-govern)]/20"><ShieldCheck size={12} /></span>
+              Audit Ledger
+            </span>
           </motion.div>
           <motion.div variants={fadeUpVariant} className="flex flex-col gap-2">
-            <h1 className="text-2xl md:text-4xl font-bold leading-tight tracking-tight text-balance" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Audit Ledger</h1>
-            <p className="text-sm md:text-base leading-relaxed" style={{ color: "#CBD5E1" }}>Immutable record of {DECISIONS_AUDITED.toLocaleString()} decisions with full evidence chain</p>
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>Audit Ledger</h1>
+            <p className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide">Immutable record of {DECISIONS_AUDITED.toLocaleString()} decisions with full evidence chain</p>
           </motion.div>
 
-          {/* Search */}
-          <motion.div variants={fadeUpVariant}>
-            <div className="flex items-center gap-3 rounded-xl border px-4 py-3" style={{ borderColor: "rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.03)" }}>
-              <Search size={16} style={{ color: "#64748B" }} aria-hidden="true" />
-              <input type="search" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search by decision ID, type, or date..." className="flex-1 bg-transparent text-sm outline-none placeholder:text-[#475569]" style={{ color: "#F1F5F9" }} aria-label="Search audit ledger" />
+          <motion.div variants={fadeUpVariant} className="flex flex-col md:flex-row gap-4 items-center justify-between w-full mt-4">
+            {/* Search */}
+            <div className="flex items-center gap-3 rounded-2xl border border-white/[0.08] px-4 py-3 bg-white/[0.02] backdrop-blur-xl w-full md:max-w-md focus-within:border-[var(--engine-govern)]/50 focus-within:bg-white/[0.04] transition-all shadow-inner">
+              <Search size={18} className="text-white/40" aria-hidden="true" />
+              <input type="search" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search ID, type, or date..." className="flex-1 bg-transparent text-sm md:text-base outline-none placeholder:text-white/30 text-white font-light tracking-wide" aria-label="Search audit ledger" />
             </div>
-          </motion.div>
 
-          {/* Filter pills */}
-          <motion.div variants={fadeUpVariant} className="flex flex-wrap gap-2" role="tablist" aria-label="Filter decisions">
-            {filterTabs.map(f => {
-              const isActive = f.label === activeFilter
-              return (
-                <Button key={f.label} role="tab" aria-selected={isActive} onClick={() => setActiveFilter(f.label)} variant="glass" engine="govern" size="sm" className="rounded-full text-xs" springPress={false}>
-                  {f.label}
-                  {f.count != null && <span className="text-[10px]" style={{ color: isActive ? "var(--engine-govern)" : "#64748B" }}>({f.count})</span>}
-                </Button>
-              )
-            })}
+            {/* Filter pills */}
+            <div className="flex flex-wrap gap-2 w-full md:w-auto" role="tablist" aria-label="Filter decisions">
+              {filterTabs.map(f => {
+                const isActive = f.label === activeFilter
+                return (
+                  <Button key={f.label} role="tab" aria-selected={isActive} onClick={() => setActiveFilter(f.label)} variant={isActive ? "primary" : "glass"} engine="govern" size="sm" className={`rounded-full text-xs transition-all ${isActive ? 'bg-[var(--engine-govern)] text-black font-semibold shadow-[0_0_15px_rgba(20,184,166,0.4)] border-none' : 'text-white/70 hover:text-white'}`} springPress={false}>
+                    {f.label}
+                    {f.count != null && <span className={`text-[10px] ml-1.5 px-1.5 py-0.5 rounded-full ${isActive ? 'bg-black/20 text-black' : 'bg-white/10 text-white/50'}`}>{f.count}</span>}
+                  </Button>
+                )
+              })}
+            </div>
           </motion.div>
         </motion.section>
 
         {/* ── Table + Sidebar ── */}
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="flex-1 min-w-0 lg:w-2/3">
+        <div className="flex flex-col lg:flex-row gap-8 px-4 md:px-6 lg:px-8 mt-4">
+          <div className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-6">
             {/* Desktop table */}
             <div className="hidden md:block">
-              <Surface variant="glass" padding="none" data-surface-role="structure" className="overflow-hidden !p-0">
+              <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-0">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
                 {sorted.length === 0 ? (
-                  <EmptyState
-                    icon={Search}
-                    title="No matching decisions"
-                    description="Try adjusting filters or using a different search term."
-                    accentColor="var(--engine-govern)"
-                  />
+                  <div className="p-12 relative z-10">
+                    <EmptyState
+                      icon={Search}
+                      title="No matching decisions"
+                      description="Try adjusting filters or using a different search term."
+                      accentColor="var(--engine-govern)"
+                    />
+                  </div>
                 ) : null}
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto relative z-10">
                   <table className="w-full text-left" role="table">
                     <thead>
-                      <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                        <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("id")}><div className="flex items-center gap-1">{"Decision ID"} <SortIndicator field="id" /></div></th>
-                        <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("timestamp")}><div className="flex items-center gap-1">Timestamp <SortIndicator field="timestamp" /></div></th>
-                        <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold" style={{ color: "#64748B" }} scope="col">Type</th>
-                        <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold" style={{ color: "#64748B" }} scope="col">Action</th>
-                        <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("confidence")}><div className="flex items-center gap-1">Confidence <SortIndicator field="confidence" /></div></th>
-                        <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("evidence")}><div className="flex items-center gap-1">Evidence <SortIndicator field="evidence" /></div></th>
-                        <th className="px-4 py-3 text-[11px] uppercase tracking-wider font-semibold" style={{ color: "#64748B" }} scope="col">Status</th>
+                      <tr className="bg-white/[0.02] border-b border-white/[0.06]">
+                        <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold cursor-pointer select-none text-white/50 hover:text-white/80 transition-colors" scope="col" onClick={() => handleSort("id")}><div className="flex items-center gap-2">{"Decision ID"} <SortIndicator field="id" /></div></th>
+                        <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold cursor-pointer select-none text-white/50 hover:text-white/80 transition-colors" scope="col" onClick={() => handleSort("timestamp")}><div className="flex items-center gap-2">Timestamp <SortIndicator field="timestamp" /></div></th>
+                        <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold text-white/50" scope="col">Type</th>
+                        <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold text-white/50" scope="col">Action</th>
+                        <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold cursor-pointer select-none text-white/50 hover:text-white/80 transition-colors" scope="col" onClick={() => handleSort("confidence")}><div className="flex items-center gap-2">Confidence <SortIndicator field="confidence" /></div></th>
+                        <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold cursor-pointer select-none text-white/50 hover:text-white/80 transition-colors" scope="col" onClick={() => handleSort("evidence")}><div className="flex items-center gap-2">Evidence <SortIndicator field="evidence" /></div></th>
+                        <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold text-white/50" scope="col">Status</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-white/[0.04]">
                       {sorted.map(entry => {
                         const sCfg = statusCfg[entry.status]
                         const SIcon = sCfg.icon
@@ -221,8 +225,7 @@ export default function GovernAuditPage() {
                           <motion.tr
                             key={entry.id}
                             variants={fadeUpVariant}
-                            className="group cursor-pointer transition-colors hover:bg-white/[0.02] focus-within:bg-white/[0.02]"
-                            style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+                            className="group cursor-pointer transition-colors hover:bg-white/[0.04] focus-within:bg-white/[0.04]"
                             onClick={() => navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)}
                             onKeyDown={(event) => {
                               if (event.key === 'Enter' || event.key === ' ') {
@@ -233,22 +236,21 @@ export default function GovernAuditPage() {
                             tabIndex={0}
                             aria-label={`Open audit detail for ${entry.id}`}
                           >
-                            <td className="px-4 py-3.5">
+                            <td className="px-6 py-4">
                               <Link
                                 to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
-                                className="text-sm font-mono font-medium underline-offset-2 hover:underline focus-visible:underline"
-                                style={{ color: "var(--engine-govern)" }}
+                                className="text-sm font-mono tracking-wide underline-offset-4 hover:underline focus-visible:underline text-[var(--engine-govern)] transition-all group-hover:text-teal-300"
                                 aria-label={`Open audit detail for ${entry.id}`}
                               >
                                 {entry.id}
                               </Link>
                             </td>
-                            <td className="px-4 py-3.5"><span className="text-xs" style={{ color: "#94A3B8" }}>{entry.timestamp}</span></td>
-                            <td className="px-4 py-3.5"><span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium" style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}><CircleDot size={10} />{entry.type}</span></td>
-                            <td className="px-4 py-3.5"><span className="text-sm" style={{ color: "#CBD5E1" }}>{entry.action}</span></td>
-                            <td className="px-4 py-3.5"><span className="text-xs font-mono tabular-nums" style={{ color: getConfidenceColor(entry.confidence) }}>{formatConfidence(entry.confidence)}</span></td>
-                            <td className="px-4 py-3.5"><span className="text-sm font-mono tabular-nums" style={{ color: "#CBD5E1" }}>{entry.evidence}</span></td>
-                            <td className="px-4 py-3.5"><span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold" style={{ background: sCfg.bg, color: sCfg.color }}><SIcon size={11} />{entry.status}</span></td>
+                            <td className="px-6 py-4"><span className="text-xs tracking-wide text-white/60">{entry.timestamp}</span></td>
+                            <td className="px-6 py-4"><span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase font-bold tracking-widest border border-white/[0.05]" style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}><CircleDot size={12} />{entry.type}</span></td>
+                            <td className="px-6 py-4"><span className="text-sm tracking-wide text-white/90 font-light">{entry.action}</span></td>
+                            <td className="px-6 py-4"><span className="text-sm font-mono tracking-widest" style={{ color: getConfidenceColor(entry.confidence), textShadow: `0 0 10px ${getConfidenceColor(entry.confidence)}50` }}>{formatConfidence(entry.confidence)}</span></td>
+                            <td className="px-6 py-4"><span className="text-sm font-mono tracking-widest text-white/80">{entry.evidence}</span></td>
+                            <td className="px-6 py-4"><span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase font-bold tracking-widest border border-white/[0.05]" style={{ background: sCfg.bg, color: sCfg.color }}><SIcon size={12} />{entry.status}</span></td>
                           </motion.tr>
                         )
                       })}
@@ -259,15 +261,18 @@ export default function GovernAuditPage() {
             </div>
 
             {/* Mobile cards */}
-            <div className="flex flex-col gap-3 md:hidden">
+            <div className="flex flex-col gap-4 md:hidden">
               {sorted.length === 0 ? (
-                <Surface variant="glass" padding="md">
-                  <EmptyState
-                    icon={Search}
-                    title="No matching decisions"
-                    description="Try adjusting filters or using a different search term."
-                    accentColor="var(--engine-govern)"
-                  />
+                <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-8">
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
+                  <div className="relative z-10">
+                    <EmptyState
+                      icon={Search}
+                      title="No matching decisions"
+                      description="Try adjusting filters or using a different search term."
+                      accentColor="var(--engine-govern)"
+                    />
+                  </div>
                 </Surface>
               ) : null}
               {sorted.map(entry => {
@@ -275,24 +280,26 @@ export default function GovernAuditPage() {
                 const SIcon = sCfg.icon
                 return (
                   <motion.div key={entry.id} variants={fadeUpVariant}>
-                    <Surface variant="glass" padding="md" className="flex flex-col gap-3">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium" style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}><CircleDot size={10} />{entry.type}</span>
-                        <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: sCfg.bg, color: sCfg.color }}><SIcon size={10} />{entry.status}</span>
-                        <span className="ml-auto text-xs" style={{ color: "#64748B" }}>{entry.timestamp}</span>
+                    <Surface className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-5 flex flex-col gap-4">
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+                      <div className="relative z-10 flex items-center gap-2 flex-wrap pb-3 border-b border-white/[0.06]">
+                        <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase font-bold tracking-widest border border-white/[0.05]" style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}><CircleDot size={12} />{entry.type}</span>
+                        <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase font-bold tracking-widest border border-white/[0.05]" style={{ background: sCfg.bg, color: sCfg.color }}><SIcon size={12} />{entry.status}</span>
+                        <span className="ml-auto text-[10px] uppercase tracking-widest text-white/40">{entry.timestamp}</span>
                       </div>
-                      <Link
-                        to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
-                        className="text-sm font-mono font-medium underline-offset-2 hover:underline focus-visible:underline"
-                        style={{ color: "var(--engine-govern)" }}
-                        aria-label={`Open audit detail for ${entry.id}`}
-                      >
-                        {entry.id}
-                      </Link>
-                      <span className="text-xs" style={{ color: "#CBD5E1" }}>{entry.action}</span>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs" style={{ color: "#64748B" }}>{entry.evidence} evidence pts</span>
-                        <span className="text-xs font-mono tabular-nums" style={{ color: getConfidenceColor(entry.confidence) }}>Conf: {formatConfidence(entry.confidence)}</span>
+                      <div className="relative z-10 flex flex-col gap-1">
+                        <Link
+                          to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
+                          className="text-base font-mono font-medium tracking-wide underline-offset-4 hover:underline focus-visible:underline text-[var(--engine-govern)]"
+                          aria-label={`Open audit detail for ${entry.id}`}
+                        >
+                          {entry.id}
+                        </Link>
+                        <span className="text-sm font-light tracking-wide text-white/90">{entry.action}</span>
+                      </div>
+                      <div className="relative z-10 flex items-center justify-between pt-3 border-t border-white/[0.06]">
+                        <span className="text-xs text-white/50 tracking-wide">{entry.evidence} evidence pts</span>
+                        <span className="text-xs font-mono tracking-widest" style={{ color: getConfidenceColor(entry.confidence), textShadow: `0 0 10px ${getConfidenceColor(entry.confidence)}50` }}>Conf: {formatConfidence(entry.confidence)}</span>
                       </div>
                     </Surface>
                   </motion.div>
@@ -302,51 +309,62 @@ export default function GovernAuditPage() {
           </div>
 
           {/* Sidebar */}
-          <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-4" aria-label="Audit sidebar">
-            {/* Summary */}
-            <Surface variant="glass" padding="md" className="flex flex-col gap-3">
-              <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Audit Summary</h3>
-              {[
-                { label: "Total decisions", value: DECISIONS_AUDITED.toLocaleString() },
-                { label: "Verified", value: `${VERIFIED_COUNT.toLocaleString()} (${VERIFIED_PERCENT}%)`, color: "var(--state-healthy)" },
-                { label: "Pending", value: `${PENDING_REVIEW_COUNT.toLocaleString()} (${PENDING_REVIEW_PERCENT}%)`, color: "var(--state-warning)" },
-                { label: "Flagged", value: `${FLAGGED_COUNT.toLocaleString()} (${FLAGGED_PERCENT}%)`, color: "var(--state-critical)" },
-                { label: "Avg evidence", value: "8.4 pts" },
-                { label: "Compliance", value: `${COMPLIANCE_SCORE}%`, color: "var(--state-healthy)" },
-              ].map(d => (
-                <div key={d.label} className="flex items-center justify-between">
-                  <span className="text-xs" style={{ color: "#64748B" }}>{d.label}</span>
-                  <span className="text-sm font-mono font-semibold tabular-nums" style={{ color: d.color || "#F1F5F9" }}>{d.value}</span>
+          <aside className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6" aria-label="Audit sidebar">
+            <div className="sticky top-24 flex flex-col gap-6">
+              {/* Summary */}
+              <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-5">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Audit Summary</h3>
+                <div className="relative z-10 flex flex-col gap-4">
+                  {[
+                    { label: "Total decisions", value: DECISIONS_AUDITED.toLocaleString() },
+                    { label: "Verified", value: `${VERIFIED_COUNT.toLocaleString()} (${VERIFIED_PERCENT}%)`, color: "var(--state-healthy)" },
+                    { label: "Pending", value: `${PENDING_REVIEW_COUNT.toLocaleString()} (${PENDING_REVIEW_PERCENT}%)`, color: "var(--state-warning)" },
+                    { label: "Flagged", value: `${FLAGGED_COUNT.toLocaleString()} (${FLAGGED_PERCENT}%)`, color: "var(--state-critical)" },
+                    { label: "Avg evidence", value: "8.4 pts" },
+                    { label: "Compliance", value: `${COMPLIANCE_SCORE}%`, color: "var(--state-healthy)" },
+                  ].map(d => (
+                    <div key={d.label} className="flex items-center justify-between">
+                      <span className="text-xs tracking-wide text-white/60">{d.label}</span>
+                      <span className="text-sm font-mono tracking-widest" style={{ color: d.color || "white", textShadow: d.color ? `0 0 10px ${d.color}60` : 'none' }}>{d.value}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </Surface>
+              </Surface>
 
-            {/* Evidence flow */}
-            <Surface variant="glass" padding="md" className="flex flex-col gap-4">
-              <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Evidence Flow</h3>
-              {["Data Source", "AI Analysis", "Evidence Aggregation", "Confidence Score", "Audit Record"].map((step, i, arr) => (
-                <React.Fragment key={step}>
-                  <div className="w-full flex items-center justify-center rounded-lg px-3 py-2 text-xs font-medium" style={{ background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.2)", color: "#93C5FD" }}>{step}</div>
-                  {i < arr.length - 1 && <div className="flex items-center justify-center" aria-hidden="true"><ArrowDown size={14} style={{ color: "var(--engine-govern)" }} /></div>}
-                </React.Fragment>
-              ))}
-            </Surface>
+              {/* Evidence flow */}
+              <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Evidence Flow</h3>
+                <div className="relative z-10 flex flex-col gap-3 mt-2">
+                  {["Data Source", "AI Analysis", "Evidence Aggregation", "Confidence Score", "Audit Record"].map((step, i, arr) => (
+                    <React.Fragment key={step}>
+                      <div className="w-full flex items-center justify-center rounded-2xl px-4 py-3 text-xs font-bold uppercase tracking-widest border border-[var(--engine-govern)]/30 bg-[var(--engine-govern)]/10 text-[var(--engine-govern)] shadow-inner">{step}</div>
+                      {i < arr.length - 1 && <div className="flex items-center justify-center -my-1" aria-hidden="true"><ArrowDown size={16} className="text-[var(--engine-govern)]/50 drop-shadow-[0_0_8px_rgba(20,184,166,0.5)]" /></div>}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </Surface>
 
-            {/* Export */}
-            <Surface variant="glass" padding="md" className="flex flex-col gap-3">
-              <h3 className="text-sm font-semibold" style={{ fontFamily: "var(--font-display)", color: "#F1F5F9" }}>Export Options</h3>
-              <Button disabled title="Export available in production release" variant="secondary" engine="govern" fullWidth size="sm" className="rounded-xl text-xs cursor-not-allowed opacity-60" aria-label="Export full ledger preview only">
-                <Download size={14} />Export full ledger (CSV)<PreviewBadge className="ml-2" />
-              </Button>
-              <Button disabled title="Export available in production release" variant="secondary" engine="govern" fullWidth size="sm" className="rounded-xl text-xs cursor-not-allowed opacity-60" aria-label="Generate compliance report preview only">
-                <FileText size={14} />Generate compliance report (PDF)<PreviewBadge className="ml-2" />
-              </Button>
-            </Surface>
+              {/* Export */}
+              <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-5">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Export Options</h3>
+                <div className="relative z-10 flex flex-col gap-3">
+                  <Button disabled title="Export available in production release" variant="glass" engine="govern" fullWidth className="rounded-2xl text-sm py-4 cursor-not-allowed opacity-60 border border-white/[0.08] hover:border-white/[0.08]" aria-label="Export full ledger preview only">
+                    <Download size={16} className="mr-2" />Export full ledger (CSV)<PreviewBadge className="ml-2" />
+                  </Button>
+                  <Button disabled title="Export available in production release" variant="glass" engine="govern" fullWidth className="rounded-2xl text-sm py-4 cursor-not-allowed opacity-60 border border-white/[0.08] hover:border-white/[0.08]" aria-label="Generate compliance report preview only">
+                    <FileText size={16} className="mr-2" />Generate report (PDF)<PreviewBadge className="ml-2" />
+                  </Button>
+                </div>
+              </Surface>
 
-            {/* Primary CTA: Back to govern overview -> /govern */}
-            <ButtonLink to="/govern" variant="glass" engine="govern" className="rounded-xl text-sm">
-              <ArrowLeft size={16} />Back to govern overview
-            </ButtonLink>
+              {/* Primary CTA: Back to govern overview -> /govern */}
+              <ButtonLink to="/govern" variant="glass" engine="govern" className="w-full rounded-2xl text-lg px-6 py-5 shadow-[0_0_20px_rgba(20,184,166,0.15)] hover:shadow-[0_0_30px_rgba(20,184,166,0.3)] transition-all bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] text-white font-semibold flex items-center justify-center gap-2">
+                <ArrowLeft size={18} />Back to govern overview
+              </ButtonLink>
+            </div>
           </aside>
         </div>
 

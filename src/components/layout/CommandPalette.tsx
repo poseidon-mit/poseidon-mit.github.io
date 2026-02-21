@@ -245,7 +245,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
 
   return (
     <CommandDialog open={isOpen} onOpenChange={(open) => { if (!open) { if (isListening) stopListening(); setSearchValue(''); onClose(); } }}>
-      <div className="flex items-center">
+      <div className="flex items-center border-b border-white/5 px-2">
         <CommandInput
           placeholder={isListening ? 'Listening…' : 'Search engines, actions, presentations…'}
           value={searchValue}

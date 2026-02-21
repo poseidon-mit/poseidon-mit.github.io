@@ -11,48 +11,48 @@ import { DEMO_THREAD } from '@/lib/demo-thread';
 import { Button, Surface } from '@/design-system';
 
 const reviewCards = [
-{
-  id: 'RV-001', urgency: 'Critical' as const, urgencyColor: 'var(--state-critical)', engine: 'Protect', engineColor: 'var(--engine-protect)',
-  action: 'Block card', confidence: 0.71, reason: `Amount $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} near threshold`,
-  aiRec: 'AI recommends blocking due to anomalous spending pattern. Transaction origin flagged.',
-  auditId: 'GV-2026-0216-OVR-001'
-},
-{
-  id: 'RV-002', urgency: 'Warning' as const, urgencyColor: 'var(--engine-execute)', engine: 'Execute', engineColor: 'var(--engine-execute)',
-  action: 'Auto-pay bill', confidence: 0.76, reason: 'New merchant, first payment',
-  aiRec: 'AI recommends proceeding. Merchant verified, amount within normal range.',
-  auditId: 'GV-2026-0216-OVR-002'
-},
-{
-  id: 'RV-003', urgency: 'Info' as const, urgencyColor: 'var(--engine-govern)', engine: 'Grow', engineColor: 'var(--engine-grow)',
-  action: 'Rebalance portfolio', confidence: 0.79, reason: 'Market conditions changed',
-  aiRec: 'AI suggests shifting 5% from bonds to equities based on updated forecasts.',
-  auditId: 'GV-2026-0216-OVR-003'
-}];
+  {
+    id: 'RV-001', urgency: 'Critical' as const, urgencyColor: 'var(--state-critical)', engine: 'Protect', engineColor: 'var(--engine-protect)',
+    action: 'Block card', confidence: 0.71, reason: `Amount $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} near threshold`,
+    aiRec: 'AI recommends blocking due to anomalous spending pattern. Transaction origin flagged.',
+    auditId: 'GV-2026-0216-OVR-001'
+  },
+  {
+    id: 'RV-002', urgency: 'Warning' as const, urgencyColor: 'var(--engine-execute)', engine: 'Execute', engineColor: 'var(--engine-execute)',
+    action: 'Auto-pay bill', confidence: 0.76, reason: 'New merchant, first payment',
+    aiRec: 'AI recommends proceeding. Merchant verified, amount within normal range.',
+    auditId: 'GV-2026-0216-OVR-002'
+  },
+  {
+    id: 'RV-003', urgency: 'Info' as const, urgencyColor: 'var(--engine-govern)', engine: 'Grow', engineColor: 'var(--engine-grow)',
+    action: 'Rebalance portfolio', confidence: 0.79, reason: 'Market conditions changed',
+    aiRec: 'AI suggests shifting 5% from bonds to equities based on updated forecasts.',
+    auditId: 'GV-2026-0216-OVR-003'
+  }];
 
 
 const recentResolved = [
-{ decision: 'Block suspicious transfer', reviewer: 'J. Smith', outcome: 'Confirmed', time: '2h ago' },
-{ decision: 'Auto-save $500', reviewer: 'M. Chen', outcome: 'Confirmed', time: '4h ago' },
-{ decision: 'Increase 401k contrib.', reviewer: 'A. Patel', outcome: 'Overridden', time: '1d ago' },
-{ decision: 'Cancel subscription', reviewer: 'J. Smith', outcome: 'Confirmed', time: '1d ago' },
-{ decision: 'Adjust investment mix', reviewer: 'M. Chen', outcome: 'Confirmed', time: '2d ago' }];
+  { decision: 'Block suspicious transfer', reviewer: 'J. Smith', outcome: 'Confirmed', time: '2h ago' },
+  { decision: 'Auto-save $500', reviewer: 'M. Chen', outcome: 'Confirmed', time: '4h ago' },
+  { decision: 'Increase 401k contrib.', reviewer: 'A. Patel', outcome: 'Overridden', time: '1d ago' },
+  { decision: 'Cancel subscription', reviewer: 'J. Smith', outcome: 'Confirmed', time: '1d ago' },
+  { decision: 'Adjust investment mix', reviewer: 'M. Chen', outcome: 'Confirmed', time: '2d ago' }];
 
 
 const overrideTrendData = [
-{ day: 'Mon', overrides: 2 },
-{ day: 'Tue', overrides: 1 },
-{ day: 'Wed', overrides: 3 },
-{ day: 'Thu', overrides: 1 },
-{ day: 'Fri', overrides: 2 },
-{ day: 'Sat', overrides: 0 },
-{ day: 'Sun', overrides: 1 }];
+  { day: 'Mon', overrides: 2 },
+  { day: 'Tue', overrides: 1 },
+  { day: 'Wed', overrides: 3 },
+  { day: 'Thu', overrides: 1 },
+  { day: 'Fri', overrides: 2 },
+  { day: 'Sat', overrides: 0 },
+  { day: 'Sun', overrides: 1 }];
 
 
 const overrideReasons = [
-{ reason: 'Low confidence', pct: 45 },
-{ reason: 'Edge case', pct: 32 },
-{ reason: 'Policy change', pct: 23 }];
+  { reason: 'Low confidence', pct: 45 },
+  { reason: 'Edge case', pct: 32 },
+  { reason: 'Policy change', pct: 23 }];
 
 
 export function GovernOversight() {
@@ -75,151 +75,181 @@ export function GovernOversight() {
         </div>
       </nav>
 
-      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8" style={{ maxWidth: '1280px' }} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
-        {/* Hero */}
-        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(59,130,246,0.15)' }}>
-              <Eye className="h-4 w-4" style={{ color: 'var(--engine-govern)' }} />
+      <motion.div id="main-content" className="mx-auto flex flex-col gap-8 w-full font-sans pb-8" style={{ maxWidth: '1440px' }} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 px-4 md:px-6 lg:px-8 pt-8 lg:pt-12">
+          {/* Hero */}
+          <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-govern)]/20 bg-[var(--engine-govern)]/10 text-[var(--engine-govern)] text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(20,184,166,0.2)]">
+                <Eye size={12} /> Govern · Oversight
+              </span>
             </div>
-            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--engine-govern)' }}>Govern · Oversight</span>
-          </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-white">Human Oversight</h1>
-          <p className="text-sm text-slate-400">Override rate: 3.2%. Zero escalations this week.</p>
-        </motion.div>
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>Human Oversight</h1>
+            <p className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide">Override rate: <span className="text-[var(--engine-protect)] font-mono drop-shadow-[0_0_10px_rgba(59,130,246,0.4)]">3.2%</span>. Zero escalations this week.</p>
+          </motion.div>
 
-        {/* KPI bar */}
-        <motion.div variants={fadeUpVariant} className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-          { label: 'Override rate', value: '3.2%', color: 'var(--engine-protect)' },
-          { label: 'Human reviews', value: '41', color: 'var(--engine-govern)' },
-          { label: 'Avg review time', value: '4.2m', color: 'var(--engine-dashboard)' },
-          { label: 'Escalations', value: '0', color: 'var(--engine-protect)' }].
-          map((kpi) => <Surface
-            key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
-              <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
-              <p className="text-lg font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
-            </Surface>
-          )}
-        </motion.div>
+          {/* KPI bar */}
+          <motion.div variants={fadeUpVariant} className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6 mt-4">
+            {[
+              { label: 'Override rate', value: '3.2%', color: 'var(--engine-protect)' },
+              { label: 'Human reviews', value: '41', color: 'var(--engine-govern)' },
+              { label: 'Avg review time', value: '4.2m', color: 'white' },
+              { label: 'Escalations', value: '0', color: 'var(--state-healthy)' }].
+              map((kpi) => <Surface
+                key={kpi.label} className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-5 md:p-6" padding="none">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="relative z-10 flex flex-col gap-2">
+                  <p className="text-[10px] md:text-xs uppercase tracking-widest font-semibold text-white/50">{kpi.label}</p>
+                  <p className="text-2xl md:text-3xl font-light font-mono truncate" style={{ color: kpi.color, textShadow: kpi.color !== 'white' ? `0 0 15px ${kpi.color}60` : 'none' }}>{kpi.value}</p>
+                </div>
+              </Surface>
+              )}
+          </motion.div>
+        </motion.section>
 
         {/* Main 2-col */}
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex flex-col lg:flex-row gap-8 px-4 md:px-6 lg:px-8 pb-12 w-full">
           {/* Main feed */}
-          <div className="flex-1 lg:w-2/3 flex flex-col gap-6">
+          <div className="flex-1 lg:w-2/3 flex flex-col gap-8">
             {/* Review queue */}
-            <motion.div variants={fadeUpVariant}>
-              <div className="flex items-center gap-2 mb-4">
-                <h2 className="text-sm font-semibold text-white">Flagged for human review</h2>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400">3</span>
-              </div>
+            <motion.div variants={staggerContainerVariant} className="flex flex-col gap-6">
+              <motion.div variants={fadeUpVariant} className="flex items-center gap-3 border-b border-white/[0.06] pb-4">
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)]">Flagged for human review</h2>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--state-warning)]/20 text-[var(--state-warning)] border border-[var(--state-warning)]/30">3</span>
+              </motion.div>
               <div className="flex flex-col gap-4">
                 {reviewCards.map((card) => <Surface
-                  key={card.id} className="rounded-2xl" style={{ borderLeftWidth: 3, borderLeftColor: card.urgencyColor }} variant="glass" padding="md">
-                    <div className="flex flex-wrap items-center gap-2 mb-3">
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: `${card.urgencyColor}20`, color: card.urgencyColor }}>{card.urgency}</span>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: `${card.engineColor}20`, color: card.engineColor }}>{card.engine}</span>
-                      <span className="text-xs text-white/40 ml-auto">Confidence: <span className="font-semibold text-white/70">{card.confidence}</span></span>
-                    </div>
-                    <h3 className="text-sm font-semibold text-white mb-1">{card.action}</h3>
-                    <p className="text-xs text-slate-400 mb-3">{card.reason}</p>
-
-                    <div className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-3 mb-4">
-                      <div className="flex items-center gap-1.5 mb-1">
-                        <Bot className="h-3 w-3 text-white/30" />
-                        <span className="text-[10px] text-white/30 uppercase tracking-wider">AI Recommendation</span>
+                  key={card.id} className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 p-6 lg:p-8" style={{ borderLeftWidth: 4, borderLeftColor: card.urgencyColor }} variant="glass" padding="none">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+                  <div className="relative z-10 flex flex-col gap-6">
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full border" style={{ background: `${card.urgencyColor}10`, color: card.urgencyColor, borderColor: `${card.urgencyColor}30` }}>{card.urgency}</span>
+                        <span className="text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full border" style={{ background: `${card.engineColor}10`, color: card.engineColor, borderColor: `${card.engineColor}30` }}>{card.engine}</span>
                       </div>
-                      <p className="text-xs text-white/50">{card.aiRec}</p>
+                      <div className="flex items-center gap-2 bg-white/[0.03] px-3 py-1 rounded-full border border-white/[0.05]">
+                        <span className="text-[10px] uppercase tracking-widest text-white/40">Confidence</span>
+                        <span className="text-xs font-mono font-bold" style={{ color: card.engineColor, textShadow: `0 0 10px ${card.engineColor}80` }}>{card.confidence}</span>
+                      </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Button variant="glass" engine="govern" size="sm" className="rounded-xl text-xs">Confirm AI decision</Button>
-                      <Button variant="secondary" engine="execute" size="sm" className="rounded-xl text-xs">Override</Button>
-                      <Button variant="ghost" engine="govern" size="sm" className="rounded-xl text-xs text-white/40 hover:text-white/60 hover:bg-white/5 transition-colors">Request more info</Button>
-                      <span className="ml-auto text-[10px] font-mono text-white/20">{card.auditId}</span>
+                    <div className="flex flex-col gap-2">
+                      <h3 className="text-xl md:text-2xl font-light text-white tracking-wide">{card.action}</h3>
+                      <p className="text-sm text-white/50 font-light">{card.reason}</p>
                     </div>
-                  </Surface>
+
+                    <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-4 lg:p-5 flex flex-col gap-3">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1.5 rounded-lg bg-[var(--engine-govern)]/10 border border-[var(--engine-govern)]/20">
+                          <Bot className="h-4 w-4 text-[var(--engine-govern)]" />
+                        </div>
+                        <span className="text-[10px] font-bold text-[var(--engine-govern)] uppercase tracking-widest">AI Recommendation</span>
+                      </div>
+                      <p className="text-sm text-white/70 leading-relaxed font-light">{card.aiRec}</p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-white/[0.04] mt-2">
+                      <button className="px-5 py-2.5 rounded-xl bg-[var(--engine-govern)] text-black text-xs font-semibold shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:shadow-[0_0_30px_rgba(20,184,166,0.5)] transition-all">Confirm Decision</button>
+                      <button className="px-5 py-2.5 rounded-xl bg-white/[0.05] border border-white/[0.1] text-white text-xs font-semibold hover:bg-white/[0.1] transition-colors">Override</button>
+                      <button className="px-4 py-2.5 rounded-xl text-white/40 text-xs hover:text-white/70 transition-colors hidden sm:block">Request more info</button>
+                      <span className="ml-auto text-[10px] font-mono tracking-widest text-white/20 hidden md:block">{card.auditId}</span>
+                    </div>
+                  </div>
+                </Surface>
                 )}
               </div>
             </motion.div>
 
-            {/* Recently resolved */}
-            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
-              <h2 className="text-sm font-semibold text-white mb-4">Recently Resolved</h2>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left min-w-[320px]">
-                  <thead>
-                    <tr className="border-b border-white/[0.06]">
-                      {['Decision', 'Reviewer', 'Outcome', 'Time'].map((h) =>
-                      <th key={h} className="pb-2 text-[10px] font-semibold text-white/30 uppercase tracking-wider">{h}</th>
-                      )}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentResolved.map((r, i) =>
-                    <tr key={i} className="border-b border-white/[0.04]">
-                        <td className="py-2 text-xs text-white/70">{r.decision}</td>
-                        <td className="py-2 text-xs text-white/40">{r.reviewer}</td>
-                        <td className="py-2">
-                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${r.outcome === 'Confirmed' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>
-                            {r.outcome}
-                          </span>
-                        </td>
-                        <td className="py-2 text-xs text-white/30">{r.time}</td>
+            {/* Recently Resolved */}
+            <motion.div variants={fadeUpVariant}>
+              <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6 lg:p-8" padding="none">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <h2 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 mb-6">Recently Resolved</h2>
+                <div className="relative z-10 overflow-x-auto">
+                  <table className="w-full text-left min-w-[500px]">
+                    <thead>
+                      <tr className="border-b border-white/[0.06]">
+                        {['Decision', 'Reviewer', 'Outcome', 'Time'].map((h) =>
+                          <th key={h} className="pb-4 text-[10px] font-semibold text-white/30 uppercase tracking-widest">{h}</th>
+                        )}
                       </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </Surface>
+                    </thead>
+                    <tbody>
+                      {recentResolved.map((r, i) =>
+                        <tr key={i} className="border-b border-white/[0.02] last:border-0 hover:bg-white/[0.02] transition-colors">
+                          <td className="py-4 text-sm tracking-wide text-white/80">{r.decision}</td>
+                          <td className="py-4 text-xs font-mono text-white/50">{r.reviewer}</td>
+                          <td className="py-4">
+                            <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold border ${r.outcome === 'Confirmed' ? 'bg-[var(--state-healthy)]/10 text-[var(--state-healthy)] border-[var(--state-healthy)]/30' : 'bg-[var(--state-warning)]/10 text-[var(--state-warning)] border-[var(--state-warning)]/30'}`}>
+                              {r.outcome}
+                            </span>
+                          </td>
+                          <td className="py-4 text-xs font-mono text-white/40 text-right">{r.time}</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </Surface>
+            </motion.div>
           </div>
 
           {/* Side rail */}
-          <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4">
+          <motion.aside className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6" aria-label="Oversight sidebar" variants={staggerContainerVariant}>
             {/* Override trend chart */}
-            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
-              <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Override Trend (7d)</h3>
-              <div className="h-32">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={overrideTrendData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#253852" />
-                    <XAxis dataKey="day" tick={{ fill: '#6B7280', fontSize: 10 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: '#6B7280', fontSize: 10 }} axisLine={false} tickLine={false} />
-                    <Tooltip contentStyle={{ background: '#0F1D32', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 11 }} labelStyle={{ color: '#94A3B8' }} itemStyle={{ color: 'var(--engine-govern)' }} />
-                    <Bar dataKey="overrides" fill="var(--engine-govern)" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </Surface>
+            <motion.div variants={fadeUpVariant}>
+              <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6 lg:p-8" padding="none">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <h3 className="relative z-10 text-xs font-semibold text-white/50 uppercase tracking-widest mb-6 border-b border-white/[0.06] pb-4">Override Trend (7d)</h3>
+                <div className="relative z-10 h-40">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={overrideTrendData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#ffffff" strokeOpacity={0.05} vertical={false} />
+                      <XAxis dataKey="day" tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 10 }} axisLine={false} tickLine={false} dy={10} />
+                      <Tooltip cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ background: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, fontSize: 12, backdropFilter: 'blur(10px)' }} labelStyle={{ color: 'rgba(255,255,255,0.5)', marginBottom: 4 }} itemStyle={{ color: 'var(--engine-govern)', fontWeight: 'bold' }} />
+                      <Bar dataKey="overrides" fill="var(--engine-govern)" radius={[4, 4, 0, 0]} maxBarSize={32} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </Surface>
+            </motion.div>
 
             {/* Decision accuracy */}
-            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
-              <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Decision Accuracy</h3>
-              <p className="text-xs text-white/50 mb-2">Post-override accuracy</p>
-              <p className="text-lg font-bold text-emerald-400 mb-2">94.2%</p>
-              <div className="h-1.5 rounded-full bg-white/10">
-                <div className="h-full rounded-full" style={{ width: '94.2%', background: 'var(--engine-protect)' }} />
-              </div>
-            </Surface>
+            <motion.div variants={fadeUpVariant}>
+              <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6 lg:p-8 flex flex-col gap-4" padding="none">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
+                <h3 className="relative z-10 text-xs font-semibold text-white/50 uppercase tracking-widest border-b border-white/[0.06] pb-4">Decision Accuracy</h3>
+                <div className="relative z-10 flex flex-col gap-1">
+                  <p className="text-[10px] uppercase tracking-widest text-white/40">Post-override accuracy</p>
+                  <p className="text-3xl font-light font-mono text-[var(--state-healthy)] drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]">94.2%</p>
+                </div>
+                <div className="relative z-10 h-2 rounded-full bg-black/40 overflow-hidden shadow-inner border border-white/[0.03]">
+                  <div className="h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_currentColor]" style={{ width: '94.2%', background: 'var(--state-healthy)' }} />
+                </div>
+              </Surface>
+            </motion.div>
 
             {/* Top override reasons */}
-            <Surface variants={fadeUpVariant} className="rounded-2xl" variant="glass" padding="md" as={motion.div}>
-              <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">Top Override Reasons</h3>
-              <div className="flex flex-col gap-3">
-                {overrideReasons.map((r) =>
-                <div key={r.reason}>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-white/50">{r.reason}</span>
-                      <span className="text-white/70 font-semibold">{r.pct}%</span>
+            <motion.div variants={fadeUpVariant}>
+              <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6 lg:p-8" padding="none">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <h3 className="relative z-10 text-xs font-semibold text-white/50 uppercase tracking-widest mb-6 border-b border-white/[0.06] pb-4">Top Override Reasons</h3>
+                <div className="relative z-10 flex flex-col gap-5">
+                  {overrideReasons.map((r) =>
+                    <div key={r.reason} className="flex flex-col gap-2 group">
+                      <div className="flex justify-between items-end">
+                        <span className="text-xs uppercase tracking-widest text-white/70">{r.reason}</span>
+                        <span className="text-xs font-mono font-bold text-white/50">{r.pct}%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-black/40 overflow-hidden shadow-inner border border-white/[0.03]">
+                        <div className="h-full rounded-full transition-all duration-700 bg-[var(--engine-govern)]/60 group-hover:bg-[var(--engine-govern)]" style={{ width: `${r.pct}%` }} />
+                      </div>
                     </div>
-                    <div className="h-1.5 rounded-full bg-white/10">
-                      <div className="h-full rounded-full" style={{ width: `${r.pct}%`, background: 'var(--engine-govern)' }} />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </Surface>
-          </div>
+                  )}
+                </div>
+              </Surface>
+            </motion.div>
+          </motion.aside>
         </div>
 
         <GovernFooter auditId={GOVERNANCE_META['/govern/oversight'].auditId} pageContext={GOVERNANCE_META['/govern/oversight'].pageContext} />

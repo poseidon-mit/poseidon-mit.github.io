@@ -38,40 +38,40 @@ interface ToneClasses {
 
 const TONE_CLASSES: Record<AccentTone, ToneClasses> = {
   dashboard: {
-    activeLink: 'text-cyan-50 bg-cyan-500/15 border-l-cyan-400',
-    activeIcon: 'text-cyan-300',
-    indicator: 'bg-cyan-400',
-    activeSubNav: 'text-cyan-200 bg-cyan-500/15 border-cyan-400/30',
+    activeLink: 'text-cyan-50 bg-cyan-500/10 ring-1 ring-cyan-500/30 shadow-[inset_0_0_12px_rgba(6,182,212,0.15)]',
+    activeIcon: 'text-cyan-400 drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]',
+    indicator: 'bg-cyan-400 shadow-[0_0_5px_rgba(6,182,212,0.5)]',
+    activeSubNav: 'text-cyan-100 bg-cyan-500/20 border-cyan-400/30 glow',
   },
   protect: {
-    activeLink: 'text-green-50 bg-green-500/15 border-l-green-400',
-    activeIcon: 'text-green-300',
-    indicator: 'bg-green-400',
-    activeSubNav: 'text-green-200 bg-green-500/15 border-green-400/30',
+    activeLink: 'text-emerald-50 bg-emerald-500/10 ring-1 ring-emerald-500/30 shadow-[inset_0_0_12px_rgba(16,185,129,0.15)]',
+    activeIcon: 'text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]',
+    indicator: 'bg-emerald-400 shadow-[0_0_5px_rgba(16,185,129,0.5)]',
+    activeSubNav: 'text-emerald-100 bg-emerald-500/20 border-emerald-400/30 glow',
   },
   grow: {
-    activeLink: 'text-violet-50 bg-violet-500/15 border-l-violet-400',
-    activeIcon: 'text-violet-300',
-    indicator: 'bg-violet-400',
-    activeSubNav: 'text-violet-200 bg-violet-500/15 border-violet-400/30',
+    activeLink: 'text-violet-50 bg-violet-500/10 ring-1 ring-violet-500/30 shadow-[inset_0_0_12px_rgba(139,92,246,0.15)]',
+    activeIcon: 'text-violet-400 drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]',
+    indicator: 'bg-violet-400 shadow-[0_0_5px_rgba(139,92,246,0.5)]',
+    activeSubNav: 'text-violet-100 bg-violet-500/20 border-violet-400/30 glow',
   },
   execute: {
-    activeLink: 'text-amber-50 bg-amber-500/15 border-l-amber-400',
-    activeIcon: 'text-amber-300',
-    indicator: 'bg-amber-400',
-    activeSubNav: 'text-amber-200 bg-amber-500/15 border-amber-400/30',
+    activeLink: 'text-amber-50 bg-amber-500/10 ring-1 ring-amber-500/30 shadow-[inset_0_0_12px_rgba(245,158,11,0.15)]',
+    activeIcon: 'text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]',
+    indicator: 'bg-amber-400 shadow-[0_0_5px_rgba(245,158,11,0.5)]',
+    activeSubNav: 'text-amber-100 bg-amber-500/20 border-amber-400/30 glow',
   },
   govern: {
-    activeLink: 'text-blue-50 bg-blue-500/15 border-l-blue-400',
-    activeIcon: 'text-blue-300',
-    indicator: 'bg-blue-400',
-    activeSubNav: 'text-blue-200 bg-blue-500/15 border-blue-400/30',
+    activeLink: 'text-blue-50 bg-blue-500/10 ring-1 ring-blue-500/30 shadow-[inset_0_0_12px_rgba(59,130,246,0.15)]',
+    activeIcon: 'text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]',
+    indicator: 'bg-blue-400 shadow-[0_0_5px_rgba(59,130,246,0.5)]',
+    activeSubNav: 'text-blue-100 bg-blue-500/20 border-blue-400/30 glow',
   },
   system: {
-    activeLink: 'text-slate-50 bg-white/10 border-l-slate-300',
+    activeLink: 'text-slate-50 bg-white/10 ring-1 ring-white/10 shadow-[inset_0_0_12px_rgba(255,255,255,0.05)]',
     activeIcon: 'text-slate-200',
-    indicator: 'bg-slate-300',
-    activeSubNav: 'text-slate-200 bg-white/10 border-slate-300/30',
+    indicator: 'bg-slate-300 shadow-[0_0_5px_rgba(255,255,255,0.5)]',
+    activeSubNav: 'text-slate-200 bg-white/10 border-white/20 glow',
   },
 };
 
@@ -256,7 +256,7 @@ export function AppNavShell({
     <div className="app-bg-oled flex min-h-screen">
       <CommandPalette isOpen={isPaletteOpen} onClose={closePalette} />
       {/* ── Desktop Sidebar ── */}
-      <aside className="glass-sidebar fixed top-0 left-0 z-40 hidden h-screen w-[240px] flex-col lg:flex">
+      <aside className="fixed top-0 left-0 z-40 hidden h-screen w-[240px] flex-col bg-black/30 backdrop-blur-3xl border-r border-white/[0.04] lg:flex">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 px-5 py-5" aria-label="Poseidon home">
           <img
@@ -284,8 +284,8 @@ export function AppNavShell({
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  'flex items-center gap-3 rounded-xl border-l-[3px] px-4 py-3 transition-colors duration-150 hover:bg-white/5 hover:text-slate-50',
-                  isActive ? tone.activeLink : 'border-l-transparent text-slate-400'
+                  'flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/5 hover:text-white',
+                  isActive ? tone.activeLink : 'text-slate-400 border border-transparent hover:border-white/5'
                 )}
                 aria-current={isActive ? 'page' : undefined}
               >
@@ -325,8 +325,8 @@ export function AppNavShell({
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  'flex items-center gap-3 rounded-xl border-l-[3px] px-4 py-3 transition-colors duration-150 hover:bg-white/5 hover:text-slate-50',
-                  isActive ? tone.activeLink : 'border-l-transparent text-slate-400',
+                  'flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/5 hover:text-white',
+                  isActive ? tone.activeLink : 'text-slate-400 border border-transparent hover:border-white/5',
                 )}
                 aria-current={isActive ? 'page' : undefined}
               >
@@ -349,11 +349,9 @@ export function AppNavShell({
         </div>
       </aside>
 
-      {/* ── Main area ── */}
       <div className="relative flex min-w-0 flex-1 flex-col lg:ml-[240px]">
-        <AuroraPulse engine={activeEngine} intensity="subtle" />
         {/* ── Desktop top header ── */}
-        <header className="glass-header sticky top-0 z-30 hidden h-14 items-center justify-between px-6 lg:flex">
+        <header className="sticky top-0 z-30 hidden h-14 items-center justify-between px-6 bg-transparent border-b border-white/[0.04] backdrop-blur-3xl lg:flex">
           {/* Breadcrumb — only show when 2+ segments; otherwise show page title */}
           {breadcrumbs.length > 1 ? (
             <nav className="flex items-center gap-1.5" aria-label="Breadcrumb">
@@ -459,7 +457,7 @@ export function AppNavShell({
         </header>
 
         {/* ── Mobile top header ── */}
-        <header className="glass-header sticky top-0 z-30 flex h-14 items-center justify-between px-4 lg:hidden">
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between px-4 bg-black/40 backdrop-blur-xl border-b border-white/[0.04] lg:hidden">
           {/* Left: Logo */}
           <Link to="/" className="flex items-center gap-1.5" aria-label="Poseidon home">
             <img
@@ -497,7 +495,7 @@ export function AppNavShell({
         {/* ── Sub-navigation strip ── */}
         {subNav && (
           <div
-            className="glass-header flex items-center gap-2 overflow-x-auto border-b border-white/5 px-4 py-2.5 lg:px-6"
+            className="flex items-center gap-2 overflow-x-auto border-b border-white/[0.04] bg-black/20 backdrop-blur-md px-4 py-2.5 lg:px-6"
             role="navigation"
             aria-label="Sub-navigation"
           >
@@ -561,7 +559,7 @@ export function AppNavShell({
       ) : null}
 
       <nav
-        className="glass-header fixed bottom-0 left-0 right-0 z-40 flex h-16 items-center justify-around border-t border-white/5 pb-[env(safe-area-inset-bottom,0px)] lg:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 flex h-16 items-center justify-around border-t border-white/[0.04] bg-black/60 backdrop-blur-2xl pb-[env(safe-area-inset-bottom,0px)] lg:hidden"
         aria-label="Mobile navigation"
       >
         {mobilePrimaryItems.map((item) => {
