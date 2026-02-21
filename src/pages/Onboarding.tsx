@@ -94,7 +94,7 @@ export default function OnboardingConnectPage() {
 
           <motion.div variants={fadeUp} className="mt-12 flex items-center justify-center">
             <ButtonLink
-              to="/onboarding/complete"
+              to="/dashboard"
               variant="primary"
               engine="dashboard"
               className="rounded-full py-6 px-12 text-lg tracking-wide transition-all shadow-[0_0_30px_rgba(6,182,212,0.15)] hover:shadow-[0_0_50px_rgba(6,182,212,0.3)]"

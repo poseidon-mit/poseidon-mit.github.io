@@ -117,9 +117,6 @@ interface SubNavItem {
 const SUB_NAV: Record<string, SubNavItem[]> = {
   '/dashboard': [
     { label: 'Overview', path: '/dashboard' },
-    { label: 'Alerts Hub', path: '/dashboard/alerts' },
-    { label: 'Insights', path: '/dashboard/insights' },
-    { label: 'Timeline', path: '/dashboard/timeline' },
     { label: 'Notifications', path: '/dashboard/notifications' },
   ],
   '/protect': [
@@ -134,21 +131,10 @@ const SUB_NAV: Record<string, SubNavItem[]> = {
   '/execute': [
     { label: 'Queue', path: '/execute' },
     { label: 'Approval', path: '/execute/approval' },
-    { label: 'History', path: '/execute/history' },
   ],
   '/govern': [
     { label: 'Overview', path: '/govern' },
     { label: 'Audit Ledger', path: '/govern/audit' },
-    { label: 'Trust', path: '/govern/trust' },
-    { label: 'Registry', path: '/govern/registry' },
-    { label: 'Oversight', path: '/govern/oversight' },
-    { label: 'Policy', path: '/govern/policy' },
-  ],
-  '/settings': [
-    { label: 'General', path: '/settings' },
-    { label: 'AI', path: '/settings/ai' },
-    { label: 'Integrations', path: '/settings/integrations' },
-    { label: 'Rights', path: '/settings/rights' },
   ],
 };
 
@@ -156,9 +142,6 @@ const SUB_NAV: Record<string, SubNavItem[]> = {
 
 const BREADCRUMB_MAP: Record<string, string[]> = {
   '/dashboard': ['Dashboard'],
-  '/dashboard/alerts': ['Dashboard', 'Alerts'],
-  '/dashboard/insights': ['Dashboard', 'Insights'],
-  '/dashboard/timeline': ['Dashboard', 'Timeline'],
   '/dashboard/notifications': ['Dashboard', 'Notifications'],
   '/protect': ['Protect'],
   '/protect/alert-detail': ['Protect', 'Alert Detail'],
@@ -169,19 +152,10 @@ const BREADCRUMB_MAP: Record<string, string[]> = {
   '/grow/recommendations': ['Grow', 'Recommendations'],
   '/execute': ['Execute'],
   '/execute/approval': ['Execute', 'Approval Queue'],
-  '/execute/history': ['Execute', 'History'],
   '/govern': ['Govern'],
   '/govern/audit': ['Govern', 'Audit Ledger'],
   '/govern/audit-detail': ['Govern', 'Audit Detail'],
-  '/govern/trust': ['Govern', 'Trust'],
-  '/govern/registry': ['Govern', 'Registry'],
-  '/govern/oversight': ['Govern', 'Oversight'],
-  '/govern/policy': ['Govern', 'Policy'],
   '/settings': ['Settings'],
-  '/settings/ai': ['Settings', 'AI'],
-  '/settings/integrations': ['Settings', 'Integrations'],
-  '/settings/rights': ['Settings', 'Rights'],
-  '/help': ['Help'],
 };
 
 /* ─── Helpers ────────────────────────────────────────────── */

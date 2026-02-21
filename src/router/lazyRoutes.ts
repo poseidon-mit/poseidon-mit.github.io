@@ -106,9 +106,6 @@ function withRouteImportRecovery(routePath: string, loader: RouteLoader): RouteL
 export const routeLoaders = {
   // ─── Public ─────────────────────────────────────────────────────────────────
   '/': () => import('../pages/Landing'),
-  '/deck': () => import('../pages/DeckViewer'),
-  '/trust': () => import('../pages/TrustSecurity'),
-  '/pricing': () => import('../pages/Pricing'),
 
   // ─── Design System ──────────────────────────────────────────────────────────
   '/design-system': () => import('../pages/DesignSystemLanding'),
@@ -122,17 +119,10 @@ export const routeLoaders = {
   // ─── Activation ─────────────────────────────────────────────────────────────
   '/signup': () => import('../pages/Signup'),
   '/login': () => import('../pages/Login'),
-  '/recovery': () => import('../pages/Recovery'),
-  '/onboarding/connect': () => import('../pages/Onboarding'),
-  '/onboarding/goals': () => import('../pages/OnboardingGoals'),
-  '/onboarding/consent': () => import('../pages/OnboardingConsent'),
-  '/onboarding/complete': () => import('../pages/OnboardingComplete'),
+  '/onboarding': () => import('../pages/Onboarding'),
 
   // ─── Core ───────────────────────────────────────────────────────────────────
   '/dashboard': () => import('../pages/Dashboard'),
-  '/dashboard/alerts': () => import('../pages/AlertsHub'),
-  '/dashboard/insights': () => import('../pages/InsightsFeed'),
-  '/dashboard/timeline': () => import('../pages/ActivityTimelinePage'),
   '/dashboard/notifications': () => import('../pages/Notifications'),
 
   // ─── Protect ────────────────────────────────────────────────────────────────
@@ -149,27 +139,16 @@ export const routeLoaders = {
   // ─── Execute ────────────────────────────────────────────────────────────────
   '/execute': () => import('../pages/Execute'),
   '/execute/approval': () => import('../pages/ExecuteApproval'),
-  '/execute/history': () => import('../pages/ExecuteHistory'),
 
   // ─── Govern ─────────────────────────────────────────────────────────────────
   '/govern': () => import('../pages/Govern'),
-  '/govern/trust': () => import('../pages/GovernTrust'),
   '/govern/audit': () => import('../pages/GovernAuditLedger'),
   '/govern/audit-detail': () => import('../pages/GovernAuditDetail'),
-  '/govern/registry': () => import('../pages/GovernRegistry'),
-  '/govern/oversight': () => import('../pages/GovernOversight'),
-  '/govern/policy': () => import('../pages/GovernPolicy'),
 
   // ─── Settings ───────────────────────────────────────────────────────────────
   '/settings': () => import('../pages/Settings'),
-  '/settings/ai': () => import('../pages/SettingsAI'),
-  '/settings/integrations': () => import('../pages/SettingsIntegrations'),
-  '/settings/rights': () => import('../pages/SettingsRights'),
 
   // ─── System ─────────────────────────────────────────────────────────────────
-  '/help': () => import('../pages/HelpSupport'),
-
-  '/onboarding': () => import('../pages/OnboardingWelcome'),
   '/404': () => import('../pages/NotFound'),
 
   // --- Test / Showcase ---
