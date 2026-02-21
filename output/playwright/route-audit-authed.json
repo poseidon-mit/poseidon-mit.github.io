@@ -1,0 +1,625 @@
+{
+  "generatedAt": "2026-02-20T19:18:51.060Z",
+  "base": "https://poseidon-mit.com",
+  "results": [
+    {
+      "route": "/dashboard",
+      "startUrl": "https://poseidon-mit.com/dashboard",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/dashboard/",
+      "finalPath": "/dashboard/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Welcome back. System confidence: 0.92 across 4 engines + command center."
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA See risk, opportunities, and actions in one screen. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Dashboard Search ⌘K AC Overview Alerts Hub Insights Timeline Notificat",
+      "navTiming": {
+        "domContentLoadedMs": 66,
+        "loadMs": 66,
+        "responseEndMs": 46
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/dashboard/alerts",
+      "startUrl": "https://poseidon-mit.com/dashboard/alerts",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/dashboard/alerts/",
+      "finalPath": "/dashboard/alerts/",
+      "finalSearch": "",
+      "title": "Alerts | Poseidon.AI",
+      "h1s": [
+        "Alerts Hub"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Review active threats in one queue. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Dashboard Alerts Search ⌘K AC Overview Alerts Hub Insights Timeline Notifications Skip",
+      "navTiming": {
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "responseEndMs": 45
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/dashboard/insights",
+      "startUrl": "https://poseidon-mit.com/dashboard/insights",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/dashboard/insights/",
+      "finalPath": "/dashboard/insights/",
+      "finalSearch": "",
+      "title": "Insights | Poseidon.AI",
+      "h1s": [
+        "Insights Feed"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Prioritized insights with evidence. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Dashboard Insights Search ⌘K AC Overview Alerts Hub Insights Timeline Notifications Sk",
+      "navTiming": {
+        "domContentLoadedMs": 43,
+        "loadMs": 44,
+        "responseEndMs": 37
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/dashboard/timeline",
+      "startUrl": "https://poseidon-mit.com/dashboard/timeline",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/dashboard/timeline/",
+      "finalPath": "/dashboard/timeline/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Activity Timeline"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Trace what happened and when. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Dashboard Timeline Search ⌘K AC Overview Alerts Hub Insights Timeline Notifications Skip to ",
+      "navTiming": {
+        "domContentLoadedMs": 50,
+        "loadMs": 51,
+        "responseEndMs": 44
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/dashboard/notifications",
+      "startUrl": "https://poseidon-mit.com/dashboard/notifications",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/dashboard/notifications/",
+      "finalPath": "/dashboard/notifications/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Notifications"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA All system notifications in one feed. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Dashboard Notifications Search ⌘K AC Overview Alerts Hub Insights Timeline Notificat",
+      "navTiming": {
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "responseEndMs": 44
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/protect",
+      "startUrl": "https://poseidon-mit.com/protect",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/protect/",
+      "finalPath": "/protect/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Threat posture: 1 critical, 1 high, 3 monitoring."
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Catch financial threats before they escalate. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Protect Search ⌘K AC Alerts Dispute Skip to main content PROTECT ENGINE Thre",
+      "navTiming": {
+        "domContentLoadedMs": 78,
+        "loadMs": 78,
+        "responseEndMs": 72
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/protect/alert-detail",
+      "startUrl": "https://poseidon-mit.com/protect/alert-detail",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/protect/alert-detail/",
+      "finalPath": "/protect/alert-detail/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Signal #PRT-2026-0216-003"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Inspect model factors and evidence for this alert. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Protect Alert Detail Search ⌘K AC Alerts Dispute Skip to main content B",
+      "navTiming": {
+        "domContentLoadedMs": 60,
+        "loadMs": 61,
+        "responseEndMs": 54
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/protect/dispute",
+      "startUrl": "https://poseidon-mit.com/protect/dispute",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/protect/dispute/",
+      "finalPath": "/protect/dispute/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Dispute Transaction"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Manage the dispute workflow with audit traceability. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Protect Dispute Search ⌘K AC Alerts Dispute Skip to main content Prot",
+      "navTiming": {
+        "domContentLoadedMs": 52,
+        "loadMs": 53,
+        "responseEndMs": 46
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/grow",
+      "startUrl": "https://poseidon-mit.com/grow",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/grow/",
+      "finalPath": "/grow/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Emergency fund at 73%"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Forecast outcomes and compare growth paths. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Grow Search ⌘K AC Goals Scenarios Recommendations Skip to main content Grow En",
+      "navTiming": {
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "responseEndMs": 42
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/grow/goal",
+      "startUrl": "https://poseidon-mit.com/grow/goal",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/grow/goal/",
+      "finalPath": "/grow/goal/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Emergency fund"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Track goal contribution and expected timeline. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Grow Goal Detail Search ⌘K AC Goals Scenarios Recommendations Skip to main ",
+      "navTiming": {
+        "domContentLoadedMs": 88,
+        "loadMs": 88,
+        "responseEndMs": 82
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/grow/scenarios",
+      "startUrl": "https://poseidon-mit.com/grow/scenarios",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/grow/scenarios/",
+      "finalPath": "/grow/scenarios/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Compare growth paths"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Compare what-if scenarios before committing. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Grow Scenarios Search ⌘K AC Goals Scenarios Recommendations Skip to main cont",
+      "navTiming": {
+        "domContentLoadedMs": 55,
+        "loadMs": 55,
+        "responseEndMs": 49
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/grow/recommendations",
+      "startUrl": "https://poseidon-mit.com/grow/recommendations",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/grow/recommendations/",
+      "finalPath": "/grow/recommendations/",
+      "finalSearch": "",
+      "title": "Recommendations | Poseidon.AI",
+      "h1s": [
+        "Growth Recommendations"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA AI recommendations ranked by impact and confidence. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Grow Recommendations Search ⌘K AC Goals Scenarios Recommendations Skip",
+      "navTiming": {
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "responseEndMs": 42
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/execute",
+      "startUrl": "https://poseidon-mit.com/execute",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/execute/",
+      "finalPath": "/execute/",
+      "finalSearch": "",
+      "title": "Execute | Poseidon.AI",
+      "h1s": [
+        "5 actions queued. Projected savings: $847/mo."
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Approve high-impact actions with context. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Execute Search ⌘K AC Queue Approval History Skip to main content EXECUTE ENGINE ",
+      "navTiming": {
+        "domContentLoadedMs": 98,
+        "loadMs": 99,
+        "responseEndMs": 93
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/execute/approval",
+      "startUrl": "https://poseidon-mit.com/execute/approval",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/execute/approval/",
+      "finalPath": "/execute/approval/",
+      "finalSearch": "",
+      "title": "Action Approval | Poseidon.AI",
+      "h1s": [
+        "Approval Queue"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Review queued actions before approval. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Execute Approval Queue Search ⌘K AC Queue Approval History Skip to main content Exe",
+      "navTiming": {
+        "domContentLoadedMs": 50,
+        "loadMs": 50,
+        "responseEndMs": 44
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/execute/history",
+      "startUrl": "https://poseidon-mit.com/execute/history",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/execute/history/",
+      "finalPath": "/execute/history/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Inspect executed actions with audit references. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Execute History Search ⌘K AC Queue Approval History Skip to main content B",
+      "navTiming": {
+        "domContentLoadedMs": 176,
+        "loadMs": 177,
+        "responseEndMs": 155
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/govern",
+      "startUrl": "https://poseidon-mit.com/govern",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/govern/",
+      "finalPath": "/govern/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Compliance score: 96/100. 1,247 decisions audited."
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Trace every decision with audit-ready transparency. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Govern Search ⌘K AC Overview Audit Ledger Trust Registry Oversight Pol",
+      "navTiming": {
+        "domContentLoadedMs": 116,
+        "loadMs": 116,
+        "responseEndMs": 109
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/govern/trust",
+      "startUrl": "https://poseidon-mit.com/govern/trust",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/govern/trust/",
+      "finalPath": "/govern/trust/",
+      "finalSearch": "",
+      "title": "Trust Index | Poseidon.AI",
+      "h1s": [
+        "Trust Dashboard"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Tune trust metrics and thresholds. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Govern Trust Search ⌘K AC Overview Audit Ledger Trust Registry Oversight Policy Skip to",
+      "navTiming": {
+        "domContentLoadedMs": 36,
+        "loadMs": 36,
+        "responseEndMs": 30
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/govern/audit",
+      "startUrl": "https://poseidon-mit.com/govern/audit",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/govern/audit/",
+      "finalPath": "/govern/audit/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Audit Ledger"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Review immutable decision ledger entries. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Govern Audit Ledger Search ⌘K AC Overview Audit Ledger Trust Registry Oversight ",
+      "navTiming": {
+        "domContentLoadedMs": 67,
+        "loadMs": 67,
+        "responseEndMs": 60
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/govern/audit-detail",
+      "startUrl": "https://poseidon-mit.com/govern/audit-detail",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/govern/audit-detail/",
+      "finalPath": "/govern/audit-detail/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Decision Reconstruction"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Inspect evidence and reasoning for one decision. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Govern Audit Detail Search ⌘K AC Overview Audit Ledger Trust Registry Ove",
+      "navTiming": {
+        "domContentLoadedMs": 85,
+        "loadMs": 85,
+        "responseEndMs": 78
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/govern/registry",
+      "startUrl": "https://poseidon-mit.com/govern/registry",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/govern/registry/",
+      "finalPath": "/govern/registry/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "AI Model Registry"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Model registry and approval status. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Govern Registry Search ⌘K AC Overview Audit Ledger Trust Registry Oversight Policy Ski",
+      "navTiming": {
+        "domContentLoadedMs": 52,
+        "loadMs": 52,
+        "responseEndMs": 46
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/govern/oversight",
+      "startUrl": "https://poseidon-mit.com/govern/oversight",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/govern/oversight/",
+      "finalPath": "/govern/oversight/",
+      "finalSearch": "",
+      "title": "Oversight Queue | Poseidon.AI",
+      "h1s": [
+        "Human Oversight"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Human review queue for high-risk decisions. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Govern Oversight Search ⌘K AC Overview Audit Ledger Trust Registry Oversight P",
+      "navTiming": {
+        "domContentLoadedMs": 103,
+        "loadMs": 103,
+        "responseEndMs": 99
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/govern/policy",
+      "startUrl": "https://poseidon-mit.com/govern/policy",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/govern/policy/",
+      "finalPath": "/govern/policy/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Policy & Rules"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Adjust governance policy controls safely. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Govern Policy Search ⌘K AC Overview Audit Ledger Trust Registry Oversight Policy",
+      "navTiming": {
+        "domContentLoadedMs": 97,
+        "loadMs": 97,
+        "responseEndMs": 90
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/settings",
+      "startUrl": "https://poseidon-mit.com/settings",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/settings/",
+      "finalPath": "/settings/",
+      "finalSearch": "",
+      "title": "Settings | Poseidon.AI",
+      "h1s": [
+        "Control your experience"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Configure controls without losing context. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Settings Search ⌘K AC General AI Integrations Rights Skip to main content Setti",
+      "navTiming": {
+        "domContentLoadedMs": 53,
+        "loadMs": 53,
+        "responseEndMs": 46
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/settings/ai",
+      "startUrl": "https://poseidon-mit.com/settings/ai",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/settings/ai/",
+      "finalPath": "/settings/ai/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "AI Configuration"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Tune AI control and explanation preferences. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Settings AI Search ⌘K AC General AI Integrations Rights Skip to main content ",
+      "navTiming": {
+        "domContentLoadedMs": 63,
+        "loadMs": 63,
+        "responseEndMs": 57
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/settings/integrations",
+      "startUrl": "https://poseidon-mit.com/settings/integrations",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/settings/integrations/",
+      "finalPath": "/settings/integrations/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Connected Accounts"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Manage third-party integrations securely. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Settings Integrations Search ⌘K AC General AI Integrations Rights Skip to main c",
+      "navTiming": {
+        "domContentLoadedMs": 103,
+        "loadMs": 104,
+        "responseEndMs": 97
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/settings/rights",
+      "startUrl": "https://poseidon-mit.com/settings/rights",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/settings/rights/",
+      "finalPath": "/settings/rights/",
+      "finalSearch": "",
+      "title": "Poseidon.AI",
+      "h1s": [
+        "Your Data Rights"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Exercise data rights with clear control boundaries. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Settings Rights Search ⌘K AC General AI Integrations Rights Skip to ma",
+      "navTiming": {
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "responseEndMs": 39
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    },
+    {
+      "route": "/help",
+      "startUrl": "https://poseidon-mit.com/help",
+      "status": 200,
+      "finalUrl": "https://poseidon-mit.com/help/",
+      "finalPath": "/help/",
+      "finalSearch": "",
+      "title": "Help | Poseidon.AI",
+      "h1s": [
+        "How can we help?"
+      ],
+      "mainCount": 2,
+      "hasNotFoundText": false,
+      "hasComingSoonText": false,
+      "bodyPreview": "DEMO MODE · SIMULATED DATA Get support without leaving workflow context. Poseidon ENGINES Dashboard Protect Grow Execute 5 Govern SYSTEM Settings Help AC Alex Chen Help Search ⌘K AC Skip to main content Dashboard / Help Center HELP CENTER H",
+      "navTiming": {
+        "domContentLoadedMs": 149,
+        "loadMs": 149,
+        "responseEndMs": 142
+      },
+      "horizontalOverflow": false,
+      "canvasCount": 0
+    }
+  ]
+}

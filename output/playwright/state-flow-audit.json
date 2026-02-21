@@ -1,0 +1,22 @@
+[
+  {
+    "case": "login_validation",
+    "result": "Password is required. | Please resolve all form errors to continue. | ✕Please fix validation errors before continuing. | ✕"
+  },
+  {
+    "case": "login_demo_success",
+    "result": "path=/dashboard, h1=Welcome back. System confidence: 0.92 across 4 engines + command center."
+  },
+  {
+    "case": "help_empty_and_success",
+    "result": "empty=true, ticket=Last submitted ticket: TKT-20260220-1920-516"
+  },
+  {
+    "case": "execute_success",
+    "result": "EXE-001 approved and logged to audit trace."
+  },
+  {
+    "case": "protect_dispute_success",
+    "result": "submit_button_not_found"
+  }
+]

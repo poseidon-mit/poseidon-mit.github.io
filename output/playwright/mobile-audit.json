@@ -1,0 +1,269 @@
+{
+  "generatedAt": "2026-02-20T19:26:24.814Z",
+  "unauthResults": [
+    {
+      "route": "/",
+      "finalPath": "/",
+      "h1s": [
+        "Your Money.AI-Governed."
+      ],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 1,
+      "hasBottomNav": true,
+      "fixedNodes": 4,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/unauth_root.png"
+    },
+    {
+      "route": "/login",
+      "finalPath": "/login/",
+      "h1s": [],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 2,
+      "hasBottomNav": false,
+      "fixedNodes": 3,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/unauth_login.png"
+    },
+    {
+      "route": "/signup",
+      "finalPath": "/signup/",
+      "h1s": [],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 2,
+      "hasBottomNav": false,
+      "fixedNodes": 3,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/unauth_signup.png"
+    },
+    {
+      "route": "/onboarding/connect",
+      "finalPath": "/onboarding/connect/",
+      "h1s": [],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 2,
+      "hasBottomNav": false,
+      "fixedNodes": 3,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/unauth_onboarding__connect.png"
+    },
+    {
+      "route": "/onboarding/goals",
+      "finalPath": "/onboarding/goals/",
+      "h1s": [],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 2,
+      "hasBottomNav": true,
+      "fixedNodes": 3,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/unauth_onboarding__goals.png"
+    },
+    {
+      "route": "/onboarding/consent",
+      "finalPath": "/onboarding/consent/",
+      "h1s": [],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 2,
+      "hasBottomNav": false,
+      "fixedNodes": 3,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/unauth_onboarding__consent.png"
+    },
+    {
+      "route": "/pricing",
+      "finalPath": "/pricing/",
+      "h1s": [
+        "Choose your level of protection"
+      ],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 1,
+      "hasBottomNav": false,
+      "fixedNodes": 3,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/unauth_pricing.png"
+    },
+    {
+      "route": "/trust",
+      "finalPath": "/trust/",
+      "h1s": [
+        "Trusted by design, not by chance"
+      ],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 1,
+      "hasBottomNav": true,
+      "fixedNodes": 3,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/unauth_trust.png"
+    }
+  ],
+  "authedResults": [
+    {
+      "route": "/dashboard",
+      "finalPath": "/dashboard/",
+      "h1s": [
+        "Welcome back. System confidence: 0.92 across 4 engines + command center."
+      ],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 2,
+      "hasBottomNav": true,
+      "fixedNodes": 5,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/authed_dashboard.png"
+    },
+    {
+      "route": "/dashboard/alerts",
+      "finalPath": "/dashboard/alerts/",
+      "h1s": [
+        "Alerts Hub"
+      ],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 2,
+      "hasBottomNav": true,
+      "fixedNodes": 5,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/authed_dashboard__alerts.png"
+    },
+    {
+      "route": "/protect",
+      "finalPath": "/protect/",
+      "h1s": [
+        "Threat posture: 1 critical, 1 high, 3 monitoring."
+      ],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 2,
+      "hasBottomNav": true,
+      "fixedNodes": 5,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/authed_protect.png"
+    },
+    {
+      "route": "/execute",
+      "finalPath": "/execute/",
+      "h1s": [
+        "5 actions queued. Projected savings: $847/mo."
+      ],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 2,
+      "hasBottomNav": true,
+      "fixedNodes": 5,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/authed_execute.png"
+    },
+    {
+      "route": "/govern",
+      "finalPath": "/govern/",
+      "h1s": [
+        "Compliance score: 96/100. 1,247 decisions audited."
+      ],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 2,
+      "hasBottomNav": true,
+      "fixedNodes": 5,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/authed_govern.png"
+    },
+    {
+      "route": "/govern/audit",
+      "finalPath": "/govern/audit/",
+      "h1s": [
+        "Audit Ledger"
+      ],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 2,
+      "hasBottomNav": true,
+      "fixedNodes": 5,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/authed_govern__audit.png"
+    },
+    {
+      "route": "/settings",
+      "finalPath": "/settings/",
+      "h1s": [
+        "Control your experience"
+      ],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 2,
+      "hasBottomNav": true,
+      "fixedNodes": 5,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/authed_settings.png"
+    },
+    {
+      "route": "/help",
+      "finalPath": "/help/",
+      "h1s": [
+        "How can we help?"
+      ],
+      "horizontalOverflow": false,
+      "bodyWidth": 390,
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "mainCount": 2,
+      "hasBottomNav": true,
+      "fixedNodes": 5,
+      "hasNotFoundText": false,
+      "hasDemoBadge": true,
+      "screenshot": "output/playwright/screens/mobile/authed_help.png"
+    }
+  ]
+}

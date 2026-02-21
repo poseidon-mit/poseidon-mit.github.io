@@ -1,0 +1,162 @@
+{
+  "generatedAt": "2026-02-20T19:32:24.194Z",
+  "results": [
+    {
+      "route": "/",
+      "phase": "public",
+      "url": "https://poseidon-mit.com/",
+      "violations": [],
+      "passes": 19,
+      "incomplete": 1
+    },
+    {
+      "route": "/login",
+      "phase": "public",
+      "url": "https://poseidon-mit.com/login/",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=axeAPI",
+          "nodes": 3
+        }
+      ],
+      "passes": 23,
+      "incomplete": 1
+    },
+    {
+      "route": "/signup",
+      "phase": "public",
+      "url": "https://poseidon-mit.com/signup/",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=axeAPI",
+          "nodes": 3
+        }
+      ],
+      "passes": 25,
+      "incomplete": 1
+    },
+    {
+      "route": "/onboarding/connect",
+      "phase": "public",
+      "url": "https://poseidon-mit.com/onboarding/connect/",
+      "violations": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "help": "Elements must only use permitted ARIA attributes",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/aria-prohibited-attr?application=axeAPI",
+          "nodes": 1
+        }
+      ],
+      "passes": 18,
+      "incomplete": 1
+    },
+    {
+      "route": "/pricing",
+      "phase": "public",
+      "url": "https://poseidon-mit.com/pricing/",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=axeAPI",
+          "nodes": 3
+        }
+      ],
+      "passes": 21,
+      "incomplete": 1
+    },
+    {
+      "route": "/trust",
+      "phase": "public",
+      "url": "https://poseidon-mit.com/trust/",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=axeAPI",
+          "nodes": 1
+        }
+      ],
+      "passes": 17,
+      "incomplete": 1
+    },
+    {
+      "route": "/dashboard",
+      "phase": "authed",
+      "url": "https://poseidon-mit.com/dashboard/",
+      "violations": [],
+      "passes": 19,
+      "incomplete": 1
+    },
+    {
+      "route": "/protect",
+      "phase": "authed",
+      "url": "https://poseidon-mit.com/protect/",
+      "violations": [],
+      "passes": 23,
+      "incomplete": 1
+    },
+    {
+      "route": "/execute",
+      "phase": "authed",
+      "url": "https://poseidon-mit.com/execute/",
+      "violations": [],
+      "passes": 19,
+      "incomplete": 1
+    },
+    {
+      "route": "/govern",
+      "phase": "authed",
+      "url": "https://poseidon-mit.com/govern/",
+      "violations": [],
+      "passes": 19,
+      "incomplete": 1
+    },
+    {
+      "route": "/settings",
+      "phase": "authed",
+      "url": "https://poseidon-mit.com/settings/",
+      "violations": [],
+      "passes": 19,
+      "incomplete": 1
+    },
+    {
+      "route": "/help",
+      "phase": "authed",
+      "url": "https://poseidon-mit.com/help/",
+      "violations": [],
+      "passes": 23,
+      "incomplete": 1
+    },
+    {
+      "route": "/govern/audit",
+      "phase": "authed",
+      "url": "https://poseidon-mit.com/govern/audit/",
+      "violations": [],
+      "passes": 26,
+      "incomplete": 1
+    },
+    {
+      "route": "/execute/approval",
+      "phase": "authed",
+      "url": "https://poseidon-mit.com/execute/approval/",
+      "violations": [],
+      "passes": 20,
+      "incomplete": 2
+    }
+  ]
+}

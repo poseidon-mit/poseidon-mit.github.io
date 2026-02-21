@@ -1,0 +1,138 @@
+[
+  {
+    "route": "/login",
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": [
+          {
+            "target": [
+              "a[href$=\"dashboard\"]"
+            ],
+            "html": "<a href=\"/dashboard\" class=\"transition-colors duration-fast hover:text-text-primary\">Product</a>",
+            "failureSummary": "Fix any of the following: |   Element has insufficient color contrast of 4.18 (foreground color: #64748b, background color: #07090f, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "target": [
+              "a[href$=\"pricing\"]"
+            ],
+            "html": "<a href=\"/pricing\" class=\"transition-colors duration-fast hover:text-text-primary\">Pricing</a>",
+            "failureSummary": "Fix any of the following: |   Element has insufficient color contrast of 4.18 (foreground color: #64748b, background color: #07090f, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "target": [
+              "a[href$=\"login\"]"
+            ],
+            "html": "<a href=\"/login\" class=\"text-sm text-text-muted transition-colors duration-fast hover:text-text-primary\">Sign in</a>",
+            "failureSummary": "Fix any of the following: |   Element has insufficient color contrast of 4.18 (foreground color: #64748b, background color: #07090f, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "route": "/signup",
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": [
+          {
+            "target": [
+              "a[href$=\"dashboard\"]"
+            ],
+            "html": "<a href=\"/dashboard\" class=\"transition-colors duration-fast hover:text-text-primary\">Product</a>",
+            "failureSummary": "Fix any of the following: |   Element has insufficient color contrast of 4.18 (foreground color: #64748b, background color: #07090f, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "target": [
+              "a[href$=\"pricing\"]"
+            ],
+            "html": "<a href=\"/pricing\" class=\"transition-colors duration-fast hover:text-text-primary\">Pricing</a>",
+            "failureSummary": "Fix any of the following: |   Element has insufficient color contrast of 4.18 (foreground color: #64748b, background color: #07090f, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "target": [
+              ".text-text-muted.duration-fast[href$=\"login\"]"
+            ],
+            "html": "<a href=\"/login\" class=\"text-sm text-text-muted transition-colors duration-fast hover:text-text-primary\">Sign in</a>",
+            "failureSummary": "Fix any of the following: |   Element has insufficient color contrast of 4.18 (foreground color: #64748b, background color: #07090f, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "target": [
+              ".w-full:nth-child(1) > .border-white\\/80.bg-white.text-slate-900"
+            ],
+            "html": "<button type=\"button\" class=\"inline-flex items-center font-medium transition-all duration-150 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-40",
+            "failureSummary": "Fix any of the following: |   Element has insufficient color contrast of 1.07 (foreground color: #121216, background color: #1a1a1d, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "target": [
+              ".w-full:nth-child(2) > .border-white\\/80.bg-white.text-slate-900"
+            ],
+            "html": "<button type=\"button\" class=\"inline-flex items-center font-medium transition-all duration-150 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-40",
+            "failureSummary": "Fix any of the following: |   Element has insufficient color contrast of 1.07 (foreground color: #121216, background color: #1a1a1d, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "route": "/onboarding/connect",
+    "violations": [
+      {
+        "id": "aria-prohibited-attr",
+        "impact": "serious",
+        "help": "Elements must only use permitted ARIA attributes",
+        "nodes": [
+          {
+            "target": [
+              "div[aria-label=\"Onboarding step 1 of 4\"]"
+            ],
+            "html": "<div class=\"flex items-center gap-2\" aria-label=\"Onboarding step 1 of 4\">",
+            "failureSummary": "Fix all of the following: |   aria-label attribute cannot be used on a div with no valid role attribute."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "route": "/pricing",
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": [
+          {
+            "target": [
+              "a[href$=\"dashboard\"]"
+            ],
+            "html": "<a href=\"/dashboard\" class=\"transition-colors duration-fast hover:text-text-primary\">Product</a>",
+            "failureSummary": "Fix any of the following: |   Element has insufficient color contrast of 4.18 (foreground color: #64748b, background color: #07090f, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "target": [
+              "a[href$=\"pricing\"]"
+            ],
+            "html": "<a href=\"/pricing\" class=\"transition-colors duration-fast hover:text-text-primary\">Pricing</a>",
+            "failureSummary": "Fix any of the following: |   Element has insufficient color contrast of 4.18 (foreground color: #64748b, background color: #07090f, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "target": [
+              "a[href$=\"login\"]"
+            ],
+            "html": "<a href=\"/login\" class=\"text-sm text-text-muted transition-colors duration-fast hover:text-text-primary\">Sign in</a>",
+            "failureSummary": "Fix any of the following: |   Element has insufficient color contrast of 4.18 (foreground color: #64748b, background color: #07090f, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "route": "/trust",
+    "violations": []
+  }
+]
