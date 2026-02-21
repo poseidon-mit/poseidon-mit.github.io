@@ -281,7 +281,7 @@ export function GrowRecommendations() {
                   aria-expanded={!!expanded[rec.rank]}>
 
                   {expanded[rec.rank] ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                  {expanded[rec.rank] ? 'Hide details' : 'Show SHAP factors & evidence'}
+                  {expanded[rec.rank] ? 'Hide details' : 'Show AI decision drivers & evidence'}
                 </Button>
 
                 {expanded[rec.rank] &&

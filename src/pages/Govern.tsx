@@ -74,48 +74,32 @@ export default function GovernPage() {
               Govern Engine
             </span>
           </motion.div>
-          <motion.div variants={fadeUpVariant} className="flex flex-col gap-2">
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-              Compliance score: <span className="text-[var(--engine-govern)] drop-shadow-[0_0_15px_rgba(20,184,166,0.4)] font-mono">{COMPLIANCE_SCORE}/100</span>.
-              <br className="hidden lg:block" />
-              {DECISIONS_AUDITED.toLocaleString()} decisions audited.
-            </h1>
-
-          </motion.div>
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+            Governance & Oversight
+          </h1>
+          <p className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide mb-2">
+            Transparent, accountable AI. Every decision strictly audited and mathematically provable.
+          </p>
         </motion.section>
 
         {/* ── Compliance score ring + stats ── */}
         <motion.div variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
-          <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-10 backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col md:flex-row gap-8 lg:gap-16 items-center border border-[var(--engine-govern)]/20">
-            <div className="absolute inset-0 bg-gradient-to-r from-[var(--engine-govern)]/10 to-transparent pointer-events-none" />
-            <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-[var(--engine-govern)]/10 blur-[120px] rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2" />
-
-            {/* SVG ring */}
-            <div className="relative w-40 md:w-48 lg:w-56 h-40 md:h-48 lg:h-56 shrink-0 z-10" aria-label={`Compliance score: ${COMPLIANCE_SCORE}%`}>
-              <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_0_15px_rgba(20,184,166,0.3)]">
-                <circle cx="60" cy="60" r="50" fill="none" strokeWidth="6" stroke="rgba(255,255,255,0.06)" />
-                <circle cx="60" cy="60" r="50" fill="none" strokeWidth="6" stroke="var(--engine-govern)" strokeLinecap="round" strokeDasharray={`${COMPLIANCE_SCORE * 3.14} ${314 - COMPLIANCE_SCORE * 3.14}`} transform="rotate(-90 60 60)" />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center pt-2">
-                <span className="text-4xl lg:text-5xl font-light font-mono text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">{COMPLIANCE_SCORE}</span>
-                <span className="text-xs uppercase tracking-widest text-white/50 mt-1 font-semibold">Score</span>
-              </div>
-            </div>
-
-            <div className="flex-1 grid grid-cols-2 gap-y-8 gap-x-6 w-full z-10">
-              {[
-                { label: "Decisions audited", value: DECISIONS_AUDITED.toLocaleString() },
-                { label: "Verified", value: `${VERIFIED_PERCENT}%`, color: "var(--state-healthy)" },
-                { label: "Pending review", value: String(PENDING_REVIEW_COUNT), color: "var(--state-warning)" },
-                { label: "Flagged", value: String(FLAGGED_COUNT), color: "var(--state-critical)" },
-              ].map(d => (
-                <div key={d.label} className="flex flex-col gap-2">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 w-full">
+            {[
+              { label: "Decisions audited", value: DECISIONS_AUDITED.toLocaleString(), color: "white" },
+              { label: "Verified", value: `${VERIFIED_PERCENT}%`, color: "var(--state-healthy)" },
+              { label: "Pending review", value: String(PENDING_REVIEW_COUNT), color: "var(--state-warning)" },
+              { label: "Flagged", value: String(FLAGGED_COUNT), color: "var(--state-critical)" },
+            ].map(d => (
+              <Surface key={d.label} className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-lg border border-white/[0.08] hover:bg-white/[0.02] transition-colors">
+                <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-govern)]/5 to-transparent pointer-events-none" />
+                <div className="flex flex-col gap-3 relative z-10">
                   <span className="text-[10px] md:text-xs uppercase tracking-widest font-semibold text-white/50">{d.label}</span>
-                  <span className="text-2xl md:text-3xl lg:text-4xl font-light font-mono" style={{ color: d.color || "white", textShadow: d.color ? `0 0 15px ${d.color}60` : 'none' }}>{d.value}</span>
+                  <span className="text-3xl md:text-4xl lg:text-5xl font-light font-mono" style={{ color: d.color, textShadow: d.color !== 'white' ? `0 0 15px ${d.color}60` : 'none' }}>{d.value}</span>
                 </div>
-              ))}
-            </div>
-          </Surface>
+              </Surface>
+            ))}
+          </div>
         </motion.div>
 
         {/* ── Decision Ledger + Sidebar ── */}
@@ -123,34 +107,39 @@ export default function GovernPage() {
           <div className="flex-1 min-w-0 lg:w-2/3">
             <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
               <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 px-2">Recent Decisions</h2>
-              <div className="flex flex-col gap-4">
-                {ledgerEntries.map(entry => {
-                  const sCfg = statusConfig[entry.status];
-                  const SIcon = sCfg.icon;
-                  return (
-                    <motion.div key={entry.id} variants={fadeUpVariant} onClick={() => navigate('/govern/audit')} className="cursor-pointer">
-                      <Surface className="relative overflow-hidden rounded-[24px] border border-white/[0.08] hover:border-white/[0.15] backdrop-blur-3xl bg-black/60 shadow-2xl transition-all p-5 md:p-6" style={{ borderLeftWidth: 4, borderLeftColor: typeColor[entry.type] }}>
-                        <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
-                        <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-4">
-                          <div className="flex items-center gap-2 flex-wrap md:w-48 shrink-0">
-                            <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase tracking-widest font-bold border border-white/[0.05]" style={{ background: `${typeColor[entry.type]}15`, color: typeColor[entry.type] }}><CircleDot size={12} />{entry.type}</span>
-                            <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase tracking-widest font-bold border border-white/[0.05]" style={{ background: sCfg.bg, color: sCfg.color }}><SIcon size={12} />{entry.status}</span>
+              <div className="flex flex-col">
+                <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-0">
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
+                  <div className="flex flex-col divide-y divide-white/[0.04] relative z-10">
+                    {ledgerEntries.map(entry => {
+                      const sCfg = statusConfig[entry.status];
+                      const SIcon = sCfg.icon;
+                      return (
+                        <motion.div key={entry.id} variants={fadeUpVariant} onClick={() => navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)} className="group cursor-pointer p-4 md:p-6 hover:bg-white/[0.04] transition-colors flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-4">
+                            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/[0.05] shrink-0" style={{ background: `${typeColor[entry.type]}15`, color: typeColor[entry.type] }}><CircleDot size={16} /></span>
+                            <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+                              <span className="text-base font-light tracking-wide text-white group-hover:text-[var(--engine-govern)] transition-colors truncate">{entry.action}</span>
+                              <div className="flex items-center gap-3 flex-wrap">
+                                <span className="text-[10px] uppercase tracking-widest font-mono text-white/40">{entry.id}</span>
+                                <span className="text-[10px] uppercase tracking-widest font-bold flex items-center gap-1" style={{ color: sCfg.color }}><SIcon size={10} />{entry.status}</span>
+                              </div>
+                            </div>
                           </div>
-
-                          <div className="flex-1 min-w-0">
-                            <span className="text-lg font-light tracking-wide text-white block mb-1">{entry.action}</span>
-                            <span className="text-[10px] uppercase tracking-widest font-mono text-white/40">{entry.id}</span>
+                          <div className="flex items-center justify-end gap-6 shrink-0">
+                            <div className="flex-col items-end gap-1.5 hidden md:flex">
+                              <span className="text-sm font-mono tracking-widest" style={{ color: entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)", textShadow: `0 0 10px ${entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)"}60` }}>{formatConfidence(entry.confidence)}</span>
+                              <span className="text-[10px] uppercase tracking-widest text-white/30">{entry.time}</span>
+                            </div>
+                            <div className="w-8 h-8 rounded-full hidden sm:flex items-center justify-center border border-white/[0.05] bg-white/[0.02] group-hover:bg-white/[0.1] group-hover:border-[var(--engine-govern)]/30 transition-all shadow-inner">
+                              <ArrowUpRight size={14} className="text-white/60 group-hover:text-[var(--engine-govern)]" />
+                            </div>
                           </div>
-
-                          <div className="flex md:flex-col items-center justify-between md:items-end gap-2 md:gap-1 w-full md:w-auto mt-2 md:mt-0 pt-3 md:pt-0 border-t border-white/[0.06] md:border-none">
-                            <span className="text-sm font-mono tracking-widest" style={{ color: entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)", textShadow: `0 0 10px ${entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)"}60` }}>{formatConfidence(entry.confidence)}</span>
-                            <span className="text-[10px] uppercase tracking-widest text-white/30">{entry.time}</span>
-                          </div>
-                        </div>
-                      </Surface>
-                    </motion.div>
-                  )
-                })}
+                        </motion.div>
+                      )
+                    })}
+                  </div>
+                </Surface>
               </div>
             </motion.section>
           </div>

@@ -19,7 +19,6 @@ import ActivityTimelinePage from '../../pages/ActivityTimelinePage';
 import Notifications from '../../pages/Notifications';
 import Protect from '../../pages/Protect';
 import ProtectAlertDetail from '../../pages/ProtectAlertDetail';
-import ProtectDispute from '../../pages/ProtectDispute';
 import Grow from '../../pages/Grow';
 import GrowScenarios from '../../pages/GrowScenarios';
 import GrowRecommendations from '../../pages/GrowRecommendations';
@@ -76,7 +75,6 @@ const SCREEN_COMPONENT_MAP: Array<{ screenId: ScreenId; component: React.Compone
   // Protect
   { screenId: 'S-V3-PRT01', component: Protect, name: 'Protect' },
   { screenId: 'S-V3-PRT02', component: ProtectAlertDetail, name: 'ProtectAlertDetail' },
-  { screenId: 'S-V3-PRT03', component: ProtectDispute, name: 'ProtectDispute' },
   // Grow
   { screenId: 'S-V3-GRW01', component: Grow, name: 'Grow' },
   { screenId: 'S-V3-GRW02', component: GrowScenarios, name: 'GrowScenarios' },

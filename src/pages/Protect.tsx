@@ -21,20 +21,20 @@ import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 /* ── Types ── */
 export type Severity = "Critical" | "High" | "Medium" | "Low"
-export type SortField = "severity" | "confidence" | "time"
+export type SortField = "severity" | "confidence" | "time" | "amount"
 export type SortDir = "asc" | "desc"
 
 export interface ThreatRow {
-  id: string; merchant: string; amount: string; confidence: number; severity: Severity; time: string; sortTime: number; description: string
+  id: string; merchant: string; amount: string; numericAmount: number; confidence: number; severity: Severity; time: string; sortTime: number; description: string
 }
 
 /* ── Data ── */
 export const THREATS: ThreatRow[] = [
-  { id: DEMO_THREAD.criticalAlert.id, merchant: DEMO_THREAD.criticalAlert.merchant, amount: `$${DEMO_THREAD.criticalAlert.amount.toLocaleString()}`, confidence: DEMO_THREAD.criticalAlert.confidence, severity: "Critical", time: "2m ago", sortTime: 8, description: "Unusual transaction pattern" },
-  { id: "THR-002", merchant: "Unknown Vendor", amount: "$1,200", confidence: 0.87, severity: "High", time: "15m ago", sortTime: 7, description: "Unrecognized merchant" },
-  { id: "THR-003", merchant: "Travel Agency XYZ", amount: "$3,400", confidence: 0.72, severity: "Medium", time: "1h ago", sortTime: 6, description: "International wire transfer" },
-  { id: "THR-004", merchant: "Subscription Service", amount: "$49.99", confidence: 0.65, severity: "Low", time: "3h ago", sortTime: 5, description: "Duplicate charge detected" },
-  { id: "THR-005", merchant: "Crypto Exchange", amount: "$5,000", confidence: 0.91, severity: "Medium", time: "5h ago", sortTime: 4, description: "High-risk category transfer" },
+  { id: DEMO_THREAD.criticalAlert.id, merchant: DEMO_THREAD.criticalAlert.merchant, amount: `$${DEMO_THREAD.criticalAlert.amount.toLocaleString()}`, numericAmount: DEMO_THREAD.criticalAlert.amount, confidence: DEMO_THREAD.criticalAlert.confidence, severity: "Critical", time: "2m ago", sortTime: 8, description: "Unusual transaction pattern" },
+  { id: "THR-002", merchant: "Unknown Vendor", amount: "$1,200", numericAmount: 1200, confidence: 0.87, severity: "High", time: "15m ago", sortTime: 7, description: "Unrecognized merchant" },
+  { id: "THR-003", merchant: "Travel Agency XYZ", amount: "$3,400", numericAmount: 3400, confidence: 0.72, severity: "Medium", time: "1h ago", sortTime: 6, description: "International wire transfer" },
+  { id: "THR-004", merchant: "Subscription Service", amount: "$49.99", numericAmount: 49.99, confidence: 0.65, severity: "Low", time: "3h ago", sortTime: 5, description: "Duplicate charge detected" },
+  { id: "THR-005", merchant: "Crypto Exchange", amount: "$5,000", numericAmount: 5000, confidence: 0.91, severity: "Medium", time: "5h ago", sortTime: 4, description: "High-risk category transfer" },
 ]
 
 const severityConfig: Record<Severity, { color: string; bg: string; order: number }> = {
@@ -83,6 +83,7 @@ export default function ProtectPage() {
           case "severity": cmp = severityConfig[a.severity].order - severityConfig[b.severity].order; break
           case "confidence": cmp = a.confidence - b.confidence; break
           case "time": cmp = a.sortTime - b.sortTime; break
+          case "amount": cmp = a.numericAmount - b.numericAmount; break
         }
         return sortDir === "asc" ? cmp : -cmp
       }),
@@ -144,19 +145,21 @@ export default function ProtectPage() {
                       <caption className="sr-only">Threat alerts sorted by confidence, severity, or time</caption>
                       <thead>
                         <tr className="border-b border-white/[0.08] bg-black/40 backdrop-blur-md">
-                          <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold" style={{ color: "#64748B" }} scope="col">ID</th>
-                          <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold" style={{ color: "#64748B" }} scope="col">Merchant</th>
-                          <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold" style={{ color: "#64748B" }} scope="col">Amount</th>
-                          <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("confidence")} aria-sort={sortField === "confidence" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                          <th className="px-6 py-4 whitespace-nowrap text-xs uppercase tracking-widest font-semibold" style={{ color: "#64748B" }} scope="col">ID</th>
+                          <th className="px-6 py-4 whitespace-nowrap text-xs uppercase tracking-widest font-semibold" style={{ color: "#64748B" }} scope="col">Merchant</th>
+                          <th className="px-6 py-4 whitespace-nowrap text-xs uppercase tracking-widest font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("amount")} aria-sort={sortField === "amount" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                            <div className="flex items-center gap-2 hover:text-white/70 transition-colors">Amount <SortIndicator field="amount" /></div>
+                          </th>
+                          <th className="px-6 py-4 whitespace-nowrap text-xs uppercase tracking-widest font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("confidence")} aria-sort={sortField === "confidence" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
                             <div className="flex items-center gap-2 hover:text-white/70 transition-colors">Confidence <SortIndicator field="confidence" /></div>
                           </th>
-                          <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("severity")} aria-sort={sortField === "severity" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                          <th className="px-6 py-4 whitespace-nowrap text-xs uppercase tracking-widest font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("severity")} aria-sort={sortField === "severity" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
                             <div className="flex items-center gap-2 hover:text-white/70 transition-colors">Severity <SortIndicator field="severity" /></div>
                           </th>
-                          <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("time")} aria-sort={sortField === "time" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                          <th className="px-6 py-4 whitespace-nowrap text-xs uppercase tracking-widest font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("time")} aria-sort={sortField === "time" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
                             <div className="flex items-center gap-2 hover:text-white/70 transition-colors">Time <SortIndicator field="time" /></div>
                           </th>
-                          <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold" style={{ color: "#64748B" }} scope="col">Action</th>
+                          <th className="px-6 py-4 whitespace-nowrap text-xs uppercase tracking-widest font-semibold" style={{ color: "#64748B" }} scope="col">Action</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -170,18 +173,18 @@ export default function ProtectPage() {
                               style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
                               onClick={() => navigate(`/protect/alert-detail?alertId=${t.id}`)}
                             >
-                              <td className="px-6 py-5"><span className="text-xs font-mono font-medium drop-shadow-[0_0_8px_rgba(239,68,68,0.4)]" style={{ color: "var(--engine-protect)" }}>{t.id}</span></td>
-                              <td className="px-6 py-5"><div className="flex flex-col gap-1.5"><span className="text-base font-medium text-white/90 group-hover:text-white transition-colors tracking-wide">{t.merchant}</span><span className="text-xs text-white/40 tracking-wide">{t.description}</span></div></td>
-                              <td className="px-6 py-5"><span className="text-base font-mono font-bold text-white/80 group-hover:text-white">{t.amount}</span></td>
-                              <td className="px-6 py-5">
+                              <td className="px-6 py-5 whitespace-nowrap"><span className="text-xs font-mono font-medium drop-shadow-[0_0_8px_rgba(239,68,68,0.4)]" style={{ color: "var(--engine-protect)" }}>{t.id}</span></td>
+                              <td className="px-6 py-5 whitespace-nowrap"><div className="flex flex-col gap-1.5"><span className="text-base font-medium text-white/90 group-hover:text-white transition-colors tracking-wide">{t.merchant}</span><span className="text-xs text-white/40 tracking-wide">{t.description}</span></div></td>
+                              <td className="px-6 py-5 whitespace-nowrap"><span className="text-base font-mono font-bold text-white/80 group-hover:text-white">{t.amount}</span></td>
+                              <td className="px-6 py-5 whitespace-nowrap">
                                 <div className="flex items-center gap-3">
                                   <div className="h-1.5 w-16 rounded-full overflow-hidden bg-white/[0.05] border border-white/[0.02]"><div className="h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_currentColor]" style={{ width: `${t.confidence * 100}%`, background: severityToneColor[t.severity], color: severityToneColor[t.severity] }} /></div>
                                   <span className="text-xs font-mono font-medium drop-shadow-[0_0_5px_currentColor]" style={{ color: severityToneColor[t.severity] }}>{t.confidence.toFixed(2)}</span>
                                 </div>
                               </td>
-                              <td className="px-6 py-5"><span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest shadow-[0_0_10px_rgba(0,0,0,0.5)]" style={{ background: severityConfig[t.severity].bg, color: severityConfig[t.severity].color, border: `1px solid rgba(255,255,255,0.05)` }}>{t.severity === "Critical" && <AlertTriangle size={12} />}{t.severity}</span></td>
-                              <td className="px-6 py-5"><span className="text-xs font-mono text-white/40 group-hover:text-white/60 transition-colors uppercase tracking-widest">{t.time}</span></td>
-                              <td className="px-6 py-5">
+                              <td className="px-6 py-5 whitespace-nowrap"><span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest shadow-[0_0_10px_rgba(0,0,0,0.5)]" style={{ background: severityConfig[t.severity].bg, color: severityConfig[t.severity].color, border: `1px solid rgba(255,255,255,0.05)` }}>{t.severity === "Critical" && <AlertTriangle size={12} />}{t.severity}</span></td>
+                              <td className="px-6 py-5 whitespace-nowrap"><span className="text-xs font-mono text-white/40 group-hover:text-white/60 transition-colors uppercase tracking-widest">{t.time}</span></td>
+                              <td className="px-6 py-5 whitespace-nowrap">
                                 <div className="w-8 h-8 rounded-full flex items-center justify-center border border-white/[0.05] bg-white/[0.05] group-hover:bg-white/[0.15] group-hover:border-white/[0.2] transition-all shadow-inner">
                                   <ChevronRight size={14} className="text-white/60 group-hover:text-white" />
                                 </div>

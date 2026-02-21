@@ -41,7 +41,6 @@ const ROUTE_PAGE_FILES: Record<RoutePath, string | null> = {
   '/dashboard/notifications': 'src/pages/Notifications.tsx',
   '/protect': 'src/pages/Protect.tsx',
   '/protect/alert-detail': 'src/pages/ProtectAlertDetail.tsx',
-  '/protect/dispute': 'src/pages/ProtectDispute.tsx',
   '/grow': 'src/pages/Grow.tsx',
   '/grow/goal': 'src/pages/GrowGoalDetail.tsx',
   '/grow/scenarios': 'src/pages/GrowScenarios.tsx',
@@ -116,7 +115,6 @@ describe('target scope routing contract', () => {
       '/dashboard/notifications',
       '/protect',
       '/protect/alert-detail',
-      '/protect/dispute',
       '/grow',
       '/grow/goal',
       '/grow/scenarios',
@@ -294,7 +292,6 @@ describe('cross-thread consistency contract', () => {
       '/dashboard/alerts',
       '/protect',
       '/protect/alert-detail',
-      '/protect/dispute',
       '/execute/approval',
     ];
 

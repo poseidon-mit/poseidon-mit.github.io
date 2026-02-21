@@ -11,9 +11,7 @@ import {
   CheckCircle2,
   XCircle,
   CircleDot,
-  Shield,
-  ShieldCheck,
-  User,
+  Upload,
   ArrowUpRight,
 } from "lucide-react"
 import { DEMO_THREAD } from '@/lib/demo-thread'
@@ -46,20 +44,19 @@ const evidenceItems: EvidenceItem[] = [
 ]
 
 const shapFactors = [
-  { name: "Transaction velocity", value: 8.2 },
-  { name: "Geo anomaly", value: 5.7 },
-  { name: "Amount deviation", value: 4.1 },
-  { name: "Time pattern", value: -2.3 },
-  { name: "Account history", value: -1.8 },
+  { name: "Recent transaction speed", value: 8.2 },
+  { name: "Unusual location", value: 5.7 },
+  { name: "Unusual amount", value: 4.1 },
+  { name: "Time of day", value: -2.3 },
+  { name: "Past behavior", value: -1.8 },
 ]
 
 const detectedAt = formatDemoTimestamp('2026-03-19T14:28:00-04:00')
 const updatedAt = formatDemoTimestamp('2026-03-19T14:30:00-04:00')
 
 function getScoreColor(s: number) { return s >= 0.9 ? "var(--state-critical)" : s >= 0.8 ? "var(--state-warning)" : "var(--engine-govern)" }
-function getScoreBg(s: number) { return s >= 0.9 ? "rgba(var(--state-critical-rgb),0.12)" : s >= 0.8 ? "rgba(var(--state-warning-rgb),0.12)" : "rgba(59,130,246,0.12)" }
 
-/* ── SHAP Waterfall (inlined from poseidon/shap-waterfall) ── */
+/* ── SHAP Waterfall ── */
 function ShapWaterfall({ factors }: { factors: { name: string; value: number }[] }) {
   const sorted = [...factors].sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
   const maxAbs = Math.max(...factors.map(f => Math.abs(f.value)), 1)
@@ -89,7 +86,6 @@ function ShapWaterfall({ factors }: { factors: { name: string; value: number }[]
 
 /* ═══════════════════════════════════════════════════════
    PROTECT ALERT DETAIL PAGE
-   CTA: "Open execute queue" -> /execute (line 536-537)
    ═══════════════════════════════════════════════════════ */
 
 export default function ProtectAlertDetailPage() {
@@ -97,11 +93,22 @@ export default function ProtectAlertDetailPage() {
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const { search } = useRouter()
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [disputeState, setDisputeState] = useState<'idle' | 'drafting' | 'submitted'>('idle')
 
   const alert = useMemo(() => {
     const alertId = new URLSearchParams(search).get('alertId')
     return THREATS.find(t => t.id === alertId) || THREATS[0]
   }, [search])
+
+  const severityTheme = useMemo(() => {
+    switch (alert.severity) {
+      case 'Critical': return { color: 'var(--state-critical)', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.2)', shadow: 'rgba(239,68,68,0.5)' }
+      case 'High': return { color: 'var(--state-warning)', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.2)', shadow: 'rgba(245,158,11,0.5)' }
+      case 'Medium': return { color: 'var(--engine-govern)', bg: 'rgba(59,130,246,0.1)', border: 'rgba(59,130,246,0.2)', shadow: 'rgba(59,130,246,0.5)' }
+      case 'Low': return { color: '#94A3B8', bg: 'rgba(148,163,184,0.1)', border: 'rgba(148,163,184,0.2)', shadow: 'rgba(148,163,184,0.5)' }
+      default: return { color: 'var(--state-critical)', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.2)', shadow: 'rgba(239,68,68,0.5)' }
+    }
+  }, [alert.severity])
 
   return (
     <div className="relative min-h-screen w-full">
@@ -128,22 +135,22 @@ export default function ProtectAlertDetailPage() {
               <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white leading-tight" style={{ fontFamily: "var(--font-display)" }}>{`Signal #${alert.id}`}</h1>
               <span className="text-sm tracking-wide text-white/40 font-mono mt-1">{`Detected: ${detectedAt} • Updated: ${updatedAt}`}</span>
             </div>
-            <span className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold uppercase tracking-widest border border-red-500/20 shadow-[0_0_20px_rgba(239,68,68,0.2)]" style={{ background: "rgba(239,68,68,0.1)", color: "var(--state-critical)" }} aria-label="Alert status: Critical"><AlertTriangle size={16} />{alert.severity}</span>
+            <span className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(0,0,0,0.2)]" style={{ background: severityTheme.bg, border: `1px solid ${severityTheme.border}`, color: severityTheme.color }} aria-label={`Alert status: ${alert.severity}`}><AlertTriangle size={16} />{alert.severity}</span>
           </motion.div>
         </motion.section>
 
         {/* ── Alert Summary ── */}
         <motion.div variants={fadeUpVariant} className="mb-6">
-          <Surface interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-red-500/20 backdrop-blur-3xl bg-black/60 shadow-[0_0_30px_rgba(239,68,68,0.1)] flex flex-col gap-4 transition-all hover:bg-white/[0.02]" padding="none">
-            <div className="absolute inset-0 bg-gradient-to-br from-[var(--state-critical)]/10 to-transparent pointer-events-none" />
+          <Surface interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-[0_0_30px_rgba(0,0,0,0.2)] flex flex-col gap-4 transition-all hover:bg-white/[0.02]" style={{ border: `1px solid ${severityTheme.border}` }} padding="none">
+            <div className="absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none" style={{ backgroundImage: `linear-gradient(to bottom right, ${severityTheme.bg}, transparent)` }} />
 
             <div className="grid grid-cols-2 lg:grid-cols-6 gap-6 lg:gap-8 relative z-10">
               <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Merchant</span><span className="text-lg font-medium text-white/90">{alert.merchant}</span></div>
-              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Amount</span><span className="text-2xl font-light font-mono text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">{alert.amount}</span></div>
-              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Confidence</span><div className="flex items-center gap-3"><div className="h-1.5 w-24 rounded-full overflow-hidden bg-white/[0.05] border border-white/[0.02]"><div className="h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(239,68,68,0.8)]" style={{ width: `${alert.confidence * 100}%`, background: "var(--state-critical)" }} /></div><span className="text-base font-mono font-bold drop-shadow-[0_0_5px_currentColor] text-red-400">{formatConfidence(alert.confidence)}</span></div></div>
+              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Amount</span><span className="text-2xl font-light font-mono" style={{ color: severityTheme.color, textShadow: `0 0 8px ${severityTheme.shadow}` }}>{alert.amount}</span></div>
+              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Confidence</span><div className="flex items-center gap-3"><div className="h-1.5 w-24 rounded-full overflow-hidden bg-white/[0.05] border border-white/[0.02]"><div className="h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_currentColor]" style={{ width: `${alert.confidence * 100}%`, background: severityTheme.color }} /></div><span className="text-base font-mono font-bold drop-shadow-[0_0_5px_currentColor]" style={{ color: severityTheme.color }}>{formatConfidence(alert.confidence)}</span></div></div>
               <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Alert type</span><span className="text-base text-white/70 tracking-wide">{alert.description}</span></div>
               <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Account</span><div className="flex items-center gap-2"><CreditCard size={16} className="text-white/30" /><span className="text-base font-mono font-medium drop-shadow-[0_0_5px_rgba(255,255,255,0.2)] text-white/80">{`Checking ****4821`}</span></div></div>
-              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Location</span><div className="flex items-center gap-2"><MapPin size={16} className="text-white/30" /><span className="text-base text-white/80 tracking-wide">{"Online"}</span></div><span className="text-xs font-semibold tracking-wide text-red-400">Flagged IP: 203.0.113.42</span></div>
+              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Location</span><div className="flex items-center gap-2"><MapPin size={16} className="text-white/30" /><span className="text-base text-white/80 tracking-wide">{"Online"}</span></div><span className="text-xs font-semibold tracking-wide" style={{ color: severityTheme.color }}>Flagged IP: 203.0.113.42</span></div>
             </div>
           </Surface>
         </motion.div>
@@ -227,8 +234,8 @@ export default function ProtectAlertDetailPage() {
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
                   <div className="relative z-10 flex items-center justify-between border-b border-white/[0.06] pb-4">
                     <div>
-                      <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">SHAP attribution</h3>
-                      <p className="text-xs text-white/30 tracking-wide mt-1">Feature contribution to threat score</p>
+                      <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Decision Drivers</h3>
+                      <p className="text-xs text-white/30 tracking-wide mt-1">Key factors driving this AI decision</p>
                     </div>
                   </div>
                   <div className="relative z-10">
@@ -241,42 +248,88 @@ export default function ProtectAlertDetailPage() {
 
           {/* Sidebar */}
           <aside className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6" aria-label="Alert actions sidebar">
-            {/* Recommended actions */}
+            {/* Actions / Dispute Workflow */}
             <div className="sticky top-6 flex flex-col gap-6">
-              <Surface interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]" padding="none">
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--state-critical)]/10 to-transparent pointer-events-none" />
-                <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Actions</h3>
+              {disputeState === 'idle' && (
+                <Surface interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]" style={{ borderColor: 'var(--state-critical)' }} padding="none">
+                  <div className="absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none" style={{ backgroundImage: `linear-gradient(to bottom right, ${severityTheme.bg}, transparent)` }} />
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Actions</h3>
 
-                <div className="flex flex-col gap-4 relative z-10">
-                  <ButtonLink to={`/protect/dispute?alertId=${alert.id}`} variant="primary" engine="protect" fullWidth className="rounded-2xl py-4 shadow-[0_0_30px_rgba(239,68,68,0.3)] hover:shadow-[0_0_50px_rgba(239,68,68,0.5)] transition-all font-bold tracking-wide border-none bg-gradient-to-r from-[var(--engine-protect)] to-red-400 text-white" icon={<XCircle size={18} />}>{"Block & investigate"}</ButtonLink>
-                  <ButtonLink
-                    to={`/protect/dispute?alertId=${alert.id}`}
-                    variant="glass"
-                    engine="protect"
-                    fullWidth
-                    className="rounded-2xl py-4 border border-white/[0.1] hover:bg-white/[0.05] shadow-lg backdrop-blur-md font-semibold tracking-wide"
-                  >
-                    Request verification
-                  </ButtonLink>
-                  <div className="rounded-2xl bg-red-500/10 border border-red-500/20 p-4 mt-2 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
-                    <p className="text-xs text-center text-red-400 font-medium tracking-wide leading-relaxed drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">{`AI recommends blocking (${formatConfidence(alert.confidence)} confidence)`}</p>
+                  <div className="flex flex-col gap-4 relative z-10">
+                    <Button onClick={() => setDisputeState('drafting')} variant="primary" engine="protect" fullWidth className="rounded-2xl py-4 transition-all font-bold tracking-wide border-none text-white shadow-[0_0_30px_rgba(239,68,68,0.3)] hover:shadow-[0_0_50px_rgba(239,68,68,0.5)]" style={{ background: `linear-gradient(to right, ${severityTheme.color}, #ef4444)` }} icon={<XCircle size={18} />}>{"Block & Dispute"}</Button>
+                    <Button
+                      onClick={() => setDisputeState('drafting')}
+                      variant="glass"
+                      engine="protect"
+                      fullWidth
+                      className="rounded-2xl py-4 border border-white/[0.1] hover:bg-white/[0.05] shadow-lg backdrop-blur-md font-semibold tracking-wide"
+                    >
+                      Request verification
+                    </Button>
+                    <div className="rounded-2xl border p-4 mt-2 shadow-[0_0_15px_rgba(0,0,0,0.1)]" style={{ background: severityTheme.bg, borderColor: severityTheme.border }}>
+                      <p className="text-xs text-center font-medium tracking-wide leading-relaxed" style={{ color: severityTheme.color, textShadow: `0 0 8px ${severityTheme.shadow}` }}>{`AI recommends blocking (${formatConfidence(alert.confidence)} confidence)`}</p>
+                    </div>
                   </div>
-                </div>
-              </Surface>
+                </Surface>
+              )}
+
+              {disputeState === 'drafting' && (
+                <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-[var(--engine-protect)]/30 backdrop-blur-3xl bg-[var(--engine-protect)]/10 shadow-2xl flex flex-col gap-6" padding="none">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/20 to-transparent pointer-events-none" />
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Dispute Setup</h3>
+
+                  <div className="flex flex-col gap-4 relative z-10">
+                    <div className="rounded-[20px] bg-white/[0.02] border border-white/[0.05] p-4 text-xs text-white/70 leading-relaxed font-mono tracking-wide shadow-inner">
+                      <p className="font-semibold text-white/90 mb-2">AI Draft Letter</p>
+                      <p>{`Disputing charge of `}<span className="text-red-400 font-bold">{alert.amount}</span>{` from `}<span className="text-white/90 font-bold">{alert.merchant}</span>{`. AI flagged with `}<span className="text-red-400 font-bold">{formatConfidence(alert.confidence)}</span>{` fraud confidence. I request an immediate reversal.`}</p>
+                    </div>
+
+                    <div className="border border-dashed border-white/20 hover:border-white/40 cursor-pointer rounded-[20px] p-4 text-center bg-white/[0.02] hover:bg-white/[0.04] transition-colors group">
+                      <Upload className="w-6 h-6 text-white/40 group-hover:text-white/80 mx-auto mb-2 transition-colors" />
+                      <p className="text-xs font-medium tracking-wide text-white/80">Upload Evidence (Optional)</p>
+                    </div>
+
+                    <div className="flex flex-col gap-3 mt-2">
+                      <Button onClick={() => setDisputeState('submitted')} variant="primary" engine="protect" fullWidth className="rounded-xl py-3 shadow-[0_0_20px_rgba(16,185,129,0.3)] bg-[var(--engine-protect)] border-none text-black font-bold tracking-wide">Submit Dispute</Button>
+                      <Button onClick={() => setDisputeState('idle')} variant="ghost" engine="protect" fullWidth className="rounded-xl py-3 border border-white/10 hover:bg-white/10 text-white/60 font-medium">Cancel</Button>
+                    </div>
+                  </div>
+                </Surface>
+              )}
+
+              {disputeState === 'submitted' && (
+                <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-emerald-500/30 backdrop-blur-3xl bg-emerald-500/10 shadow-[0_0_30px_rgba(16,185,129,0.15)] flex flex-col gap-4 text-center" padding="none">
+                  <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none" />
+                  <div className="relative z-10 flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                      <CheckCircle2 className="h-8 w-8 text-emerald-400 drop-shadow-[0_0_10px_currentColor]" />
+                    </div>
+                    <h3 className="text-xl font-light tracking-wide text-white mb-2" style={{ fontFamily: "var(--font-display)" }}>Investigation Active</h3>
+                    <p className="text-sm text-white/70 tracking-wide mb-4">Case <span className="font-mono text-emerald-300 font-bold bg-emerald-500/10 px-1 rounded border border-emerald-500/20">DIS-001</span> filed.</p>
+                    <div className="bg-black/40 border border-white/10 rounded-xl p-3 w-full text-left">
+                      <p className="text-xs text-white/50 uppercase tracking-widest font-semibold mb-1">Status</p>
+                      <p className="text-sm font-medium text-emerald-400 drop-shadow-[0_0_5px_currentColor]">48h SLA provisional credit pending</p>
+                    </div>
+                  </div>
+                </Surface>
+              )}
+
 
               {/* Primary CTA: Open execute queue -> /execute */}
-              <Surface interactive className="relative overflow-hidden rounded-[24px] p-4 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-lg group hover:border-white/[0.2] transition-all cursor-pointer" padding="none" onClick={() => window.location.assign('/execute')}>
-                <div className="absolute inset-0 bg-gradient-to-r from-[var(--engine-execute)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                <div className="relative z-10 flex items-center justify-between px-2">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[var(--engine-execute)]/20 border border-[var(--engine-execute)]/30 flex items-center justify-center text-[var(--engine-execute)] shadow-[0_0_10px_rgba(251,191,36,0.3)]">
-                      <CircleDot size={14} className="drop-shadow-[0_0_5px_currentColor]" />
+              {disputeState === 'idle' && (
+                <Surface interactive className="relative overflow-hidden rounded-[24px] p-4 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-lg group hover:border-white/[0.2] transition-all cursor-pointer" padding="none" onClick={() => window.location.assign('/execute')}>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[var(--engine-execute)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                  <div className="relative z-10 flex items-center justify-between px-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[var(--engine-execute)]/20 border border-[var(--engine-execute)]/30 flex items-center justify-center text-[var(--engine-execute)] shadow-[0_0_10px_rgba(251,191,36,0.3)]">
+                        <CircleDot size={14} className="drop-shadow-[0_0_5px_currentColor]" />
+                      </div>
+                      <span className="text-sm font-semibold tracking-wide text-white/90">Open execute queue</span>
                     </div>
-                    <span className="text-sm font-semibold tracking-wide text-white/90">Open execute queue</span>
+                    <ArrowUpRight size={18} className="text-white/40 group-hover:text-white/90 transition-colors drop-shadow-[0_0_5px_currentColor]" />
                   </div>
-                  <ArrowUpRight size={18} className="text-white/40 group-hover:text-white/90 transition-colors drop-shadow-[0_0_5px_currentColor]" />
-                </div>
-              </Surface>
+                </Surface>
+              )}
 
               {/* Similar incidents */}
               <Surface interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]" padding="none">

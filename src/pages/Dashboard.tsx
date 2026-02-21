@@ -135,8 +135,7 @@ function ActivityFeed({ itemVariants, navigate }: { itemVariants: Variants; navi
           <motion.div
             key={i}
             variants={itemVariants}
-            onClick={() => navigate(item.path)}
-            className="flex items-center gap-5 py-3 group cursor-pointer"
+            className="flex items-center gap-5 py-3 group"
           >
             <div
               className="flex items-center justify-center rounded-2xl w-12 h-12 shrink-0 border border-white/[0.05] transition-all duration-500 group-hover:scale-110 group-hover:border-white/[0.1]"
@@ -145,10 +144,9 @@ function ActivityFeed({ itemVariants, navigate }: { itemVariants: Variants; navi
               <item.icon size={18} style={{ color: item.color }} className="group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all" />
             </div>
             <div className="flex flex-col gap-1 min-w-0 flex-1">
-              <span className="text-base font-medium text-white/80 group-hover:text-white transition-colors tracking-wide">{item.label}</span>
+              <span className="text-base font-medium text-white/80 tracking-wide">{item.label}</span>
               <span className="text-xs font-mono text-white/30 tracking-wider">{item.time}</span>
             </div>
-            <ArrowUpRight size={16} className="text-white/20 group-hover:text-white/80 transition-all duration-300 opacity-0 group-hover:opacity-100 transform translate-x-1 translate-y-1 group-hover:translate-x-0 group-hover:translate-y-0" />
           </motion.div>
         ))}
       </div>
@@ -267,9 +265,6 @@ export default function DashboardPage() {
 
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
             <div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-semibold tracking-tighter text-white mb-4">
-                System Confidence
-              </h1>
               <div className="flex items-center gap-4">
                 <div className="text-5xl lg:text-6xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400">
                   {SYSTEM_CONFIDENCE.toFixed(2)}
@@ -279,16 +274,6 @@ export default function DashboardPage() {
                   Optimal
                 </div>
               </div>
-            </div>
-
-            <div className="hidden lg:flex items-center gap-8 text-sm font-medium bg-black/40 border border-white/[0.08] rounded-full px-8 py-4 backdrop-blur-3xl shadow-2xl">
-              <span className="flex items-center gap-2.5 text-white/50 tracking-wider uppercase text-xs"><Shield size={16} className="text-[var(--engine-protect)] drop-shadow-[0_0_8px_currentColor]" /> Protect <span className="text-white font-mono">0.94</span></span>
-              <span className="w-px h-6 bg-white/10" />
-              <span className="flex items-center gap-2.5 text-white/50 tracking-wider uppercase text-xs"><TrendingUp size={16} className="text-[var(--engine-grow)] drop-shadow-[0_0_8px_currentColor]" /> Grow <span className="text-white font-mono">0.89</span></span>
-              <span className="w-px h-6 bg-white/10" />
-              <span className="flex items-center gap-2.5 text-white/50 tracking-wider uppercase text-xs"><Zap size={16} className="text-[var(--engine-execute)] drop-shadow-[0_0_8px_currentColor]" /> Execute <span className="text-white font-mono">0.91</span></span>
-              <span className="w-px h-6 bg-white/10" />
-              <span className="flex items-center gap-2.5 text-white/50 tracking-wider uppercase text-xs"><Scale size={16} className="text-[var(--engine-govern)] drop-shadow-[0_0_8px_currentColor]" /> Govern <span className="text-white font-mono">0.97</span></span>
             </div>
           </div>
         </motion.section>

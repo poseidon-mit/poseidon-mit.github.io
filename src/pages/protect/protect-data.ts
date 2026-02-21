@@ -66,9 +66,9 @@ export const signals: Signal[] = [
 ]
 
 export const shapFactors: ShapFactor[] = [
-  { label: 'merchant_days_since_registration', value: 0.82 },
-  { label: 'txn_amount_zscore (+3.2\u03C3)', value: 0.71 },
-  { label: 'geo_ip_distance_km', value: 0.65 },
+  { label: 'Merchant account age (New)', value: 0.82 },
+  { label: 'Unusual transaction amount', value: 0.71 },
+  { label: 'Unusual IP location', value: 0.65 },
 ]
 
 export const categoryScores: CategoryScore[] = [

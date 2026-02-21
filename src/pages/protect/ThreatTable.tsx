@@ -62,7 +62,7 @@ function SHAPPanel() {
     <div className="flex flex-col gap-4 rounded-xl p-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
       <div className="flex items-center gap-2">
         <Brain className="h-4 w-4" style={{ color: 'var(--engine-protect)' }} />
-        <span className="text-sm font-semibold" style={{ color: '#F1F5F9' }}>SHAP Factor Analysis</span>
+        <span className="text-sm font-semibold" style={{ color: '#F1F5F9' }}>AI Decision Drivers</span>
       </div>
       <div className="flex flex-col gap-3">
         {shapFactors.map((f) => (

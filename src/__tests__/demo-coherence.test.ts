@@ -35,7 +35,6 @@ describe('demo coherence invariants', () => {
 
   it('uses canonical critical-alert data on demo-path pages', () => {
     const files = [
-      'src/pages/ProtectDispute.tsx',
       'src/pages/AlertsHub.tsx',
       'src/pages/Dashboard.tsx',
       'src/pages/ExecuteApproval.tsx',
