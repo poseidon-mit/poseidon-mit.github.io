@@ -21,3 +21,6 @@ tmp/
 
 # Large raw recordings (keep processed versions)
 remotion/public/assets/recordings/*-raw.mp4
+
+# Visual regression screenshots (generated at runtime)
+docs/baselines/screenshots/
