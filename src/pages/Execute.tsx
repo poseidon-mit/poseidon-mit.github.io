@@ -55,7 +55,7 @@ export const QUEUE_ACTIONS: QueueAction[] = [
     amount: '$12,400',
     confidence: 0.97,
     time: '14:28',
-    description: 'Optimize allocation based on 90-day pattern',
+    description: '$12,400 transfer from Cash Reserve to Growth Equity Index',
     urgency: 'high',
     impact: {
       approved: 'Allocation adjusted and tracked in the govern audit trace.',
@@ -76,7 +76,7 @@ export const QUEUE_ACTIONS: QueueAction[] = [
     amount: `$${DEMO_THREAD.criticalAlert.amount.toLocaleString()}`,
     confidence: DEMO_THREAD.criticalAlert.confidence,
     time: '14:15',
-    description: `Suspicious transaction to ${DEMO_THREAD.criticalAlert.merchant}`,
+    description: `Suspicious $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} wire transfer from Checking to ${DEMO_THREAD.criticalAlert.merchant}`,
     urgency: 'high',
     impact: {
       approved: 'Wire transfer is blocked and dispute workflow opens automatically.',
@@ -97,7 +97,7 @@ export const QUEUE_ACTIONS: QueueAction[] = [
     amount: '$140/mo',
     confidence: 0.89,
     time: '13:52',
-    description: '3 overlapping subscriptions detected',
+    description: 'Cancel 3 overlapping media subscriptions to save $140/mo',
     urgency: 'medium',
     impact: {
       approved: 'Estimated savings of $140/mo are queued for execution.',
@@ -118,7 +118,7 @@ export const QUEUE_ACTIONS: QueueAction[] = [
     amount: '-',
     confidence: 0.78,
     time: '11:20',
-    description: 'Batch archive of 47 paid invoices',
+    description: 'Batch archive 47 paid Q3 invoices to compliance cold storage',
     urgency: 'medium',
     impact: {
       approved: 'Legacy invoices are archived and indexed for governance audit.',
@@ -139,7 +139,7 @@ export const QUEUE_ACTIONS: QueueAction[] = [
     amount: '$187',
     confidence: 0.99,
     time: '10:30',
-    description: 'Recurring auto-payment',
+    description: '$187 scheduled auto-payment from Checking to ConEdison',
     urgency: 'low',
     impact: {
       approved: 'Payment executes and receipt is logged in the audit ledger.',
@@ -314,6 +314,17 @@ export default function ExecutePage() {
                         Review & Approve
                         <ArrowUpRight size={16} className="ml-2" />
                       </ButtonLink>
+                      <Button
+                        variant="ghost"
+                        engine="execute"
+                        className="rounded-2xl text-sm px-6 py-3 border border-white/10 hover:bg-white/10 transition-all font-semibold text-white/50 hover:text-white"
+                        onClick={() => {
+                          setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'deferred' })
+                          showToast({ message: 'Action dismissed', variant: 'info' })
+                        }}
+                      >
+                        Dismiss
+                      </Button>
                     </div>
                   </Surface>
                 </motion.div>

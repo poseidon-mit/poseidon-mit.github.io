@@ -23,6 +23,7 @@ interface AuditDecision {
   topFactors: Array<{ label: string; contribution: number; note: string; }>;
   compliance: { gdpr: boolean; ecoa: boolean; ccpa: boolean; };
   userFeedback: { correct: boolean; comment: string; };
+  dataSources: string[];
 }
 
 const DEFAULT_DECISION_ID = 'GV-2026-0319-846';
@@ -53,7 +54,8 @@ const AUDIT_DECISIONS: Record<string, AuditDecision> = {
       { label: 'Tax impact', contribution: 0.62, note: 'Estimated tax drag stayed within accepted range' }],
 
     compliance: { gdpr: true, ecoa: true, ccpa: true },
-    userFeedback: { correct: true, comment: 'Matches investment policy and approved risk profile.' }
+    userFeedback: { correct: true, comment: 'Matches investment policy and approved risk profile.' },
+    dataSources: ['Brokerage Account History (90 days)', 'Market Volatility Index (VIX)', 'User IPS Targets']
   },
   'GV-2026-0319-846': {
     id: 'GV-2026-0319-846',
@@ -68,7 +70,8 @@ const AUDIT_DECISIONS: Record<string, AuditDecision> = {
     },
     topFactors: sharedFactors,
     compliance: { gdpr: true, ecoa: true, ccpa: true },
-    userFeedback: { correct: true, comment: 'Confirmed suspicious transfer. Keep card protection active.' }
+    userFeedback: { correct: true, comment: 'Confirmed suspicious transfer. Keep card protection active.' },
+    dataSources: ['Transaction History (Last 30 Days)', 'Geolocation Database', 'Merchant Trust Consortium']
   },
   'GV-2026-0319-845': {
     id: 'GV-2026-0319-845',
@@ -88,7 +91,8 @@ const AUDIT_DECISIONS: Record<string, AuditDecision> = {
       { label: 'Contract term', contribution: 0.58, note: 'Cancellation windows confirmed open' }],
 
     compliance: { gdpr: true, ecoa: true, ccpa: true },
-    userFeedback: { correct: true, comment: 'Recommendation approved. Savings target updated.' }
+    userFeedback: { correct: true, comment: 'Recommendation approved. Savings target updated.' },
+    dataSources: ['Recurring Billing Ledger (12 Months)', 'Subscription App Usage Logs']
   },
   'GV-2026-0319-844': {
     id: 'GV-2026-0319-844',
@@ -108,7 +112,8 @@ const AUDIT_DECISIONS: Record<string, AuditDecision> = {
       { label: 'Audit preservation', contribution: 0.59, note: 'Immutable references retained in ledger' }],
 
     compliance: { gdpr: true, ecoa: true, ccpa: true },
-    userFeedback: { correct: true, comment: 'Queued for human review before completion.' }
+    userFeedback: { correct: true, comment: 'Queued for human review before completion.' },
+    dataSources: ['Document Archive DB', 'Data Retention Policy V2']
   },
   'GV-2026-0318-843': {
     id: 'GV-2026-0318-843',
@@ -123,7 +128,8 @@ const AUDIT_DECISIONS: Record<string, AuditDecision> = {
     },
     topFactors: sharedFactors,
     compliance: { gdpr: true, ecoa: true, ccpa: true },
-    userFeedback: { correct: true, comment: 'Escalation was appropriate for this charge profile.' }
+    userFeedback: { correct: true, comment: 'Escalation was appropriate for this charge profile.' },
+    dataSources: ['Retail Transaction History', 'Fraud Fingerprinting Network']
   },
   'GV-2026-0318-842': {
     id: 'GV-2026-0318-842',
@@ -143,7 +149,8 @@ const AUDIT_DECISIONS: Record<string, AuditDecision> = {
       { label: 'Forecast uncertainty', contribution: 0.61, note: 'Confidence interval narrowed month-over-month' }],
 
     compliance: { gdpr: true, ecoa: true, ccpa: true },
-    userFeedback: { correct: true, comment: 'Progress estimate aligns with current account balances.' }
+    userFeedback: { correct: true, comment: 'Progress estimate aligns with current account balances.' },
+    dataSources: ['Payroll Deposit Ledger', 'Monthly Expense Variance']
   },
   'GV-2026-0317-841': {
     id: 'GV-2026-0317-841',
@@ -163,7 +170,8 @@ const AUDIT_DECISIONS: Record<string, AuditDecision> = {
       { label: 'Counterparty trust', contribution: 0.63, note: 'Verified vendor with prior successful history' }],
 
     compliance: { gdpr: true, ecoa: true, ccpa: true },
-    userFeedback: { correct: true, comment: 'Execution met expected timing and amount.' }
+    userFeedback: { correct: true, comment: 'Execution met expected timing and amount.' },
+    dataSources: ['Scheduled Payment Queue', 'Vendor Risk Graph']
   },
   'GV-2026-0317-840': {
     id: 'GV-2026-0317-840',
@@ -183,7 +191,8 @@ const AUDIT_DECISIONS: Record<string, AuditDecision> = {
       { label: 'Policy coverage', contribution: 0.67, note: 'Controls expanded for edge-case transactions' }],
 
     compliance: { gdpr: true, ecoa: true, ccpa: true },
-    userFeedback: { correct: true, comment: 'Policy update approved with full oversight trace.' }
+    userFeedback: { correct: true, comment: 'Policy update approved with full oversight trace.' },
+    dataSources: ['Aggregated False-Positive Error Log', 'Oversight Committee Rules']
   }
 };
 
@@ -322,7 +331,16 @@ export function GovernAuditDetail() {
                   </div>
 
                   <div className="flex flex-col gap-5 pt-6 border-t border-white/[0.06]">
-                    <h3 className="text-[10px] uppercase tracking-widest text-white/50 font-semibold mb-2">Contributing Factors</h3>
+                    <div className="flex flex-col gap-3">
+                      <h3 className="text-[10px] uppercase tracking-widest text-[#94a3b8] font-semibold flex items-center gap-2">Data Sources Analyzed</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {auditEntry.dataSources?.map(src => (
+                          <span key={src} className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs font-mono tracking-wide text-white/70 shadow-sm">{src}</span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <h3 className="text-[10px] uppercase tracking-widest text-white/50 font-semibold mb-2 mt-2">Contributing Factors</h3>
                     {auditEntry.topFactors.map((factor) =>
                       <div key={factor.label} className="flex flex-col gap-3 group">
                         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">

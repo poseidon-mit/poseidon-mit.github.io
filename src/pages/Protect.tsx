@@ -124,112 +124,76 @@ export default function ProtectPage() {
         <div className="flex flex-col gap-6 lg:flex-row lg:gap-5">
           {/* Threat Table */}
           <div className="flex-1 min-w-0 lg:w-2/3">
-            {/* Desktop table */}
-            <div className="hidden md:block">
-              <Surface interactive className="relative h-full overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl transition-all hover:bg-white/[0.02]" padding="none">
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
+            {/* Threat Cards */}
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between px-2">
+                <h2 className="text-sm font-semibold uppercase tracking-widest text-white/50">Active Threats</h2>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-white/40">Sort:</span>
+                  <select
+                    className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white/80 focus:outline-none focus:border-white/20"
+                    value={`${sortField}-${sortDir}`}
+                    onChange={(e) => {
+                      const [f, d] = e.target.value.split('-');
+                      setSortField(f as SortField);
+                      setSortDir(d as SortDir);
+                    }}
+                    aria-label="Sort threats"
+                  >
+                    <option value="severity-desc">Highest Severity</option>
+                    <option value="severity-asc">Lowest Severity</option>
+                    <option value="amount-desc">Highest Amount</option>
+                    <option value="amount-asc">Lowest Amount</option>
+                    <option value="confidence-desc">Highest Confidence</option>
+                    <option value="time-desc">Most Recent</option>
+                  </select>
+                </div>
+              </div>
 
-                {sorted.length === 0 ? (
-                  <div className="p-8">
+              <div className="flex flex-col gap-3">
+                {sorted.length === 0 && (
+                  <Surface variant="glass" padding="md">
                     <EmptyState
                       icon={Shield}
-                      title="No threats match your current view"
-                      description="Try a different sort strategy or reopen top alert details."
+                      title="No active threats"
+                      description="Threat feed is clear right now."
                       accentColor="var(--engine-protect)"
-                      action={{ label: "Open top alert", onClick: () => navigate(`/protect/alert-detail?alertId=${THREATS[0]?.id}`) }}
                     />
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto relative z-10 w-full rounded-[24px] bg-white/[0.02] border border-white/[0.05]">
-                    <table className="w-full text-left border-collapse" role="table">
-                      <caption className="sr-only">Threat alerts sorted by confidence, severity, or time</caption>
-                      <thead>
-                        <tr className="border-b border-white/[0.08] bg-black/40 backdrop-blur-md">
-                          <th className="px-6 py-4 whitespace-nowrap text-xs uppercase tracking-widest font-semibold" style={{ color: "#64748B" }} scope="col">ID</th>
-                          <th className="px-6 py-4 whitespace-nowrap text-xs uppercase tracking-widest font-semibold" style={{ color: "#64748B" }} scope="col">Merchant</th>
-                          <th className="px-6 py-4 whitespace-nowrap text-xs uppercase tracking-widest font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("amount")} aria-sort={sortField === "amount" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                            <div className="flex items-center gap-2 hover:text-white/70 transition-colors">Amount <SortIndicator field="amount" /></div>
-                          </th>
-                          <th className="px-6 py-4 whitespace-nowrap text-xs uppercase tracking-widest font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("confidence")} aria-sort={sortField === "confidence" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                            <div className="flex items-center gap-2 hover:text-white/70 transition-colors">Confidence <SortIndicator field="confidence" /></div>
-                          </th>
-                          <th className="px-6 py-4 whitespace-nowrap text-xs uppercase tracking-widest font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("severity")} aria-sort={sortField === "severity" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                            <div className="flex items-center gap-2 hover:text-white/70 transition-colors">Severity <SortIndicator field="severity" /></div>
-                          </th>
-                          <th className="px-6 py-4 whitespace-nowrap text-xs uppercase tracking-widest font-semibold cursor-pointer select-none" style={{ color: "#64748B" }} scope="col" onClick={() => handleSort("time")} aria-sort={sortField === "time" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                            <div className="flex items-center gap-2 hover:text-white/70 transition-colors">Time <SortIndicator field="time" /></div>
-                          </th>
-                          <th className="px-6 py-4 whitespace-nowrap text-xs uppercase tracking-widest font-semibold" style={{ color: "#64748B" }} scope="col">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <AnimatePresence>
-                          {sorted.map((t) => (
-                            <motion.tr
-                              key={t.id}
-                              variants={fadeUpVariant}
-                              exit={{ opacity: 0, y: -8, transition: { duration: 0.18 } }}
-                              className="group transition-all hover:bg-white/[0.06] cursor-pointer"
-                              style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
-                              onClick={() => navigate(`/protect/alert-detail?alertId=${t.id}`)}
-                            >
-                              <td className="px-6 py-5 whitespace-nowrap"><span className="text-xs font-mono font-medium drop-shadow-[0_0_8px_rgba(239,68,68,0.4)]" style={{ color: "var(--engine-protect)" }}>{t.id}</span></td>
-                              <td className="px-6 py-5 whitespace-nowrap"><div className="flex flex-col gap-1.5"><span className="text-base font-medium text-white/90 group-hover:text-white transition-colors tracking-wide">{t.merchant}</span><span className="text-xs text-white/40 tracking-wide">{t.description}</span></div></td>
-                              <td className="px-6 py-5 whitespace-nowrap"><span className="text-base font-mono font-bold text-white/80 group-hover:text-white">{t.amount}</span></td>
-                              <td className="px-6 py-5 whitespace-nowrap">
-                                <div className="flex items-center gap-3">
-                                  <div className="h-1.5 w-16 rounded-full overflow-hidden bg-white/[0.05] border border-white/[0.02]"><div className="h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_currentColor]" style={{ width: `${t.confidence * 100}%`, background: severityToneColor[t.severity], color: severityToneColor[t.severity] }} /></div>
-                                  <span className="text-xs font-mono font-medium drop-shadow-[0_0_5px_currentColor]" style={{ color: severityToneColor[t.severity] }}>{t.confidence.toFixed(2)}</span>
-                                </div>
-                              </td>
-                              <td className="px-6 py-5 whitespace-nowrap"><span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest shadow-[0_0_10px_rgba(0,0,0,0.5)]" style={{ background: severityConfig[t.severity].bg, color: severityConfig[t.severity].color, border: `1px solid rgba(255,255,255,0.05)` }}>{t.severity === "Critical" && <AlertTriangle size={12} />}{t.severity}</span></td>
-                              <td className="px-6 py-5 whitespace-nowrap"><span className="text-xs font-mono text-white/40 group-hover:text-white/60 transition-colors uppercase tracking-widest">{t.time}</span></td>
-                              <td className="px-6 py-5 whitespace-nowrap">
-                                <div className="w-8 h-8 rounded-full flex items-center justify-center border border-white/[0.05] bg-white/[0.05] group-hover:bg-white/[0.15] group-hover:border-white/[0.2] transition-all shadow-inner">
-                                  <ChevronRight size={14} className="text-white/60 group-hover:text-white" />
-                                </div>
-                              </td>
-                            </motion.tr>
-                          ))}
-                        </AnimatePresence>
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </Surface>
-            </div>
-
-            {/* Mobile cards */}
-            <div className="flex flex-col gap-3 md:hidden">
-              {sorted.length === 0 && (
-                <Surface variant="glass" padding="md">
-                  <EmptyState
-                    icon={Shield}
-                    title="No active threats"
-                    description="Threat feed is clear right now."
-                    accentColor="var(--engine-protect)"
-                  />
-                </Surface>
-              )}
-              {sorted.map((t) => (
-                <motion.div key={t.id} variants={fadeUpVariant}>
-                  <Surface variant="glass" padding="md" className="flex flex-col gap-3" borderColor={severityConfig[t.severity].color}>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-mono font-medium" style={{ color: "var(--engine-protect)" }}>{t.id}</span>
-                      <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: severityConfig[t.severity].bg, color: severityConfig[t.severity].color }}>{t.severity}</span>
-                      <span className="ml-auto text-[10px]" style={{ color: "#64748B" }}>{t.time}</span>
-                    </div>
-                    <span className="text-sm font-medium" style={{ color: "#F1F5F9" }}>{t.merchant}</span>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-mono font-semibold tabular-nums" style={{ color: "#F1F5F9" }}>{t.amount}</span>
-                      <span className="text-xs font-mono tabular-nums" style={{ color: severityToneColor[t.severity] }}>{t.confidence.toFixed(2)}</span>
-                    </div>
-                    <ButtonLink to={`/protect/alert-detail?alertId=${t.id}`} variant="glass" engine="protect" size="sm" fullWidth className="rounded-xl" icon={<ChevronRight size={14} />} iconPosition="right">
-                      Investigate
-                    </ButtonLink>
                   </Surface>
-                </motion.div>
-              ))}
+                )}
+                <AnimatePresence>
+                  {sorted.map((t) => (
+                    <motion.div key={t.id} variants={fadeUpVariant} exit={{ opacity: 0, height: 0 }}>
+                      <Surface interactive variant="glass" padding="md" className="flex flex-col gap-3 hover:bg-white/[0.04] transition-colors cursor-pointer" borderColor={severityConfig[t.severity].color} onClick={() => navigate(`/protect/alert-detail?alertId=${t.id}`)}>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-xs font-mono font-medium drop-shadow-[0_0_5px_currentColor]" style={{ color: "var(--engine-protect)" }}>{t.id}</span>
+                          <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: severityConfig[t.severity].bg, color: severityConfig[t.severity].color }}>{t.severity === 'Critical' && <AlertTriangle size={10} />}{t.severity}</span>
+                          <span className="ml-auto text-[10px] uppercase font-mono tracking-widest" style={{ color: "#64748B" }}>{t.time}</span>
+                        </div>
+                        <div>
+                          <span className="text-base font-medium tracking-wide block" style={{ color: "#F1F5F9" }}>{t.merchant}</span>
+                          <span className="text-xs text-white/40">{t.description}</span>
+                        </div>
+                        <div className="flex items-center justify-between mt-1">
+                          <span className="text-lg font-mono font-bold tabular-nums" style={{ color: "#F1F5F9" }}>{t.amount}</span>
+                          <div className="flex items-center gap-2">
+                            <div className="h-1.5 w-12 rounded-full overflow-hidden bg-white/[0.05] border border-white/[0.02]">
+                              <div className="h-full rounded-full shadow-[0_0_8px_currentColor]" style={{ width: `${t.confidence * 100}%`, background: severityToneColor[t.severity], color: severityToneColor[t.severity] }} />
+                            </div>
+                            <span className="text-xs font-mono font-medium tabular-nums" style={{ color: severityToneColor[t.severity] }}>{t.confidence.toFixed(2)}</span>
+                          </div>
+                        </div>
+                        <div className="mt-2 pt-3 border-t border-white/[0.04] flex items-center justify-between">
+                          <span className="text-xs tracking-wide text-white/40 group-hover:text-white/70 transition-colors">Click to investigate</span>
+                          <div className="w-6 h-6 rounded-full bg-white/[0.05] flex items-center justify-center text-white/50 group-hover:bg-white/10 group-hover:text-white transition-all">
+                            <ChevronRight size={14} />
+                          </div>
+                        </div>
+                      </Surface>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
 
@@ -281,13 +245,6 @@ export default function ProtectPage() {
               </Surface>
             </motion.div>
 
-            {/* Primary CTA */}
-            <motion.div variants={fadeUpVariant}>
-              <ButtonLink to={`/protect/alert-detail?alertId=${sorted[0]?.id || ''}`} variant="primary" engine="protect" className="w-full rounded-[24px] py-4 shadow-[0_0_30px_rgba(239,68,68,0.3)] hover:shadow-[0_0_50px_rgba(239,68,68,0.5)] transition-all font-bold tracking-wide border-none bg-gradient-to-r from-[var(--engine-protect)] to-red-400 text-white">
-                Open Top Alert
-                <ChevronRight size={18} className="ml-2" />
-              </ButtonLink>
-            </motion.div>
           </aside>
         </div>
 

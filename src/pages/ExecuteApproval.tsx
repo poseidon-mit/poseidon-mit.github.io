@@ -163,20 +163,6 @@ export function ExecuteApproval() {
                         </h2>
                         <p className="text-base text-white/60 leading-relaxed mt-4 tracking-wide font-light">{action.description}</p>
                       </div>
-
-                      <div className="shrink-0 relative hidden sm:flex items-center justify-center translate-y-2 pr-2">
-                        <svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true">
-                          <circle cx="40" cy="40" r="36" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
-                          <circle
-                            cx="40" cy="40" r="36" fill="none" stroke="var(--engine-execute)" strokeWidth="6"
-                            strokeLinecap="round"
-                            strokeDasharray={`${action.confidence * 2 * Math.PI * 36} ${2 * Math.PI * 36}`}
-                            transform="rotate(-90 40 40)" />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-lg font-mono font-bold text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]">{Math.round(action.confidence * 100)}%</span>
-                        </div>
-                      </div>
                     </div>
 
                     <div className="pt-6 border-t border-white/[0.06] flex flex-col gap-8">

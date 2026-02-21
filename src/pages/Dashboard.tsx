@@ -118,7 +118,7 @@ const StatCard = memo(function StatCard({
 const activities = [
   { icon: Shield, label: `Blocked suspicious transfer to ${DEMO_THREAD.criticalAlert.merchant}`, time: "2m ago", color: "var(--engine-protect)", path: "/protect/alert-detail?alertId=THR-001" },
   { icon: TrendingUp, label: "Savings goal projection updated", time: "15m ago", color: "var(--engine-grow)", path: "/grow" },
-  { icon: Zap, label: "Auto-paid electricity bill", time: "1h ago", color: "var(--engine-execute)", path: "/execute/history" },
+  { icon: Zap, label: "Auto-paid electricity bill", time: "1h ago", color: "var(--engine-execute)", path: "/govern/audit" },
   { icon: Scale, label: `Compliance check passed (${COMPLIANCE_SCORE}/100)`, time: "2h ago", color: "var(--engine-govern)", path: "/govern" },
   { icon: AlertTriangle, label: "New alert: unusual pattern detected", time: "3h ago", color: "var(--state-warning)", path: "/protect" },
 ]
@@ -184,7 +184,7 @@ function DecisionRail({ itemVariants, navigate }: { itemVariants: Variants; navi
               if (d.status === "pending" && d.engine !== "Govern") {
                 navigate(`/execute/approval?actionId=${d.actionId}`);
               } else if (d.status === "approved" || d.engine === "Govern") {
-                navigate("/execute/history");
+                navigate("/govern/audit");
               }
             }}
             className="flex items-center gap-4 rounded-2xl p-4 transition-all duration-300 bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.04] hover:border-white/[0.1] group cursor-pointer"
@@ -266,12 +266,9 @@ export default function DashboardPage() {
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
             <div>
               <div className="flex items-center gap-4">
-                <div className="text-5xl lg:text-6xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400">
-                  {SYSTEM_CONFIDENCE.toFixed(2)}
-                </div>
                 <div className="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-semibold flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></div>
-                  Optimal
+                  System Status: Optimal
                 </div>
               </div>
             </div>

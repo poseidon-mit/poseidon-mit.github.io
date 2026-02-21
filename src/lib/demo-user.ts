@@ -8,8 +8,8 @@ export interface DemoUser {
 
 export const DEMO_USER: DemoUser = {
   id: 'demo-user-001',
-  name: 'Alex Chen',
-  initials: 'AC',
-  email: 'alex@example.com',
+  name: 'Shinji Fujiwara',
+  initials: 'SF',
+  email: 'shinji@example.com',
   plan: 'Pro',
 }

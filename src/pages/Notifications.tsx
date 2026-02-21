@@ -223,57 +223,61 @@ export function Notifications() {
           {/* Side rail */}
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Notification preferences">
             {/* Preferences */}
-            <Surface className="rounded-2xl" variant="glass" padding="md">
-              <div className="flex items-center gap-2 mb-4">
-                <Settings2 className="h-4 w-4" style={{ color: 'var(--engine-dashboard)' }} />
-                <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest">Alert Preferences</h3>
-              </div>
-              <div className="space-y-3">
-                {[
-                  { label: 'Security alerts', type: 'Push + Email', enabled: true },
-                  { label: 'Growth insights', type: 'Push only', enabled: true },
-                  { label: 'Action updates', type: 'Push only', enabled: true },
-                  { label: 'System notices', type: 'Email digest', enabled: false }
-                ].map((pref) => (
-                  <div key={pref.label} className="flex items-center justify-between py-1 border-b border-white/[0.04] last:border-0 pb-3">
-                    <div>
-                      <span className="text-sm font-medium text-white tracking-wide">{pref.label}</span>
-                      <span className="text-[10px] text-white/40 block uppercase tracking-widest font-semibold mt-0.5">{pref.type}</span>
-                    </div>
-                    <div className={`w-9 h-5 rounded-full relative ${pref.enabled ? 'bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.3)]' : 'bg-white/10'}`}>
-                      <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${pref.enabled ? 'left-4' : 'left-0.5'}`} />
-                    </div>
-                  </div>
-                ))}
-                <div className="pt-2">
-                  <span className="text-xs text-white/50 block mb-1">Digest frequency</span>
-                  <select className="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white/70 focus:outline-none">
-                    <option>Daily</option>
-                    <option>Weekly</option>
-                    <option>Monthly</option>
-                  </select>
+            <motion.div variants={fadeUpVariant}>
+              <Surface className="rounded-2xl" variant="glass" padding="md">
+                <div className="flex items-center gap-2 mb-4">
+                  <Settings2 className="h-4 w-4" style={{ color: 'var(--engine-dashboard)' }} />
+                  <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest">Alert Preferences</h3>
                 </div>
-              </div>
-              <p className="text-[10px] text-white/30 mt-4 uppercase tracking-widest font-semibold border-t border-white/[0.04] pt-4">3 channels active · Push + Email for security</p>
-            </Surface>
+                <div className="space-y-3">
+                  {[
+                    { label: 'Security alerts', type: 'Push + Email', enabled: true },
+                    { label: 'Growth insights', type: 'Push only', enabled: true },
+                    { label: 'Action updates', type: 'Push only', enabled: true },
+                    { label: 'System notices', type: 'Email digest', enabled: false }
+                  ].map((pref) => (
+                    <div key={pref.label} className="flex items-center justify-between py-1 border-b border-white/[0.04] last:border-0 pb-3">
+                      <div>
+                        <span className="text-sm font-medium text-white tracking-wide">{pref.label}</span>
+                        <span className="text-[10px] text-white/40 block uppercase tracking-widest font-semibold mt-0.5">{pref.type}</span>
+                      </div>
+                      <div className={`w-9 h-5 rounded-full relative ${pref.enabled ? 'bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.3)]' : 'bg-white/10'}`}>
+                        <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${pref.enabled ? 'left-4' : 'left-0.5'}`} />
+                      </div>
+                    </div>
+                  ))}
+                  <div className="pt-2">
+                    <span className="text-xs text-white/50 block mb-1">Digest frequency</span>
+                    <select className="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white/70 focus:outline-none">
+                      <option>Daily</option>
+                      <option>Weekly</option>
+                      <option>Monthly</option>
+                    </select>
+                  </div>
+                </div>
+                <p className="text-[10px] text-white/30 mt-4 uppercase tracking-widest font-semibold border-t border-white/[0.04] pt-4">3 channels active · Push + Email for security</p>
+              </Surface>
+            </motion.div>
 
             {/* Stats */}
-            <Surface className="rounded-2xl" variant="glass" padding="md">
-              <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest mb-4">Notification Stats</h3>
-              <div className="space-y-3">
-                {[
-                  { label: 'Total today', value: String(notifications.length), color: 'text-white' },
-                  { label: 'Unread', value: String(unreadCount), color: 'text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]' },
-                  { label: 'Security', value: String(categoryCounts.security), color: 'text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]' },
-                  { label: 'Actioned (7d)', value: '87%', color: 'text-cyan-400 drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]' }
-                ].map((row) => (
-                  <div key={row.label} className="flex justify-between items-center py-1 border-b border-white/[0.04] last:border-0">
-                    <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">{row.label}</span>
-                    <span className={`text-sm font-mono ${row.color}`}>{row.value}</span>
-                  </div>
-                ))}
-              </div>
-            </Surface>
+            <motion.div variants={fadeUpVariant}>
+              <Surface className="rounded-2xl" variant="glass" padding="md">
+                <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest mb-4">Notification Stats</h3>
+                <div className="space-y-3">
+                  {[
+                    { label: 'Total today', value: String(notifications.length), color: 'text-white' },
+                    { label: 'Unread', value: String(unreadCount), color: 'text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]' },
+                    { label: 'Security', value: String(categoryCounts.security), color: 'text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]' },
+                    { label: 'Actioned (7d)', value: '87%', color: 'text-cyan-400 drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]' }
+                  ].map((row) => (
+                    <div key={row.label} className="flex justify-between items-center py-1 border-b border-white/[0.04] last:border-0">
+                      <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">{row.label}</span>
+                      <span className={`text-sm font-mono ${row.color}`}>{row.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </Surface>
+            </motion.div>
           </aside>
         </div>
 

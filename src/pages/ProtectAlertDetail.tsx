@@ -256,25 +256,16 @@ export default function ProtectAlertDetailPage() {
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Actions</h3>
 
                   <div className="flex flex-col gap-4 relative z-10">
-                    <Button onClick={() => setDisputeState('drafting')} variant="primary" engine="protect" fullWidth className="rounded-2xl py-4 transition-all font-bold tracking-wide border-none text-white shadow-[0_0_30px_rgba(239,68,68,0.3)] hover:shadow-[0_0_50px_rgba(239,68,68,0.5)]" style={{ background: `linear-gradient(to right, ${severityTheme.color}, #ef4444)` }} icon={<XCircle size={18} />}>{"Block & Dispute"}</Button>
-                    <Button
-                      onClick={() => setDisputeState('drafting')}
-                      variant="glass"
-                      engine="protect"
-                      fullWidth
-                      className="rounded-2xl py-4 border border-white/[0.1] hover:bg-white/[0.05] shadow-lg backdrop-blur-md font-semibold tracking-wide"
-                    >
-                      Request verification
-                    </Button>
+                    <Button onClick={() => setDisputeState('drafting')} variant="primary" engine="protect" fullWidth className="rounded-2xl py-4 transition-all font-bold tracking-wide border-none text-white shadow-lg" style={{ background: `linear-gradient(to right, ${severityTheme.color}, ${severityTheme.color})`, boxShadow: `0 0 30px ${severityTheme.shadow}` }} icon={<XCircle size={18} />}>{"Block & Dispute"}</Button>
                     <div className="rounded-2xl border p-4 mt-2 shadow-[0_0_15px_rgba(0,0,0,0.1)]" style={{ background: severityTheme.bg, borderColor: severityTheme.border }}>
-                      <p className="text-xs text-center font-medium tracking-wide leading-relaxed" style={{ color: severityTheme.color, textShadow: `0 0 8px ${severityTheme.shadow}` }}>{`AI recommends blocking (${formatConfidence(alert.confidence)} confidence)`}</p>
+                      <p className="text-xs text-center font-medium tracking-wide leading-relaxed drop-shadow-sm" style={{ color: severityTheme.color }}>{`AI recommends blocking (${formatConfidence(alert.confidence)} confidence)`}</p>
                     </div>
                   </div>
                 </Surface>
               )}
 
               {disputeState === 'drafting' && (
-                <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-[var(--engine-protect)]/30 backdrop-blur-3xl bg-[var(--engine-protect)]/10 shadow-2xl flex flex-col gap-6" padding="none">
+                <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border backdrop-blur-3xl shadow-2xl flex flex-col gap-6" style={{ borderColor: 'var(--engine-protect)', background: 'rgba(239, 68, 68, 0.05)' }} padding="none">
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/20 to-transparent pointer-events-none" />
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Dispute Setup</h3>
 
@@ -284,9 +275,10 @@ export default function ProtectAlertDetailPage() {
                       <p>{`Disputing charge of `}<span className="text-red-400 font-bold">{alert.amount}</span>{` from `}<span className="text-white/90 font-bold">{alert.merchant}</span>{`. AI flagged with `}<span className="text-red-400 font-bold">{formatConfidence(alert.confidence)}</span>{` fraud confidence. I request an immediate reversal.`}</p>
                     </div>
 
-                    <div className="border border-dashed border-white/20 hover:border-white/40 cursor-pointer rounded-[20px] p-4 text-center bg-white/[0.02] hover:bg-white/[0.04] transition-colors group">
-                      <Upload className="w-6 h-6 text-white/40 group-hover:text-white/80 mx-auto mb-2 transition-colors" />
-                      <p className="text-xs font-medium tracking-wide text-white/80">Upload Evidence (Optional)</p>
+                    <div className="rounded-[20px] border border-dashed border-[var(--engine-protect)]/30 hover:border-[var(--engine-protect)]/60 cursor-pointer p-4 text-center bg-[var(--engine-protect)]/5 hover:bg-[var(--engine-protect)]/10 transition-colors group">
+                      <Upload className="w-6 h-6 text-white/40 group-hover:text-white/80 mx-auto mb-2 transition-colors drop-shadow-sm" />
+                      <p className="text-xs font-medium tracking-wide text-white/80">Submit Receipt/Invoice (Recommended)</p>
+                      <p className="text-[10px] text-white/40 mt-1">Our AI identified missing documentation as a primary driver. Uploading now speeds processing.</p>
                     </div>
 
                     <div className="flex flex-col gap-3 mt-2">
