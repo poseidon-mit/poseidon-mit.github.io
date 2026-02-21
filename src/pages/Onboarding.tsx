@@ -1,111 +1,139 @@
-import { motion } from 'framer-motion';
-import { Link } from '@/router';
-import { Building2, Check, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from '@/router';
+import { Building2, ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { OnboardingShell } from '@/components/layout/OnboardingShell';
 import { fadeUp, staggerContainer } from '@/lib/motion-presets';
-import { Button, ButtonLink, Surface } from '@/design-system';
+import { Button } from '@/design-system';
 import { useDemoState } from '@/lib/demo-state/provider';
 
 const CONNECTORS = [
   {
     id: 'bank',
     icon: Building2,
-    label: 'Connect Primary Account',
-    desc: 'Bank-level encryption. Read-only access.',
+    label: 'Chase Private Client',
+    desc: 'Primary Operating Account',
   },
 ] as const
 
-export default function OnboardingConnectPage() {
-  const { state, updateOnboarding } = useDemoState();
-  const connected = new Set(state.onboarding.connectedAccountIds);
+type ConnectionState = 'idle' | 'connecting' | 'success';
 
-  const toggle = (id: string) => {
-    const next = new Set(connected);
-    if (next.has(id)) {
-      next.delete(id);
-    } else {
-      next.add(id);
-    }
-    updateOnboarding({ connectedAccountIds: Array.from(next) });
+export default function OnboardingConnectPage() {
+  const { navigate } = useRouter();
+  const [connState, setConnState] = useState<ConnectionState>('idle');
+  const { updateOnboarding } = useDemoState();
+
+  const handleConnect = () => {
+    if (connState !== 'idle') return;
+    setConnState('connecting');
+    // Simulate connection delay for premium feel
+    setTimeout(() => {
+      setConnState('success');
+      updateOnboarding({ connectedAccountIds: ['bank'] });
+    }, 2500);
   };
 
   return (
     <OnboardingShell
       step={1}
       title="Establish Connection"
-      subtitle="Securely link your accounts to fuel the AI engines.">
-      <main id="main-content">
-        <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
-          <motion.div variants={staggerContainer} className="space-y-3">
-            {CONNECTORS.map((connector) => {
-              const isConnected = connected.has(connector.id);
-              return (
-                <motion.div
-                  key={connector.id}
-                  variants={fadeUp}>
+      subtitle="Link your primary account to initialize the AI routing engine."
+    >
+      <main id="main-content" className="flex flex-col h-full min-h-[50vh]">
+        <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex-1 flex flex-col">
 
-                  <Button
+          <motion.div variants={staggerContainer} className="space-y-4 flex-1 mt-4">
+            {CONNECTORS.map((connector) => {
+              const isConnecting = connState === 'connecting';
+              const isSuccess = connState === 'success';
+
+              return (
+                <motion.div key={connector.id} variants={fadeUp}>
+                  <button
                     type="button"
-                    variant="glass"
-                    engine="dashboard"
-                    onClick={() => toggle(connector.id)}
-                    fullWidth
+                    onClick={handleConnect}
+                    disabled={connState !== 'idle'}
                     className={cn(
-                      'w-full rounded-2xl border p-6 text-left transition-all duration-300 !h-auto !min-h-0 justify-start',
-                      isConnected
-                        ? 'border-[var(--state-healthy)]/45 bg-[var(--state-healthy)]/10 shadow-[0_0_30px_rgba(34,197,94,0.15)]'
-                        : 'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]'
+                      'w-full rounded-3xl border p-5 md:p-6 text-left transition-all duration-500 flex items-center gap-4 md:gap-6 group relative overflow-hidden',
+                      isSuccess
+                        ? 'border-[var(--state-healthy)]/40 bg-[var(--state-healthy)]/10 shadow-[0_0_30px_rgba(34,197,94,0.15)]'
+                        : isConnecting
+                          ? 'border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_30px_rgba(6,182,212,0.15)]'
+                          : 'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]'
                     )}
                   >
-                    <div className="flex w-full items-center gap-6">
-                      <span
-                        className={cn(
-                          'inline-flex h-14 w-14 items-center justify-center rounded-xl border transition-colors',
-                          isConnected
-                            ? 'border-[var(--state-healthy)]/40 bg-[var(--state-healthy)]/15 text-[var(--state-healthy)] shadow-[0_0_15px_rgba(34,197,94,0.2)]'
-                            : 'border-white/10 bg-white/[0.03] text-slate-400'
-                        )}
-                      >
-                        <connector.icon className="h-7 w-7" aria-hidden="true" />
-                      </span>
+                    {isConnecting && (
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent"
+                        animate={{ x: ['-100%', '200%'] }}
+                        transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                      />
+                    )}
 
-                      <div className="min-w-0 flex-1">
-                        <p className="text-lg font-display font-medium text-slate-100">{connector.label}</p>
-                        <p className="mt-1 text-sm text-slate-400 font-light">{connector.desc}</p>
-                      </div>
+                    <span
+                      className={cn(
+                        'inline-flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-2xl border transition-colors relative z-10 shrink-0',
+                        isSuccess
+                          ? 'border-[var(--state-healthy)]/40 bg-[var(--state-healthy)]/15 text-[var(--state-healthy)]'
+                          : isConnecting
+                            ? 'border-cyan-500/40 bg-cyan-500/15 text-cyan-400'
+                            : 'border-white/10 bg-white/[0.03] text-white/70 group-hover:text-white'
+                      )}
+                    >
+                      <connector.icon className="h-6 w-6 md:h-7 md:w-7" aria-hidden="true" />
+                    </span>
 
-                      <span
-                        className={cn(
-                          'inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border transition-all',
-                          isConnected
-                            ? 'border-[var(--state-healthy)] bg-[var(--state-healthy)] text-slate-950 scale-100 opacity-100'
-                            : 'border-white/15 bg-white/[0.03] text-transparent scale-90 opacity-50'
-                        )}
-                      >
-                        <Check className="h-4 w-4" aria-hidden="true" />
-                      </span>
+                    <div className="min-w-0 flex-1 relative z-10">
+                      <p className="text-base md:text-lg font-display font-medium text-white">{connector.label}</p>
+                      <p className="mt-0.5 text-xs md:text-sm text-slate-400 font-light">{connector.desc}</p>
                     </div>
-                  </Button>
+
+                    <div className="shrink-0 relative z-10">
+                      {connState === 'idle' && (
+                        <span className="hidden sm:inline-block text-[10px] font-semibold uppercase tracking-widest text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity">Connect</span>
+                      )}
+                      {isConnecting && (
+                        <div className="flex items-center gap-2 text-cyan-400">
+                          <Loader2 className="h-4 w-4 md:h-5 md:w-5 animate-spin" />
+                          <span className="hidden sm:inline-block text-[10px] uppercase tracking-widest font-semibold">Authenticating</span>
+                        </div>
+                      )}
+                      {isSuccess && (
+                        <div className="flex items-center gap-2 text-emerald-400">
+                          <ShieldCheck className="h-5 w-5 md:h-6 md:w-6" />
+                          <span className="hidden sm:inline-block text-[10px] uppercase tracking-widest font-semibold">Verified</span>
+                        </div>
+                      )}
+                    </div>
+                  </button>
                 </motion.div>
               )
             })}
           </motion.div>
 
-          <motion.div variants={fadeUp} className="mt-12 flex items-center justify-center">
-            <ButtonLink
-              to="/login"
-              variant="primary"
-              engine="dashboard"
-              className="rounded-full py-6 px-12 text-lg tracking-wide transition-all shadow-[0_0_30px_rgba(6,182,212,0.15)] hover:shadow-[0_0_50px_rgba(6,182,212,0.3)]"
-            >
-              Enter Command Center
-              <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
-            </ButtonLink>
-          </motion.div>
+          <AnimatePresence>
+            {connState === 'success' && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-12 pt-4 pb-4 w-full"
+              >
+                <Button
+                  onClick={() => navigate('/login')}
+                  variant="primary"
+                  engine="dashboard"
+                  fullWidth
+                  className="rounded-2xl py-5 text-lg font-bold shadow-[0_0_30px_rgba(6,182,212,0.2)] hover:shadow-[0_0_50px_rgba(6,182,212,0.4)] transition-all flex justify-center items-center gap-2 border border-cyan-500/50"
+                >
+                  Enter Command Center <ArrowRight className="h-5 w-5" />
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
         </motion.div>
       </main>
     </OnboardingShell>
   )
-
 }

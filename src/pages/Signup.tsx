@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { useRouter } from '@/router'
-import { Eye, Check } from 'lucide-react'
+import { ShieldCheck, Check, Fingerprint, ArrowRight } from 'lucide-react'
 import { PublicTopBar } from '@/components/landing/PublicTopBar'
 import { AuthShell } from '@/components/layout/AuthShell'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
@@ -11,30 +11,23 @@ import { DEMO_USER } from '@/lib/demo-user'
 import { usePageTitle } from '@/hooks/use-page-title'
 
 const TRUST_POINTS = [
-  'Bank-level encryption for all data',
-  'Read-only access to financial accounts',
-  'Every AI decision is explainable',
-  'Full audit trail in the Govern engine',
-  'Reverse any action at any time',
+  'Bank-level 256-bit encryption',
+  'Read-only financial access',
+  'Full AI audit trails & reversibility',
 ]
 
-
-function wait(ms: number) {
-  return new Promise((resolve) => window.setTimeout(resolve, ms))
-}
-
 export default function SignupPage() {
-  usePageTitle('Create account')
+  usePageTitle('Initialize Engine')
   const { navigate } = useRouter()
   const { showToast } = useToast()
   const { beginDemoSession, updateOnboarding } = useDemoState()
 
-  const beginSignupFlow = (method: 'skip') => {
-    beginDemoSession({ method, email: DEMO_USER.email })
+  const beginSignupFlow = () => {
+    beginDemoSession({ method: 'skip', email: DEMO_USER.email })
     updateOnboarding({ completed: false, completedAt: null })
     showToast({
       variant: 'success',
-      message: 'Account initialized. Proceeding to connection.',
+      message: 'Profile initialized. Proceeding to secure connection.',
     })
     navigate('/onboarding')
   }
@@ -42,54 +35,50 @@ export default function SignupPage() {
   return (
     <>
       <PublicTopBar />
-      <AuthShell title="Onboarding" subtitle="Create your account">
+      <AuthShell title="Initialization" subtitle="Create your secure wealth profile">
         <main id="main-content">
-          <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
-            <motion.div variants={fadeUp} className="mb-4">
-              <Button
-                type="button"
-                onClick={() => beginSignupFlow('skip')}
-                variant="primary"
-                engine="dashboard"
-                fullWidth
-                className="rounded-xl"
-              >
-                Continue in Demo Mode
-              </Button>
-              <p className="mt-2 text-xs text-slate-400">
-                Demo mode skips real account creation and uses simulated financial data.
+          <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex flex-col h-full">
+
+            <motion.div variants={fadeUp} className="text-center mb-8 mt-2">
+              <div className="w-20 h-20 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(6,182,212,0.2)]">
+                <Fingerprint className="w-10 h-10 text-cyan-400" strokeWidth={1.5} />
+              </div>
+              <h3 className="text-2xl font-display font-medium text-white mb-2 tracking-wide">Initialize Profile</h3>
+              <p className="text-sm text-slate-400 font-light">
+                Securing a hyper-personalized autonomous engine for {DEMO_USER.name}.
               </p>
             </motion.div>
 
-            <motion.ul variants={staggerContainer} className="mb-6 space-y-2 rounded-xl border border-white/10 bg-white/[0.02] p-4">
+            <motion.ul variants={staggerContainer} className="mb-8 space-y-3 rounded-2xl border border-white/10 bg-white/[0.02] p-5 backdrop-blur-md">
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/10">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-semibold uppercase tracking-widest text-slate-300">Security Guarantee</span>
+              </div>
               {TRUST_POINTS.map((point) => (
-                <motion.li key={point} variants={fadeUp} className="flex items-start gap-2 text-xs text-slate-300">
-                  <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-[var(--state-healthy)]" aria-hidden="true" />
-                  {point}
+                <motion.li key={point} variants={fadeUp} className="flex items-center gap-3 text-sm text-slate-300">
+                  <Check className="h-4 w-4 flex-shrink-0 text-emerald-400" aria-hidden="true" />
+                  <span className="font-light">{point}</span>
                 </motion.li>
               ))}
             </motion.ul>
 
-            <motion.div variants={fadeUp} className="space-y-6 pt-4">
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(6,182,212,0.2)]">
-                  <Eye className="w-8 h-8 text-cyan-400" />
-                </div>
-                <h3 className="text-xl font-display font-medium text-white mb-2">Initialize Profile</h3>
-                <p className="text-sm text-slate-400">Securing environment for {DEMO_USER.name}</p>
-              </div>
-
+            <motion.div variants={fadeUp} className="pt-4 pb-4">
               <Button
                 type="button"
-                onClick={() => beginSignupFlow('skip')}
+                onClick={beginSignupFlow}
                 variant="primary"
                 engine="dashboard"
                 fullWidth
-                className="rounded-full py-6 text-lg tracking-wide shadow-[0_0_30px_rgba(6,182,212,0.15)] hover:shadow-[0_0_50px_rgba(6,182,212,0.3)] transition-all"
+                className="rounded-2xl py-5 text-lg font-bold shadow-[0_0_30px_rgba(6,182,212,0.2)] hover:shadow-[0_0_50px_rgba(6,182,212,0.4)] transition-all flex justify-center items-center gap-2 border border-cyan-500/50"
               >
-                Enter Command Center
+                Create Profile <ArrowRight className="w-5 h-5" />
               </Button>
+              <p className="text-center text-xs text-slate-500 mt-4 font-light">
+                By initializing, you retain absolute control.<br />
+                <span className="text-white/20 text-[10px] uppercase tracking-wider mt-2 block">(Demo Mode Simulation)</span>
+              </p>
             </motion.div>
+
           </motion.div>
         </main>
       </AuthShell>
