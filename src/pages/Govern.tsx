@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { Link } from '@/router'
+import { Link, useRouter } from '@/router'
 import {
   Scale,
   Shield,
@@ -57,6 +57,7 @@ const ledgerEntries = [
 export default function GovernPage() {
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
+  const { navigate } = useRouter()
 
   return (
     <div className="relative min-h-screen w-full">
@@ -79,9 +80,7 @@ export default function GovernPage() {
               <br className="hidden lg:block" />
               {DECISIONS_AUDITED.toLocaleString()} decisions audited.
             </h1>
-            <p className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide">
-              Full governance transparency. Every AI decision is explainable, auditable, and reversible.
-            </p>
+
           </motion.div>
         </motion.section>
 
@@ -129,7 +128,7 @@ export default function GovernPage() {
                   const sCfg = statusConfig[entry.status];
                   const SIcon = sCfg.icon;
                   return (
-                    <motion.div key={entry.id} variants={fadeUpVariant}>
+                    <motion.div key={entry.id} variants={fadeUpVariant} onClick={() => navigate('/govern/audit')} className="cursor-pointer">
                       <Surface className="relative overflow-hidden rounded-[24px] border border-white/[0.08] hover:border-white/[0.15] backdrop-blur-3xl bg-black/60 shadow-2xl transition-all p-5 md:p-6" style={{ borderLeftWidth: 4, borderLeftColor: typeColor[entry.type] }}>
                         <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
                         <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-4">

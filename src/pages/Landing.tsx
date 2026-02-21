@@ -33,7 +33,7 @@ export default function Landing() {
         </div>
         <div className="flex items-center gap-4">
           <ButtonLink to="/login" variant="glass" className="px-5 py-2.5 rounded-full text-sm font-semibold border border-white/10 hover:bg-white/5 transition-all">
-            Enter Command Center
+            Sign In
           </ButtonLink>
         </div>
       </nav>
@@ -61,19 +61,17 @@ export default function Landing() {
             variants={fadeUp}
             className="text-6xl md:text-8xl font-display font-bold tracking-tighter leading-[1.05] text-balance"
           >
-            Explainable AI for <br className="hidden md:block" />
+            The Engine for <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-500">
-              Enterprise Finance.
+              Modern Wealth.
             </span>
           </motion.h1>
 
-          <motion.p variants={fadeUp} className="text-xl md:text-2xl text-white/50 font-light max-w-2xl mx-auto text-balance leading-relaxed">
-            Uncompromising mathematical precision. Instantaneous autonomous execution. Absolute architectural transparency.
-          </motion.p>
+
 
           <motion.div variants={fadeUp} className="pt-8 flex justify-center">
-            <ButtonLink to="/dashboard" variant="primary" engine="dashboard" className="px-8 py-4 rounded-full text-lg font-semibold min-w-[240px] hover:scale-[1.02] shadow-[0_0_40px_rgba(6,182,212,0.3)] hover:shadow-[0_0_60px_rgba(6,182,212,0.5)] transition-all duration-500">
-              Launch Intelligence
+            <ButtonLink to="/signup" variant="primary" engine="dashboard" className="px-8 py-4 rounded-full text-lg font-semibold min-w-[240px] hover:scale-[1.02] shadow-[0_0_40px_rgba(6,182,212,0.3)] hover:shadow-[0_0_60px_rgba(6,182,212,0.5)] transition-all duration-500">
+              Get Started
             </ButtonLink>
           </motion.div>
         </motion.div>

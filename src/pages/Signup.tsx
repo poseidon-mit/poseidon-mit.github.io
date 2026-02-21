@@ -34,9 +34,9 @@ export default function SignupPage() {
     updateOnboarding({ completed: false, completedAt: null })
     showToast({
       variant: 'success',
-      message: 'Demo onboarding started. Continue to account connection.',
+      message: 'Account initialized. Proceeding to connection.',
     })
-    navigate('/onboarding/connect')
+    navigate('/onboarding')
   }
 
   return (
@@ -76,7 +76,7 @@ export default function SignupPage() {
                   <Eye className="w-8 h-8 text-cyan-400" />
                 </div>
                 <h3 className="text-xl font-display font-medium text-white mb-2">Initialize Profile</h3>
-                <p className="text-sm text-slate-400">Preparing workspace for {DEMO_USER.name}</p>
+                <p className="text-sm text-slate-400">Securing environment for {DEMO_USER.name}</p>
               </div>
 
               <Button
@@ -87,7 +87,7 @@ export default function SignupPage() {
                 fullWidth
                 className="rounded-full py-6 text-lg tracking-wide shadow-[0_0_30px_rgba(6,182,212,0.15)] hover:shadow-[0_0_50px_rgba(6,182,212,0.3)] transition-all"
               >
-                Begin Setup Sequence
+                Enter Command Center
               </Button>
             </motion.div>
           </motion.div>

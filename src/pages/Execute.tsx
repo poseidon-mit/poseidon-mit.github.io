@@ -10,7 +10,7 @@ import {
   ArrowUpRight,
 } from 'lucide-react'
 import { useRouter } from '@/router'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
+// Removed Dialog import
 import { AuroraPulse, EmptyState, GovernFooter } from '@/components/poseidon'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { DEMO_THREAD } from '@/lib/demo-thread'
@@ -32,7 +32,7 @@ type ActionStatus = 'pending' | 'approved' | 'deferred'
 
 type QueueEngine = 'Protect' | 'Grow' | 'Execute'
 
-interface QueueAction {
+export interface QueueAction {
   id: string
   title: string
   engine: QueueEngine
@@ -40,9 +40,14 @@ interface QueueAction {
   confidence: number
   time: string
   description: string
+  urgency: 'high' | 'medium' | 'low';
+  impact: { approved: string; deferred: string; };
+  reversible: boolean;
+  expiresIn: string | null;
+  factors: Array<{ label: string; value: number; }>;
 }
 
-const QUEUE_ACTIONS: QueueAction[] = [
+export const QUEUE_ACTIONS: QueueAction[] = [
   {
     id: 'EXE-001',
     title: 'Portfolio rebalance',
@@ -51,6 +56,18 @@ const QUEUE_ACTIONS: QueueAction[] = [
     confidence: 0.97,
     time: '14:28',
     description: 'Optimize allocation based on 90-day pattern',
+    urgency: 'high',
+    impact: {
+      approved: 'Allocation adjusted and tracked in the govern audit trace.',
+      deferred: 'Portfolio keeps current drift and review is deferred to next cycle.',
+    },
+    reversible: true,
+    expiresIn: '14h',
+    factors: [
+      { label: 'Concentration risk', value: 0.91 },
+      { label: 'Cash allocation', value: 0.87 },
+      { label: 'Volatility outlook', value: 0.78 },
+    ],
   },
   {
     id: 'EXE-002',
@@ -60,6 +77,18 @@ const QUEUE_ACTIONS: QueueAction[] = [
     confidence: DEMO_THREAD.criticalAlert.confidence,
     time: '14:15',
     description: `Suspicious transaction to ${DEMO_THREAD.criticalAlert.merchant}`,
+    urgency: 'high',
+    impact: {
+      approved: 'Wire transfer is blocked and dispute workflow opens automatically.',
+      deferred: 'Transaction remains active and fraud exposure window extends.',
+    },
+    reversible: true,
+    expiresIn: '6h',
+    factors: [
+      { label: 'Merchant risk', value: 0.87 },
+      { label: 'Amount anomaly', value: 0.71 },
+      { label: 'Geo mismatch', value: 0.65 },
+    ],
   },
   {
     id: 'EXE-003',
@@ -69,6 +98,18 @@ const QUEUE_ACTIONS: QueueAction[] = [
     confidence: 0.89,
     time: '13:52',
     description: '3 overlapping subscriptions detected',
+    urgency: 'medium',
+    impact: {
+      approved: 'Estimated savings of $140/mo are queued for execution.',
+      deferred: 'Current subscription stack remains unchanged.',
+    },
+    reversible: true,
+    expiresIn: null,
+    factors: [
+      { label: 'Cost reduction', value: 0.92 },
+      { label: 'Overlap confidence', value: 0.88 },
+      { label: 'Usage parity', value: 0.82 },
+    ],
   },
   {
     id: 'EXE-004',
@@ -78,6 +119,18 @@ const QUEUE_ACTIONS: QueueAction[] = [
     confidence: 0.78,
     time: '11:20',
     description: 'Batch archive of 47 paid invoices',
+    urgency: 'medium',
+    impact: {
+      approved: 'Legacy invoices are archived and indexed for governance audit.',
+      deferred: 'Invoice archive remains unchanged and queue re-checks in 24h.',
+    },
+    reversible: false,
+    expiresIn: '3d',
+    factors: [
+      { label: 'Document age', value: 0.84 },
+      { label: 'Archive confidence', value: 0.77 },
+      { label: 'Policy fit', value: 0.73 },
+    ],
   },
   {
     id: 'EXE-005',
@@ -87,6 +140,18 @@ const QUEUE_ACTIONS: QueueAction[] = [
     confidence: 0.99,
     time: '10:30',
     description: 'Recurring auto-payment',
+    urgency: 'low',
+    impact: {
+      approved: 'Payment executes and receipt is logged in the audit ledger.',
+      deferred: 'Payment is deferred and reminder is raised to the queue.',
+    },
+    reversible: true,
+    expiresIn: '18h',
+    factors: [
+      { label: 'Payment confidence', value: 0.99 },
+      { label: 'Schedule consistency', value: 0.93 },
+      { label: 'Balance sufficiency', value: 0.95 },
+    ],
   },
 ]
 
@@ -116,10 +181,7 @@ export default function ExecutePage() {
   const { state, setExecuteDecision } = useDemoState()
   const { showToast } = useToast()
 
-  const [confirm, setConfirm] = useState<{
-    actionId: string
-    decision: Extract<ActionStatus, 'approved' | 'deferred'>
-  } | null>(null)
+  // Removed confirm state since we navigate to approval page
 
   const pendingCount = getPendingExecuteCount(state)
   const completedCount = getCompletedExecuteCount(state)
@@ -138,29 +200,7 @@ export default function ExecutePage() {
   const deferredActions = queue.filter((item) => item.status === 'deferred')
   const completedActions = queue.filter((item) => item.status === 'approved')
 
-  const handleConfirmDecision = () => {
-    if (!confirm) return
-    const action = QUEUE_ACTIONS.find((item) => item.id === confirm.actionId)
-    if (!action) return
-
-    setExecuteDecision({
-      actionId: action.id,
-      actionTitle: action.title,
-      decision: confirm.decision,
-    })
-
-    showToast({
-      variant: 'success',
-      message:
-        confirm.decision === 'approved'
-          ? `${action.id} approved and logged to audit trace.`
-          : `${action.id} deferred. Queue will re-evaluate automatically.`,
-    })
-
-    setConfirm(null)
-  }
-
-  const confirmAction = confirm ? QUEUE_ACTIONS.find((item) => item.id === confirm.actionId) ?? null : null
+  // Removed handleConfirmDecision and confirmAction variables
 
   return (
     <div className="relative min-h-screen w-full">
@@ -190,9 +230,7 @@ export default function ExecutePage() {
           <motion.h1 variants={fadeUpVariant} className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
             {pendingCount} actions queued. <br className="hidden lg:block" />Projected savings: <span className="text-[var(--engine-execute)] font-mono drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]">${DEMO_THREAD.monthlySavings}/mo</span>.
           </motion.h1>
-          <motion.p variants={fadeUpVariant} className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide mb-4">
-            AI-optimized execution queue. Every action is auditable and reversible within 24 hours.
-          </motion.p>
+
         </motion.section>
 
         <div className="flex flex-col lg:flex-row gap-8 px-4 md:px-6 lg:px-8">
@@ -267,24 +305,15 @@ export default function ExecutePage() {
                     </div>
 
                     <div className="relative z-10 flex flex-wrap gap-4 mt-2">
-                      <Button
-                        onClick={() => setConfirm({ actionId: action.id, decision: 'approved' })}
+                      <ButtonLink
+                        to={`/execute/approval?actionId=${action.id}`}
                         variant="primary"
                         engine="execute"
-                        className="rounded-2xl text-sm px-6 py-3 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.5)] transition-all bg-[var(--engine-execute)] text-black border-none"
+                        className="rounded-2xl text-sm px-6 py-3 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.5)] transition-all bg-[var(--engine-execute)] text-black border-none font-semibold"
                       >
-                        <CheckCircle2 size={16} className="mr-2" />
-                        Approve
-                      </Button>
-                      <Button
-                        onClick={() => setConfirm({ actionId: action.id, decision: 'deferred' })}
-                        variant="glass"
-                        engine="execute"
-                        className="rounded-2xl text-sm px-6 py-3 border border-white/[0.1] hover:bg-white/[0.05] transition-all"
-                      >
-                        <Clock size={16} className="mr-2" />
-                        Defer
-                      </Button>
+                        Review & Approve
+                        <ArrowUpRight size={16} className="ml-2" />
+                      </ButtonLink>
                     </div>
                   </Surface>
                 </motion.div>
@@ -413,63 +442,7 @@ export default function ExecutePage() {
         />
       </motion.div>
 
-      <Dialog open={Boolean(confirm)} onOpenChange={(open) => !open && setConfirm(null)}>
-        <DialogContent
-          className="max-w-md"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="execute-decision-title"
-          style={{ background: '#0f1e35', border: '1px solid rgba(255,255,255,0.12)' }}
-        >
-          {confirm && confirmAction ? (
-            <div className="flex flex-col gap-4 p-2">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--engine-execute)' }}>
-                  Confirm decision
-                </p>
-                <h2 id="execute-decision-title" className="text-base font-semibold text-white">
-                  {confirmAction.title}
-                </h2>
-                <p className="text-xs text-white/50 mt-1">{confirmAction.description}</p>
-              </div>
 
-              <div className="rounded-xl border border-white/12 bg-white/5 p-3">
-                <p className="text-[10px] uppercase tracking-wider mb-1 text-white/60">Selected action</p>
-                <p className="text-xs text-white/80">
-                  {confirm.decision === 'approved'
-                    ? 'Approve and write immutable event to audit ledger.'
-                    : 'Defer for later review. No transaction executes now.'}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2 pt-1">
-                <Button
-                  variant={confirm.decision === 'approved' ? 'glass' : 'secondary'}
-                  engine="execute"
-                  fullWidth
-                  className="rounded-xl text-sm"
-                  onClick={handleConfirmDecision}
-                >
-                  {confirm.decision === 'approved' ? 'Approve' : 'Defer'}
-                </Button>
-                <Button
-                  variant="secondary"
-                  engine="execute"
-                  fullWidth
-                  className="rounded-xl text-sm"
-                  onClick={() => setConfirm(null)}
-                >
-                  Cancel
-                </Button>
-              </div>
-
-              <p className="text-[10px] text-white/25 text-center">
-                Status will update immediately · Pending {pendingCount} · Deferred {deferredCount}
-              </p>
-            </div>
-          ) : null}
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

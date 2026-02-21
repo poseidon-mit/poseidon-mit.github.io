@@ -29,8 +29,8 @@ function SettingToggle({
   return (
     <div className="flex items-start justify-between gap-4 py-3 border-b border-white/[0.04]">
       <div>
-        <p className="text-sm font-medium text-slate-100">{label}</p>
-        <p className="text-xs text-slate-400">{desc}</p>
+        <p className="text-sm font-medium text-white tracking-wide">{label}</p>
+        <p className="text-xs text-white/50">{desc}</p>
       </div>
       <Toggle checked={checked} onChange={onChange} ariaLabel={label} />
     </div>
@@ -87,9 +87,7 @@ export default function SettingsPage() {
             Control your <span style={{ color: 'var(--engine-dashboard)' }}>experience</span>
           </motion.h1>
 
-          <motion.p variants={fadeUpVariant} className="hero-subline">
-            Manage your profile, notifications, and security preferences. All changes are logged.
-          </motion.p>
+
         </motion.section>
 
         <div className="flex flex-col lg:flex-row gap-4 px-4 md:px-6 lg:px-8">
@@ -99,22 +97,22 @@ export default function SettingsPage() {
                 <User size={20} style={{ color: 'var(--engine-dashboard)' }} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-100">Profile</p>
-                <p className="text-xs text-slate-500">Account details</p>
+                <p className="text-base font-medium text-white tracking-wide">Profile</p>
+                <p className="text-xs text-white/50 tracking-wider uppercase font-semibold">Account details</p>
               </div>
             </div>
             <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-400">Name</span>
-                <span className="text-sm font-medium text-slate-100">{state.user.name}</span>
+              <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
+                <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">Name</span>
+                <span className="text-sm font-medium text-white">{state.user.name}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-400">Email</span>
-                <span className="text-sm font-medium text-slate-100">{state.user.email}</span>
+              <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
+                <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">Email</span>
+                <span className="text-sm font-medium text-white">{state.user.email}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-400">Plan</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-400/10 text-cyan-300">{state.user.plan}</span>
+              <div className="flex items-center justify-between py-2">
+                <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">Plan</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-[0_0_10px_rgba(6,182,212,0.2)]">{state.user.plan}</span>
               </div>
             </div>
           </Surface>
@@ -125,8 +123,8 @@ export default function SettingsPage() {
                 <Bell size={20} style={{ color: 'var(--engine-execute)' }} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-100">Notifications</p>
-                <p className="text-xs text-slate-500">Alert preferences</p>
+                <p className="text-base font-medium text-white tracking-wide">Notifications</p>
+                <p className="text-xs text-white/50 tracking-wider uppercase font-semibold">Alert preferences</p>
               </div>
             </div>
             <SettingToggle
@@ -157,24 +155,24 @@ export default function SettingsPage() {
                 <Shield size={20} style={{ color: 'var(--engine-protect)' }} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-100">Security</p>
-                <p className="text-xs text-slate-500">Authentication and access controls</p>
+                <p className="text-base font-medium text-white tracking-wide">Security</p>
+                <p className="text-xs text-white/50 tracking-wider uppercase font-semibold">Authentication and access controls</p>
               </div>
             </div>
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
                 <div>
-                  <p className="text-sm font-medium text-slate-100">Two-factor authentication</p>
-                  <p className="text-xs text-slate-400">Add an extra layer of security</p>
+                  <p className="text-sm font-medium text-white tracking-wide">Two-factor authentication</p>
+                  <p className="text-xs text-white/50">Add an extra layer of security</p>
                 </div>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300">Enabled</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_10px_rgba(52,211,153,0.2)]">Enabled</span>
               </div>
               <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
                 <div>
-                  <p className="text-sm font-medium text-slate-100">Active sessions</p>
-                  <p className="text-xs text-slate-400">Manage your logged-in devices</p>
+                  <p className="text-sm font-medium text-white tracking-wide">Active sessions</p>
+                  <p className="text-xs text-white/50">Manage your logged-in devices</p>
                 </div>
-                <span className="text-sm font-mono text-slate-100">2 devices</span>
+                <span className="text-sm font-mono text-white/80">2 devices</span>
               </div>
             </div>
           </Surface>

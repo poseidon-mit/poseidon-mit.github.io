@@ -25,14 +25,14 @@ interface Notification {
 }
 
 const notifications: Notification[] = [
-{ id: 'N-001', engine: 'Protect', category: 'security', title: 'Suspicious transaction blocked', body: `Card ending ${DEMO_THREAD.criticalAlert.cardLast4} temporarily frozen after unrecognized $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} charge.`, time: 'Just now', read: false, actionLink: '/protect/alert-detail' },
-{ id: 'N-002', engine: 'Protect', category: 'security', title: 'Login from new device detected', body: 'IP 203.0.113.42 — if this was you, no action needed.', time: '12m ago', read: false, actionLink: '/protect' },
-{ id: 'N-003', engine: 'Grow', category: 'growth', title: `Emergency fund milestone — $${DEMO_THREAD.emergencyFund.current.toLocaleString()} reached`, body: `You are now ${DEMO_THREAD.emergencyFund.percent}% toward your $${DEMO_THREAD.emergencyFund.target.toLocaleString()} goal.`, time: '1h ago', read: false },
-{ id: 'N-004', engine: 'Grow', category: 'growth', title: 'New savings recommendation available', body: 'Subscription consolidation could save $140/mo.', time: '2h ago', read: false },
-{ id: 'N-005', engine: 'Execute', category: 'actions', title: 'Action approved — Bill negotiation sent', body: 'Internet bill renegotiation request submitted to ISP.', time: '3h ago', read: true, actionLink: '/execute/history' },
-{ id: 'N-006', engine: 'Execute', category: 'actions', title: '2 actions expiring soon', body: 'Streaming consolidation and card freeze expire in 18h.', time: '4h ago', read: true, actionLink: '/execute/approval' },
-{ id: 'N-007', engine: 'Govern', category: 'system', title: 'Weekly audit report ready', body: '1,247 decisions audited. 100% coverage maintained.', time: '6h ago', read: true, actionLink: '/govern/audit' },
-{ id: 'N-008', engine: 'Govern', category: 'system', title: 'Model update — FraudDetection v3.3', body: 'New model deployed with 0.2% accuracy improvement.', time: '8h ago', read: true }];
+  { id: 'N-001', engine: 'Protect', category: 'security', title: 'Suspicious transaction blocked', body: `Card ending ${DEMO_THREAD.criticalAlert.cardLast4} temporarily frozen after unrecognized $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} charge.`, time: 'Just now', read: false, actionLink: '/protect/alert-detail' },
+  { id: 'N-002', engine: 'Protect', category: 'security', title: 'Login from new device detected', body: 'IP 203.0.113.42 — if this was you, no action needed.', time: '12m ago', read: false, actionLink: '/protect' },
+  { id: 'N-003', engine: 'Grow', category: 'growth', title: `Emergency fund milestone — $${DEMO_THREAD.emergencyFund.current.toLocaleString()} reached`, body: `You are now ${DEMO_THREAD.emergencyFund.percent}% toward your $${DEMO_THREAD.emergencyFund.target.toLocaleString()} goal.`, time: '1h ago', read: false },
+  { id: 'N-004', engine: 'Grow', category: 'growth', title: 'New savings recommendation available', body: 'Subscription consolidation could save $140/mo.', time: '2h ago', read: false },
+  { id: 'N-005', engine: 'Execute', category: 'actions', title: 'Action approved — Bill negotiation sent', body: 'Internet bill renegotiation request submitted to ISP.', time: '3h ago', read: true, actionLink: '/execute/history' },
+  { id: 'N-006', engine: 'Execute', category: 'actions', title: '2 actions expiring soon', body: 'Streaming consolidation and card freeze expire in 18h.', time: '4h ago', read: true, actionLink: '/execute/approval' },
+  { id: 'N-007', engine: 'Govern', category: 'system', title: 'Weekly audit report ready', body: '1,247 decisions audited. 100% coverage maintained.', time: '6h ago', read: true, actionLink: '/govern/audit' },
+  { id: 'N-008', engine: 'Govern', category: 'system', title: 'Model update — FraudDetection v3.3', body: 'New model deployed with 0.2% accuracy improvement.', time: '8h ago', read: true }];
 
 
 const engineBadgeCls: Record<string, string> = { Protect: 'bg-emerald-500/20 text-emerald-400', Grow: 'bg-violet-500/20 text-violet-400', Execute: 'bg-amber-500/20 text-amber-400', Govern: 'bg-blue-500/20 text-blue-400' };
@@ -79,7 +79,7 @@ export function Notifications() {
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
         style={{ background: 'var(--engine-dashboard)', color: 'var(--bg-oled)' }}>
-        
+
         Skip to main content
       </a>
 
@@ -87,13 +87,13 @@ export function Notifications() {
         className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/[0.06]"
 
         aria-label="Breadcrumb">
-        
+
         <div className="mx-auto px-4 md:px-6 lg:px-8 h-14 flex items-center gap-2" style={{ maxWidth: '1280px' }}>
           <Link
             to="/dashboard"
             className="flex items-center gap-1.5 text-sm font-medium hover:opacity-80 transition-opacity"
             style={{ color: 'var(--engine-dashboard)' }}>
-            
+
             <ArrowLeft className="h-4 w-4" />
             Dashboard
           </Link>
@@ -110,7 +110,7 @@ export function Notifications() {
         initial="hidden"
         animate="visible"
         role="main">
-        
+
         {/* Hero */}
         <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
@@ -128,17 +128,17 @@ export function Notifications() {
         {/* KPI bar */}
         <motion.div variants={fadeUpVariant}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-            { label: 'Unread', value: String(unreadCount), color: 'var(--engine-execute)' },
-            { label: 'Security', value: String(categoryCounts.security), color: 'var(--engine-protect)' },
-            { label: 'Growth', value: String(categoryCounts.growth), color: 'var(--engine-grow)' },
-            { label: 'Actions', value: String(categoryCounts.actions), color: 'var(--engine-dashboard)' }].
-            map((kpi) => <Surface
-              key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
+            {[
+              { label: 'Unread', value: String(unreadCount), color: 'var(--engine-execute)' },
+              { label: 'Security', value: String(categoryCounts.security), color: 'var(--engine-protect)' },
+              { label: 'Growth', value: String(categoryCounts.growth), color: 'var(--engine-grow)' },
+              { label: 'Actions', value: String(categoryCounts.actions), color: 'var(--engine-dashboard)' }].
+              map((kpi) => <Surface
+                key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
                 <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
                 <p className="text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
               </Surface>
-            )}
+              )}
           </div>
         </motion.div>
 
@@ -158,14 +158,14 @@ export function Notifications() {
             {/* Category tabs */}
             <div className="flex gap-2 overflow-x-auto pb-1">
               {(['all', 'security', 'growth', 'actions', 'system'] as CategoryFilter[]).map((t) =>
-              <Button
-                key={t}
-                onClick={() => setFilter(t)}
-                variant="glass"
-                engine="dashboard"
-                size="sm"
-                className={`!min-h-8 rounded-full px-3 py-1.5 text-xs font-medium whitespace-nowrap capitalize transition-colors ${filter === t ? 'text-white border border-white/20' : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'}`}>
-                
+                <Button
+                  key={t}
+                  onClick={() => setFilter(t)}
+                  variant="glass"
+                  engine="dashboard"
+                  size="sm"
+                  className={`!min-h-8 rounded-full px-3 py-1.5 text-xs font-medium whitespace-nowrap capitalize transition-colors ${filter === t ? 'text-white border border-white/20' : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'}`}>
+
                   {t === 'all' ? `All (${notifications.length})` : `${t} (${notifications.filter((n) => n.category === t).length})`}
                 </Button>
               )}
@@ -182,15 +182,15 @@ export function Notifications() {
                 />
               )}
               {sorted.map((notif) =>
-              <div
-                key={notif.id}
-                className={`rounded-2xl border border-white/[0.08] p-4 flex items-start gap-3 cursor-pointer transition-colors ${!readState[notif.id] ? 'bg-white/[0.05]' : 'bg-white/[0.02]'}`}
-                onClick={() => markRead(notif.id)}
-                onKeyDown={(event) => markReadByKeyboard(event, notif.id)}
-                tabIndex={0}
-                role="button"
-                aria-label={`${notif.title}. ${readState[notif.id] ? 'Read' : 'Unread'}. ${notif.time}`}>
-                
+                <div
+                  key={notif.id}
+                  className={`rounded-2xl border border-white/[0.08] p-4 flex items-start gap-3 cursor-pointer transition-colors ${!readState[notif.id] ? 'bg-white/[0.05]' : 'bg-white/[0.02]'}`}
+                  onClick={() => markRead(notif.id)}
+                  onKeyDown={(event) => markReadByKeyboard(event, notif.id)}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`${notif.title}. ${readState[notif.id] ? 'Read' : 'Unread'}. ${notif.time}`}>
+
                   {/* Unread dot */}
                   <div className="pt-1.5 w-2 shrink-0">
                     {!readState[notif.id] && <div className="w-2 h-2 rounded-full bg-cyan-400" />}
@@ -208,8 +208,8 @@ export function Notifications() {
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-[10px] text-white/30">{notif.time}</span>
                       {notif.actionLink &&
-                    <Link to={notif.actionLink} className="text-[10px] text-cyan-400 hover:underline" onClick={(e) => e.stopPropagation()}>View</Link>
-                    }
+                        <Link to={notif.actionLink} className="text-[10px] text-cyan-400 hover:underline" onClick={(e) => e.stopPropagation()}>View</Link>
+                      }
                     </div>
                   </div>
 
@@ -224,27 +224,27 @@ export function Notifications() {
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Notification preferences">
             {/* Preferences */}
             <Surface className="rounded-2xl" variant="glass" padding="md">
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-2 mb-4">
                 <Settings2 className="h-4 w-4" style={{ color: 'var(--engine-dashboard)' }} />
-                <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider">Preferences</h3>
+                <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest">Alert Preferences</h3>
               </div>
               <div className="space-y-3">
                 {[
-                { label: 'Security alerts', type: 'Push + Email', enabled: true },
-                { label: 'Growth insights', type: 'Push only', enabled: true },
-                { label: 'Action updates', type: 'Push only', enabled: true },
-                { label: 'System notices', type: 'Email digest', enabled: false }].
-                map((pref) =>
-                <div key={pref.label} className="flex items-center justify-between">
+                  { label: 'Security alerts', type: 'Push + Email', enabled: true },
+                  { label: 'Growth insights', type: 'Push only', enabled: true },
+                  { label: 'Action updates', type: 'Push only', enabled: true },
+                  { label: 'System notices', type: 'Email digest', enabled: false }
+                ].map((pref) => (
+                  <div key={pref.label} className="flex items-center justify-between py-1 border-b border-white/[0.04] last:border-0 pb-3">
                     <div>
-                      <span className="text-xs text-white/70">{pref.label}</span>
-                      <span className="text-[10px] text-white/30 block">{pref.type}</span>
+                      <span className="text-sm font-medium text-white tracking-wide">{pref.label}</span>
+                      <span className="text-[10px] text-white/40 block uppercase tracking-widest font-semibold mt-0.5">{pref.type}</span>
                     </div>
-                    <div className={`w-9 h-5 rounded-full relative ${pref.enabled ? 'bg-cyan-500' : 'bg-white/10'}`}>
+                    <div className={`w-9 h-5 rounded-full relative ${pref.enabled ? 'bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.3)]' : 'bg-white/10'}`}>
                       <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${pref.enabled ? 'left-4' : 'left-0.5'}`} />
                     </div>
                   </div>
-                )}
+                ))}
                 <div className="pt-2">
                   <span className="text-xs text-white/50 block mb-1">Digest frequency</span>
                   <select className="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white/70 focus:outline-none">
@@ -254,24 +254,24 @@ export function Notifications() {
                   </select>
                 </div>
               </div>
-              <p className="text-xs text-white/30 mt-3">3 channels active · Push + Email for security</p>
+              <p className="text-[10px] text-white/30 mt-4 uppercase tracking-widest font-semibold border-t border-white/[0.04] pt-4">3 channels active · Push + Email for security</p>
             </Surface>
 
             {/* Stats */}
             <Surface className="rounded-2xl" variant="glass" padding="md">
-              <h3 className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-3">Stats</h3>
-              <div className="space-y-2.5">
+              <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest mb-4">Notification Stats</h3>
+              <div className="space-y-3">
                 {[
-                { label: 'Total today', value: String(notifications.length), color: 'text-white/70' },
-                { label: 'Unread', value: String(unreadCount), color: 'text-amber-400' },
-                { label: 'Security', value: String(categoryCounts.security), color: 'text-emerald-400' },
-                { label: 'Actioned (7d)', value: '87%', color: 'text-cyan-400' }].
-                map((row) =>
-                <div key={row.label} className="flex justify-between">
-                    <span className="text-xs text-white/50">{row.label}</span>
-                    <span className={`text-xs font-medium ${row.color}`}>{row.value}</span>
+                  { label: 'Total today', value: String(notifications.length), color: 'text-white' },
+                  { label: 'Unread', value: String(unreadCount), color: 'text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]' },
+                  { label: 'Security', value: String(categoryCounts.security), color: 'text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]' },
+                  { label: 'Actioned (7d)', value: '87%', color: 'text-cyan-400 drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]' }
+                ].map((row) => (
+                  <div key={row.label} className="flex justify-between items-center py-1 border-b border-white/[0.04] last:border-0">
+                    <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">{row.label}</span>
+                    <span className={`text-sm font-mono ${row.color}`}>{row.value}</span>
                   </div>
-                )}
+                ))}
               </div>
             </Surface>
           </aside>

@@ -11,8 +11,8 @@ const CONNECTORS = [
   {
     id: 'bank',
     icon: Building2,
-    label: 'Connect Primary Institution',
-    desc: 'Secure read-only access for demonstration',
+    label: 'Connect Primary Account',
+    desc: 'Bank-level encryption. Read-only access.',
   },
 ] as const
 
@@ -34,7 +34,7 @@ export default function OnboardingConnectPage() {
     <OnboardingShell
       step={1}
       title="Establish Connection"
-      subtitle="Link a primary institution to initialize the AI engines.">
+      subtitle="Securely link your accounts to fuel the AI engines.">
       <main id="main-content">
         <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
           <motion.div variants={staggerContainer} className="space-y-3">
@@ -94,12 +94,12 @@ export default function OnboardingConnectPage() {
 
           <motion.div variants={fadeUp} className="mt-12 flex items-center justify-center">
             <ButtonLink
-              to="/dashboard"
+              to="/login"
               variant="primary"
               engine="dashboard"
               className="rounded-full py-6 px-12 text-lg tracking-wide transition-all shadow-[0_0_30px_rgba(6,182,212,0.15)] hover:shadow-[0_0_50px_rgba(6,182,212,0.3)]"
             >
-              Initialize Command Center
+              Enter Command Center
               <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
             </ButtonLink>
           </motion.div>

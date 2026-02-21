@@ -1,4 +1,5 @@
 import { useMemo, memo } from "react"
+import { useRouter } from "@/router"
 import { motion, type Variants } from "framer-motion"
 import {
   LayoutDashboard,
@@ -115,14 +116,14 @@ const StatCard = memo(function StatCard({
 
 /* ── Activity Feed ── */
 const activities = [
-  { icon: Shield, label: `Blocked suspicious transfer to ${DEMO_THREAD.criticalAlert.merchant}`, time: "2m ago", color: "var(--engine-protect)" },
-  { icon: TrendingUp, label: "Savings goal projection updated", time: "15m ago", color: "var(--engine-grow)" },
-  { icon: Zap, label: "Auto-paid electricity bill", time: "1h ago", color: "var(--engine-execute)" },
-  { icon: Scale, label: `Compliance check passed (${COMPLIANCE_SCORE}/100)`, time: "2h ago", color: "var(--engine-govern)" },
-  { icon: AlertTriangle, label: "New alert: unusual pattern detected", time: "3h ago", color: "var(--state-warning)" },
+  { icon: Shield, label: `Blocked suspicious transfer to ${DEMO_THREAD.criticalAlert.merchant}`, time: "2m ago", color: "var(--engine-protect)", path: "/protect/alert-detail?alertId=THR-001" },
+  { icon: TrendingUp, label: "Savings goal projection updated", time: "15m ago", color: "var(--engine-grow)", path: "/grow" },
+  { icon: Zap, label: "Auto-paid electricity bill", time: "1h ago", color: "var(--engine-execute)", path: "/execute/history" },
+  { icon: Scale, label: `Compliance check passed (${COMPLIANCE_SCORE}/100)`, time: "2h ago", color: "var(--engine-govern)", path: "/govern" },
+  { icon: AlertTriangle, label: "New alert: unusual pattern detected", time: "3h ago", color: "var(--state-warning)", path: "/protect" },
 ]
 
-function ActivityFeed({ itemVariants }: { itemVariants: Variants }) {
+function ActivityFeed({ itemVariants, navigate }: { itemVariants: Variants; navigate: (path: string) => void }) {
   return (
     <Surface className="rounded-[32px] p-8 lg:p-10 flex flex-col gap-6 backdrop-blur-3xl border-white/[0.08] bg-black/50 h-full shadow-2xl relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
@@ -134,6 +135,7 @@ function ActivityFeed({ itemVariants }: { itemVariants: Variants }) {
           <motion.div
             key={i}
             variants={itemVariants}
+            onClick={() => navigate(item.path)}
             className="flex items-center gap-5 py-3 group cursor-pointer"
           >
             <div
@@ -156,14 +158,14 @@ function ActivityFeed({ itemVariants }: { itemVariants: Variants }) {
 
 /* ── Decision Rail ── */
 const decisions = [
-  { label: "Approve rebalance", engine: "Execute" as const, status: "pending", confidence: 0.91 },
-  { label: "Block vendor charge", engine: "Protect" as const, status: "pending", confidence: 0.94 },
-  { label: "Update savings goal", engine: "Grow" as const, status: "approved", confidence: 0.89 },
-  { label: "Archive old invoices", engine: "Execute" as const, status: "pending", confidence: 0.78 },
-  { label: "Policy update", engine: "Govern" as const, status: "approved", confidence: 0.97 },
+  { label: "Approve rebalance", engine: "Execute" as const, status: "pending", confidence: 0.91, actionId: "EXE-001" },
+  { label: "Block vendor charge", engine: "Protect" as const, status: "pending", confidence: 0.94, actionId: "EXE-002" },
+  { label: "Update savings goal", engine: "Grow" as const, status: "approved", confidence: 0.89, actionId: "EXE-003" },
+  { label: "Archive old invoices", engine: "Execute" as const, status: "pending", confidence: 0.78, actionId: "EXE-004" },
+  { label: "Policy update", engine: "Govern" as const, status: "approved", confidence: 0.97, actionId: "EXE-005" },
 ]
 
-function DecisionRail({ itemVariants }: { itemVariants: Variants }) {
+function DecisionRail({ itemVariants, navigate }: { itemVariants: Variants; navigate: (path: string) => void }) {
   return (
     <Surface className="rounded-[32px] p-8 lg:p-10 flex flex-col gap-6 backdrop-blur-3xl border-white/[0.08] bg-black/50 h-full shadow-2xl relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
@@ -180,6 +182,13 @@ function DecisionRail({ itemVariants }: { itemVariants: Variants }) {
           <motion.div
             key={i}
             variants={itemVariants}
+            onClick={() => {
+              if (d.status === "pending" && d.engine !== "Govern") {
+                navigate(`/execute/approval?actionId=${d.actionId}`);
+              } else if (d.status === "approved" || d.engine === "Govern") {
+                navigate("/execute/history");
+              }
+            }}
             className="flex items-center gap-4 rounded-2xl p-4 transition-all duration-300 bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.04] hover:border-white/[0.1] group cursor-pointer"
           >
             <div className="w-1.5 h-10 rounded-full shadow-[0_0_10px_currentColor] opacity-50 group-hover:opacity-100 transition-opacity" style={{ background: ENGINE_COLOR_MAP[d.engine], color: ENGINE_COLOR_MAP[d.engine] }} />
@@ -224,6 +233,7 @@ export default function DashboardPage() {
   const motionPreset = getMotionPreset(prefersReducedMotion)
   const containerVariants = motionPreset.creatorStudioStaggerContainer
   const itemVariants = motionPreset.creatorStudioStaggerItem
+  const { navigate } = useRouter()
 
   const alertCount = 1
   const alertSpark = [6, 5, 4, 4, 3, 2, 2, 1]
@@ -294,10 +304,10 @@ export default function DashboardPage() {
         {/* ── Activity Feed + Decision Rail ── */}
         <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
           <div className="lg:col-span-8">
-            <ActivityFeed itemVariants={itemVariants} />
+            <ActivityFeed itemVariants={itemVariants} navigate={navigate} />
           </div>
           <div className="lg:col-span-4 flex flex-col gap-8">
-            <DecisionRail itemVariants={itemVariants} />
+            <DecisionRail itemVariants={itemVariants} navigate={navigate} />
           </div>
         </motion.div>
 

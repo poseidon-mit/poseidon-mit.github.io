@@ -49,7 +49,7 @@ export default function LoginPage() {
               <Eye className="w-8 h-8 text-cyan-400" />
             </div>
             <h3 className="text-xl font-display font-medium text-white mb-2">Biometric Verification</h3>
-            <p className="text-sm text-slate-400">Authenticating {DEMO_USER.email}</p>
+            <p className="text-sm text-slate-400">Scan initiated for {DEMO_USER.email}</p>
           </div>
 
           <Button

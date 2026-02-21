@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Link } from '@/router'
+import { Link, useRouter } from '@/router'
 import {
   ArrowLeft,
   AlertTriangle,
@@ -23,6 +23,7 @@ import { AuroraPulse, GovernFooter } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { Surface, Button, ButtonLink } from '@/design-system'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+import { THREATS, type ThreatRow } from './Protect'
 
 /* ── Data ── */
 interface EvidenceItem { id: string; title: string; score: number; details: string; model?: string }
@@ -52,7 +53,6 @@ const shapFactors = [
   { name: "Account history", value: -1.8 },
 ]
 
-const criticalAlert = DEMO_THREAD.criticalAlert
 const detectedAt = formatDemoTimestamp('2026-03-19T14:28:00-04:00')
 const updatedAt = formatDemoTimestamp('2026-03-19T14:30:00-04:00')
 
@@ -95,8 +95,13 @@ function ShapWaterfall({ factors }: { factors: { name: string; value: number }[]
 export default function ProtectAlertDetailPage() {
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
-
+  const { search } = useRouter()
   const [expandedId, setExpandedId] = useState<string | null>(null)
+
+  const alert = useMemo(() => {
+    const alertId = new URLSearchParams(search).get('alertId')
+    return THREATS.find(t => t.id === alertId) || THREATS[0]
+  }, [search])
 
   return (
     <div className="relative min-h-screen w-full">
@@ -120,10 +125,10 @@ export default function ProtectAlertDetailPage() {
           </motion.div>
           <motion.div variants={fadeUpVariant} className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="flex flex-col gap-2">
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white leading-tight" style={{ fontFamily: "var(--font-display)" }}>{`Signal #${criticalAlert.signalId}`}</h1>
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white leading-tight" style={{ fontFamily: "var(--font-display)" }}>{`Signal #${alert.id}`}</h1>
               <span className="text-sm tracking-wide text-white/40 font-mono mt-1">{`Detected: ${detectedAt} • Updated: ${updatedAt}`}</span>
             </div>
-            <span className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold uppercase tracking-widest border border-red-500/20 shadow-[0_0_20px_rgba(239,68,68,0.2)]" style={{ background: "rgba(239,68,68,0.1)", color: "var(--state-critical)" }} aria-label="Alert status: Critical"><AlertTriangle size={16} />CRITICAL</span>
+            <span className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold uppercase tracking-widest border border-red-500/20 shadow-[0_0_20px_rgba(239,68,68,0.2)]" style={{ background: "rgba(239,68,68,0.1)", color: "var(--state-critical)" }} aria-label="Alert status: Critical"><AlertTriangle size={16} />{alert.severity}</span>
           </motion.div>
         </motion.section>
 
@@ -133,11 +138,11 @@ export default function ProtectAlertDetailPage() {
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--state-critical)]/10 to-transparent pointer-events-none" />
 
             <div className="grid grid-cols-2 lg:grid-cols-6 gap-6 lg:gap-8 relative z-10">
-              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Merchant</span><span className="text-lg font-medium text-white/90">{criticalAlert.merchant}</span></div>
-              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Amount</span><span className="text-2xl font-light font-mono text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">{`$${criticalAlert.amount.toLocaleString()}.00`}</span></div>
-              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Confidence</span><div className="flex items-center gap-3"><div className="h-1.5 w-24 rounded-full overflow-hidden bg-white/[0.05] border border-white/[0.02]"><div className="h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(239,68,68,0.8)]" style={{ width: `${criticalAlert.confidence * 100}%`, background: "var(--state-critical)" }} /></div><span className="text-base font-mono font-bold drop-shadow-[0_0_5px_currentColor] text-red-400">{formatConfidence(criticalAlert.confidence)}</span></div></div>
-              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Alert type</span><span className="text-base text-white/70 tracking-wide">Unusual transaction pattern</span></div>
-              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Account</span><div className="flex items-center gap-2"><CreditCard size={16} className="text-white/30" /><span className="text-base font-mono font-medium drop-shadow-[0_0_5px_rgba(255,255,255,0.2)] text-white/80">{`Checking ****${criticalAlert.cardLast4}`}</span></div></div>
+              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Merchant</span><span className="text-lg font-medium text-white/90">{alert.merchant}</span></div>
+              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Amount</span><span className="text-2xl font-light font-mono text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">{alert.amount}</span></div>
+              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Confidence</span><div className="flex items-center gap-3"><div className="h-1.5 w-24 rounded-full overflow-hidden bg-white/[0.05] border border-white/[0.02]"><div className="h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(239,68,68,0.8)]" style={{ width: `${alert.confidence * 100}%`, background: "var(--state-critical)" }} /></div><span className="text-base font-mono font-bold drop-shadow-[0_0_5px_currentColor] text-red-400">{formatConfidence(alert.confidence)}</span></div></div>
+              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Alert type</span><span className="text-base text-white/70 tracking-wide">{alert.description}</span></div>
+              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Account</span><div className="flex items-center gap-2"><CreditCard size={16} className="text-white/30" /><span className="text-base font-mono font-medium drop-shadow-[0_0_5px_rgba(255,255,255,0.2)] text-white/80">{`Checking ****4821`}</span></div></div>
               <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Location</span><div className="flex items-center gap-2"><MapPin size={16} className="text-white/30" /><span className="text-base text-white/80 tracking-wide">{"Online"}</span></div><span className="text-xs font-semibold tracking-wide text-red-400">Flagged IP: 203.0.113.42</span></div>
             </div>
           </Surface>
@@ -243,9 +248,9 @@ export default function ProtectAlertDetailPage() {
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Actions</h3>
 
                 <div className="flex flex-col gap-4 relative z-10">
-                  <ButtonLink to="/protect/dispute" variant="primary" engine="protect" fullWidth className="rounded-2xl py-4 shadow-[0_0_30px_rgba(239,68,68,0.3)] hover:shadow-[0_0_50px_rgba(239,68,68,0.5)] transition-all font-bold tracking-wide border-none bg-gradient-to-r from-[var(--engine-protect)] to-red-400 text-white" icon={<XCircle size={18} />}>{"Block & investigate"}</ButtonLink>
+                  <ButtonLink to={`/protect/dispute?alertId=${alert.id}`} variant="primary" engine="protect" fullWidth className="rounded-2xl py-4 shadow-[0_0_30px_rgba(239,68,68,0.3)] hover:shadow-[0_0_50px_rgba(239,68,68,0.5)] transition-all font-bold tracking-wide border-none bg-gradient-to-r from-[var(--engine-protect)] to-red-400 text-white" icon={<XCircle size={18} />}>{"Block & investigate"}</ButtonLink>
                   <ButtonLink
-                    to="/protect/dispute"
+                    to={`/protect/dispute?alertId=${alert.id}`}
                     variant="glass"
                     engine="protect"
                     fullWidth
@@ -254,7 +259,7 @@ export default function ProtectAlertDetailPage() {
                     Request verification
                   </ButtonLink>
                   <div className="rounded-2xl bg-red-500/10 border border-red-500/20 p-4 mt-2 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
-                    <p className="text-xs text-center text-red-400 font-medium tracking-wide leading-relaxed drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">{`AI recommends blocking (${formatConfidence(criticalAlert.confidence)} confidence)`}</p>
+                    <p className="text-xs text-center text-red-400 font-medium tracking-wide leading-relaxed drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">{`AI recommends blocking (${formatConfidence(alert.confidence)} confidence)`}</p>
                   </div>
                 </div>
               </Surface>
@@ -278,7 +283,7 @@ export default function ProtectAlertDetailPage() {
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Similar Incidents</h3>
                 <div className="flex flex-col relative z-10">
-                  {[{ title: `${criticalAlert.merchant} flagged`, time: "2 weeks ago", result: "Blocked" }, { title: "Unusual pattern", time: "3 weeks ago", result: "Verified safe" }, { title: "High-risk geo", time: "1 month ago", result: "Blocked" }].map((item, i) => (
+                  {[{ title: `${alert.merchant} flagged`, time: "2 weeks ago", result: "Blocked" }, { title: "Unusual pattern", time: "3 weeks ago", result: "Verified safe" }, { title: "High-risk geo", time: "1 month ago", result: "Blocked" }].map((item, i) => (
                     <div key={i} className={`flex items-center justify-between py-4 ${i !== 0 ? 'border-t border-white/[0.04]' : ''}`}>
                       <div className="flex flex-col gap-1.5"><span className="text-sm font-medium tracking-wide text-white/80">{item.title}</span><span className="text-xs font-mono font-bold text-white/30 tracking-widest">{item.time}</span></div>
                       <span className="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest shadow-[0_0_10px_currentColor] border border-[currentColor]/30 bg-[currentColor]/10" style={{ color: item.result === "Blocked" ? "var(--state-critical)" : "var(--state-healthy)" }}>{item.result}</span>

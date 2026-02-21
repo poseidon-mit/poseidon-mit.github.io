@@ -1,26 +1,20 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Shield, CheckCircle2 } from 'lucide-react';
-import { Link } from '../router';
+import { Link, useRouter } from '../router';
 import { GovernFooter, AuroraPulse } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
 import { getMotionPreset } from '@/lib/motion-presets';
 import { DEMO_THREAD } from '@/lib/demo-thread';
 import { Button, ButtonLink, Surface } from '@/design-system';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
+import { THREATS } from './Protect';
 
 /* ═══════════════════════════════════════════
    DATA
    ═══════════════════════════════════════════ */
 
-const transaction = {
-  merchant: DEMO_THREAD.criticalAlert.merchant,
-  amount: `$${DEMO_THREAD.criticalAlert.amount.toLocaleString()}.00`,
-  date: 'Feb 16, 2026 at 03:00 AM',
-  card: `****${DEMO_THREAD.criticalAlert.cardLast4}`,
-  category: 'Electronics',
-  confidence: Math.round(DEMO_THREAD.criticalAlert.confidence * 100)
-};
+// Removed hardcoded transaction object as we will compute it dynamically
 
 const shapFactors = [
   { label: 'Merchant history', value: 0.82, direction: 'up' as const },
@@ -52,8 +46,23 @@ const milestones = [
 export function ProtectDispute() {
   const prefersReducedMotion = useReducedMotionSafe();
   const { fadeUp: fadeUpVariant, staggerContainer: stagger } = getMotionPreset(prefersReducedMotion);
+  const { search } = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+
+  const alert = React.useMemo(() => {
+    const alertId = new URLSearchParams(search).get('alertId');
+    return THREATS.find(t => t.id === alertId) || THREATS[0];
+  }, [search]);
+
+  const transaction = React.useMemo(() => ({
+    merchant: alert.merchant,
+    amount: alert.amount,
+    date: 'Feb 16, 2026 at 03:00 AM', // keeping static for demo
+    card: `****4821`,
+    category: 'Electronics',
+    confidence: Math.round(alert.confidence * 100)
+  }), [alert]);
 
   const goNext = () => {
     if (currentStep === disputeSteps.length - 1) setSubmitted(true); else

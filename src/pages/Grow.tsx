@@ -34,8 +34,8 @@ const FORECAST_DATA: ForecastPoint[] = Array.from({ length: 12 }, (_, i) => ({
 
 /* ── Goal KPIs ── */
 const GOAL_KPIS = [
-  { label: "Emergency fund", value: `${EMERGENCY_FUND_PROGRESS}%`, delta: "+5% this month", icon: PiggyBank, color: "var(--engine-grow)" },
-  { label: "Monthly savings", value: "$420", delta: "+$60 vs plan", icon: DollarSign, color: "var(--engine-execute)" },
+  { label: "AI Recommendations", value: "3 Active", delta: "+1 this week", icon: Zap, color: "var(--engine-grow)" },
+  { label: "Portfolio Yield", value: "5.2%", delta: "+0.4% vs benchmark", icon: TrendingUp, color: "var(--engine-execute)" },
   { label: "Invest target", value: "On track", delta: "Q3 milestone", icon: Target, color: "var(--engine-dashboard)" }];
 
 
@@ -67,12 +67,12 @@ export default function GrowPage() {
               </span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-              Emergency fund at{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400 drop-shadow-[0_0_15px_rgba(139,92,246,0.5)]">{EMERGENCY_FUND_PROGRESS}%</span>
+              Growth Plan{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400 drop-shadow-[0_0_15px_rgba(139,92,246,0.5)]">Optimized</span>
             </h1>
             <p className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide">
-              ${EMERGENCY_FUND_CURRENT.toLocaleString()} of ${EMERGENCY_FUND_TARGET.toLocaleString()} target.
-              At current pace, you will reach your goal in approximately <span className="text-white/80 font-medium tracking-wide">3 months</span>.
+              Portfolio projected to exceed target by <span className="text-white/80 font-medium tracking-wide">12%</span> this year.
+              AI has identified <span className="text-[var(--engine-grow)] font-bold">3 new opportunities</span> to accelerate wealth generation.
             </p>
           </motion.div>
 
@@ -86,7 +86,7 @@ export default function GrowPage() {
               className="rounded-xl px-8 shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:shadow-[0_0_50px_rgba(139,92,246,0.5)] transition-all font-semibold tracking-wide"
               icon={<ArrowRight size={18} />}
               iconPosition="right">
-              Review growth plan
+              View Recommendations
             </ButtonLink>
             <ButtonLink
               to="/grow/scenarios"
@@ -161,10 +161,10 @@ export default function GrowPage() {
                 </div>
                 <div className="flex flex-col gap-4">
                   <p className="text-3xl font-light text-white leading-tight tracking-wide">
-                    Increase monthly transfer by <span className="font-mono text-[var(--engine-grow)] drop-shadow-[0_0_15px_rgba(139,92,246,0.6)]">$60</span>
+                    Optimize cash sweep by <span className="font-mono text-[var(--engine-grow)] drop-shadow-[0_0_15px_rgba(139,92,246,0.6)]">$1,200</span>
                   </p>
                   <p className="text-sm text-white/40 leading-relaxed font-light">
-                    This would accelerate your emergency fund target by <span className="text-white/80 font-medium tracking-wide">3 weeks</span> based on current projections.
+                    Moving excess liquidity to High-Yield reserves will generate an estimated <span className="text-white/80 font-medium tracking-wide">$62/year</span> with identical risk profile.
                   </p>
                 </div>
               </div>
@@ -174,7 +174,7 @@ export default function GrowPage() {
                 to="/grow/scenarios"
                 className="inline-flex items-center gap-2 text-sm font-semibold tracking-wide transition-all group-hover:text-white"
                 style={{ color: "var(--engine-grow)" }}>
-                Compare scenarios <ArrowRight size={16} className="transform transition-transform group-hover:translate-x-1" />
+                Review & Execute <ArrowRight size={16} className="transform transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
           </Surface>

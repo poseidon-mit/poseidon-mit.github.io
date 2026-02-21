@@ -162,7 +162,7 @@ export default function GovernAuditPage() {
           </motion.div>
           <motion.div variants={fadeUpVariant} className="flex flex-col gap-2">
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>Audit Ledger</h1>
-            <p className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide">Immutable record of {DECISIONS_AUDITED.toLocaleString()} decisions with full evidence chain</p>
+
           </motion.div>
 
           <motion.div variants={fadeUpVariant} className="flex flex-col md:flex-row gap-4 items-center justify-between w-full mt-4">

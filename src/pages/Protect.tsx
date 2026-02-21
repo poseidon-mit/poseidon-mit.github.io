@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Link } from '@/router'
+import { Link, useRouter } from '@/router'
 import {
   Shield,
   ShieldCheck,
@@ -20,16 +20,16 @@ import { Surface, ButtonLink } from '@/design-system'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 /* ── Types ── */
-type Severity = "Critical" | "High" | "Medium" | "Low"
-type SortField = "severity" | "confidence" | "time"
-type SortDir = "asc" | "desc"
+export type Severity = "Critical" | "High" | "Medium" | "Low"
+export type SortField = "severity" | "confidence" | "time"
+export type SortDir = "asc" | "desc"
 
-interface ThreatRow {
+export interface ThreatRow {
   id: string; merchant: string; amount: string; confidence: number; severity: Severity; time: string; sortTime: number; description: string
 }
 
 /* ── Data ── */
-const threats: ThreatRow[] = [
+export const THREATS: ThreatRow[] = [
   { id: DEMO_THREAD.criticalAlert.id, merchant: DEMO_THREAD.criticalAlert.merchant, amount: `$${DEMO_THREAD.criticalAlert.amount.toLocaleString()}`, confidence: DEMO_THREAD.criticalAlert.confidence, severity: "Critical", time: "2m ago", sortTime: 8, description: "Unusual transaction pattern" },
   { id: "THR-002", merchant: "Unknown Vendor", amount: "$1,200", confidence: 0.87, severity: "High", time: "15m ago", sortTime: 7, description: "Unrecognized merchant" },
   { id: "THR-003", merchant: "Travel Agency XYZ", amount: "$3,400", confidence: 0.72, severity: "Medium", time: "1h ago", sortTime: 6, description: "International wire transfer" },
@@ -68,6 +68,7 @@ export default function ProtectPage() {
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const [sortField, setSortField] = useState<SortField>("severity")
   const [sortDir, setSortDir] = useState<SortDir>("desc")
+  const { navigate } = useRouter()
 
   const handleSort = (field: SortField) => {
     if (sortField === field) { setSortDir(d => d === "asc" ? "desc" : "asc") }
@@ -76,7 +77,7 @@ export default function ProtectPage() {
 
   const sorted = useMemo(
     () =>
-      [...threats].sort((a, b) => {
+      [...THREATS].sort((a, b) => {
         let cmp = 0
         switch (sortField) {
           case "severity": cmp = severityConfig[a.severity].order - severityConfig[b.severity].order; break
@@ -87,9 +88,9 @@ export default function ProtectPage() {
       }),
     [sortField, sortDir],
   )
-  const criticalCount = threats.filter((t) => t.severity === "Critical").length
-  const highCount = threats.filter((t) => t.severity === "High").length
-  const monitoringCount = threats.filter((t) => t.severity === "Medium" || t.severity === "Low").length
+  const criticalCount = THREATS.filter((t) => t.severity === "Critical").length
+  const highCount = THREATS.filter((t) => t.severity === "High").length
+  const monitoringCount = THREATS.filter((t) => t.severity === "Medium" || t.severity === "Low").length
 
   const SortIndicator = ({ field }: { field: SortField }) => {
     if (sortField !== field) return <ArrowUpDown size={11} style={{ color: "#475569" }} />
@@ -114,9 +115,7 @@ export default function ProtectPage() {
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white max-w-4xl leading-tight" style={{ fontFamily: "var(--font-display)" }}>
               Threat posture: <span className="text-[var(--state-critical)] font-semibold drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">{criticalCount} critical</span>, {highCount} high, {monitoringCount} monitoring.
             </h1>
-            <p className="text-lg md:text-xl leading-relaxed text-white/50 font-light max-w-2xl tracking-wide mt-2">
-              Real-time threat detection across all connected accounts. AI confidence scoring with full evidence chain.
-            </p>
+
           </motion.div>
         </motion.section>
 
@@ -136,7 +135,7 @@ export default function ProtectPage() {
                       title="No threats match your current view"
                       description="Try a different sort strategy or reopen top alert details."
                       accentColor="var(--engine-protect)"
-                      action={{ label: "Open top alert", onClick: () => window.location.assign('/protect/alert-detail') }}
+                      action={{ label: "Open top alert", onClick: () => navigate(`/protect/alert-detail?alertId=${THREATS[0]?.id}`) }}
                     />
                   </div>
                 ) : (
@@ -169,7 +168,7 @@ export default function ProtectPage() {
                               exit={{ opacity: 0, y: -8, transition: { duration: 0.18 } }}
                               className="group transition-all hover:bg-white/[0.06] cursor-pointer"
                               style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
-                              onClick={() => window.location.assign('/protect/alert-detail')}
+                              onClick={() => navigate(`/protect/alert-detail?alertId=${t.id}`)}
                             >
                               <td className="px-6 py-5"><span className="text-xs font-mono font-medium drop-shadow-[0_0_8px_rgba(239,68,68,0.4)]" style={{ color: "var(--engine-protect)" }}>{t.id}</span></td>
                               <td className="px-6 py-5"><div className="flex flex-col gap-1.5"><span className="text-base font-medium text-white/90 group-hover:text-white transition-colors tracking-wide">{t.merchant}</span><span className="text-xs text-white/40 tracking-wide">{t.description}</span></div></td>
@@ -222,7 +221,7 @@ export default function ProtectPage() {
                       <span className="text-sm font-mono font-semibold tabular-nums" style={{ color: "#F1F5F9" }}>{t.amount}</span>
                       <span className="text-xs font-mono tabular-nums" style={{ color: severityToneColor[t.severity] }}>{t.confidence.toFixed(2)}</span>
                     </div>
-                    <ButtonLink to="/protect/alert-detail" variant="glass" engine="protect" size="sm" fullWidth className="rounded-xl" icon={<ChevronRight size={14} />} iconPosition="right">
+                    <ButtonLink to={`/protect/alert-detail?alertId=${t.id}`} variant="glass" engine="protect" size="sm" fullWidth className="rounded-xl" icon={<ChevronRight size={14} />} iconPosition="right">
                       Investigate
                     </ButtonLink>
                   </Surface>
@@ -244,7 +243,7 @@ export default function ProtectPage() {
                 </div>
 
                 <div className="flex flex-col gap-4 relative z-10">
-                  {[{ label: "Active threats", value: String(threats.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Blocked today", value: "3", color: "var(--state-healthy)" }, { label: "Avg response", value: "<200ms" }].map((d, i) => (
+                  {[{ label: "Active threats", value: String(THREATS.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Blocked today", value: "3", color: "var(--state-healthy)" }, { label: "Avg response", value: "<200ms" }].map((d, i) => (
                     <div key={d.label} className={`flex items-center justify-between ${i !== 0 ? 'pt-4 border-t border-white/[0.04]' : ''}`}>
                       <span className="text-sm font-medium text-white/60 tracking-wide">{d.label}</span>
                       <span className="text-base font-mono font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" style={{ color: d.color || "rgba(255,255,255,0.9)" }}>{d.value}</span>
@@ -281,7 +280,7 @@ export default function ProtectPage() {
 
             {/* Primary CTA */}
             <motion.div variants={fadeUpVariant}>
-              <ButtonLink to="/protect/alert-detail" variant="primary" engine="protect" className="w-full rounded-[24px] py-4 shadow-[0_0_30px_rgba(239,68,68,0.3)] hover:shadow-[0_0_50px_rgba(239,68,68,0.5)] transition-all font-bold tracking-wide border-none bg-gradient-to-r from-[var(--engine-protect)] to-red-400 text-white">
+              <ButtonLink to={`/protect/alert-detail?alertId=${sorted[0]?.id || ''}`} variant="primary" engine="protect" className="w-full rounded-[24px] py-4 shadow-[0_0_30px_rgba(239,68,68,0.3)] hover:shadow-[0_0_50px_rgba(239,68,68,0.5)] transition-all font-bold tracking-wide border-none bg-gradient-to-r from-[var(--engine-protect)] to-red-400 text-white">
                 Open Top Alert
                 <ChevronRight size={18} className="ml-2" />
               </ButtonLink>

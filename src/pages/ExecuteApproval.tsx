@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Zap, AlertTriangle, CheckCircle2 } from 'lucide-react';
-import { Link } from '../router';
+import { Link, useRouter } from '../router';
 import { GovernFooter, ShapWaterfall, AuroraPulse } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
 import { Dialog, DialogContent } from '../components/ui/dialog';
@@ -12,121 +12,13 @@ import { Button, ButtonLink, Surface } from '@/design-system';
 import { useDemoState } from '@/lib/demo-state/provider';
 import { useToast } from '@/hooks/useToast';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
+import { QUEUE_ACTIONS, type QueueAction } from './Execute';
 
 /* ═══════════════════════════════════════════
    DATA
    ═══════════════════════════════════════════ */
 
-interface QueueAction {
-  id: string;
-  engine: 'Protect' | 'Grow' | 'Execute';
-  title: string;
-  description: string;
-  urgency: 'high' | 'medium' | 'low';
-  confidence: number;
-  impact: { approved: string; deferred: string; };
-  reversible: boolean;
-  expiresIn: string | null;
-  factors: Array<{ label: string; value: number; }>;
-}
-
-const queueActions: QueueAction[] = [
-  {
-    id: 'EXE-001',
-    engine: 'Execute',
-    title: 'Portfolio rebalance',
-    description: 'Optimize allocation based on 90-day pattern.',
-    urgency: 'high',
-    confidence: 0.97,
-    impact: {
-      approved: 'Allocation adjusted and tracked in the govern audit trace.',
-      deferred: 'Portfolio keeps current drift and review is deferred to next cycle.',
-    },
-    reversible: true,
-    expiresIn: '14h',
-    factors: [
-      { label: 'Concentration risk', value: 0.91 },
-      { label: 'Cash allocation', value: 0.87 },
-      { label: 'Volatility outlook', value: 0.78 },
-    ],
-  },
-  {
-    id: 'EXE-002',
-    engine: 'Protect',
-    title: 'Block wire transfer',
-    description: `Suspicious transaction to ${DEMO_THREAD.criticalAlert.merchant}.`,
-    urgency: 'high',
-    confidence: DEMO_THREAD.criticalAlert.confidence,
-    impact: {
-      approved: 'Wire transfer is blocked and dispute workflow opens automatically.',
-      deferred: 'Transaction remains active and fraud exposure window extends.',
-    },
-    reversible: true,
-    expiresIn: '6h',
-    factors: [
-      { label: 'Merchant risk', value: 0.87 },
-      { label: 'Amount anomaly', value: 0.71 },
-      { label: 'Geo mismatch', value: 0.65 },
-    ],
-  },
-  {
-    id: 'EXE-003',
-    engine: 'Grow',
-    title: 'Subscription consolidation',
-    description: '3 overlapping subscriptions detected.',
-    urgency: 'medium',
-    confidence: 0.89,
-    impact: {
-      approved: 'Estimated savings of $140/mo are queued for execution.',
-      deferred: 'Current subscription stack remains unchanged.',
-    },
-    reversible: true,
-    expiresIn: null,
-    factors: [
-      { label: 'Cost reduction', value: 0.92 },
-      { label: 'Overlap confidence', value: 0.88 },
-      { label: 'Usage parity', value: 0.82 },
-    ],
-  },
-  {
-    id: 'EXE-004',
-    engine: 'Execute',
-    title: 'Archive invoices',
-    description: 'Batch archive of 47 paid invoices.',
-    urgency: 'medium',
-    confidence: 0.78,
-    impact: {
-      approved: 'Legacy invoices are archived and indexed for governance audit.',
-      deferred: 'Invoice archive remains unchanged and queue re-checks in 24h.',
-    },
-    reversible: false,
-    expiresIn: '3d',
-    factors: [
-      { label: 'Document age', value: 0.84 },
-      { label: 'Archive confidence', value: 0.77 },
-      { label: 'Policy fit', value: 0.73 },
-    ],
-  },
-  {
-    id: 'EXE-005',
-    engine: 'Execute',
-    title: 'Pay electricity bill',
-    description: 'Recurring auto-payment scheduled today.',
-    urgency: 'low',
-    confidence: 0.99,
-    impact: {
-      approved: 'Payment executes and receipt is logged in the audit ledger.',
-      deferred: 'Payment is deferred and reminder is raised to the queue.',
-    },
-    reversible: true,
-    expiresIn: '18h',
-    factors: [
-      { label: 'Payment confidence', value: 0.99 },
-      { label: 'Schedule consistency', value: 0.93 },
-      { label: 'Balance sufficiency', value: 0.95 },
-    ],
-  },
-];
+// Removed hardcoded queueActions in favor of the imported QUEUE_ACTIONS from Execute.tsx
 
 
 const urgencyBorderColor = { high: 'var(--state-critical)', medium: 'var(--engine-execute)', low: 'var(--engine-govern)' };
@@ -144,13 +36,24 @@ export function ExecuteApproval() {
   const { fadeUp: fadeUpVariant, staggerContainer: stagger } = getMotionPreset(prefersReducedMotion);
   const { state, setExecuteDecision } = useDemoState();
   const { showToast } = useToast();
-  const [expandedAction, setExpandedAction] = useState<string | null>(queueActions[0].id);
+  const [expandedAction, setExpandedAction] = useState<string | null>(null);
   const [confirmAction, setConfirmAction] = useState<{ id: string; type: 'approve' | 'defer'; } | null>(null);
   const [consentReviewed, setConsentReviewed] = useState(false);
+  const { search } = useRouter();
+
+  const actionIdParam = useMemo(() => new URLSearchParams(search).get('actionId'), [search]);
+
+  useEffect(() => {
+    if (actionIdParam) {
+      setExpandedAction(actionIdParam);
+    } else {
+      setExpandedAction(QUEUE_ACTIONS[0]?.id || null);
+    }
+  }, [actionIdParam]);
 
   const handleConfirm = () => {
     if (confirmAction) {
-      const action = queueActions.find((a) => a.id === confirmAction.id);
+      const action = QUEUE_ACTIONS.find((a) => a.id === confirmAction.id);
       if (action) {
         const decision = confirmAction.type === 'approve' ? 'approved' : 'deferred';
         setExecuteDecision({
@@ -171,9 +74,9 @@ export function ExecuteApproval() {
   };
 
   const actionStatus = (id: string) => state.execute.actionStates[id]?.status ?? 'pending';
-  const visibleActions = queueActions.filter((a) => actionStatus(a.id) === 'pending');
-  const approvedCount = queueActions.filter((a) => actionStatus(a.id) === 'approved').length;
-  const deferredCount = queueActions.filter((a) => actionStatus(a.id) === 'deferred').length;
+  const visibleActions = QUEUE_ACTIONS.filter((a) => actionStatus(a.id) === 'pending' && (!actionIdParam || a.id === actionIdParam));
+  const approvedCount = QUEUE_ACTIONS.filter((a) => actionStatus(a.id) === 'approved').length;
+  const deferredCount = QUEUE_ACTIONS.filter((a) => actionStatus(a.id) === 'deferred').length;
   const avgConfidence = useMemo(
     () => (visibleActions.length > 0 ? visibleActions.reduce((sum, action) => sum + action.confidence, 0) / visibleActions.length : 0),
     [visibleActions],
@@ -312,7 +215,7 @@ export function ExecuteApproval() {
 
                 key={action.id} className="relative overflow-hidden rounded-[32px] border border-white/[0.08] hover:border-white/[0.15] backdrop-blur-3xl bg-black/60 shadow-2xl transition-all"
 
-                style={{ borderLeftWidth: 4, borderLeftColor: urgencyBorderColor[action.urgency] }}>
+                style={{ borderLeftWidth: 4, borderLeftColor: urgencyBorderColor[action.urgency as 'high' | 'medium' | 'low'] || urgencyBorderColor.medium }}>
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
                 <div className="relative z-10 p-6 lg:p-8 flex flex-col gap-4">
                   <div className="flex items-start justify-between gap-4 w-full">
@@ -374,7 +277,7 @@ export function ExecuteApproval() {
                         <div className="order-2 md:order-1">
                           <p className="text-[10px] font-semibold uppercase tracking-widest mb-4 flex items-center gap-2 text-white/50">Action evidence</p>
                           <div className="space-y-4">
-                            {action.factors.map((f) =>
+                            {action.factors.map((f: any) =>
                               <div key={f.label} className="flex items-center gap-4">
                                 <span className="text-xs font-medium tracking-wide text-white/70 w-36 shrink-0">{f.label}</span>
                                 <div className="flex-1 h-2 rounded-full overflow-hidden bg-white/10 shadow-inner">
@@ -390,7 +293,7 @@ export function ExecuteApproval() {
                         <div className="order-1 md:order-2 bg-black/20 p-4 rounded-xl border border-white/5">
                           <p className="text-[10px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--engine-protect)' }}>SHAP attribution</p>
                           <ShapWaterfall
-                            factors={action.factors.map((f) => ({ name: f.label, value: f.value }))}
+                            factors={action.factors.map((f: any) => ({ name: f.label, value: f.value }))}
                             baseValue={50}
                             className="mt-1" />
                         </div>
@@ -504,7 +407,7 @@ export function ExecuteApproval() {
 
       {/* Confirm Dialog */}
       {confirmAction && (() => {
-        const action = queueActions.find((a) => a.id === confirmAction.id)!;
+        const action = QUEUE_ACTIONS.find((a) => a.id === confirmAction.id)!;
         const isApprove = confirmAction.type === 'approve';
         return (
           <Dialog open={true} onOpenChange={(open) => !open && setConfirmAction(null)}>
