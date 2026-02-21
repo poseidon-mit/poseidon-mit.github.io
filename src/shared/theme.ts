@@ -1,5 +1,5 @@
 /**
- * Poseidon.AI unified design tokens — CSS variable references
+ * Poseidon unified design tokens — CSS variable references
  * These values correspond to custom properties defined in src/styles/system/tokens.css.
  * Use this object when you need type-safe access to design tokens in TypeScript/JSX.
  */

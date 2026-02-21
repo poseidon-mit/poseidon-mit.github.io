@@ -6,16 +6,16 @@
 
 /* ── Default: creator-studio (Apple-style deep OLED + glass) ── */
 :root {
-  --ds-surface-bg: color-mix(in srgb, #050508 72%, #ffffff 3%);
-  --ds-surface-border: oklch(1 0 0 / 0.1);
-  --ds-surface-blur: 24px;
-  --ds-glow-opacity: 0.08;
-  --ds-glow-spread: 24px;
+  --ds-surface-bg: oklch(0 0 0 / 0.4);
+  --ds-surface-border: oklch(1 0 0 / 0.06);
+  --ds-surface-blur: 64px;
+  --ds-glow-opacity: 0.15;
+  --ds-glow-spread: 32px;
   --ds-animation-entry: fadeUp;
-  --ds-glass-inset: inset 0 1px 0 0 oklch(1 0 0 / 0.14), inset 0 -1px 0 0 oklch(1 0 0 / 0.06);
-  --ds-backdrop-filter: blur(24px) saturate(1.45) brightness(1.05);
-  --ds-border-radius-surface: var(--radius-md);
-  --ds-surface-shadow: 0 12px 48px oklch(0 0 0 / 0.55), 0 4px 14px oklch(0 0 0 / 0.3);
+  --ds-glass-inset: inset 0 1px 0 0 oklch(1 0 0 / 0.08);
+  --ds-backdrop-filter: blur(64px) saturate(1.8) brightness(1.1);
+  --ds-border-radius-surface: 32px;
+  --ds-surface-shadow: 0 24px 64px oklch(0 0 0 / 0.6), 0 8px 16px oklch(0 0 0 / 0.4);
 }
 
 /* ── minimal — Clean professional ── */
@@ -86,16 +86,16 @@
 
 /* ── creator-studio — explicit selector for runtime toggles ── */
 [data-effect-preset="creator-studio"] {
-  --ds-surface-bg: color-mix(in srgb, #050508 72%, #ffffff 3%);
-  --ds-surface-border: oklch(1 0 0 / 0.1);
-  --ds-surface-blur: 24px;
-  --ds-glow-opacity: 0.08;
-  --ds-glow-spread: 24px;
+  --ds-surface-bg: oklch(0 0 0 / 0.4);
+  --ds-surface-border: oklch(1 0 0 / 0.06);
+  --ds-surface-blur: 64px;
+  --ds-glow-opacity: 0.15;
+  --ds-glow-spread: 32px;
   --ds-animation-entry: fadeUp;
-  --ds-glass-inset: inset 0 1px 0 0 oklch(1 0 0 / 0.14), inset 0 -1px 0 0 oklch(1 0 0 / 0.06);
-  --ds-backdrop-filter: blur(24px) saturate(1.45) brightness(1.05);
-  --ds-border-radius-surface: var(--radius-md);
-  --ds-surface-shadow: 0 12px 48px oklch(0 0 0 / 0.55), 0 4px 14px oklch(0 0 0 / 0.3);
+  --ds-glass-inset: inset 0 1px 0 0 oklch(1 0 0 / 0.08);
+  --ds-backdrop-filter: blur(64px) saturate(1.8) brightness(1.1);
+  --ds-border-radius-surface: 32px;
+  --ds-surface-shadow: 0 24px 64px oklch(0 0 0 / 0.6), 0 8px 16px oklch(0 0 0 / 0.4);
 }
 
 /* ── Glow utility per engine color ── */

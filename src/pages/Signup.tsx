@@ -35,7 +35,7 @@ export default function SignupPage() {
   return (
     <>
       <PublicTopBar />
-      <AuthShell title="Initialization" subtitle="Create your secure wealth profile">
+      <AuthShell title="Activate Engine" subtitle="Create your secure wealth profile">
         <main id="main-content">
           <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex flex-col h-full">
 
@@ -43,7 +43,7 @@ export default function SignupPage() {
               <div className="w-20 h-20 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(6,182,212,0.2)]">
                 <Fingerprint className="w-10 h-10 text-cyan-400" strokeWidth={1.5} />
               </div>
-              <h3 className="text-2xl font-display font-medium text-white mb-2 tracking-wide">Initialize Profile</h3>
+              <h3 className="text-2xl font-display font-medium text-white mb-2 tracking-wide">Secure Your Profile</h3>
               <p className="text-sm text-slate-400 font-light">
                 Securing a hyper-personalized autonomous engine for {DEMO_USER.name}.
               </p>
@@ -71,7 +71,7 @@ export default function SignupPage() {
                 fullWidth
                 className="rounded-2xl py-5 text-lg font-bold shadow-[0_0_30px_rgba(6,182,212,0.2)] hover:shadow-[0_0_50px_rgba(6,182,212,0.4)] transition-all flex justify-center items-center gap-2 border border-cyan-500/50"
               >
-                Create Profile <ArrowRight className="w-5 h-5" />
+                Activate Engine <ArrowRight className="w-5 h-5" />
               </Button>
               <p className="text-center text-xs text-slate-500 mt-4 font-light">
                 By initializing, you retain absolute control.<br />

@@ -113,7 +113,7 @@ export default function ProtectPage() {
                 <Shield size={12} /> Protect Engine
               </span>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white max-w-4xl leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight tabular-nums text-white max-w-4xl leading-tight" style={{ fontFamily: "var(--font-display)" }}>
               Threat posture: <span className="text-[var(--state-critical)] font-semibold drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">{criticalCount} critical</span>, {highCount} high, {monitoringCount} monitoring.
             </h1>
 
@@ -127,7 +127,7 @@ export default function ProtectPage() {
             {/* Threat Cards */}
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between px-2">
-                <h2 className="text-sm font-semibold uppercase tracking-widest text-white/50">Active Threats</h2>
+                <h2 className="text-sm font-semibold uppercase tracking-widest text-white/50">Live Threat Feed</h2>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-white/40">Sort:</span>
                   <select
@@ -201,8 +201,8 @@ export default function ProtectPage() {
           <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-6" aria-label="Protect sidebar">
             {/* Threat summary */}
             <motion.div variants={fadeUpVariant} className="h-full">
-              <Surface interactive className="relative h-full overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]" padding="none">
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/10 to-transparent pointer-events-none" />
+              <Surface interactive className="relative h-full overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]" padding="none">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
 
                 <div className="relative z-10 flex items-center justify-between">
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Threat Summary</h3>
@@ -222,8 +222,8 @@ export default function ProtectPage() {
 
             {/* Risk breakdown */}
             <motion.div variants={fadeUpVariant}>
-              <Surface interactive className="relative h-full overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]" padding="none">
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
+              <Surface interactive className="relative h-full overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]" padding="none">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
 
                 <div className="relative z-10 flex items-center justify-between">
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Risk Breakdown</h3>

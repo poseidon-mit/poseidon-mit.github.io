@@ -115,7 +115,7 @@ export default function LandingPreviewNew() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <a href="/" className="flex items-center gap-2 text-lg font-bold text-slate-100">
             <Waves className="h-5 w-5 text-teal-400" />
-            Poseidon.AI
+            Poseidon
           </a>
           <div className="hidden items-center gap-8 text-sm text-slate-300 md:flex">
             <a href="/dashboard" className="hover:text-white">Product</a>

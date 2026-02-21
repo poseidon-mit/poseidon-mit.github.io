@@ -227,7 +227,7 @@ export default function ExecutePage() {
             <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[var(--engine-execute)]/20"><Zap size={12} /></span>
             Execute Engine
           </motion.div>
-          <motion.h1 variants={fadeUpVariant} className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+          <motion.h1 variants={fadeUpVariant} className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight tabular-nums text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
             {pendingCount} actions queued. <br className="hidden lg:block" />Projected savings: <span className="text-[var(--engine-execute)] font-mono drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]">${DEMO_THREAD.monthlySavings}/mo</span>.
           </motion.h1>
 
@@ -255,7 +255,7 @@ export default function ExecutePage() {
                 <motion.div key={action.id} variants={fadeUpVariant}>
                   <Surface
                     interactive
-                    className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] hover:border-white/[0.15] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-5 transition-all"
+                    className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] hover:border-white/[0.15] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-5 transition-all"
                     style={{ borderLeftWidth: 4, borderLeftColor: ENGINE_COLOR_MAP[action.engine] }}
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
@@ -278,7 +278,7 @@ export default function ExecutePage() {
                     </div>
 
                     <div className="relative z-10 flex flex-wrap items-center gap-6 py-4 border-y border-white/[0.06] my-2">
-                      <span className="text-xl font-mono font-light tracking-wide text-[var(--engine-execute)] drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]">{action.amount}</span>
+                      <span className="text-xl font-mono font-light tracking-wide tabular-nums text-[var(--engine-execute)] drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]">{action.amount}</span>
                       <div className="w-px h-6 bg-white/[0.06]" />
                       <div className="flex items-center gap-3">
                         <span className="text-xs uppercase tracking-widest text-white/40">Confidence</span>
@@ -336,7 +336,7 @@ export default function ExecutePage() {
                   <div className="flex flex-col gap-3">
                     {deferredActions.map((action) => (
                       <motion.div key={action.id} variants={fadeUpVariant}>
-                        <Surface className="relative overflow-hidden rounded-[24px] p-4 lg:p-5 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl flex items-center gap-4 opacity-70 hover:opacity-100 transition-opacity">
+                        <Surface className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl flex items-center gap-4 opacity-70 hover:opacity-100 transition-opacity">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-[var(--state-warning)]/20 shadow-inner" style={{ background: 'rgba(234,179,8,0.1)' }}>
                             <Clock size={18} style={{ color: 'var(--state-warning)' }} className="drop-shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
                           </div>
@@ -358,7 +358,7 @@ export default function ExecutePage() {
                   <div className="flex flex-col gap-3">
                     {completedActions.map((action) => (
                       <motion.div key={action.id} variants={fadeUpVariant}>
-                        <Surface className="relative overflow-hidden rounded-[24px] p-4 lg:p-5 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl flex items-center gap-4 opacity-50 hover:opacity-80 transition-opacity">
+                        <Surface className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl flex items-center gap-4 opacity-50 hover:opacity-80 transition-opacity">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-[var(--state-healthy)]/20 shadow-inner" style={{ background: 'rgba(34,197,94,0.1)' }}>
                             <CheckCircle2 size={18} style={{ color: 'var(--state-healthy)' }} className="drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
                           </div>
@@ -379,7 +379,7 @@ export default function ExecutePage() {
           <motion.aside className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6" aria-label="Execute sidebar" variants={staggerContainerVariant}>
             <div className="sticky top-24 flex flex-col gap-6">
               <motion.div variants={fadeUpVariant}>
-                <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
+                <Surface className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
                   <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 mb-2 relative z-10">Queue Summary</h3>
                   <div className="space-y-4 relative z-10">
@@ -401,7 +401,7 @@ export default function ExecutePage() {
               </motion.div>
 
               <motion.div variants={fadeUpVariant}>
-                <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
+                <Surface className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
                   <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 mb-2 relative z-10">Savings Tracker</h3>
                   <div className="relative z-10 flex items-center gap-4">
@@ -422,7 +422,7 @@ export default function ExecutePage() {
               </motion.div>
 
               <motion.div variants={fadeUpVariant}>
-                <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
+                <Surface className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-govern)]/10 to-transparent pointer-events-none" />
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 mb-2 relative z-10">Rollback Safety</h3>
                   <p className="text-sm leading-relaxed text-white/70 tracking-wide relative z-10">

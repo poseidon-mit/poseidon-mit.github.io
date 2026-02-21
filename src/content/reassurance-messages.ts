@@ -1,5 +1,5 @@
 /**
- * Reassurance Messages Library for Poseidon.AI
+ * Reassurance Messages Library for Poseidon
  * Positive, non-judgmental language for financial stress relief
  * Part of Gap 6: Emotional/Wellness UX
  */

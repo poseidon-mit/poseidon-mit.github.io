@@ -1,0 +1,205 @@
+[
+  {
+    "route": "/",
+    "finalUrl": "https://poseidon-mit.com/",
+    "h1": "The Engine for Modern Wealth.",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/root.png"
+  },
+  {
+    "route": "/signup",
+    "finalUrl": "https://poseidon-mit.com/signup/",
+    "h1": "Create your account",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/signup.png"
+  },
+  {
+    "route": "/login",
+    "finalUrl": "https://poseidon-mit.com/login/",
+    "h1": "Welcome back",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/login.png"
+  },
+  {
+    "route": "/onboarding",
+    "finalUrl": "https://poseidon-mit.com/onboarding/",
+    "h1": "Establish Connection",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/onboarding.png"
+  },
+  {
+    "route": "/dashboard",
+    "finalUrl": "https://poseidon-mit.com/dashboard/",
+    "h1": null,
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/dashboard.png"
+  },
+  {
+    "route": "/dashboard/notifications",
+    "finalUrl": "https://poseidon-mit.com/dashboard/notifications/",
+    "h1": "Notifications",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/dashboard__notifications.png"
+  },
+  {
+    "route": "/protect",
+    "finalUrl": "https://poseidon-mit.com/protect/",
+    "h1": "Threat posture: 1 critical, 1 high, 3 monitoring.",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/protect.png"
+  },
+  {
+    "route": "/protect/alert-detail?alertId=THR-001",
+    "finalUrl": "https://poseidon-mit.com/protect/alert-detail/?alertId=THR-001",
+    "h1": "Signal #THR-001",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/protect__alert-detail_alertId_THR-001.png"
+  },
+  {
+    "route": "/protect/dispute",
+    "finalUrl": "https://poseidon-mit.com/protect/dispute/",
+    "h1": "Page not found",
+    "is404": true,
+    "screenshot": "output/playwright/deep-research-20260221/protect__dispute.png"
+  },
+  {
+    "route": "/grow",
+    "finalUrl": "https://poseidon-mit.com/grow/",
+    "h1": "Growth Plan Optimized",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/grow.png"
+  },
+  {
+    "route": "/grow/goal",
+    "finalUrl": "https://poseidon-mit.com/grow/goal/",
+    "h1": "Emergency fund",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/grow__goal.png"
+  },
+  {
+    "route": "/grow/scenarios",
+    "finalUrl": "https://poseidon-mit.com/grow/scenarios/",
+    "h1": "Compare growth paths",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/grow__scenarios.png"
+  },
+  {
+    "route": "/grow/recommendations",
+    "finalUrl": "https://poseidon-mit.com/grow/recommendations/",
+    "h1": "Growth Recommendations",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/grow__recommendations.png"
+  },
+  {
+    "route": "/execute",
+    "finalUrl": "https://poseidon-mit.com/execute/",
+    "h1": "5 actions queued. Projected savings: $847/mo.",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/execute.png"
+  },
+  {
+    "route": "/execute/approval?actionId=EXE-001",
+    "finalUrl": "https://poseidon-mit.com/execute/approval/?actionId=EXE-001",
+    "h1": "Action Review",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/execute__approval_actionId_EXE-001.png"
+  },
+  {
+    "route": "/execute/approval?actionId=EXE-002",
+    "finalUrl": "https://poseidon-mit.com/execute/approval/?actionId=EXE-002",
+    "h1": "Action Review",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/execute__approval_actionId_EXE-002.png"
+  },
+  {
+    "route": "/execute/approval?actionId=EXE-003",
+    "finalUrl": "https://poseidon-mit.com/execute/approval/?actionId=EXE-003",
+    "h1": "Action Review",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/execute__approval_actionId_EXE-003.png"
+  },
+  {
+    "route": "/execute/approval?actionId=EXE-004",
+    "finalUrl": "https://poseidon-mit.com/execute/approval/?actionId=EXE-004",
+    "h1": "Action Review",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/execute__approval_actionId_EXE-004.png"
+  },
+  {
+    "route": "/execute/approval?actionId=EXE-005",
+    "finalUrl": "https://poseidon-mit.com/execute/approval/?actionId=EXE-005",
+    "h1": "Action Review",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/execute__approval_actionId_EXE-005.png"
+  },
+  {
+    "route": "/execute/history",
+    "finalUrl": "https://poseidon-mit.com/execute/history/",
+    "h1": "Page not found",
+    "is404": true,
+    "screenshot": "output/playwright/deep-research-20260221/execute__history.png"
+  },
+  {
+    "route": "/govern",
+    "finalUrl": "https://poseidon-mit.com/govern/",
+    "h1": "Governance & Oversight",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/govern.png"
+  },
+  {
+    "route": "/govern/audit",
+    "finalUrl": "https://poseidon-mit.com/govern/audit/",
+    "h1": "Audit Ledger",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/govern__audit.png"
+  },
+  {
+    "route": "/govern/audit-detail?decision=GV-2026-0319-846",
+    "finalUrl": "https://poseidon-mit.com/govern/audit-detail/?decision=GV-2026-0319-846",
+    "h1": "Decision Reconstruction",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/govern__audit-detail_decision_GV-2026-0319-846.png"
+  },
+  {
+    "route": "/govern/oversight",
+    "finalUrl": "https://poseidon-mit.com/govern/oversight/",
+    "h1": "Page not found",
+    "is404": true,
+    "screenshot": "output/playwright/deep-research-20260221/govern__oversight.png"
+  },
+  {
+    "route": "/settings",
+    "finalUrl": "https://poseidon-mit.com/settings/",
+    "h1": "Control your experience",
+    "is404": false,
+    "screenshot": "output/playwright/deep-research-20260221/settings.png"
+  },
+  {
+    "route": "/settings/ai",
+    "finalUrl": "https://poseidon-mit.com/settings/ai/",
+    "h1": "Page not found",
+    "is404": true,
+    "screenshot": "output/playwright/deep-research-20260221/settings__ai.png"
+  },
+  {
+    "route": "/settings/integrations",
+    "finalUrl": "https://poseidon-mit.com/settings/integrations/",
+    "h1": "Page not found",
+    "is404": true,
+    "screenshot": "output/playwright/deep-research-20260221/settings__integrations.png"
+  },
+  {
+    "route": "/settings/rights",
+    "finalUrl": "https://poseidon-mit.com/settings/rights/",
+    "h1": "Page not found",
+    "is404": true,
+    "screenshot": "output/playwright/deep-research-20260221/settings__rights.png"
+  },
+  {
+    "route": "/help",
+    "finalUrl": "https://poseidon-mit.com/help/",
+    "h1": "Page not found",
+    "is404": true,
+    "screenshot": "output/playwright/deep-research-20260221/help.png"
+  }
+]

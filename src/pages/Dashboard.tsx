@@ -71,7 +71,7 @@ const StatCard = memo(function StatCard({
 
         <div className="flex items-end justify-between relative z-10">
           <div>
-            <div className="text-4xl font-display font-light tracking-tight text-white mb-3">{value}</div>
+            <div className="text-4xl font-display font-light tracking-tight tabular-nums text-white mb-3">{value}</div>
             <div className="flex items-center gap-2">
               <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${deltaPositive ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-red-500/10 text-red-400 border-red-500/20"}`}>
                 {delta}

@@ -37,7 +37,7 @@ export default function OnboardingConnectPage() {
   return (
     <OnboardingShell
       step={1}
-      title="Establish Connection"
+      title="Secure Connection"
       subtitle="Link your primary account to initialize the AI routing engine."
     >
       <main id="main-content" className="flex flex-col h-full min-h-[50vh]">
@@ -55,7 +55,7 @@ export default function OnboardingConnectPage() {
                     onClick={handleConnect}
                     disabled={connState !== 'idle'}
                     className={cn(
-                      'w-full rounded-3xl border p-5 md:p-6 text-left transition-all duration-500 flex items-center gap-4 md:gap-6 group relative overflow-hidden',
+                      'w-full rounded-3xl border p-6 md:p-8 text-left transition-all duration-500 flex items-center gap-4 md:gap-6 group relative overflow-hidden',
                       isSuccess
                         ? 'border-[var(--state-healthy)]/40 bg-[var(--state-healthy)]/10 shadow-[0_0_30px_rgba(34,197,94,0.15)]'
                         : isConnecting
@@ -126,7 +126,7 @@ export default function OnboardingConnectPage() {
                   fullWidth
                   className="rounded-2xl py-5 text-lg font-bold shadow-[0_0_30px_rgba(6,182,212,0.2)] hover:shadow-[0_0_50px_rgba(6,182,212,0.4)] transition-all flex justify-center items-center gap-2 border border-cyan-500/50"
                 >
-                  Enter Command Center <ArrowRight className="h-5 w-5" />
+                  Enter Financial Engine <ArrowRight className="h-5 w-5" />
                 </Button>
               </motion.div>
             )}

@@ -2,7 +2,7 @@ export const landingCopy = {
   eyebrow: 'AI-NATIVE MONEY INTELLIGENCE',
   title: 'Your AI financial guardian is always on.',
   subtitle:
-    'Poseidon.AI analyzes every transaction, forecasts your future, and acts on your behalf — while keeping you in full control.',
+    'Poseidon analyzes every transaction, forecasts your future, and acts on your behalf — while keeping you in full control.',
   chips: ['I detect threats in real time', 'I forecast with 94% accuracy', 'I act only when you approve'],
   previewFooter: 'Monitoring 4 accounts · Last scan 2m ago',
 };

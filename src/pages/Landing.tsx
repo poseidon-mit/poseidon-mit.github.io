@@ -1,160 +1,256 @@
-import React from 'react';
-import { motion, type Variants } from 'framer-motion';
-import { Shield, TrendingUp, Zap, Scale, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { ButtonLink, AuroraGradient, Badge } from '@/design-system';
-
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.2, 0.8, 0.2, 1] } }
-};
-
-const stagger: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15 }
-  }
-};
+import React, { useEffect } from 'react';
+import { ChevronDown, Shield, TrendingUp, Zap, Scale, ArrowRight, Lock, CheckCircle2 } from 'lucide-react';
+import { PublicTopBar } from '@/components/landing/PublicTopBar';
 
 export default function Landing() {
+
+  // Clean scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
-    <div className="relative min-h-screen bg-[var(--bg-oled)] text-white overflow-x-hidden selection:bg-cyan-500/30 font-sans pb-24 md:pb-0">
-      <AuroraGradient engine="execute" intensity="vivid" className="fixed inset-0 pointer-events-none z-0" />
+    <div className="relative min-h-screen w-full bg-[#05050A] overflow-x-hidden selection:bg-cyan-500 selection:text-black">
 
-      {/* Navbar */}
-      <nav className="fixed top-0 w-full z-50 px-4 md:px-6 py-4 flex justify-between items-center bg-black/50 backdrop-blur-2xl border-b border-white/[0.04]">
-        <div className="flex items-center gap-2 md:gap-3">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(0,240,255,0.4)]">
-            <Shield className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-display font-bold text-lg tracking-tight hover:opacity-80 transition-opacity cursor-pointer">Poseidon.AI</span>
-        </div>
-        <div className="flex items-center gap-3 md:gap-4">
-          <ButtonLink to="/login" variant="glass" className="px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-semibold border border-white/10 hover:bg-white/5 transition-all">
-            Sign In
-          </ButtonLink>
-        </div>
-      </nav>
+      {/* Top Level Content Wrapper (z-index 10) */}
+      <div className="relative z-10 w-full font-manrope">
 
-      <main className="relative z-10 pt-32 pb-20 px-4 md:px-6 max-w-7xl mx-auto flex flex-col items-center">
+        {/* Navbar: Replaced with Signup Screen Top Bar */}
+        <PublicTopBar />
 
-        {/* Hero */}
-        <motion.div initial="hidden" animate="visible" variants={stagger} className="text-center w-full max-w-4xl mx-auto space-y-6 md:space-y-8 mb-20 md:mb-32">
-          {/* Badge */}
-          <motion.div variants={fadeUp}>
-            <Badge variant="info" className="px-4 py-2 text-[10px] md:text-xs font-semibold tracking-widest uppercase mx-auto inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 backdrop-blur-md">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-              </span>
-              MIT Research Prototype - Autonomous Finance
-            </Badge>
-          </motion.div>
+        {/* Section 1: Hero */}
+        <section className="relative w-full min-h-screen flex flex-col items-center justify-center pt-[102px] px-6 overflow-hidden">
+          {/* Background Video (Constrained to Hero) */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover opacity-80"
+              src="/videos/hero-theme-desktop.mp4"
+            />
+            {/* Fade out bottom to blend with background */}
+            <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#05050A] to-transparent" />
 
-          {/* Title */}
-          <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl lg:text-8xl font-display font-bold tracking-tighter leading-[1.05] text-balance">
-            The Engine for <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-500">
-              Modern Wealth.
-            </span>
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p variants={fadeUp} className="text-base md:text-xl text-white/50 max-w-2xl mx-auto font-light leading-relaxed px-4 text-balance">
-            Experience the first hyper-personalized, autonomous financial engine that protects, grows, and manages your money with absolute transparency.
-          </motion.p>
-
-          {/* Video Placeholder */}
-          <motion.div variants={fadeUp} className="w-full mt-12 mb-12 h-[300px] md:h-[500px] relative rounded-[32px] md:rounded-[40px] overflow-hidden border border-white/[0.08] bg-white/[0.02] backdrop-blur-3xl shadow-2xl flex items-center justify-center group mx-auto">
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10 opacity-50 mix-blend-overlay"></div>
-            <div className="absolute inset-0 opacity-[0.15] mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
-            <div className="relative z-10 text-center flex flex-col items-center">
-              <Shield className="w-12 h-12 md:w-16 md:h-16 text-white/20 mb-4 drop-shadow-2xl" />
-              <p className="text-white/40 tracking-widest uppercase text-xs md:text-sm font-semibold">Liquid Intelligence / Video Area</p>
+            {/* Unified Pill-shaped Blur Overlay */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-full max-w-[871px] h-[508px] bg-[#000000] rounded-full blur-[77.5px] opacity-80 mix-blend-multiply" />
             </div>
-          </motion.div>
-
-        </motion.div>
-
-        {/* Value Propositions */}
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={stagger} className="w-full max-w-5xl mx-auto space-y-16">
-          <motion.div variants={fadeUp} className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl md:text-4xl font-display font-medium text-white mb-4">Four Engines. Complete Control.</h2>
-            <p className="text-slate-400 font-light max-w-xl mx-auto text-sm md:text-base px-4">Poseidon.AI handles the complexity of your financial life intuitively and transparently.</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-
-            {/* Protect */}
-            <motion.div variants={fadeUp} className="rounded-[32px] p-6 md:p-8 border border-white/[0.08] bg-black/40 backdrop-blur-xl hover:bg-white/[0.06] transition-colors group">
-              <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(16,185,129,0.15)] group-hover:scale-110 transition-transform">
-                <Shield className="w-6 h-6 text-emerald-400" />
-              </div>
-              <h3 className="text-xl md:text-2xl font-display font-medium text-white mb-3 tracking-wide">Protect</h3>
-              <p className="text-slate-400 font-light leading-relaxed mb-6 text-sm md:text-base">Halts fraud instantly so you don't have to worry. Smart blocking catches anomalies before money leaves your account.</p>
-              <ul className="space-y-3 text-sm text-slate-500">
-                <li className="flex items-center gap-3"><CheckCircle2 className="w-4 h-4 text-emerald-500/70" /> Active Threat Monitoring</li>
-                <li className="flex items-center gap-3"><CheckCircle2 className="w-4 h-4 text-emerald-500/70" /> Automated Risk Freezes</li>
-              </ul>
-            </motion.div>
-
-            {/* Grow */}
-            <motion.div variants={fadeUp} className="rounded-[32px] p-6 md:p-8 border border-white/[0.08] bg-black/40 backdrop-blur-xl hover:bg-white/[0.06] transition-colors group">
-              <div className="w-12 h-12 rounded-full bg-violet-500/10 border border-violet-500/30 flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(139,92,246,0.15)] group-hover:scale-110 transition-transform">
-                <TrendingUp className="w-6 h-6 text-violet-400" />
-              </div>
-              <h3 className="text-xl md:text-2xl font-display font-medium text-white mb-3 tracking-wide">Grow</h3>
-              <p className="text-slate-400 font-light leading-relaxed mb-6 text-sm md:text-base">Optimizes cash flow and subscriptions automatically. Let the engine find compounding routing opportunities effortlessly.</p>
-              <ul className="space-y-3 text-sm text-slate-500">
-                <li className="flex items-center gap-3"><CheckCircle2 className="w-4 h-4 text-violet-500/70" /> Subscription Consolidation</li>
-                <li className="flex items-center gap-3"><CheckCircle2 className="w-4 h-4 text-violet-500/70" /> Cash Yield Optimization</li>
-              </ul>
-            </motion.div>
-
-            {/* Execute */}
-            <motion.div variants={fadeUp} className="rounded-[32px] p-6 md:p-8 border border-white/[0.08] bg-black/40 backdrop-blur-xl hover:bg-white/[0.06] transition-colors group">
-              <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(245,158,11,0.15)] group-hover:scale-110 transition-transform">
-                <Zap className="w-6 h-6 text-amber-400" />
-              </div>
-              <h3 className="text-xl md:text-2xl font-display font-medium text-white mb-3 tracking-wide">Execute</h3>
-              <p className="text-slate-400 font-light leading-relaxed mb-6 text-sm md:text-base">Handles the busywork of paying bills and moving money accurately. Approve multi-step actions with a single tap.</p>
-              <ul className="space-y-3 text-sm text-slate-500">
-                <li className="flex items-center gap-3"><CheckCircle2 className="w-4 h-4 text-amber-500/70" /> Intelligent Auto-Pay</li>
-                <li className="flex items-center gap-3"><CheckCircle2 className="w-4 h-4 text-amber-500/70" /> Cross-Account Transfers</li>
-              </ul>
-            </motion.div>
-
-            {/* Govern */}
-            <motion.div variants={fadeUp} className="rounded-[32px] p-6 md:p-8 border border-white/[0.08] bg-black/40 backdrop-blur-xl hover:bg-white/[0.06] transition-colors group">
-              <div className="w-12 h-12 rounded-full bg-teal-500/10 border border-teal-500/30 flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(20,184,166,0.15)] group-hover:scale-110 transition-transform">
-                <Scale className="w-6 h-6 text-teal-400" />
-              </div>
-              <h3 className="text-xl md:text-2xl font-display font-medium text-white mb-3 tracking-wide">Govern</h3>
-              <p className="text-slate-400 font-light leading-relaxed mb-6 text-sm md:text-base">Honest, explainable AI where you are always in control and can reverse anything. Full audit trails backing every decision.</p>
-              <ul className="space-y-3 text-sm text-slate-500">
-                <li className="flex items-center gap-3"><CheckCircle2 className="w-4 h-4 text-teal-500/70" /> Mathematical Transparency</li>
-                <li className="flex items-center gap-3"><CheckCircle2 className="w-4 h-4 text-teal-500/70" /> Decision Ledger Reversibility</li>
-              </ul>
-            </motion.div>
-
           </div>
-        </motion.div>
-      </main>
 
-      {/* Mobile Sticky CTA */}
-      <div className="fixed bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black via-black/80 to-transparent z-50 md:hidden">
-        <ButtonLink to="/signup" variant="primary" engine="dashboard" className="w-full py-4 rounded-2xl text-base font-bold shadow-[0_0_30px_rgba(6,182,212,0.3)] flex items-center justify-center gap-2 border border-cyan-500/50">
-          Initialize Wealth Engine <ArrowRight className="w-4 h-4" />
-        </ButtonLink>
+          <div className="relative z-10 flex flex-col items-center max-w-[900px] gap-[32px] mt-12 md:mt-24">
+
+            {/* Badge */}
+            <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider">System Confidence: 0.92</span>
+            </div>
+
+            {/* Heading Block */}
+            <div className="flex flex-col items-center gap-[16px] text-center">
+              <h1 className="font-inter font-medium text-white text-[56px] md:text-[88px] tracking-[-3px] leading-[1.05]">
+                Deterministic models compute.<br />
+                <span className="font-instrument italic font-light text-cyan-400 drop-shadow-[0_0_40px_rgba(0,240,255,0.3)]">GenAI explains.</span>
+              </h1>
+              <p className="font-normal text-[#f6f7f9] opacity-80 text-[18px] md:text-[22px] leading-[1.6] max-w-[650px] mt-6 text-balance">
+                The trusted AI-native money platform. AI Agents execute seamlessly. Humans confidently approve.
+              </p>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-center gap-[16px] md:gap-[24px] mt-8">
+              <a href="/signup" className="flex items-center gap-2 bg-gradient-to-b from-[#7b39fc] to-[#6a2ce0] shadow-[0px_0px_40px_rgba(123,57,252,0.4)] px-[32px] py-[16px] rounded-[12px] font-cabin font-medium text-[16px] md:text-[18px] text-white hover:scale-[1.02] transition-transform">
+                Activate Financial Engine
+                <ArrowRight className="w-5 h-5" />
+              </a>
+              <a href="/CTO-Group7-Poseidon.pdf" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-xl px-[32px] py-[16px] rounded-[12px] font-cabin font-medium text-[16px] md:text-[18px] text-white hover:bg-white/10 transition-colors">
+                Read MIT Abstract
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 2: Core Formula Bento Box (Show, Don't Tell) */}
+        <section className="relative w-full py-32 px-6 md:px-12 z-10">
+          <div className="max-w-[1200px] w-full mx-auto">
+
+            <div className="text-center mb-20">
+              <h2 className="font-instrument italic text-white text-[48px] md:text-[64px] tracking-tight leading-[1.1]">
+                Four sovereign engines.<br />One unified system.
+              </h2>
+            </div>
+
+            {/* Bento Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+
+              {/* Protect Card */}
+              <div className="group relative p-8 md:p-10 rounded-[32px] backdrop-blur-[24px] bg-[#05050A]/60 border border-white/5 hover:border-green-500/30 transition-all overflow-hidden flex flex-col justify-between min-h-[400px]">
+                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-green-500/10 blur-[100px] rounded-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity" />
+
+                <div className="relative z-10 flex flex-col gap-4 max-w-[80%]">
+                  <div className="flex items-center gap-3">
+                    <Shield className="w-6 h-6 text-green-400" />
+                    <h3 className="font-inter text-2xl text-white">Protect</h3>
+                  </div>
+                  <p className="text-white/60 text-lg">Real-time threat detection and active fraud blocking.</p>
+                </div>
+
+                {/* Mini UI Teaser */}
+                <div className="relative z-10 mt-10 p-6 rounded-[16px] bg-black/40 border border-white/5 shadow-2xl">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-mono text-xs text-green-400 uppercase tracking-wider">Critical Block</span>
+                    <span className="text-xs text-white/40">Just now</span>
+                  </div>
+                  <div className="flex items-end justify-between">
+                    <div>
+                      <div className="text-white font-inter text-2xl tracking-tight">$2,847</div>
+                      <div className="text-white/60 text-sm mt-1">TechElectro Store</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-green-400 text-sm font-medium">Blocked</div>
+                      <div className="text-white/40 text-xs font-mono mt-1">THR-001</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Grow Card */}
+              <div className="group relative p-8 md:p-10 rounded-[32px] backdrop-blur-[24px] bg-[#05050A]/60 border border-white/5 hover:border-violet-500/30 transition-all overflow-hidden flex flex-col justify-between min-h-[400px]">
+                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-violet-500/10 blur-[100px] rounded-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity" />
+
+                <div className="relative z-10 flex flex-col gap-4 max-w-[80%]">
+                  <div className="flex items-center gap-3">
+                    <TrendingUp className="w-6 h-6 text-violet-400" />
+                    <h3 className="font-inter text-2xl text-white">Grow</h3>
+                  </div>
+                  <p className="text-white/60 text-lg">Strategic cash flow optimization and automated high-yield routing.</p>
+                </div>
+
+                {/* Mini UI Teaser */}
+                <div className="relative z-10 mt-10 p-6 rounded-[16px] bg-black/40 border border-white/5 shadow-2xl flex items-center gap-6">
+                  {/* Fake Progress Ring */}
+                  <div className="relative w-20 h-20 flex items-center justify-center rounded-full border-4 border-violet-500/20">
+                    <svg className="absolute inset-0 w-full h-full -rotate-90">
+                      <circle cx="36" cy="36" r="36" className="stroke-violet-500 fill-none" strokeWidth="8" strokeDasharray="226" strokeDashoffset="61" />
+                    </svg>
+                    <span className="font-inter text-xl text-white font-medium">73%</span>
+                  </div>
+                  <div>
+                    <div className="text-white/60 text-sm mb-1">Emergency Fund</div>
+                    <div className="text-white font-inter text-2xl tracking-tight">$7,300 <span className="text-white/40 text-lg">/ $10,000</span></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Execute Card */}
+              <div className="group relative p-8 md:p-10 rounded-[32px] backdrop-blur-[24px] bg-[#05050A]/60 border border-white/5 hover:border-amber-500/30 transition-all overflow-hidden flex flex-col justify-between min-h-[400px]">
+                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-amber-500/10 blur-[100px] rounded-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity" />
+
+                <div className="relative z-10 flex flex-col gap-4 max-w-[80%]">
+                  <div className="flex items-center gap-3">
+                    <Zap className="w-6 h-6 text-amber-400" />
+                    <h3 className="font-inter text-2xl text-white">Execute</h3>
+                  </div>
+                  <p className="text-white/60 text-lg">Intelligent automation with consent-first, human-in-the-loop approvals.</p>
+                </div>
+
+                {/* Mini UI Teaser */}
+                <div className="relative z-10 mt-10 p-6 rounded-[16px] bg-black/40 border border-white/5 shadow-2xl">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="font-inter text-white text-xl">5 pending actions</span>
+                    <span className="text-amber-400 text-sm font-medium bg-amber-500/10 px-3 py-1 rounded-full">Requires Approval</span>
+                  </div>
+                  <button className="w-full bg-amber-500 text-black font-semibold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-amber-400 transition-colors">
+                    <CheckCircle2 className="w-5 h-5" />
+                    Consent & Execute All
+                  </button>
+                </div>
+              </div>
+
+              {/* Govern Card */}
+              <div className="group relative p-8 md:p-10 rounded-[32px] backdrop-blur-[24px] bg-[#05050A]/60 border border-white/5 hover:border-blue-500/30 transition-all overflow-hidden flex flex-col justify-between min-h-[400px]">
+                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity" />
+
+                <div className="relative z-10 flex flex-col gap-4 max-w-[80%]">
+                  <div className="flex items-center gap-3">
+                    <Scale className="w-6 h-6 text-blue-400" />
+                    <h3 className="font-inter text-2xl text-white">Govern</h3>
+                  </div>
+                  <p className="text-white/60 text-lg">Immutable decision ledger with full cryptographic and semantic transparency.</p>
+                </div>
+
+                {/* Mini UI Teaser */}
+                <div className="relative z-10 mt-10 grid grid-cols-2 gap-4">
+                  <div className="p-5 rounded-[16px] bg-black/40 border border-white/5 shadow-2xl">
+                    <div className="text-white/60 text-sm mb-2">Decisions Audited</div>
+                    <div className="text-white font-inter text-3xl tracking-tight">1,247</div>
+                  </div>
+                  <div className="p-5 rounded-[16px] bg-black/40 border border-white/5 shadow-2xl">
+                    <div className="text-white/60 text-sm mb-2">Compliance Score</div>
+                    <div className="flex items-end gap-1">
+                      <div className="text-white font-inter text-3xl tracking-tight">96</div>
+                      <div className="text-white/40 text-lg mb-1">/100</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* Section 3: The Coordination Gap */}
+        <section className="relative w-full py-32 px-6 border-y border-white/5 bg-black/40 backdrop-blur-md z-10">
+          <div className="max-w-[1000px] mx-auto text-center">
+            <h2 className="font-inter text-white text-[32px] md:text-[48px] tracking-tight leading-[1.2] mb-16">
+              The coordination gap is costing you.
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+              <div className="flex flex-col items-center">
+                <div className="font-instrument italic text-[64px] text-cyan-400 mb-2">$133<span className="text-3xl text-cyan-400/50">/mo</span></div>
+                <div className="text-white/60 text-lg">Average subscription waste per active user due to lack of visibility.</div>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="font-instrument italic text-[64px] text-green-400 mb-2">$12.5<span className="text-3xl text-green-400/50">B</span></div>
+                <div className="text-white/60 text-lg">Lost to fraud and theft annually due to delayed threat response.</div>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="font-instrument italic text-[64px] text-amber-400 mb-2">$12<span className="text-3xl text-amber-400/50">B</span></div>
+                <div className="text-white/60 text-lg">In overdraft and NSF fees caused by uncoordinated cash flow.</div>
+              </div>
+            </div>
+
+            <p className="font-manrope text-white/50 text-sm mt-16 mt-16 max-w-2xl mx-auto">
+              Data aggregation is solved. Coordination is not. Poseidon is the missing coordination layer that acts instantly upon your linked financial data.
+            </p>
+          </div>
+        </section>
+
+        {/* Section 4: Final Ascent (Outro) */}
+        <section className="relative w-full min-h-[60vh] flex flex-col items-center justify-center py-32 px-6 text-center z-10">
+          <Lock className="w-8 h-8 text-white/40 mb-8" />
+          <h2 className="font-inter font-medium text-white text-[48px] md:text-[64px] tracking-[-2px] leading-[1.1] mb-8">
+            Take control of the narrative.
+          </h2>
+          <p className="font-manrope text-white/70 text-xl max-w-2xl text-balance mb-12">
+            Experience the MIT prototype. Full cryptographic transparency, zero hallucination execution.
+          </p>
+          <a href="/signup" className="group relative inline-flex items-center justify-center px-8 py-4 font-cabin font-bold text-lg text-white transition-all duration-200 bg-white/10 border border-white/20 rounded-full hover:bg-white/20 overflow-hidden">
+            <span className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black" />
+            <span className="relative flex items-center gap-2">
+              Enter Prototype
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </span>
+          </a>
+
+          <footer className="absolute bottom-8 w-full flex justify-center text-white/30 font-mono text-xs tracking-wider uppercase">
+            © 2026 Poseidon Web3 Infrastructure · MIT Capstone
+          </footer>
+        </section>
+
       </div>
-
-      {/* Desktop Sticky/Bottom CTA */}
-      <div className="hidden md:flex justify-center pb-32 pt-16 relative z-10 w-full">
-        <ButtonLink to="/signup" variant="primary" engine="dashboard" className="px-10 py-5 rounded-full text-lg font-bold shadow-[0_0_40px_rgba(6,182,212,0.3)] hover:shadow-[0_0_60px_rgba(6,182,212,0.5)] transition-all hover:scale-105 flex items-center gap-3 border border-cyan-500/50">
-          Initialize Wealth Engine <ArrowRight className="w-5 h-5" />
-        </ButtonLink>
-      </div>
-
     </div>
   );
 }

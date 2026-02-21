@@ -1,93 +1,112 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0B1221" />
-    <meta name="color-scheme" content="dark" />
-    <meta name="robots" content="index,follow" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Poseidon" />
-    <meta name="description" content="Poseidon.AI helps teams monitor risk, approve actions, and govern financial decisions with explainable AI." />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Poseidon.AI" />
-    <meta property="og:title" content="Poseidon.AI" />
-    <meta property="og:description" content="Calm, explainable financial AI experience for monitoring, execution, and governance." />
-    <meta property="og:url" content="https://poseidon-mit.com/" />
-    <meta property="og:image" content="/og/poseidon-share-1200x630.svg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Poseidon.AI dashboard preview" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Poseidon.AI" />
-    <meta name="twitter:description" content="Calm, explainable financial AI experience for monitoring, execution, and governance." />
-    <meta name="twitter:image" content="/og/poseidon-share-1200x630.svg" />
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192" />
-    <link rel="apple-touch-icon" href="/favicon.png" />
-    <title>Poseidon.AI</title>
-    <!-- GitHub Pages SPA routing restore -->
-    <script>
-      (function(l){
-        if(l.search[1]==='/'){
-          var d=l.search.slice(1).split('&').map(function(s){return s.replace(/~and~/g,'&')}).join('?');
-          window.history.replaceState(null,null,l.pathname.slice(0,-1)+d+l.hash);
-        }
-      }(window.location));
-    </script>
-    <style>
-      :root {
-        color-scheme: dark;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0B1221" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="robots" content="index,follow" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Poseidon" />
+  <meta name="description"
+    content="Poseidon helps teams monitor risk, approve actions, and govern financial decisions with explainable AI." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Poseidon" />
+  <meta property="og:title" content="Poseidon" />
+  <meta property="og:description"
+    content="Calm, explainable financial AI experience for monitoring, execution, and governance." />
+  <meta property="og:url" content="https://poseidon-mit.com/" />
+  <meta property="og:image" content="/og/poseidon-share-1200x630.svg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Poseidon dashboard preview" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Poseidon" />
+  <meta name="twitter:description"
+    content="Calm, explainable financial AI experience for monitoring, execution, and governance." />
+  <meta name="twitter:image" content="/og/poseidon-share-1200x630.svg" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cabin:wght@500&family=Instrument+Serif:ital@0;1&family=Inter:wght@500&family=Manrope:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <title>Poseidon</title>
+  <!-- GitHub Pages SPA routing restore -->
+  <script>
+    (function (l) {
+      if (l.search[1] === '/') {
+        var d = l.search.slice(1).split('&').map(function (s) { return s.replace(/~and~/g, '&') }).join('?');
+        window.history.replaceState(null, null, l.pathname.slice(0, -1) + d + l.hash);
       }
-      html, body {
-        margin: 0;
-        padding: 0;
-        min-height: 100%;
-        background: #0b1221;
-        color: #e6edf7;
-      }
-      body {
-        font-family: Inter, "Noto Sans JP", system-ui, -apple-system, Segoe UI, sans-serif;
-      }
-      #root {
-        min-height: 100vh;
-      }
-      .boot-fallback {
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        background: radial-gradient(70% 70% at 50% 15%, rgba(0, 240, 255, 0.14), rgba(11, 18, 33, 0));
-      }
-      .boot-fallback__panel {
-        display: grid;
-        gap: 8px;
-        justify-items: center;
-      }
-      .boot-fallback__badge {
-        border: 1px solid rgba(255, 255, 255, 0.16);
-        border-radius: 999px;
-        padding: 8px 14px;
-        letter-spacing: 0.04em;
-        font-size: 12px;
-        color: #b7c4da;
-      }
-      .boot-fallback__value {
-        font-size: 13px;
-        color: rgba(214, 227, 245, 0.84);
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root">
-      <div class="boot-fallback">
-        <div class="boot-fallback__panel">
-          <div class="boot-fallback__badge">Poseidon.AI</div>
-          <div class="boot-fallback__value">Protect, Grow, Execute, Govern.</div>
-        </div>
+    }(window.location));
+  </script>
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background: #0b1221;
+      color: #e6edf7;
+    }
+
+    body {
+      font-family: Inter, "Noto Sans JP", system-ui, -apple-system, Segoe UI, sans-serif;
+    }
+
+    #root {
+      min-height: 100vh;
+    }
+
+    .boot-fallback {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(70% 70% at 50% 15%, rgba(0, 240, 255, 0.14), rgba(11, 18, 33, 0));
+    }
+
+    .boot-fallback__panel {
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+    }
+
+    .boot-fallback__badge {
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+      padding: 8px 14px;
+      letter-spacing: 0.04em;
+      font-size: 12px;
+      color: #b7c4da;
+    }
+
+    .boot-fallback__value {
+      font-size: 13px;
+      color: rgba(214, 227, 245, 0.84);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root">
+    <div class="boot-fallback">
+      <div class="boot-fallback__panel">
+        <div class="boot-fallback__badge">Poseidon</div>
+        <div class="boot-fallback__value">Protect, Grow, Execute, Govern.</div>
       </div>
     </div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+  </div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

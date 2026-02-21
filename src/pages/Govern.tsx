@@ -91,11 +91,11 @@ export default function GovernPage() {
               { label: "Pending review", value: String(PENDING_REVIEW_COUNT), color: "var(--state-warning)" },
               { label: "Flagged", value: String(FLAGGED_COUNT), color: "var(--state-critical)" },
             ].map(d => (
-              <Surface key={d.label} className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-lg border border-white/[0.08] hover:bg-white/[0.02] transition-colors">
+              <Surface key={d.label} className="relative overflow-hidden rounded-[24px] p-8 lg:p-12 backdrop-blur-3xl bg-black/60 shadow-lg border border-white/[0.08] hover:bg-white/[0.02] transition-colors">
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-govern)]/5 to-transparent pointer-events-none" />
                 <div className="flex flex-col gap-3 relative z-10">
                   <span className="text-[10px] md:text-xs uppercase tracking-widest font-semibold text-white/50">{d.label}</span>
-                  <span className="text-3xl md:text-4xl lg:text-5xl font-light font-mono" style={{ color: d.color, textShadow: d.color !== 'white' ? `0 0 15px ${d.color}60` : 'none' }}>{d.value}</span>
+                  <span className="text-3xl md:text-4xl lg:text-5xl font-light font-mono tabular-nums tracking-tight" style={{ color: d.color, textShadow: d.color !== 'white' ? `0 0 15px ${d.color}60` : 'none' }}>{d.value}</span>
                 </div>
               </Surface>
             ))}
@@ -106,7 +106,7 @@ export default function GovernPage() {
         <div className="flex flex-col lg:flex-row gap-8 px-4 md:px-6 lg:px-8">
           <div className="flex-1 min-w-0 lg:w-2/3">
             <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 px-2">Recent Decisions</h2>
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 px-2">Decision Ledger</h2>
               <div className="flex flex-col">
                 <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-0">
                   <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
@@ -115,7 +115,7 @@ export default function GovernPage() {
                       const sCfg = statusConfig[entry.status];
                       const SIcon = sCfg.icon;
                       return (
-                        <motion.div key={entry.id} variants={fadeUpVariant} onClick={() => navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)} className="group cursor-pointer p-4 md:p-6 hover:bg-white/[0.04] transition-colors flex items-center justify-between gap-4">
+                        <motion.div key={entry.id} variants={fadeUpVariant} onClick={() => navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)} className="group cursor-pointer p-6 md:p-8 hover:bg-white/[0.04] transition-colors flex items-center justify-between gap-4">
                           <div className="flex items-center gap-4">
                             <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/[0.05] shrink-0" style={{ background: `${typeColor[entry.type]}15`, color: typeColor[entry.type] }}><CircleDot size={16} /></span>
                             <div className="flex flex-col gap-1.5 flex-1 min-w-0">
@@ -147,7 +147,7 @@ export default function GovernPage() {
           {/* Sidebar */}
           <aside className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6" aria-label="Governance sidebar">
             <div className="sticky top-24 flex flex-col gap-6">
-              <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6">
+              <Surface className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6">
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                 <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Compliance Breakdown</h3>
                 <div className="relative z-10 flex flex-col gap-5">
@@ -160,7 +160,7 @@ export default function GovernPage() {
                     <div key={r.label} className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] uppercase tracking-widest font-medium text-white/70">{r.label}</span>
-                        <span className="text-xs font-mono font-medium tracking-wide" style={{ color: r.color, textShadow: `0 0 10px ${r.color}60` }}>{r.pct}%</span>
+                        <span className="text-xs font-mono font-medium tracking-tight tabular-nums" style={{ color: r.color, textShadow: `0 0 10px ${r.color}60` }}>{r.pct}%</span>
                       </div>
                       <div className="h-1.5 rounded-full overflow-hidden bg-white/10 shadow-inner">
                         <div className="h-full rounded-full transition-all duration-500 shadow-[0_0_8px_currentColor]" style={{ width: `${r.pct}%`, background: r.color }} />
@@ -170,14 +170,14 @@ export default function GovernPage() {
                 </div>
               </Surface>
 
-              <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6">
+              <Surface className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6">
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                 <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Policy Status</h3>
                 <div className="relative z-10 flex flex-col gap-4">
                   {[{ label: "Active policies", value: "12" }, { label: "Last updated", value: "2h ago" }, { label: "Auto-enforce", value: "Enabled", color: "var(--state-healthy)" }].map(d => (
                     <div key={d.label} className="flex items-center justify-between">
                       <span className="text-[10px] uppercase tracking-widest font-medium text-white/50">{d.label}</span>
-                      <span className="text-sm font-mono tracking-wide" style={{ color: d.color || "white", textShadow: d.color ? `0 0 10px ${d.color}60` : 'none' }}>{d.value}</span>
+                      <span className="text-sm font-mono tracking-tight tabular-nums" style={{ color: d.color || "white", textShadow: d.color ? `0 0 10px ${d.color}60` : 'none' }}>{d.value}</span>
                     </div>
                   ))}
                 </div>

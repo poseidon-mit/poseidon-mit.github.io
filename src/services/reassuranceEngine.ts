@@ -1,5 +1,5 @@
 /**
- * Reassurance Engine for Poseidon.AI
+ * Reassurance Engine for Poseidon
  * Detects stress-inducing financial events and provides reassurance
  * Part of Gap 6: Emotional/Wellness UX
  */

@@ -39,7 +39,7 @@ export default function LoginPage() {
         beginDemoSession({ method: 'skip', email: DEMO_USER.email })
         showToast({
           variant: 'success',
-          message: 'Authentication successful. Entering Command Center.',
+          message: 'Authentication successful. Activating Engine.',
         })
         navigate(nextPath)
       }, 800)
@@ -66,7 +66,7 @@ export default function LoginPage() {
 
                 {/* Main Icon Container */}
                 <motion.div
-                  className={`w - full h - full rounded - 3xl flex items - center justify - center transition - all duration - 500 relative z - 10 ${authState === 'success'
+                  className={`w-full h-full rounded-3xl flex items-center justify-center transition-all duration-500 relative z-10 ${authState === 'success'
                     ? 'bg-emerald-500/20 border-emerald-500/50 shadow-[0_0_40px_rgba(16,185,129,0.3)]'
                     : 'bg-black/50 border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-md'
                     } border`}
@@ -89,7 +89,7 @@ export default function LoginPage() {
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0, opacity: 0 }}
                       >
-                        <ScanFace className={`w - 12 h - 12 ${authState === 'scanning' ? 'text-cyan-400' : 'text-slate-400'} `} strokeWidth={1.5} />
+                        <ScanFace className={`w-12 h-12 ${authState === 'scanning' ? 'text-cyan-400' : 'text-slate-400'} `} strokeWidth={1.5} />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -110,7 +110,7 @@ export default function LoginPage() {
               </h3>
               <p className="text-sm text-slate-400 font-light h-5">
                 {authState === 'success'
-                  ? 'Access granted to Wealth Engine.'
+                  ? 'Access granted to Financial Engine.'
                   : authState === 'scanning'
                     ? `Verifying credentials for ${DEMO_USER.email}...`
                     : 'Tap below to authenticate via secure enclave.'}
@@ -128,7 +128,7 @@ export default function LoginPage() {
                 className="rounded-2xl py-5 text-lg font-bold shadow-[0_0_30px_rgba(6,182,212,0.2)] hover:shadow-[0_0_50px_rgba(6,182,212,0.4)] transition-all flex justify-center items-center gap-2 border border-cyan-500/50"
               >
                 {authState === 'idle' ? (
-                  <>Authenticate <ArrowRight className="w-5 h-5" /></>
+                  <>Access Profile <ArrowRight className="w-5 h-5" /></>
                 ) : authState === 'scanning' ? (
                   'Scanning...'
                 ) : (

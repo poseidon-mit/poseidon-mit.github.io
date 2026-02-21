@@ -110,7 +110,7 @@ export default function GrowPage() {
               key={kpi.label}
               variants={fadeUp}
               interactive
-              className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col justify-center gap-4 group transition-all hover:bg-white/[0.02]"
+              className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col justify-center gap-4 group transition-all hover:bg-white/[0.02]"
               as={motion.div}
               padding="none">
               <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
@@ -123,7 +123,7 @@ export default function GrowPage() {
                 </div>
                 <div className="text-right flex flex-col gap-1.5">
                   <p className="text-[10px] md:text-xs uppercase tracking-widest font-semibold text-white/50">{kpi.label}</p>
-                  <p className="text-2xl md:text-3xl font-light font-mono text-white/90" style={{ textShadow: `0 0 20px ${kpi.color}40` }}>{kpi.value}</p>
+                  <p className="text-2xl md:text-3xl font-light font-mono tabular-nums tracking-tight text-white/90" style={{ textShadow: `0 0 20px ${kpi.color}40` }}>{kpi.value}</p>
                   <p className="text-xs font-medium tracking-wide" style={{ color: kpi.color === "var(--engine-dashboard)" ? "var(--engine-dashboard)" : kpi.color === "var(--engine-grow)" ? "var(--engine-grow)" : kpi.color === "var(--engine-execute)" ? "var(--engine-execute)" : "var(--state-healthy)" }}>{kpi.delta}</p>
                 </div>
               </div>
@@ -134,10 +134,10 @@ export default function GrowPage() {
         {/* ── P3: Forecast Preview + Recommendation ── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 px-4 md:px-6 lg:px-8 mb-12">
           {/* Forecast visualization */}
-          <Surface variants={fadeUp} interactive className="lg:col-span-8 relative overflow-hidden rounded-[32px] p-6 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]" as={motion.div} padding="none">
+          <Surface variants={fadeUp} interactive className="lg:col-span-8 relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]" as={motion.div} padding="none">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
             <div className="relative z-10 flex items-center justify-between mb-8 pb-4 border-b border-white/[0.06]">
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">12-month forecast</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">12-Month Trajectory</h3>
             </div>
             <div className="relative z-10 flex-1 flex flex-col justify-center gap-4">
               <ForecastBand data={FORECAST_DATA} width={800} height={200} engine="grow" className="w-full drop-shadow-[0_0_15px_rgba(139,92,246,0.3)]" />
@@ -149,11 +149,11 @@ export default function GrowPage() {
           </Surface>
 
           {/* Top recommendation */}
-          <Surface variants={fadeUp} interactive className="lg:col-span-4 relative overflow-hidden rounded-[32px] p-6 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col justify-between group transition-all hover:bg-white/[0.02]" as={motion.div} padding="none">
+          <Surface variants={fadeUp} interactive className="lg:col-span-4 relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col justify-between group transition-all hover:bg-white/[0.02]" as={motion.div} padding="none">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/10 to-transparent pointer-events-none opacity-50 transition-opacity group-hover:opacity-100" />
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/[0.06]">
-                <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Top recommendation</h3>
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">AI Recommendation</h3>
               </div>
               <div className="flex flex-col gap-8">
                 <div className="w-14 h-14 rounded-2xl bg-[var(--engine-grow)]/10 border border-[var(--engine-grow)]/20 flex items-center justify-center text-[var(--engine-grow)] shadow-[0_0_20px_rgba(139,92,246,0.3)] transition-transform group-hover:scale-110">

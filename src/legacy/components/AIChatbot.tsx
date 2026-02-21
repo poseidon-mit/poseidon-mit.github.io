@@ -16,7 +16,7 @@ import { useReducedMotionSafe } from '../hooks/useReducedMotionSafe';
 const INITIAL_MESSAGE: Message = {
   id: 'welcome',
   role: 'assistant',
-  content: 'Welcome to Poseidon.AI. I can help with your accounts, spending, goals, and more.',
+  content: 'Welcome to Poseidon. I can help with your accounts, spending, goals, and more.',
   timestamp: new Date(),
   responseType: 'text',
 };

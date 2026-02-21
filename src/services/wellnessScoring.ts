@@ -1,5 +1,5 @@
 /**
- * Wellness Scoring Engine for Poseidon.AI
+ * Wellness Scoring Engine for Poseidon
  * 5-axis financial wellness score calculator
  * Part of Gap 6: Emotional/Wellness UX
  */

@@ -8,7 +8,7 @@ interface BootSplashProps {
 }
 
 export function BootSplash({
-  title = 'Poseidon.AI',
+  title = 'Poseidon',
   subtitle = copy('app_boot_subtitle'),
 }: BootSplashProps) {
   const reducedMotion = useReducedMotionSafe();

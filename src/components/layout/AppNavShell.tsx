@@ -230,9 +230,9 @@ export function AppNavShell({
     <div className="app-bg-oled flex min-h-screen">
       <CommandPalette isOpen={isPaletteOpen} onClose={closePalette} />
       {/* ── Desktop Sidebar ── */}
-      <aside className="fixed top-0 left-0 z-40 hidden h-screen w-[240px] flex-col bg-black/30 backdrop-blur-3xl border-r border-white/[0.04] lg:flex">
+      <aside className="fixed top-0 left-0 z-40 hidden h-screen w-[280px] flex-col bg-black/40 backdrop-blur-3xl border-r border-white/[0.04] lg:flex">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 px-5 py-5" aria-label="Poseidon home">
+        <Link to="/" className="flex items-center gap-3 px-8 py-8" aria-label="Poseidon home">
           <img
             src="/logo.png"
             alt=""
@@ -245,8 +245,8 @@ export function AppNavShell({
         </Link>
 
         {/* Engines section */}
-        <nav className="flex flex-1 flex-col gap-1 px-3" aria-label="Main navigation">
-          <span className="px-3 pt-4 pb-2 text-[11px] font-semibold uppercase tracking-widest text-slate-500">
+        <nav className="flex flex-1 flex-col gap-1.5 px-4" aria-label="Main navigation">
+          <span className="px-4 pt-4 pb-3 text-xs font-bold uppercase tracking-widest text-slate-500">
             Engines
           </span>
           {ENGINE_ITEMS.map((item) => {
@@ -258,13 +258,13 @@ export function AppNavShell({
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  'flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/5 hover:text-white',
+                  'flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-300 hover:bg-white/[0.06] hover:text-white',
                   isActive ? tone.activeLink : 'text-slate-400 border border-transparent hover:border-white/5'
                 )}
                 aria-current={isActive ? 'page' : undefined}
               >
                 <Icon className={cn('h-[18px] w-[18px]', isActive && tone.activeIcon)} aria-hidden="true" />
-                <span className="flex-1 text-sm font-medium">{item.label}</span>
+                <span className="flex-1 text-sm font-medium tracking-wide">{item.label}</span>
                 {navBadges[item.path]?.type === 'pulse' && (
                   <span
                     className={cn('nav-badge-pulse h-2 w-2 flex-shrink-0 rounded-full', TONE_CLASSES[navBadges[item.path].tone].indicator)}
@@ -287,7 +287,7 @@ export function AppNavShell({
           })}
 
           {/* System section */}
-          <span className="px-3 pt-6 pb-2 text-[11px] font-semibold uppercase tracking-widest text-slate-500">
+          <span className="px-4 pt-8 pb-3 text-xs font-bold uppercase tracking-widest text-slate-500">
             System
           </span>
           {SYSTEM_ITEMS.map((item) => {
@@ -299,33 +299,33 @@ export function AppNavShell({
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  'flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/5 hover:text-white',
+                  'flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-300 hover:bg-white/[0.06] hover:text-white',
                   isActive ? tone.activeLink : 'text-slate-400 border border-transparent hover:border-white/5',
                 )}
                 aria-current={isActive ? 'page' : undefined}
               >
                 <Icon className={cn('h-[18px] w-[18px]', isActive && tone.activeIcon)} aria-hidden="true" />
-                <span className="text-sm font-medium">{item.label}</span>
+                <span className="text-sm font-medium tracking-wide">{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
         {/* Sidebar bottom: user */}
-        <div className="flex items-center gap-3 border-t border-white/10 px-5 py-4">
+        <div className="flex items-center gap-4 border-t border-white/[0.06] px-8 py-6">
           <div
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-semibold text-slate-400"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-sm font-bold text-slate-300 shadow-inner border border-white/5"
             aria-hidden="true"
           >
             {state.user.initials}
           </div>
-          <span className="text-sm text-slate-400">{state.user.name}</span>
+          <span className="text-sm font-medium tracking-wide text-slate-300">{state.user.name}</span>
         </div>
       </aside>
 
-      <div className="relative flex min-w-0 flex-1 flex-col lg:ml-[240px]">
+      <div className="relative flex min-w-0 flex-1 flex-col lg:ml-[280px]">
         {/* ── Desktop top header ── */}
-        <header className="sticky top-0 z-30 hidden h-14 items-center justify-between px-6 bg-transparent border-b border-white/[0.04] backdrop-blur-3xl lg:flex">
+        <header className="sticky top-0 z-30 hidden h-20 items-center justify-between px-8 lg:px-10 bg-transparent border-b border-white/[0.04] backdrop-blur-3xl lg:flex">
           {/* Breadcrumb — only show when 2+ segments; otherwise show page title */}
           {breadcrumbs.length > 1 ? (
             <nav className="flex items-center gap-1.5" aria-label="Breadcrumb">
@@ -431,7 +431,7 @@ export function AppNavShell({
         </header>
 
         {/* ── Mobile top header ── */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between px-4 bg-black/40 backdrop-blur-xl border-b border-white/[0.04] lg:hidden">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between px-5 bg-black/40 backdrop-blur-2xl border-b border-white/[0.04] lg:hidden">
           {/* Left: Logo */}
           <Link to="/" className="flex items-center gap-1.5" aria-label="Poseidon home">
             <img

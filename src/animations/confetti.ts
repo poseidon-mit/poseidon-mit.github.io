@@ -1,5 +1,5 @@
 /**
- * DOM-based Confetti Animation for Poseidon.AI
+ * DOM-based Confetti Animation for Poseidon
  * Particle-based animation system with physics simulation
  * Part of Gap 6: Emotional/Wellness UX
  */

@@ -42,6 +42,10 @@ export default {
         header: theme.typography.fontHeader.split(',').map((f) => f.trim()),
         ui: theme.typography.fontUi.split(',').map((f) => f.trim()),
         mono: theme.typography.fontMono.split(',').map((f) => f.trim()),
+        manrope: ['Manrope', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
+        instrument: ['Instrument Serif', 'serif'],
+        cabin: ['Cabin', 'sans-serif'],
       },
       fontSize: {
         display: theme.typography.scale.display,

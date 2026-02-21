@@ -1,5 +1,5 @@
 /**
- * Celebration Engine for Poseidon.AI
+ * Celebration Engine for Poseidon
  * Detects celebration-worthy events and manages trigger state
  * Part of Gap 6: Emotional/Wellness UX
  */

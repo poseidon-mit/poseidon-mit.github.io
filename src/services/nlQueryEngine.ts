@@ -877,7 +877,7 @@ function formatSubscriptionResponse(_intent: ParsedIntent): QueryResponse {
 function formatHelpResponse(): QueryResponse {
   return {
     responseType: 'text',
-    text: `I can help you with financial management using Poseidon.AI's four engines:
+    text: `I can help you with financial management using Poseidon's four engines:
 
 **PROTECT** (Security & Alerts)
 • Fraud detection: "Any suspicious activity?"

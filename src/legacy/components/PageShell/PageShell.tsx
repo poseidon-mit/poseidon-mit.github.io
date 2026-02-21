@@ -136,7 +136,7 @@ export function PageShell({
       ? 'dashboard-command'
       : `engine-command${fullWidth ? ' engine-command--full-width' : ''}`;
   const heroHeadingId = `hero-heading-${slug}`;
-  const titleBase = hero.headline || hero.kicker || 'Poseidon.AI';
+  const titleBase = hero.headline || hero.kicker || 'Poseidon';
   const parentRouteLabel: Record<string, string> = {
     dashboard: 'Dashboard',
     protect: 'Protect',
@@ -191,7 +191,7 @@ export function PageShell({
   };
 
   useEffect(() => {
-    document.title = `${titleBase} | Poseidon.AI`;
+    document.title = `${titleBase} | Poseidon`;
   }, [titleBase]);
 
   useEffect(() => {

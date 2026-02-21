@@ -141,9 +141,9 @@ export default function LandingV3() {
       <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/[0.03] border-b border-white/[0.06]">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Left: logo */}
-          <Link to="/" className="flex items-center gap-2 font-bold text-lg text-white" aria-label="Poseidon.AI home">
+          <Link to="/" className="flex items-center gap-2 font-bold text-lg text-white" aria-label="Poseidon home">
             <img src="/logo.png" alt="" width="40" height="40" className="h-10 w-10 object-contain" aria-hidden="true" />
-            Poseidon.AI
+            Poseidon
           </Link>
           {/* Center: links */}
           <div className="hidden md:flex items-center gap-8 text-sm text-slate-400">

@@ -52,7 +52,7 @@ export function PWAInstallPrompt(): React.ReactNode {
             <div className="mission-pwa-prompt-icon" aria-hidden="true">📲</div>
 
             <div className="mission-pwa-prompt-copy">
-              <div className="mission-pwa-prompt-title">Install Poseidon.AI</div>
+              <div className="mission-pwa-prompt-title">Install Poseidon</div>
               <div className="mission-pwa-prompt-subtitle">Get faster access and offline support</div>
             </div>
 

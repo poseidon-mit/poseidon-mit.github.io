@@ -11,9 +11,10 @@ const ENGINE_GLOW_COLORS = {
 
 const PADDING_MAP = {
   none: '',
-  sm: 'p-3',
-  md: 'p-4',
-  lg: 'p-6',
+  sm: 'p-4',
+  md: 'p-8',
+  lg: 'p-10',
+  xl: 'p-12',
 } as const
 
 export const Surface = forwardRef<HTMLElement, SurfaceProps>(

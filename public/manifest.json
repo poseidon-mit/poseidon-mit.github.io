@@ -1,5 +1,5 @@
 {
-  "name": "Poseidon.AI",
+  "name": "Poseidon",
   "short_name": "Poseidon",
   "description": "AI-Powered Autonomous Financial Engine",
   "lang": "en",
@@ -9,7 +9,10 @@
   "orientation": "any",
   "theme_color": "#0B1221",
   "background_color": "#020410",
-  "categories": ["finance", "productivity"],
+  "categories": [
+    "finance",
+    "productivity"
+  ],
   "screenshots": [],
   "icons": [
     {
@@ -41,7 +44,7 @@
     {
       "name": "Dashboard",
       "short_name": "Dashboard",
-      "description": "View your Poseidon.AI dashboard",
+      "description": "View your Poseidon dashboard",
       "url": "/dashboard",
       "icons": [
         {

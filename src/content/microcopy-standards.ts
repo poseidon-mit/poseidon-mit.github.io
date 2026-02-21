@@ -1,5 +1,5 @@
 /**
- * Poseidon.AI Microcopy Standards
+ * Poseidon Microcopy Standards
  *
  * Central repository for:
  * 1. Financial term definitions (English)

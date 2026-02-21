@@ -1,5 +1,5 @@
 /**
- * Poseidon.AI Accessibility Label Generators
+ * Poseidon Accessibility Label Generators
  *
  * Produces screen-reader-friendly descriptions of financial data.
  * All functions return plain English text suitable for announcement to users.

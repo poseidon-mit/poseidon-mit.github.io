@@ -1,5 +1,5 @@
 export const microcopyCatalog = {
-  app_loading: 'Loading Poseidon.AI',
+  app_loading: 'Loading Poseidon',
   app_boot_subtitle: 'Preparing your financial command center',
   command_palette_empty: 'No matching commands. Try a broader keyword.',
   command_palette_title: 'Command Palette',

@@ -13,12 +13,12 @@ export function PublicTopBar() {
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className="mx-auto max-w-7xl px-6 flex h-16 items-center justify-between">
+      <div className="mx-auto max-w-7xl px-6 lg:px-10 flex h-20 items-center justify-between">
         {/* Left: Logo */}
         <Link
           to="/"
           className="flex items-center gap-1.5"
-          aria-label="Poseidon.AI home"
+          aria-label="Poseidon home"
         >
           <img
             src="/logo.png"
@@ -32,37 +32,37 @@ export function PublicTopBar() {
         </Link>
 
         {/* Center: Desktop Links */}
-        <div className="hidden md:flex items-center gap-8 text-sm text-text-muted">
+        <div className="hidden md:flex items-center gap-10 text-sm font-medium tracking-wide text-text-muted">
           <Link
             to="/dashboard"
-            className="transition-colors duration-fast hover:text-text-primary"
+            className="transition-colors duration-fast hover:text-text-primary hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]"
           >
-            Product
+            Platform
           </Link>
           <Link
             to="/pricing"
-            className="transition-colors duration-fast hover:text-text-primary"
+            className="transition-colors duration-fast hover:text-text-primary hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]"
           >
             Pricing
           </Link>
         </div>
 
         {/* Right: Buttons */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-4">
           <Link
             to="/login"
-            className="text-sm text-text-muted transition-colors duration-fast hover:text-text-primary"
+            className="text-sm font-medium tracking-wide text-text-muted transition-colors duration-fast hover:text-text-primary"
           >
-            Sign in
+            Authenticate
           </Link>
           <ButtonLink
             to="/signup"
             variant="glass"
             engine="dashboard"
             size="sm"
-            className="rounded-xl"
+            className="rounded-xl px-5 py-2.5 font-bold shadow-[0_0_15px_rgba(6,182,212,0.15)] hover:shadow-[0_0_25px_rgba(6,182,212,0.3)] transition-all"
           >
-            Get Started
+            Activate Engine
           </ButtonLink>
         </div>
 
@@ -92,34 +92,34 @@ export function PublicTopBar() {
             <div className="px-6 py-4 flex flex-col gap-4">
               <Link
                 to="/dashboard"
-                className="text-sm text-text-muted hover:text-text-primary transition-colors"
+                className="text-sm font-medium tracking-wide text-text-muted hover:text-text-primary transition-colors"
                 onClick={() => setMobileOpen(false)}
               >
-                Product
+                Platform
               </Link>
               <Link
                 to="/pricing"
-                className="text-sm text-text-muted hover:text-text-primary transition-colors"
+                className="text-sm font-medium tracking-wide text-text-muted hover:text-text-primary transition-colors"
                 onClick={() => setMobileOpen(false)}
               >
                 Pricing
               </Link>
               <Link
                 to="/login"
-                className="text-sm text-text-muted hover:text-text-primary transition-colors"
+                className="text-sm font-medium tracking-wide text-text-muted hover:text-text-primary transition-colors"
                 onClick={() => setMobileOpen(false)}
               >
-                Sign in
+                Authenticate
               </Link>
               <ButtonLink
                 to="/signup"
                 variant="glass"
                 engine="dashboard"
                 size="sm"
-                className="rounded-xl text-center"
+                className="rounded-xl text-center py-3 font-bold"
                 onClick={() => setMobileOpen(false)}
               >
-                Get Started
+                Activate Engine
               </ButtonLink>
             </div>
           </motion.div>

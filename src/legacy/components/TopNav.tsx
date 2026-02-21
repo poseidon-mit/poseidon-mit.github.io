@@ -43,7 +43,7 @@ export const TopNav: React.FC = () => {
       <header className={`top-nav${scrolled ? ' top-nav--scrolled' : ''}`}>
         <div className="brand">
           <div className="logo">P</div>
-          <span>Poseidon.AI</span>
+          <span>Poseidon</span>
         </div>
         <nav className="nav-links" aria-label="Main navigation">
           {navItems.map((item) => (
