@@ -5,7 +5,6 @@
  * Renders: verified badge | audit ID (mono) | "Request human review" button.
  */
 import { ShieldCheck, Shield, ExternalLink, User } from 'lucide-react'
-import { useRouter } from '../../router'
 
 export interface GovernFooterProps {
   auditId: string
@@ -18,8 +17,6 @@ export function GovernFooter({
   pageContext,
   className = '',
 }: GovernFooterProps) {
-  const { navigate } = useRouter()
-
   return (
     <footer
       className={`mt-8 flex flex-col gap-3 md:flex-row md:items-center md:justify-between rounded-2xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 md:px-6 md:py-4 ${className}`}
@@ -42,9 +39,9 @@ export function GovernFooter({
         <ExternalLink size={12} className="text-slate-500" aria-hidden="true" />
       </div>
       <button
-        className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-white/[0.08] bg-transparent px-4 py-2 text-xs font-medium text-slate-300 transition-all hover:bg-white/[0.04] cursor-pointer"
+        disabled
+        className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-white/[0.08] bg-transparent px-4 py-2 text-xs font-medium text-slate-500 cursor-not-allowed opacity-50"
         aria-label={pageContext ? `Request human review of ${pageContext}` : 'Request human review'}
-        onClick={() => navigate('/govern/oversight')}
       >
         <User size={14} />
         Request human review

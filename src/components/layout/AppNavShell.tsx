@@ -20,9 +20,9 @@ import { getPendingExecuteCount } from '@/lib/demo-state/selectors';
 const BREADCRUMB_MAP: Record<string, string[]> = {
   '/dashboard': ['Dashboard'],
   '/dashboard/notifications': ['Dashboard', 'Notifications'],
-  '/protect': ['Protect'],
-  '/protect/alert-detail': ['Protect', 'Alert Detail'],
-  '/protect/dispute': ['Protect', 'Dispute'],
+  '/protect': ['Protect Engine'],
+  '/protect/alert-detail': ['Protect Engine', 'Alert Detail'],
+  '/protect/dispute': ['Protect Engine', 'Dispute'],
   '/grow': ['Grow'],
   '/grow/goal': ['Grow', 'Goal Detail'],
   '/grow/scenarios': ['Grow', 'Scenarios'],

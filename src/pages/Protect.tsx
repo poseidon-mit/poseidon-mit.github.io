@@ -1,20 +1,11 @@
 import { useMemo, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Link, useRouter } from '@/router'
+import { Link } from '@/router'
 import {
   Shield,
   ShieldCheck,
   AlertTriangle,
-  ExternalLink,
-  User,
-  ArrowUpDown,
-  ArrowUp,
-  ArrowDown,
-  ChevronRight,
   ArrowRight,
-  ShieldAlert,
-  Radar,
-  Network
 } from "lucide-react"
 import { DEMO_DATA } from '@/lib/constants/mock-data'
 import { EmptyState } from '@/components/poseidon'
@@ -24,9 +15,9 @@ import { cn } from '@/lib/utils'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 /* ── Types ── */
-export type Severity = "Critical" | "High" | "Medium" | "Low"
-export type SortField = "severity" | "confidence" | "time" | "amount"
-export type SortDir = "asc" | "desc"
+type Severity = "Critical" | "High" | "Medium" | "Low"
+type SortField = "severity" | "confidence" | "time" | "amount"
+type SortDir = "asc" | "desc"
 
 export interface ThreatRow {
   id: string; merchant: string; amount: string; numericAmount: number; confidence: number; severity: Severity; time: string; sortTime: number; description: string
@@ -34,11 +25,11 @@ export interface ThreatRow {
 
 /* ── Data ── */
 export const THREATS: ThreatRow[] = [
-  { id: DEMO_DATA.EXECUTE_ALERT_ID, merchant: DEMO_DATA.EXECUTE_VENDOR, amount: DEMO_DATA.EXECUTE_AMOUNT, numericAmount: 2847, confidence: DEMO_DATA.EXECUTE_CONFIDENCE, severity: "Critical", time: "2m ago", sortTime: 8, description: "Unusual transaction pattern" },
-  { id: "THR-002", merchant: "Unknown Vendor", amount: "$1,200", numericAmount: 1200, confidence: 0.87, severity: "High", time: "15m ago", sortTime: 7, description: "Unrecognized merchant" },
-  { id: "THR-003", merchant: "Travel Agency XYZ", amount: "$3,400", numericAmount: 3400, confidence: 0.72, severity: "Medium", time: "1h ago", sortTime: 6, description: "International wire transfer" },
-  { id: "THR-004", merchant: "Subscription Service", amount: "$49.99", numericAmount: 49.99, confidence: 0.65, severity: "Low", time: "3h ago", sortTime: 5, description: "Duplicate charge detected" },
-  { id: "THR-005", merchant: "Crypto Exchange", amount: "$5,000", numericAmount: 5000, confidence: 0.91, severity: "Medium", time: "5h ago", sortTime: 4, description: "High-risk category transfer" },
+  { id: DEMO_DATA.EXECUTE_ALERT_ID, merchant: DEMO_DATA.EXECUTE_VENDOR, amount: DEMO_DATA.EXECUTE_AMOUNT, numericAmount: 2847, confidence: DEMO_DATA.EXECUTE_CONFIDENCE, severity: "Critical", time: "4h ago", sortTime: 8, description: "Unusual transaction pattern" },
+  { id: "THR-002", merchant: "Unknown Vendor", amount: "$1,200", numericAmount: 1200, confidence: 0.87, severity: "High", time: "1d ago", sortTime: 7, description: "Unrecognized merchant" },
+  { id: "THR-003", merchant: "Travel Agency XYZ", amount: "$3,400", numericAmount: 3400, confidence: 0.72, severity: "Medium", time: "3d ago", sortTime: 6, description: "International wire transfer" },
+  { id: "THR-004", merchant: "Gas Station ATM", amount: "$800", numericAmount: 800, confidence: 0.65, severity: "Low", time: "1w ago", sortTime: 4, description: "Unusual ATM withdrawal" },
+  { id: "THR-005", merchant: "Crypto Exchange", amount: "$5,000", numericAmount: 5000, confidence: 0.91, severity: "Medium", time: "5d ago", sortTime: 5, description: "High-risk category transfer" },
 ]
 
 const severityConfig: Record<Severity, { color: string; bg: string; order: number }> = {
@@ -72,16 +63,16 @@ export default function ProtectPage() {
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const [sortField, setSortField] = useState<SortField>("severity")
   const [sortDir, setSortDir] = useState<SortDir>("desc")
-  const { navigate } = useRouter()
 
-  const handleSort = (field: SortField) => {
-    if (sortField === field) { setSortDir(d => d === "asc" ? "desc" : "asc") }
-    else { setSortField(field); setSortDir("desc") }
-  }
+  const dismissed = useMemo(() => {
+    try { return new Set<string>(JSON.parse(localStorage.getItem('poseidon:dismissed-alerts') || '[]')) }
+    catch { return new Set<string>() }
+  }, [])
+  const activeThreats = useMemo(() => THREATS.filter(t => !dismissed.has(t.id)), [dismissed])
 
   const sorted = useMemo(
     () =>
-      [...THREATS].sort((a, b) => {
+      [...activeThreats].sort((a, b) => {
         let cmp = 0
         switch (sortField) {
           case "severity": cmp = severityConfig[a.severity].order - severityConfig[b.severity].order; break
@@ -91,16 +82,10 @@ export default function ProtectPage() {
         }
         return sortDir === "asc" ? cmp : -cmp
       }),
-    [sortField, sortDir],
+    [sortField, sortDir, activeThreats],
   )
-  const criticalCount = THREATS.filter((t) => t.severity === "Critical").length
-  const highCount = THREATS.filter((t) => t.severity === "High").length
-  const monitoringCount = THREATS.filter((t) => t.severity === "Medium" || t.severity === "Low").length
-
-  const SortIndicator = ({ field }: { field: SortField }) => {
-    if (sortField !== field) return <ArrowUpDown size={11} style={{ color: "#475569" }} />
-    return sortDir === "asc" ? <ArrowUp size={11} style={{ color: "var(--engine-protect)" }} /> : <ArrowDown size={11} style={{ color: "var(--engine-protect)" }} />
-  }
+  const criticalCount = activeThreats.filter((t) => t.severity === "Critical").length
+  const highCount = activeThreats.filter((t) => t.severity === "High").length
 
   return (
     <>
@@ -112,12 +97,13 @@ export default function ProtectPage() {
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 mb-8 mt-4">
           <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
             <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-2 rounded-full border border-[var(--engine-protect)]/20 bg-[var(--engine-protect)]/10 px-3 py-1.5 text-xs font-bold tracking-widest uppercase text-[var(--engine-protect)] shadow-[0_0_15px_rgba(239,68,68,0.2)]">
-                <Shield size={12} /> Protect Engine
+              <span className="inline-flex items-center gap-2 rounded-full border border-[var(--engine-protect)]/20 bg-[var(--engine-protect)]/10 px-3 py-1.5 text-xs font-bold tracking-widest uppercase text-[var(--engine-protect)] shadow-[0_0_15px_rgba(34,197,94,0.2)]">
+                <ShieldCheck size={12} /> Engine status: Good
               </span>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight tabular-nums text-white max-w-4xl leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-              Threat posture: <span className="text-[var(--state-critical)] font-semibold drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">{criticalCount} critical</span>, {highCount} high, {monitoringCount} monitoring.
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-white/80 max-w-4xl leading-snug" style={{ fontFamily: "var(--font-display)" }}>
+              24/7 threat detection across your accounts based on{' '}
+              <span className="bg-gradient-to-r from-[var(--engine-protect)] to-[var(--engine-govern)] bg-clip-text text-transparent">your transaction history</span>
             </h1>
 
           </motion.div>
@@ -130,7 +116,7 @@ export default function ProtectPage() {
             {/* Threat Cards */}
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between px-2">
-                <h2 className="text-sm font-semibold uppercase tracking-widest text-white/50">Live Threat Feed</h2>
+                <h2 className="text-sm xl:text-base font-semibold uppercase tracking-widest text-white/50">Live Threat Feed</h2>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-white/40">Sort:</span>
                   <select
@@ -175,7 +161,10 @@ export default function ProtectPage() {
                             {/* Mobile layout */}
                             <div className="flex flex-col gap-4 md:hidden relative z-10">
                               <div className="flex items-center justify-between">
-                                <span className="inline-flex items-center justify-center rounded-xl text-xs font-bold font-mono tabular-nums shadow-[0_0_15px_currentColor] border border-[currentColor]/30 bg-[currentColor]/10" style={{ color: theme.color, width: 44, height: 28 }}>{t.confidence.toFixed(2)}</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="inline-flex items-center justify-center rounded-xl text-xs font-bold font-mono tabular-nums shadow-[0_0_15px_currentColor] border border-[currentColor]/30 bg-[currentColor]/10" style={{ color: theme.color, width: 44, height: 28 }}>{t.confidence.toFixed(2)}</span>
+                                  <span className="text-[10px] font-medium uppercase tracking-widest text-white/40">Confidence</span>
+                                </div>
                                 <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest">{t.time}</span>
                               </div>
                               <div>
@@ -198,9 +187,10 @@ export default function ProtectPage() {
                                 <span className="text-base font-mono font-bold tabular-nums" style={{ color: "#F1F5F9" }}>{t.amount}</span>
                                 <span className="text-[10px] uppercase font-mono tracking-widest text-white/50">{t.time}</span>
                               </div>
-                              <div className="flex flex-col items-end">
+                              <div className="flex flex-col items-end gap-1">
                                 <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: severityConfig[t.severity].bg, color: severityConfig[t.severity].color }}>{t.severity === 'Critical' && <AlertTriangle size={10} />}{t.severity}</span>
-                                <div className="flex items-center gap-1 mt-1">
+                                <span className="text-[10px] font-medium uppercase tracking-widest text-white/30">Threat confidence</span>
+                                <div className="flex items-center gap-1">
                                   <div className="h-1.5 w-12 rounded-full overflow-hidden bg-white/[0.05] border border-white/[0.02]">
                                     <div className="h-full rounded-full shadow-[0_0_8px_currentColor]" style={{ width: `${t.confidence * 100}%`, background: severityToneColor[t.severity], color: severityToneColor[t.severity] }} />
                                   </div>
@@ -222,22 +212,22 @@ export default function ProtectPage() {
           </div>
 
           {/* Sidebar */}
-          <aside className="w-full lg:w-[320px] shrink-0" aria-label="Security summary sidebar">
+          <aside className="w-full lg:w-[320px] xl:w-[380px] shrink-0" aria-label="Security summary sidebar">
             <div className="sticky top-6 flex flex-col gap-6">
               {/* Threat summary */}
               <motion.div variants={fadeUpVariant} className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
 
                 <div className="relative z-10 flex items-center justify-between">
-                  <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Threat Summary</h3>
+                  <h3 className="text-xs xl:text-sm font-semibold uppercase tracking-widest text-white/50">Threat Summary</h3>
                   <Shield size={16} className="text-white/20" />
                 </div>
 
                 <div className="flex flex-col gap-4 relative z-10">
-                  {[{ label: "Active threats", value: String(THREATS.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Blocked today", value: "3", color: "var(--state-healthy)" }, { label: "Avg response", value: "<200ms" }].map((d, i) => (
+                  {[{ label: "Active threats", value: String(activeThreats.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Blocked today", value: String(dismissed.size), color: "var(--state-healthy)" }].map((d, i) => (
                     <div key={d.label} className={`flex items-center justify-between ${i !== 0 ? 'pt-4 border-t border-white/[0.04]' : ''}`}>
-                      <span className="text-sm font-medium text-white/60 tracking-wide">{d.label}</span>
-                      <span className="text-base font-mono font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" style={{ color: d.color || "rgba(255,255,255,0.9)" }}>{d.value}</span>
+                      <span className="text-sm xl:text-base font-medium text-white/60 tracking-wide">{d.label}</span>
+                      <span className="text-base xl:text-lg font-mono font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" style={{ color: d.color || "rgba(255,255,255,0.9)" }}>{d.value}</span>
                     </div>
                   ))}
                 </div>
@@ -248,15 +238,15 @@ export default function ProtectPage() {
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
 
                 <div className="relative z-10 flex items-center justify-between">
-                  <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Risk Breakdown</h3>
+                  <h3 className="text-xs xl:text-sm font-semibold uppercase tracking-widest text-white/50">Risk Breakdown</h3>
                 </div>
 
                 <div className="flex flex-col gap-5 relative z-10">
                   {riskBreakdown.map(r => (
                     <div key={r.label} className="flex flex-col gap-2.5">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-white/70 tracking-wide">{r.label}</span>
-                        <span className="text-xs font-mono font-bold drop-shadow-[0_0_5px_currentColor]" style={{ color: r.color }}>{r.pct}%</span>
+                        <span className="text-sm xl:text-base font-medium text-white/70 tracking-wide">{r.label}</span>
+                        <span className="text-xs xl:text-sm font-mono font-bold drop-shadow-[0_0_5px_currentColor]" style={{ color: r.color }}>{r.pct}%</span>
                       </div>
                       <div className="h-2 rounded-full overflow-hidden bg-white/[0.04] border border-white/[0.02]">
                         <div className="h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_currentColor]" style={{ width: `${r.pct}%`, background: r.color, color: r.color }} />
@@ -269,14 +259,14 @@ export default function ProtectPage() {
               {/* AI Defense Posture */}
               <motion.div variants={fadeUpVariant} className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
-                <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 relative z-10">AI Defense Posture</h3>
+                <h3 className="text-xs xl:text-sm font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 relative z-10">AI Defense Posture</h3>
                 <div className="flex flex-col gap-4 relative z-10">
-                  <div className="flex items-center justify-between"><span className="text-sm text-white/60 tracking-wide">Threats blocked (30d)</span><span className="text-base font-mono font-medium text-white/90">42</span></div>
-                  <div className="flex items-center justify-between"><span className="text-sm text-white/60 tracking-wide">False positive rate</span><span className="text-base font-mono font-medium text-white/90">0.01%</span></div>
-                  <div className="flex items-center justify-between"><span className="text-sm text-white/60 tracking-wide">Last model update</span><span className="text-sm font-mono text-white/50 uppercase tracking-widest">2h ago</span></div>
+                  <div className="flex items-center justify-between"><span className="text-sm xl:text-base text-white/60 tracking-wide">Threats blocked (30d)</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">1</span></div>
+                  <div className="flex items-center justify-between"><span className="text-sm xl:text-base text-white/60 tracking-wide">False positive rate</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">0.01%</span></div>
+                  <div className="flex items-center justify-between"><span className="text-sm xl:text-base text-white/60 tracking-wide">Last model update</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">2d ago</span></div>
                 </div>
                 <div className="mt-2 pt-6 border-t border-white/[0.06] relative z-10">
-                  <Link to="/govern" className={cn(buttonVariants({ variant: "glass", size: "sm" }), "w-full rounded-xl justify-center font-medium tracking-wide text-xs")}>View AI Governance Log</Link>
+                  <Link to="/govern" className={cn(buttonVariants({ variant: "glass", size: "sm" }), "w-full rounded-xl justify-center font-medium tracking-wide text-xs xl:text-sm")}>View AI Governance Log</Link>
                 </div>
               </motion.div>
             </div>
