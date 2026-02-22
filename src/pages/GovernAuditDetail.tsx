@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion';
-import { ArrowLeft, FileText, CheckCircle2, AlertTriangle, User, ChevronDown } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Link, useRouter } from '../router';
-import { GovernFooter, AuroraPulse } from '@/components/poseidon';
-import { GOVERNANCE_META } from '@/lib/governance-meta';
+import { AuroraPulse } from '@/components/poseidon';
 import { getMotionPreset } from '@/lib/motion-presets';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { DEMO_THREAD } from '@/lib/demo-thread';
@@ -216,10 +215,6 @@ export function GovernAuditDetail() {
     { label: 'Model accuracy', value: `${auditEntry.model.accuracy}%`, highlight: false }];
 
 
-  const complianceFlags = [
-    { label: 'GDPR', compliant: auditEntry.compliance.gdpr },
-    { label: 'ECOA', compliant: auditEntry.compliance.ecoa },
-    { label: 'CCPA', compliant: auditEntry.compliance.ccpa }];
 
 
   return (
@@ -240,15 +235,13 @@ export function GovernAuditDetail() {
 
         <div className="mx-auto px-4 md:px-6 lg:px-8 h-14 flex items-center gap-2" style={{ maxWidth: '1280px' }}>
           <Link
-            to="/govern/audit"
+            to="/govern"
             className="flex items-center gap-1.5 text-sm font-medium hover:opacity-80 transition-opacity"
             style={{ color: 'var(--engine-govern)' }}>
 
             <ArrowLeft className="h-4 w-4" />
-            Audit Ledger
+            Back to Govern
           </Link>
-          <span className="text-white/20">/</span>
-          <span className="text-sm text-white/50">Audit Detail</span>
         </div>
       </nav>
 
@@ -263,32 +256,23 @@ export function GovernAuditDetail() {
 
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 px-4 md:px-6 lg:px-8">
           <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-govern)]/20 bg-[var(--engine-govern)]/10 text-[var(--engine-govern)] text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(20,184,166,0.2)]">
-                <FileText size={12} /> Govern · Audit Detail
-              </span>
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>Decision Reconstruction</h1>
-            <p className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide">
-              Full decision audit for <code className="text-[var(--engine-govern)] font-mono tracking-wider drop-shadow-[0_0_10px_rgba(20,184,166,0.5)]">{auditEntry.id}</code>
-            </p>
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>Audit log for <span className="text-[var(--engine-govern)]">{auditEntry.id}</span></h1>
           </motion.div>
 
           <motion.div variants={fadeUpVariant}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6 mt-4">
+            <div className="grid grid-cols-3 gap-4 lg:gap-6 mt-4">
               {[
-                { label: 'Timestamp', value: resolvedTimestamp.substring(0, resolvedTimestamp.lastIndexOf(' ')), subValue: resolvedTimestamp.substring(resolvedTimestamp.lastIndexOf(' ') + 1), color: 'white' },
+                { label: 'Timestamp', value: resolvedTimestamp, color: 'white' },
                 { label: 'Confidence', value: resolvedConfidence, color: 'var(--engine-govern)' },
-                { label: 'Model', value: auditEntry.model.name, subValue: `v${auditEntry.model.version}`, color: 'var(--engine-execute)' },
-                { label: 'Accuracy', value: `${auditEntry.model.accuracy}%`, color: 'var(--engine-protect)' }].
+                { label: 'Model', value: auditEntry.model.name, subValue: `v${auditEntry.model.version}`, color: 'var(--engine-execute)' }].
                 map((kpi) => <div
-                  key={kpi.label} className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-5 md:p-6">
+                  key={kpi.label} className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-4 md:p-5">
                   <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
-                  <div className="relative z-10 flex flex-col gap-2">
-                    <p className="text-[10px] md:text-xs uppercase tracking-widest font-semibold text-white/50">{kpi.label}</p>
+                  <div className="relative z-10 flex flex-col gap-1.5">
+                    <p className="text-[9px] md:text-[10px] uppercase tracking-widest font-semibold text-white/50">{kpi.label}</p>
                     <div className="flex flex-col">
-                      <p className="text-2xl md:text-3xl font-light font-mono truncate" style={{ color: kpi.color, textShadow: kpi.color !== 'white' ? `0 0 15px ${kpi.color}60` : 'none' }}>{kpi.value}</p>
-                      {kpi.subValue && <p className="text-xs text-white/40 mt-1">{kpi.subValue}</p>}
+                      <p className="text-lg md:text-xl font-light font-mono truncate" style={{ color: kpi.color, textShadow: kpi.color !== 'white' ? `0 0 15px ${kpi.color}60` : 'none' }}>{kpi.value}</p>
+                      {kpi.subValue && <p className="text-[10px] text-white/40 mt-0.5">{kpi.subValue}</p>}
                     </div>
                   </div>
                 </div>
@@ -297,8 +281,8 @@ export function GovernAuditDetail() {
           </motion.div>
         </motion.section>
 
-        <div className="flex flex-col lg:flex-row gap-8 px-4 md:px-6 lg:px-8">
-          <motion.div variants={staggerContainerVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-6 lg:gap-8">
+        <div className="flex flex-col gap-6 lg:gap-8 px-4 md:px-6 lg:px-8">
+          <motion.div variants={staggerContainerVariant} className="flex flex-col gap-6 lg:gap-8">
             <motion.div variants={fadeUpVariant}>
               <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-6 lg:p-8">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
@@ -360,74 +344,10 @@ export function GovernAuditDetail() {
               </div>
             </motion.div>
 
-            <motion.div variants={fadeUpVariant}>
-              <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-6 lg:p-8">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
-                <h2 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 mb-6">Compliance Flags</h2>
-                <div className="relative z-10 flex flex-col gap-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {complianceFlags.map((flag) =>
-                      <div key={flag.label} className="flex flex-col gap-3 p-4 rounded-2xl border border-white/[0.06] bg-white/[0.02]">
-                        <span className="text-xs uppercase tracking-widest text-white/70">{flag.label}</span>
-                        <div className={`flex items-center gap-2 text-sm font-semibold tracking-wide ${flag.compliant ? 'text-[var(--state-healthy)] drop-shadow-[0_0_8px_rgba(34,197,94,0.3)]' : 'text-red-400'}`}>
-                          {flag.compliant ? <CheckCircle2 className="h-5 w-5" /> : <AlertTriangle className="h-5 w-5" />}
-                          {flag.compliant ? 'Compliant' : 'Non-compliant'}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-[10px] uppercase tracking-widest text-white/30 text-center mt-4">All 3 regulatory frameworks satisfied · Source: Compliance engine</p>
-                </div>
-              </div>
-            </motion.div>
           </motion.div>
 
-          <aside className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6" aria-label="Audit detail sidebar">
-            <div className="sticky top-24 flex flex-col gap-6">
-              <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
-                <div className="relative z-10 flex items-center gap-3 mb-6 border-b border-white/[0.06] pb-4">
-                  <div className="p-1.5 rounded-lg bg-[var(--engine-govern)]/10 border border-[var(--engine-govern)]/20">
-                    <User className="h-4 w-4 text-[var(--engine-govern)]" />
-                  </div>
-                  <h3 className="text-xs font-semibold text-white/70 uppercase tracking-widest">User Feedback</h3>
-                </div>
-
-                <div className="relative z-10 flex flex-col gap-6">
-                  <div className="flex flex-col gap-2">
-                    <span className="text-[10px] uppercase tracking-widest text-white/50">Verdict</span>
-                    <span className={`inline-flex items-center justify-center gap-2 py-2 px-4 rounded-xl border font-bold text-sm tracking-wide ${auditEntry.userFeedback.correct ? 'bg-[var(--state-healthy)]/10 border-[var(--state-healthy)]/30 text-[var(--state-healthy)]' : 'bg-red-500/10 border-red-500/30 text-red-400'}`}>
-                      {auditEntry.userFeedback.correct ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
-                      {auditEntry.userFeedback.correct ? 'Correct' : 'Incorrect'}
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <span className="text-[10px] uppercase tracking-widest text-white/50">Comment</span>
-                    <p className="text-sm font-light leading-relaxed text-white/80 p-4 rounded-xl border border-white/[0.06] bg-white/[0.02]">
-                      "{auditEntry.userFeedback.comment}"
-                    </p>
-                  </div>
-                </div>
-                <p className="relative z-10 text-[10px] uppercase tracking-widest text-white/30 text-center mt-6">Human-validated · Source: Feedback system</p>
-              </div>
-
-              <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
-                <h3 className="relative z-10 text-xs font-semibold text-white/70 uppercase tracking-widest mb-6 border-b border-white/[0.06] pb-4">Actions</h3>
-                <div className="relative z-10 flex flex-col gap-3">
-                  <Link to="/govern/audit" className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white/[0.03] hover:bg-white/[0.08] transition-all border border-white/[0.05] text-sm text-white font-medium">
-                    <ArrowLeft size={16} className="text-white/50" /> Back to Ledger
-                  </Link>
-                  <Link to="/govern/oversight" className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-[var(--engine-govern)] text-black transition-all shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:shadow-[0_0_30px_rgba(20,184,166,0.5)] text-sm font-semibold">
-                    Oversight Queue <ArrowLeft size={16} className="rotate-180" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </aside>
         </div>
 
-        <GovernFooter auditId={GOVERNANCE_META['/govern/audit-detail'].auditId} pageContext={GOVERNANCE_META['/govern/audit-detail'].pageContext} />
       </motion.div>
     </div>);
 

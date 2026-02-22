@@ -62,17 +62,13 @@ export default function GrowPage() {
           <motion.div variants={fadeUp} className="flex flex-col gap-1">
             <div className="flex items-center gap-2 mb-2">
               <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-grow)]/20 bg-[var(--engine-grow)]/10 text-[var(--engine-grow)] text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(139,92,246,0.2)]">
-                <TrendingUp size={12} /> Grow Engine
+                <TrendingUp size={12} /> Engine status: Good
               </span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
               Growth Plan{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400 drop-shadow-[0_0_15px_rgba(139,92,246,0.5)]">Optimized</span>
             </h1>
-            <p className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide">
-              Portfolio projected to exceed target by <span className="text-white/80 font-medium tracking-wide">12%</span> this year.
-              AI has identified <span className="text-[var(--engine-grow)] font-bold">3 new opportunities</span> to accelerate wealth generation.
-            </p>
           </motion.div>
 
           <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-4 mt-4">

@@ -13,7 +13,6 @@ import {
   Download,
   Trash2,
 } from 'lucide-react'
-import { AuroraPulse } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
 import { useDemoState } from '@/lib/demo-state/provider'
@@ -85,7 +84,6 @@ export default function SettingsPage() {
 
   return (
     <div className="relative">
-      <AuroraPulse engine="dashboard" />
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"

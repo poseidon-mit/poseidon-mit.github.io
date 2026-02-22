@@ -723,7 +723,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionLabel: 'Back to audit ledger',
     primaryActionPath: '/govern/audit',
     first5sMessage: 'Inspect evidence and reasoning for one decision.',
-    governance: { auditId: 'GV-2026-0216-GOV-ADT', pageContext: 'audit detail', engine: 'govern' },
+    governance: { auditId: 'GV-2026-0216-GOV-ADT', pageContext: 'audit detail', engine: 'govern', showFooter: false },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/govern/registry': routeMeta({

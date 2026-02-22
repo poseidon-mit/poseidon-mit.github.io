@@ -15,6 +15,7 @@ import {
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+import { usePageTitle } from '@/hooks/use-page-title'
 
 /* ── Cross-thread values (Single Source of Truth) ── */
 const DECISIONS_AUDITABLE = 50
@@ -43,12 +44,8 @@ const ledgerEntries: { id: string; type: DecisionType; action: string; confidenc
 ]
 
 
-/* ═══════════════════════════════════════════════════════
-   GOVERN PAGE
-   CTA: "Open audit ledger" -> /govern/audit (line 667-668)
-   ═══════════════════════════════════════════════════════ */
-
 export default function GovernPage() {
+  usePageTitle('Govern Engine')
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const { navigate } = useRouter()
@@ -107,7 +104,7 @@ export default function GovernPage() {
                 {ledgerEntries.map(entry => {
                   const sCfg = entry.status ? statusConfig[entry.status] : null;
                   return (
-                    <motion.div key={entry.id} variants={fadeUpVariant} onClick={() => navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)} className="group cursor-pointer p-6 md:p-8 hover:bg-white/[0.04] transition-colors flex items-center justify-between gap-4">
+                    <motion.button key={entry.id} type="button" variants={fadeUpVariant} onClick={() => navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)} className="group cursor-pointer p-6 md:p-8 hover:bg-white/[0.04] transition-colors flex items-center justify-between gap-4 w-full text-left">
                       <div className="flex items-center gap-4">
                         <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/[0.05] shrink-0" style={{ background: `${typeColor[entry.type]}15`, color: typeColor[entry.type] }}><CircleDot size={16} /></span>
                         <div className="flex flex-col gap-1.5 flex-1 min-w-0">
@@ -127,7 +124,7 @@ export default function GovernPage() {
                           <ArrowUpRight size={14} className="text-white/60 group-hover:text-[var(--engine-govern)]" />
                         </div>
                       </div>
-                    </motion.div>
+                    </motion.button>
                   )
                 })}
               </div>
