@@ -56,6 +56,8 @@ export interface RouteMetaContract {
     auditId: string;
     pageContext: string;
     engine: EngineName;
+    /** Whether GovernFooter is shown on this page. Defaults to true. */
+    showFooter?: boolean;
   };
   evidence: EvidenceContract;
 }
@@ -461,7 +463,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionPath: '/execute',
     first5sMessage: 'See risk, opportunities, and actions in one screen.',
     demoPriority: 'P0',
-    governance: { auditId: 'GV-2026-0216-DASH', pageContext: 'financial overview', engine: 'dashboard' },
+    governance: { auditId: 'GV-2026-0216-DASH', pageContext: 'financial overview', engine: 'dashboard', showFooter: false },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/dashboard/alerts': routeMeta({
@@ -533,7 +535,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionPath: '/protect/alert-detail',
     first5sMessage: 'Catch financial threats before they escalate.',
     demoPriority: 'P0',
-    governance: { auditId: 'GV-2026-0216-PRT-SIG', pageContext: 'threat signals', engine: 'protect' },
+    governance: { auditId: 'GV-2026-0216-PRT-SIG', pageContext: 'threat signals', engine: 'protect', showFooter: false },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/protect/alert-detail': routeMeta({
@@ -577,7 +579,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionPath: '/execute',
     first5sMessage: 'Forecast outcomes and compare growth paths.',
     demoPriority: 'P1',
-    governance: { auditId: 'GV-2026-0216-GROW', pageContext: 'growth projections', engine: 'grow' },
+    governance: { auditId: 'GV-2026-0216-GROW', pageContext: 'growth projections', engine: 'grow', showFooter: false },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/grow/goal': routeMeta({
@@ -635,7 +637,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionPath: '/govern/audit',
     first5sMessage: 'Approve high-impact actions with context.',
     demoPriority: 'P0',
-    governance: { auditId: 'GV-2026-0216-EXEC', pageContext: 'this execution batch', engine: 'execute' },
+    governance: { auditId: 'GV-2026-0216-EXEC', pageContext: 'this execution batch', engine: 'execute', showFooter: false },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/execute/approval': routeMeta({
@@ -679,7 +681,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionPath: '/govern/audit',
     first5sMessage: 'Trace every decision with audit-ready transparency.',
     demoPriority: 'P0',
-    governance: { auditId: 'GV-2026-0216-GOV', pageContext: 'governance decisions', engine: 'govern' },
+    governance: { auditId: 'GV-2026-0216-GOV', pageContext: 'governance decisions', engine: 'govern', showFooter: false },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/govern/trust': routeMeta({

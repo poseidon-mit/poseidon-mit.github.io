@@ -2,19 +2,12 @@ import { useMemo, memo } from "react"
 import { useRouter } from "@/router"
 import { motion, type Variants } from "framer-motion"
 import {
-  LayoutDashboard,
-  Info,
   Shield,
   TrendingUp,
   Zap,
-  Scale,
   ShieldCheck,
-  ExternalLink,
-  User,
   AlertTriangle,
-  ArrowUpRight,
-  CheckCircle2,
-  Clock,
+  Scale,
   type LucideIcon,
   Activity
 } from "lucide-react"
@@ -23,14 +16,10 @@ import { DEMO_DATA } from '@/lib/constants/mock-data'
 import {
   getMotionPreset,
 } from '@/lib/motion-presets'
-import { Link } from '@/router'
-import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
-import { ENGINE_COLOR_MAP, ENGINE_BADGE_CLASS } from '@/lib/engine-color-map'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+import { PendingActionsBanner } from '@/components/dashboard/PendingActionsBanner'
 
 /* ── Cross-thread values (Single Source of Truth) ── */
-const SYSTEM_CONFIDENCE = DEMO_DATA.SYSTEM_CONFIDENCE
 const COMPLIANCE_SCORE = DEMO_DATA.COMPLIANCE_SCORE
 
 /* ── KPI Stat Card (Premium Apple WWDC Style) ── */
@@ -115,14 +104,14 @@ const StatCard = memo(function StatCard({
 
 /* ── Activity Feed ── */
 const activities = [
-  { icon: Shield, label: `Blocked suspicious transfer to ${DEMO_DATA.EXECUTE_VENDOR}`, time: "2m ago", color: "var(--engine-protect)", path: "/protect/alert-detail?alertId=THR-001" },
-  { icon: TrendingUp, label: "Savings goal projection updated", time: "15m ago", color: "var(--engine-grow)", path: "/grow" },
-  { icon: Zap, label: "Auto-paid electricity bill", time: "1h ago", color: "var(--engine-execute)", path: "/govern/audit" },
-  { icon: Scale, label: `Compliance check passed (${COMPLIANCE_SCORE}/100)`, time: "2h ago", color: "var(--engine-govern)", path: "/govern" },
-  { icon: AlertTriangle, label: "New alert: unusual pattern detected", time: "3h ago", color: "var(--state-warning)", path: "/protect" },
+  { icon: Shield, label: `Blocked suspicious transfer to ${DEMO_DATA.EXECUTE_VENDOR}`, time: "2m ago", color: "var(--engine-protect)" },
+  { icon: TrendingUp, label: "Savings goal projection updated", time: "15m ago", color: "var(--engine-grow)" },
+  { icon: Zap, label: "Auto-paid electricity bill", time: "1h ago", color: "var(--engine-execute)" },
+  { icon: Scale, label: `Compliance check passed (${COMPLIANCE_SCORE}/100)`, time: "2h ago", color: "var(--engine-govern)" },
+  { icon: AlertTriangle, label: "New alert: unusual pattern detected", time: "3h ago", color: "var(--state-warning)" },
 ]
 
-function ActivityFeed({ itemVariants, navigate }: { itemVariants: Variants; navigate: (path: string) => void }) {
+function ActivityFeed({ itemVariants }: { itemVariants: Variants }) {
   return (
     <div className="rounded-[32px] p-8 lg:p-10 flex flex-col gap-6 backdrop-blur-3xl border border-white/[0.08] bg-black/50 h-full shadow-2xl relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
@@ -153,74 +142,14 @@ function ActivityFeed({ itemVariants, navigate }: { itemVariants: Variants; navi
   )
 }
 
-/* ── Decision Rail ── */
+/* ── Pending decisions count (used by PendingActionsBanner) ── */
 const decisions = [
-  { label: "Approve rebalance", engine: "Execute" as const, status: "pending", confidence: 0.91, actionId: "EXE-001" },
-  { label: "Block vendor charge", engine: "Protect" as const, status: "pending", confidence: 0.94, actionId: "EXE-002" },
-  { label: "Update savings goal", engine: "Grow" as const, status: "approved", confidence: 0.89, actionId: "EXE-003" },
-  { label: "Archive old invoices", engine: "Execute" as const, status: "pending", confidence: 0.78, actionId: "EXE-004" },
-  { label: "Policy update", engine: "Govern" as const, status: "approved", confidence: 0.97, actionId: "EXE-005" },
+  { status: "pending" },
+  { status: "pending" },
+  { status: "approved" },
+  { status: "pending" },
+  { status: "approved" },
 ]
-
-function DecisionRail({ itemVariants, navigate }: { itemVariants: Variants; navigate: (path: string) => void }) {
-  return (
-    <div className="rounded-[32px] p-8 lg:p-10 flex flex-col gap-6 backdrop-blur-3xl border border-white/[0.08] bg-black/50 h-full shadow-2xl relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
-      <div className="flex items-center justify-between relative z-10">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-white/50">
-          Decision Queue
-        </h2>
-        <span className="text-xs font-mono font-medium text-cyan-300 bg-cyan-400/10 px-3 py-1.5 rounded-full border border-cyan-400/20 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-          {DEMO_DATA.AUDIT_COUNT} entries
-        </span>
-      </div>
-      <div className="flex flex-col gap-3 flex-1 relative z-10">
-        {decisions.map((d, i) => (
-          <motion.div
-            key={i}
-            variants={itemVariants}
-            onClick={() => {
-              if (d.status === "pending" && d.engine !== "Govern") {
-                navigate(`/execute/approval?actionId=${d.actionId}`);
-              } else if (d.status === "approved" || d.engine === "Govern") {
-                navigate("/govern/audit");
-              }
-            }}
-            className="flex items-center gap-4 rounded-2xl p-4 transition-all duration-300 bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.04] hover:border-white/[0.1] group cursor-pointer"
-          >
-            <div className="w-1.5 h-10 rounded-full shadow-[0_0_10px_currentColor] opacity-50 group-hover:opacity-100 transition-opacity" style={{ background: ENGINE_COLOR_MAP[d.engine], color: ENGINE_COLOR_MAP[d.engine] }} />
-            <div className="flex-1 min-w-0">
-              <span className="text-base font-medium block text-white/80 group-hover:text-white tracking-wide">{d.label}</span>
-              <span className="text-xs text-white/40 mt-1 flex items-center gap-2 tracking-wider uppercase font-mono">
-                <div className={`w-2 h-2 rounded-full ${d.confidence >= 0.9 ? 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]' : 'bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.8)]'}`} />
-                {d.confidence >= 0.9 ? 'High Conf' : 'Review'}
-              </span>
-            </div>
-            {d.status === "pending" ? (
-              <div className="p-2 rounded-xl bg-amber-400/10 border border-amber-400/20 text-amber-400 group-hover:bg-amber-400/20 transition-colors">
-                <Clock size={16} />
-              </div>
-            ) : (
-              <div className="p-2 rounded-xl bg-emerald-400/10 border border-emerald-400/20 text-emerald-400 group-hover:bg-emerald-400/20 transition-colors">
-                <CheckCircle2 size={16} />
-              </div>
-            )}
-          </motion.div>
-        ))}
-      </div>
-      <Link
-        to="/execute/approval"
-        className={cn(
-          buttonVariants({ variant: 'glass' }),
-          "mt-6 w-full rounded-2xl py-4 border-white/[0.1] hover:bg-white/[0.08] text-base tracking-wide relative z-10 shadow-lg"
-        )}
-      >
-        Review Queue
-        <ArrowUpRight size={18} className="ml-2" />
-      </Link>
-    </div>
-  )
-}
 
 /* ═══════════════════════════════════════════════════════
    DASHBOARD PAGE
@@ -251,11 +180,6 @@ export default function DashboardPage() {
       >
         {/* ── Hero Section ── */}
         <motion.section variants={itemVariants} className="mb-12" aria-label="Dashboard overview">
-          <div className="flex items-center gap-2 mb-6 text-cyan-400/80 uppercase tracking-widest text-xs font-semibold">
-            <LayoutDashboard size={14} className="animate-pulse" />
-            <span>Command Center</span>
-          </div>
-
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
             <div>
               <div className="flex items-center gap-4">
@@ -268,6 +192,13 @@ export default function DashboardPage() {
           </div>
         </motion.section>
 
+        {/* ── Pending Actions Banner ── */}
+        <PendingActionsBanner
+          pendingCount={decisions.filter(d => d.status === 'pending').length}
+          navigate={navigate}
+          variants={itemVariants}
+        />
+
         {/* ── KPI Grid ── */}
         <motion.section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10" variants={itemVariants} aria-label="Key performance indicators">
           <StatCard label="Net position" value="$847.2k" delta="+8.2%" deltaPositive sparkData={[30, 35, 28, 40, 38, 50, 55, 60]} sparkColor="var(--engine-dashboard)" icon={Activity} />
@@ -276,14 +207,9 @@ export default function DashboardPage() {
           <StatCard label="Active Alerts" value={String(alertCount)} delta={alertCount <= 2 ? "-3 resolved" : `+${alertCount - 2} new`} deltaPositive={alertCount <= 2} sparkData={alertSpark} sparkColor="var(--state-warning)" icon={AlertTriangle} />
         </motion.section>
 
-        {/* ── Activity Feed + Decision Rail ── */}
-        <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
-          <div className="lg:col-span-8">
-            <ActivityFeed itemVariants={itemVariants} navigate={navigate} />
-          </div>
-          <div className="lg:col-span-4 flex flex-col gap-8">
-            <DecisionRail itemVariants={itemVariants} navigate={navigate} />
-          </div>
+        {/* ── Activity Feed ── */}
+        <motion.div variants={itemVariants} className="mb-16">
+          <ActivityFeed itemVariants={itemVariants} />
         </motion.div>
 
       </motion.main>

@@ -36,7 +36,7 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
                     {children}
 
                     {/* Layer 2: Final Verification (GovernFooter) */}
-                    {meta && (
+                    {meta?.showFooter && (
                         <div className="mt-auto pt-12">
                             <GovernFooter
                                 auditId={meta.auditId}

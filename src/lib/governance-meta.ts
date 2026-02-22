@@ -13,6 +13,7 @@ export interface GovernanceMeta {
   pageContext: string
   engine: EngineName
   auroraColor: string
+  showFooter: boolean
 }
 
 /**
@@ -31,6 +32,7 @@ export const GOVERNANCE_META: Record<string, GovernanceMeta> = Object.fromEntrie
           pageContext: governance.pageContext,
           engine: governance.engine,
           auroraColor: engineTokens[governance.engine].color,
+          showFooter: governance.showFooter !== false,
         } satisfies GovernanceMeta,
       ];
     }),
