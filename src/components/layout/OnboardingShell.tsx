@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { OnboardingProgress } from '@/components/onboarding/OnboardingProgress';
+import { PublicTopBar } from '@/components/landing/PublicTopBar';
 
 const STEP_ITEMS = [
   { id: 1, label: 'Connect sources' },
@@ -15,6 +16,7 @@ export interface OnboardingShellProps {
   subtitle: string;
   children: ReactNode;
   className?: string;
+  titleClassName?: string;
   showProgress?: boolean;
 }
 
@@ -24,11 +26,14 @@ export function OnboardingShell({
   subtitle,
   children,
   className,
+  titleClassName,
   showProgress = true
 }: OnboardingShellProps) {
   const activeStep = Math.max(1, Math.min(step, STEP_ITEMS.length));
 
   return (
+    <>
+    <PublicTopBar />
     <main id="main-content" className={cn('relative min-h-screen app-bg-oled overflow-x-hidden', className)}>
       <a
         href="#onboarding-shell-content"
@@ -42,17 +47,18 @@ export function OnboardingShell({
         aria-hidden="true"
       />
 
-      <div id="onboarding-shell-content" className="relative z-10 mx-auto max-w-4xl px-6 py-12 lg:py-24">
+      <div id="onboarding-shell-content" className="relative z-10 mx-auto max-w-lg px-6 pt-28 pb-16 lg:pt-36 lg:pb-32">
         <section className="rounded-[32px] p-8 md:p-12 border border-white/[0.08] bg-black/40 backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_20px_60px_rgba(0,0,0,0.5)]">
           {showProgress ? <OnboardingProgress step={activeStep} /> : null}
           <div className="text-center mt-12 mb-10">
-            <h1 className="font-display text-4xl md:text-5xl font-semibold tracking-tighter text-white">{title}</h1>
-            <p className="mt-4 text-base leading-relaxed text-white/50 max-w-2xl mx-auto">{subtitle}</p>
+            <h1 className={cn('font-display text-4xl md:text-5xl font-semibold tracking-tighter text-white', titleClassName)}>{title}</h1>
+            {subtitle && <p className="mt-4 text-base leading-relaxed text-white/50 max-w-2xl mx-auto">{subtitle}</p>}
           </div>
           <div className="mt-12">{children}</div>
         </section>
       </div>
-    </main >
+    </main>
+    </>
   );
 }
 

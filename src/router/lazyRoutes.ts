@@ -120,6 +120,9 @@ export const routeLoaders = {
   '/signup': () => import('../pages/Signup'),
   '/login': () => import('../pages/Login'),
   '/onboarding': () => import('../pages/Onboarding'),
+  '/onboarding/priorities': () => import('../pages/OnboardingPriorities'),
+  '/onboarding/consent': () => import('../pages/OnboardingConsent'),
+  '/onboarding/activate': () => import('../pages/OnboardingActivate'),
 
   // ─── Core ───────────────────────────────────────────────────────────────────
   '/dashboard': () => import('../pages/Dashboard'),

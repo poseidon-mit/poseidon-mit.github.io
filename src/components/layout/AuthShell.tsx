@@ -17,6 +17,7 @@ export interface AuthShellProps {
   heading?: string
   description?: string
   features?: AuthShellFeature[]
+  hideLogo?: boolean
 }
 
 export function AuthShell({
@@ -25,6 +26,7 @@ export function AuthShell({
   children,
   className,
   formClassName,
+  hideLogo,
 }: AuthShellProps) {
   return (
     <main id="main-content" className={cn('relative min-h-screen app-bg-oled overflow-x-hidden', className)}>
@@ -40,10 +42,12 @@ export function AuthShell({
         aria-hidden="true"
       />
 
-      <div id="auth-shell-content" className="relative z-10 mx-auto max-w-lg px-6 py-16 lg:py-32 flex flex-col items-center">
-        <div className="w-16 h-16 rounded-3xl bg-black/40 border border-white/10 flex items-center justify-center mb-10 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-3xl">
-          <img src="/logo.png" alt="Poseidon" className="w-8 h-8 opacity-90 drop-shadow-[0_0_10px_rgba(0,240,255,0.3)]" />
-        </div>
+      <div id="auth-shell-content" className="relative z-10 mx-auto max-w-lg px-6 pt-28 pb-16 lg:pt-36 lg:pb-32 flex flex-col items-center">
+        {!hideLogo && (
+          <div className="w-16 h-16 rounded-3xl bg-black/40 border border-white/10 flex items-center justify-center mb-10 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-3xl">
+            <img src="/logo.png" alt="Poseidon" className="w-8 h-8 opacity-90 drop-shadow-[0_0_10px_rgba(0,240,255,0.3)]" />
+          </div>
+        )}
 
         <section
           className={cn(

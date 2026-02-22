@@ -1,6 +1,6 @@
 import { DEMO_USER, type DemoUser } from '@/lib/demo-user'
 
-export const DEMO_STATE_VERSION = 1
+export const DEMO_STATE_VERSION = 2
 
 export type DemoAuthMethod = 'skip' | 'form' | 'google' | 'apple'
 export type DemoExecuteDecision = 'approved' | 'deferred' | 'rejected' | 'pending'
@@ -101,11 +101,11 @@ export function createDefaultDemoState(): DemoState {
     },
     onboarding: {
       connectedAccountIds: [],
-      selectedGoals: ['protect'],
+      selectedGoals: ['govern'],
       consentSelections: {
         analyze: true,
         recommend: true,
-        approve: true,
+        approve: false,
         notifications: true,
       },
       completed: false,

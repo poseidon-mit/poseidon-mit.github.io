@@ -37,10 +37,6 @@ export default function LoginPage() {
       setAuthState('success');
       setTimeout(() => {
         beginDemoSession({ method: 'skip', email: DEMO_USER.email })
-        showToast({
-          variant: 'success',
-          message: 'Authentication successful. Activating Engine.',
-        })
         navigate(nextPath)
       }, 800)
     }, 1500)
@@ -49,7 +45,7 @@ export default function LoginPage() {
   return (
     <>
       <PublicTopBar />
-      <AuthShell title="Authentication" subtitle={`Welcome back, ${DEMO_USER.name.split(' ')[0]} `}>
+      <AuthShell title="" subtitle="Welcome back" hideLogo>
         <main id="main-content">
           <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex flex-col h-full">
             <motion.div variants={fadeUp} className="text-center mb-12 mt-8">
@@ -105,15 +101,12 @@ export default function LoginPage() {
                 </motion.div>
               </div>
 
-              <h3 className="text-2xl font-display font-medium text-white mb-2 tracking-wide">
-                {authState === 'success' ? 'Identity Verified' : 'Biometric Login'}
-              </h3>
               <p className="text-sm text-slate-400 font-light h-5">
                 {authState === 'success'
-                  ? 'Access granted to Financial Engine.'
+                  ? 'Identity Verified'
                   : authState === 'scanning'
-                    ? `Verifying credentials for ${DEMO_USER.email}...`
-                    : 'Tap below to authenticate via secure enclave.'}
+                    ? 'Verifying login...'
+                    : ''}
               </p>
             </motion.div>
 
@@ -125,11 +118,11 @@ export default function LoginPage() {
                 className="w-full rounded-2xl py-7 text-lg font-bold shadow-[0_0_30px_rgba(6,182,212,0.2)] hover:shadow-[0_0_50px_rgba(6,182,212,0.4)] transition-all flex justify-center items-center gap-2 border border-cyan-500/50 bg-cyan-500 text-slate-950 hover:bg-cyan-400"
               >
                 {authState === 'idle' ? (
-                  <>Access Profile <ArrowRight className="w-5 h-5" /></>
+                  <>Biometric Login <ArrowRight className="w-5 h-5" /></>
                 ) : authState === 'scanning' ? (
                   'Scanning...'
                 ) : (
-                  'Entering Engine...'
+                  'Entering...'
                 )}
               </Button>
             </motion.div>
