@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { RouterProvider } from '../../router';
-import ProtectAlertDetail from '../../pages/ProtectAlertDetail';
+import ProtectAlertDetail from '../../pages/protect/ProtectAlertDetail';
 import { DEMO_THREAD } from '../../lib/demo-thread';
 import { formatConfidence } from '../../lib/demo-date';
 

@@ -7,52 +7,17 @@ import {
   AlertTriangle,
   ArrowRight,
 } from "lucide-react"
-import { DEMO_DATA } from '@/lib/constants/mock-data'
 import { EmptyState } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+import { THREATS, severityConfig, severityToneColor, riskBreakdown } from './protect-data'
+import { useDismissedAlerts } from './useDismissedAlerts'
 
 /* ── Types ── */
-type Severity = "Critical" | "High" | "Medium" | "Low"
 type SortField = "severity" | "confidence" | "time" | "amount"
 type SortDir = "asc" | "desc"
-
-export interface ThreatRow {
-  id: string; merchant: string; amount: string; numericAmount: number; confidence: number; severity: Severity; time: string; sortTime: number; description: string
-}
-
-/* ── Data ── */
-export const THREATS: ThreatRow[] = [
-  { id: DEMO_DATA.EXECUTE_ALERT_ID, merchant: DEMO_DATA.EXECUTE_VENDOR, amount: DEMO_DATA.EXECUTE_AMOUNT, numericAmount: 2847, confidence: DEMO_DATA.EXECUTE_CONFIDENCE, severity: "Critical", time: "4h ago", sortTime: 8, description: "Unusual transaction pattern" },
-  { id: "THR-002", merchant: "Unknown Vendor", amount: "$1,200", numericAmount: 1200, confidence: 0.87, severity: "High", time: "1d ago", sortTime: 7, description: "Unrecognized merchant" },
-  { id: "THR-003", merchant: "Travel Agency XYZ", amount: "$3,400", numericAmount: 3400, confidence: 0.72, severity: "Medium", time: "3d ago", sortTime: 6, description: "International wire transfer" },
-  { id: "THR-004", merchant: "Gas Station ATM", amount: "$800", numericAmount: 800, confidence: 0.65, severity: "Low", time: "1w ago", sortTime: 4, description: "Unusual ATM withdrawal" },
-  { id: "THR-005", merchant: "Crypto Exchange", amount: "$5,000", numericAmount: 5000, confidence: 0.91, severity: "Medium", time: "5d ago", sortTime: 5, description: "High-risk category transfer" },
-]
-
-const severityConfig: Record<Severity, { color: string; bg: string; order: number }> = {
-  Critical: { color: "var(--state-critical)", bg: "rgba(var(--state-critical-rgb),0.12)", order: 4 },
-  High: { color: "var(--state-warning)", bg: "rgba(var(--state-warning-rgb),0.12)", order: 3 },
-  Medium: { color: "var(--engine-govern)", bg: "rgba(59,130,246,0.12)", order: 2 },
-  Low: { color: "#64748B", bg: "rgba(100,116,139,0.12)", order: 1 },
-}
-
-/* ── Risk sidebar data ── */
-const riskBreakdown = [
-  { label: "Transaction fraud", pct: 45, color: "var(--state-critical)" },
-  { label: "Merchant risk", pct: 25, color: "var(--state-warning)" },
-  { label: "Geo anomaly", pct: 20, color: "var(--engine-govern)" },
-  { label: "Velocity", pct: 10, color: "#64748B" },
-]
-
-const severityToneColor: Record<Severity, string> = {
-  Critical: "var(--state-critical)",
-  High: "var(--state-warning)",
-  Medium: "var(--engine-govern)",
-  Low: "#64748B",
-}
 
 /* ═══════════════════════════════════════════════════════
    PROTECT PAGE
@@ -64,10 +29,7 @@ export default function ProtectPage() {
   const [sortField, setSortField] = useState<SortField>("severity")
   const [sortDir, setSortDir] = useState<SortDir>("desc")
 
-  const dismissed = useMemo(() => {
-    try { return new Set<string>(JSON.parse(localStorage.getItem('poseidon:dismissed-alerts') || '[]')) }
-    catch { return new Set<string>() }
-  }, [])
+  const { dismissed } = useDismissedAlerts()
   const activeThreats = useMemo(() => THREATS.filter(t => !dismissed.has(t.id)), [dismissed])
 
   const sorted = useMemo(

@@ -12,7 +12,7 @@ import Landing from '../Landing';
 import Login from '../Login';
 import NotFound from '../NotFound';
 import Onboarding from '../Onboarding';
-import Protect from '../Protect';
+import Protect from '../protect/Protect';
 import Settings from '../Settings';
 import Signup from '../Signup';
 

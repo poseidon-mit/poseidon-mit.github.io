@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { THREATS } from '../pages/Protect'
 import {
+  THREATS,
   ALERT_FACTOR_ITEMS,
   ALERT_TIMING,
   MITIGATING_TOTAL,
   deriveFactors,
-} from '../pages/ProtectAlertDetail'
+} from '../pages/protect/protect-data'
 
 const threatIds = THREATS.map(t => t.id)
 

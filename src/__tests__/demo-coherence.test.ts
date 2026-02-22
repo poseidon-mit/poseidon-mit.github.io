@@ -38,7 +38,7 @@ describe('demo coherence invariants', () => {
       'src/pages/AlertsHub.tsx',
       'src/pages/Dashboard.tsx',
       'src/pages/ExecuteApproval.tsx',
-      'src/pages/ProtectAlertDetail.tsx',
+      'src/pages/protect/ProtectAlertDetail.tsx',
       'src/pages/GovernOversight.tsx',
       'src/pages/TrustSecurity.tsx',
     ]

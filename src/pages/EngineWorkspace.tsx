@@ -1,5 +1,5 @@
 import Dashboard from './Dashboard';
-import Protect from './Protect';
+import Protect from './protect/Protect';
 import Grow from './Grow';
 import Execute from './Execute';
 import Govern from './Govern';

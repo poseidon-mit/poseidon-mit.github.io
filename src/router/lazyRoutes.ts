@@ -129,8 +129,8 @@ export const routeLoaders = {
   '/dashboard/notifications': () => import('../pages/Notifications'),
 
   // ─── Protect ────────────────────────────────────────────────────────────────
-  '/protect': () => import('../pages/Protect'),
-  '/protect/alert-detail': () => import('../pages/ProtectAlertDetail'),
+  '/protect': () => import('../pages/protect/Protect'),
+  '/protect/alert-detail': () => import('../pages/protect/ProtectAlertDetail'),
 
   // ─── Grow ───────────────────────────────────────────────────────────────────
   '/grow': () => import('../pages/Grow'),
