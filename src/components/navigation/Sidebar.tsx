@@ -6,7 +6,6 @@ import {
     Zap,
     Scale,
     Settings,
-    HelpCircle,
     type LucideIcon,
 } from 'lucide-react';
 import { Link } from '@/router';
@@ -79,7 +78,6 @@ export const NAV_ITEMS: NavItem[] = [
     { label: 'Execute', path: '/execute', icon: Zap, engine: 'execute', group: 'engine', tone: 'execute' },
     { label: 'Govern', path: '/govern', icon: Scale, engine: 'govern', group: 'engine', tone: 'govern' },
     { label: 'Settings', path: '/settings', icon: Settings, group: 'system', tone: 'system' },
-    { label: 'Help', path: '/help', icon: HelpCircle, group: 'system', tone: 'system' },
 ];
 
 export const ENGINE_ITEMS = NAV_ITEMS.filter((i) => i.group === 'engine');
@@ -109,7 +107,7 @@ export function Sidebar({ path }: { path: string }) {
                     className="h-16 w-16 object-contain drop-shadow-[0_0_3px_rgba(0,240,255,0.3)]"
                     aria-hidden="true"
                 />
-                <span className="text-xl font-light tracking-widest text-slate-50">Poseidon</span>
+                <span className="text-2xl font-light tracking-widest text-slate-50">Poseidon</span>
             </Link>
 
             {/* Nav groups */}
@@ -173,10 +171,7 @@ export function Sidebar({ path }: { path: string }) {
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-sm font-bold text-slate-300 shadow-inner border border-white/5" aria-hidden="true">
                     {state.user.initials}
                 </div>
-                <div className="flex flex-col">
-                    <span className="text-sm font-medium tracking-wide text-slate-300">{state.user.name}</span>
-                    <span className="text-xs text-slate-500">Poseidon Web App</span>
-                </div>
+                <span className="text-sm font-medium tracking-wide text-slate-300">{state.user.name}</span>
             </div>
         </aside>
     );

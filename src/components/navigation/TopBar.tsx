@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronRight, Search, Bell, WifiOff, Radio } from 'lucide-react';
+import { ChevronRight, Bell, WifiOff, Radio } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { type AccentTone, TONE_CLASSES } from './Sidebar';
@@ -80,18 +80,6 @@ export function TopBar({
                         Presenting
                     </span>
                 )}
-
-                <button
-                    onClick={onOpenPalette}
-                    className="group flex h-9 items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 text-xs text-slate-500 transition-all duration-300 hover:bg-white/[0.08] hover:text-slate-300 hover:border-white/20"
-                    aria-label="Open command palette"
-                >
-                    <Search className="h-3.5 w-3.5" aria-hidden="true" />
-                    <span>Search</span>
-                    <kbd className="ml-1 rounded bg-white/10 px-1 py-0.5 text-[10px] text-slate-600 group-hover:bg-white/20 group-hover:text-slate-400 transition-colors">
-                        ⌘K
-                    </kbd>
-                </button>
 
                 <button
                     className="relative flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 transition-colors duration-300 hover:bg-white/10 hover:text-slate-200"

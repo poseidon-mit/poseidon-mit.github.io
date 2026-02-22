@@ -173,7 +173,7 @@ export function AppNavShell({
           variant="ghost"
           className={cn(
             'flex min-h-12 flex-1 flex-col items-center justify-center gap-1 py-2 !h-auto !w-auto !min-w-0 !px-0 text-[10px] font-medium transition-colors',
-            path.startsWith('/govern') || path.startsWith('/settings') || path.startsWith('/help')
+            path.startsWith('/govern') || path.startsWith('/settings')
               ? 'text-slate-100'
               : 'text-slate-500',
           )}
