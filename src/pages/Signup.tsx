@@ -6,7 +6,6 @@ import { PublicTopBar } from '@/components/landing/PublicTopBar'
 import { AuthShell } from '@/components/layout/AuthShell'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
 import { Button } from '@/components/ui/button'
-import { useToast } from '@/hooks/useToast'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { DEMO_USER } from '@/lib/demo-user'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -14,7 +13,6 @@ import { usePageTitle } from '@/hooks/use-page-title'
 export default function SignupPage() {
   usePageTitle('Sign Up')
   const { navigate } = useRouter()
-  const { showToast } = useToast()
   const { beginDemoSession, updateOnboarding } = useDemoState()
 
   const [fullName, setFullName] = useState('')
@@ -38,7 +36,7 @@ export default function SignupPage() {
     <>
       <PublicTopBar />
       <AuthShell title="" subtitle="Create your profile" hideLogo>
-        <main id="main-content">
+        <div>
           <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex flex-col">
 
             {/* Social Sign Up Buttons */}
@@ -128,7 +126,7 @@ export default function SignupPage() {
             </motion.p>
 
           </motion.div>
-        </main>
+        </div>
       </AuthShell>
     </>
   )

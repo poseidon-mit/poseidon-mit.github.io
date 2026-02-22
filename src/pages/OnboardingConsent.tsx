@@ -85,7 +85,7 @@ export default function OnboardingConsentPage() {
       title="AI Permissions"
       subtitle="Set consent bounds"
     >
-      <main id="main-content" className="flex flex-col h-full">
+      <div className="flex flex-col h-full">
         <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex-1 flex flex-col">
 
           <motion.div variants={staggerContainer} className="space-y-3 flex-1 mt-4">
@@ -163,7 +163,7 @@ export default function OnboardingConsentPage() {
           </motion.div>
 
         </motion.div>
-      </main>
+      </div>
 
       <Dialog open={showApproveDialog} onOpenChange={setShowApproveDialog}>
         <DialogContent className="max-w-sm rounded-2xl border border-amber-500/30 bg-[#0d0d14] text-white shadow-[0_0_40px_rgba(245,158,11,0.1)]">

@@ -6,7 +6,6 @@ import { PublicTopBar } from '@/components/landing/PublicTopBar'
 import { AuthShell } from '@/components/layout/AuthShell'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
 import { Button } from '@/components/ui/button'
-import { useToast } from '@/hooks/useToast'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { DEMO_USER } from '@/lib/demo-user'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -23,7 +22,6 @@ export default function LoginPage() {
   usePageTitle('Sign in')
 
   const { navigate, search } = useRouter()
-  const { showToast } = useToast()
   const { beginDemoSession } = useDemoState()
   const [authState, setAuthState] = useState<AuthState>('idle')
 
@@ -46,7 +44,7 @@ export default function LoginPage() {
     <>
       <PublicTopBar />
       <AuthShell title="" subtitle="Welcome back" hideLogo>
-        <main id="main-content">
+        <div>
           <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex flex-col h-full">
             <motion.div variants={fadeUp} className="text-center mb-12 mt-8">
 
@@ -128,7 +126,7 @@ export default function LoginPage() {
             </motion.div>
 
           </motion.div>
-        </main>
+        </div>
       </AuthShell>
     </>
   )

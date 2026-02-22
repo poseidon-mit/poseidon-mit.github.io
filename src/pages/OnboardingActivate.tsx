@@ -34,7 +34,7 @@ export default function OnboardingActivatePage() {
       title="You are all set"
       subtitle=""
     >
-      <main id="main-content" className="flex flex-col h-full">
+      <div className="flex flex-col h-full">
         <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex-1 flex flex-col items-center">
 
           <motion.div variants={fadeUp} className="text-center mt-8 mb-12">
@@ -115,7 +115,7 @@ export default function OnboardingActivatePage() {
           </motion.div>
 
         </motion.div>
-      </main>
+      </div>
     </OnboardingShell>
   );
 }

@@ -66,7 +66,7 @@ export default function OnboardingPrioritiesPage() {
       title="Financial Goals"
       subtitle="Define your priorities"
     >
-      <main id="main-content" className="flex flex-col h-full">
+      <div className="flex flex-col h-full">
         <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex-1 flex flex-col">
 
           <motion.div variants={staggerContainer} className="space-y-3 flex-1 mt-4">
@@ -134,7 +134,7 @@ export default function OnboardingPrioritiesPage() {
           </motion.div>
 
         </motion.div>
-      </main>
+      </div>
     </OnboardingShell>
   );
 }
