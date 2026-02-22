@@ -29,7 +29,7 @@ export function GovernFooter({
         </div>
         <span className="mission-govern-badge inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-500">
           <Shield size={10} />
-          Verified
+          Auditable
         </span>
       </div>
       <div className="flex items-center gap-2">
