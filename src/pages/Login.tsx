@@ -5,7 +5,7 @@ import { ScanFace, Unlock, ArrowRight } from 'lucide-react'
 import { PublicTopBar } from '@/components/landing/PublicTopBar'
 import { AuthShell } from '@/components/layout/AuthShell'
 import { fadeUp, staggerContainer } from '@/lib/motion-presets'
-import { Button } from '@/design-system'
+import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/useToast'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { DEMO_USER } from '@/lib/demo-user'
@@ -122,10 +122,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={handleAuth}
                 disabled={authState !== 'idle'}
-                variant="primary"
-                engine="dashboard"
-                fullWidth
-                className="rounded-2xl py-5 text-lg font-bold shadow-[0_0_30px_rgba(6,182,212,0.2)] hover:shadow-[0_0_50px_rgba(6,182,212,0.4)] transition-all flex justify-center items-center gap-2 border border-cyan-500/50"
+                className="w-full rounded-2xl py-7 text-lg font-bold shadow-[0_0_30px_rgba(6,182,212,0.2)] hover:shadow-[0_0_50px_rgba(6,182,212,0.4)] transition-all flex justify-center items-center gap-2 border border-cyan-500/50 bg-cyan-500 text-slate-950 hover:bg-cyan-400"
               >
                 {authState === 'idle' ? (
                   <>Access Profile <ArrowRight className="w-5 h-5" /></>

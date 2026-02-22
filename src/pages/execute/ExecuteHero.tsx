@@ -21,7 +21,8 @@ import { ViewModeToggle, CitationCard, CountUp } from '@/components/poseidon'
 import { kpiData, executeCitations } from './execute-data'
 import type { ViewMode } from '@/hooks/useViewMode'
 import { DEMO_THREAD } from '@/lib/demo-thread'
-import { Surface, Button } from '@/design-system'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
 
 /* ═══════════════════════════════════════════
    HERO SECTION
@@ -80,33 +81,28 @@ function HeroSection({ navigate, viewMode, onViewModeChange }: HeroSectionProps)
           viewMode={viewMode}
         />
         <div className="flex flex-wrap gap-2 mt-3">
-          <Button
-            className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-            variant="glass"
-            engine="execute"
+          <button
+            className={cn(buttonVariants({ variant: "glass", size: "sm" }), "inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer bg-[var(--engine-execute)]/10 text-[var(--engine-execute)] border-[var(--engine-execute)]/30 hover:bg-[var(--engine-execute)]/20")}
             aria-label={`Approve action: Block wire transfer to ${DEMO_THREAD.criticalAlert.merchant}`}
             onClick={() => navigate('/execute/approval')}
           >
             <CheckCircle2 size={16} />
             Approve
-          </Button>
-          <Button
-            className="inline-flex items-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-semibold transition-all hover:shadow-[0_0_12px_rgba(var(--state-critical-rgb),0.3)] active:scale-[0.98] cursor-pointer"
-            variant="danger"
+          </button>
+          <button
+            className={cn(buttonVariants({ variant: "destructive", size: "sm" }), "inline-flex items-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-semibold transition-all hover:shadow-[0_0_12px_rgba(var(--state-critical-rgb),0.3)] active:scale-[0.98] cursor-pointer")}
             aria-label={`Reject action: Block wire transfer to ${DEMO_THREAD.criticalAlert.merchant}`}
             onClick={() => navigate('/execute/approval')}
           >
             <XCircle size={16} />
             Reject
-          </Button>
-          <Button
-            className="inline-flex items-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-medium transition-all hover:bg-white/[0.04] active:scale-[0.98] cursor-pointer"
-            variant="secondary"
-            engine="execute"
+          </button>
+          <button
+            className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "inline-flex items-center gap-2 rounded-xl border border-white/10 px-5 py-2.5 text-sm font-medium transition-all hover:bg-white/[0.04] active:scale-[0.98] cursor-pointer")}
             onClick={() => navigate('/execute/approval')}
           >
             Review details
-          </Button>
+          </button>
         </div>
       </motion.div>
     </motion.section>
@@ -147,7 +143,7 @@ function KpiGrid({ viewMode: _viewMode }: { viewMode: ViewMode }) {
         const KpiIcon = kpiIcons[kpi.label]
         return (
           <motion.div key={kpi.label} variants={fadeUp} className="h-full">
-            <Surface variant="glass" padding="md" className="flex flex-col gap-2 h-full">
+            <div className="relative overflow-hidden rounded-[24px] p-6 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl flex flex-col gap-2 h-full">
               <span className="text-xs uppercase tracking-wider font-medium flex items-center gap-1.5" style={{ color: '#64748B' }}>
                 {KpiIcon && <KpiIcon size={12} aria-hidden="true" />}
                 {kpi.label}
@@ -181,7 +177,7 @@ function KpiGrid({ viewMode: _viewMode }: { viewMode: ViewMode }) {
                   {kpi.trend.text}
                 </span>
               )}
-            </Surface>
+            </div>
           </motion.div>
         )
       })}

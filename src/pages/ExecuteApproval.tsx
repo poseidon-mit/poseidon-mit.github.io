@@ -8,7 +8,8 @@ import { Dialog, DialogContent } from '../components/ui/dialog';
 import { usePageTitle } from '../hooks/use-page-title';
 import { getMotionPreset } from '@/lib/motion-presets';
 import { DEMO_THREAD } from '@/lib/demo-thread';
-import { Button, ButtonLink, Surface } from '@/design-system';
+import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/components/ui/button';
 import { useDemoState } from '@/lib/demo-state/provider';
 import { useToast } from '@/hooks/useToast';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
@@ -142,7 +143,7 @@ export function ExecuteApproval() {
           {visibleActions.length > 0 ? (
             <motion.div variants={fadeUpVariant} className="flex flex-col gap-8 lg:w-3/4 max-w-4xl">
               {visibleActions.map((action) => (
-                <Surface
+                <motion.div
                   key={action.id}
                   className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl"
                   style={{ borderLeftWidth: 4, borderLeftColor: urgencyBorderColor[action.urgency as 'high' | 'medium' | 'low'] || urgencyBorderColor.medium }}
@@ -206,28 +207,24 @@ export function ExecuteApproval() {
                       </div>
 
                       <div className="flex flex-wrap items-center justify-end gap-4 mt-8 pt-8 border-t border-white/[0.06]">
-                        <Button
-                          variant="glass"
-                          engine="execute"
-                          className="rounded-2xl text-base px-10 py-4 bg-[var(--engine-execute)]/10 border border-[var(--engine-execute)]/30 hover:bg-[var(--engine-execute)] hover:text-black transition-colors"
+                        <button
+                          className={cn(buttonVariants({ variant: "glass", size: "lg" }), "rounded-2xl text-base px-10 py-4 bg-[var(--engine-execute)]/10 border border-[var(--engine-execute)]/30 hover:bg-[var(--engine-execute)] hover:text-black transition-colors cursor-pointer")}
                           onClick={() => setConfirmAction({ id: action.id, type: 'approve' })}>
                           Approve Action
-                        </Button>
-                        <Button
-                          variant="glass"
-                          engine="execute"
-                          className="rounded-2xl text-base px-10 py-4 border border-white/10 hover:bg-white/10 transition-colors"
+                        </button>
+                        <button
+                          className={cn(buttonVariants({ variant: "glass", size: "lg" }), "rounded-2xl text-base px-10 py-4 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer")}
                           onClick={() => setConfirmAction({ id: action.id, type: 'defer' })}>
                           Cancel / Defer
-                        </Button>
+                        </button>
                       </div>
                     </div>
                   </div>
-                </Surface>
+                </motion.div>
               ))}
             </motion.div>
           ) : (
-            <Surface className="relative overflow-hidden rounded-[32px] p-16 lg:w-3/4 max-w-4xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col items-center justify-center gap-6 text-center">
+            <motion.div className="relative overflow-hidden rounded-[32px] p-16 lg:w-3/4 max-w-4xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col items-center justify-center gap-6 text-center">
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
               <div className="w-24 h-24 rounded-full bg-[var(--engine-protect)]/10 flex items-center justify-center border border-[var(--engine-protect)]/20 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
                 <CheckCircle2 className="w-12 h-12 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" style={{ color: 'var(--engine-protect)' }} />
@@ -236,10 +233,10 @@ export function ExecuteApproval() {
                 <h3 className="text-3xl font-light text-white tracking-wide mb-3">Action Complete</h3>
                 <p className="text-lg font-light text-white/50 tracking-wide">The requested action has been processed and logged.</p>
               </div>
-              <ButtonLink to="/dashboard" variant="glass" engine="execute" className="mt-4 rounded-xl px-8 py-3 bg-[var(--engine-protect)]/10 text-[var(--engine-protect)] border-[var(--engine-protect)]/30 hover:bg-[var(--engine-protect)]/20 transition-colors">
+              <Link to="/dashboard" className={cn(buttonVariants({ variant: "glass" }), "mt-4 rounded-xl px-8 py-3 bg-[var(--engine-protect)]/10 text-[var(--engine-protect)] border-[var(--engine-protect)]/30 hover:bg-[var(--engine-protect)]/20 transition-colors")}>
                 Return to Command Center
-              </ButtonLink>
-            </Surface>
+              </Link>
+            </motion.div>
           )}
         </div>
 
@@ -288,24 +285,18 @@ export function ExecuteApproval() {
                 </div>
 
                 <div className="flex items-center gap-2 pt-1">
-                  <Button
-                    variant={isApprove ? 'glass' : 'secondary'}
-                    engine="execute"
-                    fullWidth
-                    className="rounded-xl text-sm"
+                  <button
+                    className={cn(buttonVariants({ variant: isApprove ? 'glass' : 'secondary' }), "w-full rounded-xl text-sm cursor-pointer")}
                     onClick={handleConfirm}>
 
                     {isApprove ? 'Approve' : 'Defer'}
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    engine="execute"
-                    fullWidth
-                    className="rounded-xl text-sm"
+                  </button>
+                  <button
+                    className={cn(buttonVariants({ variant: 'secondary' }), "w-full rounded-xl text-sm cursor-pointer")}
                     onClick={() => setConfirmAction(null)}>
 
                     Cancel
-                  </Button>
+                  </button>
                 </div>
 
                 <p className="text-[10px] text-white/25 text-center">

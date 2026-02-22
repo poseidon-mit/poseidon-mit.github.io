@@ -19,20 +19,19 @@ import {
   Activity
 } from "lucide-react"
 import { AreaChart, Area, ResponsiveContainer } from "recharts"
-import { DEMO_THREAD } from '@/lib/demo-thread'
-import { GOVERNANCE_META } from '@/lib/governance-meta'
-import { GovernFooter } from '@/components/poseidon'
+import { DEMO_DATA } from '@/lib/constants/mock-data'
 import {
   getMotionPreset,
 } from '@/lib/motion-presets'
-import { Surface, ButtonLink } from '@/design-system'
+import { Link } from '@/router'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
 import { ENGINE_COLOR_MAP, ENGINE_BADGE_CLASS } from '@/lib/engine-color-map'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
-/* ── Cross-thread values ── */
-const SYSTEM_CONFIDENCE = DEMO_THREAD.systemConfidence
-const PENDING_ACTIONS = DEMO_THREAD.pendingActions
-const COMPLIANCE_SCORE = DEMO_THREAD.complianceScore
+/* ── Cross-thread values (Single Source of Truth) ── */
+const SYSTEM_CONFIDENCE = DEMO_DATA.SYSTEM_CONFIDENCE
+const COMPLIANCE_SCORE = DEMO_DATA.COMPLIANCE_SCORE
 
 /* ── KPI Stat Card (Premium Apple WWDC Style) ── */
 const StatCard = memo(function StatCard({
@@ -56,7 +55,7 @@ const StatCard = memo(function StatCard({
 
   return (
     <motion.div whileHover={{ scale: 1.02, y: -4 }} transition={{ type: "spring", stiffness: 400, damping: 25 }}>
-      <Surface interactive className="relative h-full overflow-hidden rounded-[32px] p-6 border border-white/[0.08] backdrop-blur-3xl bg-black/60 group shadow-2xl">
+      <div className="relative h-full overflow-hidden rounded-[32px] p-6 border border-white/[0.08] backdrop-blur-3xl bg-black/60 group shadow-2xl transition-all hover:bg-black/40">
         <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none" style={{ background: `radial-gradient(circle at 50% 100%, ${sparkColor}, transparent)` }} />
         <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
 
@@ -109,14 +108,14 @@ const StatCard = memo(function StatCard({
             </ResponsiveContainer>
           </div>
         </div>
-      </Surface>
+      </div>
     </motion.div>
   )
 })
 
 /* ── Activity Feed ── */
 const activities = [
-  { icon: Shield, label: `Blocked suspicious transfer to ${DEMO_THREAD.criticalAlert.merchant}`, time: "2m ago", color: "var(--engine-protect)", path: "/protect/alert-detail?alertId=THR-001" },
+  { icon: Shield, label: `Blocked suspicious transfer to ${DEMO_DATA.EXECUTE_VENDOR}`, time: "2m ago", color: "var(--engine-protect)", path: "/protect/alert-detail?alertId=THR-001" },
   { icon: TrendingUp, label: "Savings goal projection updated", time: "15m ago", color: "var(--engine-grow)", path: "/grow" },
   { icon: Zap, label: "Auto-paid electricity bill", time: "1h ago", color: "var(--engine-execute)", path: "/govern/audit" },
   { icon: Scale, label: `Compliance check passed (${COMPLIANCE_SCORE}/100)`, time: "2h ago", color: "var(--engine-govern)", path: "/govern" },
@@ -125,7 +124,7 @@ const activities = [
 
 function ActivityFeed({ itemVariants, navigate }: { itemVariants: Variants; navigate: (path: string) => void }) {
   return (
-    <Surface className="rounded-[32px] p-8 lg:p-10 flex flex-col gap-6 backdrop-blur-3xl border-white/[0.08] bg-black/50 h-full shadow-2xl relative overflow-hidden">
+    <div className="rounded-[32px] p-8 lg:p-10 flex flex-col gap-6 backdrop-blur-3xl border border-white/[0.08] bg-black/50 h-full shadow-2xl relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
       <div className="flex justify-between items-center relative z-10">
         <h2 className="text-sm font-semibold uppercase tracking-widest text-white/50">Recent Activity</h2>
@@ -150,7 +149,7 @@ function ActivityFeed({ itemVariants, navigate }: { itemVariants: Variants; navi
           </motion.div>
         ))}
       </div>
-    </Surface>
+    </div>
   )
 }
 
@@ -165,14 +164,14 @@ const decisions = [
 
 function DecisionRail({ itemVariants, navigate }: { itemVariants: Variants; navigate: (path: string) => void }) {
   return (
-    <Surface className="rounded-[32px] p-8 lg:p-10 flex flex-col gap-6 backdrop-blur-3xl border-white/[0.08] bg-black/50 h-full shadow-2xl relative overflow-hidden">
+    <div className="rounded-[32px] p-8 lg:p-10 flex flex-col gap-6 backdrop-blur-3xl border border-white/[0.08] bg-black/50 h-full shadow-2xl relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
       <div className="flex items-center justify-between relative z-10">
         <h2 className="text-sm font-semibold uppercase tracking-widest text-white/50">
           Decision Queue
         </h2>
         <span className="text-xs font-mono font-medium text-cyan-300 bg-cyan-400/10 px-3 py-1.5 rounded-full border border-cyan-400/20 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-          {PENDING_ACTIONS} pending
+          {DEMO_DATA.AUDIT_COUNT} entries
         </span>
       </div>
       <div className="flex flex-col gap-3 flex-1 relative z-10">
@@ -209,16 +208,17 @@ function DecisionRail({ itemVariants, navigate }: { itemVariants: Variants; navi
           </motion.div>
         ))}
       </div>
-      <ButtonLink
+      <Link
         to="/execute/approval"
-        variant="glass"
-        engine="dashboard"
-        className="mt-6 w-full rounded-2xl py-4 border-white/[0.1] hover:bg-white/[0.08] text-base tracking-wide relative z-10 shadow-lg"
+        className={cn(
+          buttonVariants({ variant: 'glass' }),
+          "mt-6 w-full rounded-2xl py-4 border-white/[0.1] hover:bg-white/[0.08] text-base tracking-wide relative z-10 shadow-lg"
+        )}
       >
         Review Queue
         <ArrowUpRight size={18} className="ml-2" />
-      </ButtonLink>
-    </Surface>
+      </Link>
+    </div>
   )
 }
 
@@ -237,21 +237,14 @@ export default function DashboardPage() {
   const alertSpark = [6, 5, 4, 4, 3, 2, 2, 1]
 
   return (
-    <div className="command-center relative min-h-screen overflow-hidden bg-[var(--bg-oled)] selection:bg-cyan-500/30">
-
-      {/* Background Noise & Gradient */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-cyan-500/10 blur-[120px]" />
-        <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-violet-500/10 blur-[120px]" />
-      </div>
-
+    <div className="selection:bg-cyan-500/30">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold bg-white text-black">
         Skip to main content
       </a>
 
       <motion.main
         id="main-content"
-        className="relative z-10 py-10 px-6 max-w-[1920px] mx-auto w-full"
+        className="w-full"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -293,13 +286,6 @@ export default function DashboardPage() {
           </div>
         </motion.div>
 
-        {/* ── GovernFooter ── */}
-        <div className="pt-8 border-t border-white/[0.04]">
-          <GovernFooter
-            auditId={GOVERNANCE_META['/dashboard'].auditId}
-            pageContext={GOVERNANCE_META['/dashboard'].pageContext}
-          />
-        </div>
       </motion.main>
     </div>
   )

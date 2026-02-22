@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { DSToast } from '@/design-system'
+import { Toast } from '@/components/ui/toast'
 
 export type ToastVariant = 'info' | 'success' | 'warning' | 'error'
 
@@ -31,8 +31,8 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue>({
   showToast: () => '',
-  dismissToast: () => {},
-  clearToasts: () => {},
+  dismissToast: () => { },
+  clearToasts: () => { },
 })
 
 function createToastId() {
@@ -90,7 +90,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       >
         {toasts.map((toast) => (
           <div key={toast.id} className="pointer-events-auto">
-            <DSToast
+            <Toast
               variant={toast.variant}
               message={toast.message}
               onDismiss={() => dismissToast(toast.id)}

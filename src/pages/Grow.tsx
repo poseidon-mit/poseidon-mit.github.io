@@ -12,17 +12,17 @@ import {
   "lucide-react";
 import { ForecastBand } from "@/components/poseidon/forecast-band";
 import type { ForecastPoint } from "@/components/poseidon/forecast-band";
-import { DEMO_THREAD } from '@/lib/demo-thread';
-import { GOVERNANCE_META } from '@/lib/governance-meta';
-import { AuroraPulse, GovernFooter } from '@/components/poseidon';
+import { DEMO_DATA } from '@/lib/constants/mock-data';
 import { fadeUp, staggerContainer } from '@/lib/motion-presets';
-import { ButtonLink, Surface } from '@/design-system';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 
-/* ── Cross-thread values ── */
-const EMERGENCY_FUND_PROGRESS = DEMO_THREAD.emergencyFund.percent;
-const EMERGENCY_FUND_CURRENT = DEMO_THREAD.emergencyFund.current;
-const EMERGENCY_FUND_TARGET = DEMO_THREAD.emergencyFund.target;
+/* ── Cross-thread values (Single Source of Truth) ── */
+const EMERGENCY_FUND_PROGRESS = DEMO_DATA.EMERGENCY_FUND_PCT;
+const EMERGENCY_FUND_CURRENT = DEMO_DATA.EMERGENCY_FUND_VAL_NUMERIC;
+const EMERGENCY_FUND_TARGET = DEMO_DATA.EMERGENCY_FUND_TARGET;
+const EMERGENCY_FUND_VALUE = DEMO_DATA.EMERGENCY_FUND_VALUE;
 
 /* ── Forecast data ── */
 const FORECAST_DATA: ForecastPoint[] = Array.from({ length: 12 }, (_, i) => ({
@@ -41,8 +41,7 @@ const GOAL_KPIS = [
 
 export default function GrowPage() {
   return (
-    <div className="relative">
-      <AuroraPulse engine="grow" />
+    <>
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
@@ -51,9 +50,9 @@ export default function GrowPage() {
         Skip to main content
       </a>
 
-      <motion.main
+      <motion.div
         id="main-content"
-        className="command-center__main"
+        className="w-full flex flex-col gap-6 md:gap-8"
         initial="hidden"
         animate="visible"
         variants={staggerContainer}>
@@ -78,24 +77,18 @@ export default function GrowPage() {
 
           <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-4 mt-4">
             {/* CTA: Primary -> /grow/goal */}
-            <ButtonLink
+            <Link
               to="/grow/goal"
-              variant="primary"
-              engine="grow"
-              size="lg"
-              className="rounded-xl px-8 shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:shadow-[0_0_50px_rgba(139,92,246,0.5)] transition-all font-semibold tracking-wide"
-              icon={<ArrowRight size={18} />}
-              iconPosition="right">
-              View Recommendations
-            </ButtonLink>
-            <ButtonLink
+              className={cn(buttonVariants({ variant: "default", size: "lg" }), "rounded-xl px-8 shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:shadow-[0_0_50px_rgba(139,92,246,0.5)] transition-all font-semibold tracking-wide bg-[var(--engine-grow)] text-white hover:bg-[#7c3aed]")}
+            >
+              View Recommendations <ArrowRight size={18} className="ml-2" />
+            </Link>
+            <Link
               to="/grow/scenarios"
-              variant="glass"
-              engine="grow"
-              size="lg"
-              className="rounded-xl px-8 border border-white/[0.08] hover:bg-white/[0.05] transition-all font-semibold tracking-wide shadow-lg backdrop-blur-md">
+              className={cn(buttonVariants({ variant: "glass", size: "lg" }), "rounded-xl px-8 border border-white/[0.08] hover:bg-white/[0.05] transition-all font-semibold tracking-wide shadow-lg backdrop-blur-md")}
+            >
               Open scenarios
-            </ButtonLink>
+            </Link>
           </motion.div>
         </motion.section>
 
@@ -106,13 +99,11 @@ export default function GrowPage() {
           aria-label="Growth KPIs">
 
           {GOAL_KPIS.map((kpi) => (
-            <Surface
+            <motion.div
               key={kpi.label}
               variants={fadeUp}
-              interactive
               className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col justify-center gap-4 group transition-all hover:bg-white/[0.02]"
-              as={motion.div}
-              padding="none">
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
 
               <div className="relative z-10 flex items-center justify-between">
@@ -127,14 +118,14 @@ export default function GrowPage() {
                   <p className="text-xs font-medium tracking-wide" style={{ color: kpi.color === "var(--engine-dashboard)" ? "var(--engine-dashboard)" : kpi.color === "var(--engine-grow)" ? "var(--engine-grow)" : kpi.color === "var(--engine-execute)" ? "var(--engine-execute)" : "var(--state-healthy)" }}>{kpi.delta}</p>
                 </div>
               </div>
-            </Surface>
+            </motion.div>
           ))}
         </motion.section>
 
         {/* ── P3: Forecast Preview + Recommendation ── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 px-4 md:px-6 lg:px-8 mb-12">
           {/* Forecast visualization */}
-          <Surface variants={fadeUp} interactive className="lg:col-span-8 relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]" as={motion.div} padding="none">
+          <motion.div variants={fadeUp} className="lg:col-span-8 relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
             <div className="relative z-10 flex items-center justify-between mb-8 pb-4 border-b border-white/[0.06]">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">12-Month Trajectory</h3>
@@ -146,10 +137,10 @@ export default function GrowPage() {
                 <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest px-2">+12 months</span>
               </div>
             </div>
-          </Surface>
+          </motion.div>
 
           {/* Top recommendation */}
-          <Surface variants={fadeUp} interactive className="lg:col-span-4 relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col justify-between group transition-all hover:bg-white/[0.02]" as={motion.div} padding="none">
+          <motion.div variants={fadeUp} className="lg:col-span-4 relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col justify-between group transition-all hover:bg-white/[0.02]">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/10 to-transparent pointer-events-none opacity-50 transition-opacity group-hover:opacity-100" />
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/[0.06]">
@@ -177,17 +168,10 @@ export default function GrowPage() {
                 Review & Execute <ArrowRight size={16} className="transform transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
-          </Surface>
+          </motion.div>
         </div>
 
-        {/* GovernFooter */}
-        <div className="px-4 md:px-6 lg:px-8">
-          <GovernFooter
-            auditId={GOVERNANCE_META['/grow'].auditId}
-            pageContext={GOVERNANCE_META['/grow'].pageContext} />
-
-        </div>
-      </motion.main>
-    </div>);
-
+      </motion.div>
+    </>
+  );
 }

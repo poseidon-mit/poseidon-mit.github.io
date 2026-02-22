@@ -9,7 +9,8 @@ import { fadeUp, staggerContainer } from '@/lib/motion-presets';
 import { StatusBadge, ConfidenceIndicator, CitationCard, ReasoningChain } from '@/components/poseidon';
 import type { ViewMode } from '@/hooks/useViewMode';
 import { decisions, typeColor, typeBg, governCitations, governReasoningSteps, type DecisionType } from './govern-data';
-import { Surface, Button } from '@/design-system'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
 
 /* ═══════════════════════════════════════════
    GOVERN-SPECIFIC: TypeBadge
@@ -52,8 +53,9 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
 
       {/* Desktop table */}
       <div className="hidden md:block">
-        <Surface variant="glass" padding="none" data-surface-role="structure" className="overflow-hidden !p-0">
-          <div className="overflow-x-auto">
+        <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl !p-0" data-surface-role="structure">
+          <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+          <div className="relative z-10 overflow-x-auto">
             <table className="w-full text-left" role="table">
               <thead>
                 <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
@@ -80,17 +82,14 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
                     style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
                   >
                     <td className="px-4 py-3.5">
-                      <Button
-                        className="text-sm font-mono font-medium transition-colors hover:underline cursor-pointer"
-                        variant="ghost"
-                        engine="govern"
-                        size="sm"
+                      <button
+                        className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "text-sm font-mono font-medium transition-colors hover:underline cursor-pointer !px-0")}
                         style={{ color: 'var(--engine-govern)' }}
                         aria-label={`View details for decision ${d.id}`}
                         onClick={() => navigate('/govern/audit-detail')}
                       >
                         {d.id}
-                      </Button>
+                      </button>
                       <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>{d.description}</p>
                       {d.hash && (
                         <p className="text-[10px] mt-0.5 font-mono" style={{ color: '#475569' }}>{d.hash}</p>
@@ -114,42 +113,37 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
                       <StatusBadge status={d.status} />
                     </td>
                     <td className="px-4 py-3.5">
-                      <Button
-                        className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-                        variant="glass"
-                        engine="govern"
-                        size="sm"
+                      <button
+                        className={cn(buttonVariants({ variant: "glass", size: "sm" }), "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer")}
                         aria-label={`View audit trail for decision ${d.id}`}
                         onClick={() => navigate('/govern/audit-detail')}
                       >
                         <Eye size={13} />
                         View trail
-                      </Button>
+                      </button>
                     </td>
                   </motion.tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </Surface>
+        </div>
       </div>
 
       {/* Mobile cards */}
       <div className="flex flex-col gap-3 md:hidden">
         {decisions.map((d) => (
           <motion.div key={d.id} variants={fadeUp}>
-            <Surface variant="glass" padding="md" className="flex flex-col gap-3">
-              <div className="flex items-center gap-2 flex-wrap">
+            <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6 flex flex-col gap-3 transition-colors hover:bg-white/[0.02]">
+              <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+              <div className="relative z-10 flex items-center gap-2 flex-wrap">
                 <TypeBadge type={d.type} />
                 <StatusBadge status={d.status} />
                 <span className="ml-auto text-xs" style={{ color: '#64748B' }}>{d.timestamp}</span>
               </div>
-              <Button
-                className="text-sm font-mono font-medium text-left transition-colors hover:underline cursor-pointer"
-                variant="ghost"
-                engine="govern"
-                size="sm"
-                style={{ color: 'var(--engine-govern)', padding: 0 }}
+              <button
+                className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "text-sm font-mono font-medium text-left transition-colors hover:underline cursor-pointer w-fit !px-0")}
+                style={{ color: 'var(--engine-govern)' }}
                 aria-label={`View details for decision ${d.id}`}
                 onClick={() => {
                   if (viewMode === 'deep') {
@@ -160,8 +154,8 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
                 }}
               >
                 {d.id}
-              </Button>
-              <p className="text-xs leading-relaxed" style={{ color: '#94A3B8' }}>{d.description}</p>
+              </button>
+              <p className="relative z-10 text-xs leading-relaxed" style={{ color: '#94A3B8' }}>{d.description}</p>
               {d.hash && (
                 <p className="text-[10px] font-mono" style={{ color: '#475569' }}>{d.hash}</p>
               )}
@@ -181,18 +175,15 @@ export function DecisionLedger({ navigate, viewMode = 'detail' }: DecisionLedger
                   className="mt-2"
                 />
               )}
-              <Button
-                className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-                variant="glass"
-                engine="govern"
-                fullWidth
+              <button
+                className={cn(buttonVariants({ variant: "glass" }), "relative z-10 w-full inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer")}
                 aria-label={`View audit trail for decision ${d.id}`}
                 onClick={() => navigate('/govern/audit-detail')}
               >
                 <Eye size={16} />
                 View trail
-              </Button>
-            </Surface>
+              </button>
+            </div>
           </motion.div>
         ))}
       </div>

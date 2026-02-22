@@ -6,7 +6,8 @@ import { usePageTitle } from '../hooks/use-page-title';
 import { GovernFooter, AuroraPulse } from '@/components/poseidon';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
 import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
-import { Button, ButtonLink, Surface } from '@/design-system';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 /* ═══════════════════════════════════════════
    DATA
@@ -177,13 +178,13 @@ export function GrowRecommendations() {
               { label: 'Actionable', value: String(actionableNowCount), color: 'var(--engine-dashboard)' },
               { label: 'Avg conf.', value: `${(Number(avgConfidence) * 100).toFixed(0)}%`, color: 'var(--engine-execute)' }].
               map((kpi) => (
-                <Surface key={kpi.label} interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col justify-center transition-all hover:bg-white/[0.02]" as={motion.div} padding="none">
+                <motion.div key={kpi.label} className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col justify-center transition-all hover:bg-white/[0.02]">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
                   <div className="relative z-10 flex flex-col gap-1.5">
                     <p className="text-[10px] md:text-xs uppercase tracking-widest font-semibold text-white/50">{kpi.label}</p>
                     <p className="text-2xl md:text-3xl font-light font-mono text-white/90" style={{ textShadow: `0 0 20px ${kpi.color}40`, color: kpi.color }}>{kpi.value}</p>
                   </div>
-                </Surface>
+                </motion.div>
               ))}
           </div>
         </motion.div>
@@ -197,7 +198,6 @@ export function GrowRecommendations() {
                 key={s}
                 onClick={() => setSort(s)}
                 variant="glass"
-                engine="grow"
                 size="sm"
                 className={`whitespace-nowrap rounded-2xl text-xs font-semibold uppercase tracking-widest transition-all px-4 py-2 border ${sort === s ? 'text-[var(--engine-grow)] border-[var(--engine-grow)]/40 bg-[var(--engine-grow)]/10 shadow-[0_0_10px_rgba(139,92,246,0.2)]' : 'text-white/50 border-white/10 hover:bg-white/10'}`}>
                 {s}
@@ -210,7 +210,6 @@ export function GrowRecommendations() {
                 key={c}
                 onClick={() => setCategory(c)}
                 variant="glass"
-                engine="grow"
                 size="sm"
                 className={`whitespace-nowrap rounded-2xl text-xs font-semibold uppercase tracking-widest transition-all px-4 py-2 border ${category === c ? 'text-[var(--engine-grow)] border-[var(--engine-grow)]/40 bg-[var(--engine-grow)]/10 shadow-[0_0_10px_rgba(139,92,246,0.2)]' : 'text-white/50 border-white/10 hover:bg-white/10'}`}>
                 {c}
@@ -224,14 +223,12 @@ export function GrowRecommendations() {
           {/* Main feed */}
           <div className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-6">
             {filtered.map((rec) => (
-              <Surface
+              <motion.div
                 key={rec.rank}
                 variants={fadeUp}
-                interactive
                 className="relative overflow-hidden rounded-[32px] p-6 lg:p-10 backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]"
                 style={{ border: '1px solid rgba(255,255,255,0.08)', borderLeftWidth: 4, borderLeftColor: 'var(--engine-grow)' }}
-                as={motion.div}
-                padding="none">
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
 
                 {/* Top row */}
@@ -276,7 +273,6 @@ export function GrowRecommendations() {
                 <Button
                   onClick={() => toggleExpand(rec.rank)}
                   variant="ghost"
-                  engine="grow"
                   className="relative z-10 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-white/40 hover:text-white/70 transition-colors mb-4 !px-0 !h-auto !min-h-0 bg-transparent hover:bg-transparent"
                   aria-expanded={!!expanded[rec.rank]}>
 
@@ -319,16 +315,16 @@ export function GrowRecommendations() {
 
                 {/* Action row */}
                 <div className="relative z-10 flex flex-wrap gap-4 mt-6 pt-6 border-t border-white/[0.06]">
-                  <ButtonLink to="/execute" variant="primary" engine="dashboard" size="lg" className="flex items-center gap-2 rounded-2xl shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:shadow-[0_0_50px_rgba(59,130,246,0.5)] transition-all bg-gradient-to-r from-[var(--engine-dashboard)] to-blue-400 text-black font-bold tracking-wide border-none px-8">
+                  <Link to="/execute" className={cn(buttonVariants({ variant: "default", size: "lg" }), "flex items-center gap-2 rounded-2xl shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:shadow-[0_0_50px_rgba(59,130,246,0.5)] transition-all bg-gradient-to-r from-[var(--engine-dashboard)] to-blue-400 text-black font-bold tracking-wide border-none px-8")}>
                     <Send size={18} />
                     Add to Execute
-                  </ButtonLink>
-                  <Button variant="glass" engine="grow" size="lg" className="flex items-center gap-2 rounded-2xl px-8 border border-white/[0.1] hover:bg-white/[0.05] transition-all font-semibold tracking-wide shadow-lg backdrop-blur-md">
+                  </Link>
+                  <Button variant="glass" size="lg" className="flex items-center gap-2 rounded-2xl px-8 border border-white/[0.1] hover:bg-white/[0.05] transition-all font-semibold tracking-wide shadow-lg backdrop-blur-md">
                     <X size={18} />
                     Dismiss
                   </Button>
                 </div>
-              </Surface>
+              </motion.div>
             ))}
           </div>
 
@@ -336,7 +332,7 @@ export function GrowRecommendations() {
           <aside className="w-full lg:w-[320px] shrink-0 flex flex-col gap-6" aria-label="Recommendations sidebar">
             <div className="sticky top-24 flex flex-col gap-6">
               {/* Summary */}
-              <Surface interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-2 transition-all hover:bg-white/[0.02]" as={motion.div} padding="none">
+              <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-2 transition-all hover:bg-white/[0.02]">
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
                 <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest border-b border-white/[0.06] pb-4 mb-4 relative z-10">Summary</h3>
                 <div className="space-y-4 relative z-10">
@@ -352,10 +348,10 @@ export function GrowRecommendations() {
                       </div>
                     ))}
                 </div>
-              </Surface>
+              </motion.div>
 
               {/* Impact breakdown */}
-              <Surface interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-2 transition-all hover:bg-white/[0.02]" as={motion.div} padding="none">
+              <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-2 transition-all hover:bg-white/[0.02]">
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
                 <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest border-b border-white/[0.06] pb-4 mb-4 relative z-10">Impact Breakdown</h3>
                 <div className="space-y-5 relative z-10">
@@ -376,10 +372,10 @@ export function GrowRecommendations() {
                       </div>
                     ))}
                 </div>
-              </Surface>
+              </motion.div>
 
               {/* AI Analysis */}
-              <Surface interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4 transition-all hover:bg-white/[0.02]" style={{ border: '1px solid rgba(255,255,255,0.08)', borderLeftWidth: 4, borderLeftColor: 'var(--engine-grow)' }} as={motion.div} padding="none">
+              <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4 transition-all hover:bg-white/[0.02]" style={{ border: '1px solid rgba(255,255,255,0.08)', borderLeftWidth: 4, borderLeftColor: 'var(--engine-grow)' }}>
                 <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.02] mix-blend-overlay pointer-events-none" />
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/10 to-transparent pointer-events-none" />
                 <div className="relative z-10 flex items-center gap-3 border-b border-white/[0.06] pb-4 mb-2">
@@ -392,7 +388,7 @@ export function GrowRecommendations() {
                 <p className="relative z-10 text-[10px] uppercase tracking-widest font-mono text-white/30 pt-2 border-t border-white/[0.04]">
                   ScenarioEngine v1.4<br />GV-2026-0216-GROW
                 </p>
-              </Surface>
+              </motion.div>
             </div>
           </aside>
         </div>

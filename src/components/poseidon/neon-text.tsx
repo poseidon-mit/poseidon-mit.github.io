@@ -16,11 +16,11 @@ const neonTextMap: Record<string, string> = {
 }
 
 const gradientMap: Record<string, string> = {
-  dashboard: 'from-[#bffcff] to-[#00f0ff]',
-  protect: 'from-[#5eead4] to-[#15e1c2]',
-  grow: 'from-[#d7b7ff] to-[#8b5cf6]',
-  execute: 'from-[#ffe0a1] to-[#f59e0b]',
-  govern: 'from-[#b8d6ff] to-[#58a6ff]',
+  dashboard: 'bg-[image:var(--gradient-cyan)]',
+  protect: 'bg-[image:var(--gradient-teal)]',
+  grow: 'bg-[image:var(--gradient-violet)]',
+  execute: 'bg-[image:var(--gradient-amber)]',
+  govern: 'bg-[image:var(--gradient-blue)]',
 }
 
 export interface NeonTextProps {
@@ -42,7 +42,7 @@ export function NeonText({
     return (
       <Tag
         className={cn(
-          'bg-gradient-to-r bg-clip-text text-transparent',
+          'bg-clip-text text-transparent',
           gradientMap[engine],
           neonTextMap[engine],
           className,

@@ -12,6 +12,7 @@ export interface AuroraPulseProps {
   color?: string
   engine?: EngineName
   intensity?: 'subtle' | 'normal' | 'vivid'
+  className?: string
 }
 
 const opacityMap = {
@@ -28,33 +29,21 @@ const variableColorMap: Record<string, string> = {
   'var(--engine-govern)': engineTokens.govern.color,
 }
 
-export function AuroraPulse({ color, engine, intensity = 'normal' }: AuroraPulseProps) {
+export function AuroraPulse({ color, engine, intensity = 'normal', className = '' }: AuroraPulseProps) {
   const reducedMotion = useReducedMotionSafe()
   const { primary, secondary } = opacityMap[intensity]
-  const resolvedColor = color ?? (engine ? engineTokens[engine].color : engineTokens.dashboard.color)
+  // Fallback to CSS var instead of hex for JS evaluation. Let CSS do the mix.
+  const resolvedColor = color ?? (engine ? `var(--engine-${engine})` : 'var(--engine-dashboard)')
 
-  // Convert hex color to rgba with given opacity
-  const hexToRgba = (hex: string, alpha: number) => {
-    const normalized = variableColorMap[hex] ?? hex
-    if (!normalized.startsWith('#') || normalized.length < 7) {
-      const fallback = engineTokens.dashboard.color
-      const r = parseInt(fallback.slice(1, 3), 16)
-      const g = parseInt(fallback.slice(3, 5), 16)
-      const b = parseInt(fallback.slice(5, 7), 16)
-      return `rgba(${r},${g},${b},${alpha})`
-    }
-    const r = parseInt(normalized.slice(1, 3), 16)
-    const g = parseInt(normalized.slice(3, 5), 16)
-    const b = parseInt(normalized.slice(5, 7), 16)
-    return `rgba(${r},${g},${b},${alpha})`
-  }
+  const primaryMix = `color-mix(in srgb, ${resolvedColor} ${primary * 100}%, transparent)`
+  const secondaryMix = `color-mix(in srgb, ${resolvedColor} ${secondary * 100}%, transparent)`
 
   return (
     <div
-      className="pointer-events-none absolute inset-0"
+      className={`pointer-events-none absolute inset-0 ${className}`}
       aria-hidden="true"
       style={{
-        background: `radial-gradient(70% 50% at 50% 0%, ${hexToRgba(resolvedColor, primary)}, transparent), radial-gradient(40% 40% at 80% 20%, ${hexToRgba(resolvedColor, secondary)}, transparent)`,
+        background: `radial-gradient(70% 50% at 50% 0%, ${primaryMix}, transparent), radial-gradient(40% 40% at 80% 20%, ${secondaryMix}, transparent)`,
         animation: reducedMotion ? 'none' : 'aurora-drift 8s ease-in-out infinite alternate',
       }}
     />

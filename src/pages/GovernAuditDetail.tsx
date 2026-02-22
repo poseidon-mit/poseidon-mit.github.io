@@ -7,7 +7,7 @@ import { getMotionPreset } from '@/lib/motion-presets';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { DEMO_THREAD } from '@/lib/demo-thread';
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date';
-import { Surface } from '@/design-system';
+
 
 interface AuditDecision {
   id: string;
@@ -281,8 +281,8 @@ export function GovernAuditDetail() {
                 { label: 'Confidence', value: resolvedConfidence, color: 'var(--engine-govern)' },
                 { label: 'Model', value: auditEntry.model.name, subValue: `v${auditEntry.model.version}`, color: 'var(--engine-execute)' },
                 { label: 'Accuracy', value: `${auditEntry.model.accuracy}%`, color: 'var(--engine-protect)' }].
-                map((kpi) => <Surface
-                  key={kpi.label} className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-5 md:p-6" padding="none">
+                map((kpi) => <div
+                  key={kpi.label} className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-5 md:p-6">
                   <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                   <div className="relative z-10 flex flex-col gap-2">
                     <p className="text-[10px] md:text-xs uppercase tracking-widest font-semibold text-white/50">{kpi.label}</p>
@@ -291,7 +291,7 @@ export function GovernAuditDetail() {
                       {kpi.subValue && <p className="text-xs text-white/40 mt-1">{kpi.subValue}</p>}
                     </div>
                   </div>
-                </Surface>
+                </div>
                 )}
             </div>
           </motion.div>
@@ -300,7 +300,7 @@ export function GovernAuditDetail() {
         <div className="flex flex-col lg:flex-row gap-8 px-4 md:px-6 lg:px-8">
           <motion.div variants={staggerContainerVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-6 lg:gap-8">
             <motion.div variants={fadeUpVariant}>
-              <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-6 lg:p-8" padding="none">
+              <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-6 lg:p-8">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
                 <h2 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 mb-6">Decision Metadata</h2>
                 <div className="relative z-10 flex flex-col gap-4">
@@ -311,11 +311,11 @@ export function GovernAuditDetail() {
                     </div>
                   )}
                 </div>
-              </Surface>
+              </div>
             </motion.div>
 
             <motion.div variants={fadeUpVariant}>
-              <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-6 lg:p-10" style={{ borderTopWidth: 4, borderTopColor: 'var(--engine-govern)' }} padding="none">
+              <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-6 lg:p-10" style={{ borderTopWidth: 4, borderTopColor: 'var(--engine-govern)' }}>
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(20,184,166,0.1),transparent_70%)] pointer-events-none" />
                 <h2 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4 mb-6">Decision Reconstruction</h2>
 
@@ -357,11 +357,11 @@ export function GovernAuditDetail() {
                     )}
                   </div>
                 </div>
-              </Surface>
+              </div>
             </motion.div>
 
             <motion.div variants={fadeUpVariant}>
-              <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-6 lg:p-8" padding="none">
+              <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-6 lg:p-8">
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                 <h2 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 mb-6">Compliance Flags</h2>
                 <div className="relative z-10 flex flex-col gap-4">
@@ -378,13 +378,13 @@ export function GovernAuditDetail() {
                   </div>
                   <p className="text-[10px] uppercase tracking-widest text-white/30 text-center mt-4">All 3 regulatory frameworks satisfied · Source: Compliance engine</p>
                 </div>
-              </Surface>
+              </div>
             </motion.div>
           </motion.div>
 
           <aside className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6" aria-label="Audit detail sidebar">
             <div className="sticky top-24 flex flex-col gap-6">
-              <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl" padding="none">
+              <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl">
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                 <div className="relative z-10 flex items-center gap-3 mb-6 border-b border-white/[0.06] pb-4">
                   <div className="p-1.5 rounded-lg bg-[var(--engine-govern)]/10 border border-[var(--engine-govern)]/20">
@@ -409,9 +409,9 @@ export function GovernAuditDetail() {
                   </div>
                 </div>
                 <p className="relative z-10 text-[10px] uppercase tracking-widest text-white/30 text-center mt-6">Human-validated · Source: Feedback system</p>
-              </Surface>
+              </div>
 
-              <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl" padding="none">
+              <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl">
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                 <h3 className="relative z-10 text-xs font-semibold text-white/70 uppercase tracking-widest mb-6 border-b border-white/[0.06] pb-4">Actions</h3>
                 <div className="relative z-10 flex flex-col gap-3">
@@ -422,7 +422,7 @@ export function GovernAuditDetail() {
                     Oversight Queue <ArrowLeft size={16} className="rotate-180" />
                   </Link>
                 </div>
-              </Surface>
+              </div>
             </div>
           </aside>
         </div>

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ChevronDown, Shield, TrendingUp, Zap, Scale, ArrowRight, Lock, CheckCircle2 } from 'lucide-react';
+import { Shield, TrendingUp, Zap, Scale, ArrowRight, CheckCircle2, FileText, Play } from 'lucide-react';
 import { PublicTopBar } from '@/components/landing/PublicTopBar';
 
 export default function Landing() {
@@ -19,7 +19,7 @@ export default function Landing() {
         <PublicTopBar />
 
         {/* Section 1: Hero */}
-        <section className="relative w-full min-h-screen flex flex-col items-center justify-center pt-[102px] px-6 overflow-hidden">
+        <section className="relative w-full min-h-screen flex flex-col items-center justify-center pt-[102px] px-6">
           {/* Background Video (Constrained to Hero) */}
           <div className="absolute inset-0 z-0 pointer-events-none">
             <video
@@ -44,28 +44,33 @@ export default function Landing() {
             {/* Badge */}
             <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-              <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider">System Confidence: 0.92</span>
+              <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider">MIT CTO Program Group7</span>
             </div>
 
             {/* Heading Block */}
             <div className="flex flex-col items-center gap-[16px] text-center">
               <h1 className="font-inter font-medium text-white text-[56px] md:text-[88px] tracking-[-3px] leading-[1.05]">
-                Deterministic models compute.<br />
-                <span className="font-instrument italic font-light text-cyan-400 drop-shadow-[0_0_40px_rgba(0,240,255,0.3)]">GenAI explains.</span>
+                The Trusted AI-Native<br />
+                <span className="inline-block pt-2 pr-4 font-instrument italic font-light bg-gradient-to-r from-[#0EA5E9] via-[#06B6D4] to-[#10B981] bg-clip-text text-transparent">Money Platform</span>
               </h1>
               <p className="font-normal text-[#f6f7f9] opacity-80 text-[18px] md:text-[22px] leading-[1.6] max-w-[650px] mt-6 text-balance">
-                The trusted AI-native money platform. AI Agents execute seamlessly. Humans confidently approve.
+                Deterministic models analyze, GenAI explains, and AI Agents prepare execution. You give final approval.
               </p>
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center gap-[16px] md:gap-[24px] mt-8">
-              <a href="/signup" className="flex items-center gap-2 bg-gradient-to-b from-[#7b39fc] to-[#6a2ce0] shadow-[0px_0px_40px_rgba(123,57,252,0.4)] px-[32px] py-[16px] rounded-[12px] font-cabin font-medium text-[16px] md:text-[18px] text-white hover:scale-[1.02] transition-transform">
-                Activate Financial Engine
-                <ArrowRight className="w-5 h-5" />
+            <div className="flex flex-col sm:flex-row items-center gap-[16px] md:gap-[24px] mt-8 w-full sm:w-auto max-w-[340px] sm:max-w-none mx-auto">
+              <a href="/signup" className="relative flex items-center justify-center gap-2 w-full sm:w-auto bg-[#0a0a12] border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.3),0_0_4px_rgba(139,92,246,0.4),inset_0_0_12px_rgba(16,185,129,0.06)] px-[32px] py-[16px] rounded-[12px] font-cabin font-semibold text-[16px] md:text-[18px] hover:scale-[1.03] hover:shadow-[0_0_20px_rgba(16,185,129,0.5),0_0_8px_rgba(139,92,246,0.6),inset_0_0_16px_rgba(16,185,129,0.1)] hover:border-emerald-400/50 transition-all">
+                <span className="bg-gradient-to-r from-[#34D399] to-[#A78BFA] bg-clip-text text-transparent">Activate Your Poseidon</span>
+                <ArrowRight className="w-5 h-5 text-[#A78BFA]" />
               </a>
-              <a href="/CTO-Group7-Poseidon.pdf" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-xl px-[32px] py-[16px] rounded-[12px] font-cabin font-medium text-[16px] md:text-[18px] text-white hover:bg-white/10 transition-colors">
-                Read MIT Abstract
+              <a href="/CTO-Group7-Poseidon.pdf" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full sm:w-auto bg-white/5 border border-white/10 backdrop-blur-xl px-[32px] py-[16px] rounded-[12px] font-cabin font-medium text-[16px] md:text-[18px] text-white hover:bg-white/10 transition-colors">
+                <FileText className="w-5 h-5" />
+                Presentation
+              </a>
+              <a href="#" className="flex items-center justify-center gap-2 w-full sm:w-auto bg-white/5 border border-white/10 backdrop-blur-xl px-[32px] py-[16px] rounded-[12px] font-cabin font-medium text-[16px] md:text-[18px] text-white hover:bg-white/10 transition-colors">
+                <Play className="w-5 h-5" />
+                Video
               </a>
             </div>
           </div>
@@ -77,7 +82,7 @@ export default function Landing() {
 
             <div className="text-center mb-20">
               <h2 className="font-instrument italic text-white text-[48px] md:text-[64px] tracking-tight leading-[1.1]">
-                Four sovereign engines.<br />One unified system.
+                Four AI engines personalized for you.
               </h2>
             </div>
 
@@ -93,7 +98,7 @@ export default function Landing() {
                     <Shield className="w-6 h-6 text-green-400" />
                     <h3 className="font-inter text-2xl text-white">Protect</h3>
                   </div>
-                  <p className="text-white/60 text-lg">Real-time threat detection and active fraud blocking.</p>
+                  <p className="text-white/60 text-lg">Threat detection across your accounts. Personalized analysis.</p>
                 </div>
 
                 {/* Mini UI Teaser */}
@@ -124,7 +129,7 @@ export default function Landing() {
                     <TrendingUp className="w-6 h-6 text-violet-400" />
                     <h3 className="font-inter text-2xl text-white">Grow</h3>
                   </div>
-                  <p className="text-white/60 text-lg">Strategic cash flow optimization and automated high-yield routing.</p>
+                  <p className="text-white/60 text-lg">Cashflow and portfolio recommendation.</p>
                 </div>
 
                 {/* Mini UI Teaser */}
@@ -152,7 +157,7 @@ export default function Landing() {
                     <Zap className="w-6 h-6 text-amber-400" />
                     <h3 className="font-inter text-2xl text-white">Execute</h3>
                   </div>
-                  <p className="text-white/60 text-lg">Intelligent automation with consent-first, human-in-the-loop approvals.</p>
+                  <p className="text-white/60 text-lg">Intelligent automation with human-in-the-loop approval and reverse workflow.</p>
                 </div>
 
                 {/* Mini UI Teaser */}
@@ -177,7 +182,7 @@ export default function Landing() {
                     <Scale className="w-6 h-6 text-blue-400" />
                     <h3 className="font-inter text-2xl text-white">Govern</h3>
                   </div>
-                  <p className="text-white/60 text-lg">Immutable decision ledger with full cryptographic and semantic transparency.</p>
+                  <p className="text-white/60 text-lg">Trust by design. 100% audibility and transparency.</p>
                 </div>
 
                 {/* Mini UI Teaser */}
@@ -210,45 +215,28 @@ export default function Landing() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
               <div className="flex flex-col items-center">
                 <div className="font-instrument italic text-[64px] text-cyan-400 mb-2">$133<span className="text-3xl text-cyan-400/50">/mo</span></div>
-                <div className="text-white/60 text-lg">Average subscription waste per active user due to lack of visibility.</div>
+                <div className="text-white/60 text-lg">Average subscription waste per active user. (C+R 2024)</div>
               </div>
               <div className="flex flex-col items-center">
                 <div className="font-instrument italic text-[64px] text-green-400 mb-2">$12.5<span className="text-3xl text-green-400/50">B</span></div>
-                <div className="text-white/60 text-lg">Lost to fraud and theft annually due to delayed threat response.</div>
+                <div className="text-white/60 text-lg">Lost to fraud and theft annually across US. (FTC, 2024)</div>
               </div>
               <div className="flex flex-col items-center">
                 <div className="font-instrument italic text-[64px] text-amber-400 mb-2">$12<span className="text-3xl text-amber-400/50">B</span></div>
-                <div className="text-white/60 text-lg">In overdraft and NSF fees caused by uncoordinated cash flow.</div>
+                <div className="text-white/60 text-lg">Annual overdraft & Non Sufficient Fund fee charged. (CFPB, 2021)</div>
               </div>
             </div>
 
-            <p className="font-manrope text-white/50 text-sm mt-16 mt-16 max-w-2xl mx-auto">
+            <p className="font-manrope text-white/50 text-xl mt-16 max-w-2xl mx-auto">
               Data aggregation is solved. Coordination is not. Poseidon is the missing coordination layer that acts instantly upon your linked financial data.
             </p>
           </div>
         </section>
 
-        {/* Section 4: Final Ascent (Outro) */}
-        <section className="relative w-full min-h-[60vh] flex flex-col items-center justify-center py-32 px-6 text-center z-10">
-          <Lock className="w-8 h-8 text-white/40 mb-8" />
-          <h2 className="font-inter font-medium text-white text-[48px] md:text-[64px] tracking-[-2px] leading-[1.1] mb-8">
-            Take control of the narrative.
-          </h2>
-          <p className="font-manrope text-white/70 text-xl max-w-2xl text-balance mb-12">
-            Experience the MIT prototype. Full cryptographic transparency, zero hallucination execution.
-          </p>
-          <a href="/signup" className="group relative inline-flex items-center justify-center px-8 py-4 font-cabin font-bold text-lg text-white transition-all duration-200 bg-white/10 border border-white/20 rounded-full hover:bg-white/20 overflow-hidden">
-            <span className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black" />
-            <span className="relative flex items-center gap-2">
-              Enter Prototype
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </span>
-          </a>
-
-          <footer className="absolute bottom-8 w-full flex justify-center text-white/30 font-mono text-xs tracking-wider uppercase">
-            © 2026 Poseidon Web3 Infrastructure · MIT Capstone
-          </footer>
-        </section>
+        {/* Footer */}
+        <footer className="w-full py-8 flex justify-center text-white/30 font-mono text-xs tracking-wider uppercase z-10">
+          2026 MAR MIT CTO PROGRAM CAPSTONE - GROUP7
+        </footer>
 
       </div>
     </div>

@@ -17,7 +17,8 @@ import { fadeUp, staggerContainer, staggerContainerDelayed } from '@/lib/motion-
 import { ViewModeToggle, CitationCard, CountUp } from '@/components/poseidon';
 import type { ViewMode } from '@/hooks/useViewMode';
 import { kpiData, governCitations } from './govern-data';
-import { Surface, Button } from '@/design-system'
+import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/components/ui/button';
 
 interface GovernHeroProps {
   navigate: (path: string) => void;
@@ -78,25 +79,21 @@ function HeroSection({ navigate, viewMode = 'detail', onViewModeChange }: Govern
           viewMode={viewMode}
         />
         <div className="flex flex-wrap gap-2 mt-4">
-          <Button
-            className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-            variant="glass"
-            engine="govern"
+          <button
+            className={cn(buttonVariants({ variant: "glass" }), "inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer")}
             aria-label="View audit trail for decision GV-2026-0214-42"
             onClick={() => navigate('/govern/audit-detail')}
           >
             <Eye size={16} />
             View audit trail
-          </Button>
-          <Button
-            className="inline-flex items-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-medium transition-all hover:bg-white/[0.04] active:scale-[0.98] cursor-pointer"
-            variant="secondary"
-            engine="govern"
+          </button>
+          <button
+            className={cn(buttonVariants({ variant: "secondary" }), "inline-flex items-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-medium transition-all hover:bg-white/[0.04] active:scale-[0.98] cursor-pointer")}
             onClick={() => navigate('/govern/audit')}
           >
             <FileText size={16} />
             Export report
-          </Button>
+          </button>
         </div>
       </motion.div>
     </motion.section>
@@ -147,34 +144,37 @@ function KpiGrid({ viewMode: _viewMode = 'detail' }: KpiGridProps) {
         const KpiIcon = kpiIcons[kpi.label]
         return (
           <motion.div key={kpi.label} variants={fadeUp}>
-            <Surface variant="glass" padding="md" className="flex flex-col gap-2 h-full">
-              <span className="text-xs uppercase tracking-wider font-medium flex items-center gap-1.5" style={{ color: '#64748B' }}>
-                {KpiIcon && <KpiIcon size={12} aria-hidden="true" />}
-                {kpi.label}
-              </span>
-              <div className="flex items-end gap-2">
-                <span
-                  className="text-2xl md:text-3xl font-bold tabular-nums"
-                  style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}
-                >
-                  {renderKpiValue(kpi.value)}
+            <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-5 flex flex-col gap-2 h-full">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+              <div className="relative z-10 flex flex-col gap-2 h-full">
+                <span className="text-xs uppercase tracking-wider font-medium flex items-center gap-1.5" style={{ color: '#64748B' }}>
+                  {KpiIcon && <KpiIcon size={12} aria-hidden="true" />}
+                  {kpi.label}
                 </span>
-                {kpi.badge && (
+                <div className="flex items-end gap-2">
                   <span
-                    className="mb-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
-                    style={{ background: kpi.badge.bg, color: kpi.badge.color }}
+                    className="text-2xl md:text-3xl font-bold tabular-nums"
+                    style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}
                   >
-                    {kpi.badge.text}
+                    {renderKpiValue(kpi.value)}
+                  </span>
+                  {kpi.badge && (
+                    <span
+                      className="mb-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                      style={{ background: kpi.badge.bg, color: kpi.badge.color }}
+                    >
+                      {kpi.badge.text}
+                    </span>
+                  )}
+                </div>
+                {kpi.trend && (
+                  <span className="flex items-center gap-1 text-xs font-medium" style={{ color: kpi.trend.color }}>
+                    <TrendingUp size={12} />
+                    {kpi.trend.text}
                   </span>
                 )}
               </div>
-              {kpi.trend && (
-                <span className="flex items-center gap-1 text-xs font-medium" style={{ color: kpi.trend.color }}>
-                  <TrendingUp size={12} />
-                  {kpi.trend.text}
-                </span>
-              )}
-            </Surface>
+            </div>
           </motion.div>
         )
       })}

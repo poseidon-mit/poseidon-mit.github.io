@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { OnboardingProgress } from '@/components/onboarding/OnboardingProgress';
-import { Surface, AuroraGradient } from '@/design-system';
 
 const STEP_ITEMS = [
   { id: 1, label: 'Connect sources' },
@@ -38,23 +37,22 @@ export function OnboardingShell({
         Skip to main content
       </a>
 
-      <AuroraGradient
-        engine="grow"
-        intensity="vivid"
-        className="fixed inset-0 pointer-events-none z-0"
+      <div
+        className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-br from-violet-900/40 via-purple-800/20 to-transparent opacity-70"
+        aria-hidden="true"
       />
 
       <div id="onboarding-shell-content" className="relative z-10 mx-auto max-w-4xl px-6 py-12 lg:py-24">
-        <Surface className="rounded-[32px] p-8 md:p-12 border-white/[0.08] bg-black/40 backdrop-blur-2xl" variant="glass" as="section">
+        <section className="rounded-[32px] p-8 md:p-12 border border-white/[0.08] bg-black/40 backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_20px_60px_rgba(0,0,0,0.5)]">
           {showProgress ? <OnboardingProgress step={activeStep} /> : null}
           <div className="text-center mt-12 mb-10">
             <h1 className="font-display text-4xl md:text-5xl font-semibold tracking-tighter text-white">{title}</h1>
             <p className="mt-4 text-base leading-relaxed text-white/50 max-w-2xl mx-auto">{subtitle}</p>
           </div>
           <div className="mt-12">{children}</div>
-        </Surface>
+        </section>
       </div>
-    </main>
+    </main >
   );
 }
 

@@ -9,7 +9,6 @@ import type { ViewMode } from '@/hooks/useViewMode'
 import { fadeUp } from '@/lib/motion-presets'
 import { kpis, protectCitations } from './protect-data'
 import { DEMO_THREAD } from '@/lib/demo-thread'
-import { Surface } from '@/design-system'
 
 /* ─── KPI value mapping for CountUp ─────────────────────── */
 
@@ -97,36 +96,39 @@ export function ProtectHero({ viewMode, onViewModeChange }: ProtectHeroProps) {
             const cu = kpiCountUp[kpi.label]
             const KpiIcon = kpiIcons[kpi.label]
             return (
-              <Surface variant="glass" padding="md"
+              <div
                 key={kpi.label}
+                className="relative overflow-hidden rounded-[24px] border backdrop-blur-3xl bg-black/60 shadow-xl p-5 flex flex-col gap-2"
                 style={{
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderColor: 'rgba(255,255,255,0.1)',
                 }}
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium tracking-wide flex items-center gap-1.5" style={{ color: '#64748B' }}>
-                    {KpiIcon && <KpiIcon size={12} aria-hidden="true" />}
-                    {kpi.label}
-                  </span>
-                  <div className="h-2 w-2 rounded-full" style={{ background: kpi.accent }} />
+                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="relative z-10 flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium tracking-wide flex items-center gap-1.5" style={{ color: '#64748B' }}>
+                      {KpiIcon && <KpiIcon size={12} aria-hidden="true" />}
+                      {kpi.label}
+                    </span>
+                    <div className="h-2 w-2 rounded-full" style={{ background: kpi.accent }} />
+                  </div>
+                  <p
+                    className="mt-2 font-mono text-2xl font-bold tracking-tight md:text-3xl"
+                    style={{ color: kpi.accent }}
+                  >
+                    {cu ? (
+                      <CountUp
+                        value={cu.value}
+                        decimals={cu.decimals}
+                        suffix={cu.suffix}
+                        className="font-mono text-2xl font-bold tracking-tight md:text-3xl"
+                      />
+                    ) : (
+                      kpi.value
+                    )}
+                  </p>
                 </div>
-                <p
-                  className="mt-2 font-mono text-2xl font-bold tracking-tight md:text-3xl"
-                  style={{ color: kpi.accent }}
-                >
-                  {cu ? (
-                    <CountUp
-                      value={cu.value}
-                      decimals={cu.decimals}
-                      suffix={cu.suffix}
-                      className="font-mono text-2xl font-bold tracking-tight md:text-3xl"
-                    />
-                  ) : (
-                    kpi.value
-                  )}
-                </p>
-              </Surface>
+              </div>
             )
           })}
         </div>

@@ -19,7 +19,8 @@ import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { AuroraPulse, GovernFooter } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
-import { Surface, Button, ButtonLink } from '@/design-system'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { THREATS, type ThreatRow } from './Protect'
 
@@ -141,7 +142,7 @@ export default function ProtectAlertDetailPage() {
 
         {/* ── Alert Summary ── */}
         <motion.div variants={fadeUpVariant} className="mb-6">
-          <Surface interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-[0_0_30px_rgba(0,0,0,0.2)] flex flex-col gap-4 transition-all hover:bg-white/[0.02]" style={{ border: `1px solid ${severityTheme.border}` }} padding="none">
+          <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-[0_0_30px_rgba(0,0,0,0.2)] flex flex-col gap-4 transition-all hover:bg-white/[0.02]" style={{ border: `1px solid ${severityTheme.border}` }}>
             <div className="absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none" style={{ backgroundImage: `linear-gradient(to bottom right, ${severityTheme.bg}, transparent)` }} />
 
             <div className="grid grid-cols-2 lg:grid-cols-6 gap-6 lg:gap-8 relative z-10">
@@ -152,12 +153,12 @@ export default function ProtectAlertDetailPage() {
               <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Account</span><div className="flex items-center gap-2"><CreditCard size={16} className="text-white/30" /><span className="text-base font-mono font-medium drop-shadow-[0_0_5px_rgba(255,255,255,0.2)] text-white/80">{`Checking ****4821`}</span></div></div>
               <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Location</span><div className="flex items-center gap-2"><MapPin size={16} className="text-white/30" /><span className="text-base text-white/80 tracking-wide">{"Online"}</span></div><span className="text-xs font-semibold tracking-wide" style={{ color: severityTheme.color }}>Flagged IP: 203.0.113.42</span></div>
             </div>
-          </Surface>
+          </div>
         </motion.div>
 
         {/* ── Timeline ── */}
         <motion.div variants={fadeUpVariant} className="mb-8">
-          <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4 transition-all hover:bg-white/[0.02]" padding="none">
+          <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4 transition-all hover:bg-white/[0.02]">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
             <div className="relative z-10 hidden md:flex items-center justify-between" role="list" aria-label="Alert timeline">
               {timelineSteps.map((step, i) => (
@@ -188,7 +189,7 @@ export default function ProtectAlertDetailPage() {
                 </div>
               ))}
             </div>
-          </Surface>
+          </div>
         </motion.div>
 
         {/* ── Evidence + Sidebar ── */}
@@ -201,9 +202,9 @@ export default function ProtectAlertDetailPage() {
                   const expanded = expandedId === item.id
                   return (
                     <motion.div key={item.id} variants={fadeUpVariant}>
-                      <Surface interactive className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-2xl bg-black/40 shadow-xl !p-0 transition-all hover:bg-white/[0.02]" padding="none">
+                      <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-2xl bg-black/40 shadow-xl !p-0 transition-all hover:bg-white/[0.02] cursor-pointer" onClick={() => setExpandedId(expanded ? null : item.id)}>
                         <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
-                        <Button className="w-full justify-between rounded-none !p-6 text-left relative z-10 border-none" variant="ghost" engine="protect" size="sm" springPress={false} onClick={() => setExpandedId(expanded ? null : item.id)} aria-expanded={expanded} aria-label={`${item.title}: score ${(item.score * 100).toFixed(0)}%`}>
+                        <div className="w-full flex items-center justify-between rounded-none !p-6 text-left relative z-10 border-none" aria-expanded={expanded} aria-label={`${item.title}: score ${(item.score * 100).toFixed(0)}%`}>
                           <div className="flex items-center gap-4">
                             <span className="inline-flex items-center justify-center rounded-xl text-sm font-bold font-mono tabular-nums shadow-[0_0_15px_currentColor] border border-[currentColor]/30 bg-[currentColor]/10" style={{ color: getScoreColor(item.score), width: 56, height: 36 }}>{item.score.toFixed(2)}</span>
                             <span className="text-base font-medium text-white/90 tracking-wide">{item.title}</span>
@@ -211,7 +212,7 @@ export default function ProtectAlertDetailPage() {
                           <div className="w-8 h-8 rounded-full flex items-center justify-center border border-white/[0.05] bg-white/[0.02] shadow-inner transition-all group-hover:bg-white/[0.1]">
                             {expanded ? <ChevronUp size={16} className="text-white/60 drop-shadow-[0_0_5px_currentColor]" /> : <ChevronDown size={16} className="text-white/60 drop-shadow-[0_0_5px_currentColor]" />}
                           </div>
-                        </Button>
+                        </div>
                         <AnimatePresence>
                           {expanded && (
                             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden relative z-10">
@@ -222,7 +223,7 @@ export default function ProtectAlertDetailPage() {
                             </motion.div>
                           )}
                         </AnimatePresence>
-                      </Surface>
+                      </div>
                     </motion.div>
                   )
                 })}
@@ -230,7 +231,7 @@ export default function ProtectAlertDetailPage() {
 
               {/* SHAP attribution waterfall */}
               <motion.div variants={fadeUpVariant} className="mt-4">
-                <Surface interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]" padding="none">
+                <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]">
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
                   <div className="relative z-10 flex items-center justify-between border-b border-white/[0.06] pb-4">
                     <div>
@@ -241,7 +242,7 @@ export default function ProtectAlertDetailPage() {
                   <div className="relative z-10">
                     <ShapWaterfall factors={shapFactors} />
                   </div>
-                </Surface>
+                </div>
               </motion.div>
             </motion.section>
           </div>
@@ -251,21 +252,23 @@ export default function ProtectAlertDetailPage() {
             {/* Actions / Dispute Workflow */}
             <div className="sticky top-6 flex flex-col gap-6">
               {disputeState === 'idle' && (
-                <Surface interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]" style={{ borderColor: 'var(--state-critical)' }} padding="none">
+                <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]" style={{ borderColor: 'var(--state-critical)' }}>
                   <div className="absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none" style={{ backgroundImage: `linear-gradient(to bottom right, ${severityTheme.bg}, transparent)` }} />
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Actions</h3>
 
                   <div className="flex flex-col gap-4 relative z-10">
-                    <Button onClick={() => setDisputeState('drafting')} variant="primary" engine="protect" fullWidth className="rounded-2xl py-4 transition-all font-bold tracking-wide border-none text-white shadow-lg" style={{ background: `linear-gradient(to right, ${severityTheme.color}, ${severityTheme.color})`, boxShadow: `0 0 30px ${severityTheme.shadow}` }} icon={<XCircle size={18} />}>{"Block & Dispute"}</Button>
+                    <button onClick={() => setDisputeState('drafting')} className={cn(buttonVariants({ variant: "default" }), "w-full rounded-2xl py-4 transition-all font-bold tracking-wide border-none text-white shadow-lg")} style={{ background: `linear-gradient(to right, ${severityTheme.color}, ${severityTheme.color})`, boxShadow: `0 0 30px ${severityTheme.shadow}` }}>
+                      <span className="flex items-center justify-center gap-2"><XCircle size={18} /> Block & Dispute</span>
+                    </button>
                     <div className="rounded-2xl border p-4 mt-2 shadow-[0_0_15px_rgba(0,0,0,0.1)]" style={{ background: severityTheme.bg, borderColor: severityTheme.border }}>
                       <p className="text-xs text-center font-medium tracking-wide leading-relaxed drop-shadow-sm" style={{ color: severityTheme.color }}>{`AI recommends blocking (${formatConfidence(alert.confidence)} confidence)`}</p>
                     </div>
                   </div>
-                </Surface>
+                </div>
               )}
 
               {disputeState === 'drafting' && (
-                <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border backdrop-blur-3xl shadow-2xl flex flex-col gap-6" style={{ borderColor: 'var(--engine-protect)', background: 'rgba(239, 68, 68, 0.05)' }} padding="none">
+                <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border backdrop-blur-3xl shadow-2xl flex flex-col gap-6" style={{ borderColor: 'var(--engine-protect)', background: 'rgba(239, 68, 68, 0.05)' }}>
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/20 to-transparent pointer-events-none" />
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Dispute Setup</h3>
 
@@ -282,15 +285,15 @@ export default function ProtectAlertDetailPage() {
                     </div>
 
                     <div className="flex flex-col gap-3 mt-2">
-                      <Button onClick={() => setDisputeState('submitted')} variant="primary" engine="protect" fullWidth className="rounded-xl py-3 shadow-[0_0_20px_rgba(16,185,129,0.3)] bg-[var(--engine-protect)] border-none text-black font-bold tracking-wide">Submit Dispute</Button>
-                      <Button onClick={() => setDisputeState('idle')} variant="ghost" engine="protect" fullWidth className="rounded-xl py-3 border border-white/10 hover:bg-white/10 text-white/60 font-medium">Cancel</Button>
+                      <button onClick={() => setDisputeState('submitted')} className={cn(buttonVariants({ variant: "default" }), "w-full rounded-xl py-3 shadow-[0_0_20px_rgba(16,185,129,0.3)] bg-[var(--engine-protect)] border-none text-black font-bold tracking-wide")}>Submit Dispute</button>
+                      <button onClick={() => setDisputeState('idle')} className={cn(buttonVariants({ variant: "ghost" }), "w-full rounded-xl py-3 border border-white/10 hover:bg-white/10 text-white/60 font-medium")}>Cancel</button>
                     </div>
                   </div>
-                </Surface>
+                </div>
               )}
 
               {disputeState === 'submitted' && (
-                <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-emerald-500/30 backdrop-blur-3xl bg-emerald-500/10 shadow-[0_0_30px_rgba(16,185,129,0.15)] flex flex-col gap-4 text-center" padding="none">
+                <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-emerald-500/30 backdrop-blur-3xl bg-emerald-500/10 shadow-[0_0_30px_rgba(16,185,129,0.15)] flex flex-col gap-4 text-center">
                   <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none" />
                   <div className="relative z-10 flex flex-col items-center">
                     <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
@@ -303,13 +306,13 @@ export default function ProtectAlertDetailPage() {
                       <p className="text-sm font-medium text-emerald-400 drop-shadow-[0_0_5px_currentColor]">48h SLA provisional credit pending</p>
                     </div>
                   </div>
-                </Surface>
+                </div>
               )}
 
 
               {/* Primary CTA: Open execute queue -> /execute */}
               {disputeState === 'idle' && (
-                <Surface interactive className="relative overflow-hidden rounded-[24px] p-4 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-lg group hover:border-white/[0.2] transition-all cursor-pointer" padding="none" onClick={() => window.location.assign('/execute')}>
+                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter') window.location.assign('/execute') }} className="relative overflow-hidden rounded-[24px] p-4 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-lg group hover:border-white/[0.2] transition-all cursor-pointer" onClick={() => window.location.assign('/execute')}>
                   <div className="absolute inset-0 bg-gradient-to-r from-[var(--engine-execute)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                   <div className="relative z-10 flex items-center justify-between px-2">
                     <div className="flex items-center gap-3">
@@ -320,11 +323,11 @@ export default function ProtectAlertDetailPage() {
                     </div>
                     <ArrowUpRight size={18} className="text-white/40 group-hover:text-white/90 transition-colors drop-shadow-[0_0_5px_currentColor]" />
                   </div>
-                </Surface>
+                </div>
               )}
 
               {/* Similar incidents */}
-              <Surface interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]" padding="none">
+              <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]">
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Similar Incidents</h3>
                 <div className="flex flex-col relative z-10">
@@ -335,10 +338,10 @@ export default function ProtectAlertDetailPage() {
                     </div>
                   ))}
                 </div>
-              </Surface>
+              </div>
 
               {/* Account context */}
-              <Surface interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]" padding="none">
+              <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Account Context</h3>
                 <div className="flex flex-col gap-4 relative z-10">
@@ -346,7 +349,7 @@ export default function ProtectAlertDetailPage() {
                     <div key={d.label} className="flex items-center justify-between"><span className="text-sm text-white/60 tracking-wide font-medium">{d.label}</span><span className="text-base font-mono font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" style={{ color: d.color || "rgba(255,255,255,0.9)" }}>{d.value}</span></div>
                   ))}
                 </div>
-              </Surface>
+              </div>
             </div>
           </aside>
         </div>

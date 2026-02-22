@@ -34,7 +34,7 @@ import {
 } from './execute-data'
 import type { Engine } from '@/types/engine-data'
 import type { ViewMode } from '@/hooks/useViewMode'
-import { Surface } from '@/design-system'
+// Removed Surface
 
 /* ── Local EngineBadge (Execute-specific inline style) ── */
 
@@ -63,7 +63,7 @@ function ExecutionStats() {
   ]
 
   return (
-    <Surface variant="glass" padding="md" className="flex flex-col gap-4">
+    <div className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <Calendar size={14} style={{ color: 'var(--engine-execute)' }} aria-hidden="true" />
         {"Today's Activity"}
@@ -92,7 +92,7 @@ function ExecutionStats() {
           </div>
         ))}
       </div>
-    </Surface>
+    </div>
   )
 }
 
@@ -102,7 +102,7 @@ function ExecutionStats() {
 
 function ConfidenceChart() {
   return (
-    <Surface variant="glass" padding="md" className="flex flex-col gap-4">
+    <div className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <Gauge size={14} style={{ color: 'var(--engine-execute)' }} aria-hidden="true" />
         Confidence Scores
@@ -142,7 +142,7 @@ function ConfidenceChart() {
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </Surface>
+    </div>
   )
 }
 
@@ -152,7 +152,7 @@ function ConfidenceChart() {
 
 function RecentExecutionsTimeline() {
   return (
-    <Surface variant="glass" padding="md" className="flex flex-col gap-4">
+    <div className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl flex flex-col gap-4">
       <h3 className="text-sm font-semibold flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: '#F1F5F9' }}>
         <History size={14} style={{ color: 'var(--engine-execute)' }} aria-hidden="true" />
         Recent Executions
@@ -195,7 +195,7 @@ function RecentExecutionsTimeline() {
           )
         })}
       </div>
-    </Surface>
+    </div>
   )
 }
 

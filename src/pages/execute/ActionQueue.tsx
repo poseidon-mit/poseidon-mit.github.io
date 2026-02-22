@@ -19,7 +19,8 @@ import { PriorityBadge, ConfidenceIndicator, ReasoningChain } from '@/components
 import { initialActions, engineColor, engineBg, executeReasoningSteps } from './execute-data'
 import type { ActionItem, ActionStatus, Engine } from '@/types/engine-data'
 import type { ViewMode } from '@/hooks/useViewMode'
-import { Surface, Button } from '@/design-system'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
 
 /* ── Local EngineBadge (Execute-specific inline style) ── */
 
@@ -73,8 +74,9 @@ export function ActionQueue({ viewMode = 'detail' }: ActionQueueProps) {
 
       {/* Desktop table */}
       <div className="hidden md:block">
-        <Surface variant="glass" padding="none" data-surface-role="structure" className="overflow-hidden !p-0">
-          <div className="overflow-x-auto">
+        <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl !p-0" data-surface-role="structure">
+          <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+          <div className="relative z-10 overflow-x-auto">
             <table className="w-full text-left" role="table">
               <thead>
                 <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
@@ -151,33 +153,28 @@ export function ActionQueue({ viewMode = 'detail' }: ActionQueueProps) {
                         </td>
                         <td className="px-4 py-3.5">
                           <div className="flex items-center gap-2">
-                            <Button
+                            <button
                               onClick={(e) => {
                                 e.stopPropagation()
                                 handleApprove(item.id)
                               }}
-                              variant="glass"
-                              engine="execute"
-                              size="sm"
-                              className="inline-flex items-center gap-1.5 rounded-lg text-xs font-semibold"
+                              className={cn(buttonVariants({ variant: "glass", size: "sm" }), "inline-flex items-center gap-1.5 rounded-lg text-xs font-semibold")}
                               aria-label={`Approve: ${item.action}`}
                             >
                               <CheckCircle2 size={13} />
                               Approve
-                            </Button>
-                            <Button
+                            </button>
+                            <button
                               onClick={(e) => {
                                 e.stopPropagation()
                                 handleReject(item.id)
                               }}
-                              variant="danger"
-                              size="sm"
-                              className="inline-flex items-center gap-1.5 rounded-lg text-xs font-semibold"
+                              className={cn(buttonVariants({ variant: "destructive", size: "sm" }), "inline-flex items-center gap-1.5 rounded-lg text-xs font-semibold")}
                               aria-label={`Reject: ${item.action}`}
                             >
                               <XCircle size={13} />
                               Reject
-                            </Button>
+                            </button>
                           </div>
                         </td>
                       </motion.tr>
@@ -196,18 +193,21 @@ export function ActionQueue({ viewMode = 'detail' }: ActionQueueProps) {
               </tbody>
             </table>
           </div>
-        </Surface>
+        </div>
       </div>
 
       {/* Mobile cards */}
       <div className="flex flex-col gap-3 md:hidden">
         {pendingActions.map((item) => (
           <motion.div key={item.id} variants={fadeUp}>
-            <Surface variant="glass" padding="md"
-              borderColor={item.priority === 'CRITICAL' ? 'rgba(234,179,8,0.5)' : undefined}
-              className="flex flex-col gap-3"
+            <div
+              className="relative overflow-hidden rounded-[24px] border backdrop-blur-3xl bg-black/60 shadow-xl p-6 flex flex-col gap-3"
+              style={{
+                borderColor: item.priority === 'CRITICAL' ? 'rgba(234,179,8,0.5)' : 'rgba(255,255,255,0.08)',
+              }}
             >
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+              <div className="relative z-10 flex items-center gap-2 flex-wrap">
                 <PriorityBadge priority={item.priority} />
                 <EngineBadge engine={item.engine} />
                 <span className="ml-auto text-xs" style={{ color: '#64748B' }}>
@@ -226,30 +226,25 @@ export function ActionQueue({ viewMode = 'detail' }: ActionQueueProps) {
                 </span>
                 <ConfidenceIndicator value={item.confidence} accentColor="#14B8A6" />
               </div>
-              <div className="flex items-center gap-2">
-                <Button
+              <div className="relative z-10 flex items-center gap-2">
+                <button
                   onClick={() => handleApprove(item.id)}
-                  variant="glass"
-                  engine="execute"
-                  fullWidth
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl text-sm font-semibold"
+                  className={cn(buttonVariants({ variant: "glass" }), "w-full flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl text-sm font-semibold")}
                   aria-label={`Approve: ${item.action}`}
                 >
                   <CheckCircle2 size={16} />
                   Approve
-                </Button>
-                <Button
+                </button>
+                <button
                   onClick={() => handleReject(item.id)}
-                  variant="danger"
-                  fullWidth
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl text-sm font-semibold"
+                  className={cn(buttonVariants({ variant: "destructive" }), "w-full flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl text-sm font-semibold")}
                   aria-label={`Reject: ${item.action}`}
                 >
                   <XCircle size={16} />
                   Reject
-                </Button>
+                </button>
               </div>
-            </Surface>
+            </div>
           </motion.div>
         ))}
       </div>

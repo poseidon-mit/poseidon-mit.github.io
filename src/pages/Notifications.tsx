@@ -7,7 +7,8 @@ import { GOVERNANCE_META } from '@/lib/governance-meta';
 import { getMotionPreset } from '@/lib/motion-presets';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { DEMO_THREAD } from '@/lib/demo-thread';
-import { Button, Surface } from '@/design-system';
+import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/components/ui/button';
 
 /* ═══════════════════════════════════════════
    DATA
@@ -133,11 +134,12 @@ export function Notifications() {
               { label: 'Security', value: String(categoryCounts.security), color: 'var(--engine-protect)' },
               { label: 'Growth', value: String(categoryCounts.growth), color: 'var(--engine-grow)' },
               { label: 'Actions', value: String(categoryCounts.actions), color: 'var(--engine-dashboard)' }].
-              map((kpi) => <Surface
-                key={kpi.label} className="rounded-2xl" variant="glass" padding="md">
-                <p className="text-xs text-white/40 mb-1">{kpi.label}</p>
-                <p className="text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
-              </Surface>
+              map((kpi) => <div
+                key={kpi.label} className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-4 flex flex-col gap-1 transition-colors hover:bg-white/[0.02]">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <p className="relative z-10 text-xs text-white/40 mb-1">{kpi.label}</p>
+                <p className="relative z-10 text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
+              </div>
               )}
           </div>
         </motion.div>
@@ -152,22 +154,18 @@ export function Notifications() {
                 <span className="text-xs text-white/50">{unreadCount} unread</span>
                 {unreadCount > 0 && <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />}
               </div>
-              <Button onClick={markAllRead} variant="ghost" engine="dashboard" size="sm" className="!min-h-7 !px-2 text-xs text-white/40 hover:text-white/60 transition-colors">Mark all read</Button>
+              <button onClick={markAllRead} className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "!min-h-7 !px-2 text-xs text-white/40 hover:text-white/60 transition-colors")}>Mark all read</button>
             </div>
 
             {/* Category tabs */}
             <div className="flex gap-2 overflow-x-auto pb-1">
               {(['all', 'security', 'growth', 'actions', 'system'] as CategoryFilter[]).map((t) =>
-                <Button
+                <button
                   key={t}
                   onClick={() => setFilter(t)}
-                  variant="glass"
-                  engine="dashboard"
-                  size="sm"
-                  className={`!min-h-8 rounded-full px-3 py-1.5 text-xs font-medium whitespace-nowrap capitalize transition-colors ${filter === t ? 'text-white border border-white/20' : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'}`}>
-
+                  className={cn(buttonVariants({ variant: "glass", size: "sm" }), `!min-h-8 rounded-full px-3 py-1.5 text-xs font-medium whitespace-nowrap capitalize transition-colors ${filter === t ? 'text-white border border-white/20' : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'}`)}>
                   {t === 'all' ? `All (${notifications.length})` : `${t} (${notifications.filter((n) => n.category === t).length})`}
-                </Button>
+                </button>
               )}
             </div>
 
@@ -214,7 +212,7 @@ export function Notifications() {
                   </div>
 
                   {/* Menu button */}
-                  <Button variant="ghost" engine="dashboard" size="sm" className="text-white/20 hover:text-white/40 text-lg leading-none shrink-0 !h-8 !min-h-8 !w-8 !px-0" onClick={(e) => e.stopPropagation()}>⋯</Button>
+                  <button className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "text-white/20 hover:text-white/40 text-lg leading-none shrink-0 !h-8 !min-h-8 !w-8 !px-0")} onClick={(e) => e.stopPropagation()}>⋯</button>
                 </div>
               )}
             </div>
@@ -224,12 +222,13 @@ export function Notifications() {
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Notification preferences">
             {/* Preferences */}
             <motion.div variants={fadeUpVariant}>
-              <Surface className="rounded-2xl" variant="glass" padding="md">
-                <div className="flex items-center gap-2 mb-4">
+              <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6 flex flex-col gap-4">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="relative z-10 flex items-center gap-2 mb-2">
                   <Settings2 className="h-4 w-4" style={{ color: 'var(--engine-dashboard)' }} />
                   <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest">Alert Preferences</h3>
                 </div>
-                <div className="space-y-3">
+                <div className="relative z-10 space-y-3">
                   {[
                     { label: 'Security alerts', type: 'Push + Email', enabled: true },
                     { label: 'Growth insights', type: 'Push only', enabled: true },
@@ -255,15 +254,16 @@ export function Notifications() {
                     </select>
                   </div>
                 </div>
-                <p className="text-[10px] text-white/30 mt-4 uppercase tracking-widest font-semibold border-t border-white/[0.04] pt-4">3 channels active · Push + Email for security</p>
-              </Surface>
+                <p className="relative z-10 text-[10px] text-white/30 mt-4 uppercase tracking-widest font-semibold border-t border-white/[0.04] pt-4">3 channels active · Push + Email for security</p>
+              </div>
             </motion.div>
 
             {/* Stats */}
             <motion.div variants={fadeUpVariant}>
-              <Surface className="rounded-2xl" variant="glass" padding="md">
-                <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest mb-4">Notification Stats</h3>
-                <div className="space-y-3">
+              <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6 flex flex-col gap-4">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <h3 className="relative z-10 text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Notification Stats</h3>
+                <div className="relative z-10 space-y-3">
                   {[
                     { label: 'Total today', value: String(notifications.length), color: 'text-white' },
                     { label: 'Unread', value: String(unreadCount), color: 'text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]' },
@@ -276,7 +276,7 @@ export function Notifications() {
                     </div>
                   ))}
                 </div>
-              </Surface>
+              </div>
             </motion.div>
           </aside>
         </div>

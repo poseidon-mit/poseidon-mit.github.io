@@ -8,7 +8,8 @@ import { DEMO_THREAD } from '@/lib/demo-thread';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
 import { AuroraPulse, GovernFooter } from '@/components/poseidon';
 import { fadeUp, staggerContainer } from '@/lib/motion-presets';
-import { ButtonLink, Surface } from '@/design-system';
+import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/components/ui/button';
 
 
 /* ── Cross-thread ── */
@@ -116,10 +117,9 @@ export default function GrowScenariosPage() {
           className="grid grid-cols-1 md:grid-cols-3 gap-6 px-4 md:px-6 lg:px-8 mb-8">
 
           {SCENARIOS.map((s) => (
-            <Surface
+            <motion.div
               key={s.id}
               variants={fadeUp}
-              interactive
               animate={prefersReducedMotion ? undefined : { scale: selected === s.id ? 1.015 : 1, y: 0 }}
               whileHover={prefersReducedMotion ? undefined : { scale: selected === s.id ? 1.02 : 1.01 }}
               whileTap={prefersReducedMotion ? undefined : { scale: selected === s.id ? 1.005 : 0.995 }}
@@ -131,11 +131,10 @@ export default function GrowScenariosPage() {
                   setSelected(s.id);
                 }
               }}
-              className={`relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 flex flex-col gap-4 text-left transition-all will-change-transform ${selected === s.id ? 'shadow-[0_0_30px_rgba(139,92,246,0.2)] border-2 border-[var(--engine-grow)]/40' : 'shadow-xl border border-white/[0.08] hover:border-white/[0.15] hover:bg-white/[0.02]'}`}
+              className={`relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 flex flex-col gap-4 text-left transition-all will-change-transform cursor-pointer ${selected === s.id ? 'shadow-[0_0_30px_rgba(139,92,246,0.2)] border-2 border-[var(--engine-grow)]/40' : 'shadow-xl border border-white/[0.08] hover:border-white/[0.15] hover:bg-white/[0.02]'}`}
               role="button"
               tabIndex={0}
-              padding="none"
-              aria-pressed={selected === s.id} as={motion.div}>
+              aria-pressed={selected === s.id}>
               <div className={`absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none ${selected === s.id ? 'opacity-100' : 'opacity-60'}`} />
               <div className={`absolute left-0 top-0 bottom-0 w-1 opacity-50 transition-opacity ${selected === s.id ? 'opacity-100' : 'opacity-0'}`} style={{ background: "var(--engine-grow)" }} />
 
@@ -166,13 +165,13 @@ export default function GrowScenariosPage() {
                   </div>
                 </div>
               </div>
-            </Surface>
+            </motion.div>
           ))}
         </motion.section>
 
         {/* ── P2: Comparative Forecast with ForecastBand ── */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8 mb-8">
-          <Surface interactive className="relative overflow-hidden rounded-[32px] p-6 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]" as={motion.div} padding="none">
+          <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between border-b border-white/[0.06] pb-6 mb-8">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">
@@ -191,12 +190,12 @@ export default function GrowScenariosPage() {
                 </span>
               </div>
             </div>
-          </Surface>
+          </motion.div>
         </motion.section>
 
         {/* ── P3: Impact Summary + Send to Execute ── */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8 mb-8">
-          <Surface interactive className="relative overflow-hidden rounded-[32px] p-8 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group transition-all hover:bg-white/[0.02]" as={motion.div} padding="none">
+          <motion.div className="relative overflow-hidden rounded-[32px] p-8 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group transition-all hover:bg-white/[0.02]">
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--engine-grow)]/10 to-transparent pointer-events-none opacity-50 transition-opacity group-hover:opacity-100" />
             <div className="absolute left-0 top-0 bottom-0 w-1.5 opacity-70 transition-opacity group-hover:opacity-100" style={{ background: "var(--engine-grow)" }} />
             <div className="relative z-10 max-w-2xl pl-2">
@@ -213,32 +212,24 @@ export default function GrowScenariosPage() {
               </p>
             </div>
             <div className="relative z-10 flex flex-wrap items-center gap-4 md:ml-auto">
-              <ButtonLink
+              <Link
                 to="/grow"
-                variant="glass"
-                engine="grow"
-                size="lg"
-                className="rounded-2xl px-6 border border-white/[0.1] hover:bg-white/[0.05] transition-all font-semibold tracking-wide">
+                className={cn(buttonVariants({ variant: "glass", size: "lg" }), "rounded-2xl px-6 border border-white/[0.1] hover:bg-white/[0.05] transition-all font-semibold tracking-wide")}>
                 Cancel
-              </ButtonLink>
+              </Link>
               {/* CTA: Primary -> /execute */}
-              <ButtonLink
+              <Link
                 to="/execute"
-                variant="primary"
-                engine="execute"
-                size="lg"
-                className="rounded-2xl px-8 shadow-[0_0_30px_rgba(251,191,36,0.3)] hover:shadow-[0_0_50px_rgba(251,191,36,0.5)] transition-all bg-gradient-to-r from-[var(--engine-execute)] to-[#FDE68A] text-black font-bold tracking-wide border-none"
-                icon={<Zap size={18} />}
-                iconPosition="right">
-                Send to Execute
-              </ButtonLink>
+                className={cn(buttonVariants({ variant: "default", size: "lg" }), "rounded-2xl px-8 shadow-[0_0_30px_rgba(251,191,36,0.3)] hover:shadow-[0_0_50px_rgba(251,191,36,0.5)] transition-all bg-gradient-to-r from-[var(--engine-execute)] to-[#FDE68A] text-black hover:opacity-90 font-bold tracking-wide border-none flex items-center gap-2")}>
+                Send to Execute <Zap size={18} />
+              </Link>
             </div>
-          </Surface>
+          </motion.div>
         </motion.section>
 
         {/* ── P4: Sensitivity notes (Tier B: 4 block cap) ── */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8 mb-12">
-          <Surface className="relative overflow-hidden rounded-[24px] p-8 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl" as={motion.div} padding="none">
+          <motion.div className="relative overflow-hidden rounded-[24px] p-8 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl">
             <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.02] mix-blend-overlay pointer-events-none" />
             <div className="relative z-10">
               <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-3 flex items-center gap-2">
@@ -250,7 +241,7 @@ export default function GrowScenariosPage() {
                 All projections are re-evaluated weekly. Historical accuracy of this model: <strong className="font-medium text-white/70 tracking-wide drop-shadow-[0_0_5px_rgba(255,255,255,0.2)]">89%</strong> within 5% margin.
               </p>
             </div>
-          </Surface>
+          </motion.div>
         </motion.section>
 
         {/* GovernFooter */}

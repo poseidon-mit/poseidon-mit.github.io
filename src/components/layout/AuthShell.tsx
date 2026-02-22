@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Surface, AuroraGradient } from '@/design-system'
 
 export interface AuthShellFeature {
   icon: LucideIcon
@@ -36,10 +35,9 @@ export function AuthShell({
         Skip to main content
       </a>
 
-      <AuroraGradient
-        engine="govern"
-        intensity="vivid"
-        className="fixed inset-0 pointer-events-none z-0"
+      <div
+        className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-br from-blue-900/40 via-indigo-800/20 to-transparent opacity-70"
+        aria-hidden="true"
       />
 
       <div id="auth-shell-content" className="relative z-10 mx-auto max-w-lg px-6 py-16 lg:py-32 flex flex-col items-center">
@@ -47,7 +45,12 @@ export function AuthShell({
           <img src="/logo.png" alt="Poseidon" className="w-8 h-8 opacity-90 drop-shadow-[0_0_10px_rgba(0,240,255,0.3)]" />
         </div>
 
-        <Surface as="section" variant="glass" className={cn('w-full rounded-[32px] p-8 md:p-10 border-white/[0.08] bg-black/40 backdrop-blur-2xl', formClassName)}>
+        <section
+          className={cn(
+            'w-full rounded-[32px] p-8 md:p-10 border border-white/[0.08] bg-black/40 backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_20px_60px_rgba(0,0,0,0.5)]',
+            formClassName
+          )}
+        >
           <div className="text-center mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-semibold tracking-tight text-white mb-2">
               {subtitle}
@@ -55,7 +58,7 @@ export function AuthShell({
             <p className="text-sm font-medium uppercase tracking-widest text-white/50">{title}</p>
           </div>
           <div className="mt-8">{children}</div>
-        </Surface>
+        </section>
       </div>
     </main>
   )

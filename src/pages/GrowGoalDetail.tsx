@@ -10,7 +10,8 @@ import { fadeUp, staggerContainer } from '@/lib/motion-presets';
 
 
 /* ── Cross-thread ── */
-import { Surface, ButtonLink } from "@/design-system";
+import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/components/ui/button';
 const EMERGENCY_FUND_PROGRESS = DEMO_THREAD.emergencyFund.percent;
 const EMERGENCY_FUND_CURRENT = DEMO_THREAD.emergencyFund.current;
 const EMERGENCY_FUND_TARGET = DEMO_THREAD.emergencyFund.target;
@@ -63,22 +64,22 @@ export default function GrowGoalPage() {
             </Link>
           </motion.div>
 
-          <Surface variants={fadeUp} interactive className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col md:flex-row items-center gap-10 lg:gap-16" as={motion.div} padding="none">
-            <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/10 to-transparent pointer-events-none" />
+          <motion.div variants={fadeUp} className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col md:flex-row items-center gap-10 lg:gap-16">
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/10 to-transparent pointer-events-none opacity-50" />
 
-            {/* Progress ring */}
-            <div className="relative flex-shrink-0 drop-shadow-[0_0_20px_rgba(139,92,246,0.3)]">
-              <svg width={160} height={160} className="-rotate-90">
-                <circle cx={80} cy={80} r={70} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={12} />
+            <div className="relative w-40 h-40 lg:w-48 lg:h-48 flex-shrink-0">
+              <svg className="w-full h-full -rotate-90" viewBox="0 0 160 160">
+                <circle cx="80" cy="80" r="70" className="stroke-white/[0.05] fill-none" strokeWidth="8" />
                 <circle
-                  cx={80} cy={80} r={70}
-                  fill="none"
-                  stroke="var(--engine-grow)"
-                  strokeWidth={12}
+                  cx="80"
+                  cy="80"
+                  r="70"
+                  strokeWidth="8"
+                  style={{ stroke: "var(--engine-grow)" }}
                   strokeLinecap="round"
-                  strokeDasharray={2 * Math.PI * 70}
+                  strokeDasharray={`${2 * Math.PI * 70}`}
                   strokeDashoffset={2 * Math.PI * 70 - EMERGENCY_FUND_PROGRESS / 100 * 2 * Math.PI * 70}
-                  className="transition-all duration-1000 ease-out" />
+                  className="fill-none drop-shadow-[0_0_15px_rgba(139,92,246,0.5)] transition-all duration-1000 ease-out" />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="text-4xl font-light font-mono text-white drop-shadow-[0_0_15px_rgba(139,92,246,0.8)] tracking-tighter">{EMERGENCY_FUND_PROGRESS}%</span>
@@ -99,13 +100,13 @@ export default function GrowGoalPage() {
                 At current pace, you will reach your target in approximately <span className="text-white/80 font-medium">3 months</span>.
               </p>
             </div>
-          </Surface>
+          </motion.div>
         </motion.section>
 
         {/* ── P2: Contribution Timeline + Forecast ── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 md:px-6 lg:px-8 mb-12">
           {/* Contribution timeline */}
-          <Surface variants={fadeUp} interactive className="lg:col-span-4 relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]" as={motion.div} padding="none">
+          <motion.div variants={fadeUp} className="lg:col-span-4 relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]">
             <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
             <div className="relative z-10 flex items-center justify-between border-b border-white/[0.06] pb-6 mb-6">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">
@@ -132,10 +133,10 @@ export default function GrowGoalPage() {
                 </div>
               )}
             </div>
-          </Surface>
+          </motion.div>
 
           {/* Forecast */}
-          <Surface variants={fadeUp} interactive className="lg:col-span-8 relative overflow-hidden rounded-[32px] p-6 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]" as={motion.div} padding="none">
+          <motion.div variants={fadeUp} className="lg:col-span-8 relative overflow-hidden rounded-[32px] p-6 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
             <div className="relative z-10 flex items-center justify-between border-b border-white/[0.06] pb-6 mb-8">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">
@@ -149,12 +150,12 @@ export default function GrowGoalPage() {
                 <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest px-2">+12 months</span>
               </div>
             </div>
-          </Surface>
+          </motion.div>
         </div>
 
         {/* ── P3: Goal Adjustment Action ── */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8 mb-12">
-          <Surface interactive className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group transition-all hover:bg-white/[0.02]" as={motion.div} padding="none">
+          <motion.div className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group transition-all hover:bg-white/[0.02]">
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--engine-grow)]/10 to-transparent pointer-events-none opacity-50 transition-opacity group-hover:opacity-100" />
             <div className="absolute left-0 top-0 bottom-0 w-1.5 opacity-70 transition-opacity group-hover:opacity-100" style={{ background: "var(--engine-grow)" }} />
             <div className="relative z-10 max-w-2xl pl-2">
@@ -171,27 +172,19 @@ export default function GrowGoalPage() {
               </p>
             </div>
             <div className="relative z-10 flex flex-wrap items-center gap-4 md:ml-auto">
-              <ButtonLink
+              <Link
                 to="/grow"
-                variant="glass"
-                engine="grow"
-                size="lg"
-                className="rounded-2xl px-6 border border-white/[0.1] hover:bg-white/[0.05] transition-all font-semibold tracking-wide">
+                className={cn(buttonVariants({ variant: "glass", size: "lg" }), "rounded-2xl px-6 border border-white/[0.1] hover:bg-white/[0.05] transition-all font-semibold tracking-wide")}>
                 Back to grow
-              </ButtonLink>
+              </Link>
               {/* CTA: Primary -> /execute */}
-              <ButtonLink
+              <Link
                 to="/execute"
-                variant="primary"
-                engine="grow"
-                size="lg"
-                className="rounded-2xl px-8 shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:shadow-[0_0_50px_rgba(139,92,246,0.5)] transition-all font-semibold tracking-wide border-none bg-[var(--engine-grow)] text-white"
-                icon={<ArrowRight size={18} />}
-                iconPosition="right">
-                Adjust goal
-              </ButtonLink>
+                className={cn(buttonVariants({ variant: "default", size: "lg" }), "rounded-2xl px-8 shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:shadow-[0_0_50px_rgba(139,92,246,0.5)] transition-all font-semibold tracking-wide border-none bg-[var(--engine-grow)] hover:opacity-90 text-white flex items-center gap-2")}>
+                Adjust goal <ArrowRight size={18} />
+              </Link>
             </div>
-          </Surface>
+          </motion.div>
         </motion.section>
 
         {/* GovernFooter */}

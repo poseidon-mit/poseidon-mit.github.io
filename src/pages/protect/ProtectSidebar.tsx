@@ -21,7 +21,6 @@ import { MethodologyCard } from '@/components/poseidon'
 import type { ViewMode } from '@/hooks/useViewMode'
 import { fadeUp } from '@/lib/motion-presets'
 import { categoryScores, milestones, protectMethodology } from './protect-data'
-import { Surface } from '@/design-system'
 
 /* ─── Score Ring (large, for Decision Rail) ────────────────── */
 
@@ -177,21 +176,23 @@ function Timeline() {
 
 function EvidenceSummary() {
   return (
-    <Surface variant="glass" padding="md"
-      borderColor="var(--engine-protect)"
+    <div
+      className="relative overflow-hidden rounded-[24px] border backdrop-blur-3xl bg-black/60 shadow-xl p-6 flex flex-col gap-3"
       style={{
-        background: 'rgba(255,255,255,0.05)',
-        border: '1px solid rgba(255,255,255,0.1)',
+        borderColor: 'var(--engine-protect)',
       }}
     >
-      <h3 className="mb-3 text-sm font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
-        <AlertCircle size={14} style={{ color: 'var(--engine-protect)' }} aria-hidden="true" />
-        Evidence Summary
-      </h3>
-      <p className="text-sm leading-relaxed" style={{ color: '#CBD5E1' }}>
-        AI identified 3 correlated signals across 2 accounts in the last 6 hours.
-      </p>
-    </Surface>
+      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+      <div className="relative z-10 flex flex-col gap-3">
+        <h3 className="mb-3 text-sm font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
+          <AlertCircle size={14} style={{ color: 'var(--engine-protect)' }} aria-hidden="true" />
+          Evidence Summary
+        </h3>
+        <p className="text-sm leading-relaxed" style={{ color: '#CBD5E1' }}>
+          AI identified 3 correlated signals across 2 accounts in the last 6 hours.
+        </p>
+      </div>
+    </div>
   )
 }
 
@@ -207,42 +208,51 @@ export function ProtectSidebar({ viewMode = 'detail' }: ProtectSidebarProps) {
   return (
     <motion.aside variants={fadeUp} className="flex min-w-0 flex-1 flex-col gap-5" aria-label="Decision rail">
       {/* Score Ring */}
-      <Surface variant="glass" padding="md"
+      <div
+        className="relative overflow-hidden rounded-[24px] border backdrop-blur-3xl bg-black/60 shadow-xl p-6"
         style={{
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.1)',
+          borderColor: 'rgba(255,255,255,0.1)',
         }}
       >
-        <ScoreRingLarge score={94} />
-      </Surface>
+        <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+        <div className="relative z-10">
+          <ScoreRingLarge score={94} />
+        </div>
+      </div>
 
       {/* Category Score Bars */}
-      <Surface variant="glass" padding="md"
+      <div
+        className="relative overflow-hidden rounded-[24px] border backdrop-blur-3xl bg-black/60 shadow-xl p-6 flex flex-col gap-4"
         style={{
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.1)',
+          borderColor: 'rgba(255,255,255,0.1)',
         }}
       >
-        <h3 className="mb-4 text-sm font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
-          <Layers size={14} style={{ color: 'var(--engine-protect)' }} aria-hidden="true" />
-          Category Breakdown
-        </h3>
-        <CategoryScoreBars />
-      </Surface>
+        <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+        <div className="relative z-10 flex flex-col gap-4">
+          <h3 className="mb-4 text-sm font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
+            <Layers size={14} style={{ color: 'var(--engine-protect)' }} aria-hidden="true" />
+            Category Breakdown
+          </h3>
+          <CategoryScoreBars />
+        </div>
+      </div>
 
       {/* Milestones Timeline */}
-      <Surface variant="glass" padding="md"
+      <div
+        className="relative overflow-hidden rounded-[24px] border backdrop-blur-3xl bg-black/60 shadow-xl p-6 flex flex-col gap-4"
         style={{
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.1)',
+          borderColor: 'rgba(255,255,255,0.1)',
         }}
       >
-        <h3 className="mb-4 text-sm font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
-          <Activity size={14} style={{ color: 'var(--engine-protect)' }} aria-hidden="true" />
-          Signal Timeline
-        </h3>
-        <Timeline />
-      </Surface>
+        <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+        <div className="relative z-10 flex flex-col gap-4">
+          <h3 className="mb-4 text-sm font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
+            <Activity size={14} style={{ color: 'var(--engine-protect)' }} aria-hidden="true" />
+            Signal Timeline
+          </h3>
+          <Timeline />
+        </div>
+      </div>
 
       {/* Evidence Summary */}
       <EvidenceSummary />

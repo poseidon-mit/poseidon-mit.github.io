@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { RouterProvider, useRouter } from './router';
 import { routes, type RoutePath } from './router/lazyRoutes';
 import { isAppRoute } from './router/app-shell-routes';
-import { AppNavShell } from './components/layout/AppNavShell';
+import { AuthenticatedLayout } from './components/layout/AuthenticatedLayout';
 import { DemoModeBanner } from './components/layout/DemoModeBanner';
 import { ToastProvider } from './components/providers/ToastProvider';
 import { runServiceWorkerCleanupOnBoot } from './bootstrap/sw-cleanup';
@@ -163,9 +163,9 @@ function RouterOutlet() {
 
   if (isAppRoute(path)) {
     return (
-      <AppNavShell path={path}>
+      <AuthenticatedLayout path={path}>
         <PageComponent />
-      </AppNavShell>
+      </AuthenticatedLayout>
     );
   }
 

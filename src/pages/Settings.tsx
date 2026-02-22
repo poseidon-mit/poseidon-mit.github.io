@@ -9,7 +9,8 @@ import {
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { AuroraPulse, GovernFooter } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
-import { Button, Surface, Toggle } from '@/design-system'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { useToast } from '@/hooks/useToast'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -32,7 +33,25 @@ function SettingToggle({
         <p className="text-sm font-medium text-white tracking-wide">{label}</p>
         <p className="text-xs text-white/50">{desc}</p>
       </div>
-      <Toggle checked={checked} onChange={onChange} ariaLabel={label} />
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        aria-label={label}
+        onClick={() => onChange(!checked)}
+        className={cn(
+          "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50",
+          checked ? "bg-[var(--engine-execute)]" : "bg-white/20"
+        )}
+      >
+        <span
+          aria-hidden="true"
+          className={cn(
+            "pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+            checked ? "translate-x-4" : "translate-x-0"
+          )}
+        />
+      </button>
     </div>
   )
 }
@@ -91,121 +110,125 @@ export default function SettingsPage() {
         </motion.section>
 
         <div className="flex flex-col lg:flex-row gap-4 px-4 md:px-6 lg:px-8">
-          <Surface variants={fadeUpVariant} className="flex-1 rounded-2xl" variant="glass" padding="md" as={motion.div}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-cyan-400/10">
-                <User size={20} style={{ color: 'var(--engine-dashboard)' }} />
+          <motion.div variants={fadeUpVariant} className="relative overflow-hidden flex-1 rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-cyan-400/10">
+                  <User size={20} style={{ color: 'var(--engine-dashboard)' }} />
+                </div>
+                <div>
+                  <p className="text-base font-medium text-white tracking-wide">Profile</p>
+                  <p className="text-xs text-white/50 tracking-wider uppercase font-semibold">Account details</p>
+                </div>
               </div>
-              <div>
-                <p className="text-base font-medium text-white tracking-wide">Profile</p>
-                <p className="text-xs text-white/50 tracking-wider uppercase font-semibold">Account details</p>
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
+                  <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">Name</span>
+                  <span className="text-sm font-medium text-white">{state.user.name}</span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
+                  <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">Email</span>
+                  <span className="text-sm font-medium text-white">{state.user.email}</span>
+                </div>
+                <div className="flex items-center justify-between py-2">
+                  <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">Plan</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-[0_0_10px_rgba(6,182,212,0.2)]">{state.user.plan}</span>
+                </div>
               </div>
             </div>
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
-                <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">Name</span>
-                <span className="text-sm font-medium text-white">{state.user.name}</span>
-              </div>
-              <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
-                <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">Email</span>
-                <span className="text-sm font-medium text-white">{state.user.email}</span>
-              </div>
-              <div className="flex items-center justify-between py-2">
-                <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">Plan</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-[0_0_10px_rgba(6,182,212,0.2)]">{state.user.plan}</span>
-              </div>
-            </div>
-          </Surface>
+          </motion.div>
 
-          <Surface variants={fadeUpVariant} className="flex-1 rounded-2xl" variant="glass" padding="md" as={motion.div}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-400/10">
-                <Bell size={20} style={{ color: 'var(--engine-execute)' }} />
+          <motion.div variants={fadeUpVariant} className="relative overflow-hidden flex-1 rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-400/10">
+                  <Bell size={20} style={{ color: 'var(--engine-execute)' }} />
+                </div>
+                <div>
+                  <p className="text-base font-medium text-white tracking-wide">Notifications</p>
+                  <p className="text-xs text-white/50 tracking-wider uppercase font-semibold">Alert preferences</p>
+                </div>
               </div>
-              <div>
-                <p className="text-base font-medium text-white tracking-wide">Notifications</p>
-                <p className="text-xs text-white/50 tracking-wider uppercase font-semibold">Alert preferences</p>
-              </div>
+              <SettingToggle
+                label="Threat alerts"
+                desc="Immediate notification for critical threats"
+                checked={draftNotifications.threatAlerts}
+                onChange={(next) => setDraftNotifications((prev) => ({ ...prev, threatAlerts: next }))}
+              />
+              <SettingToggle
+                label="Weekly digest"
+                desc="Summary of activity and recommendations"
+                checked={draftNotifications.weeklyDigest}
+                onChange={(next) => setDraftNotifications((prev) => ({ ...prev, weeklyDigest: next }))}
+              />
+              <SettingToggle
+                label="Execution alerts"
+                desc="Notify when actions are auto-queued"
+                checked={draftNotifications.executionAlerts}
+                onChange={(next) => setDraftNotifications((prev) => ({ ...prev, executionAlerts: next }))}
+              />
             </div>
-            <SettingToggle
-              label="Threat alerts"
-              desc="Immediate notification for critical threats"
-              checked={draftNotifications.threatAlerts}
-              onChange={(next) => setDraftNotifications((prev) => ({ ...prev, threatAlerts: next }))}
-            />
-            <SettingToggle
-              label="Weekly digest"
-              desc="Summary of activity and recommendations"
-              checked={draftNotifications.weeklyDigest}
-              onChange={(next) => setDraftNotifications((prev) => ({ ...prev, weeklyDigest: next }))}
-            />
-            <SettingToggle
-              label="Execution alerts"
-              desc="Notify when actions are auto-queued"
-              checked={draftNotifications.executionAlerts}
-              onChange={(next) => setDraftNotifications((prev) => ({ ...prev, executionAlerts: next }))}
-            />
-          </Surface>
+          </motion.div>
         </div>
 
         <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
-          <Surface className="rounded-2xl" variant="glass" padding="md">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-400/10">
-                <Shield size={20} style={{ color: 'var(--engine-protect)' }} />
+          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-400/10">
+                  <Shield size={20} style={{ color: 'var(--engine-protect)' }} />
+                </div>
+                <div>
+                  <p className="text-base font-medium text-white tracking-wide">Security</p>
+                  <p className="text-xs text-white/50 tracking-wider uppercase font-semibold">Authentication and access controls</p>
+                </div>
               </div>
-              <div>
-                <p className="text-base font-medium text-white tracking-wide">Security</p>
-                <p className="text-xs text-white/50 tracking-wider uppercase font-semibold">Authentication and access controls</p>
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
+                  <div>
+                    <p className="text-sm font-medium text-white tracking-wide">Two-factor authentication</p>
+                    <p className="text-xs text-white/50">Add an extra layer of security</p>
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_10px_rgba(52,211,153,0.2)]">Enabled</span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
+                  <div>
+                    <p className="text-sm font-medium text-white tracking-wide">Active sessions</p>
+                    <p className="text-xs text-white/50">Manage your logged-in devices</p>
+                  </div>
+                  <span className="text-sm font-mono text-white/80">2 devices</span>
+                </div>
               </div>
             </div>
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
-                <div>
-                  <p className="text-sm font-medium text-white tracking-wide">Two-factor authentication</p>
-                  <p className="text-xs text-white/50">Add an extra layer of security</p>
-                </div>
-                <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_10px_rgba(52,211,153,0.2)]">Enabled</span>
-              </div>
-              <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
-                <div>
-                  <p className="text-sm font-medium text-white tracking-wide">Active sessions</p>
-                  <p className="text-xs text-white/50">Manage your logged-in devices</p>
-                </div>
-                <span className="text-sm font-mono text-white/80">2 devices</span>
-              </div>
-            </div>
-          </Surface>
+          </div>
         </motion.section>
 
         <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
-          <Surface className="rounded-2xl flex items-center justify-between gap-3" variant="glass" padding="md">
-            <p className="text-sm text-slate-400">All settings changes are recorded in the audit ledger.</p>
-            <div className="flex items-center gap-2">
-              <Button
+          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+            <p className="relative z-10 text-sm text-white/50">All settings changes are recorded in the audit ledger.</p>
+            <div className="relative z-10 flex flex-wrap items-center gap-3 w-full sm:w-auto">
+              <button
                 type="button"
                 onClick={handleReset}
                 disabled={!dirty}
-                variant="secondary"
-                engine="dashboard"
-                size="sm"
-                className="rounded-xl"
+                className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "rounded-xl font-medium", !dirty && "opacity-50 cursor-not-allowed")}
               >
                 Reset draft
-              </Button>
-              <Button
+              </button>
+              <button
                 type="button"
                 onClick={handleSave}
                 disabled={!dirty}
-                variant="glass"
-                engine="dashboard"
-                size="sm"
-                className="rounded-xl"
+                className={cn(buttonVariants({ variant: "glass", size: "sm" }), "rounded-xl font-semibold shadow-[0_0_15px_rgba(255,255,255,0.1)]", !dirty && "opacity-50 cursor-not-allowed")}
               >
                 Save settings
-              </Button>
+              </button>
             </div>
-          </Surface>
+          </div>
         </motion.section>
 
         <div className="px-4 md:px-6 lg:px-8">

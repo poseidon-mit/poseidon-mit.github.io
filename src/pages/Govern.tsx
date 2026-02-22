@@ -13,21 +13,20 @@ import {
   CircleDot,
   type LucideIcon,
 } from "lucide-react"
-import { DEMO_THREAD } from '@/lib/demo-thread'
-import { GOVERNANCE_META } from '@/lib/governance-meta'
+import { DEMO_DATA } from '@/lib/constants/mock-data'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
-import { AuroraPulse, GovernFooter } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
-import { Surface, ButtonLink } from '@/design-system'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
-/* ── Cross-thread values ── */
-const DECISIONS_AUDITED = DEMO_THREAD.decisionsAudited
-const COMPLIANCE_SCORE = DEMO_THREAD.complianceScore
+/* ── Cross-thread values (Single Source of Truth) ── */
+const DECISIONS_AUDITED = 1247
+const COMPLIANCE_SCORE = DEMO_DATA.COMPLIANCE_SCORE
 const VERIFIED_COUNT = 1189
-const PENDING_REVIEW_COUNT = 55
+const PENDING_REVIEW_COUNT = DEMO_DATA.AUDIT_COUNT
 const FLAGGED_COUNT = 3
-const VERIFIED_PERCENT = Math.round((VERIFIED_COUNT / DECISIONS_AUDITED) * 100)
+const VERIFIED_PERCENT = DEMO_DATA.VERIFIED_PCT
 
 /* ── Data ── */
 type DecisionType = "Protect" | "Grow" | "Execute" | "Govern"
@@ -60,11 +59,10 @@ export default function GovernPage() {
   const { navigate } = useRouter()
 
   return (
-    <div className="relative min-h-screen w-full">
-      <AuroraPulse engine="govern" />
+    <>
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-govern)", color: "#ffffff" }}>Skip to main content</a>
 
-      <motion.div id="main-content" className="mx-auto flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12 w-full pt-8 lg:pt-12" style={{ maxWidth: "1440px" }} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
+      <motion.div id="main-content" className="flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12 w-full" variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
 
         {/* ── Hero ── */}
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 px-4 md:px-6 lg:px-8">
@@ -91,13 +89,13 @@ export default function GovernPage() {
               { label: "Pending review", value: String(PENDING_REVIEW_COUNT), color: "var(--state-warning)" },
               { label: "Flagged", value: String(FLAGGED_COUNT), color: "var(--state-critical)" },
             ].map(d => (
-              <Surface key={d.label} className="relative overflow-hidden rounded-[24px] p-8 lg:p-12 backdrop-blur-3xl bg-black/60 shadow-lg border border-white/[0.08] hover:bg-white/[0.02] transition-colors">
+              <div key={d.label} className="relative overflow-hidden rounded-[24px] p-8 lg:p-12 backdrop-blur-3xl bg-black/60 shadow-lg border border-white/[0.08] hover:bg-white/[0.02] transition-colors">
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-govern)]/5 to-transparent pointer-events-none" />
                 <div className="flex flex-col gap-3 relative z-10">
                   <span className="text-[10px] md:text-xs uppercase tracking-widest font-semibold text-white/50">{d.label}</span>
                   <span className="text-3xl md:text-4xl lg:text-5xl font-light font-mono tabular-nums tracking-tight" style={{ color: d.color, textShadow: d.color !== 'white' ? `0 0 15px ${d.color}60` : 'none' }}>{d.value}</span>
                 </div>
-              </Surface>
+              </div>
             ))}
           </div>
         </motion.div>
@@ -108,7 +106,7 @@ export default function GovernPage() {
             <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
               <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 px-2">Decision Ledger</h2>
               <div className="flex flex-col">
-                <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-0">
+                <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-0">
                   <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
                   <div className="flex flex-col divide-y divide-white/[0.04] relative z-10">
                     {ledgerEntries.map(entry => {
@@ -139,7 +137,7 @@ export default function GovernPage() {
                       )
                     })}
                   </div>
-                </Surface>
+                </div>
               </div>
             </motion.section>
           </div>
@@ -147,7 +145,7 @@ export default function GovernPage() {
           {/* Sidebar */}
           <aside className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6" aria-label="Governance sidebar">
             <div className="sticky top-24 flex flex-col gap-6">
-              <Surface className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6">
+              <div className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6">
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                 <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Compliance Breakdown</h3>
                 <div className="relative z-10 flex flex-col gap-5">
@@ -168,9 +166,9 @@ export default function GovernPage() {
                     </div>
                   ))}
                 </div>
-              </Surface>
+              </div>
 
-              <Surface className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6">
+              <div className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6">
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                 <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Policy Status</h3>
                 <div className="relative z-10 flex flex-col gap-4">
@@ -181,22 +179,18 @@ export default function GovernPage() {
                     </div>
                   ))}
                 </div>
-              </Surface>
+              </div>
 
               {/* Primary CTA: Open audit ledger -> /govern/audit */}
-              <ButtonLink to="/govern/audit" variant="primary" engine="govern" className="w-full rounded-2xl text-base px-6 py-4 shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:shadow-[0_0_30px_rgba(20,184,166,0.5)] transition-all bg-[var(--engine-govern)] text-black border-none font-semibold flex items-center justify-center gap-2">
+              <Link to="/govern/audit" className={cn(buttonVariants({ variant: "default", size: "lg" }), "w-full rounded-2xl text-base px-6 py-4 shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:shadow-[0_0_30px_rgba(20,184,166,0.5)] transition-all bg-[var(--engine-govern)] hover:opacity-90 text-black border-none font-semibold flex items-center justify-center gap-2")}>
                 Open audit ledger
                 <ArrowUpRight size={18} />
-              </ButtonLink>
+              </Link>
             </div>
           </aside>
         </div>
 
-        <GovernFooter
-          auditId={GOVERNANCE_META['/govern'].auditId}
-          pageContext={GOVERNANCE_META['/govern'].pageContext}
-        />
       </motion.div>
-    </div>
+    </>
   )
 }

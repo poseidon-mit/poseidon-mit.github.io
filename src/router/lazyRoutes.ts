@@ -138,6 +138,7 @@ export const routeLoaders = {
   // ─── Execute ────────────────────────────────────────────────────────────────
   '/execute': () => import('../pages/Execute'),
   '/execute/approval': () => import('../pages/ExecuteApproval'),
+  '/execute/history': () => import('../pages/ExecuteHistory'),
 
   // ─── Govern ─────────────────────────────────────────────────────────────────
   '/govern': () => import('../pages/Govern'),

@@ -9,11 +9,10 @@ import {
   RotateCcw,
   ArrowUpRight,
 } from 'lucide-react'
-import { useRouter } from '@/router'
+import { useRouter, Link } from '@/router'
 // Removed Dialog import
-import { AuroraPulse, EmptyState, GovernFooter } from '@/components/poseidon'
-import { GOVERNANCE_META } from '@/lib/governance-meta'
-import { DEMO_THREAD } from '@/lib/demo-thread'
+import { EmptyState } from '@/components/poseidon'
+import { DEMO_DATA } from '@/lib/constants/mock-data'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { ENGINE_BADGE_CLASS, ENGINE_COLOR_MAP } from '@/lib/engine-color-map'
 import { useDemoState } from '@/lib/demo-state/provider'
@@ -23,7 +22,8 @@ import {
   getDeferredExecuteCount,
   getPendingExecuteCount,
 } from '@/lib/demo-state/selectors'
-import { Button, ButtonLink, Surface } from '@/design-system'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
 import { useToast } from '@/hooks/useToast'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
@@ -73,10 +73,10 @@ export const QUEUE_ACTIONS: QueueAction[] = [
     id: 'EXE-002',
     title: 'Block wire transfer',
     engine: 'Protect',
-    amount: `$${DEMO_THREAD.criticalAlert.amount.toLocaleString()}`,
-    confidence: DEMO_THREAD.criticalAlert.confidence,
+    amount: DEMO_DATA.EXECUTE_AMOUNT,
+    confidence: DEMO_DATA.EXECUTE_CONFIDENCE,
     time: '14:15',
-    description: `Suspicious $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} wire transfer from Checking to ${DEMO_THREAD.criticalAlert.merchant}`,
+    description: `Suspicious ${DEMO_DATA.EXECUTE_AMOUNT} wire transfer from Checking to ${DEMO_DATA.EXECUTE_VENDOR}`,
     urgency: 'high',
     impact: {
       approved: 'Wire transfer is blocked and dispute workflow opens automatically.',
@@ -203,8 +203,7 @@ export default function ExecutePage() {
   // Removed handleConfirmDecision and confirmAction variables
 
   return (
-    <div className="relative min-h-screen w-full">
-      <AuroraPulse engine="execute" />
+    <>
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
@@ -215,8 +214,7 @@ export default function ExecutePage() {
 
       <motion.div
         id="main-content"
-        className="mx-auto flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12 w-full"
-        style={{ maxWidth: '1440px' }}
+        className="flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12 w-full"
         variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
@@ -228,7 +226,7 @@ export default function ExecutePage() {
             Execute Engine
           </motion.div>
           <motion.h1 variants={fadeUpVariant} className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight tabular-nums text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-            {pendingCount} actions queued. <br className="hidden lg:block" />Projected savings: <span className="text-[var(--engine-execute)] font-mono drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]">${DEMO_THREAD.monthlySavings}/mo</span>.
+            {pendingCount} actions queued. <br className="hidden lg:block" />Projected savings: <span className="text-[var(--engine-execute)] font-mono drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]">${DEMO_DATA.MONTHLY_SAVINGS}/mo</span>.
           </motion.h1>
 
         </motion.section>
@@ -239,7 +237,7 @@ export default function ExecutePage() {
               <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 pl-2">Pending approval ({pendingActions.length})</h2>
 
               {pendingActions.length === 0 ? (
-                <Surface className="relative overflow-hidden rounded-[32px] p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex items-center justify-center">
+                <motion.div className="relative overflow-hidden rounded-[32px] p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex items-center justify-center">
                   <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                   <EmptyState
                     icon={CheckCircle2}
@@ -248,13 +246,12 @@ export default function ExecutePage() {
                     accentColor="var(--state-healthy)"
                     action={{ label: 'Open execution history', onClick: () => navigate('/execute/history') }}
                   />
-                </Surface>
+                </motion.div>
               ) : null}
 
               {pendingActions.map((action) => (
                 <motion.div key={action.id} variants={fadeUpVariant}>
-                  <Surface
-                    interactive
+                  <motion.div
                     className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] hover:border-white/[0.15] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-5 transition-all"
                     style={{ borderLeftWidth: 4, borderLeftColor: ENGINE_COLOR_MAP[action.engine] }}
                   >
@@ -305,28 +302,24 @@ export default function ExecutePage() {
                     </div>
 
                     <div className="relative z-10 flex flex-wrap gap-4 mt-2">
-                      <ButtonLink
+                      <Link
                         to={`/execute/approval?actionId=${action.id}`}
-                        variant="primary"
-                        engine="execute"
-                        className="rounded-2xl text-sm px-6 py-3 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.5)] transition-all bg-[var(--engine-execute)] text-black border-none font-semibold"
+                        className={cn(buttonVariants({ variant: "default", size: "lg" }), "rounded-2xl text-sm px-6 py-3 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.5)] transition-all bg-[var(--engine-execute)] hover:opacity-90 text-black border-none font-semibold flex items-center")}
                       >
                         Review & Approve
                         <ArrowUpRight size={16} className="ml-2" />
-                      </ButtonLink>
-                      <Button
-                        variant="ghost"
-                        engine="execute"
-                        className="rounded-2xl text-sm px-6 py-3 border border-white/10 hover:bg-white/10 transition-all font-semibold text-white/50 hover:text-white"
+                      </Link>
+                      <button
+                        className={cn(buttonVariants({ variant: "ghost", size: "lg" }), "rounded-2xl text-sm px-6 py-3 border border-white/10 hover:bg-white/10 transition-all font-semibold text-white/50 hover:text-white cursor-pointer")}
                         onClick={() => {
                           setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'deferred' })
                           showToast({ message: 'Action dismissed', variant: 'info' })
                         }}
                       >
                         Dismiss
-                      </Button>
+                      </button>
                     </div>
-                  </Surface>
+                  </motion.div>
                 </motion.div>
               ))}
 
@@ -336,7 +329,7 @@ export default function ExecutePage() {
                   <div className="flex flex-col gap-3">
                     {deferredActions.map((action) => (
                       <motion.div key={action.id} variants={fadeUpVariant}>
-                        <Surface className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl flex items-center gap-4 opacity-70 hover:opacity-100 transition-opacity">
+                        <motion.div className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl flex items-center gap-4 opacity-70 hover:opacity-100 transition-opacity">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-[var(--state-warning)]/20 shadow-inner" style={{ background: 'rgba(234,179,8,0.1)' }}>
                             <Clock size={18} style={{ color: 'var(--state-warning)' }} className="drop-shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
                           </div>
@@ -345,7 +338,7 @@ export default function ExecutePage() {
                             <span className="text-xs font-mono block text-white/40 mt-1">{action.id}</span>
                           </div>
                           <span className="text-xs font-mono text-white/30 tracking-widest">{action.time}</span>
-                        </Surface>
+                        </motion.div>
                       </motion.div>
                     ))}
                   </div>
@@ -358,7 +351,7 @@ export default function ExecutePage() {
                   <div className="flex flex-col gap-3">
                     {completedActions.map((action) => (
                       <motion.div key={action.id} variants={fadeUpVariant}>
-                        <Surface className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl flex items-center gap-4 opacity-50 hover:opacity-80 transition-opacity">
+                        <motion.div className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl flex items-center gap-4 opacity-50 hover:opacity-80 transition-opacity">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-[var(--state-healthy)]/20 shadow-inner" style={{ background: 'rgba(34,197,94,0.1)' }}>
                             <CheckCircle2 size={18} style={{ color: 'var(--state-healthy)' }} className="drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
                           </div>
@@ -367,7 +360,7 @@ export default function ExecutePage() {
                             <span className="text-xs font-mono block text-white/40 mt-1">{action.id}</span>
                           </div>
                           <span className="text-xs font-mono text-white/30 tracking-widest">{action.time}</span>
-                        </Surface>
+                        </motion.div>
                       </motion.div>
                     ))}
                   </div>
@@ -379,7 +372,7 @@ export default function ExecutePage() {
           <motion.aside className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6" aria-label="Execute sidebar" variants={staggerContainerVariant}>
             <div className="sticky top-24 flex flex-col gap-6">
               <motion.div variants={fadeUpVariant}>
-                <Surface className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
+                <motion.div className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
                   <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 mb-2 relative z-10">Queue Summary</h3>
                   <div className="space-y-4 relative z-10">
@@ -397,11 +390,11 @@ export default function ExecutePage() {
                       </div>
                     ))}
                   </div>
-                </Surface>
+                </motion.div>
               </motion.div>
 
               <motion.div variants={fadeUpVariant}>
-                <Surface className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
+                <motion.div className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
                   <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 mb-2 relative z-10">Savings Tracker</h3>
                   <div className="relative z-10 flex items-center gap-4">
@@ -410,7 +403,7 @@ export default function ExecutePage() {
                     </div>
                     <div className="flex flex-col">
                       <span className="text-3xl font-light font-mono tabular-nums tracking-tight text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-                        ${DEMO_THREAD.monthlySavings}<span className="text-lg text-white/40">/mo</span>
+                        ${DEMO_DATA.MONTHLY_SAVINGS}<span className="text-lg text-white/40">/mo</span>
                       </span>
                       <div className="flex items-center gap-1.5 mt-1">
                         <TrendingUp size={12} style={{ color: 'var(--state-healthy)' }} />
@@ -418,11 +411,11 @@ export default function ExecutePage() {
                       </div>
                     </div>
                   </div>
-                </Surface>
+                </motion.div>
               </motion.div>
 
               <motion.div variants={fadeUpVariant}>
-                <Surface className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
+                <motion.div className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-govern)]/10 to-transparent pointer-events-none" />
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 mb-2 relative z-10">Rollback Safety</h3>
                   <p className="text-sm leading-relaxed text-white/70 tracking-wide relative z-10">
@@ -434,26 +427,20 @@ export default function ExecutePage() {
                       {state.execute.rollbackCount24h} active rollbacks
                     </span>
                   </div>
-                </Surface>
+                </motion.div>
               </motion.div>
 
               <motion.div variants={fadeUpVariant} className="flex">
-                <ButtonLink to="/execute/history" variant="glass" engine="execute" className="w-full rounded-2xl text-sm px-6 py-4 flex items-center justify-between border border-white/[0.1] hover:bg-white/[0.05] transition-all">
+                <Link to="/execute/history" className={cn(buttonVariants({ variant: "glass", size: "lg" }), "w-full rounded-2xl text-sm px-6 py-4 flex items-center justify-between border border-white/[0.1] hover:bg-white/[0.05] transition-all")}>
                   <span className="font-semibold tracking-wide text-white/80">Review execution history</span>
                   <ArrowUpRight size={18} className="text-white/40" />
-                </ButtonLink>
+                </Link>
               </motion.div>
             </div>
           </motion.aside>
         </div>
 
-        <GovernFooter
-          auditId={GOVERNANCE_META['/execute'].auditId}
-          pageContext={GOVERNANCE_META['/execute'].pageContext}
-        />
       </motion.div>
-
-
-    </div>
+    </>
   )
 }

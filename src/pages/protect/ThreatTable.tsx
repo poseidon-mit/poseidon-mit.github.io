@@ -23,7 +23,8 @@ import type { ViewMode } from '@/hooks/useViewMode'
 import { fadeUp } from '@/lib/motion-presets'
 import { signals, shapFactors, quickActions, protectReasoningSteps } from './protect-data'
 import type { Signal } from './protect-data'
-import { Surface, Button } from '@/design-system'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
 
 /* ─── Props ───────────────────────────────────────────────── */
 
@@ -102,179 +103,173 @@ export function ThreatTable({ navigate, viewMode = 'detail' }: ThreatTableProps)
   return (
     <motion.div variants={fadeUp} className="flex min-w-0 flex-[2] flex-col gap-5">
       {/* Threat Table */}
-      <Surface variant="glass" padding="md"
-        borderColor="var(--engine-protect)"
-        style={{
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.1)',
-        }}
+      <div
+        className="relative overflow-hidden rounded-[24px] border backdrop-blur-3xl bg-black/60 shadow-xl p-6 flex flex-col gap-4"
+        style={{ borderColor: 'var(--engine-protect)' }}
       >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
-            <AlertTriangle size={18} style={{ color: 'var(--engine-protect)' }} aria-hidden="true" />
-            Threat Signals
-          </h2>
-          <span
-            className="rounded-full px-2.5 py-1 text-xs font-semibold"
-            style={{ background: 'rgba(var(--state-warning-rgb),0.15)', color: 'var(--state-warning)', border: '1px solid rgba(var(--state-warning-rgb),0.3)' }}
-          >
-            3 active
-          </span>
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+        <div className="relative z-10 flex flex-col gap-4">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-lg font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
+              <AlertTriangle size={18} style={{ color: 'var(--engine-protect)' }} aria-hidden="true" />
+              Threat Signals
+            </h2>
+            <span
+              className="rounded-full px-2.5 py-1 text-xs font-semibold"
+              style={{ background: 'rgba(var(--state-warning-rgb),0.15)', color: 'var(--state-warning)', border: '1px solid rgba(var(--state-warning-rgb),0.3)' }}
+            >
+              3 active
+            </span>
+          </div>
 
-        {/* Desktop Table */}
-        <div className="hidden md:block">
-          <table className="w-full" role="table">
-            <thead>
-              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                {['Severity', 'Signal', 'Amount', 'Confidence', 'Time', 'Actions'].map((h) => (
-                  <th
-                    key={h}
-                    className="pb-3 text-left text-xs font-medium uppercase tracking-wider"
-                    style={{ color: '#64748B' }}
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {signals.map((s: Signal) => (
-                <React.Fragment key={s.id}>
-                  <tr
-                    className="cursor-pointer transition-colors"
-                    style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
-                    onClick={() => setExpandedSignal(expandedSignal === s.id ? null : s.id)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExpandedSignal(expandedSignal === s.id ? null : s.id); }}
-                    aria-expanded={expandedSignal === s.id}
-                  >
-                    <td className="py-3 pr-3">
-                      <SeverityBadge severity={s.severity} />
-                    </td>
-                    <td className="py-3 pr-3">
-                      <div>
-                        <p className="text-sm font-medium" style={{ color: '#F1F5F9' }}>{s.title}</p>
-                        <p className="text-xs" style={{ color: '#64748B' }}>{s.merchant}</p>
-                      </div>
-                    </td>
-                    <td className="py-3 pr-3 font-mono text-sm font-semibold" style={{ color: '#F1F5F9' }}>
-                      {s.amount}
-                    </td>
-                    <td className="py-3 pr-3">
-                      <MiniScoreRing value={s.confidence} />
-                    </td>
-                    <td className="py-3 pr-3">
-                      <div className="flex items-center gap-1.5">
-                        <Clock className="h-3.5 w-3.5" style={{ color: '#64748B' }} />
-                        <span className="text-sm" style={{ color: '#CBD5E1' }}>{s.time}</span>
-                      </div>
-                    </td>
-                    <td className="py-3">
-                      <Button
-                        className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors"
-                        variant="glass"
-                        engine="protect"
-                        size="sm"
-                        onClick={(e) => { e.stopPropagation(); navigate('/protect/alert-detail'); }}
-                      >
-                        <Eye className="h-3.5 w-3.5" />
-                        View
-                      </Button>
-                    </td>
-                  </tr>
-                  {/* Expanded row */}
-                  {expandedSignal === s.id && (
-                    <tr>
-                      <td colSpan={6} className="pb-4 pt-1">
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="flex flex-col gap-4"
+          {/* Desktop Table */}
+          <div className="hidden md:block">
+            <table className="w-full" role="table">
+              <thead>
+                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                  {['Severity', 'Signal', 'Amount', 'Confidence', 'Time', 'Actions'].map((h) => (
+                    <th
+                      key={h}
+                      className="pb-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style={{ color: '#64748B' }}
+                    >
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {signals.map((s: Signal) => (
+                  <React.Fragment key={s.id}>
+                    <tr
+                      className="cursor-pointer transition-colors"
+                      style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+                      onClick={() => setExpandedSignal(expandedSignal === s.id ? null : s.id)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExpandedSignal(expandedSignal === s.id ? null : s.id); }}
+                      aria-expanded={expandedSignal === s.id}
+                    >
+                      <td className="py-3 pr-3">
+                        <SeverityBadge severity={s.severity} />
+                      </td>
+                      <td className="py-3 pr-3">
+                        <div>
+                          <p className="text-sm font-medium" style={{ color: '#F1F5F9' }}>{s.title}</p>
+                          <p className="text-xs" style={{ color: '#64748B' }}>{s.merchant}</p>
+                        </div>
+                      </td>
+                      <td className="py-3 pr-3 font-mono text-sm font-semibold" style={{ color: '#F1F5F9' }}>
+                        {s.amount}
+                      </td>
+                      <td className="py-3 pr-3">
+                        <MiniScoreRing value={s.confidence} />
+                      </td>
+                      <td className="py-3 pr-3">
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="h-3.5 w-3.5" style={{ color: '#64748B' }} />
+                          <span className="text-sm" style={{ color: '#CBD5E1' }}>{s.time}</span>
+                        </div>
+                      </td>
+                      <td className="py-3">
+                        <button
+                          className={cn(buttonVariants({ variant: "glass", size: "sm" }), "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors")}
+                          onClick={(e) => { e.stopPropagation(); navigate('/protect/alert-detail'); }}
                         >
-                          <SHAPPanel />
-                          {viewMode === 'deep' && (
-                            <ReasoningChain steps={protectReasoningSteps} accentColor="var(--engine-protect)" />
-                          )}
-                        </motion.div>
+                          <Eye className="h-3.5 w-3.5" />
+                          View
+                        </button>
                       </td>
                     </tr>
-                  )}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    {/* Expanded row */}
+                    {expandedSignal === s.id && (
+                      <tr>
+                        <td colSpan={6} className="pb-4 pt-1">
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="flex flex-col gap-4"
+                          >
+                            <SHAPPanel />
+                            {viewMode === 'deep' && (
+                              <ReasoningChain steps={protectReasoningSteps} accentColor="var(--engine-protect)" />
+                            )}
+                          </motion.div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-        {/* Mobile Card View */}
-        <div className="flex flex-col gap-3 md:hidden">
-          {signals.map((s: Signal) => (
-            <div key={s.id}>
-              <div
-                className="flex flex-col gap-3 rounded-xl p-3 transition-colors"
-                style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.06)',
-                  borderLeft: `3px solid ${s.severity === 'critical' ? 'var(--state-critical)' : s.severity === 'warning' ? 'var(--state-warning)' : '#38BDF8'}`,
-                }}
-                role="button"
-                tabIndex={0}
-                onClick={() => setExpandedSignal(expandedSignal === s.id ? null : s.id)}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExpandedSignal(expandedSignal === s.id ? null : s.id); }}
-                aria-expanded={expandedSignal === s.id}
-              >
-                <div className="flex items-center justify-between">
-                  <SeverityBadge severity={s.severity} />
-                  <span className="text-xs" style={{ color: '#64748B' }}>{s.time}</span>
-                </div>
-                <div>
-                  <p className="text-sm font-medium" style={{ color: '#F1F5F9' }}>{s.title}</p>
-                  <p className="text-xs" style={{ color: '#64748B' }}>{s.merchant}</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-sm font-semibold" style={{ color: '#F1F5F9' }}>{s.amount}</span>
-                  <MiniScoreRing value={s.confidence} />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Button
-                    className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold"
-                    variant="glass"
-                    engine="protect"
-                    size="sm"
-                    onClick={(e) => { e.stopPropagation(); navigate('/protect/alert-detail'); }}
-                  >
-                    <Eye className="h-3.5 w-3.5" />
-                    View
-                  </Button>
-                  <ChevronDown
-                    className="h-4 w-4 transition-transform"
-                    style={{
-                      color: '#64748B',
-                      transform: expandedSignal === s.id ? 'rotate(180deg)' : 'rotate(0deg)',
-                    }}
-                  />
-                </div>
-              </div>
-              {expandedSignal === s.id && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  transition={{ duration: 0.3 }}
-                  className="mt-2 flex flex-col gap-4"
+          {/* Mobile Card View */}
+          <div className="flex flex-col gap-3 md:hidden">
+            {signals.map((s: Signal) => (
+              <div key={s.id}>
+                <div
+                  className="flex flex-col gap-3 rounded-xl p-3 transition-colors"
+                  style={{
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderLeft: `3px solid ${s.severity === 'critical' ? 'var(--state-critical)' : s.severity === 'warning' ? 'var(--state-warning)' : '#38BDF8'}`,
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setExpandedSignal(expandedSignal === s.id ? null : s.id)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExpandedSignal(expandedSignal === s.id ? null : s.id); }}
+                  aria-expanded={expandedSignal === s.id}
                 >
-                  <SHAPPanel />
-                  {viewMode === 'deep' && (
-                    <ReasoningChain steps={protectReasoningSteps} accentColor="var(--engine-protect)" />
-                  )}
-                </motion.div>
-              )}
-            </div>
-          ))}
+                  <div className="flex items-center justify-between">
+                    <SeverityBadge severity={s.severity} />
+                    <span className="text-xs" style={{ color: '#64748B' }}>{s.time}</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium" style={{ color: '#F1F5F9' }}>{s.title}</p>
+                    <p className="text-xs" style={{ color: '#64748B' }}>{s.merchant}</p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-sm font-semibold" style={{ color: '#F1F5F9' }}>{s.amount}</span>
+                    <MiniScoreRing value={s.confidence} />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <button
+                      className={cn(buttonVariants({ variant: "glass", size: "sm" }), "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold")}
+                      onClick={(e) => { e.stopPropagation(); navigate('/protect/alert-detail'); }}
+                    >
+                      <Eye className="h-3.5 w-3.5" />
+                      View
+                    </button>
+                    <ChevronDown
+                      className="h-4 w-4 transition-transform"
+                      style={{
+                        color: '#64748B',
+                        transform: expandedSignal === s.id ? 'rotate(180deg)' : 'rotate(0deg)',
+                      }}
+                    />
+                  </div>
+                </div>
+                {expandedSignal === s.id && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-2 flex flex-col gap-4"
+                  >
+                    <SHAPPanel />
+                    {viewMode === 'deep' && (
+                      <ReasoningChain steps={protectReasoningSteps} accentColor="var(--engine-protect)" />
+                    )}
+                  </motion.div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-      </Surface>
+      </div>
 
       {/* DefinitionLine */}
       <div
@@ -287,51 +282,51 @@ export function ThreatTable({ navigate, viewMode = 'detail' }: ThreatTableProps)
       </div>
 
       {/* Quick Actions */}
-      <Surface variant="glass" padding="md"
-        borderColor="var(--engine-protect)"
-        style={{
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.1)',
-        }}
+      <div
+        className="relative overflow-hidden rounded-[24px] border backdrop-blur-3xl bg-black/60 shadow-xl p-6 flex flex-col gap-4"
+        style={{ borderColor: 'var(--engine-protect)' }}
       >
-        <h2 className="mb-4 text-lg font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
-          <Zap size={18} style={{ color: 'var(--engine-protect)' }} aria-hidden="true" />
-          Quick Actions
-        </h2>
-        <div className="flex flex-col gap-3">
-          {quickActions.map((a) => (
-            <div
-              key={a.title}
-              className="flex items-center gap-3 rounded-xl p-3 transition-colors"
-              style={{
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.06)',
-                borderLeft: `3px solid ${a.color}`,
-                cursor: 'pointer',
-              }}
-              role="button"
-              tabIndex={0}
-              onClick={() => { if (a.route) navigate(a.route); }}
-              onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && a.route) navigate(a.route); }}
-            >
+        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+        <div className="relative z-10 flex flex-col gap-4">
+          <h2 className="mb-4 text-lg font-semibold flex items-center gap-2" style={{ color: '#F1F5F9' }}>
+            <Zap size={18} style={{ color: 'var(--engine-protect)' }} aria-hidden="true" />
+            Quick Actions
+          </h2>
+          <div className="flex flex-col gap-3">
+            {quickActions.map((a) => (
               <div
-                className="h-2.5 w-2.5 shrink-0 rounded-full"
-                style={{ background: a.color }}
-              />
-              <div className="flex-1">
-                <p className="text-sm font-medium" style={{ color: '#F1F5F9' }}>{a.title}</p>
-                <p className="text-xs flex items-center gap-1" style={{ color: '#64748B' }}>
-                  {a.priority === 'urgent' && <AlertOctagon size={10} aria-hidden="true" />}
-                  {a.priority === 'normal' && <Clock size={10} aria-hidden="true" />}
-                  {a.priority === 'low' && <ArrowDown size={10} aria-hidden="true" />}
-                  {a.priority === 'urgent' ? 'Immediate' : a.priority === 'normal' ? '24h SLA' : 'Low'}
-                </p>
+                key={a.title}
+                className="flex items-center gap-3 rounded-xl p-3 transition-colors"
+                style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  borderLeft: `3px solid ${a.color}`,
+                  cursor: 'pointer',
+                }}
+                role="button"
+                tabIndex={0}
+                onClick={() => { if (a.route) navigate(a.route); }}
+                onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && a.route) navigate(a.route); }}
+              >
+                <div
+                  className="h-2.5 w-2.5 shrink-0 rounded-full"
+                  style={{ background: a.color }}
+                />
+                <div className="flex-1">
+                  <p className="text-sm font-medium" style={{ color: '#F1F5F9' }}>{a.title}</p>
+                  <p className="text-xs flex items-center gap-1" style={{ color: '#64748B' }}>
+                    {a.priority === 'urgent' && <AlertOctagon size={10} aria-hidden="true" />}
+                    {a.priority === 'normal' && <Clock size={10} aria-hidden="true" />}
+                    {a.priority === 'low' && <ArrowDown size={10} aria-hidden="true" />}
+                    {a.priority === 'urgent' ? 'Immediate' : a.priority === 'normal' ? '24h SLA' : 'Low'}
+                  </p>
+                </div>
+                <ExternalLink className="h-4 w-4 shrink-0" style={{ color: '#64748B' }} />
               </div>
-              <ExternalLink className="h-4 w-4 shrink-0" style={{ color: '#64748B' }} />
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </Surface>
+      </div>
     </motion.div>
   )
 }

@@ -244,12 +244,16 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
     });
 
   return (
-    <CommandDialog open={isOpen} onOpenChange={(open) => { if (!open) { if (isListening) stopListening(); setSearchValue(''); onClose(); } }}>
-      <div className="flex items-center border-b border-white/5 px-2">
+    <CommandDialog
+      open={isOpen}
+      onOpenChange={(open) => { if (!open) { if (isListening) stopListening(); setSearchValue(''); onClose(); } }}
+    >
+      <div className="flex items-center border-b border-white/5 px-2 bg-black/40 backdrop-blur-3xl">
         <CommandInput
           placeholder={isListening ? 'Listening…' : 'Search engines, actions, presentations…'}
           value={searchValue}
           onValueChange={setSearchValue}
+          className="bg-transparent"
         />
         {isSupported && (
           <Button

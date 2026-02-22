@@ -23,7 +23,8 @@ import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { AuroraPulse, EmptyState, GovernFooter, PreviewBadge } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
-import { Surface, Button, ButtonLink } from '@/design-system'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { useRouter } from '@/router'
 
@@ -177,10 +178,10 @@ export default function GovernAuditPage() {
               {filterTabs.map(f => {
                 const isActive = f.label === activeFilter
                 return (
-                  <Button key={f.label} role="tab" aria-selected={isActive} onClick={() => setActiveFilter(f.label)} variant={isActive ? "primary" : "glass"} engine="govern" size="sm" className={`rounded-full text-xs transition-all ${isActive ? 'bg-[var(--engine-govern)] text-black font-semibold shadow-[0_0_15px_rgba(20,184,166,0.4)] border-none' : 'text-white/70 hover:text-white'}`} springPress={false}>
+                  <button key={f.label} role="tab" aria-selected={isActive} onClick={() => setActiveFilter(f.label)} className={cn(buttonVariants({ variant: isActive ? "default" : "glass", size: "sm" }), `rounded-full text-xs transition-all cursor-pointer ${isActive ? 'bg-[var(--engine-govern)] text-black font-semibold shadow-[0_0_15px_rgba(20,184,166,0.4)] border-none hover:opacity-90' : 'text-white/70 hover:text-white'}`)}>
                     {f.label}
                     {f.count != null && <span className={`text-[10px] ml-1.5 px-1.5 py-0.5 rounded-full ${isActive ? 'bg-black/20 text-black' : 'bg-white/10 text-white/50'}`}>{f.count}</span>}
-                  </Button>
+                  </button>
                 )
               })}
             </div>
@@ -192,7 +193,7 @@ export default function GovernAuditPage() {
           <div className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-6">
             {/* Desktop table */}
             <div className="hidden md:block">
-              <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-0">
+              <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-0">
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
                 {sorted.length === 0 ? (
                   <div className="p-12 relative z-10">
@@ -257,13 +258,13 @@ export default function GovernAuditPage() {
                     </tbody>
                   </table>
                 </div>
-              </Surface>
+              </div>
             </div>
 
             {/* Mobile cards */}
             <div className="flex flex-col gap-4 md:hidden">
               {sorted.length === 0 ? (
-                <Surface className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-8">
+                <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-8">
                   <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
                   <div className="relative z-10">
                     <EmptyState
@@ -273,14 +274,14 @@ export default function GovernAuditPage() {
                       accentColor="var(--engine-govern)"
                     />
                   </div>
-                </Surface>
+                </div>
               ) : null}
               {sorted.map(entry => {
                 const sCfg = statusCfg[entry.status]
                 const SIcon = sCfg.icon
                 return (
                   <motion.div key={entry.id} variants={fadeUpVariant}>
-                    <Surface className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-5 flex flex-col gap-4">
+                    <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-5 flex flex-col gap-4">
                       <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
                       <div className="relative z-10 flex items-center gap-2 flex-wrap pb-3 border-b border-white/[0.06]">
                         <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase font-bold tracking-widest border border-white/[0.05]" style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}><CircleDot size={12} />{entry.type}</span>
@@ -301,7 +302,7 @@ export default function GovernAuditPage() {
                         <span className="text-xs text-white/50 tracking-wide">{entry.evidence} evidence pts</span>
                         <span className="text-xs font-mono tracking-widest" style={{ color: getConfidenceColor(entry.confidence), textShadow: `0 0 10px ${getConfidenceColor(entry.confidence)}50` }}>Conf: {formatConfidence(entry.confidence)}</span>
                       </div>
-                    </Surface>
+                    </div>
                   </motion.div>
                 )
               })}
@@ -312,7 +313,7 @@ export default function GovernAuditPage() {
           <aside className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6" aria-label="Audit sidebar">
             <div className="sticky top-24 flex flex-col gap-6">
               {/* Summary */}
-              <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-5">
+              <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-5">
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                 <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Audit Summary</h3>
                 <div className="relative z-10 flex flex-col gap-4">
@@ -330,10 +331,10 @@ export default function GovernAuditPage() {
                     </div>
                   ))}
                 </div>
-              </Surface>
+              </div>
 
               {/* Evidence flow */}
-              <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
+              <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                 <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Evidence Flow</h3>
                 <div className="relative z-10 flex flex-col gap-3 mt-2">
@@ -344,26 +345,26 @@ export default function GovernAuditPage() {
                     </React.Fragment>
                   ))}
                 </div>
-              </Surface>
+              </div>
 
               {/* Export */}
-              <Surface className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-5">
+              <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-5">
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
                 <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Export Options</h3>
                 <div className="relative z-10 flex flex-col gap-3">
-                  <Button disabled title="Export available in production release" variant="glass" engine="govern" fullWidth className="rounded-2xl text-sm py-4 cursor-not-allowed opacity-60 border border-white/[0.08] hover:border-white/[0.08]" aria-label="Export full ledger preview only">
+                  <button disabled title="Export available in production release" className={cn(buttonVariants({ variant: "glass" }), "w-full rounded-2xl text-sm py-4 cursor-not-allowed opacity-60 border border-white/[0.08] hover:border-white/[0.08]")} aria-label="Export full ledger preview only">
                     <Download size={16} className="mr-2" />Export full ledger (CSV)<PreviewBadge className="ml-2" />
-                  </Button>
-                  <Button disabled title="Export available in production release" variant="glass" engine="govern" fullWidth className="rounded-2xl text-sm py-4 cursor-not-allowed opacity-60 border border-white/[0.08] hover:border-white/[0.08]" aria-label="Generate compliance report preview only">
+                  </button>
+                  <button disabled title="Export available in production release" className={cn(buttonVariants({ variant: "glass" }), "w-full rounded-2xl text-sm py-4 cursor-not-allowed opacity-60 border border-white/[0.08] hover:border-white/[0.08]")} aria-label="Generate compliance report preview only">
                     <FileText size={16} className="mr-2" />Generate report (PDF)<PreviewBadge className="ml-2" />
-                  </Button>
+                  </button>
                 </div>
-              </Surface>
+              </div>
 
               {/* Primary CTA: Back to govern overview -> /govern */}
-              <ButtonLink to="/govern" variant="glass" engine="govern" className="w-full rounded-2xl text-lg px-6 py-5 shadow-[0_0_20px_rgba(20,184,166,0.15)] hover:shadow-[0_0_30px_rgba(20,184,166,0.3)] transition-all bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] text-white font-semibold flex items-center justify-center gap-2">
+              <Link to="/govern" className={cn(buttonVariants({ variant: "glass", size: "lg" }), "w-full rounded-2xl text-lg px-6 py-5 shadow-[0_0_20px_rgba(20,184,166,0.15)] hover:shadow-[0_0_30px_rgba(20,184,166,0.3)] transition-all bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] text-white font-semibold flex items-center justify-center gap-2")}>
                 <ArrowLeft size={18} />Back to govern overview
-              </ButtonLink>
+              </Link>
             </div>
           </aside>
         </div>
