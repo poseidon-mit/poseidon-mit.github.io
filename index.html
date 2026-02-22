@@ -68,44 +68,11 @@
       min-height: 100vh;
     }
 
-    .boot-fallback {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      background: radial-gradient(70% 70% at 50% 15%, rgba(0, 240, 255, 0.14), rgba(11, 18, 33, 0));
-    }
-
-    .boot-fallback__panel {
-      display: grid;
-      gap: 8px;
-      justify-items: center;
-    }
-
-    .boot-fallback__badge {
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 999px;
-      padding: 8px 14px;
-      letter-spacing: 0.04em;
-      font-size: 12px;
-      color: #b7c4da;
-    }
-
-    .boot-fallback__value {
-      font-size: 13px;
-      color: rgba(214, 227, 245, 0.84);
-    }
   </style>
 </head>
 
 <body>
-  <div id="root">
-    <div class="boot-fallback">
-      <div class="boot-fallback__panel">
-        <div class="boot-fallback__badge">Poseidon</div>
-        <div class="boot-fallback__value">Protect, Grow, Execute, Govern.</div>
-      </div>
-    </div>
-  </div>
+  <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 
