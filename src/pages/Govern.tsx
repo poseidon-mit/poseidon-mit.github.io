@@ -1,52 +1,47 @@
-import { motion } from "framer-motion"
-import { Link, useRouter } from '@/router'
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { useRouter } from '@/router'
 import {
-  Scale,
-  Shield,
   ShieldCheck,
-  ExternalLink,
-  User,
-  CheckCircle2,
   Clock,
   AlertTriangle,
   ArrowUpRight,
+  ArrowUpDown,
+  Search,
   CircleDot,
+  ChevronDown,
   type LucideIcon,
 } from "lucide-react"
-import { DEMO_DATA } from '@/lib/constants/mock-data'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { getMotionPreset } from '@/lib/motion-presets'
-import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 /* ── Cross-thread values (Single Source of Truth) ── */
-const DECISIONS_AUDITED = 1247
-const COMPLIANCE_SCORE = DEMO_DATA.COMPLIANCE_SCORE
-const VERIFIED_COUNT = 1189
-const PENDING_REVIEW_COUNT = DEMO_DATA.AUDIT_COUNT
+const DECISIONS_AUDITABLE = 50
+const REVIEW_RECOMMENDED_COUNT = 10
 const FLAGGED_COUNT = 3
-const VERIFIED_PERCENT = DEMO_DATA.VERIFIED_PCT
 
 /* ── Data ── */
 type DecisionType = "Protect" | "Grow" | "Execute" | "Govern"
-type DecisionStatus = "Verified" | "Pending" | "Flagged"
+type DecisionStatus = "Review Recommended" | "Flagged"
 
 const typeColor: Record<DecisionType, string> = { Protect: "var(--engine-protect)", Grow: "var(--engine-grow)", Execute: "var(--engine-execute)", Govern: "var(--engine-govern)" }
-const statusConfig: Record<DecisionStatus, { color: string; bg: string; icon: LucideIcon }> = {
-  Verified: { color: "var(--engine-govern)", bg: "rgba(59,130,246,0.12)", icon: CheckCircle2 },
-  Pending: { color: "var(--state-warning)", bg: "rgba(245,158,11,0.12)", icon: Clock },
-  Flagged: { color: "var(--state-critical)", bg: "rgba(239,68,68,0.12)", icon: AlertTriangle },
+const statusConfig: Record<DecisionStatus, { color: string; icon: LucideIcon }> = {
+  "Review Recommended": { color: "var(--state-warning)", icon: Clock },
+  Flagged: { color: "var(--state-critical)", icon: AlertTriangle },
 }
 
-const ledgerEntries = [
-  { id: "GV-2026-0319-847", type: "Execute" as DecisionType, action: "Portfolio rebalance", confidence: 0.97, status: "Verified" as DecisionStatus, time: formatDemoTimestamp("2026-03-19T14:28:00-04:00") },
-  { id: "GV-2026-0319-846", type: "Protect" as DecisionType, action: "Block wire transfer", confidence: 0.94, status: "Verified" as DecisionStatus, time: formatDemoTimestamp("2026-03-19T14:15:00-04:00") },
-  { id: "GV-2026-0319-845", type: "Grow" as DecisionType, action: "Subscription consolidation", confidence: 0.89, status: "Verified" as DecisionStatus, time: formatDemoTimestamp("2026-03-19T13:52:00-04:00") },
-  { id: "GV-2026-0319-844", type: "Execute" as DecisionType, action: "Archive invoices", confidence: 0.78, status: "Pending" as DecisionStatus, time: formatDemoTimestamp("2026-03-19T11:20:00-04:00") },
-  { id: "GV-2026-0318-843", type: "Protect" as DecisionType, action: "Unusual transaction", confidence: 0.92, status: "Verified" as DecisionStatus, time: formatDemoTimestamp("2026-03-18T16:42:00-04:00") },
-  { id: "GV-2026-0318-842", type: "Govern" as DecisionType, action: "Policy update", confidence: 0.97, status: "Verified" as DecisionStatus, time: formatDemoTimestamp("2026-03-18T09:40:00-04:00") },
+const ledgerEntries: { id: string; type: DecisionType; action: string; confidence: number; status?: DecisionStatus; time: string }[] = [
+  { id: "GV-2026-0319-847", type: "Protect", action: "Block wire — TechElectro Store", confidence: 0.94, status: "Flagged", time: formatDemoTimestamp("2026-03-19T14:28:00-04:00") },
+  { id: "GV-2026-0319-846", type: "Protect", action: "Flag — Unknown Vendor", confidence: 0.87, status: "Review Recommended", time: formatDemoTimestamp("2026-03-19T14:15:00-04:00") },
+  { id: "GV-2026-0319-845", type: "Grow", action: "Increase contribution by $420", confidence: 0.89, status: "Review Recommended", time: formatDemoTimestamp("2026-03-19T13:52:00-04:00") },
+  { id: "GV-2026-0319-844", type: "Protect", action: "High-risk category — Crypto Exchange", confidence: 0.91, status: "Flagged", time: formatDemoTimestamp("2026-03-19T11:20:00-04:00") },
+  { id: "GV-2026-0318-843", type: "Protect", action: "International wire — Travel Agency XYZ", confidence: 0.72, time: formatDemoTimestamp("2026-03-18T16:42:00-04:00") },
+  { id: "GV-2026-0318-842", type: "Grow", action: "Maintain current savings rate", confidence: 0.94, time: formatDemoTimestamp("2026-03-18T09:40:00-04:00") },
+  { id: "GV-2026-0318-841", type: "Protect", action: "Unusual ATM withdrawal — Gas Station", confidence: 0.65, time: formatDemoTimestamp("2026-03-18T08:15:00-04:00") },
+  { id: "GV-2026-0317-840", type: "Grow", action: "No action needed — Home down payment", confidence: 0.91, time: formatDemoTimestamp("2026-03-17T15:30:00-04:00") },
 ]
+
 
 /* ═══════════════════════════════════════════════════════
    GOVERN PAGE
@@ -57,6 +52,7 @@ export default function GovernPage() {
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const { navigate } = useRouter()
+  const [historyOpen, setHistoryOpen] = useState(false)
 
   return (
     <>
@@ -67,26 +63,21 @@ export default function GovernPage() {
         {/* ── Hero ── */}
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 px-4 md:px-6 lg:px-8">
           <motion.div variants={fadeUpVariant}>
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-govern)]/20 bg-[var(--engine-govern)]/10 text-[var(--engine-govern)] text-xs font-bold tracking-widest uppercase self-start shadow-[0_0_15px_rgba(20,184,166,0.2)]">
-              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[var(--engine-govern)]/20"><Scale size={12} /></span>
-              Govern Engine
+            <span className="inline-flex items-center gap-2 rounded-full border border-[var(--engine-govern)]/20 bg-[var(--engine-govern)]/10 px-3 py-1.5 text-xs font-bold tracking-widest uppercase text-[var(--engine-govern)] shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+              <ShieldCheck size={12} /> Engine status: Good
             </span>
           </motion.div>
           <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-            Governance & Oversight
+            <span className="bg-gradient-to-r from-[var(--engine-govern)] to-[var(--engine-grow)] bg-clip-text text-transparent">100% auditability</span> for every AI decision
           </h1>
-          <p className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide mb-2">
-            Transparent, accountable AI. Every decision strictly audited and mathematically provable.
-          </p>
         </motion.section>
 
         {/* ── Compliance score ring + stats ── */}
         <motion.div variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 w-full">
             {[
-              { label: "Decisions audited", value: DECISIONS_AUDITED.toLocaleString(), color: "white" },
-              { label: "Verified", value: `${VERIFIED_PERCENT}%`, color: "var(--state-healthy)" },
-              { label: "Pending review", value: String(PENDING_REVIEW_COUNT), color: "var(--state-warning)" },
+              { label: "Decision auditable", value: String(DECISIONS_AUDITABLE), color: "white" },
+              { label: "Review Recommended", value: String(REVIEW_RECOMMENDED_COUNT), color: "var(--state-warning)" },
               { label: "Flagged", value: String(FLAGGED_COUNT), color: "var(--state-critical)" },
             ].map(d => (
               <div key={d.label} className="relative overflow-hidden rounded-[24px] p-8 lg:p-12 backdrop-blur-3xl bg-black/60 shadow-lg border border-white/[0.08] hover:bg-white/[0.02] transition-colors">
@@ -100,94 +91,68 @@ export default function GovernPage() {
           </div>
         </motion.div>
 
-        {/* ── Decision Ledger + Sidebar ── */}
-        <div className="flex flex-col lg:flex-row gap-8 px-4 md:px-6 lg:px-8">
-          <div className="flex-1 min-w-0 lg:w-2/3">
-            <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 px-2">Decision Ledger</h2>
-              <div className="flex flex-col">
-                <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-0">
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
-                  <div className="flex flex-col divide-y divide-white/[0.04] relative z-10">
-                    {ledgerEntries.map(entry => {
-                      const sCfg = statusConfig[entry.status];
-                      const SIcon = sCfg.icon;
-                      return (
-                        <motion.div key={entry.id} variants={fadeUpVariant} onClick={() => navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)} className="group cursor-pointer p-6 md:p-8 hover:bg-white/[0.04] transition-colors flex items-center justify-between gap-4">
-                          <div className="flex items-center gap-4">
-                            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/[0.05] shrink-0" style={{ background: `${typeColor[entry.type]}15`, color: typeColor[entry.type] }}><CircleDot size={16} /></span>
-                            <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-                              <span className="text-base font-light tracking-wide text-white group-hover:text-[var(--engine-govern)] transition-colors truncate">{entry.action}</span>
-                              <div className="flex items-center gap-3 flex-wrap">
-                                <span className="text-[10px] uppercase tracking-widest font-mono text-white/40">{entry.id}</span>
-                                <span className="text-[10px] uppercase tracking-widest font-bold flex items-center gap-1" style={{ color: sCfg.color }}><SIcon size={10} />{entry.status}</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-end gap-6 shrink-0">
-                            <div className="flex-col items-end gap-1.5 hidden md:flex">
-                              <span className="text-sm font-mono tracking-widest" style={{ color: entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)", textShadow: `0 0 10px ${entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)"}60` }}>{formatConfidence(entry.confidence)}</span>
-                              <span className="text-[10px] uppercase tracking-widest text-white/30">{entry.time}</span>
-                            </div>
-                            <div className="w-8 h-8 rounded-full hidden sm:flex items-center justify-center border border-white/[0.05] bg-white/[0.02] group-hover:bg-white/[0.1] group-hover:border-[var(--engine-govern)]/30 transition-all shadow-inner">
-                              <ArrowUpRight size={14} className="text-white/60 group-hover:text-[var(--engine-govern)]" />
-                            </div>
-                          </div>
-                        </motion.div>
-                      )
-                    })}
-                  </div>
-                </div>
+        {/* ── Decision Ledger ── */}
+        <div className="px-4 md:px-6 lg:px-8">
+          <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
+            <div className="flex items-center justify-between border-b border-white/[0.06] pb-4 px-2">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">Decision Ledger</h2>
+              <div className="flex items-center gap-2">
+                <button type="button" disabled className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/30 text-[10px] uppercase tracking-widest cursor-not-allowed"><Search size={12} />Search</button>
+                <button type="button" disabled className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/30 text-[10px] uppercase tracking-widest cursor-not-allowed"><ArrowUpDown size={12} />Sort</button>
               </div>
-            </motion.section>
-          </div>
-
-          {/* Sidebar */}
-          <aside className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6" aria-label="Governance sidebar">
-            <div className="sticky top-24 flex flex-col gap-6">
-              <div className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
-                <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Compliance Breakdown</h3>
-                <div className="relative z-10 flex flex-col gap-5">
-                  {[
-                    { label: "Transparency", pct: 92, color: "var(--state-healthy)" },
-                    { label: "Auditability", pct: 96, color: "var(--state-healthy)" },
-                    { label: "Reversibility", pct: 89, color: "var(--state-healthy)" },
-                    { label: "Human oversight", pct: 84, color: "var(--engine-govern)" },
-                  ].map(r => (
-                    <div key={r.label} className="flex flex-col gap-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] uppercase tracking-widest font-medium text-white/70">{r.label}</span>
-                        <span className="text-xs font-mono font-medium tracking-tight tabular-nums" style={{ color: r.color, textShadow: `0 0 10px ${r.color}60` }}>{r.pct}%</span>
-                      </div>
-                      <div className="h-1.5 rounded-full overflow-hidden bg-white/10 shadow-inner">
-                        <div className="h-full rounded-full transition-all duration-500 shadow-[0_0_8px_currentColor]" style={{ width: `${r.pct}%`, background: r.color }} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
-                <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Policy Status</h3>
-                <div className="relative z-10 flex flex-col gap-4">
-                  {[{ label: "Active policies", value: "12" }, { label: "Last updated", value: "2h ago" }, { label: "Auto-enforce", value: "Enabled", color: "var(--state-healthy)" }].map(d => (
-                    <div key={d.label} className="flex items-center justify-between">
-                      <span className="text-[10px] uppercase tracking-widest font-medium text-white/50">{d.label}</span>
-                      <span className="text-sm font-mono tracking-tight tabular-nums" style={{ color: d.color || "white", textShadow: d.color ? `0 0 10px ${d.color}60` : 'none' }}>{d.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Primary CTA: Open audit ledger -> /govern/audit */}
-              <Link to="/govern/audit" className={cn(buttonVariants({ variant: "default", size: "lg" }), "w-full rounded-2xl text-base px-6 py-4 shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:shadow-[0_0_30px_rgba(20,184,166,0.5)] transition-all bg-[var(--engine-govern)] hover:opacity-90 text-black border-none font-semibold flex items-center justify-center gap-2")}>
-                Open audit ledger
-                <ArrowUpRight size={18} />
-              </Link>
             </div>
-          </aside>
+            <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-0">
+              <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
+              <div className="flex flex-col divide-y divide-white/[0.04] relative z-10">
+                {ledgerEntries.map(entry => {
+                  const sCfg = entry.status ? statusConfig[entry.status] : null;
+                  return (
+                    <motion.div key={entry.id} variants={fadeUpVariant} onClick={() => navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)} className="group cursor-pointer p-6 md:p-8 hover:bg-white/[0.04] transition-colors flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/[0.05] shrink-0" style={{ background: `${typeColor[entry.type]}15`, color: typeColor[entry.type] }}><CircleDot size={16} /></span>
+                        <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+                          <span className="text-base font-light tracking-wide text-white group-hover:text-[var(--engine-govern)] transition-colors truncate">{entry.action}</span>
+                          <div className="flex items-center gap-3 flex-wrap">
+                            <span className="text-[10px] uppercase tracking-widest font-mono text-white/40">{entry.id}</span>
+                            {sCfg && <span className="text-[10px] uppercase tracking-widest font-bold flex items-center gap-1" style={{ color: sCfg.color }}><sCfg.icon size={10} />{entry.status}</span>}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-end gap-6 shrink-0">
+                        <div className="flex-col items-end gap-1.5 hidden md:flex">
+                          <span className="text-sm font-mono tracking-widest" style={{ color: entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)", textShadow: `0 0 10px ${entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)"}60` }}>Confidence {formatConfidence(entry.confidence)}</span>
+                          <span className="text-[10px] uppercase tracking-widest text-white/30">{entry.time}</span>
+                        </div>
+                        <div className="w-8 h-8 rounded-full hidden sm:flex items-center justify-center border border-white/[0.05] bg-white/[0.02] group-hover:bg-white/[0.1] group-hover:border-[var(--engine-govern)]/30 transition-all shadow-inner">
+                          <ArrowUpRight size={14} className="text-white/60 group-hover:text-[var(--engine-govern)]" />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </div>
+            </div>
+          </motion.section>
+
+          {/* ── History (collapsible) ── */}
+          <motion.section variants={fadeUpVariant} className="flex flex-col gap-6 mt-8">
+            <button type="button" onClick={() => setHistoryOpen(v => !v)} className="flex items-center justify-between w-full text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 px-2 cursor-pointer hover:text-white/70 transition-colors">
+              History
+              <ChevronDown size={14} className="transition-transform duration-200" style={{ transform: historyOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+            </button>
+            <AnimatePresence initial={false}>
+              {historyOpen && (
+                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25, ease: "easeInOut" }} className="overflow-hidden">
+                  <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-0">
+                    <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
+                    <div className="relative z-10 p-8 md:p-12 flex items-center justify-center min-h-[120px]">
+                      <span className="text-xs uppercase tracking-widest text-white/20">No history entries yet</span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.section>
         </div>
 
       </motion.div>

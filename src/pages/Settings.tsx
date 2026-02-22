@@ -1,16 +1,21 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import {
-  Settings,
   User,
   Bell,
   Shield,
+  Building2,
+  CreditCard,
+  TrendingUp,
+  ShieldAlert,
+  Zap,
+  Database,
+  Download,
+  Trash2,
 } from 'lucide-react'
-import { GOVERNANCE_META } from '@/lib/governance-meta'
-import { AuroraPulse, GovernFooter } from '@/components/poseidon'
+import { AuroraPulse } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { useToast } from '@/hooks/useToast'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -63,26 +68,20 @@ export default function SettingsPage() {
   const { state, updateSettings } = useDemoState()
   const { showToast } = useToast()
 
-  const [draftNotifications, setDraftNotifications] = useState(state.settings.notifications)
+  const CONNECTORS = [
+    { id: 'bank', icon: Building2, label: 'Bank Accounts' },
+    { id: 'credit', icon: CreditCard, label: 'Credit Cards' },
+    { id: 'investment', icon: TrendingUp, label: 'Investments' },
+  ] as const
 
-  useEffect(() => {
-    setDraftNotifications(state.settings.notifications)
-  }, [state.settings.notifications])
-
-  const dirty = useMemo(
-    () => JSON.stringify(draftNotifications) !== JSON.stringify(state.settings.notifications),
-    [draftNotifications, state.settings.notifications],
-  )
-
-  const handleSave = () => {
-    updateSettings({ notifications: draftNotifications })
-    showToast({ variant: 'success', message: 'Settings saved and logged to audit ledger.' })
-  }
-
-  const handleReset = () => {
-    setDraftNotifications(state.settings.notifications)
-    showToast({ variant: 'info', message: 'Unsaved changes were reset.' })
-  }
+  const [protectAlertNotify, setProtectAlertNotify] = useState(true)
+  const [protectAutoBlock, setProtectAutoBlock] = useState(true)
+  const [protectSeverityFilter, setProtectSeverityFilter] = useState(false)
+  const [growWeeklyGoalDigest, setGrowWeeklyGoalDigest] = useState(true)
+  const [growAutoRebalance, setGrowAutoRebalance] = useState(false)
+  const [growContributionReminder, setGrowContributionReminder] = useState(true)
+  const [executeApprovalNotify, setExecuteApprovalNotify] = useState(true)
+  const [executeDailySummary, setExecuteDailySummary] = useState(true)
 
   return (
     <div className="relative">
@@ -96,19 +95,6 @@ export default function SettingsPage() {
       </a>
 
       <motion.main id="main-content" className="command-center__main" initial="hidden" animate="visible" variants={staggerContainerVariant}>
-        <motion.section variants={staggerContainerVariant} className="hero-section">
-          <motion.div variants={fadeUpVariant} className="hero-kicker">
-            <span className="hero-kicker__icon"><Settings size={14} /></span>
-            Settings
-          </motion.div>
-
-          <motion.h1 variants={fadeUpVariant} className="hero-headline">
-            Control your <span style={{ color: 'var(--engine-dashboard)' }}>experience</span>
-          </motion.h1>
-
-
-        </motion.section>
-
         <div className="flex flex-col lg:flex-row gap-4 px-4 md:px-6 lg:px-8">
           <motion.div variants={fadeUpVariant} className="relative overflow-hidden flex-1 rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
             <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
@@ -154,20 +140,14 @@ export default function SettingsPage() {
               <SettingToggle
                 label="Threat alerts"
                 desc="Immediate notification for critical threats"
-                checked={draftNotifications.threatAlerts}
-                onChange={(next) => setDraftNotifications((prev) => ({ ...prev, threatAlerts: next }))}
+                checked={state.settings.notifications.threatAlerts}
+                onChange={(next) => updateSettings({ notifications: { ...state.settings.notifications, threatAlerts: next } })}
               />
               <SettingToggle
                 label="Weekly digest"
                 desc="Summary of activity and recommendations"
-                checked={draftNotifications.weeklyDigest}
-                onChange={(next) => setDraftNotifications((prev) => ({ ...prev, weeklyDigest: next }))}
-              />
-              <SettingToggle
-                label="Execution alerts"
-                desc="Notify when actions are auto-queued"
-                checked={draftNotifications.executionAlerts}
-                onChange={(next) => setDraftNotifications((prev) => ({ ...prev, executionAlerts: next }))}
+                checked={state.settings.notifications.weeklyDigest}
+                onChange={(next) => updateSettings({ notifications: { ...state.settings.notifications, weeklyDigest: next } })}
               />
             </div>
           </motion.div>
@@ -194,49 +174,158 @@ export default function SettingsPage() {
                   </div>
                   <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_10px_rgba(52,211,153,0.2)]">Enabled</span>
                 </div>
-                <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
-                  <div>
-                    <p className="text-sm font-medium text-white tracking-wide">Active sessions</p>
-                    <p className="text-xs text-white/50">Manage your logged-in devices</p>
-                  </div>
-                  <span className="text-sm font-mono text-white/80">2 devices</span>
-                </div>
               </div>
             </div>
           </div>
         </motion.section>
 
+        {/* ── Connected Accounts ── */}
         <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
             <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
-            <p className="relative z-10 text-sm text-white/50">All settings changes are recorded in the audit ledger.</p>
-            <div className="relative z-10 flex flex-wrap items-center gap-3 w-full sm:w-auto">
-              <button
-                type="button"
-                onClick={handleReset}
-                disabled={!dirty}
-                className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "rounded-xl font-medium", !dirty && "opacity-50 cursor-not-allowed")}
-              >
-                Reset draft
-              </button>
-              <button
-                type="button"
-                onClick={handleSave}
-                disabled={!dirty}
-                className={cn(buttonVariants({ variant: "glass", size: "sm" }), "rounded-xl font-semibold shadow-[0_0_15px_rgba(255,255,255,0.1)]", !dirty && "opacity-50 cursor-not-allowed")}
-              >
-                Save settings
-              </button>
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-cyan-400/10">
+                  <Building2 size={20} style={{ color: 'var(--engine-dashboard)' }} />
+                </div>
+                <div>
+                  <p className="text-base font-medium text-white tracking-wide">Connected Accounts</p>
+                  <p className="text-xs text-white/50 tracking-wider uppercase font-semibold">Data sources</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3">
+                {CONNECTORS.map((connector) => (
+                  <div key={connector.id} className="flex items-center justify-between py-2 border-b border-white/[0.04]">
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+                        <connector.icon className="h-4 w-4" aria-hidden="true" />
+                      </span>
+                      <p className="text-sm font-medium text-white tracking-wide">{connector.label}</p>
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_10px_rgba(52,211,153,0.2)]">Connected</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </motion.section>
 
-        <div className="px-4 md:px-6 lg:px-8">
-          <GovernFooter
-            auditId={GOVERNANCE_META['/settings'].auditId}
-            pageContext={GOVERNANCE_META['/settings'].pageContext}
-          />
-        </div>
+        {/* ── Protect Engine ── */}
+        <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-400/10">
+                  <ShieldAlert size={20} style={{ color: 'var(--engine-protect)' }} />
+                </div>
+                <div>
+                  <p className="text-base font-medium text-white tracking-wide">Protect Engine</p>
+                  <p className="text-xs text-white/50 tracking-wider uppercase font-semibold">Threat detection preferences</p>
+                </div>
+              </div>
+              <SettingToggle label="Immediate threat alerts" desc="Push notification for every detected threat" checked={protectAlertNotify} onChange={setProtectAlertNotify} />
+              <SettingToggle label="Auto-block suspicious activity" desc="Automatically block transactions above confidence threshold" checked={protectAutoBlock} onChange={setProtectAutoBlock} />
+              <SettingToggle label="Low-severity filter" desc="Suppress alerts below Medium severity" checked={protectSeverityFilter} onChange={setProtectSeverityFilter} />
+            </div>
+          </div>
+        </motion.section>
+
+        {/* ── Grow Engine ── */}
+        <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-violet-400/10">
+                  <TrendingUp size={20} style={{ color: 'var(--engine-grow)' }} />
+                </div>
+                <div>
+                  <p className="text-base font-medium text-white tracking-wide">Grow Engine</p>
+                  <p className="text-xs text-white/50 tracking-wider uppercase font-semibold">Goal and investment preferences</p>
+                </div>
+              </div>
+              <SettingToggle label="Weekly goal digest" desc="Summary of goal progress and AI recommendations" checked={growWeeklyGoalDigest} onChange={setGrowWeeklyGoalDigest} />
+              <SettingToggle label="Auto-rebalance notifications" desc="Alert when portfolio rebalancing is suggested" checked={growAutoRebalance} onChange={setGrowAutoRebalance} />
+              <SettingToggle label="Contribution reminders" desc="Remind to contribute toward active savings goals" checked={growContributionReminder} onChange={setGrowContributionReminder} />
+            </div>
+          </div>
+        </motion.section>
+
+        {/* ── Execute Engine ── */}
+        <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-400/10">
+                  <Zap size={20} style={{ color: 'var(--engine-execute)' }} />
+                </div>
+                <div>
+                  <p className="text-base font-medium text-white tracking-wide">Execute Engine</p>
+                  <p className="text-xs text-white/50 tracking-wider uppercase font-semibold">Automation and approval preferences</p>
+                </div>
+              </div>
+              <div className="flex items-start justify-between gap-4 py-3 border-b border-white/[0.04]">
+                <div>
+                  <p className="text-sm font-medium text-white tracking-wide">Auto-execute threshold</p>
+                  <p className="text-xs text-white/50">Automatically execute actions below this amount</p>
+                </div>
+                <div className="relative shrink-0">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-white/50">$</span>
+                  <input type="text" readOnly value="50" className="w-20 rounded-lg border border-white/[0.08] bg-white/[0.04] pl-7 pr-3 py-1.5 text-sm font-mono text-white text-right cursor-default focus:outline-none" />
+                </div>
+              </div>
+              <SettingToggle label="Approval notifications" desc="Notify when new actions require your approval" checked={executeApprovalNotify} onChange={setExecuteApprovalNotify} />
+              <SettingToggle label="Daily execution summary" desc="End-of-day digest of all executed and pending actions" checked={executeDailySummary} onChange={setExecuteDailySummary} />
+            </div>
+          </div>
+        </motion.section>
+
+        {/* ── Data & Privacy ── */}
+        <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-400/10">
+                  <Database size={20} style={{ color: 'var(--state-critical)' }} />
+                </div>
+                <div>
+                  <p className="text-base font-medium text-white tracking-wide">Data & Privacy</p>
+                  <p className="text-xs text-white/50 tracking-wider uppercase font-semibold">Your data rights</p>
+                </div>
+              </div>
+              <div className="flex flex-col">
+                {[
+                  { icon: Download, label: 'Export my data', desc: 'Download all personal and financial data', danger: false },
+                  { icon: Download, label: 'Export audit log', desc: 'Download Govern Engine decision history', danger: false },
+                  { icon: Trash2, label: 'Delete my account', desc: 'Permanently delete all data — cannot be undone', danger: true },
+                ].map((item, i, arr) => (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={() => showToast({ variant: 'info', message: 'Not available in demo.' })}
+                    className={cn(
+                      'flex items-center gap-3 py-3 text-left cursor-pointer hover:bg-white/[0.04] -mx-2 px-2 rounded-lg transition-colors',
+                      i < arr.length - 1 && 'border-b border-white/[0.04]'
+                    )}
+                  >
+                    <item.icon size={16} className={item.danger ? 'text-red-400' : 'text-white/60'} />
+                    <div className="flex-1 min-w-0">
+                      <p className={cn(
+                        'text-sm font-medium tracking-wide',
+                        item.danger ? 'text-red-400' : 'text-white'
+                      )}>{item.label}</p>
+                      <p className="text-xs text-white/50">{item.desc}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.section>
+
       </motion.main>
     </div>
   )

@@ -781,7 +781,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionPath: '/settings',
     first5sMessage: 'Configure controls without losing context.',
     demoPriority: 'P0',
-    governance: { auditId: 'GV-2026-0216-SETT', pageContext: 'settings overview', engine: 'dashboard' },
+    governance: { auditId: 'GV-2026-0216-SETT', pageContext: 'settings overview', engine: 'dashboard', showFooter: false },
     evidence: EVIDENCE_NONE,
   }),
   '/settings/ai': routeMeta({

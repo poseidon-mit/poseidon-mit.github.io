@@ -81,7 +81,7 @@ export default function Landing() {
           <div className="max-w-[1200px] w-full mx-auto">
 
             <div className="text-center mb-20">
-              <h2 className="font-instrument italic text-white text-[48px] md:text-[64px] tracking-tight leading-[1.1]">
+              <h2 className="font-instrument text-white text-[48px] md:text-[64px] tracking-tight leading-[1.1]">
                 Four AI engines personalized for you.
               </h2>
             </div>

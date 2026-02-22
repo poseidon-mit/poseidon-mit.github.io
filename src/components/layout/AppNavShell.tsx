@@ -29,9 +29,9 @@ const BREADCRUMB_MAP: Record<string, string[]> = {
   '/grow/recommendations': ['Grow', 'Recommendations'],
   '/execute': ['Execute'],
   '/execute/approval': ['Execute', 'Approval Queue'],
-  '/govern': ['Govern'],
-  '/govern/audit': ['Govern', 'Audit Ledger'],
-  '/govern/audit-detail': ['Govern', 'Audit Detail'],
+  '/govern': ['Govern Engine'],
+  '/govern/audit': ['Govern Engine', 'Audit Ledger'],
+  '/govern/audit-detail': ['Govern Engine', 'Audit Detail'],
   '/settings': ['Settings'],
 };
 
