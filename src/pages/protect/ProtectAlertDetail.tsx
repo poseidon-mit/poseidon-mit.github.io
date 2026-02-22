@@ -306,7 +306,7 @@ export default function ProtectAlertDetailPage() {
               <div className="relative z-10 flex items-center justify-between border-b border-white/[0.06] pb-4">
                 <div>
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Decision Drivers</h3>
-                  <p className="text-xs text-white/30 tracking-wide mt-1">Key factors driving this AI decision. <span className="font-mono uppercase tracking-widest text-white/20">Mode: Poseidon-Fraud v1.0</span></p>
+                  <p className="text-xs text-white/30 tracking-wide mt-1">Key factors driving this AI decision. <span className="font-mono uppercase tracking-widest text-white/20">Model: Poseidon-ThreatDetect v1.0</span></p>
                 </div>
               </div>
               <div className="relative z-10">
