@@ -58,7 +58,7 @@ export default function GovernPage() {
       <motion.div id="main-content" className="flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12 w-full" variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
 
         {/* ── Hero ── */}
-        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 px-4 md:px-6 lg:px-8">
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
           <motion.div variants={fadeUpVariant}>
             <span className="inline-flex items-center gap-2 rounded-full border border-[var(--engine-govern)]/20 bg-[var(--engine-govern)]/10 px-3 py-1.5 text-xs font-bold tracking-widest uppercase text-[var(--engine-govern)] shadow-[0_0_15px_rgba(59,130,246,0.2)]">
               <ShieldCheck size={12} /> Engine status: Good

@@ -40,7 +40,7 @@
 
   @font-face {
     font-family: 'Inter';
-    src: local('Inter'), local('Inter Regular');
+    src: local('Inter'), local('Inter Regular'), url('/fonts/Inter-latin.woff2') format('woff2');
     font-weight: 400 700;
     font-style: normal;
     font-display: swap;
@@ -50,6 +50,38 @@
     font-family: 'JetBrains Mono';
     src: local('JetBrains Mono'), local('JetBrainsMono-Regular');
     font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Cabin';
+    src: url('/fonts/Cabin-500-latin.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Instrument Serif';
+    src: url('/fonts/InstrumentSerif-Regular-latin.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Instrument Serif';
+    src: url('/fonts/InstrumentSerif-Italic-latin.woff2') format('woff2');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Manrope';
+    src: url('/fonts/Manrope-latin.woff2') format('woff2');
+    font-weight: 400 600;
     font-style: normal;
     font-display: swap;
   }

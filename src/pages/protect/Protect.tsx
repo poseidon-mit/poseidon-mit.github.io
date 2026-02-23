@@ -56,7 +56,7 @@ export default function ProtectPage() {
       <motion.div id="main-content" className="w-full flex flex-col gap-6 md:gap-8" variants={staggerContainerVariant} initial="hidden" animate="visible" role="main" aria-label="Protect Engine - Threat Detection">
 
         {/* ── Hero ── */}
-        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 mb-8 mt-4">
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 mb-8">
           <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
             <div className="flex items-center gap-2 mb-2">
               <span className="inline-flex items-center gap-2 rounded-full border border-[var(--engine-protect)]/20 bg-[var(--engine-protect)]/10 px-3 py-1.5 text-xs font-bold tracking-widest uppercase text-[var(--engine-protect)] shadow-[0_0_15px_rgba(34,197,94,0.2)]">

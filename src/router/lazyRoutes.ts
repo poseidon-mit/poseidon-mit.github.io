@@ -137,6 +137,7 @@ export const routeLoaders = {
   '/grow/goal': () => import('../pages/GrowGoalDetail'),
   '/grow/scenarios': () => import('../pages/GrowScenarios'),
   '/grow/recommendations': () => import('../pages/GrowRecommendations'),
+  '/grow/recommendation': () => import('../pages/grow/GrowRecommendationDetail'),
 
   // ─── Execute ────────────────────────────────────────────────────────────────
   '/execute': () => import('../pages/Execute'),

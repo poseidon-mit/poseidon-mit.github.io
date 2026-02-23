@@ -1,42 +1,56 @@
 import { motion } from "framer-motion";
 import { Link } from '@/router';
+import { TrendingUp } from "lucide-react";
 import {
-  TrendingUp,
-  Target,
-  ArrowRight,
-  PiggyBank,
-  DollarSign,
-  Scale,
-  Zap
-} from
-  "lucide-react";
-import { ForecastBand } from "@/components/poseidon/forecast-band";
-import type { ForecastPoint } from "@/components/poseidon/forecast-band";
-import { DEMO_DATA } from '@/lib/constants/mock-data';
+  ComposedChart, Line, XAxis, YAxis, Tooltip, ReferenceDot, Label,
+  ResponsiveContainer
+} from 'recharts';
 import { fadeUp, staggerContainer } from '@/lib/motion-presets';
-import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { RECOMMENDATIONS_SUMMARY } from './grow/recommendation-detail-data';
 
+/* ── 3-Year Growth Simulation Data ──
+   Base: $200k current assets
+   Status Quo: 2% annual growth, no additional savings
+   AI Optimized: Base assets at same 2% + $612/mo savings invested at 7% market return
+   Low/High: savings at 4% / 10%, base stays at 2%
+── */
+const GROWTH_SIMULATION_DATA = [
+  { year: 'Now', baseline: 200000, aiOptimized: 200000, low: 200000, high: 200000 },
+  { year: '1Y',  baseline: 204000, aiOptimized: 211584, low: 211480, high: 211690 },
+  { year: '2Y',  baseline: 208080, aiOptimized: 223797, low: 223345, high: 224266 },
+  { year: '3Y',  baseline: 212242, aiOptimized: 236679, low: 235609, high: 237812 },
+];
 
-/* ── Cross-thread values (Single Source of Truth) ── */
-const EMERGENCY_FUND_PROGRESS = DEMO_DATA.EMERGENCY_FUND_PCT;
-const EMERGENCY_FUND_CURRENT = DEMO_DATA.EMERGENCY_FUND_VAL_NUMERIC;
-const EMERGENCY_FUND_TARGET = DEMO_DATA.EMERGENCY_FUND_TARGET;
-const EMERGENCY_FUND_VALUE = DEMO_DATA.EMERGENCY_FUND_VALUE;
+const FINAL_DATA = GROWTH_SIMULATION_DATA[GROWTH_SIMULATION_DATA.length - 1];
+const formatDollar = (v: number) => `$${v.toLocaleString()}`;
+const formatDollarK = (v: number) => `$${Math.round(v / 1000)}k`;
 
-/* ── Forecast data ── */
-const FORECAST_DATA: ForecastPoint[] = Array.from({ length: 12 }, (_, i) => ({
-  x: i,
-  median: EMERGENCY_FUND_CURRENT + i * 250,
-  low: EMERGENCY_FUND_CURRENT + i * 180,
-  high: EMERGENCY_FUND_CURRENT + i * 320
-}));
+interface TooltipPayloadEntry {
+  payload: (typeof GROWTH_SIMULATION_DATA)[number];
+}
 
-/* ── Goal KPIs ── */
-const GOAL_KPIS = [
-  { label: "AI Recommendations", value: "3 Active", delta: "+1 this week", icon: Zap, color: "var(--engine-grow)" },
-  { label: "Portfolio Yield", value: "5.2%", delta: "+0.4% vs benchmark", icon: TrendingUp, color: "var(--engine-execute)" },
-  { label: "Invest target", value: "On track", delta: "Q3 milestone", icon: Target, color: "var(--engine-dashboard)" }];
+function SimulationTooltip({ active, payload, label }: { active?: boolean; payload?: TooltipPayloadEntry[]; label?: string }) {
+  if (!active || !payload?.length) return null;
+  const data = payload[0]?.payload;
+  if (!data) return null;
+  return (
+    <div className="rounded-xl border border-white/10 bg-[#0F1D32]/95 backdrop-blur-md px-4 py-3 shadow-xl text-xs">
+      <p className="font-semibold text-white/90 mb-2">{label}</p>
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-[#94A3B8]" />
+          <span className="text-white/50">Status Quo (Baseline):</span>
+          <span className="ml-auto font-mono text-white/90">{formatDollar(data.baseline)}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-[var(--engine-grow)]" />
+          <span className="text-white/50">AI Optimized:</span>
+          <span className="ml-auto font-mono text-[var(--engine-grow)]">{formatDollar(data.aiOptimized)}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 
 export default function GrowPage() {
@@ -58,7 +72,7 @@ export default function GrowPage() {
         variants={staggerContainer}>
 
         {/* ── Dashboard Hero ── */}
-        <motion.section variants={staggerContainer} className="flex flex-col gap-6 mb-12 px-4 md:px-6 lg:px-8 pt-8 lg:pt-12">
+        <motion.section variants={staggerContainer} className="flex flex-col gap-6">
           <motion.div variants={fadeUp} className="flex flex-col gap-1">
             <div className="flex items-center gap-2 mb-2">
               <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-grow)]/20 bg-[var(--engine-grow)]/10 text-[var(--engine-grow)] text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(139,92,246,0.2)]">
@@ -71,101 +85,143 @@ export default function GrowPage() {
             </h1>
           </motion.div>
 
-          <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-4 mt-4">
-            {/* CTA: Primary -> /grow/goal */}
-            <Link
-              to="/grow/goal"
-              className={cn(buttonVariants({ variant: "default", size: "lg" }), "rounded-xl px-8 shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:shadow-[0_0_50px_rgba(139,92,246,0.5)] transition-all font-semibold tracking-wide bg-[var(--engine-grow)] text-white hover:bg-[#7c3aed]")}
-            >
-              View Recommendations <ArrowRight size={18} className="ml-2" />
-            </Link>
-            <Link
-              to="/grow/scenarios"
-              className={cn(buttonVariants({ variant: "glass", size: "lg" }), "rounded-xl px-8 border border-white/[0.08] hover:bg-white/[0.05] transition-all font-semibold tracking-wide shadow-lg backdrop-blur-md")}
-            >
-              Open scenarios
-            </Link>
-          </motion.div>
         </motion.section>
 
-        {/* ── P2: Goal / Forecast KPI Strip ── */}
-        <motion.section
-          className="grid grid-cols-1 sm:grid-cols-3 gap-6 px-4 md:px-6 lg:px-8 mb-8"
-          variants={staggerContainer}
-          aria-label="Growth KPIs">
-
-          {GOAL_KPIS.map((kpi) => (
-            <motion.div
-              key={kpi.label}
-              variants={fadeUp}
-              className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col justify-center gap-4 group transition-all hover:bg-white/[0.02]"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
-
-              <div className="relative z-10 flex items-center justify-between">
-                <div
-                  className="flex items-center justify-center w-12 h-12 rounded-2xl flex-shrink-0 border border-white/[0.08] shadow-inner transition-transform group-hover:scale-105"
-                  style={{ background: `${kpi.color}15`, boxShadow: `0 0 20px ${kpi.color}30` }}>
-                  <kpi.icon size={20} style={{ color: kpi.color }} className="drop-shadow-[0_0_8px_currentColor]" />
-                </div>
-                <div className="text-right flex flex-col gap-1.5">
-                  <p className="text-[10px] md:text-xs uppercase tracking-widest font-semibold text-white/50">{kpi.label}</p>
-                  <p className="text-2xl md:text-3xl font-light font-mono tabular-nums tracking-tight text-white/90" style={{ textShadow: `0 0 20px ${kpi.color}40` }}>{kpi.value}</p>
-                  <p className="text-xs font-medium tracking-wide" style={{ color: kpi.color === "var(--engine-dashboard)" ? "var(--engine-dashboard)" : kpi.color === "var(--engine-grow)" ? "var(--engine-grow)" : kpi.color === "var(--engine-execute)" ? "var(--engine-execute)" : "var(--state-healthy)" }}>{kpi.delta}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.section>
-
-        {/* ── P3: Forecast Preview + Recommendation ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 px-4 md:px-6 lg:px-8 mb-12">
-          {/* Forecast visualization */}
-          <motion.div variants={fadeUp} className="lg:col-span-8 relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]">
+        {/* ── P3: Forecast Preview ── */}
+        <div className="px-4 md:px-6 lg:px-8 mb-12">
+          {/* Asset Growth Simulation */}
+          <motion.div variants={fadeUp} className="relative overflow-hidden rounded-2xl md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
-            <div className="relative z-10 flex items-center justify-between mb-8 pb-4 border-b border-white/[0.06]">
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">12-Month Trajectory</h3>
-            </div>
-            <div className="relative z-10 flex-1 flex flex-col justify-center gap-4">
-              <ForecastBand data={FORECAST_DATA} width={800} height={200} engine="grow" className="w-full drop-shadow-[0_0_15px_rgba(139,92,246,0.3)]" />
-              <div className="flex items-center justify-between mt-2 pt-4 border-t border-white/[0.04]">
-                <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest px-2">Now</span>
-                <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest px-2">+12 months</span>
+            <div className="relative z-10 flex flex-col gap-6">
+              <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
+                <h3 className="text-lg md:text-xl font-light tracking-tight text-white/90">
+                  Asset Growth Simulation
+                </h3>
               </div>
-            </div>
-          </motion.div>
 
-          {/* Top recommendation */}
-          <motion.div variants={fadeUp} className="lg:col-span-4 relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col justify-between group transition-all hover:bg-white/[0.02]">
-            <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/10 to-transparent pointer-events-none opacity-50 transition-opacity group-hover:opacity-100" />
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/[0.06]">
-                <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">AI Recommendation</h3>
+              {/* Legend */}
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] text-[#94A3B8]">
+                <span className="flex items-center gap-2">
+                  <span className="h-[2px] w-4 rounded-full bg-[#94A3B8] inline-block" style={{ borderTop: '2px dashed #94A3B8', height: 0 }} />
+                  Status Quo (Baseline)
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="h-[2px] w-4 rounded-full bg-[var(--engine-grow)] inline-block" />
+                  AI Optimized Scenario
+                </span>
               </div>
-              <div className="flex flex-col gap-8">
-                <div className="w-14 h-14 rounded-2xl bg-[var(--engine-grow)]/10 border border-[var(--engine-grow)]/20 flex items-center justify-center text-[var(--engine-grow)] shadow-[0_0_20px_rgba(139,92,246,0.3)] transition-transform group-hover:scale-110">
-                  <Zap size={24} />
-                </div>
-                <div className="flex flex-col gap-4">
-                  <p className="text-3xl font-light text-white leading-tight tracking-wide">
-                    Optimize cash sweep by <span className="font-mono text-[var(--engine-grow)] drop-shadow-[0_0_15px_rgba(139,92,246,0.6)]">$1,200</span>
-                  </p>
-                  <p className="text-sm text-white/40 leading-relaxed font-light">
-                    Moving excess liquidity to High-Yield reserves will generate an estimated <span className="text-white/80 font-medium tracking-wide">$62/year</span> with identical risk profile.
-                  </p>
-                </div>
+
+              {/* Chart */}
+              <div className="h-[280px] md:h-[360px]" role="img" aria-label="Asset growth simulation comparing baseline savings with AI-optimized scenario over 3 years">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={GROWTH_SIMULATION_DATA} margin={{ top: 20, right: 65, left: 5, bottom: 5 }}>
+                    <XAxis
+                      dataKey="year"
+                      tick={{ fill: '#64748B', fontSize: 11 }}
+                      axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tick={{ fill: '#64748B', fontSize: 11 }}
+                      axisLine={false}
+                      tickLine={false}
+                      tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                      domain={[198000, 240000]}
+                      ticks={[200000, 210000, 220000, 230000, 240000]}
+                    />
+                    <Tooltip content={<SimulationTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.08)' }} />
+                    {/* Baseline line */}
+                    <Line
+                      type="monotone"
+                      dataKey="baseline"
+                      stroke="#94A3B8"
+                      strokeWidth={2}
+                      strokeDasharray="6 3"
+                      dot={{ r: 4, fill: '#0F1D32', stroke: '#94A3B8', strokeWidth: 2, strokeDasharray: 'none' }}
+                      activeDot={{ r: 5, fill: '#94A3B8', strokeDasharray: 'none' }}
+                      isAnimationActive={false}
+                    />
+                    {/* AI Optimized line */}
+                    <Line
+                      type="monotone"
+                      dataKey="aiOptimized"
+                      stroke="var(--engine-grow)"
+                      strokeWidth={2.5}
+                      dot={{ r: 4, fill: '#0F1D32', stroke: 'var(--engine-grow)', strokeWidth: 2 }}
+                      activeDot={{ r: 5, fill: 'var(--engine-grow)' }}
+                      isAnimationActive={false}
+                    />
+                    {/* End-value labels inside chart */}
+                    <ReferenceDot x={FINAL_DATA.year} y={FINAL_DATA.aiOptimized} r={0} ifOverflow="extendDomain">
+                      <Label value={formatDollarK(FINAL_DATA.aiOptimized)} position="right" offset={8} fill="#8B5CF6" fontSize={13} fontWeight={600} fontFamily="var(--font-mono, ui-monospace, monospace)" />
+                    </ReferenceDot>
+                    <ReferenceDot x={FINAL_DATA.year} y={FINAL_DATA.baseline} r={0} ifOverflow="extendDomain">
+                      <Label value={formatDollarK(FINAL_DATA.baseline)} position="right" offset={8} fill="#64748B" fontSize={12} fontFamily="var(--font-mono, ui-monospace, monospace)" />
+                    </ReferenceDot>
+                  </ComposedChart>
+                </ResponsiveContainer>
               </div>
-            </div>
-            <div className="relative z-10 mt-10 pt-6 border-t border-white/[0.06]">
-              <Link
-                to="/grow/scenarios"
-                className="inline-flex items-center gap-2 text-sm font-semibold tracking-wide transition-all group-hover:text-white"
-                style={{ color: "var(--engine-grow)" }}>
-                Review & Execute <ArrowRight size={16} className="transform transition-transform group-hover:translate-x-1" />
-              </Link>
+
             </div>
           </motion.div>
         </div>
+
+        {/* ── AI Recommendations List ── */}
+        <motion.section
+          variants={staggerContainer}
+          className="flex flex-col gap-4 px-4 md:px-6 lg:px-8 mb-12"
+          aria-label="AI Recommendations"
+        >
+          <motion.div variants={fadeUp} className="flex items-center justify-between">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">
+              AI Recommendations
+              <span className="ml-2 inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-[var(--engine-grow)]/15 text-[var(--engine-grow)] text-[10px] font-bold tabular-nums">
+                {RECOMMENDATIONS_SUMMARY.length}
+              </span>
+            </h2>
+          </motion.div>
+
+          <div className="flex flex-col gap-3">
+            {RECOMMENDATIONS_SUMMARY.map((rec) => (
+              <Link key={rec.rank} to={`/grow/recommendation?id=${rec.rank}`} className="block">
+              <motion.div
+                variants={fadeUp}
+                className="relative overflow-hidden rounded-2xl p-5 md:p-6 border border-white/[0.08] bg-black/40 flex items-start gap-4 transition-colors hover:bg-white/[0.03] cursor-pointer"
+              >
+                {/* Rank badge */}
+                <div
+                  className="flex-shrink-0 w-10 h-10 rounded-full border border-[var(--engine-grow)]/30 bg-[var(--engine-grow)]/10 flex items-center justify-center text-sm font-semibold tabular-nums"
+                  style={{ color: 'var(--engine-grow)' }}
+                >
+                  {rec.rank}
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0 flex flex-col gap-2">
+                  <p className="text-sm md:text-base font-semibold text-white/90 leading-snug">{rec.title}</p>
+                  <p className="text-xs text-white/40 flex flex-wrap items-center gap-x-1.5">
+                    <span className="font-mono font-semibold" style={{ color: 'var(--engine-grow)' }}>${rec.monthly}/mo</span>
+                    <span className="text-white/20">&middot;</span>
+                    <span className="font-mono">${rec.annual.toLocaleString()}/yr</span>
+                    <span className="text-white/20">&middot;</span>
+                    <span>{Math.round(rec.confidence * 100)}% confidence</span>
+                  </p>
+                  {/* Confidence bar */}
+                  <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${rec.confidence * 100}%`,
+                        background: 'var(--engine-grow)',
+                      }}
+                    />
+                  </div>
+                </div>
+              </motion.div>
+              </Link>
+            ))}
+          </div>
+        </motion.section>
 
       </motion.div>
     </>
