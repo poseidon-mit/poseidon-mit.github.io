@@ -178,7 +178,7 @@ export function GrowRecommendations() {
               { label: 'Actionable', value: String(actionableNowCount), color: 'var(--engine-dashboard)' },
               { label: 'Avg conf.', value: `${(Number(avgConfidence) * 100).toFixed(0)}%`, color: 'var(--engine-execute)' }].
               map((kpi) => (
-                <motion.div key={kpi.label} className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col justify-center transition-all hover:bg-white/[0.02]">
+                <motion.div key={kpi.label} className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col justify-center transition-colors hover:bg-white/[0.02]">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
                   <div className="relative z-10 flex flex-col gap-1.5">
                     <p className="text-[10px] md:text-xs uppercase tracking-widest font-semibold text-white/50">{kpi.label}</p>
@@ -226,7 +226,7 @@ export function GrowRecommendations() {
               <motion.div
                 key={rec.rank}
                 variants={fadeUp}
-                className="relative overflow-hidden rounded-[32px] p-6 lg:p-10 backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]"
+                className="relative overflow-hidden rounded-[32px] p-6 lg:p-10 backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-colors hover:bg-white/[0.02]"
                 style={{ border: '1px solid rgba(255,255,255,0.08)', borderLeftWidth: 4, borderLeftColor: 'var(--engine-grow)' }}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
@@ -332,7 +332,7 @@ export function GrowRecommendations() {
           <aside className="w-full lg:w-[320px] shrink-0 flex flex-col gap-6" aria-label="Recommendations sidebar">
             <div className="sticky top-24 flex flex-col gap-6">
               {/* Summary */}
-              <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-2 transition-all hover:bg-white/[0.02]">
+              <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-2 transition-colors hover:bg-white/[0.02]">
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
                 <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest border-b border-white/[0.06] pb-4 mb-4 relative z-10">Summary</h3>
                 <div className="space-y-4 relative z-10">
@@ -351,7 +351,7 @@ export function GrowRecommendations() {
               </motion.div>
 
               {/* Impact breakdown */}
-              <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-2 transition-all hover:bg-white/[0.02]">
+              <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-2 transition-colors hover:bg-white/[0.02]">
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
                 <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest border-b border-white/[0.06] pb-4 mb-4 relative z-10">Impact Breakdown</h3>
                 <div className="space-y-5 relative z-10">
@@ -375,7 +375,7 @@ export function GrowRecommendations() {
               </motion.div>
 
               {/* AI Analysis */}
-              <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4 transition-all hover:bg-white/[0.02]" style={{ border: '1px solid rgba(255,255,255,0.08)', borderLeftWidth: 4, borderLeftColor: 'var(--engine-grow)' }}>
+              <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4 transition-colors hover:bg-white/[0.02]" style={{ border: '1px solid rgba(255,255,255,0.08)', borderLeftWidth: 4, borderLeftColor: 'var(--engine-grow)' }}>
                 <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.02] mix-blend-overlay pointer-events-none" />
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/10 to-transparent pointer-events-none" />
                 <div className="relative z-10 flex items-center gap-3 border-b border-white/[0.06] pb-4 mb-2">

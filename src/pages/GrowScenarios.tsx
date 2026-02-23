@@ -172,7 +172,7 @@ export default function GrowScenariosPage() {
 
         {/* ── P2: Comparative Forecast with ForecastBand ── */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8 mb-8">
-          <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-all hover:bg-white/[0.02]">
+          <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-colors hover:bg-white/[0.02]">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between border-b border-white/[0.06] pb-6 mb-8">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">
@@ -196,7 +196,7 @@ export default function GrowScenariosPage() {
 
         {/* ── P3: Impact Summary + Send to Execute ── */}
         <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8 mb-8">
-          <motion.div className="relative overflow-hidden rounded-[32px] p-8 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group transition-all hover:bg-white/[0.02]">
+          <motion.div className="relative overflow-hidden rounded-[32px] p-8 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group transition-colors hover:bg-white/[0.02]">
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--engine-grow)]/10 to-transparent pointer-events-none opacity-50 transition-opacity group-hover:opacity-100" />
             <div className="absolute left-0 top-0 bottom-0 w-1.5 opacity-70 transition-opacity group-hover:opacity-100" style={{ background: "var(--engine-grow)" }} />
             <div className="relative z-10 max-w-2xl pl-2">

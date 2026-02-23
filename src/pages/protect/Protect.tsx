@@ -177,7 +177,7 @@ export default function ProtectPage() {
           <aside className="w-full lg:w-[320px] xl:w-[380px] shrink-0" aria-label="Security summary sidebar">
             <div className="sticky top-6 flex flex-col gap-6">
               {/* Threat summary */}
-              <motion.div variants={fadeUpVariant} className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]">
+              <motion.div variants={fadeUpVariant} className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-colors hover:bg-white/[0.02]">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
 
                 <div className="relative z-10 flex items-center justify-between">
@@ -196,7 +196,7 @@ export default function ProtectPage() {
               </motion.div>
 
               {/* Risk breakdown */}
-              <motion.div variants={fadeUpVariant} className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]">
+              <motion.div variants={fadeUpVariant} className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-colors hover:bg-white/[0.02]">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
 
                 <div className="relative z-10 flex items-center justify-between">
@@ -219,7 +219,7 @@ export default function ProtectPage() {
               </motion.div>
 
               {/* AI Defense Posture */}
-              <motion.div variants={fadeUpVariant} className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02]">
+              <motion.div variants={fadeUpVariant} className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-colors hover:bg-white/[0.02]">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
                 <h3 className="text-xs xl:text-sm font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 relative z-10">AI Defense Posture</h3>
                 <div className="flex flex-col gap-4 relative z-10">

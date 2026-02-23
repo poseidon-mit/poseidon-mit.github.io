@@ -424,7 +424,7 @@ function ActionCard({
   return (
     <motion.div variants={fadeUpVariant}>
       <motion.div
-        className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 border border-white/[0.08] hover:border-white/[0.15] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-5 transition-all"
+        className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 border border-white/[0.08] hover:border-white/[0.15] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-5 transition-colors"
         style={{ borderLeftWidth: 4, borderLeftColor: ENGINE_COLOR_MAP[action.engine] }}
       >
         <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
