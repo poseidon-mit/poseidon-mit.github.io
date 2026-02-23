@@ -3,6 +3,21 @@ export type ExecuteEngineName = 'Protect' | 'Grow' | 'Execute'
 
 export type UrgencyLevel = 'high' | 'medium' | 'low'
 
+export type ExecutionType = 'auto' | 'semi-auto' | 'manual' | 'hybrid'
+export type ExecuteCategory = 'protection' | 'savings' | 'investment' | 'compliance' | 'rebalance'
+export type ExecuteStepActor = 'agent' | 'user'
+export type ExecuteStepStatus = 'completed' | 'current' | 'waiting' | 'blocked'
+
+export interface ExecutionStep {
+  id: string
+  label: string
+  description: string
+  actor: ExecuteStepActor
+  status: ExecuteStepStatus
+  requiresConsent: boolean
+  estimatedDuration?: string
+}
+
 export type DecisionStatus = 'Verified' | 'Pending review' | 'Flagged'
 
 export interface CriticalAlertEntity {
@@ -54,6 +69,12 @@ export interface ExecuteActionEntity {
   reversible: boolean
   expiresIn: string | null
   factors: ExecuteActionFactor[]
+  executionType: ExecutionType
+  category: ExecuteCategory
+  steps: ExecutionStep[]
+  sourceEngine: ExecuteEngineName
+  sourceEntityId?: string
+  rollbackWindowHours?: number
 }
 
 export interface GovernLedgerEntryEntity {
