@@ -1,14 +1,19 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { RouterProvider } from '../../router';
 import ExecuteApproval from '../../pages/ExecuteApproval';
 
 /**
  * Execute approval flow: EXE02 consent-gated approval.
- * Critical rule: Approve button disabled until ConsentScopePanel viewed.
+ * Critical rule: Approve button disabled until consent checkbox checked.
  */
 describe('Execute approval flow (EXE02)', () => {
+  beforeEach(() => {
+    // Set URL to a valid action so the approval page renders
+    window.history.pushState({}, '', '/execute/approval?actionId=EXE-001');
+  });
+
   function renderEXE02() {
     return render(
       <RouterProvider>
@@ -19,40 +24,42 @@ describe('Execute approval flow (EXE02)', () => {
 
   it('starts with approve button disabled', () => {
     renderEXE02();
-    const approveBtn = screen.getByRole('button', { name: /Review consent scope first/i });
+    const approveBtn = screen.getByRole('button', { name: /Approve Action/i });
     expect(approveBtn).toBeDisabled();
   });
 
   it('enables approve button after consent scope is reviewed', () => {
     const { container } = renderEXE02();
 
-    // Click the consent scope card to mark as reviewed
-    const consentCard = container.querySelector('[data-slot="consent_scope"]') as HTMLElement;
-    expect(consentCard).not.toBeNull();
-    fireEvent.click(consentCard);
+    // Check the consent checkbox via its label
+    const consentLabel = container.querySelector('[data-slot="consent_scope"]') as HTMLElement;
+    expect(consentLabel).not.toBeNull();
+    const checkbox = consentLabel.querySelector('input[type="checkbox"]') as HTMLInputElement;
+    fireEvent.click(checkbox);
 
-    // After clicking, the button text changes and becomes enabled
-    const approveBtn = screen.getByRole('button', { name: /Approve & execute/i });
+    // After checking, button becomes enabled
+    const approveBtn = screen.getByRole('button', { name: /Approve Action/i });
     expect(approveBtn).not.toBeDisabled();
   });
 
-  it('consent scope card shows reviewed status after click', () => {
+  it('consent checkbox toggles correctly', () => {
     const { container } = renderEXE02();
 
-    const consentCard = container.querySelector('[data-slot="consent_scope"]') as HTMLElement;
-    fireEvent.click(consentCard);
-
-    expect(screen.getByText(/Reviewed/)).toBeInTheDocument();
+    const consentLabel = container.querySelector('[data-slot="consent_scope"]') as HTMLElement;
+    const checkbox = consentLabel.querySelector('input[type="checkbox"]') as HTMLInputElement;
+    expect(checkbox.checked).toBe(false);
+    fireEvent.click(checkbox);
+    expect(checkbox.checked).toBe(true);
   });
 
-  it('shows action evidence section', () => {
+  it('shows decision drivers section', () => {
     renderEXE02();
-    expect(screen.getByText(/Action evidence/i)).toBeInTheDocument();
+    expect(screen.getByText(/Decision Drivers/i)).toBeInTheDocument();
   });
 
   it('shows expected outcome section', () => {
     renderEXE02();
-    expect(screen.getByText(/Expected outcome/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Expected Outcome/i).length).toBeGreaterThan(0);
   });
 
   it('has governance contract set', () => {
