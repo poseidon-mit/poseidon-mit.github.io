@@ -1,9 +1,9 @@
 import { useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell, ResponsiveContainer, LabelList } from 'recharts'
-import { Link, useRouter } from '@/router'
+import { useRouter } from '@/router'
+import { SubPageNav, ConfidenceIndicator } from '@/components/poseidon'
 import {
-  ArrowLeft,
   AlertTriangle,
   MapPin,
   CreditCard,
@@ -18,10 +18,11 @@ import {
   Check,
 } from "lucide-react"
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
-import { AuroraPulse } from '@/components/poseidon'
-import { getMotionPreset } from '@/lib/motion-presets'
+import { getMotionPreset, accordionVariants, accordionTransition } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
+import { usePageTitle } from '@/hooks/use-page-title'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import {
   THREATS,
@@ -31,6 +32,7 @@ import {
   DEFAULT_TIMING,
   MITIGATING_TOTAL,
   deriveFactors,
+  severityConfig,
 } from './protect-data'
 import type { DerivedFactor } from './protect-data'
 import { useDismissedAlerts } from './useDismissedAlerts'
@@ -77,7 +79,7 @@ function computeWaterfallData(factors: { name: string; value: number }[]): Water
   return result
 }
 
-function ShapWaterfall({ factors }: { factors: DerivedFactor[] }) {
+function ProtectShapWaterfallChart({ factors }: { factors: DerivedFactor[] }) {
   const waterfallInput = useMemo(() => factors.map(f => ({ name: f.title, value: f.value })), [factors])
   const data = useMemo(() => computeWaterfallData(waterfallInput), [waterfallInput])
 
@@ -137,6 +139,7 @@ function ShapWaterfall({ factors }: { factors: DerivedFactor[] }) {
 export default function ProtectAlertDetailPage() {
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
+  usePageTitle('Alert Detail')
   const { search, navigate } = useRouter()
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [disputeState, setDisputeState] = useState<'idle' | 'drafting' | 'submitted'>('idle')
@@ -149,15 +152,7 @@ export default function ProtectAlertDetailPage() {
     return THREATS.find(t => t.id === alertId) || THREATS[0]
   }, [search])
 
-  const severityTheme = useMemo(() => {
-    switch (alert.severity) {
-      case 'Critical': return { color: 'var(--state-critical)', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.2)', shadow: 'rgba(239,68,68,0.5)' }
-      case 'High': return { color: 'var(--state-warning)', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.2)', shadow: 'rgba(245,158,11,0.5)' }
-      case 'Medium': return { color: 'var(--engine-govern)', bg: 'rgba(59,130,246,0.1)', border: 'rgba(59,130,246,0.2)', shadow: 'rgba(59,130,246,0.5)' }
-      case 'Low': return { color: '#94A3B8', bg: 'rgba(148,163,184,0.1)', border: 'rgba(148,163,184,0.2)', shadow: 'rgba(148,163,184,0.5)' }
-      default: return { color: 'var(--state-critical)', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.2)', shadow: 'rgba(239,68,68,0.5)' }
-    }
-  }, [alert.severity])
+  const severityTheme = severityConfig[alert.severity]
 
   const factors = useMemo(() => {
     const items = ALERT_FACTOR_ITEMS[alert.id] || DEFAULT_FACTOR_ITEMS
@@ -217,14 +212,14 @@ export default function ProtectAlertDetailPage() {
   ]
 
   return (
-    <div className="relative min-h-screen w-full">
-      <AuroraPulse engine="protect" />
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-protect)", color: 'var(--bg-oled)' }}>Skip to main content</a>
+    <>
+
+      <SubPageNav engine="protect" parentPath="/protect" parentLabel="Protect" currentLabel={`Signal #${alert.id}`} />
 
       <motion.div
         id="main-content"
-        className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
-        style={{ maxWidth: "1280px" }}
+        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 py-6 md:py-8`}
+        style={PAGE_CONTENT_STYLE}
         variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
@@ -233,12 +228,9 @@ export default function ProtectAlertDetailPage() {
 
         {/* ── Header ── */}
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 mb-8 mt-4">
-          <motion.div variants={fadeUpVariant}>
-            <Link to="/protect" className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.05]" style={{ color: "#94A3B8" }}><ArrowLeft size={16} />Back to Protect</Link>
-          </motion.div>
           <motion.div variants={fadeUpVariant} className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="flex flex-col gap-2">
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white leading-tight" style={{ fontFamily: "var(--font-display)" }}>{`Signal #${alert.id}`}</h1>
+              <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>{`Signal #${alert.id}`}</h1>
               <span className="text-sm tracking-wide text-white/40 font-mono mt-1">{`Detected: ${detectedAt} • Updated: ${updatedAt}`}</span>
             </div>
             <span className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(0,0,0,0.2)]" style={{ background: severityTheme.bg, border: `1px solid ${severityTheme.border}`, color: severityTheme.color }} aria-label={`Alert status: ${alert.severity}`}><AlertTriangle size={16} />{alert.severity}</span>
@@ -247,13 +239,13 @@ export default function ProtectAlertDetailPage() {
 
         {/* ── Alert Summary ── */}
         <motion.div variants={fadeUpVariant} className="mb-6">
-          <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-[0_0_30px_rgba(0,0,0,0.2)] flex flex-col gap-4 transition-all hover:bg-white/[0.02]" style={{ border: `1px solid ${severityTheme.border}` }}>
+          <div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col gap-4 transition-all" style={{ border: `1px solid ${severityTheme.border}` }}>
             <div className="absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none" style={{ backgroundImage: `linear-gradient(to bottom right, ${severityTheme.bg}, transparent)` }} />
 
             <div className="grid grid-cols-2 lg:grid-cols-6 gap-6 lg:gap-8 relative z-10">
               <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Merchant</span><span className="text-lg font-medium text-white/90">{alert.merchant}</span></div>
               <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Amount</span><span className="text-2xl font-light font-mono" style={{ color: severityTheme.color, textShadow: `0 0 8px ${severityTheme.shadow}` }}>{alert.amount}</span></div>
-              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Confidence</span><div className="flex items-center gap-3"><div className="h-1.5 w-24 rounded-full overflow-hidden bg-white/[0.05] border border-white/[0.02]"><div className="h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_currentColor]" style={{ width: `${alert.confidence * 100}%`, background: severityTheme.color }} /></div><span className="text-base font-mono font-bold drop-shadow-[0_0_5px_currentColor]" style={{ color: severityTheme.color }}>{formatConfidence(alert.confidence)}</span></div></div>
+              <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Confidence</span><ConfidenceIndicator value={alert.confidence} colorOverride={severityTheme.color} size="lg" glow /></div>
               <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Alert type</span><span className="text-base text-white/70 tracking-wide">{alert.description}</span></div>
               <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Account</span><div className="flex items-center gap-2"><CreditCard size={16} className="text-white/30" /><span className="text-base font-mono font-medium drop-shadow-[0_0_5px_rgba(255,255,255,0.2)] text-white/80">{`Checking ****4821`}</span></div></div>
               <div className="flex flex-col gap-2"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Location</span><div className="flex items-center gap-2"><MapPin size={16} className="text-white/30" /><span className="text-base text-white/80 tracking-wide">{"Online"}</span></div><span className="text-xs font-semibold tracking-wide" style={{ color: severityTheme.color }}>Flagged IP: 203.0.113.42</span></div>
@@ -263,7 +255,7 @@ export default function ProtectAlertDetailPage() {
 
         {/* ── Timeline ── */}
         <motion.div variants={fadeUpVariant} className="mb-8">
-          <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4 transition-all hover:bg-white/[0.02]">
+          <div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col gap-4 transition-all">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
             <div className="relative z-10 hidden md:flex items-center justify-between" role="list" aria-label="Alert timeline">
               {timelineSteps.map((step, i) => (
@@ -301,7 +293,7 @@ export default function ProtectAlertDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           {/* SHAP attribution waterfall */}
           <motion.div variants={fadeUpVariant}>
-            <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02] h-full">
+            <div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col gap-6 transition-all h-full">
               <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
               <div className="relative z-10 flex items-center justify-between border-b border-white/[0.06] pb-4">
                 <div>
@@ -310,14 +302,14 @@ export default function ProtectAlertDetailPage() {
                 </div>
               </div>
               <div className="relative z-10">
-                <ShapWaterfall factors={factors} />
+                <ProtectShapWaterfallChart factors={factors} />
               </div>
             </div>
           </motion.div>
 
           {/* Evidence Analysis */}
           <motion.div variants={fadeUpVariant}>
-            <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-6 transition-all hover:bg-white/[0.02] h-full">
+            <div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col gap-6 transition-all h-full">
               <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
               <div className="relative z-10 flex items-center justify-between border-b border-white/[0.06] pb-4">
                 <div>
@@ -342,7 +334,7 @@ export default function ProtectAlertDetailPage() {
                       </div>
                       <AnimatePresence>
                         {expanded && (
-                          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
+                          <motion.div variants={accordionVariants} initial="hidden" animate="visible" exit="exit" transition={accordionTransition} className="overflow-hidden">
                             <div className="px-5 pb-4 flex flex-col gap-2 mx-5 pt-3 border-t border-white/[0.06]">
                               <p className="text-sm leading-relaxed text-white/60 tracking-wide">{item.details}</p>
                               {item.model && <span className="text-xs font-mono text-white/30 uppercase tracking-widest mt-1 block">Model: {item.model}</span>}
@@ -361,7 +353,7 @@ export default function ProtectAlertDetailPage() {
         {/* ── Actions ── */}
         <motion.div variants={fadeUpVariant}>
           {disputeState === 'idle' && (
-            <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 transition-all hover:bg-white/[0.02]" style={{ borderColor: 'var(--state-critical)' }}>
+            <div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 transition-all" style={{ borderColor: 'var(--state-critical)' }}>
               <div className="absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none" style={{ backgroundImage: `linear-gradient(to bottom right, ${severityTheme.bg}, transparent)` }} />
               <div className="relative z-10 flex flex-col gap-1">
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Recommended Action</h3>
@@ -379,7 +371,7 @@ export default function ProtectAlertDetailPage() {
           )}
 
           {disputeState === 'drafting' && (
-            <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border backdrop-blur-3xl shadow-2xl flex flex-col gap-6" style={{ borderColor: 'var(--engine-execute)', background: 'rgba(234, 179, 8, 0.05)' }}>
+            <div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col gap-6" style={{ borderColor: 'var(--engine-execute)', background: 'rgba(234, 179, 8, 0.05)' }}>
               <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-execute)]/20 to-transparent pointer-events-none" />
               <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Case Brief</h3>
               <div className="flex flex-col lg:flex-row gap-6 relative z-10">
@@ -433,7 +425,7 @@ export default function ProtectAlertDetailPage() {
           )}
 
           {disputeState === 'submitted' && (
-            <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-emerald-500/30 backdrop-blur-3xl bg-emerald-500/10 shadow-[0_0_30px_rgba(16,185,129,0.15)] flex flex-col sm:flex-row sm:items-center gap-6 text-center sm:text-left">
+            <div className="glass-card rounded-[32px] p-6 lg:p-8 !border-emerald-500/30 !bg-emerald-500/10 shadow-[0_0_30px_rgba(16,185,129,0.15)] flex flex-col sm:flex-row sm:items-center gap-6 text-center sm:text-left">
               <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none" />
               <div className="relative z-10 flex items-center gap-4 shrink-0">
                 <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.3)]">
@@ -453,6 +445,6 @@ export default function ProtectAlertDetailPage() {
         </motion.div>
 
       </motion.div>
-    </div>
+    </>
   )
 }

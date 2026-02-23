@@ -5,7 +5,11 @@ import {
   ComposedChart, Line, XAxis, YAxis, Tooltip, ReferenceDot, Label,
   ResponsiveContainer
 } from 'recharts';
-import { fadeUp, staggerContainer } from '@/lib/motion-presets';
+import { EngineBadge, ConfidenceIndicator } from '@/components/poseidon';
+import { getMotionPreset } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout';
+import { usePageTitle } from '@/hooks/use-page-title';
 import { RECOMMENDATIONS_SUMMARY } from './grow/recommendation-detail-data';
 
 /* ── 3-Year Growth Simulation Data ──
@@ -54,32 +58,27 @@ function SimulationTooltip({ active, payload, label }: { active?: boolean; paylo
 
 
 export default function GrowPage() {
+  usePageTitle('Grow Engine');
+  const prefersReducedMotion = useReducedMotionSafe()
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   return (
     <>
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: "var(--engine-grow)", color: 'var(--bg-oled)' }}>
-
-        Skip to main content
-      </a>
 
       <motion.div
         id="main-content"
-        className="w-full flex flex-col gap-6 md:gap-8"
+        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8`}
+        style={PAGE_CONTENT_STYLE}
         initial="hidden"
         animate="visible"
-        variants={staggerContainer}>
+        variants={staggerContainerVariant}>
 
         {/* ── Dashboard Hero ── */}
-        <motion.section variants={staggerContainer} className="flex flex-col gap-6">
-          <motion.div variants={fadeUp} className="flex flex-col gap-1">
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
+          <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
             <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-grow)]/20 bg-[var(--engine-grow)]/10 text-[var(--engine-grow)] text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(139,92,246,0.2)]">
-                <TrendingUp size={12} /> Engine status: Good
-              </span>
+              <EngineBadge engine="grow" icon={TrendingUp} label="Engine status: Good" />
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+            <h1 className={`${PAGE_HEADING_CLASS} mb-2`} style={PAGE_HEADING_STYLE}>
               Growth Plan{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400 drop-shadow-[0_0_15px_rgba(139,92,246,0.5)]">Optimized</span>
             </h1>
@@ -88,9 +87,9 @@ export default function GrowPage() {
         </motion.section>
 
         {/* ── P3: Forecast Preview ── */}
-        <div className="px-4 md:px-6 lg:px-8 mb-12">
+        <div className="mb-12">
           {/* Asset Growth Simulation */}
-          <motion.div variants={fadeUp} className="relative overflow-hidden rounded-2xl md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-colors hover:bg-white/[0.02]">
+          <motion.div variants={fadeUpVariant} className="glass-card rounded-2xl md:rounded-[32px] p-5 md:p-8 lg:p-12 flex flex-col transition-colors">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
             <div className="relative z-10 flex flex-col gap-6">
               <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
@@ -168,11 +167,11 @@ export default function GrowPage() {
 
         {/* ── AI Recommendations List ── */}
         <motion.section
-          variants={staggerContainer}
-          className="flex flex-col gap-4 px-4 md:px-6 lg:px-8 mb-12"
+          variants={staggerContainerVariant}
+          className="flex flex-col gap-4 mb-12"
           aria-label="AI Recommendations"
         >
-          <motion.div variants={fadeUp} className="flex items-center justify-between">
+          <motion.div variants={fadeUpVariant} className="flex items-center justify-between">
             <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">
               AI Recommendations
               <span className="ml-2 inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-[var(--engine-grow)]/15 text-[var(--engine-grow)] text-[10px] font-bold tabular-nums">
@@ -185,8 +184,8 @@ export default function GrowPage() {
             {RECOMMENDATIONS_SUMMARY.map((rec) => (
               <Link key={rec.rank} to={`/grow/recommendation?id=${rec.rank}`} className="block">
               <motion.div
-                variants={fadeUp}
-                className="relative overflow-hidden rounded-2xl p-5 md:p-6 border border-white/[0.08] bg-black/40 flex items-start gap-4 transition-colors hover:bg-white/[0.03] cursor-pointer"
+                variants={fadeUpVariant}
+                className="glass-card glass-card-overlay rounded-2xl p-5 md:p-6 flex items-start gap-4 transition-colors cursor-pointer"
               >
                 {/* Rank badge */}
                 <div
@@ -203,19 +202,8 @@ export default function GrowPage() {
                     <span className="font-mono font-semibold" style={{ color: 'var(--engine-grow)' }}>${rec.monthly}/mo</span>
                     <span className="text-white/20">&middot;</span>
                     <span className="font-mono">${rec.annual.toLocaleString()}/yr</span>
-                    <span className="text-white/20">&middot;</span>
-                    <span>{Math.round(rec.confidence * 100)}% confidence</span>
                   </p>
-                  {/* Confidence bar */}
-                  <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${rec.confidence * 100}%`,
-                        background: 'var(--engine-grow)',
-                      }}
-                    />
-                  </div>
+                  <ConfidenceIndicator value={rec.confidence} accentColor="var(--engine-grow)" format="percent" />
                 </div>
               </motion.div>
               </Link>

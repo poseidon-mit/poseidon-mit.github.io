@@ -100,3 +100,86 @@ describe('Infrastructure integrity', () => {
     expect(source).toContain('/govern/audit-detail?decision=');
   });
 });
+
+/* ─── Architecture guards ─────────────────────────────────────────────────── */
+
+describe('Architecture guards', () => {
+  /**
+   * App-route pages rendered under AuthenticatedLayout.
+   * Layout already provides AuroraPulse + GovernFooter — pages must NOT
+   * duplicate these. Public/standalone pages are excluded.
+   */
+  const APP_ROUTE_PAGES = [
+    'src/pages/Dashboard.tsx',
+    'src/pages/Notifications.tsx',
+    'src/pages/protect/Protect.tsx',
+    'src/pages/protect/ProtectAlertDetail.tsx',
+    'src/pages/Grow.tsx',
+    'src/pages/GrowGoalDetail.tsx',
+    'src/pages/GrowScenarios.tsx',
+    'src/pages/GrowRecommendations.tsx',
+    'src/pages/grow/GrowRecommendationDetail.tsx',
+    'src/pages/Execute.tsx',
+    'src/pages/ExecuteApproval.tsx',
+    'src/pages/ExecuteHistory.tsx',
+    'src/pages/Govern.tsx',
+    'src/pages/GovernAuditLedger.tsx',
+    'src/pages/GovernAuditDetail.tsx',
+    'src/pages/Settings.tsx',
+  ] as const;
+
+  const pageSources = APP_ROUTE_PAGES.map((p) => ({ path: p, src: read(p) }));
+
+  it('app-route pages do not import AuroraPulse', () => {
+    for (const { path, src } of pageSources) {
+      expect(src, `${path} still imports AuroraPulse`).not.toMatch(
+        /import\s.*AuroraPulse/,
+      );
+    }
+  });
+
+  it('app-route pages do not import GovernFooter', () => {
+    for (const { path, src } of pageSources) {
+      expect(src, `${path} still imports GovernFooter`).not.toMatch(
+        /import\s.*GovernFooter/,
+      );
+    }
+  });
+
+  it('pages do not import from src/legacy/', () => {
+    for (const { path, src } of pageSources) {
+      expect(src, `${path} imports from legacy/`).not.toMatch(
+        /from\s+['"](@\/|\.\.?\/)legacy\//,
+      );
+    }
+  });
+
+  it('app-route pages do not import from src/design-system/ directly', () => {
+    for (const { path, src } of pageSources) {
+      expect(src, `${path} imports from design-system/`).not.toMatch(
+        /from\s+['"](@\/|\.\.?\/)design-system\//,
+      );
+    }
+  });
+
+  it('pages use glass-card utility instead of inline backdrop-blur + bg-black', () => {
+    for (const { path, src } of pageSources) {
+      expect(src, `${path} uses inline glass-card pattern`).not.toMatch(
+        /backdrop-blur-(2xl|3xl)\s+bg-black\//,
+      );
+    }
+  });
+
+  it('pages use EngineBadge instead of inline engine badges', () => {
+    // The old inline pattern: rounded-full + tracking-widest uppercase + engine color via
+    // style={{ color: "var(--engine-*)" }} or inline hex on a <span>.
+    // After extraction, only <EngineBadge> should produce this pattern.
+    const inlineBadgePattern =
+      /className="[^"]*inline-flex items-center gap-2 px-3 py-1\.5 rounded-full border[^"]*tracking-widest uppercase/;
+    for (const { path, src } of pageSources) {
+      expect(src, `${path} has inline engine badge`).not.toMatch(
+        inlineBadgePattern,
+      );
+    }
+  });
+});

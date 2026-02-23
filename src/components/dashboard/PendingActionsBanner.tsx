@@ -14,8 +14,8 @@ export function PendingActionsBanner({ pendingCount, navigate, variants }: Pendi
     <motion.section variants={variants} className="mb-10" aria-label="Pending actions">
       <button
         type="button"
-        onClick={() => navigate('/execute/approval')}
-        className="w-full rounded-[32px] p-6 backdrop-blur-3xl border border-amber-500/20 bg-black/50 shadow-2xl relative overflow-hidden group cursor-pointer transition-all hover:border-amber-500/30 hover:bg-black/40 text-left"
+        onClick={() => navigate('/execute')}
+        className="glass-card w-full rounded-[32px] p-6 !border-amber-500/20 group cursor-pointer transition-all hover:!border-amber-500/30 text-left"
       >
         {/* Amber radial glow background */}
         <div

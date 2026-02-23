@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
-  ArrowLeft,
   Zap,
   CheckCircle2,
   Bot,
@@ -11,10 +10,10 @@ import {
   ExternalLink,
   Timer,
 } from 'lucide-react'
-import { Link, useRouter } from '../router'
-import { ShapWaterfall, EmptyState } from '@/components/poseidon'
-import { Dialog, DialogContent } from '../components/ui/dialog'
-import { usePageTitle } from '../hooks/use-page-title'
+import { Link, useRouter } from '@/router'
+import { ShapWaterfall, EmptyState, EngineBadge, SubPageNav, ConfidenceIndicator } from '@/components/poseidon'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { usePageTitle } from '@/hooks/use-page-title'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
@@ -24,17 +23,14 @@ import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { selectExecuteActionById } from '@/domain/poseidon-universe'
 import type { ExecuteActionEntity, ExecutionStep } from '@/domain/poseidon-universe'
 import { ENGINE_BADGE_CLASS } from '@/lib/engine-color-map'
+import { EXECUTION_TYPE_BADGE } from '@/lib/execution-type-config'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
 
 /* ═══════════════════════════════════════════
    CONSTANTS
    ═══════════════════════════════════════════ */
 
-const EXEC_TYPE_BADGE: Record<string, { label: string; cls: string }> = {
-  auto: { label: 'Auto', cls: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20' },
-  'semi-auto': { label: 'Semi-Auto', cls: 'bg-amber-500/15 text-amber-400 border-amber-500/20' },
-  manual: { label: 'Manual', cls: 'bg-slate-400/15 text-slate-300 border-slate-400/20' },
-  hybrid: { label: 'Hybrid', cls: 'bg-violet-500/15 text-violet-400 border-violet-500/20' },
-}
+// Execution type badge config — shared from lib/execution-type-config.ts
 
 /* ═══════════════════════════════════════════
    COMPONENT
@@ -92,7 +88,7 @@ export function ExecuteApproval() {
     )
   }
 
-  const typeBadge = EXEC_TYPE_BADGE[action.executionType]
+  const typeBadge = EXECUTION_TYPE_BADGE[action.executionType]
   const sourceLink = action.sourceEngine === 'Protect' && action.sourceEntityId
     ? { label: `From Protect alert ${action.sourceEntityId}`, to: `/protect/alert-detail?alertId=${action.sourceEntityId}` }
     : action.sourceEngine === 'Grow' && action.sourceEntityId
@@ -101,30 +97,13 @@ export function ExecuteApproval() {
 
   return (
     <div className="relative min-h-screen w-full">
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: 'var(--engine-execute)', color: 'var(--bg-oled)' }}
-      >
-        Skip to main content
-      </a>
 
-      {/* Breadcrumb */}
-      <nav className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/[0.06]" aria-label="Breadcrumb">
-        <div className="mx-auto px-4 md:px-6 lg:px-8 h-14 flex items-center gap-2" style={{ maxWidth: '1440px' }}>
-          <Link to="/execute" className="flex items-center gap-1.5 text-sm font-medium hover:opacity-80 transition-opacity" style={{ color: 'var(--engine-execute)' }}>
-            <ArrowLeft className="h-4 w-4" />
-            Execute
-          </Link>
-          <span className="text-white/20">/</span>
-          <span className="text-sm text-white/50">Approve: {action.title}</span>
-        </div>
-      </nav>
+      <SubPageNav engine="execute" parentPath="/execute" parentLabel="Execute" currentLabel={`Approve: ${action.title}`} />
 
       <motion.div
         id="main-content"
-        className="mx-auto flex flex-col gap-6 md:gap-8 lg:gap-10 pb-12 w-full pt-8 lg:pt-12 px-4 md:px-6 lg:px-8"
-        style={{ maxWidth: '1440px' }}
+        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 lg:gap-10 pb-12 pt-8 lg:pt-12`}
+        style={PAGE_CONTENT_STYLE}
         variants={stagger}
         initial="hidden"
         animate="visible"
@@ -133,10 +112,7 @@ export function ExecuteApproval() {
         {/* Hero */}
         <motion.div variants={fadeUpVariant} className="flex flex-col gap-4">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-execute)]/20 bg-[var(--engine-execute)]/10 text-[var(--engine-execute)] text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(251,191,36,0.2)]">
-              <Zap size={12} />
-              Execute · Action Approval
-            </span>
+            <EngineBadge engine="execute" icon={Zap} label="Execute · Action Approval" />
             <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest border border-white/[0.05] ${ENGINE_BADGE_CLASS[action.engine]}`}>
               {action.engine}
             </span>
@@ -156,7 +132,7 @@ export function ExecuteApproval() {
             )}
           </div>
 
-          <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-[#F1F5F9] leading-tight" style={{ fontFamily: 'var(--font-display)' }}>
+          <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>
             {action.title}
           </h1>
           <p className="text-base md:text-lg text-white/50 max-w-3xl font-light leading-relaxed tracking-wide">
@@ -176,19 +152,7 @@ export function ExecuteApproval() {
             <div className="w-px h-6 bg-white/[0.06]" />
             <div className="flex items-center gap-3">
               <span className="text-xs uppercase tracking-widest text-white/40">Confidence</span>
-              <div className="h-2 w-20 rounded-full overflow-hidden bg-white/[0.05]">
-                <div
-                  className="h-full rounded-full shadow-[0_0_8px_currentColor]"
-                  style={{
-                    width: `${action.confidence * 100}%`,
-                    background: action.confidence >= 0.9 ? 'var(--state-healthy)' : 'var(--state-warning)',
-                    color: action.confidence >= 0.9 ? 'var(--state-healthy)' : 'var(--state-warning)',
-                  }}
-                />
-              </div>
-              <span className="text-base font-mono font-medium" style={{ color: action.confidence >= 0.9 ? 'var(--state-healthy)' : 'var(--state-warning)' }}>
-                {(action.confidence * 100).toFixed(0)}%
-              </span>
+              <ConfidenceIndicator value={action.confidence} format="percent" size="lg" glow />
             </div>
           </div>
         </motion.div>
@@ -198,8 +162,7 @@ export function ExecuteApproval() {
           <div className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-8">
             {/* Execution Plan Stepper */}
             <motion.div variants={fadeUpVariant}>
-              <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-6 lg:p-8">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+              <div className="glass-card glass-card-overlay rounded-[24px] p-6 lg:p-8">
                 <h2 className="text-xs font-semibold uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10" style={{ color: 'var(--engine-execute)' }}>
                   <Zap size={14} />
                   Execution Plan
@@ -214,8 +177,7 @@ export function ExecuteApproval() {
 
             {/* Impact comparison */}
             <motion.div variants={fadeUpVariant}>
-              <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-6 lg:p-8">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+              <div className="glass-card glass-card-overlay rounded-[24px] p-6 lg:p-8">
                 <h2 className="text-xs font-semibold uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10" style={{ color: 'var(--engine-execute)' }}>
                   <Zap size={14} />
                   Expected Outcome
@@ -235,8 +197,7 @@ export function ExecuteApproval() {
 
             {/* SHAP Evidence */}
             <motion.div variants={fadeUpVariant}>
-              <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-6 lg:p-8">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+              <div className="glass-card glass-card-overlay rounded-[24px] p-6 lg:p-8">
                 <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                   <div>
                     <h2 className="text-xs font-semibold uppercase tracking-widest mb-5 flex items-center gap-2 text-white/50">Mathematical Reasoning</h2>
@@ -270,8 +231,7 @@ export function ExecuteApproval() {
             <div className="sticky top-20 flex flex-col gap-6">
               {/* Consent Card */}
               <motion.div variants={fadeUpVariant}>
-                <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-6 flex flex-col gap-5">
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-5">
 
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-3 relative z-10 flex items-center gap-2">
                     <ShieldCheck size={12} style={{ color: 'var(--engine-execute)' }} />
@@ -342,8 +302,7 @@ export function ExecuteApproval() {
 
               {/* Action Summary */}
               <motion.div variants={fadeUpVariant}>
-                <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-6 flex flex-col gap-3">
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-3">
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-3 relative z-10">Action Summary</h3>
                   <div className="relative z-10 space-y-2.5">
                     {[

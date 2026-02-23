@@ -13,11 +13,13 @@ import {
   User,
   AlertTriangle,
   Timer,
+  XCircle,
 } from 'lucide-react'
 import { useRouter, Link } from '@/router'
-import { EmptyState } from '@/components/poseidon'
+import { EmptyState, EngineBadge, KpiCard, ConfidenceIndicator, StatRow } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { ENGINE_BADGE_CLASS, ENGINE_COLOR_MAP } from '@/lib/engine-color-map'
+import { EXECUTION_TYPE_BADGE } from '@/lib/execution-type-config'
 import { useDemoState } from '@/lib/demo-state/provider'
 import type { DemoExecuteDecision } from '@/lib/demo-state/types'
 import {
@@ -37,19 +39,15 @@ import {
 } from '@/domain/poseidon-universe'
 import type { ExecuteActionEntity, ExecutionType, UrgencyLevel } from '@/domain/poseidon-universe'
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
 
 /* ═══════════════════════════════════════════
    CONSTANTS
    ═══════════════════════════════════════════ */
 
-type ActionStatus = 'pending' | 'approved' | 'deferred'
+type ActionStatus = 'pending' | 'approved' | 'rejected' | 'deferred'
 
-const EXECUTION_TYPE_BADGE: Record<ExecutionType, { label: string; cls: string }> = {
-  auto: { label: 'Auto', cls: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20' },
-  'semi-auto': { label: 'Semi-Auto', cls: 'bg-amber-500/15 text-amber-400 border-amber-500/20' },
-  manual: { label: 'Manual', cls: 'bg-slate-400/15 text-slate-300 border-slate-400/20' },
-  hybrid: { label: 'Hybrid', cls: 'bg-violet-500/15 text-violet-400 border-violet-500/20' },
-}
+// Execution type badge config — shared from lib/execution-type-config.ts
 
 const URGENCY_OPTIONS: UrgencyLevel[] = ['high', 'medium', 'low']
 const EXEC_TYPE_OPTIONS: ExecutionType[] = ['auto', 'semi-auto', 'manual', 'hybrid']
@@ -69,8 +67,9 @@ const URGENCY_ORDER: Record<UrgencyLevel, number> = { high: 0, medium: 1, low: 2
 function statusFromDecision(value: DemoExecuteDecision): ActionStatus {
   switch (value) {
     case 'approved':
-    case 'rejected':
       return 'approved'
+    case 'rejected':
+      return 'rejected'
     case 'deferred':
       return 'deferred'
     default:
@@ -122,21 +121,16 @@ export default function ExecutePage() {
   }, [queue, urgencyFilter, typeFilter, sortBy])
 
   const deferredActions = queue.filter((item) => item.status === 'deferred')
+  const rejectedActions = queue.filter((item) => item.status === 'rejected')
   const completedActions = queue.filter((item) => item.status === 'approved')
 
   return (
     <>
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: 'var(--engine-execute)', color: 'var(--bg-oled)' }}
-      >
-        Skip to main content
-      </a>
 
       <motion.div
         id="main-content"
-        className="flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12 w-full"
+        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12`}
+        style={PAGE_CONTENT_STYLE}
         variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
@@ -144,11 +138,8 @@ export default function ExecutePage() {
       >
         {/* Hero */}
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
-          <motion.div variants={fadeUpVariant} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-execute)]/20 bg-[var(--engine-execute)]/10 text-[var(--engine-execute)] text-xs font-bold tracking-widest uppercase self-start shadow-[0_0_15px_rgba(251,191,36,0.2)]">
-            <Zap size={12} />
-            Execute Engine
-          </motion.div>
-          <motion.h1 variants={fadeUpVariant} className="text-2xl md:text-4xl font-bold tracking-tight text-[#F1F5F9] mb-2 leading-tight" style={{ fontFamily: 'var(--font-display)' }}>
+          <motion.div variants={fadeUpVariant}><EngineBadge engine="execute" icon={Zap} label="Execute Engine" className="self-start" /></motion.div>
+          <motion.h1 variants={fadeUpVariant} className={`${PAGE_HEADING_CLASS} mb-2`} style={PAGE_HEADING_STYLE}>
             {pendingCount} actions queued. <br className="hidden lg:block" />Projected savings: <span className="text-[var(--engine-execute)] font-mono drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]">{formatUsd(executeSavings.potentialMonthlySavingsUsd)}/mo</span>.
           </motion.h1>
 
@@ -160,12 +151,7 @@ export default function ExecutePage() {
               { label: 'Deferred', value: deferredCount, color: 'var(--engine-govern)' },
               { label: 'Savings/mo', value: formatUsd(executeSavings.potentialMonthlySavingsUsd), color: 'var(--engine-execute)' },
             ].map((kpi) => (
-              <div key={kpi.label} className="rounded-[16px] border border-white/[0.06] backdrop-blur-xl bg-black/40 p-4 flex flex-col gap-1">
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-white/40">{kpi.label}</span>
-                <span className="text-xl font-mono font-medium tabular-nums" style={{ color: kpi.color, textShadow: `0 0 8px ${kpi.color}40` }}>
-                  {kpi.value}
-                </span>
-              </div>
+              <KpiCard key={kpi.label} label={kpi.label} value={kpi.value} color={kpi.color} />
             ))}
           </motion.div>
         </motion.section>
@@ -175,7 +161,7 @@ export default function ExecutePage() {
             <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
               {/* Filter Bar */}
               <motion.div variants={fadeUpVariant} className="flex items-center gap-3 flex-wrap">
-                <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">Pending approval ({pendingActions.length})</h2>
+                <h2 className="section-label">Pending approval ({pendingActions.length})</h2>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
                   className={cn(
@@ -222,8 +208,7 @@ export default function ExecutePage() {
               )}
 
               {pendingActions.length === 0 ? (
-                <motion.div className="relative overflow-hidden rounded-[32px] p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex items-center justify-center">
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <motion.div className="glass-card glass-card-overlay rounded-[32px] p-8 flex items-center justify-center">
                   <EmptyState
                     icon={CheckCircle2}
                     title="All pending actions are cleared"
@@ -252,9 +237,31 @@ export default function ExecutePage() {
                   <div className="flex flex-col gap-3">
                     {deferredActions.map((action) => (
                       <motion.div key={action.id} variants={fadeUpVariant}>
-                        <motion.div className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl flex items-center gap-4 opacity-70 hover:opacity-100 transition-opacity">
+                        <motion.div className="glass-card rounded-[24px] p-6 lg:p-8 flex items-center gap-4 opacity-70 hover:opacity-100 transition-opacity">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-[var(--state-warning)]/20 shadow-inner" style={{ background: 'rgba(234,179,8,0.1)' }}>
                             <Clock size={18} style={{ color: 'var(--state-warning)' }} className="drop-shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="text-base font-light tracking-wide text-white/90">{action.title}</span>
+                            <span className="text-xs font-mono block text-white/40 mt-1">{action.id}</span>
+                          </div>
+                          <span className="text-xs font-mono text-white/30 tracking-widest">{action.timestampLabel}</span>
+                        </motion.div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              {rejectedActions.length > 0 ? (
+                <div className="mt-8">
+                  <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 pl-2 mb-4">Rejected ({rejectedActions.length})</h2>
+                  <div className="flex flex-col gap-3">
+                    {rejectedActions.map((action) => (
+                      <motion.div key={action.id} variants={fadeUpVariant}>
+                        <motion.div className="glass-card rounded-[24px] p-6 lg:p-8 flex items-center gap-4 opacity-50 hover:opacity-80 transition-opacity">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-[var(--state-critical)]/20 shadow-inner" style={{ background: 'rgba(239,68,68,0.1)' }}>
+                            <XCircle size={18} style={{ color: 'var(--state-critical)' }} className="drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <span className="text-base font-light tracking-wide text-white/90">{action.title}</span>
@@ -274,7 +281,7 @@ export default function ExecutePage() {
                   <div className="flex flex-col gap-3">
                     {completedActions.map((action) => (
                       <motion.div key={action.id} variants={fadeUpVariant}>
-                        <motion.div className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl flex items-center gap-4 opacity-50 hover:opacity-80 transition-opacity">
+                        <motion.div className="glass-card rounded-[24px] p-6 lg:p-8 flex items-center gap-4 opacity-50 hover:opacity-80 transition-opacity">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-[var(--state-healthy)]/20 shadow-inner" style={{ background: 'rgba(34,197,94,0.1)' }}>
                             <CheckCircle2 size={18} style={{ color: 'var(--state-healthy)' }} className="drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
                           </div>
@@ -297,62 +304,35 @@ export default function ExecutePage() {
             <div className="sticky top-24 flex flex-col gap-6">
               {/* Agent Status Monitor */}
               <motion.div variants={fadeUpVariant}>
-                <div className="relative overflow-hidden rounded-[24px] p-6 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-4">
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-3 mb-1 relative z-10 flex items-center gap-2">
                     <Bot size={12} style={{ color: 'var(--engine-execute)' }} />
                     Agent Status
                   </h3>
                   <div className="space-y-3 relative z-10">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-white/60 tracking-wide">System confidence</span>
-                      <span className="text-sm font-mono font-medium tabular-nums" style={{ color: 'var(--state-healthy)', textShadow: '0 0 8px rgba(34,197,94,0.4)' }}>
-                        {(DEMO_THREAD.systemConfidence * 100).toFixed(0)}%
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-white/60 tracking-wide">Decisions audited</span>
-                      <span className="text-sm font-mono font-medium tabular-nums text-white/80">
-                        {DEMO_THREAD.decisionsAudited.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-white/60 tracking-wide">Compliance score</span>
-                      <span className="text-sm font-mono font-medium tabular-nums" style={{ color: 'var(--engine-govern)', textShadow: '0 0 8px rgba(59,130,246,0.4)' }}>
-                        {DEMO_THREAD.complianceScore}/100
-                      </span>
-                    </div>
+                    <StatRow label="System confidence" value={`${(DEMO_THREAD.systemConfidence * 100).toFixed(0)}%`} valueColor="var(--state-healthy)" glow />
+                    <StatRow label="Decisions audited" value={DEMO_THREAD.decisionsAudited.toLocaleString()} />
+                    <StatRow label="Compliance score" value={`${DEMO_THREAD.complianceScore}/100`} valueColor="var(--engine-govern)" glow />
                   </div>
                 </div>
               </motion.div>
 
               {/* Queue Summary */}
               <motion.div variants={fadeUpVariant}>
-                <div className="relative overflow-hidden rounded-[24px] p-6 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-4">
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-3 mb-1 relative z-10">Queue Summary</h3>
                   <div className="space-y-3 relative z-10">
-                    {[
-                      { label: 'Pending actions', value: String(pendingCount), color: 'var(--state-warning)' },
-                      { label: 'Completed today', value: String(completedCount), color: 'var(--state-healthy)' },
-                      { label: 'Auto-approved', value: String(state.execute.autoApprovedCount) },
-                      { label: 'Rollbacks (24h)', value: String(state.execute.rollbackCount24h), color: 'var(--engine-govern)' },
-                    ].map((item) => (
-                      <div key={item.label} className="flex items-center justify-between">
-                        <span className="text-sm text-white/60 tracking-wide">{item.label}</span>
-                        <span className="text-sm font-mono font-medium tabular-nums" style={{ color: item.color || '#F1F5F9', textShadow: item.color ? `0 0 8px ${item.color}60` : 'none' }}>
-                          {item.value}
-                        </span>
-                      </div>
-                    ))}
+                    <StatRow label="Pending actions" value={String(pendingCount)} valueColor="var(--state-warning)" glow />
+                    <StatRow label="Completed today" value={String(completedCount)} valueColor="var(--state-healthy)" glow />
+                    <StatRow label="Auto-approved" value={String(state.execute.autoApprovedCount)} />
+                    <StatRow label="Rollbacks (24h)" value={String(state.execute.rollbackCount24h)} valueColor="var(--engine-govern)" glow />
                   </div>
                 </div>
               </motion.div>
 
               {/* Savings Tracker */}
               <motion.div variants={fadeUpVariant}>
-                <div className="relative overflow-hidden rounded-[24px] p-6 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-4">
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-3 mb-1 relative z-10">Savings Tracker</h3>
                   <div className="relative z-10 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-2xl flex items-center justify-center border border-[var(--engine-execute)]/20 shadow-inner" style={{ background: 'rgba(251,191,36,0.1)' }}>
@@ -375,7 +355,7 @@ export default function ExecutePage() {
 
               {/* Rollback Safety */}
               <motion.div variants={fadeUpVariant}>
-                <div className="relative overflow-hidden rounded-[24px] p-6 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
+                <div className="glass-card rounded-[24px] p-6 flex flex-col gap-4">
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-govern)]/10 to-transparent pointer-events-none" />
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-3 mb-1 relative z-10">Rollback Safety</h3>
                   <p className="text-sm leading-relaxed text-white/70 tracking-wide relative z-10">
@@ -424,10 +404,9 @@ function ActionCard({
   return (
     <motion.div variants={fadeUpVariant}>
       <motion.div
-        className="relative overflow-hidden rounded-[24px] p-6 lg:p-8 border border-white/[0.08] hover:border-white/[0.15] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-5 transition-colors"
+        className="glass-card glass-card-overlay rounded-[24px] p-6 lg:p-8 hover:border-white/[0.15] flex flex-col gap-5 transition-colors"
         style={{ borderLeftWidth: 4, borderLeftColor: ENGINE_COLOR_MAP[action.engine] }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
 
         <div className="relative z-10 flex items-center gap-2 flex-wrap mb-1">
           <span className="text-sm font-mono font-bold tracking-wide" style={{ color: 'var(--engine-execute)', textShadow: '0 0 10px rgba(251,191,36,0.3)' }}>
@@ -462,25 +441,7 @@ function ActionCard({
           <div className="w-px h-6 bg-white/[0.06]" />
           <div className="flex items-center gap-3">
             <span className="text-xs uppercase tracking-widest text-white/40">Confidence</span>
-            <div className="h-1.5 w-16 rounded-full overflow-hidden bg-white/[0.05]">
-              <div
-                className="h-full rounded-full shadow-[0_0_8px_currentColor]"
-                style={{
-                  width: `${action.confidence * 100}%`,
-                  background: action.confidence >= 0.9 ? 'var(--state-healthy)' : 'var(--state-warning)',
-                  color: action.confidence >= 0.9 ? 'var(--state-healthy)' : 'var(--state-warning)',
-                }}
-              />
-            </div>
-            <span
-              className="text-sm font-mono font-medium"
-              style={{
-                color: action.confidence >= 0.9 ? 'var(--state-healthy)' : 'var(--state-warning)',
-                textShadow: `0 0 10px ${action.confidence >= 0.9 ? 'rgba(34,197,94,0.4)' : 'rgba(234,179,8,0.4)'}`,
-              }}
-            >
-              {(action.confidence * 100).toFixed(0)}%
-            </span>
+            <ConfidenceIndicator value={action.confidence} format="percent" glow />
           </div>
         </div>
 

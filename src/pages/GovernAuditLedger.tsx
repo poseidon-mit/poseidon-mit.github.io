@@ -18,13 +18,14 @@ import {
   ArrowLeft,
   type LucideIcon,
 } from "lucide-react"
-import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
-import { AuroraPulse, EmptyState, GovernFooter, PreviewBadge } from '@/components/poseidon'
+import { EmptyState, PreviewBadge, EngineBadge } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
+import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
 import { useRouter } from '@/router'
 import {
   selectGovernAuditEntries,
@@ -76,6 +77,7 @@ function getConfidenceColor(c: number) { return c >= 0.9 ? "var(--state-healthy)
 export default function GovernAuditPage() {
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
+  usePageTitle('Audit Ledger')
   const { navigate } = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const [activeFilter, setActiveFilter] = useState<FilterTab>("All")
@@ -128,14 +130,12 @@ export default function GovernAuditPage() {
   }
 
   return (
-    <div className="relative min-h-screen w-full">
-      <AuroraPulse engine="govern" />
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-govern)", color: "#ffffff" }}>Skip to main content</a>
+    <>
 
       <motion.div
         id="main-content"
-        className="mx-auto flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12 w-full pt-8 lg:pt-12"
-        style={{ maxWidth: "1440px" }}
+        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12 pt-8 lg:pt-12`}
+        style={PAGE_CONTENT_STYLE}
         variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
@@ -143,18 +143,15 @@ export default function GovernAuditPage() {
       >
 
         {/* ── Hero ── */}
-        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 px-4 md:px-6 lg:px-8">
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
           <motion.div variants={fadeUpVariant} className="flex items-center justify-between">
             <Link to="/govern" className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] text-white/70 hover:text-white backdrop-blur-md">
               <ArrowLeft size={16} />Back to Govern
             </Link>
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-govern)]/20 bg-[var(--engine-govern)]/10 text-[var(--engine-govern)] text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(20,184,166,0.2)]">
-              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[var(--engine-govern)]/20"><ShieldCheck size={12} /></span>
-              Audit Ledger
-            </span>
+            <EngineBadge engine="govern" icon={ShieldCheck} label="Audit Ledger" />
           </motion.div>
           <motion.div variants={fadeUpVariant} className="flex flex-col gap-2">
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>Audit Ledger</h1>
+            <h1 className={`${PAGE_HEADING_CLASS} mb-2`} style={PAGE_HEADING_STYLE}>Audit Ledger</h1>
 
           </motion.div>
 
@@ -181,12 +178,11 @@ export default function GovernAuditPage() {
         </motion.section>
 
         {/* ── Table + Sidebar ── */}
-        <div className="flex flex-col lg:flex-row gap-8 px-4 md:px-6 lg:px-8 mt-4">
+        <div className="flex flex-col lg:flex-row gap-8 mt-4">
           <div className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-6">
             {/* Desktop table */}
             <div className="hidden md:block">
-              <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-0">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
+              <div className="glass-card glass-card-overlay rounded-[32px] p-0">
                 {sorted.length === 0 ? (
                   <div className="p-12 relative z-10">
                     <EmptyState
@@ -256,8 +252,7 @@ export default function GovernAuditPage() {
             {/* Mobile cards */}
             <div className="flex flex-col gap-4 md:hidden">
               {sorted.length === 0 ? (
-                <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-8">
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
+                <div className="glass-card glass-card-overlay rounded-[32px] p-8">
                   <div className="relative z-10">
                     <EmptyState
                       icon={Search}
@@ -273,8 +268,7 @@ export default function GovernAuditPage() {
                 const SIcon = sCfg.icon
                 return (
                   <motion.div key={entry.id} variants={fadeUpVariant}>
-                    <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-5 flex flex-col gap-4">
-                      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+                    <div className="glass-card glass-card-overlay rounded-[24px] p-5 flex flex-col gap-4">
                       <div className="relative z-10 flex items-center gap-2 flex-wrap pb-3 border-b border-white/[0.06]">
                         <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase font-bold tracking-widest border border-white/[0.05]" style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}><CircleDot size={12} />{entry.type}</span>
                         <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase font-bold tracking-widest border border-white/[0.05]" style={{ background: sCfg.bg, color: sCfg.color }}><SIcon size={12} />{entry.status}</span>
@@ -305,8 +299,7 @@ export default function GovernAuditPage() {
           <aside className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6" aria-label="Audit sidebar">
             <div className="sticky top-24 flex flex-col gap-6">
               {/* Summary */}
-              <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-5">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+              <div className="glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-5">
                 <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Audit Summary</h3>
                 <div className="relative z-10 flex flex-col gap-4">
                   {[
@@ -326,8 +319,7 @@ export default function GovernAuditPage() {
               </div>
 
               {/* Evidence flow */}
-              <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+              <div className="glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-4">
                 <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Evidence Flow</h3>
                 <div className="relative z-10 flex flex-col gap-3 mt-2">
                   {["Data Source", "AI Analysis", "Evidence Aggregation", "Confidence Score", "Audit Record"].map((step, i, arr) => (
@@ -340,8 +332,7 @@ export default function GovernAuditPage() {
               </div>
 
               {/* Export */}
-              <div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-5">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+              <div className="glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-5">
                 <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Export Options</h3>
                 <div className="relative z-10 flex flex-col gap-3">
                   <button disabled title="Export available in production release" className={cn(buttonVariants({ variant: "glass" }), "w-full rounded-2xl text-sm py-4 cursor-not-allowed opacity-60 border border-white/[0.08] hover:border-white/[0.08]")} aria-label="Export full ledger preview only">
@@ -361,11 +352,7 @@ export default function GovernAuditPage() {
           </aside>
         </div>
 
-        <GovernFooter
-          auditId={GOVERNANCE_META['/govern/audit'].auditId}
-          pageContext={GOVERNANCE_META['/govern/audit'].pageContext}
-        />
       </motion.div>
-    </div>
+    </>
   )
 }

@@ -23,6 +23,12 @@ export const creatorStudioSpringPress = {
   mass: 0.8,
 }
 
+/** Hover-lift spring for KPI / stat cards (Dashboard, etc.) */
+export const hoverLift = { type: 'spring' as const, stiffness: 400, damping: 25 }
+
+/** Card-select spring for interactive selection (GrowScenarios, etc.) */
+export const cardSelect = { type: 'spring' as const, stiffness: 280, damping: 24, mass: 0.8 }
+
 /* ── Page Transition ── */
 export const pageTransition: Variants = {
   initial: { opacity: 0, y: 16 },
@@ -134,6 +140,18 @@ export function staggerDelay(i: number, base = 0.1): Transition {
 export const staggerContainerPresentation: Variants = {
   hidden: {},
   visible: {},
+}
+
+/* ── Accordion expand/collapse ── */
+export const accordionVariants: Variants = {
+  hidden: { height: 0, opacity: 0 },
+  visible: { height: 'auto', opacity: 1 },
+  exit: { height: 0, opacity: 0 },
+}
+
+export const accordionTransition: Transition = {
+  duration: 0.25,
+  ease: 'easeInOut' as const,
 }
 
 /* ── Reduced motion variants (instant, no animation) ── */

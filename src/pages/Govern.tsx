@@ -12,26 +12,21 @@ import {
   ChevronDown,
   type LucideIcon,
 } from "lucide-react"
+import { EngineBadge, KpiCard } from '@/components/poseidon'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
-import { getMotionPreset } from '@/lib/motion-presets'
+import { getMotionPreset, accordionVariants, accordionTransition } from '@/lib/motion-presets'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { selectGovernLedgerPreview, selectGovernSummaryView } from '@/domain/poseidon-universe'
+import { ENGINE_COLOR_MAP, type EngineLabel } from '@/lib/engine-color-map'
+import type { DecisionStatus } from '@/components/poseidon'
 
 /* ── Data ── */
 type DecisionType = "Protect" | "Grow" | "Execute" | "Govern"
-type DecisionStatus = "Review Recommended" | "Flagged"
-
-const typeColor: Record<DecisionType, string> = { Protect: "var(--engine-protect)", Grow: "var(--engine-grow)", Execute: "var(--engine-execute)", Govern: "var(--engine-govern)" }
-const statusConfig: Record<DecisionStatus, { color: string; icon: LucideIcon }> = {
-  "Review Recommended": { color: "var(--state-warning)", icon: Clock },
+const statusConfig: Partial<Record<DecisionStatus, { color: string; icon: LucideIcon }>> = {
+  "Pending review": { color: "var(--state-warning)", icon: Clock },
   Flagged: { color: "var(--state-critical)", icon: AlertTriangle },
-}
-
-function toDecisionStatus(status?: 'Pending review' | 'Flagged'): DecisionStatus | undefined {
-  if (!status) return undefined
-  if (status === 'Flagged') return 'Flagged'
-  return 'Review Recommended'
 }
 
 
@@ -47,49 +42,47 @@ export default function GovernPage() {
     type: entry.type as DecisionType,
     action: entry.action,
     confidence: entry.confidence,
-    status: toDecisionStatus(entry.status),
+    status: entry.status as DecisionStatus | undefined,
     time: formatDemoTimestamp(entry.timestampIso),
   }))
 
   return (
     <>
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold" style={{ background: "var(--engine-govern)", color: "#ffffff" }}>Skip to main content</a>
 
-      <motion.div id="main-content" className="flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12 w-full" variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
+      <motion.div id="main-content" className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12`} style={PAGE_CONTENT_STYLE} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
 
         {/* ── Hero ── */}
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
           <motion.div variants={fadeUpVariant}>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[var(--engine-govern)]/20 bg-[var(--engine-govern)]/10 px-3 py-1.5 text-xs font-bold tracking-widest uppercase text-[var(--engine-govern)] shadow-[0_0_15px_rgba(59,130,246,0.2)]">
-              <ShieldCheck size={12} /> Engine status: Good
-            </span>
+            <EngineBadge engine="govern" icon={ShieldCheck} label="Engine status: Good" />
           </motion.div>
-          <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+          <h1 className={`${PAGE_HEADING_CLASS} mb-2`} style={PAGE_HEADING_STYLE}>
             <span className="bg-gradient-to-r from-[var(--engine-govern)] to-[var(--engine-grow)] bg-clip-text text-transparent">100% auditability</span> for every AI decision
           </h1>
         </motion.section>
 
         {/* ── Compliance score ring + stats ── */}
-        <motion.div variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
+        <motion.div variants={fadeUpVariant}>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 w-full">
             {[
               { label: "Decision auditable", value: governSummary.decisionsAuditedTotal.toLocaleString(), color: "white" },
               { label: "Review Recommended", value: String(governSummary.pendingReviewDecisions), color: "var(--state-warning)" },
               { label: "Flagged", value: String(governSummary.flaggedDecisions), color: "var(--state-critical)" },
             ].map(d => (
-              <div key={d.label} className="relative overflow-hidden rounded-[24px] p-8 lg:p-12 backdrop-blur-3xl bg-black/60 shadow-lg border border-white/[0.08] hover:bg-white/[0.02] transition-colors">
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-govern)]/5 to-transparent pointer-events-none" />
-                <div className="flex flex-col gap-3 relative z-10">
-                  <span className="text-[10px] md:text-xs uppercase tracking-widest font-semibold text-white/50">{d.label}</span>
-                  <span className="text-3xl md:text-4xl lg:text-5xl font-light font-mono tabular-nums tracking-tight" style={{ color: d.color, textShadow: d.color !== 'white' ? `0 0 15px ${d.color}60` : 'none' }}>{d.value}</span>
-                </div>
-              </div>
+              <KpiCard
+                key={d.label}
+                label={d.label}
+                value={d.value}
+                color={d.color}
+                size="lg"
+                gradient={<div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-govern)]/5 to-transparent pointer-events-none" />}
+              />
             ))}
           </div>
         </motion.div>
 
         {/* ── Decision Ledger ── */}
-        <div className="px-4 md:px-6 lg:px-8">
+        <div>
           <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
             <div className="flex items-center justify-between border-b border-white/[0.06] pb-4 px-2">
               <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">Decision Ledger</h2>
@@ -98,15 +91,14 @@ export default function GovernPage() {
                 <button type="button" disabled className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/30 text-[10px] uppercase tracking-widest cursor-not-allowed"><ArrowUpDown size={12} />Sort</button>
               </div>
             </div>
-            <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-0">
-              <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
+            <div className="glass-card glass-card-overlay rounded-[32px] p-0">
               <div className="flex flex-col divide-y divide-white/[0.04] relative z-10">
                 {ledgerEntries.map(entry => {
                   const sCfg = entry.status ? statusConfig[entry.status] : null;
                   return (
                     <motion.button key={entry.id} type="button" variants={fadeUpVariant} onClick={() => navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)} className="group cursor-pointer p-6 md:p-8 hover:bg-white/[0.04] transition-colors flex items-center justify-between gap-4 w-full text-left">
                       <div className="flex items-center gap-4">
-                        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/[0.05] shrink-0" style={{ background: `${typeColor[entry.type]}15`, color: typeColor[entry.type] }}><CircleDot size={16} /></span>
+                        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/[0.05] shrink-0" style={{ background: `${ENGINE_COLOR_MAP[entry.type as EngineLabel]}15`, color: ENGINE_COLOR_MAP[entry.type as EngineLabel] }}><CircleDot size={16} /></span>
                         <div className="flex flex-col gap-1.5 flex-1 min-w-0">
                           <span className="text-base font-light tracking-wide text-white group-hover:text-[var(--engine-govern)] transition-colors truncate">{entry.action}</span>
                           <div className="flex items-center gap-3 flex-wrap">
@@ -139,9 +131,8 @@ export default function GovernPage() {
             </button>
             <AnimatePresence initial={false}>
               {historyOpen && (
-                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25, ease: "easeInOut" }} className="overflow-hidden">
-                  <div className="relative overflow-hidden rounded-[32px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl p-0">
-                    <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
+                <motion.div variants={accordionVariants} initial="hidden" animate="visible" exit="exit" transition={accordionTransition} className="overflow-hidden">
+                  <div className="glass-card glass-card-overlay rounded-[32px] p-0">
                     <div className="relative z-10 p-8 md:p-12 flex items-center justify-center min-h-[120px]">
                       <span className="text-xs uppercase tracking-widest text-white/20">No history entries yet</span>
                     </div>

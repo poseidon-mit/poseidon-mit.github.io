@@ -1,14 +1,15 @@
 import { useState, type KeyboardEvent } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Bell, Settings2 } from 'lucide-react';
-import { Link } from '../router';
-import { GovernFooter, AuroraPulse, EmptyState } from '@/components/poseidon';
-import { GOVERNANCE_META } from '@/lib/governance-meta';
+import { Link } from '@/router';
+import { EmptyState, KpiCard } from '@/components/poseidon';
 import { getMotionPreset } from '@/lib/motion-presets';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
+import { usePageTitle } from '@/hooks/use-page-title';
 import { DEMO_THREAD } from '@/lib/demo-thread';
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout';
 
 /* ═══════════════════════════════════════════
    DATA
@@ -48,6 +49,7 @@ type CategoryFilter = 'all' | 'security' | 'growth' | 'actions' | 'system';
 export function Notifications() {
   const prefersReducedMotion = useReducedMotionSafe();
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion);
+  usePageTitle('Notifications');
 
   const [filter, setFilter] = useState<CategoryFilter>('all');
   const [readState, setReadState] = useState<Record<string, boolean>>(
@@ -74,22 +76,14 @@ export function Notifications() {
   };
 
   return (
-    <div className="relative min-h-screen w-full">
-      <AuroraPulse color="var(--engine-dashboard)" intensity="subtle" />
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: 'var(--engine-dashboard)', color: 'var(--bg-oled)' }}>
-
-        Skip to main content
-      </a>
+    <>
 
       <nav
         className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/[0.06]"
 
         aria-label="Breadcrumb">
 
-        <div className="mx-auto px-4 md:px-6 lg:px-8 h-14 flex items-center gap-2" style={{ maxWidth: '1280px' }}>
+        <div className={`${PAGE_CONTENT_CLASS} h-14 flex items-center gap-2`} style={PAGE_CONTENT_STYLE}>
           <Link
             to="/dashboard"
             className="flex items-center gap-1.5 text-sm font-medium hover:opacity-80 transition-opacity"
@@ -105,8 +99,8 @@ export function Notifications() {
 
       <motion.div
         id="main-content"
-        className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
-        style={{ maxWidth: '1280px' }}
+        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 py-6 md:py-8`}
+        style={PAGE_CONTENT_STYLE}
         variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
@@ -133,14 +127,10 @@ export function Notifications() {
               { label: 'Unread', value: String(unreadCount), color: 'var(--engine-execute)' },
               { label: 'Security', value: String(categoryCounts.security), color: 'var(--engine-protect)' },
               { label: 'Growth', value: String(categoryCounts.growth), color: 'var(--engine-grow)' },
-              { label: 'Actions', value: String(categoryCounts.actions), color: 'var(--engine-dashboard)' }].
-              map((kpi) => <div
-                key={kpi.label} className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-4 flex flex-col gap-1 transition-colors hover:bg-white/[0.02]">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
-                <p className="relative z-10 text-xs text-white/40 mb-1">{kpi.label}</p>
-                <p className="relative z-10 text-2xl font-bold" style={{ color: kpi.color }}>{kpi.value}</p>
-              </div>
-              )}
+              { label: 'Actions', value: String(categoryCounts.actions), color: 'var(--engine-dashboard)' },
+            ].map((kpi) => (
+              <KpiCard key={kpi.label} label={kpi.label} value={kpi.value} color={kpi.color} />
+            ))}
           </div>
         </motion.div>
 
@@ -222,8 +212,7 @@ export function Notifications() {
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Notification preferences">
             {/* Preferences */}
             <motion.div variants={fadeUpVariant}>
-              <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6 flex flex-col gap-4">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+              <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-4">
                 <div className="relative z-10 flex items-center gap-2 mb-2">
                   <Settings2 className="h-4 w-4" style={{ color: 'var(--engine-dashboard)' }} />
                   <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest">Alert Preferences</h3>
@@ -260,8 +249,7 @@ export function Notifications() {
 
             {/* Stats */}
             <motion.div variants={fadeUpVariant}>
-              <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6 flex flex-col gap-4">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+              <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-4">
                 <h3 className="relative z-10 text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Notification Stats</h3>
                 <div className="relative z-10 space-y-3">
                   {[
@@ -281,9 +269,8 @@ export function Notifications() {
           </aside>
         </div>
 
-        <GovernFooter auditId={GOVERNANCE_META['/dashboard/notifications'].auditId} pageContext={GOVERNANCE_META['/dashboard/notifications'].pageContext} />
       </motion.div>
-    </div>);
+    </>);
 
 }
 

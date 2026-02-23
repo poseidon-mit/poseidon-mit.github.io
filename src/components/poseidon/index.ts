@@ -30,6 +30,16 @@ export { MethodologyCard, type MethodologyCardProps } from './methodology-card'
 /* ── Presentation Mode (Phase 7) ── */
 export { AuroraPulse, type AuroraPulseProps } from './aurora-pulse'
 
+/* ── Engine Chrome ── */
+export { EngineBadge, type EngineBadgeProps } from './engine-badge'
+export { KpiCard, type KpiCardProps } from './kpi-card'
+
 /* ── Empty State ── */
 export { EmptyState, type EmptyStateProps } from './empty-state'
 export { PreviewBadge, type PreviewBadgeProps } from './preview-badge'
+
+/* ── Data Display ── */
+export { StatRow, type StatRowProps } from './stat-row'
+
+/* ── Sub-page Navigation ── */
+export { SubPageNav, type SubPageNavProps } from './sub-page-nav'

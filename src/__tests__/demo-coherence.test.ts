@@ -54,8 +54,8 @@ describe('demo coherence invariants', () => {
     }
   })
 
-  it('keeps SOC 2 wording consistently in-progress in govern data', () => {
-    const source = readSource('src/pages/govern/govern-data.ts')
+  it('keeps SOC 2 wording consistently in-progress in landing copy', () => {
+    const source = readSource('src/content/landing-copy-jeton.ts')
     expect(source).toContain('SOC 2 Type II in progress')
     expect(source).not.toMatch(/SOC 2 certified/i)
     expect(source).not.toMatch(/SOC 2 compliance maintained/i)

@@ -1,80 +1,24 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Lightbulb, Sparkles, DollarSign, ChevronDown, ChevronUp, Send, X, Filter } from 'lucide-react';
-import { Link } from '../router';
-import { usePageTitle } from '../hooks/use-page-title';
-import { GovernFooter, AuroraPulse } from '@/components/poseidon';
-import { GOVERNANCE_META } from '@/lib/governance-meta';
-import { fadeUp, staggerContainer as stagger } from '@/lib/motion-presets';
+import { Link } from '@/router';
+import { usePageTitle } from '@/hooks/use-page-title';
+
+import { EngineBadge, KpiCard } from '@/components/poseidon';
+import { getMotionPreset, accordionVariants, accordionTransition } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout';
+import { RECOMMENDATIONS_FOR_LIST } from './grow/recommendation-detail-data';
 
 /* ═══════════════════════════════════════════
-   DATA
+   DATA — sourced from recommendation-detail-data.ts (SSOT)
    ═══════════════════════════════════════════ */
 
 type Category = 'All' | 'Savings' | 'Debt' | 'Income' | 'Investment';
 type SortMode = 'Highest Impact' | 'Highest Confidence' | 'Easiest';
 type Difficulty = 'Easy' | 'Medium' | 'Hard';
-
-interface ShapFactor { name: string; weight: number; }
-
-interface Recommendation {
-  rank: number;
-  title: string;
-  description: string;
-  category: Exclude<Category, 'All'>;
-  difficulty: Difficulty;
-  monthlySavings: number;
-  annualSavings: number;
-  confidence: number;
-  shapFactors: ShapFactor[];
-  evidence: string;
-  modelVersion: string;
-  auditId: string;
-}
-
-const recommendations: Recommendation[] = [
-  {
-    rank: 1, title: 'Consolidate streaming subscriptions', description: 'Three overlapping streaming services detected. Merge into one premium plan to retain 95% content coverage while saving significantly.', category: 'Savings', difficulty: 'Easy', monthlySavings: 140, annualSavings: 1680, confidence: 0.92,
-    shapFactors: [{ name: 'Usage overlap', weight: 0.42 }, { name: 'Cost per stream', weight: 0.31 }, { name: 'Content coverage', weight: 0.27 }],
-    evidence: '3 overlapping services detected via transaction analysis over 90 days.', modelVersion: 'GrowthForecast v3.2', auditId: 'GV-2026-0216-R01'
-  },
-  {
-    rank: 2, title: 'Increase 401k contribution 2%', description: 'Employer matches up to 6%. Current contribution at 4% leaves $180/mo in unclaimed match on the table.', category: 'Investment', difficulty: 'Medium', monthlySavings: 180, annualSavings: 2160, confidence: 0.88,
-    shapFactors: [{ name: 'Employer match gap', weight: 0.48 }, { name: 'Tax benefit', weight: 0.30 }, { name: 'Compound growth', weight: 0.22 }],
-    evidence: 'Payroll analysis shows 2% gap to full employer match.', modelVersion: 'GrowthForecast v3.2', auditId: 'GV-2026-0216-R02'
-  },
-  {
-    rank: 3, title: 'Refinance auto loan', description: 'Current rate 6.9% APR is 2.1% above market for your credit profile. Refinancing saves $95/mo over remaining 36 months.', category: 'Debt', difficulty: 'Hard', monthlySavings: 95, annualSavings: 1140, confidence: 0.85,
-    shapFactors: [{ name: 'Rate differential', weight: 0.52 }, { name: 'Credit score', weight: 0.28 }, { name: 'Remaining term', weight: 0.20 }],
-    evidence: 'Rate comparison across 12 lenders for your credit tier (740+).', modelVersion: 'GrowthForecast v3.2', auditId: 'GV-2026-0216-R03'
-  },
-  {
-    rank: 4, title: 'Cancel unused gym membership', description: 'No visits in 47 days. Membership auto-renews in 13 days at $55/mo. Cancel window open.', category: 'Savings', difficulty: 'Easy', monthlySavings: 55, annualSavings: 660, confidence: 0.97,
-    shapFactors: [{ name: 'Visit frequency', weight: 0.62 }, { name: 'Cost per visit', weight: 0.23 }, { name: 'Alternative options', weight: 0.15 }],
-    evidence: '0 check-ins in 47 days via linked bank transaction pattern.', modelVersion: 'GrowthForecast v3.2', auditId: 'GV-2026-0216-R04'
-  },
-  {
-    rank: 5, title: 'Open high-yield savings account', description: 'Current savings earning 0.5% APY. HYSA offers 4.8% APY on same FDIC-insured deposits. Passive income boost.', category: 'Savings', difficulty: 'Easy', monthlySavings: 85, annualSavings: 1020, confidence: 0.91,
-    shapFactors: [{ name: 'Rate differential', weight: 0.55 }, { name: 'FDIC coverage', weight: 0.25 }, { name: 'Liquidity match', weight: 0.20 }],
-    evidence: 'APY comparison across top 15 HYSA providers as of Feb 2026.', modelVersion: 'GrowthForecast v3.2', auditId: 'GV-2026-0216-R05'
-  },
-  {
-    rank: 6, title: 'Negotiate internet bill', description: 'Current plan $89/mo is $45 above market rate for equivalent 500Mbps service in your area.', category: 'Savings', difficulty: 'Easy', monthlySavings: 45, annualSavings: 540, confidence: 0.89,
-    shapFactors: [{ name: 'Market comparison', weight: 0.50 }, { name: 'Loyalty duration', weight: 0.30 }, { name: 'Competitor offers', weight: 0.20 }],
-    evidence: 'Price comparison across 4 ISPs in your zip code.', modelVersion: 'GrowthForecast v3.2', auditId: 'GV-2026-0216-R06'
-  },
-  {
-    rank: 7, title: 'Balance transfer credit card', description: 'Transfer $4,200 balance from 22.9% APR card to 0% intro APR for 18 months. Save $120/mo in interest.', category: 'Debt', difficulty: 'Medium', monthlySavings: 120, annualSavings: 1440, confidence: 0.83,
-    shapFactors: [{ name: 'Interest savings', weight: 0.48 }, { name: 'Balance amount', weight: 0.32 }, { name: 'Credit utilization', weight: 0.20 }],
-    evidence: 'Pre-qualified offers detected from 3 issuers for your profile.', modelVersion: 'GrowthForecast v3.2', auditId: 'GV-2026-0216-R07'
-  },
-  {
-    rank: 8, title: 'Side income from skills', description: 'Your professional skills (data analysis, Python) have high freelance demand. Estimated $200/mo from 5h/week.', category: 'Income', difficulty: 'Hard', monthlySavings: 200, annualSavings: 2400, confidence: 0.72,
-    shapFactors: [{ name: 'Skill demand', weight: 0.45 }, { name: 'Market rate', weight: 0.35 }, { name: 'Time availability', weight: 0.20 }],
-    evidence: 'Freelance market analysis from 3 platforms for your skill set.', modelVersion: 'GrowthForecast v3.2', auditId: 'GV-2026-0216-R08'
-  }];
 
 
 const categoryColors: Record<Exclude<Category, 'All'>, string> = { Savings: 'var(--engine-protect)', Debt: 'var(--state-critical)', Income: 'var(--engine-dashboard)', Investment: 'var(--engine-grow)' };
@@ -90,13 +34,15 @@ const difficultyColors: Record<Difficulty, { text: string; bg: string; }> = {
 
 export function GrowRecommendations() {
   usePageTitle('Recommendations');
+  const prefersReducedMotion = useReducedMotionSafe()
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const [sort, setSort] = useState<SortMode>('Highest Impact');
   const [category, setCategory] = useState<Category>('All');
   const [expanded, setExpanded] = useState<Record<number, boolean>>({});
 
   const toggleExpand = (rank: number) => setExpanded((prev) => ({ ...prev, [rank]: !prev[rank] }));
 
-  const filtered = recommendations.
+  const filtered = RECOMMENDATIONS_FOR_LIST.
     filter((r) => category === 'All' || r.category === category).
     sort((a, b) => {
       if (sort === 'Highest Impact') return b.monthlySavings - a.monthlySavings;
@@ -104,16 +50,16 @@ export function GrowRecommendations() {
       const diffOrder: Record<Difficulty, number> = { Easy: 0, Medium: 1, Hard: 2 };
       return diffOrder[a.difficulty] - diffOrder[b.difficulty];
     });
-  const totalMonthlyImpact = recommendations.reduce((sum, rec) => sum + rec.monthlySavings, 0);
-  const totalAnnualImpact = recommendations.reduce((sum, rec) => sum + rec.annualSavings, 0);
-  const highConfidenceCount = recommendations.filter((rec) => rec.confidence >= 0.85).length;
-  const actionableNowCount = recommendations.filter((rec) => rec.confidence >= 0.9).length;
-  const avgConfidence = (recommendations.reduce((sum, rec) => sum + rec.confidence, 0) / recommendations.length).toFixed(2);
+  const totalMonthlyImpact = RECOMMENDATIONS_FOR_LIST.reduce((sum, rec) => sum + rec.monthlySavings, 0);
+  const totalAnnualImpact = RECOMMENDATIONS_FOR_LIST.reduce((sum, rec) => sum + rec.annualSavings, 0);
+  const highConfidenceCount = RECOMMENDATIONS_FOR_LIST.filter((rec) => rec.confidence >= 0.85).length;
+  const actionableNowCount = RECOMMENDATIONS_FOR_LIST.filter((rec) => rec.confidence >= 0.9).length;
+  const avgConfidence = (RECOMMENDATIONS_FOR_LIST.reduce((sum, rec) => sum + rec.confidence, 0) / RECOMMENDATIONS_FOR_LIST.length).toFixed(2);
   const impactByCategory = {
-    Savings: recommendations.filter((rec) => rec.category === 'Savings').reduce((sum, rec) => sum + rec.monthlySavings, 0),
-    Investment: recommendations.filter((rec) => rec.category === 'Investment').reduce((sum, rec) => sum + rec.monthlySavings, 0),
-    Debt: recommendations.filter((rec) => rec.category === 'Debt').reduce((sum, rec) => sum + rec.monthlySavings, 0),
-    Income: recommendations.filter((rec) => rec.category === 'Income').reduce((sum, rec) => sum + rec.monthlySavings, 0)
+    Savings: RECOMMENDATIONS_FOR_LIST.filter((rec) => rec.category === 'Savings').reduce((sum, rec) => sum + rec.monthlySavings, 0),
+    Investment: RECOMMENDATIONS_FOR_LIST.filter((rec) => rec.category === 'Investment').reduce((sum, rec) => sum + rec.monthlySavings, 0),
+    Debt: RECOMMENDATIONS_FOR_LIST.filter((rec) => rec.category === 'Debt').reduce((sum, rec) => sum + rec.monthlySavings, 0),
+    Income: RECOMMENDATIONS_FOR_LIST.filter((rec) => rec.category === 'Income').reduce((sum, rec) => sum + rec.monthlySavings, 0)
   };
   const maxCategoryImpact = Math.max(...Object.values(impactByCategory), 1);
 
@@ -121,21 +67,13 @@ export function GrowRecommendations() {
   const categoryOptions: Category[] = ['All', 'Savings', 'Debt', 'Income', 'Investment'];
 
   return (
-    <div className="relative min-h-screen w-full">
-      <AuroraPulse color="var(--engine-grow)" intensity="subtle" />
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: 'var(--engine-grow)', color: '#fff' }}>
-
-        Skip to main content
-      </a>
+    <>
 
       {/* Sticky back nav */}
       <nav
         className="sticky top-0 z-50 backdrop-blur-2xl border-b border-white/[0.06] bg-black/40"
         aria-label="Breadcrumb">
-        <div className="mx-auto px-4 md:px-6 lg:px-8 h-16 flex items-center gap-2" style={{ maxWidth: '1280px' }}>
+        <div className={`${PAGE_CONTENT_CLASS} h-16 flex items-center gap-2`} style={PAGE_CONTENT_STYLE}>
           <Link to="/grow" className="flex items-center gap-2 text-sm font-medium hover:opacity-80 transition-opacity bg-white/[0.05] border border-white/[0.05] rounded-xl px-4 py-2" style={{ color: 'var(--engine-grow)' }}>
             <ArrowLeft className="h-4 w-4" />
             Back to Grow
@@ -145,52 +83,44 @@ export function GrowRecommendations() {
 
       <motion.div
         id="main-content"
-        className="mx-auto flex flex-col gap-6 md:gap-8 px-4 py-6 md:px-6 md:py-8 lg:px-8"
-        style={{ maxWidth: '1280px' }}
-        variants={stagger}
+        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 py-6 md:py-8`}
+        style={PAGE_CONTENT_STYLE}
+        variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
         role="main">
 
         {/* Hero */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-6 mb-4">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-6 mb-4">
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-grow)]/20 bg-[var(--engine-grow)]/10 text-[var(--engine-grow)] text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(139,92,246,0.2)]">
-                <Lightbulb size={12} /> Grow · Recommendations
-              </span>
+              <EngineBadge engine="grow" icon={Lightbulb} label="Grow · Recommendations" />
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+            <h1 className={`${PAGE_HEADING_CLASS} mb-2`} style={PAGE_HEADING_STYLE}>
               Growth Recommendations
             </h1>
             <p className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide mt-2">
-              <span className="font-medium text-white/80">{recommendations.length}</span> AI-generated recommendations · Est. <span className="text-[var(--engine-grow)] font-mono font-medium drop-shadow-[0_0_8px_rgba(139,92,246,0.4)] px-1">+${totalMonthlyImpact}/mo</span> total impact
+              <span className="font-medium text-white/80">{RECOMMENDATIONS_FOR_LIST.length}</span> AI-generated recommendations · Est. <span className="text-[var(--engine-grow)] font-mono font-medium drop-shadow-[0_0_8px_rgba(139,92,246,0.4)] px-1">+${totalMonthlyImpact}/mo</span> total impact
             </p>
           </div>
         </motion.div>
 
         {/* KPI bar */}
-        <motion.div variants={fadeUp} className="mb-8">
+        <motion.div variants={fadeUpVariant} className="mb-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { label: 'Total impact', value: `+$${totalMonthlyImpact}/mo`, color: 'var(--engine-grow)' },
               { label: 'High conf.', value: String(highConfidenceCount), color: 'var(--engine-protect)' },
               { label: 'Actionable', value: String(actionableNowCount), color: 'var(--engine-dashboard)' },
-              { label: 'Avg conf.', value: `${(Number(avgConfidence) * 100).toFixed(0)}%`, color: 'var(--engine-execute)' }].
-              map((kpi) => (
-                <motion.div key={kpi.label} className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col justify-center transition-colors hover:bg-white/[0.02]">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
-                  <div className="relative z-10 flex flex-col gap-1.5">
-                    <p className="text-[10px] md:text-xs uppercase tracking-widest font-semibold text-white/50">{kpi.label}</p>
-                    <p className="text-2xl md:text-3xl font-light font-mono text-white/90" style={{ textShadow: `0 0 20px ${kpi.color}40`, color: kpi.color }}>{kpi.value}</p>
-                  </div>
-                </motion.div>
-              ))}
+              { label: 'Avg conf.', value: `${(Number(avgConfidence) * 100).toFixed(0)}%`, color: 'var(--engine-execute)' },
+            ].map((kpi) => (
+              <KpiCard key={kpi.label} label={kpi.label} value={kpi.value} color={kpi.color} size="md" className="rounded-[32px] p-6 lg:p-8" />
+            ))}
           </div>
         </motion.div>
 
         {/* Filter row */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-4 py-2 md:flex-row md:items-center md:justify-between border-y border-white/[0.06] mt-4 mb-2">
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-4 py-2 md:flex-row md:items-center md:justify-between border-y border-white/[0.06] mt-4 mb-2">
           <div className="flex items-center gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
             <Filter className="h-4 w-4 text-white/30 shrink-0" />
             {sortOptions.map((s) =>
@@ -225,8 +155,8 @@ export function GrowRecommendations() {
             {filtered.map((rec) => (
               <motion.div
                 key={rec.rank}
-                variants={fadeUp}
-                className="relative overflow-hidden rounded-[32px] p-6 lg:p-10 backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-colors hover:bg-white/[0.02]"
+                variants={fadeUpVariant}
+                className="glass-card rounded-[32px] p-6 lg:p-10 flex flex-col transition-colors"
                 style={{ border: '1px solid rgba(255,255,255,0.08)', borderLeftWidth: 4, borderLeftColor: 'var(--engine-grow)' }}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
@@ -282,9 +212,11 @@ export function GrowRecommendations() {
 
                 {expanded[rec.rank] &&
                   <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
+                    variants={accordionVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    transition={accordionTransition}
                     className="relative z-10 mb-6 space-y-4 pt-4 border-t border-white/[0.06]">
 
                     {/* SHAP factors */}
@@ -332,7 +264,7 @@ export function GrowRecommendations() {
           <aside className="w-full lg:w-[320px] shrink-0 flex flex-col gap-6" aria-label="Recommendations sidebar">
             <div className="sticky top-24 flex flex-col gap-6">
               {/* Summary */}
-              <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-2 transition-colors hover:bg-white/[0.02]">
+              <motion.div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col gap-2 transition-colors">
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
                 <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest border-b border-white/[0.06] pb-4 mb-4 relative z-10">Summary</h3>
                 <div className="space-y-4 relative z-10">
@@ -351,7 +283,7 @@ export function GrowRecommendations() {
               </motion.div>
 
               {/* Impact breakdown */}
-              <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-2 transition-colors hover:bg-white/[0.02]">
+              <motion.div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col gap-2 transition-colors">
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
                 <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest border-b border-white/[0.06] pb-4 mb-4 relative z-10">Impact Breakdown</h3>
                 <div className="space-y-5 relative z-10">
@@ -375,7 +307,7 @@ export function GrowRecommendations() {
               </motion.div>
 
               {/* AI Analysis */}
-              <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col gap-4 transition-colors hover:bg-white/[0.02]" style={{ border: '1px solid rgba(255,255,255,0.08)', borderLeftWidth: 4, borderLeftColor: 'var(--engine-grow)' }}>
+              <motion.div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col gap-4 transition-colors" style={{ border: '1px solid rgba(255,255,255,0.08)', borderLeftWidth: 4, borderLeftColor: 'var(--engine-grow)' }}>
                 <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.02] mix-blend-overlay pointer-events-none" />
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/10 to-transparent pointer-events-none" />
                 <div className="relative z-10 flex items-center gap-3 border-b border-white/[0.06] pb-4 mb-2">
@@ -383,7 +315,7 @@ export function GrowRecommendations() {
                   <span className="text-xs font-bold uppercase tracking-widest text-[var(--engine-grow)] drop-shadow-[0_0_8px_rgba(139,92,246,0.4)]">AI Analysis</span>
                 </div>
                 <p className="relative z-10 text-base font-light text-white/80 leading-relaxed tracking-wide">
-                  Your top opportunity is subscription consolidation — <strong className="text-white font-medium">3 overlapping services</strong> total <span className="font-mono text-[var(--engine-grow)] font-bold drop-shadow-[0_0_5px_rgba(139,92,246,0.4)]">$140/mo</span>.
+                  Your top opportunity is <strong className="text-white font-medium">{RECOMMENDATIONS_FOR_LIST[0]?.title}</strong> — estimated <span className="font-mono text-[var(--engine-grow)] font-bold drop-shadow-[0_0_5px_rgba(139,92,246,0.4)]">${RECOMMENDATIONS_FOR_LIST[0]?.monthlySavings}/mo</span> impact.
                 </p>
                 <p className="relative z-10 text-[10px] uppercase tracking-widest font-mono text-white/30 pt-2 border-t border-white/[0.04]">
                   ScenarioEngine v1.4<br />GV-2026-0216-GROW
@@ -393,9 +325,8 @@ export function GrowRecommendations() {
           </aside>
         </div>
 
-        <GovernFooter auditId={GOVERNANCE_META['/grow/recommendations'].auditId} pageContext={GOVERNANCE_META['/grow/recommendations'].pageContext} />
       </motion.div>
-    </div>);
+    </>);
 
 }
 

@@ -72,7 +72,7 @@ export interface AllocationSlice {
 /* ── Execute ── */
 
 export type Priority = 'CRITICAL' | 'HIGH' | 'MEDIUM'
-export type ActionStatus = 'pending' | 'approved' | 'rejected' | 'auto-executed'
+export type ActionStatus = 'pending' | 'approved' | 'rejected' | 'deferred'
 export type Engine = 'Protect' | 'Grow' | 'Govern'
 
 export interface ActionItem {
@@ -91,7 +91,7 @@ export interface RecentExecution {
   action: string
   engine: Engine
   timeAgo: string
-  status: 'Approved' | 'Rejected' | 'Auto-executed'
+  status: 'Approved' | 'Rejected' | 'Deferred'
 }
 
 /* ── Govern ── */

@@ -14,12 +14,15 @@ import {
 import { AreaChart, Area, ResponsiveContainer } from "recharts"
 import {
   getMotionPreset,
+  hoverLift,
 } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { PendingActionsBanner } from '@/components/dashboard/PendingActionsBanner'
+import { usePageTitle } from '@/hooks/use-page-title'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { getPendingExecuteCount } from '@/lib/demo-state/selectors'
 import { selectDashboardView, formatUsd } from '@/domain/poseidon-universe'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 
 /* ── KPI Stat Card (Premium Apple WWDC Style) ── */
 const StatCard = memo(function StatCard({
@@ -42,10 +45,9 @@ const StatCard = memo(function StatCard({
   const data = useMemo(() => sparkData.map((v, i) => ({ i, v })), [sparkData])
 
   return (
-    <motion.div whileHover={{ scale: 1.02, y: -4 }} transition={{ type: "spring", stiffness: 400, damping: 25 }}>
-      <div className="relative h-full overflow-hidden rounded-[32px] p-6 border border-white/[0.08] backdrop-blur-3xl bg-black/60 group shadow-2xl transition-all hover:bg-black/40">
+    <motion.div whileHover={{ scale: 1.02, y: -4 }} transition={hoverLift}>
+      <div className="glass-card glass-card-overlay h-full rounded-[32px] p-6 group transition-all">
         <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none" style={{ background: `radial-gradient(circle at 50% 100%, ${sparkColor}, transparent)` }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
 
         <div className="flex justify-between items-start mb-8 relative z-10">
           <div className="flex items-center gap-3">
@@ -120,8 +122,7 @@ function ActivityFeed({
   activities: Array<{ id: string; kind: 'protect' | 'grow' | 'execute' | 'govern' | 'system'; label: string; relativeTime: string }>
 }) {
   return (
-    <div className="rounded-[32px] p-8 lg:p-10 flex flex-col gap-6 backdrop-blur-3xl border border-white/[0.08] bg-black/50 h-full shadow-2xl relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
+    <div className="glass-card glass-card-overlay rounded-[32px] p-8 lg:p-10 flex flex-col gap-6 h-full">
       <div className="flex justify-between items-center relative z-10">
         <h2 className="text-sm font-semibold uppercase tracking-widest text-white/50">Recent Activity</h2>
       </div>
@@ -164,6 +165,7 @@ export default function DashboardPage() {
   const itemVariants = motionPreset.creatorStudioStaggerItem
   const { navigate } = useRouter()
   const { state } = useDemoState()
+  usePageTitle('Dashboard')
 
   const pendingActions = getPendingExecuteCount(state)
   const dashboardView = selectDashboardView(pendingActions)
@@ -172,13 +174,11 @@ export default function DashboardPage() {
 
   return (
     <div className="selection:bg-cyan-500/30">
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold bg-white text-black">
-        Skip to main content
-      </a>
 
       <motion.main
         id="main-content"
-        className="w-full"
+        className={PAGE_CONTENT_CLASS}
+        style={PAGE_CONTENT_STYLE}
         variants={containerVariants}
         initial="hidden"
         animate="visible"

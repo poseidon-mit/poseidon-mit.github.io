@@ -1,15 +1,18 @@
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import {
-  ArrowLeft,
   ChevronDown,
   ChevronUp,
   Zap,
   CheckCircle2,
   ArrowRight,
 } from 'lucide-react'
-import { Link, useRouter } from '../../router'
-import { fadeUp, staggerContainer } from '@/lib/motion-presets'
+import { useRouter } from '@/router'
+import { SubPageNav, ConfidenceIndicator } from '@/components/poseidon'
+import { getMotionPreset } from '@/lib/motion-presets'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+import { usePageTitle } from '@/hooks/use-page-title'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
 import { cn } from '@/lib/utils'
 import { recommendationDetails } from './recommendation-detail-data'
 import type { ExecutionType, UsageLevel, ChangeAction } from './recommendation-detail-data'
@@ -44,6 +47,9 @@ const execLabels: Record<ExecutionType, { label: string; color: string; bg: stri
 
 export default function GrowRecommendationDetailPage() {
   const { search, navigate } = useRouter()
+  usePageTitle('Recommendation Detail')
+  const prefersReducedMotion = useReducedMotionSafe()
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const [transparencyOpen, setTransparencyOpen] = useState(false)
 
   const rec = useMemo(() => {
@@ -59,57 +65,34 @@ export default function GrowRecommendationDetailPage() {
   return (
     <div className="relative min-h-screen w-full">
 
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: 'var(--engine-grow)', color: 'var(--bg-oled)' }}
-      >
-        Skip to main content
-      </a>
+
+      <SubPageNav engine="grow" parentPath="/grow" parentLabel="Grow" currentLabel={rec.title} />
 
       <motion.div
         id="main-content"
-        className="w-full flex flex-col gap-8 pb-12"
+        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-8 pb-12`}
+        style={PAGE_CONTENT_STYLE}
         initial="hidden"
         animate="visible"
-        variants={staggerContainer}
+        variants={staggerContainerVariant}
       >
         {/* ═══════════════════════════════════════════
             S1: IMPACT HEADER
             ═══════════════════════════════════════════ */}
-        <motion.section variants={staggerContainer} className="flex flex-col gap-6 px-4 md:px-6 lg:px-8">
-          <motion.div variants={fadeUp}>
-            <Link
-              to="/grow"
-              className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.05]"
-              style={{ color: '#94A3B8' }}
-            >
-              <ArrowLeft size={16} />
-              Back to Grow
-            </Link>
-          </motion.div>
-
-          <motion.div variants={fadeUp} className="flex flex-col gap-4">
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
+          <motion.div variants={fadeUpVariant} className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <p className="text-4xl md:text-5xl font-light tabular-nums" style={{ color: 'var(--engine-grow)', fontFamily: 'var(--font-display)' }}>
                 ${rec.monthlySavings}<span className="text-lg text-white/40 font-normal">/mo</span>
               </p>
               <p className="text-xs text-white/40 font-mono">${rec.annualSavings.toLocaleString()}/year</p>
             </div>
-            <h1 className="text-2xl md:text-3xl font-light text-white/90 tracking-tight">
+            <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>
               {rec.title}
             </h1>
             <div className="flex flex-wrap items-center gap-3">
               {/* Confidence bar */}
-              <div className="flex items-center gap-2">
-                <div className="h-1.5 w-24 rounded-full bg-white/[0.08] overflow-hidden">
-                  <div
-                    className="h-full rounded-full"
-                    style={{ width: `${rec.confidence * 100}%`, background: 'var(--engine-grow)' }}
-                  />
-                </div>
-                <span className="text-xs text-white/50 tabular-nums">{Math.round(rec.confidence * 100)}% confidence</span>
-              </div>
+              <ConfidenceIndicator value={rec.confidence} accentColor="var(--engine-grow)" format="percent" size="lg" />
               {/* Execution type badge */}
               <span
                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
@@ -126,9 +109,9 @@ export default function GrowRecommendationDetailPage() {
         {/* ═══════════════════════════════════════════
             S2: YOUR CURRENT SITUATION
             ═══════════════════════════════════════════ */}
-        <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
+        <motion.section variants={fadeUpVariant}>
           <div className="rounded-2xl border border-white/[0.08] bg-black/40 p-6 md:p-8">
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 mb-6">{rec.situationLabel}</h2>
+            <h2 className="section-label mb-6">{rec.situationLabel}</h2>
 
             {/* Current items */}
             <div className="flex flex-col gap-3 mb-6">
@@ -177,9 +160,9 @@ export default function GrowRecommendationDetailPage() {
         {/* ═══════════════════════════════════════════
             S3: RECOMMENDED ACTION
             ═══════════════════════════════════════════ */}
-        <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
+        <motion.section variants={fadeUpVariant}>
           <div className="rounded-2xl border border-white/[0.08] bg-black/40 p-6 md:p-8">
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 mb-6">Recommended Action</h2>
+            <h2 className="section-label mb-6">Recommended Action</h2>
 
             {/* Changes list */}
             <div className="flex flex-col gap-3 mb-6">
@@ -269,9 +252,9 @@ export default function GrowRecommendationDetailPage() {
         {/* ═══════════════════════════════════════════
             S4: TAKE ACTION
             ═══════════════════════════════════════════ */}
-        <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
+        <motion.section variants={fadeUpVariant}>
           <div className="rounded-2xl border border-white/[0.08] bg-black/40 p-6 md:p-8">
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 mb-6">Take Action</h2>
+            <h2 className="section-label mb-6">Take Action</h2>
 
             <div className="flex flex-col gap-4">
               {rec.steps.map((step) => {
@@ -331,13 +314,13 @@ export default function GrowRecommendationDetailPage() {
         {/* ═══════════════════════════════════════════
             S5: TRANSPARENCY (Expandable Accordion)
             ═══════════════════════════════════════════ */}
-        <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8">
+        <motion.section variants={fadeUpVariant}>
           <div className="rounded-2xl border border-white/[0.08] bg-black/40 overflow-hidden">
             <button
               onClick={() => setTransparencyOpen(p => !p)}
               className="w-full flex items-center justify-between p-6 md:p-8 text-left transition-colors hover:bg-white/[0.02]"
             >
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">How we determined this</h2>
+              <h2 className="section-label">How we determined this</h2>
               {transparencyOpen ? <ChevronUp size={16} className="text-white/40" /> : <ChevronDown size={16} className="text-white/40" />}
             </button>
 

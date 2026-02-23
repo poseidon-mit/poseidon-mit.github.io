@@ -1,14 +1,16 @@
 import { useState, type KeyboardEvent } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Link } from '@/router';
 import { TrendingUp, ArrowRight, ArrowLeft, Scale, Check, Zap } from "lucide-react";
+import { EngineBadge } from '@/components/poseidon';
 import { ForecastBand } from "@/components/poseidon/forecast-band";
 import type { ForecastPoint } from "@/components/poseidon/forecast-band";
-import { GOVERNANCE_META } from '@/lib/governance-meta';
-import { AuroraPulse, GovernFooter } from '@/components/poseidon';
-import { fadeUp, staggerContainer } from '@/lib/motion-presets';
+import { getMotionPreset, cardSelect } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout';
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
+import { usePageTitle } from '@/hooks/use-page-title';
 import { selectGrowEmergencyFundView } from '@/domain/poseidon-universe';
 
 
@@ -68,42 +70,35 @@ const SCENARIOS: Scenario[] = [
 
 export default function GrowScenariosPage() {
   const [selected, setSelected] = useState("moderate");
-  const prefersReducedMotion = useReducedMotion();
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion);
+  usePageTitle('Scenario Comparison');
   const activeScenario = SCENARIOS.find((s) => s.id === selected) ?? SCENARIOS[1];
 
   return (
-    <div className="relative">
-      <AuroraPulse engine="grow" />
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: "var(--engine-grow)", color: 'var(--bg-oled)' }}>
-
-        Skip to main content
-      </a>
+    <>
 
       <motion.main
         id="main-content"
-        className="command-center__main"
+        className={`${PAGE_CONTENT_CLASS} command-center__main`}
+        style={PAGE_CONTENT_STYLE}
         initial="hidden"
         animate="visible"
-        variants={staggerContainer}>
+        variants={staggerContainerVariant}>
 
         {/* ── Dashboard Hero ── */}
-        <motion.section variants={staggerContainer} className="flex flex-col gap-6 mb-12 px-4 md:px-6 lg:px-8 pt-8 lg:pt-12">
-          <motion.div variants={fadeUp}>
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 mb-12 pt-8 lg:pt-12">
+          <motion.div variants={fadeUpVariant}>
             <Link to="/grow" className="inline-flex items-center gap-2 rounded-[16px] px-4 py-2 text-sm font-medium transition-all bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08]" style={{ color: "#94A3B8" }}>
               <ArrowLeft size={16} />
               Back to Grow
             </Link>
           </motion.div>
-          <motion.div variants={fadeUp} className="flex flex-col gap-1">
+          <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
             <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-grow)]/20 bg-[var(--engine-grow)]/10 text-[var(--engine-grow)] text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(139,92,246,0.2)]">
-                <TrendingUp size={12} /> Scenario Comparison
-              </span>
+              <EngineBadge engine="grow" icon={TrendingUp} label="Scenario Comparison" />
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+            <h1 className={`${PAGE_HEADING_CLASS} mb-2`} style={PAGE_HEADING_STYLE}>
               Compare growth paths
             </h1>
             <p className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide">
@@ -114,17 +109,17 @@ export default function GrowScenariosPage() {
 
         {/* ── Scenario cards ── */}
         <motion.section
-          variants={staggerContainer}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 px-4 md:px-6 lg:px-8 mb-8">
+          variants={staggerContainerVariant}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
           {SCENARIOS.map((s) => (
             <motion.div
               key={s.id}
-              variants={fadeUp}
+              variants={fadeUpVariant}
               animate={prefersReducedMotion ? undefined : { scale: selected === s.id ? 1.015 : 1, y: 0 }}
               whileHover={prefersReducedMotion ? undefined : { scale: selected === s.id ? 1.02 : 1.01 }}
               whileTap={prefersReducedMotion ? undefined : { scale: selected === s.id ? 1.005 : 0.995 }}
-              transition={prefersReducedMotion ? undefined : { type: "spring", stiffness: 280, damping: 24, mass: 0.8 }}
+              transition={prefersReducedMotion ? undefined : cardSelect}
               onClick={() => setSelected(s.id)}
               onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
                 if (event.key === 'Enter' || event.key === ' ') {
@@ -132,11 +127,10 @@ export default function GrowScenariosPage() {
                   setSelected(s.id);
                 }
               }}
-              className={`relative overflow-hidden rounded-[32px] p-6 lg:p-8 backdrop-blur-3xl bg-black/60 flex flex-col gap-4 text-left transition-all will-change-transform cursor-pointer ${selected === s.id ? 'shadow-[0_0_30px_rgba(139,92,246,0.2)] border-2 border-[var(--engine-grow)]/40' : 'shadow-xl border border-white/[0.08] hover:border-white/[0.15] hover:bg-white/[0.02]'}`}
+              className={`glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-4 text-left transition-all will-change-transform cursor-pointer ${selected === s.id ? 'shadow-[0_0_30px_rgba(139,92,246,0.2)] !border-2 !border-[var(--engine-grow)]/40' : 'hover:border-white/[0.15]'}`}
               role="button"
               tabIndex={0}
               aria-pressed={selected === s.id}>
-              <div className={`absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none ${selected === s.id ? 'opacity-100' : 'opacity-60'}`} />
               <div className={`absolute left-0 top-0 bottom-0 w-1 opacity-50 transition-opacity ${selected === s.id ? 'opacity-100' : 'opacity-0'}`} style={{ background: "var(--engine-grow)" }} />
 
               {selected === s.id &&
@@ -171,8 +165,8 @@ export default function GrowScenariosPage() {
         </motion.section>
 
         {/* ── P2: Comparative Forecast with ForecastBand ── */}
-        <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8 mb-8">
-          <motion.div className="relative overflow-hidden rounded-[32px] p-6 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-colors hover:bg-white/[0.02]">
+        <motion.section variants={fadeUpVariant} className="mb-8">
+          <motion.div className="glass-card rounded-[32px] p-6 lg:p-10 flex flex-col transition-colors">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between border-b border-white/[0.06] pb-6 mb-8">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">
@@ -195,8 +189,8 @@ export default function GrowScenariosPage() {
         </motion.section>
 
         {/* ── P3: Impact Summary + Send to Execute ── */}
-        <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8 mb-8">
-          <motion.div className="relative overflow-hidden rounded-[32px] p-8 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group transition-colors hover:bg-white/[0.02]">
+        <motion.section variants={fadeUpVariant} className="mb-8">
+          <motion.div className="glass-card rounded-[32px] p-8 lg:p-10 flex flex-col md:flex-row items-center justify-between gap-8 group transition-colors">
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--engine-grow)]/10 to-transparent pointer-events-none opacity-50 transition-opacity group-hover:opacity-100" />
             <div className="absolute left-0 top-0 bottom-0 w-1.5 opacity-70 transition-opacity group-hover:opacity-100" style={{ background: "var(--engine-grow)" }} />
             <div className="relative z-10 max-w-2xl pl-2">
@@ -229,8 +223,8 @@ export default function GrowScenariosPage() {
         </motion.section>
 
         {/* ── P4: Sensitivity notes (Tier B: 4 block cap) ── */}
-        <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8 mb-12">
-          <motion.div className="relative overflow-hidden rounded-[24px] p-8 border border-white/[0.04] backdrop-blur-2xl bg-black/40 shadow-xl">
+        <motion.section variants={fadeUpVariant} className="mb-12">
+          <motion.div className="glass-card glass-card-overlay rounded-[24px] p-8">
             <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.02] mix-blend-overlay pointer-events-none" />
             <div className="relative z-10">
               <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-3 flex items-center gap-2">
@@ -245,14 +239,8 @@ export default function GrowScenariosPage() {
           </motion.div>
         </motion.section>
 
-        {/* GovernFooter */}
-        <div className="px-4 md:px-6 lg:px-8">
-          <GovernFooter
-            auditId={GOVERNANCE_META['/grow/scenarios'].auditId}
-            pageContext={GOVERNANCE_META['/grow/scenarios'].pageContext} />
 
-        </div>
       </motion.main>
-    </div>);
+    </>);
 
 }

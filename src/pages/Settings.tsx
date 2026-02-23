@@ -14,6 +14,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { getMotionPreset } from '@/lib/motion-presets'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 import { cn } from '@/lib/utils'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { useToast } from '@/hooks/useToast'
@@ -84,18 +85,10 @@ export default function SettingsPage() {
 
   return (
     <div className="relative">
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: 'var(--engine-dashboard)', color: 'var(--bg-oled)' }}
-      >
-        Skip to main content
-      </a>
 
-      <motion.main id="main-content" className="command-center__main" initial="hidden" animate="visible" variants={staggerContainerVariant}>
-        <div className="flex flex-col lg:flex-row gap-4 px-4 md:px-6 lg:px-8">
-          <motion.div variants={fadeUpVariant} className="relative overflow-hidden flex-1 rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+      <motion.main id="main-content" className={`${PAGE_CONTENT_CLASS} command-center__main`} style={PAGE_CONTENT_STYLE} initial="hidden" animate="visible" variants={staggerContainerVariant}>
+        <div className="flex flex-col lg:flex-row gap-4">
+          <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay flex-1 rounded-2xl p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-cyan-400/10">
@@ -123,8 +116,7 @@ export default function SettingsPage() {
             </div>
           </motion.div>
 
-          <motion.div variants={fadeUpVariant} className="relative overflow-hidden flex-1 rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+          <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay flex-1 rounded-2xl p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-400/10">
@@ -151,9 +143,8 @@ export default function SettingsPage() {
           </motion.div>
         </div>
 
-        <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+        <motion.section variants={fadeUpVariant}>
+          <div className="glass-card glass-card-overlay rounded-2xl p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-400/10">
@@ -178,9 +169,8 @@ export default function SettingsPage() {
         </motion.section>
 
         {/* ── Connected Accounts ── */}
-        <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+        <motion.section variants={fadeUpVariant}>
+          <div className="glass-card glass-card-overlay rounded-2xl p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-cyan-400/10">
@@ -209,9 +199,8 @@ export default function SettingsPage() {
         </motion.section>
 
         {/* ── Protect Engine ── */}
-        <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+        <motion.section variants={fadeUpVariant}>
+          <div className="glass-card glass-card-overlay rounded-2xl p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-400/10">
@@ -230,9 +219,8 @@ export default function SettingsPage() {
         </motion.section>
 
         {/* ── Grow Engine ── */}
-        <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+        <motion.section variants={fadeUpVariant}>
+          <div className="glass-card glass-card-overlay rounded-2xl p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-violet-400/10">
@@ -251,9 +239,8 @@ export default function SettingsPage() {
         </motion.section>
 
         {/* ── Execute Engine ── */}
-        <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+        <motion.section variants={fadeUpVariant}>
+          <div className="glass-card glass-card-overlay rounded-2xl p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-400/10">
@@ -281,9 +268,8 @@ export default function SettingsPage() {
         </motion.section>
 
         {/* ── Data & Privacy ── */}
-        <motion.section variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-xl p-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+        <motion.section variants={fadeUpVariant}>
+          <div className="glass-card glass-card-overlay rounded-2xl p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-400/10">

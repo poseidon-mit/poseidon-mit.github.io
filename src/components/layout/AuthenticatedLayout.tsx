@@ -22,6 +22,14 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
 
     return (
         <AppNavShell path={path}>
+            {/* Skip-to-content — single instance for all app routes */}
+            <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
+                style={{ background: meta?.auroraColor ?? 'var(--engine-dashboard)', color: 'var(--bg-oled)' }}
+            >
+                Skip to main content
+            </a>
             <div className="relative min-h-full flex flex-col">
                 {/* Layer 0: Ambient Liquid Glow */}
                 {meta && (

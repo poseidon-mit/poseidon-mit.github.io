@@ -3,9 +3,10 @@ import { Link } from '@/router';
 import { Target, ArrowRight, ArrowLeft, Scale, TrendingUp } from "lucide-react";
 import { ForecastBand } from "@/components/poseidon/forecast-band";
 import type { ForecastPoint } from "@/components/poseidon/forecast-band";
-import { GOVERNANCE_META } from '@/lib/governance-meta';
-import { AuroraPulse, GovernFooter } from '@/components/poseidon';
-import { fadeUp, staggerContainer } from '@/lib/motion-presets';
+import { getMotionPreset } from '@/lib/motion-presets';
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout';
+import { usePageTitle } from '@/hooks/use-page-title';
 
 
 /* ── Cross-thread ── */
@@ -36,37 +37,33 @@ const CONTRIBUTIONS = [
 
 
 export default function GrowGoalPage() {
+  usePageTitle('Goal Detail');
+  const prefersReducedMotion = useReducedMotionSafe()
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const circumference = 2 * Math.PI * 40;
   const strokeDashoffset = circumference - EMERGENCY_FUND_PROGRESS / 100 * circumference;
 
   return (
-    <div className="relative">
-      <AuroraPulse engine="grow" />
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: "var(--engine-grow)", color: 'var(--bg-oled)' }}>
-
-        Skip to main content
-      </a>
+    <>
 
       <motion.main
         id="main-content"
-        className="command-center__main"
+        className={`${PAGE_CONTENT_CLASS} command-center__main`}
+        style={PAGE_CONTENT_STYLE}
         initial="hidden"
         animate="visible"
-        variants={staggerContainer}>
+        variants={staggerContainerVariant}>
 
         {/* ── P1: Goal Progress Summary ── */}
-        <motion.section variants={staggerContainer} className="px-4 md:px-6 lg:px-8 mb-8 pt-8 lg:pt-12">
-          <motion.div variants={fadeUp} className="mb-8">
+        <motion.section variants={staggerContainerVariant} className="mb-8 pt-8 lg:pt-12">
+          <motion.div variants={fadeUpVariant} className="mb-8">
             <Link to="/grow" className="inline-flex items-center gap-2 rounded-[16px] px-4 py-2 text-sm font-medium transition-all bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08]" style={{ color: "#94A3B8" }}>
               <ArrowLeft size={16} />
               Back to Grow
             </Link>
           </motion.div>
 
-          <motion.div variants={fadeUp} className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col md:flex-row items-center gap-10 lg:gap-16">
+          <motion.div variants={fadeUpVariant} className="glass-card rounded-[32px] p-8 lg:p-12 flex flex-col md:flex-row items-center gap-10 lg:gap-16">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/10 to-transparent pointer-events-none opacity-50" />
 
             <div className="relative w-40 h-40 lg:w-48 lg:h-48 flex-shrink-0">
@@ -93,7 +90,7 @@ export default function GrowGoalPage() {
                 <div className="w-12 h-12 rounded-2xl bg-[var(--engine-grow)]/20 border border-[var(--engine-grow)]/30 flex items-center justify-center text-[var(--engine-grow)] shadow-[0_0_15px_rgba(139,92,246,0.2)]">
                   <Target size={20} className="drop-shadow-[0_0_8px_currentColor]" />
                 </div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-tight" style={{ fontFamily: "var(--font-display)" }}>Emergency fund</h1>
+                <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>Emergency fund</h1>
               </div>
               <p className="text-2xl lg:text-3xl text-white/70 font-light mt-2 tracking-wide">
                 <span className="font-mono text-white/90 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] font-medium">${EMERGENCY_FUND_CURRENT.toLocaleString()}</span> of ${EMERGENCY_FUND_TARGET.toLocaleString()}
@@ -106,10 +103,9 @@ export default function GrowGoalPage() {
         </motion.section>
 
         {/* ── P2: Contribution Timeline + Forecast ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 md:px-6 lg:px-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
           {/* Contribution timeline */}
-          <motion.div variants={fadeUp} className="lg:col-span-4 relative overflow-hidden rounded-[32px] p-6 lg:p-8 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-colors hover:bg-white/[0.02]">
-            <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
+          <motion.div variants={fadeUpVariant} className="lg:col-span-4 glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col transition-colors">
             <div className="relative z-10 flex items-center justify-between border-b border-white/[0.06] pb-6 mb-6">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">
                 Recent contributions
@@ -138,7 +134,7 @@ export default function GrowGoalPage() {
           </motion.div>
 
           {/* Forecast */}
-          <motion.div variants={fadeUp} className="lg:col-span-8 relative overflow-hidden rounded-[32px] p-6 lg:p-10 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col transition-colors hover:bg-white/[0.02]">
+          <motion.div variants={fadeUpVariant} className="lg:col-span-8 glass-card rounded-[32px] p-6 lg:p-10 flex flex-col transition-colors">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
             <div className="relative z-10 flex items-center justify-between border-b border-white/[0.06] pb-6 mb-8">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">
@@ -156,8 +152,8 @@ export default function GrowGoalPage() {
         </div>
 
         {/* ── P3: Goal Adjustment Action ── */}
-        <motion.section variants={fadeUp} className="px-4 md:px-6 lg:px-8 mb-12">
-          <motion.div className="relative overflow-hidden rounded-[32px] p-8 lg:p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group transition-colors hover:bg-white/[0.02]">
+        <motion.section variants={fadeUpVariant} className="mb-12">
+          <motion.div className="glass-card rounded-[32px] p-8 lg:p-12 flex flex-col md:flex-row items-center justify-between gap-8 group transition-colors">
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--engine-grow)]/10 to-transparent pointer-events-none opacity-50 transition-opacity group-hover:opacity-100" />
             <div className="absolute left-0 top-0 bottom-0 w-1.5 opacity-70 transition-opacity group-hover:opacity-100" style={{ background: "var(--engine-grow)" }} />
             <div className="relative z-10 max-w-2xl pl-2">
@@ -189,14 +185,8 @@ export default function GrowGoalPage() {
           </motion.div>
         </motion.section>
 
-        {/* GovernFooter */}
-        <div className="px-4 md:px-6 lg:px-8">
-          <GovernFooter
-            auditId={GOVERNANCE_META['/grow/goal'].auditId}
-            pageContext={GOVERNANCE_META['/grow/goal'].pageContext} />
 
-        </div>
       </motion.main>
-    </div>);
+    </>);
 
 }

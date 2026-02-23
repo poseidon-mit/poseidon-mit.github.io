@@ -11,7 +11,7 @@ import {
   Filter,
 } from 'lucide-react'
 import { Link, useRouter } from '@/router'
-import { EmptyState } from '@/components/poseidon'
+import { EmptyState, EngineBadge, KpiCard } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -20,6 +20,7 @@ import { useDemoState } from '@/lib/demo-state/provider'
 import type { DemoAuditEvent } from '@/lib/demo-state/types'
 import { selectExecuteActionsView, formatUsd, selectExecuteSavingsView } from '@/domain/poseidon-universe'
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
 
 /* ═══════════════════════════════════════════
    CONSTANTS
@@ -90,17 +91,11 @@ export default function ExecuteHistoryPage() {
 
   return (
     <div className="relative min-h-screen w-full">
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-        style={{ background: 'var(--engine-execute)', color: 'var(--bg-oled)' }}
-      >
-        Skip to main content
-      </a>
 
       <motion.div
         id="main-content"
-        className="flex flex-col gap-6 md:gap-8 lg:gap-10 pb-12 w-full"
+        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 lg:gap-10 pb-12`}
+        style={PAGE_CONTENT_STYLE}
         variants={staggerContainer}
         initial="hidden"
         animate="visible"
@@ -116,11 +111,8 @@ export default function ExecuteHistoryPage() {
           </div>
 
           <motion.div variants={fadeUp} className="flex flex-col gap-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--engine-execute)]/20 bg-[var(--engine-execute)]/10 text-[var(--engine-execute)] text-xs font-bold tracking-widest uppercase self-start shadow-[0_0_15px_rgba(251,191,36,0.2)]">
-              <History size={12} />
-              Execute · History
-            </div>
-            <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-[#F1F5F9]" style={{ fontFamily: 'var(--font-display)' }}>
+            <EngineBadge engine="execute" icon={History} label="Execute · History" className="self-start" />
+            <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>
               Execution History
             </h1>
             <p className="text-white/50 text-base">Audit log of all AI-automated financial actions with governance traceability.</p>
@@ -134,12 +126,7 @@ export default function ExecuteHistoryPage() {
               { label: 'Monthly Savings', value: formatUsd(savings.currentMonthlySavingsUsd), color: 'var(--engine-execute)' },
               { label: 'Compliance', value: `${DEMO_THREAD.complianceScore}/100`, color: 'var(--engine-govern)' },
             ].map((kpi) => (
-              <div key={kpi.label} className="rounded-[16px] border border-white/[0.06] backdrop-blur-xl bg-black/40 p-4 flex flex-col gap-1">
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-white/40">{kpi.label}</span>
-                <span className="text-xl font-mono font-medium tabular-nums" style={{ color: kpi.color, textShadow: `0 0 8px ${kpi.color}40` }}>
-                  {kpi.value}
-                </span>
-              </div>
+              <KpiCard key={kpi.label} label={kpi.label} value={kpi.value} color={kpi.color} />
             ))}
           </motion.div>
         </motion.section>
@@ -165,8 +152,7 @@ export default function ExecuteHistoryPage() {
         {/* History List */}
         {filteredEvents.length === 0 ? (
           <motion.div variants={fadeUp}>
-            <div className="relative overflow-hidden rounded-[24px] p-12 border border-white/[0.08] backdrop-blur-3xl bg-black/60 shadow-2xl flex items-center justify-center">
-              <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+            <div className="glass-card glass-card-overlay rounded-[24px] p-12 flex items-center justify-center">
               <EmptyState
                 icon={History}
                 title={totalDecisions === 0 ? 'No decisions yet' : 'No matching decisions'}
@@ -219,8 +205,7 @@ function HistoryRow({ event }: { event: EnrichedEvent }) {
   }, [event.createdAt])
 
   return (
-    <div className="relative overflow-hidden rounded-[20px] p-5 lg:p-6 border border-white/[0.06] backdrop-blur-2xl bg-black/40 shadow-xl flex items-center gap-4 hover:border-white/[0.12] transition-colors group">
-      <div className="absolute inset-0 bg-gradient-to-r from-white/[0.01] to-transparent pointer-events-none" />
+    <div className="glass-card glass-card-overlay rounded-[20px] p-5 lg:p-6 flex items-center gap-4 hover:border-white/[0.12] transition-colors group">
 
       {/* Icon */}
       <div className="w-10 h-10 rounded-xl flex items-center justify-center border shadow-inner shrink-0 relative z-10" style={{ borderColor: `${color}30`, background: `${color}10` }}>

@@ -476,3 +476,52 @@ export const RECOMMENDATIONS_SUMMARY = recommendationDetails.map(r => ({
   annual: r.annualSavings,
   confidence: r.confidence,
 }))
+
+/* ── Enriched summary for GrowRecommendations list page ── */
+
+/** Enriched summary for GrowRecommendations list page. */
+export type RecommendationListItem = {
+  rank: number
+  title: string
+  description: string
+  category: 'Savings' | 'Debt' | 'Income' | 'Investment'
+  difficulty: 'Easy' | 'Medium' | 'Hard'
+  monthlySavings: number
+  annualSavings: number
+  confidence: number
+  shapFactors: { name: string; weight: number }[]
+  evidence: string
+  modelVersion: string
+  auditId: string
+}
+
+const EXECUTION_TO_DIFFICULTY: Record<ExecutionType, 'Easy' | 'Medium' | 'Hard'> = {
+  auto: 'Easy',
+  'semi-auto': 'Medium',
+  manual: 'Hard',
+}
+
+export const RECOMMENDATIONS_FOR_LIST: RecommendationListItem[] = recommendationDetails.map((r, i) => {
+  // Derive SHAP-like factors from the first 3 factors with distributed weights
+  const factorNames = r.factors.slice(0, 3)
+  const totalFactors = factorNames.length
+  const baseWeight = Math.round((1 / totalFactors) * 100) / 100
+
+  return {
+    rank: i + 1,
+    title: r.title,
+    description: r.dataBasis,
+    category: r.category as 'Savings' | 'Debt' | 'Income' | 'Investment',
+    difficulty: EXECUTION_TO_DIFFICULTY[r.executionType],
+    monthlySavings: r.monthlySavings,
+    annualSavings: r.annualSavings,
+    confidence: r.confidence,
+    shapFactors: factorNames.map((name, j) => ({
+      name: name.length > 40 ? name.slice(0, 37) + '...' : name,
+      weight: j === 0 ? 1 - baseWeight * (totalFactors - 1) : baseWeight,
+    })),
+    evidence: r.cohortProof,
+    modelVersion: `${r.modelInfo.name} v${r.modelInfo.version}`,
+    auditId: r.modelInfo.auditId,
+  }
+})

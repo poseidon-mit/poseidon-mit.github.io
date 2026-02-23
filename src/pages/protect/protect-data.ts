@@ -7,7 +7,17 @@
 import { selectProtectThreats } from '@/domain/poseidon-universe'
 
 /* ── Types ── */
-export type Severity = "Critical" | "High" | "Medium" | "Low"
+export type ThreatSeverity = "Critical" | "High" | "Medium" | "Low"
+
+/** Map 4-level threat severity to 3-level display severity for SeverityBadge. */
+export function toDisplaySeverity(s: ThreatSeverity): 'critical' | 'warning' | 'info' {
+  switch (s) {
+    case 'Critical': return 'critical'
+    case 'High': return 'warning'
+    case 'Medium': return 'info'
+    case 'Low': return 'info'
+  }
+}
 
 export interface ThreatRow {
   id: string
@@ -15,7 +25,7 @@ export interface ThreatRow {
   amount: string
   numericAmount: number
   confidence: number
-  severity: Severity
+  severity: ThreatSeverity
   time: string
   sortTime: number
   description: string
@@ -58,14 +68,14 @@ export const THREATS: ThreatRow[] = [
   { id: "THR-005", merchant: "Crypto Exchange", amount: "$5,000", numericAmount: 5000, confidence: 0.91, severity: "Medium", time: "5d ago", sortTime: 5, description: "High-risk category transfer" },
 ]
 
-export const severityConfig: Record<Severity, { color: string; bg: string; order: number }> = {
-  Critical: { color: "var(--state-critical)", bg: "rgba(var(--state-critical-rgb),0.12)", order: 4 },
-  High: { color: "var(--state-warning)", bg: "rgba(var(--state-warning-rgb),0.12)", order: 3 },
-  Medium: { color: "var(--engine-govern)", bg: "rgba(59,130,246,0.12)", order: 2 },
-  Low: { color: "#64748B", bg: "rgba(100,116,139,0.12)", order: 1 },
+export const severityConfig: Record<ThreatSeverity, { color: string; bg: string; border: string; shadow: string; order: number }> = {
+  Critical: { color: "var(--state-critical)", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.2)", shadow: "rgba(239,68,68,0.5)", order: 4 },
+  High: { color: "var(--state-warning)", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.2)", shadow: "rgba(245,158,11,0.5)", order: 3 },
+  Medium: { color: "var(--engine-govern)", bg: "rgba(59,130,246,0.1)", border: "rgba(59,130,246,0.2)", shadow: "rgba(59,130,246,0.5)", order: 2 },
+  Low: { color: "#94A3B8", bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.2)", shadow: "rgba(148,163,184,0.5)", order: 1 },
 }
 
-export const severityToneColor: Record<Severity, string> = {
+export const severityToneColor: Record<ThreatSeverity, string> = {
   Critical: "var(--state-critical)",
   High: "var(--state-warning)",
   Medium: "var(--engine-govern)",

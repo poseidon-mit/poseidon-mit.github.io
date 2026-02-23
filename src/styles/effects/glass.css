@@ -4,6 +4,36 @@
  * Keep only shell/background utilities here.
  */
 
+/* ── Glass Card Surfaces ──
+ * Shared card treatment for all engine pages.
+ * Use glass-card as the base, add glass-card-overlay for neutral gradient.
+ * For engine-coloured gradients, skip glass-card-overlay and keep the inner <div>.
+ */
+
+.glass-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(64px) saturate(1.2);
+  -webkit-backdrop-filter: blur(64px) saturate(1.2);
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.glass-card-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.04), transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .surface-elevated {
   border: 1px solid var(--ds-surface-border);
   background: var(--ds-surface-bg);
@@ -203,6 +233,34 @@
     animation: none !important;
     transform: none !important;
   }
+}
+
+/* ── Section & Field Labels ── */
+
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.section-label-bordered {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 0.75rem;
+}
+
+.field-label {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 /* ── View Transitions API ── */
