@@ -4,17 +4,18 @@ import { Link } from '@/router';
 import { TrendingUp, ArrowRight, ArrowLeft, Scale, Check, Zap } from "lucide-react";
 import { ForecastBand } from "@/components/poseidon/forecast-band";
 import type { ForecastPoint } from "@/components/poseidon/forecast-band";
-import { DEMO_THREAD } from '@/lib/demo-thread';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
 import { AuroraPulse, GovernFooter } from '@/components/poseidon';
 import { fadeUp, staggerContainer } from '@/lib/motion-presets';
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
+import { selectGrowEmergencyFundView } from '@/domain/poseidon-universe';
 
 
 /* ── Cross-thread ── */
-const EMERGENCY_FUND_PROGRESS = DEMO_THREAD.emergencyFund.percent;
-const EMERGENCY_FUND_CURRENT = DEMO_THREAD.emergencyFund.current;
+const emergencyFund = selectGrowEmergencyFundView();
+const EMERGENCY_FUND_PROGRESS = emergencyFund.percent;
+const EMERGENCY_FUND_CURRENT = emergencyFund.currentUsd;
 
 /* ── Scenario definitions ── */
 interface Scenario {

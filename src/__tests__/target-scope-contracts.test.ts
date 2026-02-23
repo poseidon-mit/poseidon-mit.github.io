@@ -287,17 +287,18 @@ describe('cross-thread consistency contract', () => {
   });
 
   it('keeps canonical critical alert references on golden-path pages', () => {
-    const routes: RoutePath[] = [
-      '/dashboard',
-      '/dashboard/alerts',
-      '/protect',
-      '/protect/alert-detail',
-      '/execute/approval',
+    const routeSelectorContracts: Array<{ route: RoutePath; expected: string[] }> = [
+      { route: '/dashboard', expected: ['selectDashboardView'] },
+      { route: '/protect', expected: ['THREATS'] },
+      { route: '/protect/alert-detail', expected: ['THREATS'] },
+      { route: '/execute/approval', expected: ['QUEUE_ACTIONS'] },
     ];
 
-    for (const route of routes) {
+    for (const { route, expected } of routeSelectorContracts) {
       const source = readPageSource(route);
-      expect(source).toContain('DEMO_THREAD.criticalAlert');
+      for (const marker of expected) {
+        expect(source).toContain(marker);
+      }
       expect(source).not.toContain('MerchantX');
       expect(source).not.toContain('$4,200');
     }

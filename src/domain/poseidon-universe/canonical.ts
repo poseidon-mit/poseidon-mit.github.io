@@ -1,0 +1,413 @@
+import { DEMO_THREAD } from '@/lib/demo-thread'
+import type {
+  CanonicalUniverseV1,
+  DashboardActivityEntity,
+  ExecuteActionEntity,
+  GovernAuditEntryEntity,
+  GovernLedgerEntryEntity,
+  ProtectThreatEntity,
+  RecommendationEntity,
+} from './types'
+
+const VERIFIED_DECISIONS = 1189
+const PENDING_REVIEW_DECISIONS = 55
+const FLAGGED_DECISIONS = 3
+const MONTHLY_SAVINGS_POTENTIAL_USD = 2460
+
+const DASHBOARD_ACTIVITIES: DashboardActivityEntity[] = [
+  {
+    id: 'ACT-001',
+    kind: 'protect',
+    label: `Blocked suspicious transfer to ${DEMO_THREAD.criticalAlert.merchant}`,
+    relativeTime: '2m ago',
+  },
+  {
+    id: 'ACT-002',
+    kind: 'grow',
+    label: 'Savings goal projection updated',
+    relativeTime: '15m ago',
+  },
+  {
+    id: 'ACT-003',
+    kind: 'execute',
+    label: 'Auto-paid electricity bill',
+    relativeTime: '1h ago',
+  },
+  {
+    id: 'ACT-004',
+    kind: 'govern',
+    label: `Compliance check passed (${DEMO_THREAD.complianceScore}/100)`,
+    relativeTime: '2h ago',
+  },
+  {
+    id: 'ACT-005',
+    kind: 'system',
+    label: `Monthly savings baseline ${formatUsd(DEMO_THREAD.monthlySavings)} confirmed`,
+    relativeTime: '3h ago',
+  },
+]
+
+const PROTECT_THREATS: ProtectThreatEntity[] = [
+  {
+    id: DEMO_THREAD.criticalAlert.id,
+    merchant: DEMO_THREAD.criticalAlert.merchant,
+    amountUsd: DEMO_THREAD.criticalAlert.amount,
+    confidence: DEMO_THREAD.criticalAlert.confidence,
+    severity: 'Critical',
+    description: 'Unusual transaction pattern',
+    relativeTime: '4h ago',
+    sortOrder: 8,
+  },
+  {
+    id: 'THR-002',
+    merchant: 'Unknown Vendor',
+    amountUsd: 1200,
+    confidence: 0.87,
+    severity: 'High',
+    description: 'Unrecognized merchant',
+    relativeTime: '1d ago',
+    sortOrder: 7,
+  },
+  {
+    id: 'THR-003',
+    merchant: 'Travel Agency XYZ',
+    amountUsd: 3400,
+    confidence: 0.72,
+    severity: 'Medium',
+    description: 'International wire transfer',
+    relativeTime: '3d ago',
+    sortOrder: 6,
+  },
+  {
+    id: 'THR-004',
+    merchant: 'Gas Station ATM',
+    amountUsd: 800,
+    confidence: 0.65,
+    severity: 'Low',
+    description: 'Unusual ATM withdrawal',
+    relativeTime: '1w ago',
+    sortOrder: 4,
+  },
+  {
+    id: 'THR-005',
+    merchant: 'Crypto Exchange',
+    amountUsd: 5000,
+    confidence: 0.91,
+    severity: 'Medium',
+    description: 'High-risk category transfer',
+    relativeTime: '5d ago',
+    sortOrder: 5,
+  },
+]
+
+const RECOMMENDATIONS: RecommendationEntity[] = [
+  { id: 'REC-001', title: 'Reduce Credit Card Interest', monthlySavingsUsd: 164, annualSavingsUsd: 1968, confidence: 0.9 },
+  { id: 'REC-002', title: 'Downgrade Subscription Tiers', monthlySavingsUsd: 42, annualSavingsUsd: 504, confidence: 0.86 },
+  { id: 'REC-003', title: 'Refinance Auto Loan', monthlySavingsUsd: 92, annualSavingsUsd: 1104, confidence: 0.84 },
+  { id: 'REC-004', title: 'Eliminate Overdraft & Bank Fees', monthlySavingsUsd: 29, annualSavingsUsd: 348, confidence: 0.88 },
+  { id: 'REC-005', title: 'Move Idle Cash to High-Yield Savings', monthlySavingsUsd: 58, annualSavingsUsd: 696, confidence: 0.87 },
+  { id: 'REC-006', title: 'Bundle Insurance at Renewal', monthlySavingsUsd: 31, annualSavingsUsd: 372, confidence: 0.82 },
+  { id: 'REC-007', title: 'Cash-Flow Recovery (Inflation)', monthlySavingsUsd: 74, annualSavingsUsd: 888, confidence: 0.8 },
+  { id: 'REC-008', title: 'Reduce Energy Utility Costs', monthlySavingsUsd: 24, annualSavingsUsd: 288, confidence: 0.78 },
+]
+
+const EXECUTE_ACTIONS: ExecuteActionEntity[] = [
+  {
+    id: 'EXE-001',
+    title: 'Portfolio rebalance',
+    engine: 'Execute',
+    amountLabel: '$12,400',
+    confidence: 0.97,
+    timestampLabel: '14:28',
+    description: '$12,400 transfer from Cash Reserve to Growth Equity Index',
+    urgency: 'high',
+    impact: {
+      approved: 'Allocation adjusted and tracked in the govern audit trace.',
+      deferred: 'Portfolio keeps current drift and review is deferred to next cycle.',
+    },
+    reversible: true,
+    expiresIn: '14h',
+    factors: [
+      { label: 'Concentration risk', value: 0.91 },
+      { label: 'Cash allocation', value: 0.87 },
+      { label: 'Volatility outlook', value: 0.78 },
+    ],
+  },
+  {
+    id: 'EXE-002',
+    title: 'Block wire transfer',
+    engine: 'Protect',
+    amountLabel: formatUsd(DEMO_THREAD.criticalAlert.amount),
+    confidence: DEMO_THREAD.criticalAlert.confidence,
+    timestampLabel: '14:15',
+    description: `Suspicious ${formatUsd(DEMO_THREAD.criticalAlert.amount)} wire transfer from Checking to ${DEMO_THREAD.criticalAlert.merchant}`,
+    urgency: 'high',
+    impact: {
+      approved: 'Wire transfer is blocked and dispute workflow opens automatically.',
+      deferred: 'Transaction remains active and fraud exposure window extends.',
+    },
+    reversible: true,
+    expiresIn: '6h',
+    factors: [
+      { label: 'Merchant risk', value: 0.87 },
+      { label: 'Amount anomaly', value: 0.71 },
+      { label: 'Geo mismatch', value: 0.65 },
+    ],
+  },
+  {
+    id: 'EXE-003',
+    title: 'Subscription consolidation',
+    engine: 'Grow',
+    amountLabel: 'Save $140/mo',
+    confidence: 0.89,
+    timestampLabel: '13:52',
+    description: 'Cancel 3 overlapping media subscriptions to save $140/mo',
+    urgency: 'medium',
+    impact: {
+      approved: 'Estimated savings of $140/mo are queued for execution.',
+      deferred: 'Current subscription stack remains unchanged.',
+    },
+    reversible: true,
+    expiresIn: null,
+    factors: [
+      { label: 'Cost reduction', value: 0.92 },
+      { label: 'Overlap confidence', value: 0.88 },
+      { label: 'Usage parity', value: 0.82 },
+    ],
+  },
+  {
+    id: 'EXE-004',
+    title: 'Archive invoices',
+    engine: 'Execute',
+    amountLabel: '-',
+    confidence: 0.78,
+    timestampLabel: '11:20',
+    description: 'Batch archive 47 paid Q3 invoices to compliance cold storage',
+    urgency: 'medium',
+    impact: {
+      approved: 'Legacy invoices are archived and indexed for governance audit.',
+      deferred: 'Invoice archive remains unchanged and queue re-checks in 24h.',
+    },
+    reversible: false,
+    expiresIn: '3d',
+    factors: [
+      { label: 'Document age', value: 0.84 },
+      { label: 'Archive confidence', value: 0.77 },
+      { label: 'Policy fit', value: 0.73 },
+    ],
+  },
+  {
+    id: 'EXE-005',
+    title: 'Pay electricity bill',
+    engine: 'Execute',
+    amountLabel: '$187',
+    confidence: 0.99,
+    timestampLabel: '10:30',
+    description: '$187 scheduled auto-payment from Checking to ConEdison',
+    urgency: 'low',
+    impact: {
+      approved: 'Payment executes and receipt is logged in the audit ledger.',
+      deferred: 'Payment is deferred and reminder is raised to the queue.',
+    },
+    reversible: true,
+    expiresIn: '18h',
+    factors: [
+      { label: 'Payment confidence', value: 0.99 },
+      { label: 'Schedule consistency', value: 0.93 },
+      { label: 'Balance sufficiency', value: 0.95 },
+    ],
+  },
+]
+
+const GOVERN_LEDGER_PREVIEW: GovernLedgerEntryEntity[] = [
+  {
+    id: 'GV-2026-0319-847',
+    type: 'Protect',
+    action: `Block wire - ${DEMO_THREAD.criticalAlert.merchant}`,
+    confidence: DEMO_THREAD.criticalAlert.confidence,
+    status: 'Flagged',
+    timestampIso: '2026-03-19T14:28:00-04:00',
+  },
+  {
+    id: 'GV-2026-0319-846',
+    type: 'Protect',
+    action: 'Flag - Unknown Vendor',
+    confidence: 0.87,
+    status: 'Pending review',
+    timestampIso: '2026-03-19T14:15:00-04:00',
+  },
+  {
+    id: 'GV-2026-0319-845',
+    type: 'Grow',
+    action: 'Increase contribution by $420',
+    confidence: 0.89,
+    status: 'Pending review',
+    timestampIso: '2026-03-19T13:52:00-04:00',
+  },
+  {
+    id: 'GV-2026-0319-844',
+    type: 'Protect',
+    action: 'High-risk category - Crypto Exchange',
+    confidence: 0.91,
+    status: 'Flagged',
+    timestampIso: '2026-03-19T11:20:00-04:00',
+  },
+  {
+    id: 'GV-2026-0318-843',
+    type: 'Protect',
+    action: 'International wire - Travel Agency XYZ',
+    confidence: 0.72,
+    timestampIso: '2026-03-18T16:42:00-04:00',
+  },
+  {
+    id: 'GV-2026-0318-842',
+    type: 'Grow',
+    action: 'Maintain current savings rate',
+    confidence: 0.94,
+    timestampIso: '2026-03-18T09:40:00-04:00',
+  },
+  {
+    id: 'GV-2026-0318-841',
+    type: 'Protect',
+    action: 'Unusual ATM withdrawal - Gas Station',
+    confidence: 0.65,
+    timestampIso: '2026-03-18T08:15:00-04:00',
+  },
+  {
+    id: 'GV-2026-0317-840',
+    type: 'Grow',
+    action: 'No action needed - Home down payment',
+    confidence: 0.91,
+    timestampIso: '2026-03-17T15:30:00-04:00',
+  },
+]
+
+const GOVERN_AUDIT_ENTRIES: GovernAuditEntryEntity[] = [
+  {
+    id: 'GV-2026-0319-847',
+    timestampIso: '2026-03-19T14:28:00-04:00',
+    type: 'Execute',
+    action: 'Portfolio rebalance',
+    confidence: 0.97,
+    evidence: 12,
+    status: 'Verified',
+  },
+  {
+    id: 'GV-2026-0319-846',
+    timestampIso: '2026-03-19T14:15:00-04:00',
+    type: 'Protect',
+    action: `Block wire transfer (${formatUsd(DEMO_THREAD.criticalAlert.amount)})`,
+    confidence: DEMO_THREAD.criticalAlert.confidence,
+    evidence: 9,
+    status: 'Verified',
+  },
+  {
+    id: 'GV-2026-0319-845',
+    timestampIso: '2026-03-19T13:52:00-04:00',
+    type: 'Grow',
+    action: 'Subscription consolidation',
+    confidence: 0.89,
+    evidence: 7,
+    status: 'Verified',
+  },
+  {
+    id: 'GV-2026-0319-844',
+    timestampIso: '2026-03-19T11:20:00-04:00',
+    type: 'Execute',
+    action: 'Archive invoices',
+    confidence: 0.78,
+    evidence: 5,
+    status: 'Pending review',
+  },
+  {
+    id: 'GV-2026-0318-843',
+    timestampIso: '2026-03-18T16:42:00-04:00',
+    type: 'Protect',
+    action: 'Unusual transaction',
+    confidence: 0.92,
+    evidence: 10,
+    status: 'Verified',
+  },
+  {
+    id: 'GV-2026-0318-842',
+    timestampIso: '2026-03-18T10:18:00-04:00',
+    type: 'Grow',
+    action: 'Goal update',
+    confidence: 0.86,
+    evidence: 6,
+    status: 'Verified',
+  },
+  {
+    id: 'GV-2026-0317-841',
+    timestampIso: '2026-03-17T14:12:00-04:00',
+    type: 'Execute',
+    action: 'Payment processed',
+    confidence: 0.91,
+    evidence: 8,
+    status: 'Verified',
+  },
+  {
+    id: 'GV-2026-0317-840',
+    timestampIso: '2026-03-17T09:40:00-04:00',
+    type: 'Govern',
+    action: 'Policy update',
+    confidence: 0.97,
+    evidence: 15,
+    status: 'Verified',
+  },
+]
+
+export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
+  schemaVersion: '1.0.0',
+  generatedAt: '2026-03-19T14:30:00-04:00',
+  metrics: {
+    systemConfidence: DEMO_THREAD.systemConfidence,
+    complianceScore: DEMO_THREAD.complianceScore,
+    pendingActions: DEMO_THREAD.pendingActions,
+    monthlySavingsCurrentUsd: DEMO_THREAD.monthlySavings,
+    monthlySavingsPotentialUsd: MONTHLY_SAVINGS_POTENTIAL_USD,
+    decisionsAuditedTotal: DEMO_THREAD.decisionsAudited,
+    verifiedDecisions: VERIFIED_DECISIONS,
+    pendingReviewDecisions: PENDING_REVIEW_DECISIONS,
+    flaggedDecisions: FLAGGED_DECISIONS,
+    emergencyFund: {
+      percent: DEMO_THREAD.emergencyFund.percent,
+      currentUsd: DEMO_THREAD.emergencyFund.current,
+      targetUsd: DEMO_THREAD.emergencyFund.target,
+    },
+  },
+  entities: {
+    criticalAlert: {
+      id: DEMO_THREAD.criticalAlert.id,
+      amountUsd: DEMO_THREAD.criticalAlert.amount,
+      merchant: DEMO_THREAD.criticalAlert.merchant,
+      confidence: DEMO_THREAD.criticalAlert.confidence,
+      cardLast4: DEMO_THREAD.criticalAlert.cardLast4 ?? '4821',
+      signalId: DEMO_THREAD.criticalAlert.signalId ?? 'PRT-2026-0216-003',
+    },
+    protectThreats: PROTECT_THREATS,
+    recommendations: RECOMMENDATIONS,
+    executeActions: EXECUTE_ACTIONS,
+    governLedgerPreview: GOVERN_LEDGER_PREVIEW,
+    governAuditEntries: GOVERN_AUDIT_ENTRIES,
+    dashboardActivities: DASHBOARD_ACTIVITIES,
+  },
+  relations: {
+    alertToAction: {
+      [DEMO_THREAD.criticalAlert.id]: ['EXE-002'],
+    },
+    recommendationToAction: {
+      'REC-002': ['EXE-003'],
+    },
+    actionToDecision: {
+      'EXE-001': ['GV-2026-0319-847'],
+      'EXE-002': ['GV-2026-0319-846'],
+      'EXE-003': ['GV-2026-0319-845'],
+      'EXE-004': ['GV-2026-0319-844'],
+    },
+  },
+}
+
+function formatUsd(value: number): string {
+  return `$${value.toLocaleString()}`
+}

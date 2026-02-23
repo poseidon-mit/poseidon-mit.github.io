@@ -4,7 +4,7 @@
  * Follows the same pattern as execute-data.ts / govern-data.ts.
  * Both Protect.tsx and ProtectAlertDetail.tsx import from here.
  */
-import { DEMO_DATA } from '@/lib/constants/mock-data'
+import { selectProtectThreats } from '@/domain/poseidon-universe'
 
 /* ── Types ── */
 export type Severity = "Critical" | "High" | "Medium" | "Low"
@@ -38,8 +38,20 @@ export interface DerivedFactor extends FactorItem {
 export const DISMISSED_ALERTS_KEY = 'poseidon:dismissed-alerts'
 export const MITIGATING_TOTAL = 0.08 // fixed total risk reduction for mitigating factors
 
+const [criticalThreat] = selectProtectThreats()
+
 export const THREATS: ThreatRow[] = [
-  { id: DEMO_DATA.EXECUTE_ALERT_ID, merchant: DEMO_DATA.EXECUTE_VENDOR, amount: DEMO_DATA.EXECUTE_AMOUNT, numericAmount: 2847, confidence: DEMO_DATA.EXECUTE_CONFIDENCE, severity: "Critical", time: "4h ago", sortTime: 8, description: "Unusual transaction pattern" },
+  {
+    id: criticalThreat.id,
+    merchant: criticalThreat.merchant,
+    amount: `$${criticalThreat.amountUsd.toLocaleString()}`,
+    numericAmount: criticalThreat.amountUsd,
+    confidence: criticalThreat.confidence,
+    severity: criticalThreat.severity,
+    time: criticalThreat.relativeTime,
+    sortTime: criticalThreat.sortOrder,
+    description: criticalThreat.description,
+  },
   { id: "THR-002", merchant: "Unknown Vendor", amount: "$1,200", numericAmount: 1200, confidence: 0.87, severity: "High", time: "1d ago", sortTime: 7, description: "Unrecognized merchant" },
   { id: "THR-003", merchant: "Travel Agency XYZ", amount: "$3,400", numericAmount: 3400, confidence: 0.72, severity: "Medium", time: "3d ago", sortTime: 6, description: "International wire transfer" },
   { id: "THR-004", merchant: "Gas Station ATM", amount: "$800", numericAmount: 800, confidence: 0.65, severity: "Low", time: "1w ago", sortTime: 4, description: "Unusual ATM withdrawal" },

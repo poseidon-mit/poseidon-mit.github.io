@@ -49,7 +49,7 @@ export const decisions: Decision[] = [
     confidence: 0.94,
     evidencePoints: 9,
     status: 'Verified',
-    description: 'Wire transfer blocked — fraud score 0.94',
+    description: 'Wire transfer blocked — TechElectro Store ($2,847), fraud score 0.94',
     hash: 'sha256:7b2e09...f18a',
   },
   {
@@ -125,7 +125,7 @@ export const complianceItems: ComplianceItem[] = [
 export const kpiData: KpiCardData[] = [
   {
     label: 'Decisions Audited',
-    value: '847',
+    value: '1,247',
     badge: { text: 'audited', color: 'var(--engine-govern)', bg: 'rgba(59,130,246,0.12)' },
   },
   {
@@ -150,13 +150,13 @@ export const kpiData: KpiCardData[] = [
    ═══════════════════════════════════════════ */
 
 export const typeColor: Record<DecisionType, string> = {
-  Protect: '#14B8A6',
+  Protect: 'var(--engine-protect)',
   Grow: 'var(--engine-grow)',
   Execute: 'var(--engine-execute)',
 }
 
 export const typeBg: Record<DecisionType, string> = {
-  Protect: 'rgba(20,184,166,0.12)',
+  Protect: 'rgba(34,197,94,0.12)',
   Grow: 'rgba(139,92,246,0.12)',
   Execute: 'rgba(234,179,8,0.12)',
 }

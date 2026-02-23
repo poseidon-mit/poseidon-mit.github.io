@@ -3,7 +3,6 @@ import { Link } from '@/router';
 import { Target, ArrowRight, ArrowLeft, Scale, TrendingUp } from "lucide-react";
 import { ForecastBand } from "@/components/poseidon/forecast-band";
 import type { ForecastPoint } from "@/components/poseidon/forecast-band";
-import { DEMO_THREAD } from '@/lib/demo-thread';
 import { GOVERNANCE_META } from '@/lib/governance-meta';
 import { AuroraPulse, GovernFooter } from '@/components/poseidon';
 import { fadeUp, staggerContainer } from '@/lib/motion-presets';
@@ -12,9 +11,12 @@ import { fadeUp, staggerContainer } from '@/lib/motion-presets';
 /* ── Cross-thread ── */
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
-const EMERGENCY_FUND_PROGRESS = DEMO_THREAD.emergencyFund.percent;
-const EMERGENCY_FUND_CURRENT = DEMO_THREAD.emergencyFund.current;
-const EMERGENCY_FUND_TARGET = DEMO_THREAD.emergencyFund.target;
+import { selectGrowEmergencyFundView } from '@/domain/poseidon-universe';
+
+const emergencyFund = selectGrowEmergencyFundView();
+const EMERGENCY_FUND_PROGRESS = emergencyFund.percent;
+const EMERGENCY_FUND_CURRENT = emergencyFund.currentUsd;
+const EMERGENCY_FUND_TARGET = emergencyFund.targetUsd;
 
 /* ── Forecast data (goal-specific) ── */
 const FORECAST_DATA: ForecastPoint[] = Array.from({ length: 12 }, (_, i) => ({

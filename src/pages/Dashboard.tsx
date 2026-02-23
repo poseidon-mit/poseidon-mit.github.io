@@ -12,15 +12,14 @@ import {
   Activity
 } from "lucide-react"
 import { AreaChart, Area, ResponsiveContainer } from "recharts"
-import { DEMO_DATA } from '@/lib/constants/mock-data'
 import {
   getMotionPreset,
 } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { PendingActionsBanner } from '@/components/dashboard/PendingActionsBanner'
-
-/* ── Cross-thread values (Single Source of Truth) ── */
-const COMPLIANCE_SCORE = DEMO_DATA.COMPLIANCE_SCORE
+import { useDemoState } from '@/lib/demo-state/provider'
+import { getPendingExecuteCount } from '@/lib/demo-state/selectors'
+import { selectDashboardView, formatUsd } from '@/domain/poseidon-universe'
 
 /* ── KPI Stat Card (Premium Apple WWDC Style) ── */
 const StatCard = memo(function StatCard({
@@ -102,16 +101,24 @@ const StatCard = memo(function StatCard({
   )
 })
 
-/* ── Activity Feed ── */
-const activities = [
-  { icon: Shield, label: `Blocked suspicious transfer to ${DEMO_DATA.EXECUTE_VENDOR}`, time: "2m ago", color: "var(--engine-protect)" },
-  { icon: TrendingUp, label: "Savings goal projection updated", time: "15m ago", color: "var(--engine-grow)" },
-  { icon: Zap, label: "Auto-paid electricity bill", time: "1h ago", color: "var(--engine-execute)" },
-  { icon: Scale, label: `Compliance check passed (${COMPLIANCE_SCORE}/100)`, time: "2h ago", color: "var(--engine-govern)" },
-  { icon: AlertTriangle, label: "New alert: unusual pattern detected", time: "3h ago", color: "var(--state-warning)" },
-]
+const activityToneMap: Record<
+  'protect' | 'grow' | 'execute' | 'govern' | 'system',
+  { icon: LucideIcon; color: string }
+> = {
+  protect: { icon: Shield, color: 'var(--engine-protect)' },
+  grow: { icon: TrendingUp, color: 'var(--engine-grow)' },
+  execute: { icon: Zap, color: 'var(--engine-execute)' },
+  govern: { icon: Scale, color: 'var(--engine-govern)' },
+  system: { icon: AlertTriangle, color: 'var(--state-warning)' },
+}
 
-function ActivityFeed({ itemVariants }: { itemVariants: Variants }) {
+function ActivityFeed({
+  itemVariants,
+  activities,
+}: {
+  itemVariants: Variants
+  activities: Array<{ id: string; kind: 'protect' | 'grow' | 'execute' | 'govern' | 'system'; label: string; relativeTime: string }>
+}) {
   return (
     <div className="rounded-[32px] p-8 lg:p-10 flex flex-col gap-6 backdrop-blur-3xl border border-white/[0.08] bg-black/50 h-full shadow-2xl relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
@@ -119,37 +126,32 @@ function ActivityFeed({ itemVariants }: { itemVariants: Variants }) {
         <h2 className="text-sm font-semibold uppercase tracking-widest text-white/50">Recent Activity</h2>
       </div>
       <div className="flex flex-col flex-1 justify-between gap-2 relative z-10">
-        {activities.map((item, i) => (
+        {activities.map((item) => {
+          const tone = activityToneMap[item.kind]
+          const Icon = tone.icon
+          return (
           <motion.div
-            key={i}
+            key={item.id}
             variants={itemVariants}
             className="flex items-center gap-5 py-3 group"
           >
             <div
               className="flex items-center justify-center rounded-2xl w-12 h-12 shrink-0 border border-white/[0.05] transition-all duration-500 group-hover:scale-110 group-hover:border-white/[0.1]"
-              style={{ background: `${item.color}10`, boxShadow: `inset 0 0 20px ${item.color}05` }}
+              style={{ background: `${tone.color}10`, boxShadow: `inset 0 0 20px ${tone.color}05` }}
             >
-              <item.icon size={18} style={{ color: item.color }} className="group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all" />
+              <Icon size={18} style={{ color: tone.color }} className="group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all" />
             </div>
             <div className="flex flex-col gap-1 min-w-0 flex-1">
               <span className="text-base font-medium text-white/80 tracking-wide">{item.label}</span>
-              <span className="text-xs font-mono text-white/30 tracking-wider">{item.time}</span>
+              <span className="text-xs font-mono text-white/30 tracking-wider">{item.relativeTime}</span>
             </div>
           </motion.div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )
 }
-
-/* ── Pending decisions count (used by PendingActionsBanner) ── */
-const decisions = [
-  { status: "pending" },
-  { status: "pending" },
-  { status: "approved" },
-  { status: "pending" },
-  { status: "approved" },
-]
 
 /* ═══════════════════════════════════════════════════════
    DASHBOARD PAGE
@@ -161,7 +163,10 @@ export default function DashboardPage() {
   const containerVariants = motionPreset.creatorStudioStaggerContainer
   const itemVariants = motionPreset.creatorStudioStaggerItem
   const { navigate } = useRouter()
+  const { state } = useDemoState()
 
+  const pendingActions = getPendingExecuteCount(state)
+  const dashboardView = selectDashboardView(pendingActions)
   const alertCount = 1
   const alertSpark = [6, 5, 4, 4, 3, 2, 2, 1]
 
@@ -194,7 +199,7 @@ export default function DashboardPage() {
 
         {/* ── Pending Actions Banner ── */}
         <PendingActionsBanner
-          pendingCount={decisions.filter(d => d.status === 'pending').length}
+          pendingCount={dashboardView.pendingActions}
           navigate={navigate}
           variants={itemVariants}
         />
@@ -202,14 +207,14 @@ export default function DashboardPage() {
         {/* ── KPI Grid ── */}
         <motion.section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10" variants={itemVariants} aria-label="Key performance indicators">
           <StatCard label="Net position" value="$847.2k" delta="+8.2%" deltaPositive sparkData={[30, 35, 28, 40, 38, 50, 55, 60]} sparkColor="var(--engine-dashboard)" icon={Activity} />
-          <StatCard label="Cash flow" value="+$4.1k" delta="+12%" deltaPositive sparkData={[10, 20, 15, 30, 25, 35, 40, 42]} sparkColor="var(--engine-grow)" icon={TrendingUp} />
-          <StatCard label="Risk Exposure" value="Low" delta="Down from Med" deltaPositive sparkData={[60, 55, 50, 45, 35, 30, 25, 20]} sparkColor="var(--engine-protect)" icon={ShieldCheck} />
-          <StatCard label="Active Alerts" value={String(alertCount)} delta={alertCount <= 2 ? "-3 resolved" : `+${alertCount - 2} new`} deltaPositive={alertCount <= 2} sparkData={alertSpark} sparkColor="var(--state-warning)" icon={AlertTriangle} />
+          <StatCard label="Monthly savings" value={`${formatUsd(dashboardView.monthlySavingsCurrentUsd)}/mo`} delta="current baseline" deltaPositive={true} sparkData={[10, 20, 15, 30, 25, 35, 40, 42]} sparkColor="var(--engine-grow)" icon={TrendingUp} />
+          <StatCard label="Pending actions" value={String(dashboardView.pendingActions)} delta="approval queue" deltaPositive={false} sparkData={[60, 55, 50, 45, 35, 30, 25, 20]} sparkColor="var(--engine-protect)" icon={ShieldCheck} />
+          <StatCard label="Compliance score" value={`${dashboardView.complianceScore}/100`} delta={alertCount <= 2 ? "-3 resolved" : `+${alertCount - 2} new`} deltaPositive={alertCount <= 2} sparkData={alertSpark} sparkColor="var(--state-warning)" icon={AlertTriangle} />
         </motion.section>
 
         {/* ── Activity Feed ── */}
         <motion.div variants={itemVariants} className="mb-16">
-          <ActivityFeed itemVariants={itemVariants} />
+          <ActivityFeed itemVariants={itemVariants} activities={dashboardView.activities} />
         </motion.div>
 
       </motion.main>

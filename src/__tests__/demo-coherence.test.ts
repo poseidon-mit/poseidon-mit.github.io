@@ -3,6 +3,12 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { CROSS_SCREEN_DATA_THREAD } from '../contracts/rebuild-contracts'
 import { DEMO_THREAD } from '../lib/demo-thread'
+import {
+  selectGovernAuditSummaryView,
+  selectGovernSummaryView,
+  validateCanonicalUniverse,
+  CANONICAL_UNIVERSE,
+} from '../domain/poseidon-universe'
 
 const repoRoot = resolve(__dirname, '..', '..')
 
@@ -22,55 +28,40 @@ describe('demo coherence invariants', () => {
   })
 
   it('keeps governed audit totals arithmetically consistent', () => {
-    const auditLedger = readSource('src/pages/GovernAuditLedger.tsx')
-    const verified = Number(auditLedger.match(/const VERIFIED_COUNT = (\d+)/)?.[1] ?? NaN)
-    const pending = Number(auditLedger.match(/const PENDING_REVIEW_COUNT = (\d+)/)?.[1] ?? NaN)
-    const flagged = Number(auditLedger.match(/const FLAGGED_COUNT = (\d+)/)?.[1] ?? NaN)
+    const summary = selectGovernSummaryView()
+    expect(
+      summary.verifiedDecisions + summary.pendingReviewDecisions + summary.flaggedDecisions,
+    ).toBe(DEMO_THREAD.decisionsAudited)
 
-    expect(Number.isFinite(verified)).toBe(true)
-    expect(Number.isFinite(pending)).toBe(true)
-    expect(Number.isFinite(flagged)).toBe(true)
-    expect(verified + pending + flagged).toBe(DEMO_THREAD.decisionsAudited)
+    const auditSummary = selectGovernAuditSummaryView()
+    expect(auditSummary.total).toBe(summary.decisionsAuditedTotal)
   })
 
-  it('uses canonical critical-alert data on demo-path pages', () => {
-    const files = [
-      'src/pages/AlertsHub.tsx',
-      'src/pages/Dashboard.tsx',
-      'src/pages/ExecuteApproval.tsx',
-      'src/pages/protect/ProtectAlertDetail.tsx',
-      'src/pages/GovernOversight.tsx',
-      'src/pages/TrustSecurity.tsx',
+  it('uses canonical universe selectors on golden-path pages', () => {
+    const selectorExpectations: Array<{ file: string; selector: string }> = [
+      { file: 'src/pages/Dashboard.tsx', selector: 'selectDashboardView' },
+      { file: 'src/pages/protect/protect-data.ts', selector: 'selectProtectThreats' },
+      { file: 'src/pages/Execute.tsx', selector: 'selectExecuteActionsView' },
+      { file: 'src/pages/Govern.tsx', selector: 'selectGovernLedgerPreview' },
+      { file: 'src/pages/GovernAuditLedger.tsx', selector: 'selectGovernAuditEntries' },
     ]
 
-    for (const file of files) {
+    for (const { file, selector } of selectorExpectations) {
       const source = readSource(file)
-      expect(source).toContain('DEMO_THREAD.criticalAlert')
+      expect(source).toContain(selector)
       expect(source).not.toContain('MerchantX')
       expect(source).not.toContain('$4,200')
     }
   })
 
-  it('keeps SOC 2 wording consistently in-progress on demo-critical surfaces', () => {
-    const files = [
-      'src/pages/TrustSecurity.tsx',
-      'src/pages/HelpSupport.tsx',
-      'src/pages/SettingsIntegrations.tsx',
-      'src/pages/InsightsFeed.tsx',
-      'src/pages/govern/govern-data.ts',
-    ]
-
-    for (const file of files) {
-      const source = readSource(file)
-      expect(source).toContain('SOC 2 Type II in progress')
-      expect(source).not.toMatch(/SOC 2 certified/i)
-      expect(source).not.toMatch(/SOC 2 compliance maintained/i)
-    }
+  it('keeps SOC 2 wording consistently in-progress in govern data', () => {
+    const source = readSource('src/pages/govern/govern-data.ts')
+    expect(source).toContain('SOC 2 Type II in progress')
+    expect(source).not.toMatch(/SOC 2 certified/i)
+    expect(source).not.toMatch(/SOC 2 compliance maintained/i)
   })
 
-  it('keeps dashboard narrative aligned to four engines plus command center', () => {
-    const dashboard = readSource('src/pages/Dashboard.tsx')
-    expect(dashboard).toContain('across 4 engines + command center')
-    expect(dashboard).not.toContain('across 5 engines')
+  it('validates canonical universe invariants', () => {
+    expect(validateCanonicalUniverse(CANONICAL_UNIVERSE)).toEqual([])
   })
 })

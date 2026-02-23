@@ -7,13 +7,12 @@ import { GOVERNANCE_META } from '@/lib/governance-meta';
 import { Dialog, DialogContent } from '../components/ui/dialog';
 import { usePageTitle } from '../hooks/use-page-title';
 import { getMotionPreset } from '@/lib/motion-presets';
-import { DEMO_THREAD } from '@/lib/demo-thread';
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
 import { useDemoState } from '@/lib/demo-state/provider';
 import { useToast } from '@/hooks/useToast';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
-import { QUEUE_ACTIONS, type QueueAction } from './Execute';
+import { QUEUE_ACTIONS } from './Execute';
 
 /* ═══════════════════════════════════════════
    DATA
@@ -185,7 +184,7 @@ export function ExecuteApproval() {
                         <div className="order-2 md:order-1">
                           <p className="text-xs font-semibold uppercase tracking-widest mb-5 flex items-center gap-2 text-white/50">Mathematical Reasoning</p>
                           <div className="space-y-5">
-                            {action.factors.map((f: any) =>
+                            {action.factors.map((f) =>
                               <div key={f.label} className="flex items-center gap-4">
                                 <span className="text-sm font-medium tracking-wide text-white/80 w-40 shrink-0">{f.label}</span>
                                 <div className="flex-1 h-2.5 rounded-full overflow-hidden bg-white/10 shadow-inner">
@@ -200,7 +199,7 @@ export function ExecuteApproval() {
                         <div className="order-1 md:order-2 bg-black/30 p-6 rounded-2xl border border-white/5 shadow-inner">
                           <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: 'var(--engine-protect)' }}>Decision Drivers</p>
                           <ShapWaterfall
-                            factors={action.factors.map((f: any) => ({ name: f.label, value: f.value }))}
+                            factors={action.factors.map((f) => ({ name: f.label, value: f.value }))}
                             baseValue={50}
                             className="mt-2" />
                         </div>

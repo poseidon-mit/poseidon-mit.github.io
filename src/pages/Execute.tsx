@@ -12,7 +12,6 @@ import {
 import { useRouter, Link } from '@/router'
 // Removed Dialog import
 import { EmptyState } from '@/components/poseidon'
-import { DEMO_DATA } from '@/lib/constants/mock-data'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { ENGINE_BADGE_CLASS, ENGINE_COLOR_MAP } from '@/lib/engine-color-map'
 import { useDemoState } from '@/lib/demo-state/provider'
@@ -27,133 +26,17 @@ import { buttonVariants } from '@/components/ui/button'
 import { useToast } from '@/hooks/useToast'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+import {
+  formatUsd,
+  selectExecuteActionsView,
+  selectExecuteSavingsView,
+} from '@/domain/poseidon-universe'
+import type { ExecuteActionEntity } from '@/domain/poseidon-universe'
 
 type ActionStatus = 'pending' | 'approved' | 'deferred'
 
-type QueueEngine = 'Protect' | 'Grow' | 'Execute'
-
-export interface QueueAction {
-  id: string
-  title: string
-  engine: QueueEngine
-  amount: string
-  confidence: number
-  time: string
-  description: string
-  urgency: 'high' | 'medium' | 'low';
-  impact: { approved: string; deferred: string; };
-  reversible: boolean;
-  expiresIn: string | null;
-  factors: Array<{ label: string; value: number; }>;
-}
-
-export const QUEUE_ACTIONS: QueueAction[] = [
-  {
-    id: 'EXE-001',
-    title: 'Portfolio rebalance',
-    engine: 'Execute',
-    amount: '$12,400',
-    confidence: 0.97,
-    time: '14:28',
-    description: '$12,400 transfer from Cash Reserve to Growth Equity Index',
-    urgency: 'high',
-    impact: {
-      approved: 'Allocation adjusted and tracked in the govern audit trace.',
-      deferred: 'Portfolio keeps current drift and review is deferred to next cycle.',
-    },
-    reversible: true,
-    expiresIn: '14h',
-    factors: [
-      { label: 'Concentration risk', value: 0.91 },
-      { label: 'Cash allocation', value: 0.87 },
-      { label: 'Volatility outlook', value: 0.78 },
-    ],
-  },
-  {
-    id: 'EXE-002',
-    title: 'Block wire transfer',
-    engine: 'Protect',
-    amount: DEMO_DATA.EXECUTE_AMOUNT,
-    confidence: DEMO_DATA.EXECUTE_CONFIDENCE,
-    time: '14:15',
-    description: `Suspicious ${DEMO_DATA.EXECUTE_AMOUNT} wire transfer from Checking to ${DEMO_DATA.EXECUTE_VENDOR}`,
-    urgency: 'high',
-    impact: {
-      approved: 'Wire transfer is blocked and dispute workflow opens automatically.',
-      deferred: 'Transaction remains active and fraud exposure window extends.',
-    },
-    reversible: true,
-    expiresIn: '6h',
-    factors: [
-      { label: 'Merchant risk', value: 0.87 },
-      { label: 'Amount anomaly', value: 0.71 },
-      { label: 'Geo mismatch', value: 0.65 },
-    ],
-  },
-  {
-    id: 'EXE-003',
-    title: 'Subscription consolidation',
-    engine: 'Grow',
-    amount: '$140/mo',
-    confidence: 0.89,
-    time: '13:52',
-    description: 'Cancel 3 overlapping media subscriptions to save $140/mo',
-    urgency: 'medium',
-    impact: {
-      approved: 'Estimated savings of $140/mo are queued for execution.',
-      deferred: 'Current subscription stack remains unchanged.',
-    },
-    reversible: true,
-    expiresIn: null,
-    factors: [
-      { label: 'Cost reduction', value: 0.92 },
-      { label: 'Overlap confidence', value: 0.88 },
-      { label: 'Usage parity', value: 0.82 },
-    ],
-  },
-  {
-    id: 'EXE-004',
-    title: 'Archive invoices',
-    engine: 'Execute',
-    amount: '-',
-    confidence: 0.78,
-    time: '11:20',
-    description: 'Batch archive 47 paid Q3 invoices to compliance cold storage',
-    urgency: 'medium',
-    impact: {
-      approved: 'Legacy invoices are archived and indexed for governance audit.',
-      deferred: 'Invoice archive remains unchanged and queue re-checks in 24h.',
-    },
-    reversible: false,
-    expiresIn: '3d',
-    factors: [
-      { label: 'Document age', value: 0.84 },
-      { label: 'Archive confidence', value: 0.77 },
-      { label: 'Policy fit', value: 0.73 },
-    ],
-  },
-  {
-    id: 'EXE-005',
-    title: 'Pay electricity bill',
-    engine: 'Execute',
-    amount: '$187',
-    confidence: 0.99,
-    time: '10:30',
-    description: '$187 scheduled auto-payment from Checking to ConEdison',
-    urgency: 'low',
-    impact: {
-      approved: 'Payment executes and receipt is logged in the audit ledger.',
-      deferred: 'Payment is deferred and reminder is raised to the queue.',
-    },
-    reversible: true,
-    expiresIn: '18h',
-    factors: [
-      { label: 'Payment confidence', value: 0.99 },
-      { label: 'Schedule consistency', value: 0.93 },
-      { label: 'Balance sufficiency', value: 0.95 },
-    ],
-  },
-]
+export type QueueAction = ExecuteActionEntity
+export const QUEUE_ACTIONS: QueueAction[] = selectExecuteActionsView()
 
 function statusFromDecision(value: DemoExecuteDecision): ActionStatus {
   switch (value) {
@@ -186,6 +69,7 @@ export default function ExecutePage() {
   const pendingCount = getPendingExecuteCount(state)
   const completedCount = getCompletedExecuteCount(state)
   const deferredCount = getDeferredExecuteCount(state)
+  const executeSavings = selectExecuteSavingsView()
 
   const queue = useMemo(
     () =>
@@ -226,7 +110,7 @@ export default function ExecutePage() {
             Engine status: Good
           </motion.div>
           <motion.h1 variants={fadeUpVariant} className="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight tabular-nums text-white mb-2 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-            {pendingCount} actions queued. <br className="hidden lg:block" />Projected savings: <span className="text-[var(--engine-execute)] font-mono drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]">${DEMO_DATA.MONTHLY_SAVINGS}/mo</span>.
+            {pendingCount} actions queued. <br className="hidden lg:block" />Projected savings: <span className="text-[var(--engine-execute)] font-mono drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]">{formatUsd(executeSavings.potentialMonthlySavingsUsd)}/mo</span>.
           </motion.h1>
 
         </motion.section>
@@ -266,7 +150,7 @@ export default function ExecutePage() {
                       >
                         {action.engine}
                       </span>
-                      <span className="ml-auto text-xs font-mono text-white/40 tracking-widest">{action.time}</span>
+                      <span className="ml-auto text-xs font-mono text-white/40 tracking-widest">{action.timestampLabel}</span>
                     </div>
 
                     <div className="relative z-10">
@@ -275,7 +159,7 @@ export default function ExecutePage() {
                     </div>
 
                     <div className="relative z-10 flex flex-wrap items-center gap-6 py-4 border-y border-white/[0.06] my-2">
-                      <span className="text-xl font-mono font-light tracking-wide tabular-nums text-[var(--engine-execute)] drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]">{action.amount}</span>
+                      <span className="text-xl font-mono font-light tracking-wide tabular-nums text-[var(--engine-execute)] drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]">{action.amountLabel}</span>
                       <div className="w-px h-6 bg-white/[0.06]" />
                       <div className="flex items-center gap-3">
                         <span className="text-xs uppercase tracking-widest text-white/40">Confidence</span>
@@ -337,7 +221,7 @@ export default function ExecutePage() {
                             <span className="text-base font-light tracking-wide text-white/90">{action.title}</span>
                             <span className="text-xs font-mono block text-white/40 mt-1">{action.id}</span>
                           </div>
-                          <span className="text-xs font-mono text-white/30 tracking-widest">{action.time}</span>
+                          <span className="text-xs font-mono text-white/30 tracking-widest">{action.timestampLabel}</span>
                         </motion.div>
                       </motion.div>
                     ))}
@@ -359,7 +243,7 @@ export default function ExecutePage() {
                             <span className="text-base font-light tracking-wide text-white/90">{action.title}</span>
                             <span className="text-xs font-mono block text-white/40 mt-1">{action.id}</span>
                           </div>
-                          <span className="text-xs font-mono text-white/30 tracking-widest">{action.time}</span>
+                          <span className="text-xs font-mono text-white/30 tracking-widest">{action.timestampLabel}</span>
                         </motion.div>
                       </motion.div>
                     ))}
@@ -403,11 +287,13 @@ export default function ExecutePage() {
                     </div>
                     <div className="flex flex-col">
                       <span className="text-3xl font-light font-mono tabular-nums tracking-tight text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-                        ${DEMO_DATA.MONTHLY_SAVINGS}<span className="text-lg text-white/40">/mo</span>
+                        {formatUsd(executeSavings.potentialMonthlySavingsUsd)}<span className="text-lg text-white/40">/mo</span>
                       </span>
                       <div className="flex items-center gap-1.5 mt-1">
                         <TrendingUp size={12} style={{ color: 'var(--state-healthy)' }} />
-                        <span className="text-xs tracking-wide" style={{ color: 'var(--state-healthy)' }}>+12% vs last month</span>
+                        <span className="text-xs tracking-wide" style={{ color: 'var(--state-healthy)' }}>
+                          Baseline: {formatUsd(executeSavings.currentMonthlySavingsUsd)}/mo
+                        </span>
                       </div>
                     </div>
                   </div>

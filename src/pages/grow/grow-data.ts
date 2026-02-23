@@ -50,12 +50,12 @@ export const goals: Goal[] = [
   },
   {
     id: 'g2',
-    name: 'Emergency fund: $50k',
-    progress: 88,
-    target: '$50k',
-    current: '$44k',
-    gap: '$6k',
-    timeline: '4 months to completion',
+    name: 'Emergency fund: $10k',
+    progress: 73,
+    target: '$10k',
+    current: '$7.3k',
+    gap: '$2.7k',
+    timeline: '6 months to completion',
     status: 'On track',
     recommendation: 'Maintain current savings rate',
     confidence: 0.94,
@@ -116,8 +116,8 @@ export interface KpiNumeric {
 export const kpiData: (KpiCardData & { numeric?: KpiNumeric })[] = [
   {
     label: 'Net Worth',
-    value: '$847k',
-    numeric: { prefix: '$', value: 847, suffix: 'k' },
+    value: '$847.2k',
+    numeric: { prefix: '$', value: 847.2, decimals: 1, suffix: 'k' },
     trend: { text: '+$12.4k (+1.5%)', color: 'var(--state-healthy)' },
   },
   {

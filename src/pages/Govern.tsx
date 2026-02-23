@@ -16,11 +16,7 @@ import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
-
-/* ── Cross-thread values (Single Source of Truth) ── */
-const DECISIONS_AUDITABLE = 50
-const REVIEW_RECOMMENDED_COUNT = 10
-const FLAGGED_COUNT = 3
+import { selectGovernLedgerPreview, selectGovernSummaryView } from '@/domain/poseidon-universe'
 
 /* ── Data ── */
 type DecisionType = "Protect" | "Grow" | "Execute" | "Govern"
@@ -32,16 +28,11 @@ const statusConfig: Record<DecisionStatus, { color: string; icon: LucideIcon }> 
   Flagged: { color: "var(--state-critical)", icon: AlertTriangle },
 }
 
-const ledgerEntries: { id: string; type: DecisionType; action: string; confidence: number; status?: DecisionStatus; time: string }[] = [
-  { id: "GV-2026-0319-847", type: "Protect", action: "Block wire — TechElectro Store", confidence: 0.94, status: "Flagged", time: formatDemoTimestamp("2026-03-19T14:28:00-04:00") },
-  { id: "GV-2026-0319-846", type: "Protect", action: "Flag — Unknown Vendor", confidence: 0.87, status: "Review Recommended", time: formatDemoTimestamp("2026-03-19T14:15:00-04:00") },
-  { id: "GV-2026-0319-845", type: "Grow", action: "Increase contribution by $420", confidence: 0.89, status: "Review Recommended", time: formatDemoTimestamp("2026-03-19T13:52:00-04:00") },
-  { id: "GV-2026-0319-844", type: "Protect", action: "High-risk category — Crypto Exchange", confidence: 0.91, status: "Flagged", time: formatDemoTimestamp("2026-03-19T11:20:00-04:00") },
-  { id: "GV-2026-0318-843", type: "Protect", action: "International wire — Travel Agency XYZ", confidence: 0.72, time: formatDemoTimestamp("2026-03-18T16:42:00-04:00") },
-  { id: "GV-2026-0318-842", type: "Grow", action: "Maintain current savings rate", confidence: 0.94, time: formatDemoTimestamp("2026-03-18T09:40:00-04:00") },
-  { id: "GV-2026-0318-841", type: "Protect", action: "Unusual ATM withdrawal — Gas Station", confidence: 0.65, time: formatDemoTimestamp("2026-03-18T08:15:00-04:00") },
-  { id: "GV-2026-0317-840", type: "Grow", action: "No action needed — Home down payment", confidence: 0.91, time: formatDemoTimestamp("2026-03-17T15:30:00-04:00") },
-]
+function toDecisionStatus(status?: 'Pending review' | 'Flagged'): DecisionStatus | undefined {
+  if (!status) return undefined
+  if (status === 'Flagged') return 'Flagged'
+  return 'Review Recommended'
+}
 
 
 export default function GovernPage() {
@@ -50,6 +41,15 @@ export default function GovernPage() {
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const { navigate } = useRouter()
   const [historyOpen, setHistoryOpen] = useState(false)
+  const governSummary = selectGovernSummaryView()
+  const ledgerEntries = selectGovernLedgerPreview().map((entry) => ({
+    id: entry.id,
+    type: entry.type as DecisionType,
+    action: entry.action,
+    confidence: entry.confidence,
+    status: toDecisionStatus(entry.status),
+    time: formatDemoTimestamp(entry.timestampIso),
+  }))
 
   return (
     <>
@@ -73,9 +73,9 @@ export default function GovernPage() {
         <motion.div variants={fadeUpVariant} className="px-4 md:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 w-full">
             {[
-              { label: "Decision auditable", value: String(DECISIONS_AUDITABLE), color: "white" },
-              { label: "Review Recommended", value: String(REVIEW_RECOMMENDED_COUNT), color: "var(--state-warning)" },
-              { label: "Flagged", value: String(FLAGGED_COUNT), color: "var(--state-critical)" },
+              { label: "Decision auditable", value: governSummary.decisionsAuditedTotal.toLocaleString(), color: "white" },
+              { label: "Review Recommended", value: String(governSummary.pendingReviewDecisions), color: "var(--state-warning)" },
+              { label: "Flagged", value: String(governSummary.flaggedDecisions), color: "var(--state-critical)" },
             ].map(d => (
               <div key={d.label} className="relative overflow-hidden rounded-[24px] p-8 lg:p-12 backdrop-blur-3xl bg-black/60 shadow-lg border border-white/[0.08] hover:bg-white/[0.02] transition-colors">
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-govern)]/5 to-transparent pointer-events-none" />

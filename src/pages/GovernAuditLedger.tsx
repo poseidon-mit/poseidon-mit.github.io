@@ -18,7 +18,6 @@ import {
   ArrowLeft,
   type LucideIcon,
 } from "lucide-react"
-import { DEMO_THREAD } from '@/lib/demo-thread'
 import { GOVERNANCE_META } from '@/lib/governance-meta'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { AuroraPulse, EmptyState, GovernFooter, PreviewBadge } from '@/components/poseidon'
@@ -27,16 +26,10 @@ import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { useRouter } from '@/router'
-
-/* ── Cross-thread values ── */
-const DECISIONS_AUDITED = DEMO_THREAD.decisionsAudited
-const COMPLIANCE_SCORE = DEMO_THREAD.complianceScore
-const VERIFIED_COUNT = 1189
-const PENDING_REVIEW_COUNT = 55
-const FLAGGED_COUNT = 3
-const VERIFIED_PERCENT = Math.round((VERIFIED_COUNT / DECISIONS_AUDITED) * 100)
-const PENDING_REVIEW_PERCENT = Math.round((PENDING_REVIEW_COUNT / DECISIONS_AUDITED) * 100)
-const FLAGGED_PERCENT = Math.round((FLAGGED_COUNT / DECISIONS_AUDITED) * 100)
+import {
+  selectGovernAuditEntries,
+  selectGovernAuditSummaryView,
+} from '@/domain/poseidon-universe'
 
 /* ── Data ── */
 type DecisionType = "Protect" | "Grow" | "Execute" | "Govern"
@@ -65,24 +58,6 @@ const toAuditTimestamp = (value: string) =>
     hour12: false,
   })
 
-const filterTabs: { label: FilterTab; count?: number }[] = [
-  { label: "All" },
-  { label: "Verified", count: VERIFIED_COUNT },
-  { label: "Pending review", count: PENDING_REVIEW_COUNT },
-  { label: "Flagged", count: FLAGGED_COUNT },
-]
-
-const auditEntries: AuditEntry[] = [
-  { id: "GV-2026-0319-847", timestamp: toAuditTimestamp("2026-03-19T14:28:00-04:00"), sortTime: new Date("2026-03-19T14:28:00-04:00").getTime(), type: "Execute", action: "Portfolio rebalance", confidence: 0.97, evidence: 12, status: "Verified" },
-  { id: "GV-2026-0319-846", timestamp: toAuditTimestamp("2026-03-19T14:15:00-04:00"), sortTime: new Date("2026-03-19T14:15:00-04:00").getTime(), type: "Protect", action: "Block wire transfer", confidence: 0.94, evidence: 9, status: "Verified" },
-  { id: "GV-2026-0319-845", timestamp: toAuditTimestamp("2026-03-19T13:52:00-04:00"), sortTime: new Date("2026-03-19T13:52:00-04:00").getTime(), type: "Grow", action: "Subscription consolidation", confidence: 0.89, evidence: 7, status: "Verified" },
-  { id: "GV-2026-0319-844", timestamp: toAuditTimestamp("2026-03-19T11:20:00-04:00"), sortTime: new Date("2026-03-19T11:20:00-04:00").getTime(), type: "Execute", action: "Archive invoices", confidence: 0.78, evidence: 5, status: "Pending review" },
-  { id: "GV-2026-0318-843", timestamp: toAuditTimestamp("2026-03-18T16:42:00-04:00"), sortTime: new Date("2026-03-18T16:42:00-04:00").getTime(), type: "Protect", action: "Unusual transaction", confidence: 0.92, evidence: 10, status: "Verified" },
-  { id: "GV-2026-0318-842", timestamp: toAuditTimestamp("2026-03-18T10:18:00-04:00"), sortTime: new Date("2026-03-18T10:18:00-04:00").getTime(), type: "Grow", action: "Goal update", confidence: 0.86, evidence: 6, status: "Verified" },
-  { id: "GV-2026-0317-841", timestamp: toAuditTimestamp("2026-03-17T14:12:00-04:00"), sortTime: new Date("2026-03-17T14:12:00-04:00").getTime(), type: "Execute", action: "Payment processed", confidence: 0.91, evidence: 8, status: "Verified" },
-  { id: "GV-2026-0317-840", timestamp: toAuditTimestamp("2026-03-17T09:40:00-04:00"), sortTime: new Date("2026-03-17T09:40:00-04:00").getTime(), type: "Govern", action: "Policy update", confidence: 0.97, evidence: 15, status: "Verified" },
-]
-
 const typeColor: Record<DecisionType, string> = { Protect: "var(--engine-protect)", Grow: "var(--engine-grow)", Execute: "var(--engine-execute)", Govern: "var(--engine-govern)" }
 const typeBg: Record<DecisionType, string> = { Protect: "rgba(34,197,94,0.12)", Grow: "rgba(139,92,246,0.12)", Execute: "rgba(234,179,8,0.12)", Govern: "rgba(59,130,246,0.12)" }
 const statusCfg: Record<DecisionStatus, { color: string; bg: string; icon: LucideIcon }> = {
@@ -106,6 +81,23 @@ export default function GovernAuditPage() {
   const [activeFilter, setActiveFilter] = useState<FilterTab>("All")
   const [sortField, setSortField] = useState<SortField>("timestamp")
   const [sortDir, setSortDir] = useState<SortDir>("desc")
+  const auditSummary = selectGovernAuditSummaryView()
+  const filterTabs: { label: FilterTab; count?: number }[] = [
+    { label: "All" },
+    { label: "Verified", count: auditSummary.verified },
+    { label: "Pending review", count: auditSummary.pending },
+    { label: "Flagged", count: auditSummary.flagged },
+  ]
+  const auditEntries: AuditEntry[] = selectGovernAuditEntries().map((entry) => ({
+    id: entry.id,
+    timestamp: toAuditTimestamp(entry.timestampIso),
+    sortTime: new Date(entry.timestampIso).getTime(),
+    type: entry.type,
+    action: entry.action,
+    confidence: entry.confidence,
+    evidence: entry.evidence,
+    status: entry.status,
+  }))
 
   const handleSort = (field: SortField) => {
     if (sortField === field) { setSortDir(d => d === "asc" ? "desc" : "asc") }
@@ -318,12 +310,12 @@ export default function GovernAuditPage() {
                 <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Audit Summary</h3>
                 <div className="relative z-10 flex flex-col gap-4">
                   {[
-                    { label: "Total decisions", value: DECISIONS_AUDITED.toLocaleString() },
-                    { label: "Verified", value: `${VERIFIED_COUNT.toLocaleString()} (${VERIFIED_PERCENT}%)`, color: "var(--state-healthy)" },
-                    { label: "Pending", value: `${PENDING_REVIEW_COUNT.toLocaleString()} (${PENDING_REVIEW_PERCENT}%)`, color: "var(--state-warning)" },
-                    { label: "Flagged", value: `${FLAGGED_COUNT.toLocaleString()} (${FLAGGED_PERCENT}%)`, color: "var(--state-critical)" },
+                    { label: "Total decisions", value: auditSummary.total.toLocaleString() },
+                    { label: "Verified", value: `${auditSummary.verified.toLocaleString()} (${auditSummary.verifiedPercent}%)`, color: "var(--state-healthy)" },
+                    { label: "Pending", value: `${auditSummary.pending.toLocaleString()} (${auditSummary.pendingPercent}%)`, color: "var(--state-warning)" },
+                    { label: "Flagged", value: `${auditSummary.flagged.toLocaleString()} (${auditSummary.flaggedPercent}%)`, color: "var(--state-critical)" },
                     { label: "Avg evidence", value: "8.4 pts" },
-                    { label: "Compliance", value: `${COMPLIANCE_SCORE}%`, color: "var(--state-healthy)" },
+                    { label: "Compliance", value: `${auditSummary.complianceScore}%`, color: "var(--state-healthy)" },
                   ].map(d => (
                     <div key={d.label} className="flex items-center justify-between">
                       <span className="text-xs tracking-wide text-white/60">{d.label}</span>
