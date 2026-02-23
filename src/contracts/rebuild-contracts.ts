@@ -156,6 +156,7 @@ export const TARGET_SCOPE_READY_ROUTES = [
   '/grow/recommendation',
   '/execute',
   '/execute/approval',
+  '/execute/history',
   '/govern',
   '/govern/audit',
   '/govern/audit-detail',

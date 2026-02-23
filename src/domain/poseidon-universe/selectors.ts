@@ -2,9 +2,11 @@ import { CANONICAL_UNIVERSE } from './canonical'
 import type {
   CanonicalUniverseV1,
   ExecuteActionEntity,
+  ExecutionType,
   GovernAuditEntryEntity,
   GovernLedgerEntryEntity,
   ProtectThreatEntity,
+  UrgencyLevel,
 } from './types'
 
 export function getCanonicalUniverse(): CanonicalUniverseV1 {
@@ -47,6 +49,26 @@ export function selectExecuteSavingsView() {
   return {
     currentMonthlySavingsUsd: universe.metrics.monthlySavingsCurrentUsd,
     potentialMonthlySavingsUsd: universe.metrics.monthlySavingsPotentialUsd,
+  }
+}
+
+export function selectExecuteActionById(actionId: string): ExecuteActionEntity | undefined {
+  return getCanonicalUniverse().entities.executeActions.find((a) => a.id === actionId)
+}
+
+export function selectExecuteQueueStats() {
+  const actions = getCanonicalUniverse().entities.executeActions
+  const byUrgency: Record<UrgencyLevel, number> = { high: 0, medium: 0, low: 0 }
+  const byType: Record<ExecutionType, number> = { auto: 0, 'semi-auto': 0, manual: 0, hybrid: 0 }
+  for (const a of actions) {
+    byUrgency[a.urgency]++
+    byType[a.executionType]++
+  }
+  return {
+    total: actions.length,
+    byUrgency,
+    byType,
+    potentialSavingsUsd: getCanonicalUniverse().metrics.monthlySavingsPotentialUsd,
   }
 }
 

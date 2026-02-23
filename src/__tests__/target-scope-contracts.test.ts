@@ -291,7 +291,7 @@ describe('cross-thread consistency contract', () => {
       { route: '/dashboard', expected: ['selectDashboardView'] },
       { route: '/protect', expected: ['THREATS'] },
       { route: '/protect/alert-detail', expected: ['THREATS'] },
-      { route: '/execute/approval', expected: ['QUEUE_ACTIONS'] },
+      { route: '/execute/approval', expected: ['selectExecuteActionById'] },
     ];
 
     for (const { route, expected } of routeSelectorContracts) {

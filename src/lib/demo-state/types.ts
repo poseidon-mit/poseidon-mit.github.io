@@ -33,6 +33,8 @@ export interface DemoAuditEvent {
   actionTitle: string
   decision: Exclude<DemoExecuteDecision, 'pending'>
   createdAt: string
+  engine?: string
+  amountLabel?: string
 }
 
 export interface DemoExecuteState {
