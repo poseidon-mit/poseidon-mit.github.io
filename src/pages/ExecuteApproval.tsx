@@ -12,8 +12,7 @@ import {
   Timer,
 } from 'lucide-react'
 import { Link, useRouter } from '../router'
-import { GovernFooter, ShapWaterfall, AuroraPulse, EmptyState } from '@/components/poseidon'
-import { GOVERNANCE_META } from '@/lib/governance-meta'
+import { ShapWaterfall, EmptyState } from '@/components/poseidon'
 import { Dialog, DialogContent } from '../components/ui/dialog'
 import { usePageTitle } from '../hooks/use-page-title'
 import { getMotionPreset } from '@/lib/motion-presets'
@@ -80,7 +79,6 @@ export function ExecuteApproval() {
   if (!action) {
     return (
       <div className="relative min-h-screen w-full">
-        <AuroraPulse color="var(--engine-execute)" intensity="subtle" />
         <div className="mx-auto flex flex-col items-center justify-center gap-8 pt-24 pb-12" style={{ maxWidth: '1440px' }}>
           <EmptyState
             icon={AlertTriangle}
@@ -103,7 +101,6 @@ export function ExecuteApproval() {
 
   return (
     <div className="relative min-h-screen w-full">
-      <AuroraPulse color="var(--engine-execute)" intensity="subtle" />
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
@@ -370,10 +367,6 @@ export function ExecuteApproval() {
           </motion.aside>
         </div>
 
-        <GovernFooter
-          auditId={GOVERNANCE_META['/execute/approval'].auditId}
-          pageContext={GOVERNANCE_META['/execute/approval'].pageContext}
-        />
       </motion.div>
 
       {/* Confirmation Dialog */}

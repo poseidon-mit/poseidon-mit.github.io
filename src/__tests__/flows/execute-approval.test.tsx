@@ -62,8 +62,8 @@ describe('Execute approval flow (EXE02)', () => {
     expect(screen.getAllByText(/Expected Outcome/i).length).toBeGreaterThan(0);
   });
 
-  it('has governance contract set', () => {
-    const { container } = renderEXE02();
-    expect(container.querySelector('.mission-govern-badge')).not.toBeNull();
+  it('renders execution plan stepper', () => {
+    renderEXE02();
+    expect(screen.getAllByText(/Execution Plan/i).length).toBeGreaterThan(0);
   });
 });

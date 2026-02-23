@@ -11,8 +11,7 @@ import {
   Filter,
 } from 'lucide-react'
 import { Link, useRouter } from '@/router'
-import { GovernFooter, AuroraPulse, EmptyState } from '@/components/poseidon'
-import { GOVERNANCE_META } from '@/lib/governance-meta'
+import { EmptyState } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -91,7 +90,6 @@ export default function ExecuteHistoryPage() {
 
   return (
     <div className="relative min-h-screen w-full">
-      <AuroraPulse color="var(--engine-execute)" intensity="subtle" />
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
@@ -186,10 +184,6 @@ export default function ExecuteHistoryPage() {
           </motion.div>
         )}
 
-        <GovernFooter
-          auditId={GOVERNANCE_META['/execute/history'].auditId}
-          pageContext={GOVERNANCE_META['/execute/history'].pageContext}
-        />
       </motion.div>
     </div>
   )
