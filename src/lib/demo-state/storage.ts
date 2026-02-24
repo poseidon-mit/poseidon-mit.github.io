@@ -4,6 +4,10 @@ import {
   type DemoState,
 } from './types'
 
+/** Must match DISMISSED_ALERTS_KEY in protect-data.ts. Duplicated here to avoid
+ *  importing the full protect-data → poseidon-universe chain into the main bundle. */
+const DISMISSED_ALERTS_KEY = 'poseidon:dismissed-alerts'
+
 const SESSION_STORAGE_KEY = 'poseidon:demo-state:session'
 const LOCAL_STORAGE_KEY = 'poseidon:demo-state:local'
 
@@ -95,6 +99,11 @@ export function resetDemoStateStorage(): void {
   }
   try {
     window.localStorage.removeItem(LOCAL_STORAGE_KEY)
+  } catch {
+    // noop
+  }
+  try {
+    window.localStorage.removeItem(DISMISSED_ALERTS_KEY)
   } catch {
     // noop
   }

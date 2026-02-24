@@ -48,25 +48,18 @@ export interface DerivedFactor extends FactorItem {
 export const DISMISSED_ALERTS_KEY = 'poseidon:dismissed-alerts'
 export const MITIGATING_TOTAL = 0.08 // fixed total risk reduction for mitigating factors
 
-const [criticalThreat] = selectProtectThreats()
-
-export const THREATS: ThreatRow[] = [
-  {
-    id: criticalThreat.id,
-    merchant: criticalThreat.merchant,
-    amount: `$${criticalThreat.amountUsd.toLocaleString()}`,
-    numericAmount: criticalThreat.amountUsd,
-    confidence: criticalThreat.confidence,
-    severity: criticalThreat.severity,
-    time: criticalThreat.relativeTime,
-    sortTime: criticalThreat.sortOrder,
-    description: criticalThreat.description,
-  },
-  { id: "THR-002", merchant: "Unknown Vendor", amount: "$1,200", numericAmount: 1200, confidence: 0.87, severity: "High", time: "1d ago", sortTime: 7, description: "Unrecognized merchant" },
-  { id: "THR-003", merchant: "Travel Agency XYZ", amount: "$3,400", numericAmount: 3400, confidence: 0.72, severity: "Medium", time: "3d ago", sortTime: 6, description: "International wire transfer" },
-  { id: "THR-004", merchant: "Gas Station ATM", amount: "$800", numericAmount: 800, confidence: 0.65, severity: "Low", time: "1w ago", sortTime: 4, description: "Unusual ATM withdrawal" },
-  { id: "THR-005", merchant: "Crypto Exchange", amount: "$5,000", numericAmount: 5000, confidence: 0.91, severity: "Medium", time: "5d ago", sortTime: 5, description: "High-risk category transfer" },
-]
+/** Derived from canonical universe (single source of truth for Protect threats). */
+export const THREATS: ThreatRow[] = selectProtectThreats().map(t => ({
+  id: t.id,
+  merchant: t.merchant,
+  amount: `$${t.amountUsd.toLocaleString()}`,
+  numericAmount: t.amountUsd,
+  confidence: t.confidence,
+  severity: t.severity,
+  time: t.relativeTime,
+  sortTime: t.sortOrder,
+  description: t.description,
+}))
 
 export const severityConfig: Record<ThreatSeverity, { color: string; bg: string; border: string; shadow: string; order: number }> = {
   Critical: { color: "var(--state-critical)", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.2)", shadow: "rgba(239,68,68,0.5)", order: 4 },

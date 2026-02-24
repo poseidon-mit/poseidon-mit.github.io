@@ -1,4 +1,5 @@
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { recommendationDetails } from '@/pages/grow/recommendation-detail-data'
 import type {
   CanonicalUniverseV1,
   DashboardActivityEntity,
@@ -12,7 +13,6 @@ import type {
 const VERIFIED_DECISIONS = 1189
 const PENDING_REVIEW_DECISIONS = 55
 const FLAGGED_DECISIONS = 3
-const MONTHLY_SAVINGS_POTENTIAL_USD = 2460
 
 const DASHBOARD_ACTIVITIES: DashboardActivityEntity[] = [
   {
@@ -100,16 +100,14 @@ const PROTECT_THREATS: ProtectThreatEntity[] = [
   },
 ]
 
-const RECOMMENDATIONS: RecommendationEntity[] = [
-  { id: 'REC-001', title: 'Reduce Credit Card Interest', monthlySavingsUsd: 164, annualSavingsUsd: 1968, confidence: 0.9 },
-  { id: 'REC-002', title: 'Downgrade Subscription Tiers', monthlySavingsUsd: 42, annualSavingsUsd: 504, confidence: 0.86 },
-  { id: 'REC-003', title: 'Refinance Auto Loan', monthlySavingsUsd: 92, annualSavingsUsd: 1104, confidence: 0.84 },
-  { id: 'REC-004', title: 'Eliminate Overdraft & Bank Fees', monthlySavingsUsd: 29, annualSavingsUsd: 348, confidence: 0.88 },
-  { id: 'REC-005', title: 'Move Idle Cash to High-Yield Savings', monthlySavingsUsd: 58, annualSavingsUsd: 696, confidence: 0.87 },
-  { id: 'REC-006', title: 'Bundle Insurance at Renewal', monthlySavingsUsd: 31, annualSavingsUsd: 372, confidence: 0.82 },
-  { id: 'REC-007', title: 'Cash-Flow Recovery (Inflation)', monthlySavingsUsd: 74, annualSavingsUsd: 888, confidence: 0.8 },
-  { id: 'REC-008', title: 'Reduce Energy Utility Costs', monthlySavingsUsd: 24, annualSavingsUsd: 288, confidence: 0.78 },
-]
+/** Derived from recommendation-detail-data.ts (single source of truth for Grow). */
+const RECOMMENDATIONS: RecommendationEntity[] = recommendationDetails.map(r => ({
+  id: `REC-${String(r.id).padStart(3, '0')}`,
+  title: r.title,
+  monthlySavingsUsd: r.monthlySavings,
+  annualSavingsUsd: r.annualSavings,
+  confidence: r.confidence,
+}))
 
 const EXECUTE_ACTIONS: ExecuteActionEntity[] = [
   {
@@ -417,7 +415,7 @@ export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
     complianceScore: DEMO_THREAD.complianceScore,
     pendingActions: DEMO_THREAD.pendingActions,
     monthlySavingsCurrentUsd: DEMO_THREAD.monthlySavings,
-    monthlySavingsPotentialUsd: MONTHLY_SAVINGS_POTENTIAL_USD,
+    monthlySavingsPotentialUsd: RECOMMENDATIONS.reduce((s, r) => s + r.monthlySavingsUsd, 0),
     decisionsAuditedTotal: DEMO_THREAD.decisionsAudited,
     verifiedDecisions: VERIFIED_DECISIONS,
     pendingReviewDecisions: PENDING_REVIEW_DECISIONS,
@@ -444,6 +442,7 @@ export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
     governAuditEntries: GOVERN_AUDIT_ENTRIES,
     dashboardActivities: DASHBOARD_ACTIVITIES,
   },
+  /** @future — Cross-engine causal links for audit trail features. Not yet consumed by UI. */
   relations: {
     alertToAction: {
       [DEMO_THREAD.criticalAlert.id]: ['EXE-002'],
