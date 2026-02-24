@@ -121,7 +121,7 @@ export function GrowRecommendations() {
 
         {/* Filter row */}
         <motion.div variants={fadeUpVariant} className="flex flex-col gap-4 py-2 md:flex-row md:items-center md:justify-between border-y border-white/[0.06] mt-4 mb-2">
-          <div className="flex items-center gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+          <div className="flex items-center gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide pr-4">
             <Filter className="h-4 w-4 text-white/30 shrink-0" />
             {sortOptions.map((s) =>
               <Button
@@ -134,7 +134,7 @@ export function GrowRecommendations() {
               </Button>
             )}
           </div>
-          <div className="flex items-center gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+          <div className="flex items-center gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide pr-4">
             {categoryOptions.map((c) =>
               <Button
                 key={c}
@@ -191,7 +191,7 @@ export function GrowRecommendations() {
                   <div className="w-px h-8 bg-white/[0.08]" />
                   <span className="text-base font-mono text-white/70">${rec.annualSavings.toLocaleString()}/yr</span>
                   <div className="w-px h-8 bg-white/[0.08]" />
-                  <div className="flex flex-col gap-1 flex-1 min-w-[150px]">
+                  <div className="flex flex-col gap-1 flex-1 min-w-[100px] md:min-w-[150px]">
                     <span className="text-xs text-white/50 tracking-widest uppercase font-semibold">Confidence: {(rec.confidence * 100).toFixed(0)}%</span>
                     <div className="h-1.5 rounded-full bg-white/[0.05] overflow-hidden">
                       <div className="h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(139,92,246,0.6)]" style={{ width: `${rec.confidence * 100}%`, background: 'var(--engine-grow)' }} />
@@ -223,7 +223,7 @@ export function GrowRecommendations() {
                     <div className="space-y-3">
                       {rec.shapFactors.map((f) =>
                         <div key={f.name} className="flex items-center gap-4">
-                          <span className="text-xs font-medium text-white/60 w-36 shrink-0 truncate tracking-wide">{f.name}</span>
+                          <span className="text-xs font-medium text-white/60 w-24 md:w-36 shrink-0 truncate tracking-wide">{f.name}</span>
                           <div className="flex-1 h-2 rounded-full bg-white/[0.05] overflow-hidden">
                             <div className="h-full rounded-full shadow-[0_0_8px_rgba(139,92,246,0.5)]" style={{ width: `${f.weight * 100}%`, background: 'var(--engine-grow)', opacity: 0.8 }} />
                           </div>

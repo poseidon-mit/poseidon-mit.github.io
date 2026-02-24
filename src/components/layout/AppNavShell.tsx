@@ -111,7 +111,7 @@ export function AppNavShell({
             />
             <span className="text-sm font-light tracking-widest text-slate-50">Poseidon</span>
           </Link>
-          <div className="pointer-events-none absolute left-1/2 flex max-w-[52vw] -translate-x-1/2 items-center gap-2">
+          <div className="pointer-events-none absolute left-1/2 flex max-w-[56vw] -translate-x-1/2 items-center gap-2">
             <span className="truncate text-sm font-medium text-slate-50">{activeSection?.label ?? ''}</span>
           </div>
           <div className="flex items-center gap-1">

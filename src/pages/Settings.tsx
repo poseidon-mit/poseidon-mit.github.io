@@ -88,7 +88,7 @@ export default function SettingsPage() {
 
       <motion.main id="main-content" className={`${PAGE_CONTENT_CLASS} command-center__main`} style={PAGE_CONTENT_STYLE} initial="hidden" animate="visible" variants={staggerContainerVariant}>
         <div className="flex flex-col lg:flex-row gap-4">
-          <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay flex-1 rounded-2xl p-6">
+          <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay flex-1 rounded-2xl p-4 md:p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-cyan-400/10">
@@ -102,11 +102,11 @@ export default function SettingsPage() {
               <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
                   <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">Name</span>
-                  <span className="text-sm font-medium text-white">{state.user.name}</span>
+                  <span className="text-sm font-medium text-white truncate ml-4">{state.user.name}</span>
                 </div>
                 <div className="flex items-center justify-between py-2 border-b border-white/[0.04]">
                   <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">Email</span>
-                  <span className="text-sm font-medium text-white">{state.user.email}</span>
+                  <span className="text-sm font-medium text-white truncate ml-4">{state.user.email}</span>
                 </div>
                 <div className="flex items-center justify-between py-2">
                   <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">Plan</span>
@@ -116,7 +116,7 @@ export default function SettingsPage() {
             </div>
           </motion.div>
 
-          <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay flex-1 rounded-2xl p-6">
+          <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay flex-1 rounded-2xl p-4 md:p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-400/10">
@@ -144,7 +144,7 @@ export default function SettingsPage() {
         </div>
 
         <motion.section variants={fadeUpVariant}>
-          <div className="glass-card glass-card-overlay rounded-2xl p-6">
+          <div className="glass-card glass-card-overlay rounded-2xl p-4 md:p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-400/10">
@@ -170,7 +170,7 @@ export default function SettingsPage() {
 
         {/* ── Connected Accounts ── */}
         <motion.section variants={fadeUpVariant}>
-          <div className="glass-card glass-card-overlay rounded-2xl p-6">
+          <div className="glass-card glass-card-overlay rounded-2xl p-4 md:p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-cyan-400/10">
@@ -184,13 +184,13 @@ export default function SettingsPage() {
               <div className="flex flex-col gap-3">
                 {CONNECTORS.map((connector) => (
                   <div key={connector.id} className="flex items-center justify-between py-2 border-b border-white/[0.04]">
-                    <div className="flex items-center gap-3">
-                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 shrink-0">
                         <connector.icon className="h-4 w-4" aria-hidden="true" />
                       </span>
-                      <p className="text-sm font-medium text-white tracking-wide">{connector.label}</p>
+                      <p className="text-sm font-medium text-white tracking-wide truncate">{connector.label}</p>
                     </div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_10px_rgba(52,211,153,0.2)]">Connected</span>
+                    <span className="shrink-0 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_10px_rgba(52,211,153,0.2)]">Connected</span>
                   </div>
                 ))}
               </div>
@@ -200,7 +200,7 @@ export default function SettingsPage() {
 
         {/* ── Protect Engine ── */}
         <motion.section variants={fadeUpVariant}>
-          <div className="glass-card glass-card-overlay rounded-2xl p-6">
+          <div className="glass-card glass-card-overlay rounded-2xl p-4 md:p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-400/10">
@@ -220,7 +220,7 @@ export default function SettingsPage() {
 
         {/* ── Grow Engine ── */}
         <motion.section variants={fadeUpVariant}>
-          <div className="glass-card glass-card-overlay rounded-2xl p-6">
+          <div className="glass-card glass-card-overlay rounded-2xl p-4 md:p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-violet-400/10">
@@ -240,7 +240,7 @@ export default function SettingsPage() {
 
         {/* ── Execute Engine ── */}
         <motion.section variants={fadeUpVariant}>
-          <div className="glass-card glass-card-overlay rounded-2xl p-6">
+          <div className="glass-card glass-card-overlay rounded-2xl p-4 md:p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-400/10">
@@ -258,7 +258,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="relative shrink-0">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-white/50">$</span>
-                  <input type="text" readOnly value="50" className="w-20 rounded-lg border border-white/[0.08] bg-white/[0.04] pl-7 pr-3 py-1.5 text-sm font-mono text-white text-right cursor-default focus:outline-none" />
+                  <input type="text" readOnly value="50" className="w-20 rounded-lg border border-white/[0.08] bg-white/[0.04] pl-7 pr-3 py-2.5 text-sm font-mono text-white text-right cursor-default focus:outline-none" />
                 </div>
               </div>
               <SettingToggle label="Approval notifications" desc="Notify when new actions require your approval" checked={executeApprovalNotify} onChange={setExecuteApprovalNotify} />
@@ -269,7 +269,7 @@ export default function SettingsPage() {
 
         {/* ── Data & Privacy ── */}
         <motion.section variants={fadeUpVariant}>
-          <div className="glass-card glass-card-overlay rounded-2xl p-6">
+          <div className="glass-card glass-card-overlay rounded-2xl p-4 md:p-6">
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-400/10">

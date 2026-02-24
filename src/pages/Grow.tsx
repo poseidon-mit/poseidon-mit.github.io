@@ -99,7 +99,7 @@ export default function GrowPage() {
               </div>
 
               {/* Legend */}
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] text-[#94A3B8]">
+              <div className="flex flex-wrap items-center gap-x-4 md:gap-x-6 gap-y-2 text-[10px] md:text-[11px] text-[#94A3B8]">
                 <span className="flex items-center gap-2">
                   <span className="h-[2px] w-4 rounded-full bg-[#94A3B8] inline-block" style={{ borderTop: '2px dashed #94A3B8', height: 0 }} />
                   Status Quo (Baseline)
@@ -197,7 +197,7 @@ export default function GrowPage() {
 
                 {/* Content */}
                 <div className="flex-1 min-w-0 flex flex-col gap-2">
-                  <p className="text-sm md:text-base font-semibold text-white/90 leading-snug">{rec.title}</p>
+                  <p className="text-sm md:text-base font-semibold text-white/90 leading-snug line-clamp-2">{rec.title}</p>
                   <p className="text-xs text-white/40 flex flex-wrap items-center gap-x-1.5">
                     <span className="font-mono font-semibold" style={{ color: 'var(--engine-grow)' }}>${rec.monthly}/mo</span>
                     <span className="text-white/20">&middot;</span>

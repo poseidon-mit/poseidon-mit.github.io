@@ -172,7 +172,7 @@ export default function ProtectPage() {
           <aside className="w-full lg:w-[320px] xl:w-[380px] shrink-0" aria-label="Security summary sidebar">
             <div className="sticky top-6 flex flex-col gap-6">
               {/* Threat summary */}
-              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-6 transition-colors">
+              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-[32px] p-5 md:p-6 lg:p-8 flex flex-col gap-6 transition-colors">
 
                 <div className="relative z-10 flex items-center justify-between">
                   <h3 className="text-xs xl:text-sm font-semibold uppercase tracking-widest text-white/50">Threat Summary</h3>
@@ -182,7 +182,7 @@ export default function ProtectPage() {
                 <div className="flex flex-col gap-4 relative z-10">
                   {[{ label: "Active threats", value: String(activeThreats.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Blocked today", value: String(dismissed.size), color: "var(--state-healthy)" }].map((d, i) => (
                     <div key={d.label} className={`flex items-center justify-between ${i !== 0 ? 'pt-4 border-t border-white/[0.04]' : ''}`}>
-                      <span className="text-sm xl:text-base font-medium text-white/60 tracking-wide">{d.label}</span>
+                      <span className="text-xs md:text-sm xl:text-base font-medium text-white/60 tracking-wide">{d.label}</span>
                       <span className="text-base xl:text-lg font-mono font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" style={{ color: d.color || "rgba(255,255,255,0.9)" }}>{d.value}</span>
                     </div>
                   ))}
@@ -190,7 +190,7 @@ export default function ProtectPage() {
               </motion.div>
 
               {/* Risk breakdown */}
-              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-6 transition-colors">
+              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-[32px] p-5 md:p-6 lg:p-8 flex flex-col gap-6 transition-colors">
 
                 <div className="relative z-10 flex items-center justify-between">
                   <h3 className="text-xs xl:text-sm font-semibold uppercase tracking-widest text-white/50">Risk Breakdown</h3>
@@ -200,7 +200,7 @@ export default function ProtectPage() {
                   {riskBreakdown.map(r => (
                     <div key={r.label} className="flex flex-col gap-2.5">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm xl:text-base font-medium text-white/70 tracking-wide">{r.label}</span>
+                        <span className="text-xs md:text-sm xl:text-base font-medium text-white/70 tracking-wide">{r.label}</span>
                         <span className="text-xs xl:text-sm font-mono font-bold drop-shadow-[0_0_5px_currentColor]" style={{ color: r.color }}>{r.pct}%</span>
                       </div>
                       <div className="h-2 rounded-full overflow-hidden bg-white/[0.04] border border-white/[0.02]">
@@ -212,12 +212,12 @@ export default function ProtectPage() {
               </motion.div>
 
               {/* AI Defense Posture */}
-              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-6 transition-colors">
+              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-[32px] p-5 md:p-6 lg:p-8 flex flex-col gap-6 transition-colors">
                 <h3 className="text-xs xl:text-sm font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 relative z-10">AI Defense Posture</h3>
                 <div className="flex flex-col gap-4 relative z-10">
-                  <div className="flex items-center justify-between"><span className="text-sm xl:text-base text-white/60 tracking-wide">Threats blocked (30d)</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">1</span></div>
-                  <div className="flex items-center justify-between"><span className="text-sm xl:text-base text-white/60 tracking-wide">False positive rate</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">0.01%</span></div>
-                  <div className="flex items-center justify-between"><span className="text-sm xl:text-base text-white/60 tracking-wide">Last model update</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">2d ago</span></div>
+                  <div className="flex items-center justify-between"><span className="text-xs md:text-sm xl:text-base text-white/60 tracking-wide">Threats blocked (30d)</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">1</span></div>
+                  <div className="flex items-center justify-between"><span className="text-xs md:text-sm xl:text-base text-white/60 tracking-wide">False positive rate</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">0.01%</span></div>
+                  <div className="flex items-center justify-between"><span className="text-xs md:text-sm xl:text-base text-white/60 tracking-wide">Last model update</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">2d ago</span></div>
                 </div>
                 <div className="mt-2 pt-6 border-t border-white/[0.06] relative z-10">
                   <Link to="/govern" className={cn(buttonVariants({ variant: "glass", size: "sm" }), "w-full rounded-xl justify-center font-medium tracking-wide text-xs xl:text-sm")}>View AI Governance Log</Link>

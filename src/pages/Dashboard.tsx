@@ -60,16 +60,16 @@ const StatCard = memo(function StatCard({
 
         <div className="flex items-end justify-between relative z-10">
           <div>
-            <div className="text-4xl font-display font-light tracking-tight tabular-nums text-white mb-3">{value}</div>
+            <div className="text-2xl md:text-4xl font-display font-light tracking-tight tabular-nums text-white mb-3">{value}</div>
             <div className="flex items-center gap-2">
-              <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${deltaPositive ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-red-500/10 text-red-400 border-red-500/20"}`}>
+              <span className={`text-xs font-medium px-2.5 py-1 rounded-full border text-center ${deltaPositive ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-red-500/10 text-red-400 border-red-500/20"}`}>
                 {delta}
               </span>
               <span className="text-white/30 text-xs tracking-wide">vs last period</span>
             </div>
           </div>
 
-          <div className="w-28 h-14" aria-hidden="true">
+          <div className="w-20 h-10 md:w-28 md:h-14" aria-hidden="true">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                 <defs>
@@ -122,7 +122,7 @@ function ActivityFeed({
   activities: Array<{ id: string; kind: 'protect' | 'grow' | 'execute' | 'govern' | 'system'; label: string; relativeTime: string }>
 }) {
   return (
-    <div className="glass-card glass-card-overlay rounded-[32px] p-8 lg:p-10 flex flex-col gap-6 h-full">
+    <div className="glass-card glass-card-overlay rounded-[32px] p-5 md:p-8 lg:p-10 flex flex-col gap-6 h-full">
       <div className="flex justify-between items-center relative z-10">
         <h2 className="text-sm font-semibold uppercase tracking-widest text-white/50">Recent Activity</h2>
       </div>

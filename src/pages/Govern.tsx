@@ -96,18 +96,18 @@ export default function GovernPage() {
                 {ledgerEntries.map(entry => {
                   const sCfg = entry.status ? statusConfig[entry.status] : null;
                   return (
-                    <motion.button key={entry.id} type="button" variants={fadeUpVariant} onClick={() => navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)} className="group cursor-pointer p-6 md:p-8 hover:bg-white/[0.04] transition-colors flex items-center justify-between gap-4 w-full text-left">
-                      <div className="flex items-center gap-4">
-                        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/[0.05] shrink-0" style={{ background: `${ENGINE_COLOR_MAP[entry.type as EngineLabel]}15`, color: ENGINE_COLOR_MAP[entry.type as EngineLabel] }}><CircleDot size={16} /></span>
+                    <motion.button key={entry.id} type="button" variants={fadeUpVariant} onClick={() => navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)} className="group cursor-pointer p-4 md:p-6 lg:p-8 hover:bg-white/[0.04] transition-colors flex items-start md:items-center justify-between gap-4 w-full text-left">
+                      <div className="flex items-start md:items-center gap-4">
+                        <span className="inline-flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full border border-white/[0.05] shrink-0" style={{ background: `${ENGINE_COLOR_MAP[entry.type as EngineLabel]}15`, color: ENGINE_COLOR_MAP[entry.type as EngineLabel] }}><CircleDot size={16} /></span>
                         <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-                          <span className="text-base font-light tracking-wide text-white group-hover:text-[var(--engine-govern)] transition-colors truncate">{entry.action}</span>
+                          <span className="text-base font-light tracking-wide text-white group-hover:text-[var(--engine-govern)] transition-colors">{entry.action}</span>
                           <div className="flex items-center gap-3 flex-wrap">
                             <span className="text-[10px] uppercase tracking-widest font-mono text-white/40">{entry.id}</span>
                             {sCfg && <span className="text-[10px] uppercase tracking-widest font-bold flex items-center gap-1" style={{ color: sCfg.color }}><sCfg.icon size={10} />{entry.status}</span>}
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center justify-end gap-6 shrink-0">
+                      <div className="hidden sm:flex items-center justify-end gap-3 md:gap-6 shrink-0">
                         <div className="flex-col items-end gap-1.5 hidden md:flex">
                           <span className="text-sm font-mono tracking-widest" style={{ color: entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)", textShadow: `0 0 10px ${entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)"}60` }}>Confidence {formatConfidence(entry.confidence)}</span>
                           <span className="text-[10px] uppercase tracking-widest text-white/30">{entry.time}</span>

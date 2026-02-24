@@ -29,7 +29,7 @@ export function SubPageNav({ engine, parentPath, parentLabel, currentLabel }: Su
           {parentLabel}
         </Link>
         <span className="text-white/20 shrink-0">/</span>
-        <span className="text-sm text-white/50 truncate">{currentLabel}</span>
+        <span className="text-sm text-white/50 truncate max-w-[50vw] md:max-w-none">{currentLabel}</span>
       </div>
     </nav>
   )

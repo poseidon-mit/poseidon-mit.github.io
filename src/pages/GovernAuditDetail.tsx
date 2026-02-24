@@ -47,11 +47,11 @@ export function GovernAuditDetail() {
 
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
           <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
-            <h1 className={`${PAGE_HEADING_CLASS} mb-2`} style={PAGE_HEADING_STYLE}>Audit log for <span className="text-[var(--engine-govern)]">{auditEntry.id}</span></h1>
+            <h1 className={`${PAGE_HEADING_CLASS} mb-2 break-words`} style={PAGE_HEADING_STYLE}>Audit log for <span className="text-[var(--engine-govern)]">{auditEntry.id}</span></h1>
           </motion.div>
 
           <motion.div variants={fadeUpVariant}>
-            <div className="grid grid-cols-3 gap-4 lg:gap-6 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mt-4">
               {[
                 { label: 'Timestamp', value: resolvedTimestamp, color: 'white' },
                 { label: 'Confidence', value: resolvedConfidence, color: 'var(--engine-govern)' },
@@ -80,7 +80,7 @@ export function GovernAuditDetail() {
                   {metaRows.map((row) =>
                     <div key={row.label} className="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-white/[0.04] last:border-0 gap-2 sm:gap-4">
                       <span className="text-[10px] uppercase tracking-widest text-white/50 shrink-0">{row.label}</span>
-                      <span className={`text-sm tracking-wide sm:text-right ${row.highlight ? 'text-[var(--engine-govern)] font-medium drop-shadow-[0_0_8px_rgba(20,184,166,0.3)]' : 'text-white/80 font-light'}`}>{row.value}</span>
+                      <span className={`text-sm tracking-wide sm:text-right break-words ${row.highlight ? 'text-[var(--engine-govern)] font-medium drop-shadow-[0_0_8px_rgba(20,184,166,0.3)]' : 'text-white/80 font-light'}`}>{row.value}</span>
                     </div>
                   )}
                 </div>
@@ -92,7 +92,7 @@ export function GovernAuditDetail() {
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(20,184,166,0.1),transparent_70%)] pointer-events-none" />
                 <h2 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4 mb-6">Decision Reconstruction</h2>
 
-                <div className="relative z-10 flex flex-col gap-8">
+                <div className="relative z-10 flex flex-col gap-5 md:gap-8">
                   <div className="flex flex-col gap-4">
                     <p className="text-xl md:text-2xl text-white/90 font-light leading-relaxed">{auditEntry.explanation.summary}</p>
                     <div className="flex items-center gap-4 bg-white/[0.02] border border-white/[0.04] rounded-2xl p-4">

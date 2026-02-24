@@ -237,7 +237,7 @@ export default function ExecutePage() {
                   <div className="flex flex-col gap-3">
                     {deferredActions.map((action) => (
                       <motion.div key={action.id} variants={fadeUpVariant}>
-                        <motion.div className="glass-card rounded-[24px] p-6 lg:p-8 flex items-center gap-4 opacity-70 hover:opacity-100 transition-opacity">
+                        <motion.div className="glass-card rounded-[24px] p-4 md:p-6 lg:p-8 flex items-center gap-4 opacity-70 hover:opacity-100 transition-opacity">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-[var(--state-warning)]/20 shadow-inner" style={{ background: 'rgba(234,179,8,0.1)' }}>
                             <Clock size={18} style={{ color: 'var(--state-warning)' }} className="drop-shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
                           </div>
@@ -259,7 +259,7 @@ export default function ExecutePage() {
                   <div className="flex flex-col gap-3">
                     {rejectedActions.map((action) => (
                       <motion.div key={action.id} variants={fadeUpVariant}>
-                        <motion.div className="glass-card rounded-[24px] p-6 lg:p-8 flex items-center gap-4 opacity-50 hover:opacity-80 transition-opacity">
+                        <motion.div className="glass-card rounded-[24px] p-4 md:p-6 lg:p-8 flex items-center gap-4 opacity-50 hover:opacity-80 transition-opacity">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-[var(--state-critical)]/20 shadow-inner" style={{ background: 'rgba(239,68,68,0.1)' }}>
                             <XCircle size={18} style={{ color: 'var(--state-critical)' }} className="drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
                           </div>
@@ -281,7 +281,7 @@ export default function ExecutePage() {
                   <div className="flex flex-col gap-3">
                     {completedActions.map((action) => (
                       <motion.div key={action.id} variants={fadeUpVariant}>
-                        <motion.div className="glass-card rounded-[24px] p-6 lg:p-8 flex items-center gap-4 opacity-50 hover:opacity-80 transition-opacity">
+                        <motion.div className="glass-card rounded-[24px] p-4 md:p-6 lg:p-8 flex items-center gap-4 opacity-50 hover:opacity-80 transition-opacity">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-[var(--state-healthy)]/20 shadow-inner" style={{ background: 'rgba(34,197,94,0.1)' }}>
                             <CheckCircle2 size={18} style={{ color: 'var(--state-healthy)' }} className="drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
                           </div>
@@ -404,7 +404,7 @@ function ActionCard({
   return (
     <motion.div variants={fadeUpVariant}>
       <motion.div
-        className="glass-card glass-card-overlay rounded-[24px] p-6 lg:p-8 hover:border-white/[0.15] flex flex-col gap-5 transition-colors"
+        className="glass-card glass-card-overlay rounded-[24px] p-4 md:p-6 lg:p-8 hover:border-white/[0.15] flex flex-col gap-5 transition-colors"
         style={{ borderLeftWidth: 4, borderLeftColor: ENGINE_COLOR_MAP[action.engine] }}
       >
 

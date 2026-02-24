@@ -116,21 +116,23 @@ export default function GrowRecommendationDetailPage() {
             {/* Current items */}
             <div className="flex flex-col gap-3 mb-6">
               {rec.currentItems.map((item) => (
-                <div key={item.name} className="flex items-center gap-3 py-2 border-b border-white/[0.04] last:border-0">
-                  {/* Usage indicator */}
+                <div key={item.name} className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3 py-2 border-b border-white/[0.04] last:border-0">
+                  {/* Usage indicator — top-left on mobile, inline on sm+ */}
                   <span
-                    className="flex-shrink-0 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider min-w-[60px] justify-center"
+                    className="self-start sm:self-auto flex-shrink-0 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider min-w-[80px] justify-center"
                     style={{ color: usageColors[item.usage].text, background: usageColors[item.usage].bg }}
                   >
                     {usageColors[item.usage].label}
                   </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-white/90 font-medium">{item.name}</p>
-                    {item.note && <p className="text-xs text-white/40 mt-0.5">{item.note}</p>}
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-white/90 font-medium">{item.name}</p>
+                      {item.note && <p className="text-xs text-white/40 mt-0.5">{item.note}</p>}
+                    </div>
+                    {item.cost > 0 && (
+                      <span className="text-sm font-mono text-white/60 tabular-nums flex-shrink-0">${item.cost.toFixed(2)}</span>
+                    )}
                   </div>
-                  {item.cost > 0 && (
-                    <span className="text-sm font-mono text-white/60 tabular-nums">${item.cost.toFixed(2)}</span>
-                  )}
                 </div>
               ))}
             </div>
@@ -169,28 +171,31 @@ export default function GrowRecommendationDetailPage() {
               {rec.changes.map((change, i) => {
                 const badge = actionBadge[change.action]
                 return (
-                  <div key={i} className="flex items-center gap-3 py-2 border-b border-white/[0.04] last:border-0">
+                  <div key={i} className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3 py-2 border-b border-white/[0.04] last:border-0">
+                    {/* Action badge — top-left on mobile, inline on sm+ */}
                     <span
-                      className="flex-shrink-0 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider min-w-[70px] justify-center"
+                      className="self-start sm:self-auto flex-shrink-0 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider min-w-[80px] justify-center"
                       style={{ color: badge.color, background: badge.bg }}
                     >
                       {badge.label}
                     </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-white/90">{change.item}</p>
-                      {(change.from || change.to) && (
-                        <p className="text-xs text-white/40 mt-0.5">
-                          {change.from && <span>{change.from}</span>}
-                          {change.from && change.to && <span className="mx-1.5">→</span>}
-                          {change.to && <span className="text-white/60">{change.to}</span>}
-                        </p>
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-white/90">{change.item}</p>
+                        {(change.from || change.to) && (
+                          <p className="text-xs text-white/40 mt-0.5">
+                            {change.from && <span>{change.from}</span>}
+                            {change.from && change.to && <span className="mx-1.5">→</span>}
+                            {change.to && <span className="text-white/60">{change.to}</span>}
+                          </p>
+                        )}
+                      </div>
+                      {change.savings > 0 && (
+                        <span className="text-sm font-mono tabular-nums flex-shrink-0" style={{ color: 'var(--state-healthy)' }}>
+                          -${change.savings.toFixed(2)}
+                        </span>
                       )}
                     </div>
-                    {change.savings > 0 && (
-                      <span className="text-sm font-mono tabular-nums" style={{ color: 'var(--state-healthy)' }}>
-                        -${change.savings.toFixed(2)}
-                      </span>
-                    )}
                   </div>
                 )
               })}
@@ -229,10 +234,10 @@ export default function GrowRecommendationDetailPage() {
                       )}
                     >
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <p className="text-sm font-medium text-white/90">{alt.name}</p>
                           {alt.recommended && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--engine-grow)', background: 'rgba(139,92,246,0.15)' }}>
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider whitespace-nowrap" style={{ color: 'var(--engine-grow)', background: 'rgba(139,92,246,0.15)' }}>
                               <CheckCircle2 size={9} /> Best for you
                             </span>
                           )}
@@ -267,10 +272,10 @@ export default function GrowRecommendationDetailPage() {
                     </div>
 
                     <div className="flex-1 min-w-0 pb-4 border-b border-white/[0.04] last:border-0">
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
                         <p className="text-sm font-semibold text-white/90">{step.title}</p>
                         <span
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider"
+                          className="inline-flex items-center justify-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider whitespace-nowrap text-center"
                           style={{ color: exec.color, background: exec.bg }}
                         >
                           {step.type === 'auto' && <Zap size={8} />}
@@ -288,11 +293,11 @@ export default function GrowRecommendationDetailPage() {
             </div>
 
             {/* CTA buttons (non-functional demo) */}
-            <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-white/[0.06]">
+            <div className="flex flex-col sm:flex-row gap-3 mt-6 pt-6 border-t border-white/[0.06]">
               {rec.steps.some(s => s.type === 'auto') && (
                 <button
                   type="button"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-default"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-default w-full sm:w-auto"
                   style={{
                     background: 'var(--engine-grow)',
                     color: 'var(--bg-oled)',
@@ -303,7 +308,7 @@ export default function GrowRecommendationDetailPage() {
               )}
               <button
                 type="button"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all border border-white/[0.1] bg-white/[0.02] hover:bg-white/[0.06] text-white/70 cursor-default"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all border border-white/[0.1] bg-white/[0.02] hover:bg-white/[0.06] text-white/70 cursor-default w-full sm:w-auto"
               >
                 Add to Execute Queue <ArrowRight size={14} />
               </button>

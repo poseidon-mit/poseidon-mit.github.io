@@ -75,7 +75,7 @@ export function ExecuteApproval() {
   if (!action) {
     return (
       <div className="relative min-h-screen w-full">
-        <div className="mx-auto flex flex-col items-center justify-center gap-8 pt-24 pb-12" style={{ maxWidth: '1440px' }}>
+        <div className="mx-auto flex flex-col items-center justify-center gap-8 pt-24 pb-12 px-5" style={{ maxWidth: '1440px' }}>
           <EmptyState
             icon={AlertTriangle}
             title="Action not found"
@@ -162,7 +162,7 @@ export function ExecuteApproval() {
           <div className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-8">
             {/* Execution Plan Stepper */}
             <motion.div variants={fadeUpVariant}>
-              <div className="glass-card glass-card-overlay rounded-[24px] p-6 lg:p-8">
+              <div className="glass-card glass-card-overlay rounded-[24px] p-4 md:p-6 lg:p-8">
                 <h2 className="text-xs font-semibold uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10" style={{ color: 'var(--engine-execute)' }}>
                   <Zap size={14} />
                   Execution Plan
@@ -177,7 +177,7 @@ export function ExecuteApproval() {
 
             {/* Impact comparison */}
             <motion.div variants={fadeUpVariant}>
-              <div className="glass-card glass-card-overlay rounded-[24px] p-6 lg:p-8">
+              <div className="glass-card glass-card-overlay rounded-[24px] p-4 md:p-6 lg:p-8">
                 <h2 className="text-xs font-semibold uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10" style={{ color: 'var(--engine-execute)' }}>
                   <Zap size={14} />
                   Expected Outcome
@@ -197,14 +197,14 @@ export function ExecuteApproval() {
 
             {/* SHAP Evidence */}
             <motion.div variants={fadeUpVariant}>
-              <div className="glass-card glass-card-overlay rounded-[24px] p-6 lg:p-8">
+              <div className="glass-card glass-card-overlay rounded-[24px] p-4 md:p-6 lg:p-8">
                 <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                   <div>
                     <h2 className="text-xs font-semibold uppercase tracking-widest mb-5 flex items-center gap-2 text-white/50">Mathematical Reasoning</h2>
                     <div className="space-y-4">
                       {action.factors.map((f) => (
                         <div key={f.label} className="flex items-center gap-4">
-                          <span className="text-sm font-medium tracking-wide text-white/80 w-40 shrink-0">{f.label}</span>
+                          <span className="text-sm font-medium tracking-wide text-white/80 w-28 md:w-40 shrink-0 truncate">{f.label}</span>
                           <div className="flex-1 h-2 rounded-full overflow-hidden bg-white/10 shadow-inner">
                             <div className="h-full rounded-full shadow-[0_0_10px_currentColor] bg-amber-500/80" style={{ width: `${f.value * 100}%` }} />
                           </div>
