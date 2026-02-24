@@ -1,8 +1,29 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Shield, TrendingUp, Zap, Scale, ArrowRight, CheckCircle2, FileText, Play } from 'lucide-react';
 import { PublicTopBar } from '@/components/landing/PublicTopBar';
+import { Link } from '@/router';
 
 export default function Landing() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Programmatic video playback — browser ignores autoPlay on SPA re-mount
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    // Safari/iOS strict autoplay workaround
+    video.defaultMuted = true;
+    video.muted = true;
+    const tryPlay = () => {
+      video.play().catch((err: DOMException) => {
+        if (err.name === 'AbortError') {
+          setTimeout(() => { video.play().catch(() => {}); }, 200);
+        }
+      });
+    };
+    if (video.readyState >= 3) tryPlay();
+    else video.addEventListener('canplay', tryPlay, { once: true });
+    return () => { video.removeEventListener('canplay', tryPlay); video.pause(); };
+  }, []);
 
   // Clean scroll to top on mount
   useEffect(() => {
@@ -23,6 +44,7 @@ export default function Landing() {
           {/* Background Video (Constrained to Hero) */}
           <div className="absolute inset-0 z-0 pointer-events-none">
             <video
+              ref={videoRef}
               autoPlay
               loop
               muted
@@ -60,10 +82,10 @@ export default function Landing() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center gap-[16px] md:gap-[24px] mt-8 w-full sm:w-auto max-w-[340px] sm:max-w-none mx-auto">
-              <a href="/signup" className="relative flex items-center justify-center gap-2 w-full sm:w-auto bg-[#0a0a12] border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.3),0_0_4px_rgba(139,92,246,0.4),inset_0_0_12px_rgba(16,185,129,0.06)] px-[32px] py-[16px] rounded-[12px] font-cabin font-semibold text-[16px] md:text-[18px] hover:scale-[1.03] hover:shadow-[0_0_20px_rgba(16,185,129,0.5),0_0_8px_rgba(139,92,246,0.6),inset_0_0_16px_rgba(16,185,129,0.1)] hover:border-emerald-400/50 transition-all">
+              <Link to="/signup" className="relative flex items-center justify-center gap-2 w-full sm:w-auto bg-[#0a0a12] border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.3),0_0_4px_rgba(139,92,246,0.4),inset_0_0_12px_rgba(16,185,129,0.06)] px-[32px] py-[16px] rounded-[12px] font-cabin font-semibold text-[16px] md:text-[18px] hover:scale-[1.03] hover:shadow-[0_0_20px_rgba(16,185,129,0.5),0_0_8px_rgba(139,92,246,0.6),inset_0_0_16px_rgba(16,185,129,0.1)] hover:border-emerald-400/50 transition-all">
                 <span className="bg-gradient-to-r from-[#34D399] to-[#A78BFA] bg-clip-text text-transparent">Activate Your Poseidon</span>
                 <ArrowRight className="w-5 h-5 text-[#A78BFA]" />
-              </a>
+              </Link>
               <a href="/CTO-Group7-Poseidon.pdf" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full sm:w-auto bg-white/5 border border-white/10 backdrop-blur-xl px-[32px] py-[16px] rounded-[12px] font-cabin font-medium text-[16px] md:text-[18px] text-white hover:bg-white/10 transition-colors">
                 <FileText className="w-5 h-5" />
                 Presentation

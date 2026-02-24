@@ -4,8 +4,6 @@ import {
   Zap,
   Clock,
   CheckCircle2,
-  DollarSign,
-  TrendingUp,
   RotateCcw,
   ArrowUpRight,
   Filter,
@@ -38,7 +36,6 @@ import {
   selectExecuteSavingsView,
 } from '@/domain/poseidon-universe'
 import type { ExecuteActionEntity, ExecutionType, UrgencyLevel } from '@/domain/poseidon-universe'
-import { DEMO_THREAD } from '@/lib/demo-thread'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
 
 /* ═══════════════════════════════════════════
@@ -139,8 +136,8 @@ export default function ExecutePage() {
         {/* Hero */}
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
           <motion.div variants={fadeUpVariant}><EngineBadge engine="execute" icon={Zap} label="Execute Engine" className="self-start" /></motion.div>
-          <motion.h1 variants={fadeUpVariant} className={`${PAGE_HEADING_CLASS} mb-2`} style={PAGE_HEADING_STYLE}>
-            {pendingCount} actions queued. <br className="hidden lg:block" />Projected savings: <span className="text-[var(--engine-execute)] font-mono drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]">{formatUsd(executeSavings.potentialMonthlySavingsUsd)}/mo</span>.
+          <motion.h1 variants={fadeUpVariant} className="text-2xl md:text-3xl lg:text-5xl font-light tracking-tight text-white leading-tight mb-2" style={PAGE_HEADING_STYLE}>
+            {pendingCount} actions queued — <span className="bg-gradient-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent">{formatUsd(executeSavings.potentialMonthlySavingsUsd)}/mo</span> in potential savings.
           </motion.h1>
 
           {/* KPI Strip */}
@@ -302,21 +299,6 @@ export default function ExecutePage() {
           {/* Sidebar */}
           <motion.aside className="w-full lg:w-[320px] xl:w-[380px] shrink-0 flex flex-col gap-6" aria-label="Execute sidebar" variants={staggerContainerVariant}>
             <div className="sticky top-24 flex flex-col gap-6">
-              {/* Agent Status Monitor */}
-              <motion.div variants={fadeUpVariant}>
-                <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-4">
-                  <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-3 mb-1 relative z-10 flex items-center gap-2">
-                    <Bot size={12} style={{ color: 'var(--engine-execute)' }} />
-                    Agent Status
-                  </h3>
-                  <div className="space-y-3 relative z-10">
-                    <StatRow label="System confidence" value={`${(DEMO_THREAD.systemConfidence * 100).toFixed(0)}%`} valueColor="var(--state-healthy)" glow />
-                    <StatRow label="Decisions audited" value={DEMO_THREAD.decisionsAudited.toLocaleString()} />
-                    <StatRow label="Compliance score" value={`${DEMO_THREAD.complianceScore}/100`} valueColor="var(--engine-govern)" glow />
-                  </div>
-                </div>
-              </motion.div>
-
               {/* Queue Summary */}
               <motion.div variants={fadeUpVariant}>
                 <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-4">
@@ -326,29 +308,6 @@ export default function ExecutePage() {
                     <StatRow label="Completed today" value={String(completedCount)} valueColor="var(--state-healthy)" glow />
                     <StatRow label="Auto-approved" value={String(state.execute.autoApprovedCount)} />
                     <StatRow label="Rollbacks (24h)" value={String(state.execute.rollbackCount24h)} valueColor="var(--engine-govern)" glow />
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Savings Tracker */}
-              <motion.div variants={fadeUpVariant}>
-                <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-4">
-                  <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-3 mb-1 relative z-10">Savings Tracker</h3>
-                  <div className="relative z-10 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center border border-[var(--engine-execute)]/20 shadow-inner" style={{ background: 'rgba(251,191,36,0.1)' }}>
-                      <DollarSign size={24} style={{ color: 'var(--engine-execute)' }} className="drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]" />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-2xl font-light font-mono tabular-nums tracking-tight text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-                        {formatUsd(executeSavings.potentialMonthlySavingsUsd)}<span className="text-base text-white/40">/mo</span>
-                      </span>
-                      <div className="flex items-center gap-1.5 mt-1">
-                        <TrendingUp size={12} style={{ color: 'var(--state-healthy)' }} />
-                        <span className="text-xs tracking-wide" style={{ color: 'var(--state-healthy)' }}>
-                          Baseline: {formatUsd(executeSavings.currentMonthlySavingsUsd)}/mo
-                        </span>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </motion.div>

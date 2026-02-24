@@ -63,9 +63,8 @@ export default function ProtectPage() {
             <div className="flex items-center gap-2 mb-2">
               <EngineBadge engine="protect" icon={ShieldCheck} label="Engine status: Good" />
             </div>
-            <h1 className={`${PAGE_HEADING_CLASS} max-w-4xl`} style={PAGE_HEADING_STYLE}>
-              24/7 threat detection across your accounts based on{' '}
-              <span className="bg-gradient-to-r from-[var(--engine-protect)] to-[var(--engine-govern)] bg-clip-text text-transparent">your transaction history</span>
+            <h1 className="text-2xl md:text-3xl lg:text-5xl font-light tracking-tight text-white leading-tight max-w-4xl" style={PAGE_HEADING_STYLE}>
+              {activeThreats.length} active threats — <span className="bg-gradient-to-r from-[var(--engine-protect)] to-emerald-300 bg-clip-text text-transparent">{criticalCount} critical</span> flagged for review.
             </h1>
 
           </motion.div>

@@ -231,7 +231,7 @@ export function ExecuteApproval() {
             <div className="sticky top-20 flex flex-col gap-6">
               {/* Consent Card */}
               <motion.div variants={fadeUpVariant}>
-                <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-5">
+                <div className="glass-card glass-card-overlay rounded-[24px] p-4 md:p-6 flex flex-col gap-5">
 
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-3 relative z-10 flex items-center gap-2">
                     <ShieldCheck size={12} style={{ color: 'var(--engine-execute)' }} />
@@ -300,28 +300,6 @@ export function ExecuteApproval() {
                 </div>
               </motion.div>
 
-              {/* Action Summary */}
-              <motion.div variants={fadeUpVariant}>
-                <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-3">
-                  <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-3 relative z-10">Action Summary</h3>
-                  <div className="relative z-10 space-y-2.5">
-                    {[
-                      { label: 'Action ID', value: action.id },
-                      { label: 'Engine', value: action.engine },
-                      { label: 'Type', value: action.executionType },
-                      { label: 'Category', value: action.category },
-                      { label: 'Steps', value: `${action.steps.length} (${action.steps.filter((s) => s.requiresConsent).length} require consent)` },
-                      { label: 'Reversible', value: action.reversible ? `Yes (${action.rollbackWindowHours ?? 24}h window)` : 'No' },
-                      { label: 'Urgency', value: action.urgency },
-                    ].map((row) => (
-                      <div key={row.label} className="flex items-center justify-between">
-                        <span className="text-xs text-white/40 tracking-wide">{row.label}</span>
-                        <span className="text-xs font-mono text-white/70">{row.value}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
             </div>
           </motion.aside>
         </div>

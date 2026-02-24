@@ -78,9 +78,8 @@ export default function GrowPage() {
             <div className="flex items-center gap-2 mb-2">
               <EngineBadge engine="grow" icon={TrendingUp} label="Engine status: Good" />
             </div>
-            <h1 className={`${PAGE_HEADING_CLASS} mb-2`} style={PAGE_HEADING_STYLE}>
-              Growth Plan{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400 drop-shadow-[0_0_15px_rgba(139,92,246,0.5)]">Optimized</span>
+            <h1 className="text-2xl md:text-3xl lg:text-5xl font-light tracking-tight text-white leading-tight mb-2" style={PAGE_HEADING_STYLE}>
+              {RECOMMENDATIONS_SUMMARY.length} recommendations — projected <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">+{formatDollarK(FINAL_DATA.aiOptimized - FINAL_DATA.baseline)}</span> over 3 years.
             </h1>
           </motion.div>
 
