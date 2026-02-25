@@ -1,0 +1,329 @@
+{
+  "generatedAt": "2026-02-23T23:38:19.888Z",
+  "viewports": [
+    {
+      "name": "mobile375",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "mobile390",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "routes": [
+    {
+      "route": "/dashboard",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/dashboard__mobile375.png",
+      "url": "/dashboard",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 375,
+      "docScrollWidth": 375,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/protect",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/protect__mobile375.png",
+      "url": "/protect",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 375,
+      "docScrollWidth": 375,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/protect/alert-detail",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/protect_alert-detail__mobile375.png",
+      "url": "/protect/alert-detail",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 375,
+      "docScrollWidth": 375,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/grow",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/grow__mobile375.png",
+      "url": "/grow",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 375,
+      "docScrollWidth": 375,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/grow/recommendation",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/grow_recommendation__mobile375.png",
+      "url": "/grow/recommendation",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 375,
+      "docScrollWidth": 375,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/execute",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/execute__mobile375.png",
+      "url": "/execute",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 375,
+      "docScrollWidth": 375,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/execute/approval",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/execute_approval__mobile375.png",
+      "url": "/execute/approval",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 375,
+      "docScrollWidth": 375,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/govern",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/govern__mobile375.png",
+      "url": "/govern",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 375,
+      "docScrollWidth": 375,
+      "overflowElements": [],
+      "textOverflowElements": [
+        {
+          "tag": "span",
+          "className": "mission-govern-badge audit-chip audit-chip-verified",
+          "text": "Govern-Verified|GV-2026-0211-GOV1v3.2",
+          "clientW": 170,
+          "scrollW": 259,
+          "clientH": 23,
+          "scrollH": 23,
+          "whiteSpace": "nowrap",
+          "overflow": "visible",
+          "overflowX": "visible",
+          "textOverflow": "clip",
+          "lineClamp": "none",
+          "path": "div.entry-screen.entry-screen--dashboard > div.engine-command > main.engine-main-col.command-grid-main > section.engine-section > div.mission-dual-actions > span.mission-govern-badge.audit-chip"
+        }
+      ]
+    },
+    {
+      "route": "/govern/audit-detail?decision=GV-2026-0319-847",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/govern_audit-detail_decision_GV-2026-0319-847__mobile375.png",
+      "url": "/govern/audit-detail?decision=GV-2026-0319-847",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 375,
+      "docScrollWidth": 375,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/settings",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/settings__mobile375.png",
+      "url": "/settings",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 375,
+      "docScrollWidth": 375,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/dashboard",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/dashboard__mobile390.png",
+      "url": "/dashboard",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/protect",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/protect__mobile390.png",
+      "url": "/protect",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/protect/alert-detail",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/protect_alert-detail__mobile390.png",
+      "url": "/protect/alert-detail",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/grow",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/grow__mobile390.png",
+      "url": "/grow",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/grow/recommendation",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/grow_recommendation__mobile390.png",
+      "url": "/grow/recommendation",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/execute",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/execute__mobile390.png",
+      "url": "/execute",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/execute/approval",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/execute_approval__mobile390.png",
+      "url": "/execute/approval",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/govern",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/govern__mobile390.png",
+      "url": "/govern",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "overflowElements": [],
+      "textOverflowElements": [
+        {
+          "tag": "span",
+          "className": "mission-govern-badge audit-chip audit-chip-verified",
+          "text": "Govern-Verified|GV-2026-0211-GOV1v3.2",
+          "clientW": 177,
+          "scrollW": 259,
+          "clientH": 23,
+          "scrollH": 23,
+          "whiteSpace": "nowrap",
+          "overflow": "visible",
+          "overflowX": "visible",
+          "textOverflow": "clip",
+          "lineClamp": "none",
+          "path": "div.entry-screen.entry-screen--dashboard > div.engine-command > main.engine-main-col.command-grid-main > section.engine-section > div.mission-dual-actions > span.mission-govern-badge.audit-chip"
+        }
+      ]
+    },
+    {
+      "route": "/govern/audit-detail?decision=GV-2026-0319-847",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/govern_audit-detail_decision_GV-2026-0319-847__mobile390.png",
+      "url": "/govern/audit-detail?decision=GV-2026-0319-847",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "overflowElements": [],
+      "textOverflowElements": []
+    },
+    {
+      "route": "/settings",
+      "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/settings__mobile390.png",
+      "url": "/settings",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "docOverflowX": 0,
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "overflowElements": [],
+      "textOverflowElements": []
+    }
+  ]
+}
