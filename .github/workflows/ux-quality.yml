@@ -73,7 +73,41 @@ jobs:
       - name: PR fast summary
         if: always()
         run: |
-          node -e "const fs=require('fs');const s=process.env.GITHUB_STEP_SUMMARY;const p='docs/baselines/ux-audit-latest.json';if(!s){process.exit(0);}if(!fs.existsSync(p)){fs.appendFileSync(s,'## UX Fast\\nNo UX audit JSON found\\n');process.exit(0);}const d=JSON.parse(fs.readFileSync(p,'utf8'));const issues=d.issues||[];const open=issues.filter(i=>i.status!=='done');const by=(sev)=>open.filter(i=>i.severity===sev).length;fs.appendFileSync(s,`## UX Fast\\nOpen issues: ${open.length}\\n- P0: ${by('P0')}\\n- P1: ${by('P1')}\\n- P2: ${by('P2')}\\n`);"
+          node <<'NODE'
+          const fs = require('fs');
+
+          try {
+            const s = process.env.GITHUB_STEP_SUMMARY;
+            const canWriteSummary = typeof s === 'string' && s.length > 0;
+            const p = 'docs/baselines/ux-audit-latest.json';
+
+            if (!fs.existsSync(p)) {
+              console.log('No UX audit JSON found');
+              if (canWriteSummary) {
+                fs.appendFileSync(s, '## UX Fast\nNo UX audit JSON found\n');
+              }
+              process.exit(0);
+            }
+
+            const d = JSON.parse(fs.readFileSync(p, 'utf8'));
+            const issues = d.issues || [];
+            const open = issues.filter((i) => i.status !== 'done');
+            const by = (sev) => open.filter((i) => i.severity === sev).length;
+
+            if (canWriteSummary) {
+              const summary =
+                '## UX Fast\n' +
+                'Open issues: ' + open.length + '\n' +
+                '- P0: ' + by('P0') + '\n' +
+                '- P1: ' + by('P1') + '\n' +
+                '- P2: ' + by('P2') + '\n';
+              fs.appendFileSync(s, summary);
+            }
+          } catch (error) {
+            console.warn('UX Fast summary generation failed (non-blocking):', error?.message ?? error);
+            process.exit(0);
+          }
+          NODE
 
       - name: Upload UX artifacts
         if: always()
@@ -152,7 +186,41 @@ jobs:
       - name: PR visual summary
         if: always()
         run: |
-          node -e "const fs=require('fs');const s=process.env.GITHUB_STEP_SUMMARY;const p='docs/baselines/ux-audit-latest.json';if(!s){process.exit(0);}if(!fs.existsSync(p)){fs.appendFileSync(s,'## UX Visual\\nNo UX audit JSON found\\n');process.exit(0);}const d=JSON.parse(fs.readFileSync(p,'utf8'));const issues=d.issues||[];const open=issues.filter(i=>i.status!=='done');const by=(sev)=>open.filter(i=>i.severity===sev).length;fs.appendFileSync(s,`## UX Visual\\nOpen issues: ${open.length}\\n- P0: ${by('P0')}\\n- P1: ${by('P1')}\\n- P2: ${by('P2')}\\n`);"
+          node <<'NODE'
+          const fs = require('fs');
+
+          try {
+            const s = process.env.GITHUB_STEP_SUMMARY;
+            const canWriteSummary = typeof s === 'string' && s.length > 0;
+            const p = 'docs/baselines/ux-audit-latest.json';
+
+            if (!fs.existsSync(p)) {
+              console.log('No UX audit JSON found');
+              if (canWriteSummary) {
+                fs.appendFileSync(s, '## UX Visual\nNo UX audit JSON found\n');
+              }
+              process.exit(0);
+            }
+
+            const d = JSON.parse(fs.readFileSync(p, 'utf8'));
+            const issues = d.issues || [];
+            const open = issues.filter((i) => i.status !== 'done');
+            const by = (sev) => open.filter((i) => i.severity === sev).length;
+
+            if (canWriteSummary) {
+              const summary =
+                '## UX Visual\n' +
+                'Open issues: ' + open.length + '\n' +
+                '- P0: ' + by('P0') + '\n' +
+                '- P1: ' + by('P1') + '\n' +
+                '- P2: ' + by('P2') + '\n';
+              fs.appendFileSync(s, summary);
+            }
+          } catch (error) {
+            console.warn('UX Visual summary generation failed (non-blocking):', error?.message ?? error);
+            process.exit(0);
+          }
+          NODE
 
       - name: Upload visual artifacts
         if: always()
@@ -225,7 +293,46 @@ jobs:
 
       - name: Nightly UX summary
         run: |
-          node -e "const fs=require('fs');const s=process.env.GITHUB_STEP_SUMMARY;const p='docs/baselines/ux-audit-latest.json';if(!fs.existsSync(p)){console.log('No UX audit JSON found');if(s)fs.appendFileSync(s,'## UX Nightly\\nNo UX audit JSON found\\n');process.exit(0);}const d=JSON.parse(fs.readFileSync(p,'utf8'));const issues=d.issues||[];const open=issues.filter(i=>i.status!=='done');const by=(sev)=>open.filter(i=>i.severity===sev).length;const p0=by('P0');console.log('Open issues:',open.length,'P0:',p0,'P1:',by('P1'),'P2:',by('P2'));if(s){fs.appendFileSync(s,`## UX Nightly\\nOpen issues: ${open.length}\\n- P0: ${p0}\\n- P1: ${by('P1')}\\n- P2: ${by('P2')}\\n`);if(p0>0){fs.appendFileSync(s,'\\nStatus: degraded (open P0 issues present)\\n');}}"
+          node <<'NODE'
+          const fs = require('fs');
+
+          try {
+            const s = process.env.GITHUB_STEP_SUMMARY;
+            const canWriteSummary = typeof s === 'string' && s.length > 0;
+            const p = 'docs/baselines/ux-audit-latest.json';
+
+            if (!fs.existsSync(p)) {
+              console.log('No UX audit JSON found');
+              if (canWriteSummary) {
+                fs.appendFileSync(s, '## UX Nightly\nNo UX audit JSON found\n');
+              }
+              process.exit(0);
+            }
+
+            const d = JSON.parse(fs.readFileSync(p, 'utf8'));
+            const issues = d.issues || [];
+            const open = issues.filter((i) => i.status !== 'done');
+            const by = (sev) => open.filter((i) => i.severity === sev).length;
+            const p0 = by('P0');
+            console.log('Open issues:', open.length, 'P0:', p0, 'P1:', by('P1'), 'P2:', by('P2'));
+
+            if (canWriteSummary) {
+              const summary =
+                '## UX Nightly\n' +
+                'Open issues: ' + open.length + '\n' +
+                '- P0: ' + p0 + '\n' +
+                '- P1: ' + by('P1') + '\n' +
+                '- P2: ' + by('P2') + '\n';
+              fs.appendFileSync(s, summary);
+              if (p0 > 0) {
+                fs.appendFileSync(s, '\nStatus: degraded (open P0 issues present)\n');
+              }
+            }
+          } catch (error) {
+            console.warn('UX Nightly summary generation failed (non-blocking):', error?.message ?? error);
+            process.exit(0);
+          }
+          NODE
 
       - name: Upload nightly UX artifacts
         if: always()
