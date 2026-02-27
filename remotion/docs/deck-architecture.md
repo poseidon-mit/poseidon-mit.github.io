@@ -89,10 +89,10 @@ node scripts/gen-v3-pptx.js --image-format png --notes --alt-text
 Output:
 - `out/Poseidon_AI_MIT_CTO_V3_Visual_First.pptx`
 
-### PDF (delivery target <=10MB, Landing and /deck source of truth)
+### PDF (delivery target 10-12MB, Landing and /deck source of truth)
 
 ```bash
-node scripts/gen-v3-pdf.mjs --output out/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf --target-mb-min 8 --target-mb-max 10 --jpeg-quality-start 72
+node scripts/gen-v3-pdf.mjs --output out/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf --target-mb-min 10 --target-mb-max 12 --jpeg-quality-start 76
 ```
 
 Output:
@@ -103,6 +103,7 @@ Copy to web app:
 
 ```bash
 npm run copy:deck-pdf:delivery
+npm run check:deck-pdf:size
 ```
 
 ### PDF (web viewer target 12–18MB, higher visual quality)
@@ -120,12 +121,25 @@ Output:
 
 Viewer contract:
 - Landing Presentation button goes to `/deck`.
-- `/deck` renders `Poseidon_AI_MIT_CTO_V3_Visual_First.pdf` (<=10MB delivery PDF).
+- `/deck` renders `Poseidon_AI_MIT_CTO_V3_Visual_First.pdf` (10-12MB delivery PDF).
 - `..._Visual_Web.pdf` is optional for ad-hoc quality comparison only, not the default Landing contract.
 
 Troubleshooting quality mismatch (`/deck` vs downloaded PDF):
 - `/deck` uses `pdfjs` canvas rendering, so perceived quality depends on render scale and viewport width.
-- Tune `QUALITY_BOOST`, `MIN_RENDER_SCALE`, `MAX_RENDER_SCALE` in `src/pages/DeckViewer.tsx` when balancing sharpness vs performance.
+- Flicker root cause was full deck re-render triggered by mobile `resize` events while scrolling (address-bar collapse/expand).
+- Current viewer policy is width-thresholded re-render (`WIDTH_CHANGE_THRESHOLD_PX`) + visible-page priority rendering.
+- Tune these constants in `src/pages/DeckViewer.tsx`:
+  - `QUALITY_BOOST`
+  - `MIN_RENDER_SCALE`
+  - `MOBILE_MAX_RENDER_SCALE`
+  - `DESKTOP_MAX_RENDER_SCALE`
+  - `PREVIEW_SCALE_MOBILE`
+  - `PREVIEW_SCALE_DESKTOP`
+  - `WIDTH_CHANGE_THRESHOLD_PX`
+- Rendering strategy:
+  - Pass1: idle preview render for non-visible pages
+  - Pass2: high-quality render for visible pages and ±1 neighbor buffer
+  - In-flight render tasks are canceled on rerun to avoid race/flicker.
 
 ### Full verification
 
