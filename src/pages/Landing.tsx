@@ -1,10 +1,18 @@
-import React, { useEffect, useRef } from 'react';
-import { Shield, TrendingUp, Zap, Scale, ArrowRight, CheckCircle2, FileText, Play } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Shield, TrendingUp, Zap, Scale, ArrowRight, CheckCircle2, FileText, Play, X } from 'lucide-react';
 import { PublicTopBar } from '@/components/landing/PublicTopBar';
 import { Link } from '@/router';
 
 export default function Landing() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoOpen, setVideoOpen] = useState(false);
+
+  useEffect(() => {
+    if (!videoOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setVideoOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [videoOpen]);
 
   // Programmatic video playback — browser ignores autoPlay on SPA re-mount
   useEffect(() => {
@@ -90,10 +98,10 @@ export default function Landing() {
                 <FileText className="w-5 h-5" />
                 Presentation
               </a>
-              <a href="#" className="flex items-center justify-center gap-2 w-full sm:w-auto bg-white/5 border border-white/10 backdrop-blur-xl px-[32px] py-[16px] rounded-[12px] font-cabin font-medium text-[16px] md:text-[18px] text-white hover:bg-white/10 transition-colors">
+              <button onClick={() => setVideoOpen(true)} className="flex items-center justify-center gap-2 w-full sm:w-auto bg-white/5 border border-white/10 backdrop-blur-xl px-[32px] py-[16px] rounded-[12px] font-cabin font-medium text-[16px] md:text-[18px] text-white hover:bg-white/10 transition-colors">
                 <Play className="w-5 h-5" />
                 Video
-              </a>
+              </button>
             </div>
           </div>
         </section>
@@ -261,6 +269,32 @@ export default function Landing() {
         </footer>
 
       </div>
+
+      {/* Video Modal */}
+      {videoOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+          onClick={() => setVideoOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-4xl aspect-video rounded-2xl overflow-hidden shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setVideoOpen(false)}
+              className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <iframe
+              src="https://www.youtube.com/embed/2u_ogUNRsdY?autoplay=1"
+              allow="autoplay; encrypted-media; fullscreen"
+              allowFullScreen
+              className="w-full h-full"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
