@@ -89,14 +89,43 @@ node scripts/gen-v3-pptx.js --image-format png --notes --alt-text
 Output:
 - `out/Poseidon_AI_MIT_CTO_V3_Visual_First.pptx`
 
-### PDF (delivery target around 10MB)
+### PDF (delivery target <=10MB, Landing and /deck source of truth)
 
 ```bash
-node scripts/gen-v3-pdf.mjs --target-mb-min 10 --target-mb-max 13
+node scripts/gen-v3-pdf.mjs --output out/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf --target-mb-min 8 --target-mb-max 10 --jpeg-quality-start 72
 ```
 
 Output:
 - `out/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf`
+- `public/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf` (after copy)
+
+Copy to web app:
+
+```bash
+npm run copy:deck-pdf:delivery
+```
+
+### PDF (web viewer target 12–18MB, higher visual quality)
+
+Run from repo root:
+
+```bash
+npm run pdf:v3:web
+npm run copy:deck-pdf:web
+```
+
+Output:
+- `remotion/out/Poseidon_AI_MIT_CTO_V3_Visual_Web.pdf` (source)
+- `public/Poseidon_AI_MIT_CTO_V3_Visual_Web.pdf` (served by web app)
+
+Viewer contract:
+- Landing Presentation button goes to `/deck`.
+- `/deck` renders `Poseidon_AI_MIT_CTO_V3_Visual_First.pdf` (<=10MB delivery PDF).
+- `..._Visual_Web.pdf` is optional for ad-hoc quality comparison only, not the default Landing contract.
+
+Troubleshooting quality mismatch (`/deck` vs downloaded PDF):
+- `/deck` uses `pdfjs` canvas rendering, so perceived quality depends on render scale and viewport width.
+- Tune `QUALITY_BOOST`, `MIN_RENDER_SCALE`, `MAX_RENDER_SCALE` in `src/pages/DeckViewer.tsx` when balancing sharpness vs performance.
 
 ### Full verification
 

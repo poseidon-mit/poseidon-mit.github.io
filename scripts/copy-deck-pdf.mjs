@@ -1,13 +1,11 @@
 #!/usr/bin/env node
 /**
- * Copy the deck PDF from remotion/out/ to public/ so the site can serve it
- * at /CTO-Group7-Poseidon.pdf (and the in-app /deck viewer can load it).
+ * Copy a deck PDF from remotion/out/ (or custom path) to public/.
+ * Default is the delivery PDF (<=10MB) used by /deck.
  *
- * Run before build when you want the deck available on the deployed site:
+ * Usage:
  *   node scripts/copy-deck-pdf.mjs
- *   npm run build
- *
- * Or: npm run copy:deck-pdf && npm run build
+ *   node scripts/copy-deck-pdf.mjs --source remotion/out/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf --dest public/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf
  */
 
 import { copyFileSync, existsSync, mkdirSync } from 'fs';
@@ -16,12 +14,28 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
-const src = join(root, 'remotion', 'out', 'CTO-Group7-Poseidon.pdf');
-const dest = join(root, 'public', 'CTO-Group7-Poseidon.pdf');
+const args = process.argv.slice(2);
+
+function readFlag(name) {
+  const idx = args.indexOf(name);
+  if (idx === -1) return null;
+  return args[idx + 1] ?? null;
+}
+
+const sourceArg = readFlag('--source');
+const destArg = readFlag('--dest');
+
+const src = sourceArg
+  ? join(root, sourceArg)
+  : join(root, 'remotion', 'out', 'Poseidon_AI_MIT_CTO_V3_Visual_First.pdf');
+
+const dest = destArg
+  ? join(root, destArg)
+  : join(root, 'public', 'Poseidon_AI_MIT_CTO_V3_Visual_First.pdf');
 
 if (!existsSync(src)) {
   console.warn(
-    `[copy-deck-pdf] Source not found: remotion/out/CTO-Group7-Poseidon.pdf\n` +
+    `[copy-deck-pdf] Source not found: ${src}\n` +
       `  Skipping copy. The /deck page will show an error until the PDF is in public/.`
   );
   process.exit(0);
@@ -29,4 +43,4 @@ if (!existsSync(src)) {
 
 mkdirSync(dirname(dest), { recursive: true });
 copyFileSync(src, dest);
-console.log('[copy-deck-pdf] Copied deck PDF to public/CTO-Group7-Poseidon.pdf');
+console.log(`[copy-deck-pdf] Copied deck PDF:\n  from: ${src}\n  to:   ${dest}`);

@@ -5,6 +5,12 @@ import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from 'pdfjs-d
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 const PDF_PATH = '/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf';
+const RESIZE_DEBOUNCE_MS = 180;
+const QUALITY_BOOST = 1.35;
+const MIN_RENDER_SCALE = 1.5;
+const MAX_RENDER_SCALE = 3.5;
+
+const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
 GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
@@ -14,6 +20,7 @@ const DeckViewer: React.FC = () => {
   const [pdfDoc, setPdfDoc] = useState<PDFDocumentProxy | null>(null);
   const [pageCount, setPageCount] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
+  const [renderKey, setRenderKey] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [renderError, setRenderError] = useState<string | null>(null);
 
@@ -46,24 +53,59 @@ const DeckViewer: React.FC = () => {
   useEffect(() => {
     const node = containerRef.current;
     if (!node) return;
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
-    const update = () => {
+    const applyWidth = () => {
       const width = Math.max(320, Math.floor(node.clientWidth));
       setContainerWidth(width);
     };
 
-    update();
-    const observer = new ResizeObserver(update);
+    const scheduleUpdate = () => {
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+      debounceTimer = setTimeout(applyWidth, RESIZE_DEBOUNCE_MS);
+    };
+
+    applyWidth();
+    const observer = new ResizeObserver(scheduleUpdate);
     observer.observe(node);
 
     return () => {
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
       observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleDprUpdate = () => {
+      setRenderKey((prev) => prev + 1);
+    };
+
+    const mediaQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+    window.addEventListener('resize', handleDprUpdate);
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleDprUpdate);
+    } else if (typeof mediaQuery.addListener === 'function') {
+      mediaQuery.addListener(handleDprUpdate);
+    }
+
+    return () => {
+      window.removeEventListener('resize', handleDprUpdate);
+      if (typeof mediaQuery.removeEventListener === 'function') {
+        mediaQuery.removeEventListener('change', handleDprUpdate);
+      } else if (typeof mediaQuery.removeListener === 'function') {
+        mediaQuery.removeListener(handleDprUpdate);
+      }
     };
   }, []);
 
   useEffect(() => {
     if (!pdfDoc || containerWidth <= 0 || pageCount === 0) return;
     let cancelled = false;
+    setRenderError(null);
 
     const renderAllPages = async () => {
       for (let i = 0; i < pageCount; i++) {
@@ -74,7 +116,11 @@ const DeckViewer: React.FC = () => {
         const page = await pdfDoc.getPage(i + 1);
         const viewport = page.getViewport({ scale: 1 });
         const fitScale = containerWidth / viewport.width;
-        const outputScale = Math.max(1, window.devicePixelRatio || 1);
+        const outputScale = clamp(
+          (window.devicePixelRatio || 1) * QUALITY_BOOST,
+          MIN_RENDER_SCALE,
+          MAX_RENDER_SCALE,
+        );
         const renderViewport = page.getViewport({ scale: fitScale * outputScale });
 
         const context = canvas.getContext('2d');
@@ -102,7 +148,7 @@ const DeckViewer: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [pdfDoc, pageCount, containerWidth]);
+  }, [pdfDoc, pageCount, containerWidth, renderKey]);
 
   return (
     <main
@@ -163,7 +209,7 @@ const DeckViewer: React.FC = () => {
           ref={containerRef}
           style={{
             width: '100%',
-            maxWidth: 980,
+            maxWidth: 1180,
             margin: '0 auto',
             padding: '0 8px 24px',
             boxSizing: 'border-box',
@@ -176,7 +222,7 @@ const DeckViewer: React.FC = () => {
           ) : null}
           {renderError ? (
             <p style={{ margin: 0, color: '#fda4af', fontSize: 14, textAlign: 'center', paddingTop: 16 }}>
-              Failed to render in-page viewer. Use Download PDF.
+              Failed to render in-page viewer. Please reopen /deck or try again later.
             </p>
           ) : null}
           {Array.from({ length: pageCount }).map((_, idx) => (
