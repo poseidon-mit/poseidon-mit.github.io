@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, Download } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Link } from '@/router';
 import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
@@ -128,7 +128,7 @@ const DeckViewer: React.FC = () => {
           style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-start',
             gap: 12,
             flexWrap: 'wrap',
           }}
@@ -147,28 +147,6 @@ const DeckViewer: React.FC = () => {
             <ArrowLeft size={16} />
             Back
           </Link>
-
-          <a
-            href={PDF_PATH}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              color: '#e6edf7',
-              textDecoration: 'none',
-              fontSize: 14,
-              border: '1px solid rgba(255,255,255,0.2)',
-              borderRadius: 999,
-              padding: '8px 12px',
-              background: 'rgba(255,255,255,0.06)',
-              backdropFilter: 'blur(8px)',
-            }}
-          >
-            <Download size={16} />
-            Download PDF
-          </a>
         </div>
       </div>
 
