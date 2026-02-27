@@ -18,7 +18,6 @@ import { SlideHeader } from '../shared/SlideHeader';
 import { slideLayouts, v2Policy } from '../shared/slideLayouts';
 import { SlideIcon } from '../shared/SlideIcon';
 import { authorityDarkGlassStyle } from '../shared/authorityDarkGlassStyle';
-import { GlassRefraction } from '../shared/cinematic/GlassRefraction';
 import { getSlideHeaderColors, recolorBackgroundLayers } from '../shared/slideThemeColor';
 
 const tc = getSlideHeaderColors('blue');
@@ -166,15 +165,17 @@ export const Slide04Solution3A: React.FC<Slide04Solution3AProps> = ({
         data-debug-id="slide04-3a.content-wrapper"
       >
         {/* ═══ GOVERN — Large container panel encompassing all engines ═══ */}
-        <GlassRefraction
-          intensity={0.25}
-          chromaticAberration={false}
-          innerGlow
-          glowColor={theme.accent.blue}
-          edgeHighlight
-          borderRadius={18}
-          frosted
-          frostedBlur={14}
+        <GlassCard
+          variant="blue"
+          tone="dark"
+          liquidGlass="premium"
+          glassQuality="premium"
+          flexContent
+          style={{
+            ...authorityDarkGlassStyle,
+            borderRadius: 18,
+            overflow: 'hidden',
+          }}
         >
           <div
             style={{
@@ -286,7 +287,7 @@ export const Slide04Solution3A: React.FC<Slide04Solution3AProps> = ({
                     key={engine.id}
                     variant={meta.variant}
                     tone="dark"
-                    liquidGlass="off"
+                    liquidGlass="premium"
                     glassQuality="premium"
                     flexContent
                     style={{
@@ -294,9 +295,7 @@ export const Slide04Solution3A: React.FC<Slide04Solution3AProps> = ({
                       padding: layout.engineCardPadding,
                       minHeight: 0,
                       flexShrink: v2Policy.card.cardFlexShrink,
-                      backgroundImage: 'linear-gradient(165deg, #080c14 0%, #050912 55%, #030608 100%)',
-                      backdropFilter: 'none',
-                      WebkitBackdropFilter: 'none',
+                      ...authorityDarkGlassStyle,
                     }}
                     debugId={`slide04-3a.engine.${engine.id}`}
                   >
@@ -382,7 +381,7 @@ export const Slide04Solution3A: React.FC<Slide04Solution3AProps> = ({
               })}
             </div>
           </div>
-        </GlassRefraction>
+        </GlassCard>
 
         {/* ═══ Architecture Principle Footer ═══ */}
         <div

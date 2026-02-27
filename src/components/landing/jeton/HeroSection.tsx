@@ -242,7 +242,7 @@ export function HeroSection() {
             {JETON_COPY.hero.secondaryCta}
           </button>
           <a
-            href="/CTO-Group7-Poseidon.pdf"
+            href="/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-400/12 px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-cyan-300/20 hover:shadow-[0_0_26px_rgba(56,189,248,0.2)] sm:w-auto"

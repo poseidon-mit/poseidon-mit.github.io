@@ -94,7 +94,7 @@ export default function Landing() {
                 <span className="bg-gradient-to-r from-[#34D399] to-[#A78BFA] bg-clip-text text-transparent">Activate Your Poseidon</span>
                 <ArrowRight className="w-5 h-5 text-[#A78BFA]" />
               </Link>
-              <a href="/CTO-Group7-Poseidon.pdf" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full sm:w-auto bg-white/5 border border-white/10 backdrop-blur-xl px-[32px] py-[16px] rounded-[12px] font-cabin font-medium text-[16px] md:text-[18px] text-white hover:bg-white/10 transition-colors">
+              <a href="/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full sm:w-auto bg-white/5 border border-white/10 backdrop-blur-xl px-[32px] py-[16px] rounded-[12px] font-cabin font-medium text-[16px] md:text-[18px] text-white hover:bg-white/10 transition-colors">
                 <FileText className="w-5 h-5" />
                 Presentation
               </a>
