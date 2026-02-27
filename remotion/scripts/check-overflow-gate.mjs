@@ -18,7 +18,7 @@
  */
 
 import { execSync } from 'child_process';
-import { existsSync, readdirSync } from 'fs';
+import { readdirSync } from 'fs';
 import { resolve, join } from 'path';
 
 // ─── Config ────────────────────────────────────────────────

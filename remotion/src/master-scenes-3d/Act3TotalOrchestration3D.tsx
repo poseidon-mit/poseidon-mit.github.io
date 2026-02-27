@@ -1,7 +1,7 @@
 import React, { useRef, useMemo } from 'react';
 import { useCurrentFrame, useVideoConfig, spring, interpolate } from 'remotion';
 import { useFrame } from '@react-three/fiber';
-import { Line, RoundedBox, Environment, Text, Edges } from '@react-three/drei';
+import { Line, RoundedBox, Environment, Text, Edges, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { staticFile } from 'remotion';

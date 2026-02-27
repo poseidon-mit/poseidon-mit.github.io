@@ -8,7 +8,7 @@
  */
 
 import { readFileSync, readdirSync } from 'fs';
-import { resolve, relative } from 'path';
+import { resolve } from 'path';
 
 // ─── Config ────────────────────────────────────────────────
 const V2_DIR = 'src/v2';

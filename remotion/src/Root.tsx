@@ -38,22 +38,23 @@ import { DEFAULT_AUDIO, VIDEO_DURATION_FRAMES } from './video/config';
 import { V5_VIDEO_DURATION_FRAMES } from './video/v5/config';
 import { VIDEO_DURATION_FRAMES as POSEIDON_INTRO_DURATION_FRAMES, DEFAULT_AUDIO as POSEIDON_INTRO_AUDIO } from './video/poseidon-intro/config';
 import { IconSampleSheet } from './IconSampleSheet';
-import { Slide01TitleV2 } from './v2/Slide01TitleV2';
-import { Slide02ProblemV2 } from './v2/Slide02ProblemV2';
-import { Slide02ProblemOptionA } from './v2/Slide02ProblemOptionA';
-import { Slide02ProblemOptionB } from './v2/Slide02ProblemOptionB';
-import { Slide02ProblemOptionC } from './v2/Slide02ProblemOptionC';
-import { Slide03WhyNowV2 } from './v2/Slide03WhyNowV2';
-import { Slide04SolutionV2 } from './v2/Slide04SolutionV2';
-import { Slide04Solution3A } from './v2/Slide04Solution3A';
-import { Slide05DifferentiationV2 } from './v2/Slide05DifferentiationV2';
-import { Slide06BusinessV2 } from './v2/Slide06BusinessV2';
-import { Slide07FinModelV2 } from './v2/Slide07FinModelV2';
-import { Slide07DemoV2 } from './v2/Slide07DemoV2';
-import { Slide08SummaryV2 } from './v2/Slide08SummaryV2';
-import { Slide09EpilogueV2 } from './v2/Slide09EpilogueV2';
-import { Slide10AppendixV2 } from './v2/Slide10AppendixV2';
-import { Slide11FinModelV2 } from './v2/Slide11FinModelV2';
+import { Slide01TitleV2 } from './v2/active/Slide01TitleV2';
+import { Slide02ProblemV2 } from './v2/active/Slide02ProblemV2';
+import { Slide02ProblemOptionA } from './v2/active/Slide02ProblemOptionA';
+import { Slide02ProblemOptionB } from './v2/archive/Slide02ProblemOptionB';
+import { Slide02ProblemOptionC } from './v2/archive/Slide02ProblemOptionC';
+import { Slide03WhyNowV2 } from './v2/active/Slide03WhyNowV2';
+import { Slide04SolutionV2 } from './v2/archive/Slide04SolutionV2';
+import { Slide04Solution3A } from './v2/active/Slide04Solution3A';
+import { Slide05DifferentiationV2 } from './v2/active/Slide05DifferentiationV2';
+import { Slide06BusinessV2 } from './v2/active/Slide06BusinessV2';
+import { Slide07FinModelV2 } from './v2/archive/Slide07FinModelV2';
+import { Slide07DemoV2 } from './v2/active/Slide07DemoV2';
+import { Slide08SummaryV2 } from './v2/active/Slide08SummaryV2';
+import { Slide09EpilogueV2 } from './v2/active/Slide09EpilogueV2';
+import { Slide10AppendixV2 } from './v2/active/Slide10AppendixV2';
+import { Slide11FinModelV2 } from './v2/active/Slide11FinModelV2';
+import { Slide12QAV2 } from './v2/active/Slide12QAV2';
 
 import {
   DashboardHeroLayout,
@@ -428,6 +429,7 @@ const RemotionRoot: React.FC = () => {
       <Composition id="Slide09EpilogueV3" component={Slide09EpilogueV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
       <Composition id="Slide10AppendixV3" component={Slide10AppendixV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
       <Composition id="Slide11FinModelV3" component={Slide11FinModelV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
+      <Composition id="Slide12QAV3" component={Slide12QAV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
 
       {/* --- V3 Debug Compositions (grid + IDs overlay) --- */}
       <Composition id="Slide01TitleV3Debug" component={Slide01TitleV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
@@ -436,7 +438,7 @@ const RemotionRoot: React.FC = () => {
       <Composition id="Slide02OptionBV3Debug" component={Slide02ProblemOptionB} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
       <Composition id="Slide02OptionCV3Debug" component={Slide02ProblemOptionC} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
       <Composition id="Slide03WhyNowV3Debug" component={Slide03WhyNowV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
-      <Composition id="Slide04SolutionV3Debug" component={Slide04SolutionV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
+      <Composition id="Slide04SolutionV3Debug" component={Slide04Solution3A} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
       <Composition id="Slide05DifferentiationV3Debug" component={Slide05DifferentiationV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
       <Composition id="Slide06BusinessV3Debug" component={Slide06BusinessV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
       <Composition id="Slide07DemoV3Debug" component={Slide07DemoV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
@@ -444,6 +446,7 @@ const RemotionRoot: React.FC = () => {
       <Composition id="Slide09EpilogueV3Debug" component={Slide09EpilogueV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
       <Composition id="Slide10AppendixV3Debug" component={Slide10AppendixV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
       <Composition id="Slide11FinModelV3Debug" component={Slide11FinModelV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
+      <Composition id="Slide12QAV3Debug" component={Slide12QAV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
 
       {/* --- V2 Visual-First Slides (legacy compatibility) --- */}
       <Composition id="Slide01TitleV2" component={Slide01TitleV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
@@ -461,6 +464,7 @@ const RemotionRoot: React.FC = () => {
       <Composition id="Slide09EpilogueV2" component={Slide09EpilogueV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
       <Composition id="Slide10AppendixV2" component={Slide10AppendixV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
       <Composition id="Slide11FinModelV2" component={Slide11FinModelV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
+      <Composition id="Slide12QAV2" component={Slide12QAV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
 
       {/* --- V2 Debug Compositions (legacy compatibility) --- */}
       <Composition id="Slide01TitleV2Debug" component={Slide01TitleV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
@@ -478,6 +482,7 @@ const RemotionRoot: React.FC = () => {
       <Composition id="Slide09EpilogueV2Debug" component={Slide09EpilogueV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
       <Composition id="Slide10AppendixV2Debug" component={Slide10AppendixV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
       <Composition id="Slide11FinModelV2Debug" component={Slide11FinModelV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
+      <Composition id="Slide12QAV2Debug" component={Slide12QAV2} durationInFrames={DURATION_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} defaultProps={{ debug: true, debugGrid: true, debugIds: true }} />
 
 
       {/* --- Logo Export Targets --- */}

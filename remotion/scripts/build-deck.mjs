@@ -74,7 +74,7 @@ for (let i = 0; i < steps.length; i++) {
   try {
     execSync(step.cmd, { cwd: rootDir, stdio: 'inherit' });
     console.log(`${prefix} ${step.name} OK\n`);
-  } catch (err) {
+  } catch {
     console.error(`\n${prefix} ${step.name} FAILED`);
     process.exit(1);
   }

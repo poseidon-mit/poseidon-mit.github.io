@@ -43,7 +43,7 @@ export const Shot04Integration: React.FC = () => {
     return (
         <ShotTransition
             durationInFrames={SHOTS.shot4.duration}
-            enterType="zoom-in"
+            enterType="zoom-through"
             exitType="fade"
         >
             <CameraController keyframes={[{ frame: 0, scale: 1, x: 0, y: 0 }, { frame: 180, scale: 1.1, x: 0, y: 0 }]}>

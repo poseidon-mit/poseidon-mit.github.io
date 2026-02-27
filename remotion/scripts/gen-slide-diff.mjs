@@ -15,7 +15,7 @@
  */
 
 import { readdirSync, copyFileSync, mkdirSync, existsSync, writeFileSync } from 'fs';
-import { resolve, join, basename } from 'path';
+import { resolve, join } from 'path';
 
 const args = process.argv.slice(2);
 const prefix = args.includes('--prefix') ? args[args.indexOf('--prefix') + 1] : 'v3-';

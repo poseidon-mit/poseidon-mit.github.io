@@ -16,8 +16,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
 const args = process.argv.slice(2);
 const dryRun = args.includes('--dry-run');
-// --all is retained for backward compatibility but has no additional effect
-const all = args.includes('--all');
 
 function formatBytes(bytes) {
   if (bytes < 1024) return `${bytes}B`;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Slide02ProblemV2 } from './v2/Slide02ProblemV2';
+import { Slide02ProblemV2 } from './v2/active/Slide02ProblemV2';
 
 interface Slide02ProblemProps {
   debug?: boolean;

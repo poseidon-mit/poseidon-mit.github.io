@@ -27,13 +27,17 @@ export const DEFAULT_AUDIO = {
 // Shot 2: 5-10s (150-300)
 // Shot 3: 10-18s (300-540)
 // Shot 4: 18-24s (540-720)
-// Shot 5: 24-30s (720-900)
+// Shot 5: 24-27s (720-810)
+// Shot 6: 27-28.5s (810-855)
+// Shot 7: 28.5-30s (855-900)
 export const SHOTS = {
   shot1: { start: 0, duration: 150 },
   shot2: { start: 150, duration: 150 },
   shot3: { start: 300, duration: 240 },
   shot4: { start: 540, duration: 180 },
-  shot5: { start: 720, duration: 180 },
+  shot5: { start: 720, duration: 90 },
+  shot6: { start: 810, duration: 45 },
+  shot7: { start: 855, duration: 45 },
 } as const;
 
 export type ShotKey = keyof typeof SHOTS;

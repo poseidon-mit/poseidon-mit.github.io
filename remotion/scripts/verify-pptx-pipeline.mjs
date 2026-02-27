@@ -56,17 +56,18 @@ const deliveryPptxName = readStringFlag('--delivery-pptx-file', 'Poseidon_AI_MIT
 const deliveryPdfName = readStringFlag('--delivery-pdf-file', 'Poseidon_AI_MIT_CTO_V3_Visual_First.pdf');
 
 const SLIDES = [
-  { compositionId: 'Slide01TitleV3', sourceFile: 'src/v2/Slide01TitleV2.tsx', pngFile: 'v3-Slide01TitleV3.png' },
-  { compositionId: 'Slide02ProblemV3', sourceFile: 'src/v2/Slide02ProblemV2.tsx', pngFile: 'v3-Slide02ProblemV3.png' },
-  { compositionId: 'Slide03WhyNowV3', sourceFile: 'src/v2/Slide03WhyNowV2.tsx', pngFile: 'v3-Slide03WhyNowV3.png' },
-  { compositionId: 'Slide04SolutionV3', sourceFile: 'src/v2/Slide04SolutionV2.tsx', pngFile: 'v3-Slide04SolutionV3.png' },
-  { compositionId: 'Slide05DifferentiationV3', sourceFile: 'src/v2/Slide05DifferentiationV2.tsx', pngFile: 'v3-Slide05DifferentiationV3.png' },
-  { compositionId: 'Slide06BusinessV3', sourceFile: 'src/v2/Slide06BusinessV2.tsx', pngFile: 'v3-Slide06BusinessV3.png' },
-  { compositionId: 'Slide07DemoV3', sourceFile: 'src/v2/Slide07DemoV2.tsx', pngFile: 'v3-Slide07DemoV3.png' },
-  { compositionId: 'Slide08SummaryV3', sourceFile: 'src/v2/Slide08SummaryV2.tsx', pngFile: 'v3-Slide08SummaryV3.png' },
-  { compositionId: 'Slide09EpilogueV3', sourceFile: 'src/v2/Slide09EpilogueV2.tsx', pngFile: 'v3-Slide09EpilogueV3.png' },
-  { compositionId: 'Slide10AppendixV3', sourceFile: 'src/v2/Slide10AppendixV2.tsx', pngFile: 'v3-Slide10AppendixV3.png' },
-  { compositionId: 'Slide11FinModelV3', sourceFile: 'src/v2/Slide11FinModelV2.tsx', pngFile: 'v3-Slide11FinModelV3.png' },
+  { compositionId: 'Slide01TitleV3', sourceFile: 'src/v2/active/Slide01TitleV2.tsx', pngFile: 'v3-Slide01TitleV3.png' },
+  { compositionId: 'Slide02ProblemV3', sourceFile: 'src/v2/active/Slide02ProblemV2.tsx', pngFile: 'v3-Slide02ProblemV3.png' },
+  { compositionId: 'Slide03WhyNowV3', sourceFile: 'src/v2/active/Slide03WhyNowV2.tsx', pngFile: 'v3-Slide03WhyNowV3.png' },
+  { compositionId: 'Slide04SolutionV3', sourceFile: 'src/v2/active/Slide04Solution3A.tsx', pngFile: 'v3-Slide04SolutionV3.png' },
+  { compositionId: 'Slide05DifferentiationV3', sourceFile: 'src/v2/active/Slide05DifferentiationV2.tsx', pngFile: 'v3-Slide05DifferentiationV3.png' },
+  { compositionId: 'Slide06BusinessV3', sourceFile: 'src/v2/active/Slide06BusinessV2.tsx', pngFile: 'v3-Slide06BusinessV3.png' },
+  { compositionId: 'Slide07DemoV3', sourceFile: 'src/v2/active/Slide07DemoV2.tsx', pngFile: 'v3-Slide07DemoV3.png' },
+  { compositionId: 'Slide08SummaryV3', sourceFile: 'src/v2/active/Slide08SummaryV2.tsx', pngFile: 'v3-Slide08SummaryV3.png' },
+  { compositionId: 'Slide09EpilogueV3', sourceFile: 'src/v2/active/Slide09EpilogueV2.tsx', pngFile: 'v3-Slide09EpilogueV3.png' },
+  { compositionId: 'Slide10AppendixV3', sourceFile: 'src/v2/active/Slide10AppendixV2.tsx', pngFile: 'v3-Slide10AppendixV3.png' },
+  { compositionId: 'Slide11FinModelV3', sourceFile: 'src/v2/active/Slide11FinModelV2.tsx', pngFile: 'v3-Slide11FinModelV3.png' },
+  { compositionId: 'Slide12QAV3', sourceFile: 'src/v2/active/Slide12QAV2.tsx', pngFile: 'v3-Slide12QAV3.png' },
 ];
 
 const SHARED_FILES = [

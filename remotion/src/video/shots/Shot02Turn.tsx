@@ -32,8 +32,8 @@ export const Shot02Turn: React.FC = () => {
     return (
         <ShotTransition
             durationInFrames={SHOTS.shot2.duration}
-            enterType="zoom-out"
-            exitType="slide"
+            enterType="push"
+            exitType="push"
         >
             <CameraController keyframes={cameraKeyframes}>
                 <AbsoluteFill style={{ background: theme.background.deepNavy }}>

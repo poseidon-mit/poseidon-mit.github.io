@@ -106,7 +106,7 @@ export const S6LoopClose: React.FC = () => {
   // Leading dot along arc
   let dotX = CENTERS[0].x;
   let dotY = CENTERS[0].y;
-  let dotColor = ENGINES[0].color;
+  let dotColor: string = ENGINES[0].color;
   if (arcProgress > 0.01 && arcProgress < 0.99) {
     const rawIdx = arcProgress * 4;
     const segIdx = Math.min(Math.floor(rawIdx), 3);

@@ -39,7 +39,7 @@ slides.forEach((slide, index) => {
       `npx remotion still src/index.ts ${slide.id} "${join(outputDir, slide.file)}" --scale 2 --quiet`,
       { cwd: rootDir, stdio: 'inherit' }
     );
-  } catch (e) {
+  } catch {
     console.error(`Failed to render ${slide.id}`);
     process.exit(1);
   }

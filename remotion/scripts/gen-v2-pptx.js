@@ -3,6 +3,7 @@
  * DEPRECATED: V2 PPTX generator wrapper kept for compatibility.
  * Prefer: scripts/gen-v3-pptx.js
  */
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { spawnSync } = require('child_process');
 const path = require('path');
 

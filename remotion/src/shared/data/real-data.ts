@@ -3,7 +3,7 @@
  * Local copy of Engine Data to avoid importing from outside Remotion src
  */
 
-import { theme } from '../../theme';
+import { theme } from '../theme';
 
 // --- PROTECT DATA ---
 export const protectSignal = {

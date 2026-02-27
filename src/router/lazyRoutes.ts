@@ -106,6 +106,7 @@ function withRouteImportRecovery(routePath: string, loader: RouteLoader): RouteL
 export const routeLoaders = {
   // ─── Public ─────────────────────────────────────────────────────────────────
   '/': () => import('../pages/Landing'),
+  '/deck': () => import('../pages/DeckViewer'),
 
   // ─── Design System ──────────────────────────────────────────────────────────
   '/design-system': () => import('../pages/DesignSystemLanding'),

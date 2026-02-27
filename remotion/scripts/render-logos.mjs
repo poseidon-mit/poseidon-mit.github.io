@@ -38,7 +38,7 @@ logos.forEach((logo, index) => {
             cwd: rootDir,
             stdio: 'inherit',
         });
-    } catch (e) {
+    } catch {
         console.error(`Failed to render ${logo.id}`);
         process.exit(1);
     }

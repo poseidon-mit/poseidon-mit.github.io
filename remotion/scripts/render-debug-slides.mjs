@@ -52,6 +52,7 @@ const v2Slides = [
     { id: 'Slide09EpilogueV2Debug', file: 'v2-slide-09-epilogue-debug.png' },
     { id: 'Slide10AppendixV2Debug', file: 'v2-slide-10-appendix-debug.png' },
     { id: 'Slide11FinModelV2Debug', file: 'v2-slide-11-fin-model-debug.png' },
+    { id: 'Slide12QAV2Debug', file: 'v2-slide-12-qa-debug.png' },
 ];
 
 const v3Slides = [
@@ -69,6 +70,7 @@ const v3Slides = [
     { id: 'Slide09EpilogueV3Debug', file: 'v3-slide-09-epilogue-debug.png' },
     { id: 'Slide10AppendixV3Debug', file: 'v3-slide-10-appendix-debug.png' },
     { id: 'Slide11FinModelV3Debug', file: 'v3-slide-11-fin-model-debug.png' },
+    { id: 'Slide12QAV3Debug', file: 'v3-slide-12-qa-debug.png' },
 ];
 
 const slides = version === 'v1' ? v1Slides : version === 'v2' ? v2Slides : v3Slides;
@@ -82,7 +84,7 @@ slides.forEach((slide, index) => {
             cwd: rootDir,
             stdio: 'inherit'
         });
-    } catch (e) {
+    } catch {
         console.error(`Failed to render ${slide.id}`);
         process.exit(1);
     }

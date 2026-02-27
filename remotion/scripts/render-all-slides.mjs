@@ -37,17 +37,18 @@ const concurrency = concurrencyIdx !== -1 ? Number(args[concurrencyIdx + 1]) : 3
 
 // ── Slide definitions ────────────────────────────────────────
 const slides = [
-    { id: 'Slide01TitleV3', source: 'src/v2/Slide01TitleV2.tsx' },
-    { id: 'Slide02ProblemV3', source: 'src/v2/Slide02ProblemV2.tsx' },
-    { id: 'Slide03WhyNowV3', source: 'src/v2/Slide03WhyNowV2.tsx' },
-    { id: 'Slide04SolutionV3', source: 'src/v2/Slide04SolutionV2.tsx' },
-    { id: 'Slide05DifferentiationV3', source: 'src/v2/Slide05DifferentiationV2.tsx' },
-    { id: 'Slide06BusinessV3', source: 'src/v2/Slide06BusinessV2.tsx' },
-    { id: 'Slide07DemoV3', source: 'src/v2/Slide07DemoV2.tsx' },
-    { id: 'Slide08SummaryV3', source: 'src/v2/Slide08SummaryV2.tsx' },
-    { id: 'Slide09EpilogueV3', source: 'src/v2/Slide09EpilogueV2.tsx' },
-    { id: 'Slide10AppendixV3', source: 'src/v2/Slide10AppendixV2.tsx' },
-    { id: 'Slide11FinModelV3', source: 'src/v2/Slide11FinModelV2.tsx' },
+    { id: 'Slide01TitleV3', source: 'src/v2/active/Slide01TitleV2.tsx' },
+    { id: 'Slide02ProblemV3', source: 'src/v2/active/Slide02ProblemV2.tsx' },
+    { id: 'Slide03WhyNowV3', source: 'src/v2/active/Slide03WhyNowV2.tsx' },
+    { id: 'Slide04SolutionV3', source: 'src/v2/active/Slide04Solution3A.tsx' },
+    { id: 'Slide05DifferentiationV3', source: 'src/v2/active/Slide05DifferentiationV2.tsx' },
+    { id: 'Slide06BusinessV3', source: 'src/v2/active/Slide06BusinessV2.tsx' },
+    { id: 'Slide07DemoV3', source: 'src/v2/active/Slide07DemoV2.tsx' },
+    { id: 'Slide08SummaryV3', source: 'src/v2/active/Slide08SummaryV2.tsx' },
+    { id: 'Slide09EpilogueV3', source: 'src/v2/active/Slide09EpilogueV2.tsx' },
+    { id: 'Slide10AppendixV3', source: 'src/v2/active/Slide10AppendixV2.tsx' },
+    { id: 'Slide11FinModelV3', source: 'src/v2/active/Slide11FinModelV2.tsx' },
+    { id: 'Slide12QAV3', source: 'src/v2/active/Slide12QAV2.tsx' },
 ];
 
 // ── Main ─────────────────────────────────────────────────────
