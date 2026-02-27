@@ -55,8 +55,8 @@ const STAGES: readonly Stage[] = [
     accentColor: theme.accent.teal,
     glowColor: 'teal',
     items: [
-      { icon: 'data-grid', label: 'Dashboard', mark: '△', desc: 'Visibility without action' },
-      { icon: 'insight-lamp', label: 'AI-Powered Insights', mark: '△', desc: 'Limited' },
+      { icon: 'data-grid', label: 'Dashboard', mark: '○', desc: 'Visibility without action' },
+      { icon: 'insight-lamp', label: 'Financial Tracking', mark: '○', desc: 'Budget management' },
     ],
   },
   {

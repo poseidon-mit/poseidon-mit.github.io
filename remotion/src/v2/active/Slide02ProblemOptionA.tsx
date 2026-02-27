@@ -315,21 +315,7 @@ export const Slide02ProblemOptionA: React.FC<Slide02ProblemOptionAProps> = ({
             }}
           >
             <span style={{ whiteSpace: 'nowrap' }}>
-              Fintech(
-              <img
-                src={staticFile('assets/svg/mint-logo-white.svg')}
-                alt="Mint"
-                style={{
-                  height: '1.05em',
-                  width: 'auto',
-                  verticalAlign: '-0.08em',
-                  margin: '0 6px',
-                }}
-              />
-              , etc) solved visibility.
-            </span>
-            <span style={{ whiteSpace: 'nowrap' }}>
-              What can we solve next?
+              Fintech solved visibility. Coordination is not.
             </span>
           </div>
         </div>

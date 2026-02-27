@@ -1,6 +1,6 @@
 /**
- * Copy for Remotion compositions (Opening, Demo30s, and Slides 01-11).
- * Keys are aligned with TSX component numbering (Slide01-Slide11).
+ * Copy for Remotion compositions (Opening, Demo30s, and Slides 01-12).
+ * Keys are aligned with TSX component numbering (Slide01-Slide12).
  *
  * Speaker notes: canonical source is ./speaker-notes.json
  *   (consumed by gen-v3-pptx.py for PPTX generation).
@@ -137,8 +137,8 @@ export const copy = {
       {
         id: 'overdraft-fees',
         label: 'Overdraft fees',
-        value: '$12B/yr',
-        subtext: 'Annual overdraft & Non Sufficient Fund fee charged. (CFPB, 2021)',
+        value: '$5B/yr',
+        subtext: 'Annual overdraft & Non Sufficient Fund fee charged. (CFPB, 2023)',
         accent: 'red',
       },
     ],
@@ -280,7 +280,7 @@ export const copy = {
       rows: [
         { id: 'data-aggregation', feature: 'Data Aggregation', traditional: '\u2713', triton: '\u2713', kind: 'base' },
         { id: 'budgeting', feature: 'Budgeting Tools', traditional: '\u2713', triton: '\u2713', kind: 'base' },
-        { id: 'ai-insights', feature: 'AI-Powered Insights', traditional: 'Limited', triton: '\u2605 By design', kind: 'unique' },
+        { id: 'ai-insights', feature: 'Financial Tracking', traditional: 'Limited', triton: '\u2605 By design', kind: 'unique' },
         { id: 'govern-engine', feature: 'Regulatory Compliance', traditional: '\u2713', triton: '\u2605 Governance by design', kind: 'unique' },
         { id: 'personalized-ml', feature: 'Prediction and Recommendation', traditional: '\u2014', triton: '\u2605 Personalized models', kind: 'unique' },
         { id: 'cash-forecasting', feature: 'Natural Language Explanation', traditional: '\u2014', triton: '\u2605 Low temperature and\ncontribution factors', kind: 'unique' },
@@ -344,7 +344,7 @@ export const copy = {
         goal: 'Prove reliability and reach break-even economics.',
         definition: '',
         gateMetrics: [
-          { label: 'Users', target: '~277K', value: 277 },
+          { label: 'Users', target: '~180K', value: 180 },
           { label: 'Precision', target: '≥ 80%', value: 80 },
           { label: 'Availability', target: '>=99.9%', value: 99.9 },
         ],
@@ -360,7 +360,7 @@ export const copy = {
         goal: 'Increase user base, data coverage, and ML model scope.',
         definition: '',
         gateMetrics: [
-          { label: 'Users', target: '500K', value: 500 },
+          { label: 'Users', target: '~251K', value: 251 },
           { label: 'Precision', target: '>=90%', value: 90 },
           { label: 'False Pos', target: '<=5%', value: 5 },
         ],
@@ -492,7 +492,7 @@ export const copy = {
         id: 'business',
         index: '3',
         title: 'Sustainable business',
-        body: 'User Savings: $640/yr | Value Ratio: 6X | Margin: 87% | Breakeven: Mo 11 | Payback: Mo 16',
+        body: 'User Savings: $640/yr | Value Ratio: 4.3X | Margin: 77% | Breakeven: Mo 12 | Payback: Mo 16',
         color: '#7b6df2',
       },
     ],
@@ -512,7 +512,7 @@ export const copy = {
   // Slide 10: Appendix
   slide10: {
     title: 'Appendix',
-    index: ['Business Model', 'Financial Projections'],
+    index: [],
   },
   // Slide 11 (legacy compatibility for Slide11FinModelV2)
   slide11: {
@@ -523,10 +523,10 @@ export const copy = {
     heroStats: [
       {
         id: 'ltv-cac',
-        label: 'Customer Lifetime Return',
-        value: '10x / 51x',
-        valueDetail: '(Plus / Pro)',
-        description: 'Every $1 spent to acquire a customer generates $10 to $51 in lifetime profit',
+        label: 'Value / Cost for customer',
+        value: '4.3X',
+        valueDetail: '',
+        description: 'Every $1 spent on the subscription generates $4.3 in measurable value for the customer',
         subtext: 'Avg. acquisition cost: $10.85',
         color: 'teal',
         variant: 'teal',
@@ -576,21 +576,28 @@ export const copy = {
       ],
     },
     arr: {
-      months: ['M0', '', '', '', '', '', 'M6', '', '', '', '', '', 'M12', '', '', '', '', '', 'M18'],
-      values: [0, -0.08, -0.18, -0.30, -0.43, -0.55, -0.66, -0.75, -0.82, -0.86, -0.88, -0.88, -0.80, -0.64, -0.40, -0.10, 0.28, 0.72, 1.20],
+      months: ['M0', '', '', '', '', '', 'M6', '', '', '', '', '', 'M12', '', '', '', '', '', 'M18', '', '', '', '', '', 'M24'],
+      values: [0, -0.13, -0.26, -0.39, -0.50, -0.61, -0.70, -0.82, -0.91, -0.99, -1.04, -1.07, -1.06, -1.02, -0.95, -0.84, -0.68, -0.47, -0.22, 0.02, 0.31, 0.67, 1.09, 1.59, 2.16],
       milestones: [
-        { month: 12, label: 'Month12: Breakeven',  color: 'amber' },
-        { month: 16, label: 'Month16: Payback',   color: 'blue', atZeroCrossing: true },
-        { month: 19, label: 'Month 18: Profit $15.7M/yr', color: 'emerald' },
+        { month: 12, label: 'Month 12: Breakeven', color: 'amber' },
+        { month: 19, label: 'Month 19: Payback',       color: 'blue', atZeroCrossing: true },
+        { month: 24, label: 'Month 24: +$2.2M',          color: 'emerald' },
       ],
     },
     market: {
       items: [
-        { label: 'Total Market', value: '$7B', detail: 'Personal finance + AI advisory' },
+        { label: 'Total Market', value: '$3.5B', detail: 'Personal finance + AI advisory' },
         { label: 'Target Segment', value: '$1.5B', detail: 'AI-native money management' },
-        { label: '3-Year Capture', value: '$25M', detail: 'Conservative 1.2% penetration' },
+        { label: '3-Year Capture', value: '$46M', detail: 'Conservative 1.3% penetration' },
       ],
       citation: 'Conservatively calculated from Federal Reserve (2024), Fortune Business Insights (2025), Allied Market Research (2025)',
+    },
+    stressTest: {
+      scenarios: [
+        { name: 'Base',         paidConv: '3.5%', churn: '5%',  opBreakeven: 'M12', payback: 'M19', color: 'emerald' },
+        { name: 'Conservative', paidConv: '2.0%', churn: '7%',  opBreakeven: 'M16', payback: 'M26', color: 'amber'   },
+        { name: 'Pessimistic',  paidConv: '1.5%', churn: '10%', opBreakeven: 'M18', payback: 'M31', color: 'red'     },
+      ],
     },
     footnote: 'Growth: 12% → 2.4%/mo over 36 mo. Benchmarked vs Copilot, Cleo, Rocket Money.',
   },
@@ -635,6 +642,86 @@ export const copy = {
       cta: 'Get Early Access',
       footer: 'poseidon.ai',
     },
+  },
+  slide12: {
+    badge: 'Risk Register',
+    title: 'Inherent Risk and Mitigation',
+    subtitle: 'Six core risks, key controls, and residual exposure at a glance.',
+    subtitleHighlight: 'controls and residual exposure.',
+    risks: [
+      {
+        id: 'risk-01',
+        inherentRisk: 'Model drift from behavior and fraud-pattern shifts.',
+        ratingImpact: 'High',
+        ratingLikelihood: 'High',
+        mitigations: [
+          'Continuous precision/recall and drift monitoring.',
+          'Scheduled and threshold-triggered retraining.',
+        ],
+        residualLevel: 'Moderate',
+        residualNote: 'Sudden environmental change remains possible.',
+      },
+      {
+        id: 'risk-02',
+        inherentRisk: 'External, insider, and supply-chain security threats.',
+        ratingImpact: 'High',
+        ratingLikelihood: 'High',
+        mitigations: [
+          'Defense-in-depth: least privilege, MFA, segmentation, SIEM/SOC.',
+          'Secure SDLC plus tested incident-response playbooks.',
+        ],
+        residualLevel: 'Moderate',
+        residualNote: 'Sophisticated attacks and insider misuse cannot be zeroed.',
+      },
+      {
+        id: 'risk-03',
+        inherentRisk: 'LLM hallucination or misleading explanations.',
+        ratingImpact: 'Medium',
+        ratingLikelihood: 'High',
+        mitigations: [
+          'Deterministic services compute all numeric outputs.',
+          'Grounded responses with post-generation validation and rollback controls.',
+        ],
+        residualLevel: 'Moderate',
+        residualNote: 'Material numeric error is constrained by deterministic checks.',
+      },
+      {
+        id: 'risk-04',
+        inherentRisk: 'Bias, fairness, and disparate-impact risk.',
+        ratingImpact: 'High',
+        ratingLikelihood: 'Medium',
+        mitigations: [
+          'Fairness testing and continuous output monitoring.',
+          'Pre-deployment harm evaluation and feedback remediation loop.',
+        ],
+        residualLevel: 'Moderate',
+        residualNote: 'Residual bias remains and requires ongoing monitoring.',
+      },
+      {
+        id: 'risk-05',
+        inherentRisk: 'Regulatory, privacy, and data-protection exposure.',
+        ratingImpact: 'High',
+        ratingLikelihood: 'Medium',
+        mitigations: [
+          'Data residency, minimization, and PII sanitization before LLM use.',
+          'Encryption, key rotation, IAM, and periodic control audits.',
+        ],
+        residualLevel: 'Moderate',
+        residualNote: 'Regulatory change and third-party dependency risk persists.',
+      },
+      {
+        id: 'risk-06',
+        inherentRisk: 'System resiliency and availability degradation.',
+        ratingImpact: 'High',
+        ratingLikelihood: 'Medium',
+        mitigations: [
+          'Auto-healing and automatic failover.',
+          'DR with RTO/RPO tests and BCP non-LLM fallback.',
+        ],
+        residualLevel: 'Low',
+        residualNote: 'Large-scale outages remain possible at low frequency.',
+      },
+    ],
   },
   footer: {
     text: 'MIT CTO Program | Group 7 | March 2026',

@@ -2,7 +2,7 @@
 
 > The HTML + Playwright export pipeline is deprecated (`slides/DEPRECATED.md`); this Remotion workspace is the single source for every PPTX PNG. See `docs/overview/high-level-summary.md` for the current enforcement plan.
 
-Poseidon uses Remotion to render **high-quality PNG stills** for the Opening, Demo30s keyframe, and the active 11-slide V3 deck (`Slide01TitleV3` … `Slide11FinModelV3`). All slides achieve full visual fidelity with the HTML/CSS slides (aurora, vignette, glass, neon, icon glow, gradient text). Remotion also provides the **canonical 30s video** pipeline (`VideoMasterWWDCv4`) and its vertical counterpart.
+Poseidon uses Remotion to render **high-quality PNG stills** for the Opening, Demo30s keyframe, and the active 12-slide V3 deck (`Slide01TitleV3` … `Slide12QAV3`). All slides achieve full visual fidelity with the HTML/CSS slides (aurora, vignette, glass, neon, icon glow, gradient text). Remotion also provides the **canonical 30s video** pipeline (`VideoMasterWWDCv4`) and its vertical counterpart.
 
 **Clean setup:** This repo does not copy intermediate files from other Remotion projects. Only the minimal source files listed in [docs/mit-capstone/plan/mit-capstone-remotion-dual-support-plan.md](../docs/mit-capstone/plan/mit-capstone-remotion-dual-support-plan.md) are used, so no past-project styles or caches are forced.
 
@@ -49,7 +49,7 @@ Legacy video sources are stored in `src/legacy/video/` and are not registered in
 
 All slide/demo compositions: **1920×1080**, 30fps, 1 frame (still output). Video compositions: **30s @ 30fps** (16:9 and 9:16).
 
-For deck exports, the V3 pipeline renders and packages 11 slides (`Slide01TitleV3` ... `Slide11FinModelV3`) via `scripts/render-all-slides.mjs`.
+For deck exports, the V3 pipeline renders and packages 12 slides (`Slide01TitleV3` ... `Slide12QAV3`) via `scripts/render-all-slides.mjs`.
 
 ## Tier3 Visual System
 
@@ -97,7 +97,7 @@ Wrapper component that renders full-bleed visuals behind slide content:
   ```bash
   node scripts/render-all-slides.mjs
   ```
-  Renders 11 V3 slides to `out/v3-*.png`. Use `--scale 3` for quality-first master output (`5760x3240`).
+  Renders 12 V3 slides to `out/v3-*.png`. Use `--scale 3` for quality-first master output (`5760x3240`).
 - **Build quality-first master exports in one command:**
   ```bash
   node scripts/build-v3-exports.mjs
@@ -160,7 +160,7 @@ Wrapper component that renders full-bleed visuals behind slide content:
 ## Output
 
 - **Individual stills** (via `npx remotion still` or `npm run remotion:still`): output to `output/remotion/` (sibling of `output/png/`).
-- **Batch rendering** (via `render-all-slides.mjs`): outputs to `out/v3-*.png` (11-slide V3 set).
+- **Batch rendering** (via `render-all-slides.mjs`): outputs to `out/v3-*.png` (12-slide V3 set).
 - **Master V3 PNG set** (`out/v3-*.png`): produced by `render-all-slides.mjs --scale 3` and consumed by `gen-v3-pptx.py`.
 - **Master PPTX assembly** (`gen-v3-pptx.py` / `gen-v3-pptx.js`): outputs `out/Poseidon_AI_MIT_CTO_V3_Visual_First.pptx` with PNG embedding.
 - **Delivery PPTX assembly** (`gen-v3-pptx.py` / `gen-v3-pptx.js --image-format jpeg`): outputs `out/Poseidon_AI_MIT_CTO_V3_Visual_First_Delivery.pptx`.

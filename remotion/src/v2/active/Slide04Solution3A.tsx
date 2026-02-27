@@ -183,7 +183,6 @@ export const Slide04Solution3A: React.FC<Slide04Solution3AProps> = ({
               flexDirection: 'column',
               gap: 18,
               padding: '22px 24px 24px',
-              borderLeft: `3px solid ${theme.accent.blue}`,
               background: 'linear-gradient(170deg, rgba(59,130,246,0.06) 0%, rgba(59,130,246,0.02) 40%, rgba(14,22,38,0.38) 100%)',
             }}
             data-debug-id="slide04-3a.govern-container"
@@ -386,7 +385,7 @@ export const Slide04Solution3A: React.FC<Slide04Solution3AProps> = ({
         {/* ═══ Architecture Principle Footer ═══ */}
         <div
           style={{
-            marginTop: 45,
+            marginTop: 12,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',

@@ -9,7 +9,7 @@ Inspects the PPTX using python-pptx to confirm:
   - Image format (PNG vs JPEG) per slide
 
 Usage:
-  python3 scripts/verify-pptx-contents.py <pptx_path> --expected-slides 11 --json
+  python3 scripts/verify-pptx-contents.py <pptx_path> --expected-slides 12 --json
   python3 scripts/verify-pptx-contents.py <pptx_path>   # human-readable output
 
 Exit code 0 = valid.  Non-zero = structural issue detected.
@@ -187,7 +187,7 @@ def print_human_report(report: dict, expected_image_format: str, require_notes: 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Verify PPTX internal structure")
     parser.add_argument("pptx_path", type=Path, help="Path to the PPTX file")
-    parser.add_argument("--expected-slides", type=int, default=11, help="Expected number of slides")
+    parser.add_argument("--expected-slides", type=int, default=12, help="Expected number of slides")
     parser.add_argument(
         "--expected-image-format",
         choices=["PNG", "JPEG", "ANY"],

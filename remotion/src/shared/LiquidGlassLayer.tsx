@@ -30,7 +30,7 @@ const modeConfig: Record<
   },
   premium: {
     opacity: 0.11,
-    backdrop: 'blur(3px) saturate(1.04) brightness(0.99)',
+    backdrop: 'none',
     motionScale: 0.5,
     accentScale: 0.28,
     whiteScale: 1.18,

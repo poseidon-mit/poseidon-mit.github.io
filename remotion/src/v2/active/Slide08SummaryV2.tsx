@@ -42,7 +42,7 @@ const ARCH_TIMELINE = [
   { icon: 'ai-brain', label: 'Deterministic models compute', detail: 'ML models calculate with precision', color: theme.accent.amber },
   { icon: 'explainability', label: 'GenAI explains', detail: 'Plain English explanation', color: theme.accent.teal },
   { icon: 'gear', label: 'AI Agents execute', detail: 'Workflow orchestration', color: theme.accent.violet },
-  { icon: 'consent-check', label: 'Humans confidently approve', detail: 'Human-in-the-loop with centralized UI', color: theme.accent.blue },
+  { icon: 'consent-check', label: 'Humans confidently approve', detail: 'Human-in-the-loop with centralized control', color: theme.accent.blue },
 ];
 
 /* ── Business metric chips (headline only; detail → Appendix) ── */
@@ -228,7 +228,7 @@ export const Slide08SummaryV2: React.FC<Slide08SummaryV2Props> = ({
                   marginLeft: 8,
                 }}
               >
-                Meet regulatory expectation, provide further value
+                Meet regulatory expectation, every AI decision auditable
               </span>
             </div>
             <div style={{ display: 'flex', flex: 1, alignItems: 'center', gap: 10 }}>
@@ -376,28 +376,6 @@ export const Slide08SummaryV2: React.FC<Slide08SummaryV2Props> = ({
               >
                 Sustainable business, measurable progress
               </span>
-              <div
-                style={{
-                  ...glassChipStyle,
-                  borderRadius: 999,
-                  border: `1px solid ${BUSINESS_COLOR}55`,
-                  padding: '4px 16px',
-                  marginLeft: 12,
-                  gap: 4,
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: theme.typography.fontUi,
-                    fontSize: layout.pillarSubtitleSize - 4,
-                    fontWeight: 600,
-                    color: BUSINESS_COLOR,
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  Appendix ›
-                </span>
-              </div>
             </div>
             {/* Large stat numbers row */}
             <div style={{ display: 'flex', flex: 1, alignItems: 'center' }}>

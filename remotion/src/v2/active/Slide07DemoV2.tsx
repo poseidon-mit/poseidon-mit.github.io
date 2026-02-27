@@ -48,29 +48,30 @@ export const Slide07DemoV2: React.FC<Slide07DemoV2Props> = ({
       >
         {/* Header */}
         <div
-          style={{ width: '100%', maxWidth: layout.headerMaxWidth, textAlign: 'center' }}
+          style={{ width: '100%', maxWidth: '100%', textAlign: 'center' }}
           data-debug-id="slide07v2.header"
         >
           <SlideHeader
-            title="Product Walkthrough"
-            subtitle="See Poseidon in action — from alert to execution"
-            subtitleHighlight="from alert to execution"
+            title="Financial Confidence, Effortlessly"
+            subtitle="Poseidon turns financial complexity into seamless action"
+            subtitleHighlight="seamless action"
             badge="DEMO"
             badgeTheme={tc.badgeTheme}
             titleColor="white"
             subtitleHighlightColor={tc.subtitleHighlightColor}
             subtitleHighlightShadow={tc.subtitleHighlightShadow}
             align="center"
-            maxWidth={1620}
+            maxWidth="100%"
             titleStyle={{
               fontSize: Math.min(96, v2Policy.header.titleMaxPx),
               lineHeight: 1,
               textShadow: tc.titleTextShadow,
+              whiteSpace: 'nowrap',
             }}
             subtitleStyle={{
               fontSize: Math.min(48, v2Policy.header.subtitleMaxPx),
               lineHeight: 1.1,
-              maxWidth: 1500,
+              whiteSpace: 'nowrap',
             }}
             headerStyle={{ marginBottom: theme.spacing.space2, textAlign: 'center' }}
             debugId="slide07v2.header.inner"

@@ -42,10 +42,11 @@ TITLE_FOR = {
     "v3-Slide05DifferentiationV3.png": "Slide 5 — Beyond Aggregation",
     "v3-Slide06BusinessV3.png": "Slide 6 — Roadmap & Governance",
     "v3-Slide07DemoV3.png": "Slide 7 — Introduction Video",
-    "v3-Slide08SummaryV3.png": "Slide 8 — Summary",
-    "v3-Slide09EpilogueV3.png": "Slide 9 — Epilogue",
-    "v3-Slide10AppendixV3.png": "Slide 10 — Appendix",
-    "v3-Slide11FinModelV3.png": "Slide 11 — Capital-Efficient Monetization",
+    "v3-Slide11FinModelV3.png": "Slide 8 — Capital-Efficient Monetization",
+    "v3-Slide08SummaryV3.png": "Slide 9 — Summary",
+    "v3-Slide09EpilogueV3.png": "Slide 10 — Epilogue",
+    "v3-Slide10AppendixV3.png": "Slide 11 — Appendix",
+    "v3-Slide12QAV3.png": "Slide 12 — Q&A",
 }
 
 
@@ -54,9 +55,9 @@ def load_speaker_notes() -> list[str]:
     if notes_path.exists():
         with open(notes_path, encoding="utf-8") as f:
             notes = json.load(f)
-        if isinstance(notes, list) and len(notes) >= 11:
+        if isinstance(notes, list) and len(notes) >= 12:
             return notes
-        print(f"WARNING: speaker-notes.json has {len(notes)} entries, expected >= 11. Using inline fallback.")
+        print(f"WARNING: speaker-notes.json has {len(notes)} entries, expected >= 12. Using inline fallback.")
     else:
         print(f"WARNING: {notes_path} not found. Using inline fallback.")
     return [
@@ -66,11 +67,12 @@ def load_speaker_notes() -> list[str]:
         "Our architecture is a closed loop: Protect, Grow, Execute, Govern. Each engine has a clear role, and together they deliver auditable decisions, not isolated insights.",
         "We match baseline fintech features, then differentiate on five critical capabilities, especially governance-by-design. That governance moat is difficult to replicate.",
         "Execution is phased across four stages. We track hard gates like 9K users, 70% precision, and 99.9% uptime to prove break-even and operational readiness.",
-        "Unit economics justify the business: customer value exceeds acquisition cost by 17x on Plus and 77x on Pro, with blended acquisition cost under $10 driven by organic-first growth. Gross margin is 87% at scale, in line with typical SaaS. We reach operating profitability at Month 15 on $25M total capital, with Series A triggered at $300K monthly revenue in Month 9. By Month 36 we project 2.2 million monthly users, 717K paid, and $96M in annual revenue.",
         "The demo follows a 30-second journey: unified dashboard, Protect with explainability, Execute with human approval, and Govern with audit logging.",
+        "Unit economics justify the business: customer value exceeds acquisition cost by 17x on Plus and 77x on Pro, with blended acquisition cost under $10 driven by organic-first growth. Gross margin is 87% at scale, in line with typical SaaS. We reach operating profitability at Month 15 on $25M total capital, with Series A triggered at $300K monthly revenue in Month 9. By Month 36 we project 2.2 million monthly users, 717K paid, and $96M in annual revenue.",
         "The strategy rests on three pillars: governance, architecture, and business model. Economics target about $235 yearly user savings, 77% margin, and roughly 8x value-to-cost.",
         "We close with the team and operating principle: deterministic compute, explainable AI, and explicit human approval before action. The QR code links to the live demo.",
         "Appendix: supporting assumptions, references, and calculation details for diligence review.",
+        "Q&A. Thank you for your time and consideration.",
     ]
 
 
@@ -241,10 +243,11 @@ def main() -> None:
         "v3-Slide05DifferentiationV3.png",
         "v3-Slide06BusinessV3.png",
         "v3-Slide07DemoV3.png",
+        "v3-Slide11FinModelV3.png",
         "v3-Slide08SummaryV3.png",
         "v3-Slide09EpilogueV3.png",
         "v3-Slide10AppendixV3.png",
-        "v3-Slide11FinModelV3.png",
+        "v3-Slide12QAV3.png",
     ]
 
     missing = [name for name in slide_pngs if not (out_dir / name).exists()]
