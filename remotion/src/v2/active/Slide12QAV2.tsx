@@ -216,7 +216,7 @@ export const Slide12QAV2: React.FC<Slide12QAV2Props> = ({
                     fontWeight: 650,
                     lineHeight: 1.18,
                     color: 'rgba(255,255,255,0.92)',
-                    textWrap: 'balance',
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   {risk.inherentRisk}

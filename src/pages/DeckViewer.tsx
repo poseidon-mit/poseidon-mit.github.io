@@ -4,7 +4,7 @@ import { Link } from '@/router';
 import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
-const PDF_PATH = '/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf';
+const PDF_PATH = '/Group7-CTO-Poseidon.pdf';
 const RESIZE_DEBOUNCE_MS = 180;
 const WIDTH_CHANGE_THRESHOLD_PX = 12;
 const VISIBLE_BUFFER_PAGES = 1;
