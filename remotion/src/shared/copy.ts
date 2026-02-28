@@ -647,7 +647,7 @@ export const copy = {
     badge: 'Risk Register',
     title: 'Inherent Risk and Mitigation',
     subtitle: 'Six core risks, key controls, and residual risks.',
-    subtitleHighlight: 'controls, and residual risks.',
+    subtitleHighlight: '',
     risks: [
       {
         id: 'risk-01',
