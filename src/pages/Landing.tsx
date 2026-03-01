@@ -94,10 +94,10 @@ export default function Landing() {
                 <span className="bg-gradient-to-r from-[#34D399] to-[#A78BFA] bg-clip-text text-transparent">Activate Your Poseidon</span>
                 <ArrowRight className="w-5 h-5 text-[#A78BFA]" />
               </Link>
-              <a href="/Group7-CTO-Poseidon.pdf" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full sm:w-auto bg-white/5 border border-white/10 backdrop-blur-xl px-[32px] py-[16px] rounded-[12px] font-cabin font-medium text-[16px] md:text-[18px] text-white hover:bg-white/10 transition-colors">
+              <Link to="/share" className="flex items-center justify-center gap-2 w-full sm:w-auto bg-white/5 border border-white/10 backdrop-blur-xl px-[32px] py-[16px] rounded-[12px] font-cabin font-medium text-[16px] md:text-[18px] text-white hover:bg-white/10 transition-colors">
                 <FileText className="w-5 h-5" />
-                Presentation
-              </a>
+                Team Files
+              </Link>
               <button onClick={() => setVideoOpen(true)} className="flex items-center justify-center gap-2 w-full sm:w-auto bg-white/5 border border-white/10 backdrop-blur-xl px-[32px] py-[16px] rounded-[12px] font-cabin font-medium text-[16px] md:text-[18px] text-white hover:bg-white/10 transition-colors">
                 <Play className="w-5 h-5" />
                 Video

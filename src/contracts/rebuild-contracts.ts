@@ -139,6 +139,7 @@ export const DEFAULT_CTA_BUDGET: CtaBudget = {
 export const TARGET_SCOPE_READY_ROUTES = [
   '/',
   '/deck',
+  '/share',
   '/signup',
   '/login',
   '/onboarding',
@@ -219,6 +220,19 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionLabel: 'Return home',
     primaryActionPath: '/',
     first5sMessage: 'Review the demo deck artifacts quickly.',
+    evidence: EVIDENCE_NONE,
+  }),
+  '/share': routeMeta({
+    route: '/share',
+    screenType: 'public',
+    navType: 'public-topbar',
+    parentRoute: '/',
+    intent: 'monitor',
+    navGroup: 'public',
+    cognitiveLoad: 'low',
+    primaryActionLabel: 'Return home',
+    primaryActionPath: '/',
+    first5sMessage: 'Open the latest shareable files without signing in.',
     evidence: EVIDENCE_NONE,
   }),
   '/trust': routeMeta({
