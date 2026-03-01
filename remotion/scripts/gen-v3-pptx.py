@@ -4,8 +4,9 @@ Generate V3 PPTX from rendered slide PNGs.
 
 Defaults are quality-first (master profile):
 - Embed source PNG files directly
-- Attach speaker notes and alt text
-- No transitions
+- Do not attach speaker notes
+- Attach alt text
+- Apply fast fade transitions
 
 Optional delivery profile:
 - Convert source PNG files to JPEG (`--image-format jpeg`)
@@ -122,18 +123,27 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Optional output PPTX path. Default depends on profile.",
     )
-    parser.add_argument(
+    transitions_group = parser.add_mutually_exclusive_group()
+    transitions_group.add_argument(
         "--transitions",
+        dest="transitions",
         action="store_true",
-        help="Enable fade transitions (default: off).",
+        help="Enable fast fade transitions (default).",
     )
+    transitions_group.add_argument(
+        "--no-transitions",
+        dest="transitions",
+        action="store_false",
+        help="Do not attach slide transitions.",
+    )
+    parser.set_defaults(transitions=True)
 
     notes_group = parser.add_mutually_exclusive_group()
     notes_group.add_argument(
         "--notes",
         dest="notes",
         action="store_true",
-        help="Attach speaker notes (default).",
+        help="Attach speaker notes.",
     )
     notes_group.add_argument(
         "--no-notes",
@@ -141,7 +151,7 @@ def parse_args() -> argparse.Namespace:
         action="store_false",
         help="Do not attach speaker notes.",
     )
-    parser.set_defaults(notes=True)
+    parser.set_defaults(notes=False)
 
     alt_group = parser.add_mutually_exclusive_group()
     alt_group.add_argument(
@@ -168,7 +178,7 @@ def apply_fade_transition(slide) -> None:
             slide_xml.remove(child)
 
     transition = OxmlElement("p:transition")
-    transition.set("spd", "med")
+    transition.set("spd", "fast")
     transition.append(OxmlElement("p:fade"))
 
     insert_idx = len(slide_xml)
@@ -223,7 +233,7 @@ def detect_profile_name(args: argparse.Namespace) -> str:
 
 def default_output_path(out_dir: Path, profile: str) -> Path:
     if profile == "master":
-        return out_dir / "Poseidon_AI_MIT_CTO_V3_Visual_First.pptx"
+        return out_dir / "Group7-CTO-Poseidon.pptx"
     return out_dir / "Poseidon_AI_MIT_CTO_V3_Visual_First_Delivery.pptx"
 
 
@@ -231,9 +241,9 @@ def main() -> None:
     args = parse_args()
     profile = detect_profile_name(args)
     jpeg_quality = clamp_jpeg_quality(args.jpeg_quality)
-    speaker_notes = load_speaker_notes()
     out_dir = Path(__file__).resolve().parent.parent / "out"
     out_path = args.output or default_output_path(out_dir, profile)
+    speaker_notes = load_speaker_notes() if args.notes else []
 
     slide_pngs = [
         "v3-Slide01TitleV3.png",

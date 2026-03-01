@@ -135,7 +135,7 @@ def apply_fade_transition(slide) -> None:
             slide_xml.remove(child)
 
     transition = OxmlElement("p:transition")
-    transition.set("spd", "med")
+    transition.set("spd", "fast")
     transition.append(OxmlElement("p:fade"))
 
     insert_idx = len(slide_xml)
@@ -155,11 +155,10 @@ def main():
         default=92,
         help='JPEG quality (1-100) when --jpeg conversion is explicitly enabled.',
     )
-    parser.add_argument(
-        '--transitions',
-        action='store_true',
-        help='Enable fade transitions (default: off).',
-    )
+    transitions_group = parser.add_mutually_exclusive_group()
+    transitions_group.add_argument('--transitions', dest='transitions', action='store_true', help='Enable fast fade transitions (default).')
+    transitions_group.add_argument('--no-transitions', dest='transitions', action='store_false', help='Do not attach slide transitions.')
+    parser.set_defaults(transitions=True)
 
     jpeg_group = parser.add_mutually_exclusive_group()
     jpeg_group.add_argument('--jpeg', dest='jpeg', action='store_true', help='Convert PNG input to JPEG before PPTX embedding.')
@@ -167,9 +166,9 @@ def main():
     parser.set_defaults(jpeg=False)
 
     notes_group = parser.add_mutually_exclusive_group()
-    notes_group.add_argument('--notes', dest='notes', action='store_true', help='Attach speaker notes (default).')
+    notes_group.add_argument('--notes', dest='notes', action='store_true', help='Attach speaker notes.')
     notes_group.add_argument('--no-notes', dest='notes', action='store_false', help='Do not attach speaker notes.')
-    parser.set_defaults(notes=True)
+    parser.set_defaults(notes=False)
 
     alt_group = parser.add_mutually_exclusive_group()
     alt_group.add_argument('--alt-text', dest='alt_text', action='store_true', help='Attach image alt text (default).')

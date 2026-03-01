@@ -4,7 +4,7 @@ Verify the internal structure of Poseidon_AI_MIT_CTO_V3_Visual_First.pptx.
 
 Inspects the PPTX using python-pptx to confirm:
   - Correct slide count
-  - Speaker notes present and non-trivial on every slide
+  - Speaker notes presence/absence when requested
   - Alt text present on every slide image
   - Image format (PNG vs JPEG) per slide
 

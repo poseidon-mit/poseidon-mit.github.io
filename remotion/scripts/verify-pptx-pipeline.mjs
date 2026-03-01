@@ -2,7 +2,7 @@
  * verify-pptx-pipeline.mjs — End-to-end verification for V3 deck exports.
  *
  * Profiles:
- * - master: scale-3 PNG slides + master PPTX (PNG images, notes required)
+ * - master: scale-3 PNG slides + master PPTX (PNG images, no notes by default)
  * - delivery: optional delivery PPTX (JPEG expected) + delivery PDF
  * - all: master + delivery
  */
@@ -51,7 +51,7 @@ const expectedHeight = readIntFlag('--expected-height', 3240);
 const minPngBytes = readIntFlag('--min-png-bytes', 500 * 1024);
 const minPdfMb = readIntFlag('--pdf-min-mb', 8);
 const maxPdfMb = readIntFlag('--pdf-max-mb', 22);
-const masterPptxName = readStringFlag('--master-pptx-file', 'Poseidon_AI_MIT_CTO_V3_Visual_First.pptx');
+const masterPptxName = readStringFlag('--master-pptx-file', 'Group7-CTO-Poseidon.pptx');
 const deliveryPptxName = readStringFlag('--delivery-pptx-file', 'Poseidon_AI_MIT_CTO_V3_Visual_First_Delivery.pptx');
 const deliveryPdfName = readStringFlag('--delivery-pdf-file', 'Poseidon_AI_MIT_CTO_V3_Visual_First.pdf');
 
@@ -185,7 +185,6 @@ function verifyPptxFile(pptxName, expectedImageFormat) {
       [
         `python3 "${verifyScript}" "${pptxPath}"`,
         `--expected-slides ${SLIDES.length}`,
-        '--require-notes',
         '--require-alt-text',
         `--expected-image-format ${expectedImageFormat}`,
         '--json',
@@ -195,9 +194,9 @@ function verifyPptxFile(pptxName, expectedImageFormat) {
     const report = JSON.parse(result.trim());
     check(`PPTX slide count = ${SLIDES.length}: ${pptxName}`, report.slideCount === SLIDES.length, `got ${report.slideCount}`);
     check(
-      `PPTX notes on all slides: ${pptxName}`,
-      report.slidesWithNotes === SLIDES.length && report.shortNotes === 0,
-      `${report.slidesWithNotes}/${SLIDES.length}, short=${report.shortNotes}`,
+      `PPTX notes omitted by default: ${pptxName}`,
+      report.slidesWithNotes === 0,
+      `${report.slidesWithNotes}/${SLIDES.length}`,
     );
     check(
       `PPTX alt text on all slides: ${pptxName}`,

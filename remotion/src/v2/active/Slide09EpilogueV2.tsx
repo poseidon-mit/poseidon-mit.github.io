@@ -141,7 +141,6 @@ export const Slide09EpilogueV2: React.FC<Slide09EpilogueV2Props> = ({
             width: '100%',
             maxWidth: layout.ctaMaxWidth,
             padding: '36px 56px',
-            borderTop: `2px solid ${theme.accent.teal}`,
             ...authorityDarkGlassStyle,
           }}
           debugId="slide09v2.cta"

@@ -49,6 +49,7 @@ export const Slide11FinModelV2: React.FC<Slide11FinModelV2Props> = ({
   const layout = slideLayouts.slide11v2;
   const slide = copy.slide11;
   const arrValues = slide.arr.values;
+  const marketItems = slide.market.items;
 
   return (
     <SlideFrame debug={debug} debugGrid={debugGrid} debugIds={debugIds} slideNumber={8}>
@@ -211,12 +212,20 @@ export const Slide11FinModelV2: React.FC<Slide11FinModelV2Props> = ({
               >
                 MARKET OPPORTUNITY
               </div>
-              <div style={{ display: 'flex', gap: 12 }}>
-                {slide.market.items.map((item) => (
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+                  columnGap: 12,
+                  rowGap: 6,
+                  alignItems: 'start',
+                }}
+              >
+                {marketItems.map((item) => (
                   <div
                     key={item.label}
                     style={{
-                      flex: 1,
+                      minWidth: 0,
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
@@ -244,7 +253,7 @@ export const Slide11FinModelV2: React.FC<Slide11FinModelV2Props> = ({
                         fontSize: layout.leftMarketLabelSize,
                         fontWeight: 600,
                         color: theme.accent.emerald,
-                        lineHeight: 1,
+                        lineHeight: 1.08,
                         textAlign: 'center',
                       }}
                     >
@@ -252,17 +261,19 @@ export const Slide11FinModelV2: React.FC<Slide11FinModelV2Props> = ({
                     </div>
                   </div>
                 ))}
-              </div>
-              <div
-                style={{
-                  fontFamily: theme.typography.fontMono,
-                  fontSize: layout.leftMarketCitationSize,
-                  color: 'rgba(255,255,255,0.30)',
-                  lineHeight: 1.2,
-                  textAlign: 'right',
-                }}
-              >
-                {slide.market.citation}
+                <div
+                  style={{
+                    gridColumn: '1 / span 2',
+                    justifySelf: 'center',
+                    fontFamily: theme.typography.fontMono,
+                    fontSize: layout.leftMarketCitationSize,
+                    color: 'rgba(255,255,255,0.30)',
+                    lineHeight: 1.2,
+                    textAlign: 'center',
+                  }}
+                >
+                  {slide.market.citation}
+                </div>
               </div>
             </div>
 
@@ -365,6 +376,7 @@ export const Slide11FinModelV2: React.FC<Slide11FinModelV2Props> = ({
               gap: 8,
               minHeight: 0,
               padding: layout.rightCardPadding,
+              borderLeft: '1px solid rgba(255,255,255,0.18)',
               ...authorityDarkGlassStyle,
             }}
             debugId="slide11v2.arrChart"

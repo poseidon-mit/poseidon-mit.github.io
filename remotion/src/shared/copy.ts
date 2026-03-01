@@ -137,7 +137,7 @@ export const copy = {
       {
         id: 'overdraft-fees',
         label: 'Overdraft fees',
-        value: '$5B/yr',
+        value: '$6B/yr',
         subtext: 'Annual overdraft & Non Sufficient Fund fee charged. (CFPB, 2023)',
         accent: 'red',
       },
@@ -586,11 +586,11 @@ export const copy = {
     },
     market: {
       items: [
-        { label: 'Total Market', value: '$3.5B', detail: 'Personal finance + AI advisory' },
-        { label: 'Target Segment', value: '$1.5B', detail: 'AI-native money management' },
+        { label: 'US retail banking profit', value: '$750B/yr', detail: '' },
+        { label: 'Balance with low ARP', value: '$17.5T', detail: '' },
         { label: '3-Year Capture', value: '$46M', detail: 'Conservative 1.3% penetration' },
       ],
-      citation: 'Conservatively calculated from Federal Reserve (2024), Fortune Business Insights (2025), Allied Market Research (2025)',
+      citation: '(McKinsey 2024)',
     },
     stressTest: {
       scenarios: [

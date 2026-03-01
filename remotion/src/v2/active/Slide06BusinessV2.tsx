@@ -157,6 +157,7 @@ export const Slide06BusinessV2: React.FC<Slide06BusinessV2Props> = ({
                 style={{
                   gap: 0,
                   padding: layout.phase1CardPadding, height: '100%',
+                  borderLeft: '1px solid rgba(255,255,255,0.18)',
                   flexShrink: v2Policy.card.cardFlexShrink,
                   ...authorityDarkGlassStyle,
                 }}

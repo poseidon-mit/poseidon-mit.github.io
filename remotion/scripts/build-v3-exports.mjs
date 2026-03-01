@@ -88,7 +88,7 @@ function main() {
   }
 
   if (!args.skipMasterPptx) {
-    run('node scripts/gen-v3-pptx.js --image-format png --notes --alt-text');
+    run('node scripts/gen-v3-pptx.js --image-format png --alt-text --transitions --no-notes');
   }
 
   if (!args.skipPdf) {
@@ -103,13 +103,13 @@ function main() {
   }
 
   if (args.deliveryPptx) {
-    run('node scripts/gen-v3-pptx.js --image-format jpeg --jpeg-quality 82 --notes --alt-text');
+    run('node scripts/gen-v3-pptx.js --image-format jpeg --jpeg-quality 82 --alt-text --transitions --no-notes');
   }
 
   console.log('\n=== Export summary ===');
   printFile(
     'Master PPTX',
-    join(OUT_DIR, 'Poseidon_AI_MIT_CTO_V3_Visual_First.pptx'),
+    join(OUT_DIR, 'Group7-CTO-Poseidon.pptx'),
   );
   printFile(
     'Delivery PDF',
