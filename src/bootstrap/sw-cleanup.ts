@@ -1,4 +1,4 @@
-const SW_CLEANUP_MARKER_KEY = 'poseidon:sw-cleanup-v1';
+const SW_CLEANUP_MARKER_KEY = 'poseidon:sw-cleanup-v2';
 
 function getCleanupMarker(): boolean {
   try {
@@ -16,35 +16,49 @@ function setCleanupMarker(): void {
   }
 }
 
-function shouldRunCleanup(): boolean {
+function shouldInspectCleanupTargets(): boolean {
   if (typeof window === 'undefined') return false;
   if (!import.meta.env.PROD) return false;
   if (import.meta.env.VITE_ENABLE_SW === '1') return false;
-  if (getCleanupMarker()) return false;
   return true;
 }
 
+async function getCleanupTargets() {
+  const registrations = 'serviceWorker' in navigator
+    ? await navigator.serviceWorker.getRegistrations().catch(() => [])
+    : [];
+  const cacheKeys = 'caches' in window
+    ? await caches.keys().catch(() => [])
+    : [];
+
+  return { registrations, cacheKeys };
+}
+
 /**
- * Clears legacy Service Worker registrations + stale caches once
- * after SW is disabled in production.
+ * Clears legacy Service Worker registrations + stale caches after SW is disabled.
+ * The cleanup re-runs if stale registrations or caches still exist, even if an
+ * older cleanup marker was already written.
  */
 export async function runServiceWorkerCleanupOnBoot(): Promise<void> {
-  if (!shouldRunCleanup()) {
+  if (!shouldInspectCleanupTargets()) {
     return;
   }
 
-  console.info('[telemetry] sw_cleanup_started');
-
   try {
-    if ('serviceWorker' in navigator) {
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(registrations.map((registration) => registration.unregister().catch(() => false)));
+    const { registrations, cacheKeys } = await getCleanupTargets();
+    const hasTargets = registrations.length > 0 || cacheKeys.length > 0;
+
+    if (!hasTargets && getCleanupMarker()) {
+      return;
     }
 
-    if ('caches' in window) {
-      const cacheKeys = await caches.keys();
-      await Promise.all(cacheKeys.map((key) => caches.delete(key).catch(() => false)));
-    }
+    console.info('[telemetry] sw_cleanup_started', {
+      registrations: registrations.length,
+      caches: cacheKeys.length,
+    });
+
+    await Promise.all(registrations.map((registration) => registration.unregister().catch(() => false)));
+    await Promise.all(cacheKeys.map((key) => caches.delete(key).catch(() => false)));
 
     console.info('[telemetry] sw_cleanup_executed');
   } catch (error) {
@@ -53,4 +67,3 @@ export async function runServiceWorkerCleanupOnBoot(): Promise<void> {
     setCleanupMarker();
   }
 }
-
