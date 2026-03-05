@@ -14,12 +14,9 @@ import { slideLayouts, v2Policy } from '../../shared/slideLayouts';
 import { DustMotes } from '../../shared/effects/FloatingParticles';
 import { staticFile } from 'remotion';
 import { DeviceFrame } from '../../shared/visuals/DeviceFrame';
-import { GlassCard } from '../../shared/GlassCard';
 import { getSlideHeaderColors, recolorBackgroundLayers } from '../../shared/slideThemeColor';
 
 const tc = getSlideHeaderColors('cyan');
-
-
 
 interface Slide07DemoV2Props {
   debug?: boolean;
@@ -212,11 +209,7 @@ export const Slide07DemoV2: React.FC<Slide07DemoV2Props> = ({
             </DeviceFrame>
 
             {/* YouTube audio-safe fallback card */}
-            <GlassCard
-              tone="dark"
-              liquidGlass="premium"
-              glassQuality="premium"
-              debugId="slide07v2.youtubeCta"
+            <div
               style={{
                 position: 'absolute',
                 right: layout.youtubeCardRight,
@@ -228,35 +221,55 @@ export const Slide07DemoV2: React.FC<Slide07DemoV2Props> = ({
                 flexDirection: 'column',
                 alignItems: 'center',
                 zIndex: theme.zIndex.overlay + 1,
-                borderRadius: 18,
-                border: '1px solid rgba(255,255,255,0.2)',
-                boxShadow: '0 26px 68px rgba(0,0,0,0.66), 0 0 18px rgba(0,240,255,0.14)',
+                borderRadius: 22,
+                border: '1.25px solid rgba(255,255,255,0.23)',
+                background:
+                  'linear-gradient(145deg, rgba(20,24,34,0.90) 0%, rgba(8,10,16,0.92) 55%, rgba(5,7,12,0.94) 100%)',
+                boxShadow: '0 26px 68px rgba(0,0,0,0.66), 0 0 0 1px rgba(0,245,255,0.10)',
+                overflow: 'hidden',
               }}
+              data-debug-id="slide07v2.youtubeCta"
             >
               <div
                 style={{
+                  position: 'relative',
                   width: '100%',
                   display: 'flex',
+                  alignItems: 'center',
                   justifyContent: 'center',
                 }}
                 title={youtubeCta.note}
               >
-                <img
-                  src={staticFile('assets/png/youtubelogo-clean-filled.png')}
-                  alt={`${youtubeCta.badge} icon`}
+                <div
                   style={{
+                    width: layout.youtubeBadgeWidth,
                     height: layout.youtubeBadgeHeight,
-                    width: 'auto',
-                    maxWidth: '100%',
-                    objectFit: 'contain',
-                    display: 'block',
+                    borderRadius: 999,
+                    overflow: 'hidden',
+                    background: 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
-                />
+                >
+                  <img
+                    src={staticFile('assets/png/newYTlogo-pill-transparent-noborder.png')}
+                    alt={`${youtubeCta.badge} icon`}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                      objectPosition: 'center',
+                      display: 'block',
+                    }}
+                  />
+                </div>
               </div>
 
               {hasYoutubeTitle ? (
                 <div
                   style={{
+                    position: 'relative',
                     marginTop: 6,
                     fontFamily: theme.typography.fontHeader,
                     fontSize: Math.min(20, layout.youtubeTitleSize),
@@ -273,6 +286,7 @@ export const Slide07DemoV2: React.FC<Slide07DemoV2Props> = ({
               {hasYoutubeSubtitle ? (
                 <div
                   style={{
+                    position: 'relative',
                     marginTop: 4,
                     fontFamily: theme.typography.fontUi,
                     fontSize: Math.min(15, layout.youtubeBodySize),
@@ -288,6 +302,7 @@ export const Slide07DemoV2: React.FC<Slide07DemoV2Props> = ({
 
               <div
                 style={{
+                  position: 'relative',
                   marginTop: hasYoutubeTitle || hasYoutubeSubtitle ? 8 : 14,
                   width: layout.youtubeQrSize,
                   height: layout.youtubeQrSize,
@@ -332,7 +347,7 @@ export const Slide07DemoV2: React.FC<Slide07DemoV2Props> = ({
                   </div>
                 )}
               </div>
-            </GlassCard>
+            </div>
           </div>
         </div>
 
