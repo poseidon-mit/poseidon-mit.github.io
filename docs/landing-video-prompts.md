@@ -1,5 +1,10 @@
 # Landing Page Background Generation Prompts
 
+> Update (2026-03-04): For production execution, use the dedicated **Dynamic AI/Data A/B/C** pack:  
+> `docs/video-production/landing-hero-prompt-pack.md`  
+> and scoring template:  
+> `docs/video-production/landing-hero-selection-sheet-template.csv`
+
 WebGLの品質課題を解決するため、AI生成動画（画像生成 → 動画生成）によるアプローチへの移行をサポートします。Poseidonの「AI-Governed (AIによる資産管理機能)」とFintechの洗練された雰囲気を表現するためのプロンプトを作成しました。
 
 ## 1. 画像生成用プロンプト (Nano banana pro 等の高品質画像モデル向け)

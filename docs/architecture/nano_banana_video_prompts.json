@@ -1,0 +1,784 @@
+{
+  "metadata": {
+    "title": "Poseidon.AI — 30-Second MIT Presentation Video",
+    "version": "2.2",
+    "tools": "Nano Banana Pro (NBP) + Veo 3.1",
+    "changes_from_v1": [
+      "JSON format",
+      "Removed F03 (Trident Wide Establishing) — S2 now transitions F02→F03(old F04) for smoother video merge",
+      "Logo frames (F02, F11) reference provided trident image instead of text-generated trident",
+      "Replaced S8 Governance Layer with Grow Engine recommendation flow",
+      "Added Execute buttons (context-specific labels) to S7 and new S8",
+      "F08 and F09 reference actual product UI screenshots as source-of-truth for layout and content",
+      "PROTECT action buttons updated to match actual product: 'Block & Dispute' + 'This was Me'",
+      "GROW content updated to match actual product: 'Move Idle Cash to High-Yield' recommendation + 3-step execution plan + 'Execute Auto Steps' button"
+    ],
+    "pipeline": {
+      "workflow": "NBP Frame Generation → Veo 3.1 Segment Animation → Assembly",
+      "segments": "10 segments × ~3 seconds each = 30 seconds",
+      "frames": "11 unique 4K static frames (Start/End pairs for Veo)",
+      "output": "3840×2160 (4K UHD), 24fps or 30fps"
+    }
+  },
+  "assembly_order": [
+    {
+      "segment": "S1",
+      "timecode": "0.0–3.0s",
+      "phase": "Visual Hook",
+      "nbp_frames": "F01 → F02",
+      "veo": "V01"
+    },
+    {
+      "segment": "S2",
+      "timecode": "3.0–6.0s",
+      "phase": "Fragmented Status Quo",
+      "nbp_frames": "F02 → F03",
+      "veo": "V02"
+    },
+    {
+      "segment": "S3",
+      "timecode": "6.0–9.0s",
+      "phase": "Cost of Fragmentation",
+      "nbp_frames": "F03 → F04",
+      "veo": "V03"
+    },
+    {
+      "segment": "S4",
+      "timecode": "9.0–12.0s",
+      "phase": "Thesis Statement",
+      "nbp_frames": "F04 → F05",
+      "veo": "V04"
+    },
+    {
+      "segment": "S5",
+      "timecode": "12.0–15.0s",
+      "phase": "The Transformation",
+      "nbp_frames": "F05 → F06",
+      "veo": "V05"
+    },
+    {
+      "segment": "S6",
+      "timecode": "15.0–18.0s",
+      "phase": "Four Engine Grid",
+      "nbp_frames": "F06 → F07",
+      "veo": "V06"
+    },
+    {
+      "segment": "S7",
+      "timecode": "18.0–21.0s",
+      "phase": "PROTECT Decision + Execute",
+      "nbp_frames": "F07 → F08",
+      "veo": "V07"
+    },
+    {
+      "segment": "S8",
+      "timecode": "21.0–24.0s",
+      "phase": "Grow Engine + Execute",
+      "nbp_frames": "F08 → F09",
+      "veo": "V08"
+    },
+    {
+      "segment": "S9",
+      "timecode": "24.0–27.0s",
+      "phase": "Key Metric",
+      "nbp_frames": "F09 → F10",
+      "veo": "V09"
+    },
+    {
+      "segment": "S10",
+      "timecode": "27.0–30.0s",
+      "phase": "Brand Resolution",
+      "nbp_frames": "F10 → F11",
+      "veo": "V10"
+    }
+  ],
+  "global_style_constants": {
+    "environment": "Deep dark-mode studio void, background #050510",
+    "floor": "Highly polished black acrylic, casting soft inverted reflections",
+    "material": "Liquid Glass — frosted translucent panels, aggressive background blur",
+    "edge_treatment": "Sharp 1-pixel glowing specular highlights on beveled edges",
+    "typography_primary": "Bold white sans-serif (Inter or SF Pro Display weight 600–700)",
+    "typography_secondary": "White at 60% opacity, weight 400",
+    "lens": "Virtual 100mm macro, f/1.4–f/2.8 aperture",
+    "render": "4K (3840×2160), photorealistic cinematic quality, no artifacts",
+    "canonical_environment_sentence": "The environment is an infinite deep dark-mode studio void (#050510) with a highly polished black acrylic floor casting soft inverted reflections.",
+    "canonical_lighting_rig": "Large soft key light (high, off-axis) creating soft drop shadows beneath floating UI elements. Specular rim kickers positioned behind UI panels creating brilliant 1-pixel glowing edge separation against the dark background. Polished floor catches soft inverted reflections of all floating elements. Deviations from this rig (e.g., engine-colored rim accents) must be explicitly noted per-frame.",
+    "canonical_isometric_phrase": "perfectly isometric, 45-degree aerial view"
+  },
+  "brand_constants": {
+    "logo": {
+      "description": "Trident symbol — curved swept prongs, fluid, cyan-to-blue gradient",
+      "reference_image": "USE PROVIDED REFERENCE IMAGE. Upload the attached Poseidon trident logo image as a reference for Nano Banana Pro and Veo 3.1. Do NOT generate the trident from text description alone — the reference image is the canonical source of truth for the trident shape, proportions, and style."
+    },
+    "wordmark": "\"POSEIDON\" — uppercase, bold, tight letter-spacing (-0.04em)",
+    "tagline": "The Trusted AI-Native Money Platform",
+    "background": "#050510 (near-black with blue undertone)",
+    "engine_colors": {
+      "dashboard": {
+        "name": "Dashboard",
+        "hex": "#00F0FF",
+        "label": "Cyan"
+      },
+      "protect": {
+        "name": "Protect",
+        "hex": "#22C55E",
+        "label": "Green"
+      },
+      "grow": {
+        "name": "Grow",
+        "hex": "#8B5CF6",
+        "label": "Violet"
+      },
+      "execute": {
+        "name": "Execute",
+        "hex": "#EAB308",
+        "label": "Amber"
+      },
+      "govern": {
+        "name": "Govern",
+        "hex": "#3B82F6",
+        "label": "Blue"
+      }
+    },
+    "canonical_trident_structure": "REFERENCE IMAGE REQUIRED — Upload the provided Poseidon trident logo image. The trident has three swept, curved prongs that arc outward with fluid, organic lines (NOT straight or rigidly geometric). The prongs taper to sharp points at the top and merge into a tapered shaft at the bottom. The material is frosted translucent glass with a cyan-to-blue gradient (#00F0FF at the prong tips transitioning to #3B82F6 at the base). A bright glowing emission point radiates from the center where the prongs converge — soft cyan (#00F0FF) light emanates outward. Sharp 1-pixel glowing specular highlights trace every beveled edge. The glass refracts and reflects subtle cyan ambient light from within. IMPORTANT: Use the provided reference image to ensure the trident shape matches exactly.",
+    "canonical_wordmark_typography": "The wordmark 'POSEIDON' in bold white sans-serif (weight 700, letter-spacing -0.04em). Below in smaller text at 60% white opacity: 'The Trusted AI-Native Money Platform'."
+  },
+  "canonical_dashboard_content": {
+    "note": "SINGLE SOURCE OF TRUTH — referenced by F05, F06, F07, F08, F09. All frames that display the Poseidon dashboard MUST use these exact text strings. No paraphrasing. No reordering.",
+    "kpi_row": {
+      "layout": "4 cards, horizontal, left-to-right",
+      "cards": [
+        {
+          "id": "A",
+          "label": "System Confidence",
+          "value": "92%",
+          "icon": "shield",
+          "accent": "#00F0FF"
+        },
+        {
+          "id": "B",
+          "label": "Monthly Savings",
+          "value": "$847/mo",
+          "icon": "dollar sign",
+          "accent": "#00F0FF"
+        },
+        {
+          "id": "C",
+          "label": "Pending Actions",
+          "value": "5",
+          "icon": "clock",
+          "accent": "#00F0FF"
+        },
+        {
+          "id": "D",
+          "label": "Compliance Score",
+          "value": "96/100",
+          "icon": "checkmark",
+          "accent": "#00F0FF"
+        }
+      ]
+    },
+    "engine_grid_summary": {
+      "layout": "2×2 grid",
+      "usage": "Used in F05 ghost, F06 wide, F09 wide",
+      "panels": [
+        {
+          "position": "top-left",
+          "engine": "PROTECT",
+          "border_color": "#22C55E",
+          "icon": "shield",
+          "title": "PROTECT",
+          "subtext": "3 threats blocked",
+          "badge": "94%"
+        },
+        {
+          "position": "top-right",
+          "engine": "GROW",
+          "border_color": "#8B5CF6",
+          "icon": "arrow-up",
+          "title": "GROW",
+          "subtext": "$612/mo savings found",
+          "element": "sparkline trending up"
+        },
+        {
+          "position": "bottom-left",
+          "engine": "EXECUTE",
+          "border_color": "#EAB308",
+          "icon": "checkmark",
+          "title": "EXECUTE",
+          "subtext": "5 actions pending",
+          "element": "mini queue (3 items)"
+        },
+        {
+          "position": "bottom-right",
+          "engine": "GOVERN",
+          "border_color": "#3B82F6",
+          "icon": "scale/balance",
+          "title": "GOVERN",
+          "subtext": "1,247 decisions audited",
+          "badge": "100% Auditable"
+        }
+      ]
+    },
+    "engine_grid_detail": {
+      "usage": "Used in F07 close-up only, extends summary",
+      "panels": {
+        "protect": {
+          "header": "3 threats blocked · Confidence 94%",
+          "lines": [
+            "TechElectro Store — $2,847 — Critical (red dot)",
+            "Unknown Vendor — $1,200 — High (orange dot)",
+            "Travel Agency XYZ — $3,400 — Medium (yellow dot)"
+          ]
+        },
+        "grow": {
+          "header": "$612/mo potential savings · 8 recommendations",
+          "sparkline": "$200K → $237K over 3 years (violet)"
+        },
+        "execute": {
+          "header": "5 actions queued · $847/mo savings",
+          "subtext": "You approve. We execute. Govern verifies.",
+          "progress": "2 of 5 completed"
+        },
+        "govern": {
+          "header": "1,247 decisions audited · 100% auditable",
+          "trust_score": "97/100 (blue accent)",
+          "badges": "GDPR · EU AI Act · SOC 2"
+        }
+      }
+    },
+    "protect_decision_screen": {
+      "usage": "Used in F08. REFERENCE: Upload the provided PROTECT product screenshot as source-of-truth for layout.",
+      "layout": "Two-panel side-by-side with action bar below",
+      "left_panel": {
+        "title": "DECISION DRIVERS",
+        "subtitle": "Key factors driving this AI decision. MODEL: POSEIDON-THREATDETECT V1.0",
+        "chart_style": "Cumulative horizontal waterfall — bars stack end-to-end",
+        "legend": {
+          "risk_increase": {
+            "color": "#EF4444",
+            "label": "Risk increase"
+          },
+          "risk_decrease": {
+            "color": "#3B82F6",
+            "label": "Risk decrease"
+          },
+          "final": {
+            "color": "#22C55E",
+            "label": "Final"
+          }
+        },
+        "x_axis_label": "Risk Score",
+        "bars": [
+          {
+            "label": "Unusual Spending",
+            "value": "+0.22",
+            "type": "risk_increase"
+          },
+          {
+            "label": "Known Fraud Pattern",
+            "value": "+0.21",
+            "type": "risk_increase"
+          },
+          {
+            "label": "Unusual Account Activity",
+            "value": "+0.20",
+            "type": "risk_increase"
+          },
+          {
+            "label": "Merchant Reputation",
+            "value": "+0.20",
+            "type": "risk_increase"
+          },
+          {
+            "label": "Unusual Timing",
+            "value": "+0.19",
+            "type": "risk_increase"
+          },
+          {
+            "label": "Account History",
+            "value": "−0.04",
+            "type": "risk_decrease"
+          },
+          {
+            "label": "Familiar Category",
+            "value": "−0.04",
+            "type": "risk_decrease"
+          },
+          {
+            "label": "Final Risk Score",
+            "value": "0.94",
+            "type": "final"
+          }
+        ]
+      },
+      "right_panel": {
+        "title": "EVIDENCE ANALYSIS",
+        "subtitle": "Why our AI flagged this transaction",
+        "items": [
+          {
+            "value": "+0.22",
+            "label": "Unusual Spending",
+            "expanded_detail": "Transaction amount $2,847 is 3.2× your 180-day electronics category mean of $890. Percentile rank: 99.1. Prior max in category: $1,340.",
+            "model": "MODEL: ISOFOREST-SPENDANOMALY V4.1"
+          },
+          {
+            "value": "+0.21",
+            "label": "Known Fraud Pattern"
+          },
+          {
+            "value": "+0.20",
+            "label": "Unusual Account Activity"
+          },
+          {
+            "value": "+0.20",
+            "label": "Merchant Reputation"
+          },
+          {
+            "value": "+0.19",
+            "label": "Unusual Timing"
+          },
+          {
+            "value": "−0.04",
+            "label": "Account History"
+          },
+          {
+            "value": "−0.04",
+            "label": "Familiar Category"
+          }
+        ]
+      },
+      "action_bar": {
+        "recommendation_text": "RECOMMENDED ACTION",
+        "recommendation_detail": "AI recommends blocking (0.94 confidence)",
+        "primary_button": {
+          "label": "Block & Dispute",
+          "color": "#EF4444",
+          "icon": "x-circle",
+          "style": "Red filled button"
+        },
+        "secondary_button": {
+          "label": "This was Me",
+          "color": "transparent",
+          "icon": "checkmark-circle",
+          "style": "Outline/ghost button"
+        }
+      }
+    },
+    "grow_recommendation_flow": {
+      "usage": "Used in F09 (NEW — Grow Engine Detail). REFERENCE: Upload the provided GROW product screenshots (recommendation + execution) as source-of-truth for layout.",
+      "layout": "Vertical scroll: recommendation header → savings strategy → insight cards → take action steps → execute button",
+      "recommendation_header": {
+        "title": "Move Idle Cash to High-Yield",
+        "confidence": "88%",
+        "badge": "AUTO",
+        "confidence_bar_color": "#8B5CF6",
+        "subtitle": "Based on 6 months of connected account balances"
+      },
+      "savings_strategy": {
+        "section_title": "YOUR SAVINGS STRATEGY",
+        "accounts": [
+          {
+            "name": "Chase Savings",
+            "detail": "$8,200 balance · 0.5% APY",
+            "badge": "REVIEW",
+            "badge_color": "#EAB308"
+          },
+          {
+            "name": "Month-end checking surplus",
+            "detail": "Avg $3,400 unused at month-end",
+            "badge": "DORMANT",
+            "badge_color": "#EF4444"
+          }
+        ]
+      },
+      "insight_cards": {
+        "note": "F09 renders only cards 2 and 3 on-screen (card 1 is visually redundant with the savings_strategy section above it, which already shows the $3,400 surplus). All three remain canonical for non-video contexts.",
+        "all": [
+          "Your checking account averages $3,400 surplus at month-end — money that could earn 4.8% APY instead of 0.5%",
+          "Moving $8,200 from Chase Savings (0.5%) to a HYSA (4.8%) earns $353/year more in interest alone",
+          "Poseidon users who set up auto-transfers save 3.2x more than those who transfer manually"
+        ],
+        "f09_rendered": [
+          2,
+          3
+        ]
+      },
+      "take_action": {
+        "section_title": "TAKE ACTION",
+        "steps": [
+          {
+            "number": 1,
+            "title": "Open HYSA",
+            "badge": "AUTO",
+            "detail": "Poseidon will open a Marcus savings account using your verified identity. No credit check required.",
+            "estimate": "Estimated: 3-5 minutes"
+          },
+          {
+            "number": 2,
+            "title": "Transfer $8,200",
+            "badge": "AUTO",
+            "detail": "One-time transfer from Chase Savings to your new Marcus HYSA.",
+            "estimate": "Estimated: 1-2 business days"
+          },
+          {
+            "number": 3,
+            "title": "Set up $200/mo auto-transfer",
+            "badge": "AUTO",
+            "detail": "Monthly sweep from checking surplus on the 1st of each month.",
+            "estimate": "Estimated: Immediate"
+          }
+        ]
+      },
+      "execute_buttons": {
+        "primary": {
+          "label": "Execute Auto Steps",
+          "color": "#8B5CF6",
+          "icon": "lightning-bolt",
+          "style": "Violet filled button matching GROW engine color"
+        },
+        "secondary": {
+          "label": "Add to Execute Queue →",
+          "color": "transparent",
+          "style": "Outline/ghost button"
+        }
+      }
+    }
+  },
+  "frames": {
+    "F01": {
+      "name": "Void Emergence",
+      "role": "Start Frame for S1",
+      "prompt": "Create a 4K ultra-high-definition image. The environment is an infinite deep dark-mode studio void (#050510) with a highly polished black acrylic floor casting soft inverted reflections. A single point of cyan light (#00F0FF) glows at the exact center of the frame, emitting a soft radial gradient that fades to invisible within 15% of the frame width. The light point has a subtle pulsing halo — two concentric rings of cyan at 30% and 10% opacity. The floor catches a dim cyan reflection directly below the light point. No other elements. No text. No UI. Absolute minimalism. Large soft key light (high, off-axis). Cinematic, professional, photorealistic. The mood is anticipation — a system powering on in darkness. 4K resolution, 16:9 aspect ratio."
+    },
+    "F02": {
+      "name": "Trident Logomark Macro",
+      "role": "End Frame for S1 / Start Frame for S2",
+      "reference_image_required": true,
+      "reference_image_instruction": "Upload the provided Poseidon trident logo image as reference. NBP must match the trident shape, proportions, and style from the reference image exactly.",
+      "prompt": "Create a perfectly centered, 4K high-fidelity extreme macro photograph of the Poseidon trident logomark rendered in the Liquid Glass design aesthetic. CRITICAL: Use the provided reference image as the definitive source for the trident shape and proportions. The trident must match the reference image exactly — three swept, curved prongs that arc outward with fluid, organic lines (NOT straight or rigidly geometric). The prongs taper to sharp points at the top and merge into a tapered shaft at the bottom. Render the trident in frosted translucent glass with a cyan-to-blue gradient (#00F0FF at the prong tips transitioning to #3B82F6 at the base). A bright glowing emission point radiates from the center where the prongs converge — soft cyan (#00F0FF) light emanates outward. Sharp 1-pixel glowing specular highlights trace every beveled edge. The glass refracts and reflects subtle cyan ambient light from within. The trident floats 2 inches above a highly polished black acrylic floor that casts a soft, inverted reflection beneath it. The environment is an infinite deep dark-mode studio void (#050510). A large off-axis key light creates soft elegant drop shadows beneath the trident. Specular rim lights behind the trident create brilliant glowing edges separating it from the black background. Virtual macro lens at f/1.4 — the tip of the center prong is in razor-sharp focus while the base of the trident dissolves into soft, creamy bokeh blur. Below the trident, the text \"POSEIDON\" is rendered in bold white sans-serif font (weight 700, letter-spacing -0.04em), and beneath it in smaller text at 60% white opacity: \"The Trusted AI-Native Money Platform\". Cinematic, photorealistic, minimalist. 4K resolution, 16:9 aspect ratio."
+    },
+    "F03": {
+      "name": "Fragmented Financial Chaos",
+      "role": "End Frame for S2 / Start Frame for S3",
+      "note": "Previously F04 in v1. F03 (Trident Wide Establishing) was removed to fix V01→V02 merge discontinuity. S2 now transitions directly from F02 macro trident to F03 chaos.",
+      "prompt": "Create a perfectly isometric, 45-degree aerial view, 4K high-fidelity UI mockup showing financial fragmentation. The environment is an infinite deep dark-mode studio void (#050510) with a highly polished black acrylic floor casting soft inverted reflections. Five disconnected, flat, NON-glassmorphic app interface tiles float at different heights and angles. The tiles are:\n\nExact text — Tile 1 (left): A generic banking app — dull gray card with blue header bar, text \"Chase Checking\" in basic sans-serif, balance \"$3,412.00\", an orange overdraft warning badge reading \"OVERDRAFT ALERT\".\n\nExact text — Tile 2 (center-left): A credit card dashboard — dark card with red accent, text \"Capital One\", balance \"$2,100\", a red notification dot with the number \"7\".\n\nExact text — Tile 3 (center): An investment portfolio — green-tinted card, text \"Fidelity 401(k)\", a basic line chart trending sideways, a yellow notification dot \"14\".\n\nExact text — Tile 4 (center-right): An insurance portal — navy card, text \"State Farm Auto\", due date alert \"PAYMENT DUE\", a red badge \"23\".\n\nExact text — Tile 5 (right): A subscription management screen — purple-tinted card, showing logos for Netflix, Spotify, DoorDash, multiple recurring charges, an amber badge \"UNUSED\".\n\nThe tiles look dated — basic flat design, no glass effects, no translucency, no glow. They are disconnected and scattered, each with a different visual language, different fonts, different color schemes. Red notification badges and warning icons create visual noise and chaos. The overall mood is fragmentation, clutter, friction. Virtual macro lens at f/4.0 — mild bokeh on edges. Large soft key light (high, off-axis). Specular rim kickers behind tiles. 4K resolution, 16:9 aspect ratio."
+    },
+    "F04": {
+      "name": "Three Cost Stat Cards",
+      "role": "End Frame for S3 / Start Frame for S4",
+      "note": "Previously F05 in v1.",
+      "prompt": "Create a perfectly isometric, 45-degree aerial view, 4K high-fidelity UI mockup of three glassmorphic stat cards arranged horizontally. The environment is an infinite deep dark-mode studio void (#050510) with a highly polished black acrylic floor casting soft inverted reflections. The Liquid Glass design aesthetic — frosted translucent panels with aggressive background blur and 1-pixel glowing specular edge highlights.\n\nExact text — Card 1 (left): Frosted glass panel with a 1-pixel glowing red (#EF4444) specular border highlight. Large bold white sans-serif headline reads \"$12.5B\". Below in smaller white text at 60% opacity: \"Lost to fraud annually\". A faint red glow emanates from behind the card. Source citation at bottom in 40% opacity text: \"FTC, 2024\".\n\nExact text — Card 2 (center): Frosted glass panel with a 1-pixel glowing amber (#EAB308) specular border highlight. Large bold white headline reads \"$12B\". Below: \"In overdraft fees\". Faint amber glow. Source: \"CFPB, 2021\".\n\nExact text — Card 3 (right): Frosted glass panel with a 1-pixel glowing orange (#F97316) specular border highlight. Large bold white headline reads \"$133/mo\". Below: \"Wasted on forgotten subscriptions\". Faint orange glow. Source: \"C+R Research, 2024\".\n\nBehind the three cards, faintly visible through the frosted glass blur, are the remnants of the five fragmented app tiles from the previous frame — disintegrating into particles, barely visible at 10% opacity. Virtual macro lens at f/2.8 — the center \"$12B\" card is in razor-sharp focus, the left and right cards have subtle bokeh softness. Large soft key light (high, off-axis). Specular rim kickers behind each card. 4K resolution, 16:9 aspect ratio."
+    },
+    "F05": {
+      "name": "Thesis Statement",
+      "role": "End Frame for S4 / Start Frame for S5",
+      "note": "Previously F06 in v1. Ghost dashboard geometry includes all four engines (GOVERN retained in grid).",
+      "consistency_note": "This frame seeds the dashboard ghost geometry that F06 fully materializes. The bento-box grid layout (4 KPI top row + 2×2 engine grid below) must use identical proportions, positions, and panel sizes as F06. Veo 3.1 interpolates between F05 and F06 — the ghost outlines provide visual anchors for smooth transformation.",
+      "prompt": "Create a 4K high-fidelity typographic hero frame set in an infinite deep dark-mode studio void (#050510). The three cost stat cards from the previous frame are pushed back to the far background, barely visible as dim, defocused glassmorphic shapes at 15% opacity.\n\nHERO TEXT — In the exact center of the frame, two lines of bold white sans-serif text (weight 700, large display size):\n\nExact text — Line 1: \"Data aggregation is solved.\"\nExact text — Line 2: \"Coordination is not.\"\n\nLine 2 has a subtle cyan (#00F0FF) text-shadow glow — a soft neon halo around each letter. Line 1 is pure white with no glow.\n\nBelow the text, a thin horizontal line (1-pixel, cyan #00F0FF at 40% opacity) spans 30% of the frame width, acting as a visual separator.\n\nExact text — Below the line, smaller text at 50% white opacity: \"Mint. 30M users. Shut down March 2024.\"\n\nGHOST DASHBOARD GEOMETRY — Behind and around the hero text, at 5-8% opacity, faint glassmorphic rectangular outlines are arranged in a bento-box grid occupying roughly 60% of the frame. These are NOT solid panels — they are thin 1-pixel border outlines only, barely perceptible, like a blueprint wireframe:\n\nTop row (4 small rectangles, horizontal, evenly spaced):\n  Outline A: faint 1-pixel cyan (#00F0FF) border at 5% opacity\n  Outline B: faint 1-pixel cyan (#00F0FF) border at 5% opacity\n  Outline C: faint 1-pixel cyan (#00F0FF) border at 5% opacity\n  Outline D: faint 1-pixel cyan (#00F0FF) border at 5% opacity\n\nBottom 2×2 grid (4 larger rectangles):\n  Outline top-left: faint 1-pixel green (#22C55E) border at 5% opacity\n  Outline top-right: faint 1-pixel violet (#8B5CF6) border at 5% opacity\n  Outline bottom-left: faint 1-pixel amber (#EAB308) border at 5% opacity\n  Outline bottom-right: faint 1-pixel blue (#3B82F6) border at 5% opacity\n\nThe ghost outlines contain no text, no icons — just empty geometric borders. They are subliminal, barely visible against the dark void. The hero thesis text overlaps and dominates the center of this ghost grid. The grid is viewed from a flat, centered perspective (NOT isometric — the isometric tilt happens during V05 animation).\n\nThe environment is stark, minimal — the ghost outlines add structure without distracting from the declarative thesis text. Faintly visible polished black floor with soft text reflections. The mood is declarative, authoritative, a moment of silence before transformation. Cinematic, professional. 4K resolution, 16:9 aspect ratio."
+    },
+    "F06": {
+      "name": "Poseidon Command Center Dashboard",
+      "role": "End Frame for S5 / Start Frame for S6",
+      "note": "Previously F07 in v1. All four engines retained including GOVERN.",
+      "consistency_note": "All text strings below are copied verbatim from canonical_dashboard_content. Do NOT paraphrase. The bento-box grid layout (4 KPI top row + 2×2 engine grid) uses identical panel proportions and relative positions as the ghost outlines in F05.",
+      "prompt": "Create a perfectly isometric (45-degree aerial view), 4K high-fidelity UI mockup of the Poseidon AI Command Center dashboard. The environment is a deep dark-mode studio void (#050510) with a highly polished black acrylic floor casting soft reflections. The UI features a bento-box layout using the Liquid Glass design aesthetic — all panels are frosted translucent glass with aggressive background blur and sharp 1-pixel glowing cyan (#00F0FF) specular highlights on beveled edges.\n\nLayout — 4 KPI cards across the top row, 4 engine panels in a 2×2 grid below:\n\nTOP ROW (4 small KPI cards, horizontal, evenly spaced):\nExact text — Card A: Icon of a shield. Text \"System Confidence\" above, large bold \"92%\" below. Cyan (#00F0FF) accent glow on left border.\nExact text — Card B: Icon of a dollar sign. Text \"Monthly Savings\" above, large bold \"$847/mo\" below. Cyan accent glow.\nExact text — Card C: Icon of a clock. Text \"Pending Actions\" above, large bold \"5\" below. Cyan accent glow.\nExact text — Card D: Icon of a checkmark. Text \"Compliance Score\" above, large bold \"96/100\" below. Cyan accent glow.\n\nBOTTOM 2×2 BENTO GRID (4 engine panels — summary level):\nExact text — Panel 1 (top-left — PROTECT): 1-pixel glowing green (#22C55E) specular border. Shield icon. Bold text \"PROTECT\". Subtext \"3 threats blocked\". A confidence badge reading \"94%\".\n\nExact text — Panel 2 (top-right — GROW): 1-pixel glowing violet (#8B5CF6) specular border. Upward arrow icon. Bold text \"GROW\". Subtext \"$612/mo savings found\". A small sparkline chart trending upward in violet.\n\nExact text — Panel 3 (bottom-left — EXECUTE): 1-pixel glowing amber (#EAB308) specular border. Checkmark icon. Bold text \"EXECUTE\". Subtext \"5 actions pending\". A mini queue list with 3 action items.\n\nExact text — Panel 4 (bottom-right — GOVERN): 1-pixel glowing blue (#3B82F6) specular border. Scale/balance icon. Bold text \"GOVERN\". Subtext \"1,247 decisions audited\". A badge reading \"100% Auditable\".\n\nThe dashboard is viewed from a perfectly isometric, 45-degree aerial view, floating as a unified architectural structure above the reflective floor. Each panel is a separate glass tile with physical depth separation visible from the isometric view. Virtual macro lens at f/2.8 — the PROTECT panel in the foreground is sharpest, back panels have subtle bokeh. Large soft key light (high, off-axis) creating soft drop shadows. Specular rim kickers behind every panel edge. Professional, minimalist, premium. 4K resolution, 16:9 aspect ratio."
+    },
+    "F07": {
+      "name": "Four Engines Close-Up",
+      "role": "End Frame for S6 / Start Frame for S7",
+      "note": "Previously F08 in v1. Identical content — detail-level engine grid.",
+      "consistency_note": "This is a close-up of F06's engine grid. Engine titles, border colors, and icon types MUST be identical to F06. This frame adds detail-level content (see canonical_dashboard_content.engine_grid_detail).",
+      "prompt": "Create a 4K high-fidelity close-up shot of the Poseidon 2×2 engine bento grid from a slightly lower isometric angle (30-degree), bringing the viewer closer to the four engine panels. The environment remains a deep dark-mode studio void (#050510) with polished black floor reflections. Liquid Glass aesthetic throughout.\n\nThe four panels are now larger in frame, each clearly readable. Detail-level content extends the summary text visible in F06:\n\nExact text — PROTECT (top-left): Frosted glass with 1-pixel green (#22C55E) specular edge glow. Shield icon in green. Bold white text \"PROTECT\". Below: \"3 threats blocked · Confidence 94%\". A mini threat feed shows three lines:\n\"TechElectro Store — $2,847 — Critical\" (red severity dot)\n\"Unknown Vendor — $1,200 — High\" (orange severity dot)\n\"Travel Agency XYZ — $3,400 — Medium\" (yellow severity dot)\n\nExact text — GROW (top-right): Frosted glass with 1-pixel violet (#8B5CF6) edge glow. Arrow-up icon in violet. Bold white text \"GROW\". Below: \"$612/mo potential savings · 8 recommendations\". A sparkline chart in violet showing upward trend from $200K to $237K over 3 years.\n\nExact text — EXECUTE (bottom-left): Frosted glass with 1-pixel amber (#EAB308) edge glow. Checkmark icon in amber. Bold white text \"EXECUTE\". Below: \"5 actions queued · $847/mo savings\". Subtext: \"You approve. We execute. Govern verifies.\" A small progress indicator showing 2 of 5 completed.\n\nExact text — GOVERN (bottom-right): Frosted glass with 1-pixel blue (#3B82F6) edge glow. Scale icon in blue. Bold white text \"GOVERN\". Below: \"1,247 decisions audited · 100% auditable\". Trust Score: \"97/100\" in large blue-accented text. Compliance badges: \"GDPR · EU AI Act · SOC 2\".\n\nUse a macro lens at f/2.8. The PROTECT panel is in sharp focus — GOVERN panel has gentle bokeh. Cinematic lighting with each engine's color subtly tinting its respective rim light. 4K resolution, 16:9 aspect ratio."
+    },
+    "F08": {
+      "name": "PROTECT Decision Screen — SHAP + Evidence + Action Buttons",
+      "role": "End Frame for S7 / Start Frame for S8",
+      "reference_image_required": true,
+      "reference_image_instruction": "Upload the provided PROTECT product screenshot as reference. NBP must match the two-panel layout (DECISION DRIVERS left, EVIDENCE ANALYSIS right) and the red action bar at bottom.",
+      "note": "Previously F09 in v1. REWRITTEN for v2.1 to match actual product UI. Two-panel layout with SHAP waterfall (left), evidence accordion (right), and action bar (bottom) with 'Block & Dispute' and 'This was Me' buttons.",
+      "consistency_note": "All SHAP bar labels, values, and evidence text MUST match canonical_dashboard_content.protect_decision_screen exactly. The layout must match the provided product screenshot.",
+      "prompt": "Create a 4K high-fidelity cinematic rendering of the Poseidon PROTECT decision screen, recreated in the Liquid Glass design aesthetic. CRITICAL: Use the provided PROTECT product screenshot as the definitive source for layout and content structure. The environment is an infinite deep dark-mode studio void (#050510) with a highly polished black acrylic floor casting soft inverted reflections. The screen fills approximately 80% of the frame.\n\nThe screen is composed of two side-by-side frosted Liquid Glass panels with a red action bar spanning the full width below them.\n\nLEFT PANEL — DECISION DRIVERS: Frosted glass panel with a subtle 1-pixel glowing green (#22C55E) specular border.\nExact text — Header: \"DECISION DRIVERS\"\nExact text — Subheader at 40% opacity: \"Key factors driving this AI decision. MODEL: POSEIDON-THREATDETECT V1.0\"\n\nA legend shows three entries: \"Risk increase\" (red #EF4444 dot), \"Risk decrease\" (blue #3B82F6 dot), \"Final\" (green #22C55E dot).\n\nThe SHAP waterfall chart — cumulative horizontal bars stacking end-to-end:\nExact text — Bar 1: Red bar, \"Unusual Spending\" \"+0.22\"\nExact text — Bar 2: Red bar, \"Known Fraud Pattern\" \"+0.21\"\nExact text — Bar 3: Red bar, \"Unusual Account Activity\" \"+0.20\"\nExact text — Bar 4: Red bar, \"Merchant Reputation\" \"+0.20\"\nExact text — Bar 5: Red bar, \"Unusual Timing\" \"+0.19\"\nExact text — Bar 6: Blue bar (left), \"Account History\" \"−0.04\"\nExact text — Bar 7: Blue bar (left), \"Familiar Category\" \"−0.04\"\nExact text — Final bar: Solid green bar from 0 to 0.94, \"Final Risk Score\" \"0.94\"\nX-axis labeled \"Risk Score\" with markings 0, 0.2, 0.4, 0.6, 0.8, 1.\n\nRIGHT PANEL — EVIDENCE ANALYSIS: Frosted glass panel with subtle green specular border.\nExact text — Header: \"EVIDENCE ANALYSIS\"\nExact text — Subheader at 40% opacity: \"Why our AI flagged this transaction\"\n\nAn accordion list of evidence cards, each with a colored value badge on the left:\nExact text — Card 1 (expanded): Red badge \"+0.22\", label \"Unusual Spending\" with expand arrow. Expanded detail: \"Transaction amount $2,847 is 3.2× your 180-day electronics category mean of $890. Percentile rank: 99.1. Prior max in category: $1,340.\" Below in monospace at 40% opacity: \"MODEL: ISOFOREST-SPENDANOMALY V4.1\"\nExact text — Card 2: Red badge \"+0.21\", \"Known Fraud Pattern\" (collapsed)\nExact text — Card 3: Red badge \"+0.20\", \"Unusual Account Activity\" (collapsed)\nExact text — Card 4: Red badge \"+0.20\", \"Merchant Reputation\" (collapsed)\nExact text — Card 5: Amber badge \"+0.19\", \"Unusual Timing\" (collapsed)\nExact text — Card 6: Blue badge \"−0.04\", \"Account History\" (collapsed)\nExact text — Card 7: Blue badge \"−0.04\", \"Familiar Category\" (collapsed)\n\nBOTTOM ACTION BAR — A wide frosted glassmorphic bar spanning the full width below both panels, with a subtle red (#EF4444) tinted glass and 1-pixel red specular border.\nExact text — Left side, small caps: \"RECOMMENDED ACTION\"\nExact text — Below, in red (#EF4444) text: \"AI recommends blocking (0.94 confidence)\"\nExact text — Right side, two buttons:\n  Button 1 (primary): Red (#EF4444) filled button with X-circle icon, text \"Block & Dispute\" in bold white\n  Button 2 (secondary): Transparent outline button with checkmark-circle icon, text \"This was Me\" in white\n\nThe entire screen floats above the polished floor, casting a soft red-tinted reflection from the action bar. Virtual macro lens at f/2.0 — the action bar (\"Block & Dispute\" and \"This was Me\" buttons) and the \"0.94\" final risk score are in razor-sharp focus. The top of the evidence accordion has subtle bokeh softness. Large soft key light (high, off-axis). Green (#22C55E) rim accent light on the panels, red (#EF4444) rim accent on the action bar. 4K resolution, 16:9 aspect ratio."
+    },
+    "F09": {
+      "name": "Grow Engine — Move Idle Cash Recommendation + Execute Auto Steps",
+      "role": "End Frame for S8 / Start Frame for S9",
+      "reference_image_required": true,
+      "reference_image_instruction": "Upload the provided GROW product screenshots (recommendation view + TAKE ACTION execution view) as reference. NBP must match the layout, content hierarchy, and button styling from the reference images.",
+      "note": "NEW FRAME — replaces old F10 (Governance Layer). Shows the GROW engine surfacing a real recommendation ('Move Idle Cash to High-Yield'), explaining the savings math, presenting 3 auto-steps, and offering one-tap execution. Content matches actual product UI screenshots.",
+      "consistency_note": "All text strings MUST match canonical_dashboard_content.grow_recommendation_flow exactly. The panel border color (violet #8B5CF6) must match the GROW engine. Button colors: 'Execute Auto Steps' in violet (#8B5CF6), 'Add to Execute Queue' as outline/ghost.",
+      "prompt": "Create a 4K high-fidelity extreme macro shot of a Grow engine recommendation screen rendered inside a frosted Liquid Glass panel. The environment is an infinite deep dark-mode studio void (#050510) with a highly polished black acrylic floor casting soft inverted reflections. This single panel fills approximately 70% of the frame — we are zoomed in close.\n\nThe panel has a 1-pixel glowing violet (#8B5CF6) specular border (this is the GROW engine). The layout is a vertical scroll presenting the recommendation journey from insight to execution:\n\n— RECOMMENDATION HEADER —\nExact text — Title: \"Move Idle Cash to High-Yield\"\nExact text — Confidence badge: \"88%\" with a horizontal confidence bar filled 88% in violet (#8B5CF6)\nExact text — Badge pill: \"AUTO\" in small violet-tinted pill\nExact text — Subtitle at 60% opacity: \"Based on 6 months of connected account balances\"\n\n— YOUR SAVINGS STRATEGY section —\nExact text — Section header: \"YOUR SAVINGS STRATEGY\"\nTwo account rows as frosted sub-cards:\nExact text — Row 1: \"Chase Savings\" with detail \"$8,200 balance · 0.5% APY\" and an amber (#EAB308) badge pill \"REVIEW\"\nExact text — Row 2: \"Month-end checking surplus\" with detail \"Avg $3,400 unused at month-end\" and a red (#EF4444) badge pill \"DORMANT\"\n\n— INSIGHT CARDS — (rendered as a compact stack of 2 insight lines in 60% opacity text)\nExact text — \"Moving $8,200 from Chase Savings (0.5%) to a HYSA (4.8%) earns $353/year more in interest alone\"\nExact text — \"Poseidon users who set up auto-transfers save 3.2x more than those who transfer manually\"\n\n— TAKE ACTION section —\nExact text — Section header: \"TAKE ACTION\"\nThree numbered steps as frosted sub-cards, each with a violet circled number:\nExact text — Step 1: \"Open HYSA\" with badge \"AUTO\" and detail \"Poseidon will open a Marcus savings account using your verified identity.\"\nExact text — Step 2: \"Transfer $8,200\" with badge \"AUTO\" and detail \"One-time transfer from Chase Savings to new HYSA.\"\nExact text — Step 3: \"Set up $200/mo auto-transfer\" with badge \"AUTO\" and detail \"Monthly sweep from checking surplus.\"\n\n— ACTION BAR at bottom —\nPrimary button: Frosted glassmorphic button with violet (#8B5CF6) filled background. Bold white text reads \"Execute Auto Steps\". A small play-circle icon in white sits to the left of the text. Subtle violet glow emanating from behind.\nSecondary button: Ghost/outline button with 1-pixel violet border and transparent fill. Text reads \"Add to Execute Queue\" at 70% opacity.\n\nExtreme macro lens at f/1.4 — the TAKE ACTION steps and the \"Execute Auto Steps\" button are in razor-sharp focus. The recommendation header at the top has slight bokeh softness. The rest of the dashboard is completely blurred out in the background, visible only as abstract colored shapes. Large soft key light (high, off-axis). Violet (#8B5CF6) rim accent light on the GROW panel (deviation from standard cyan rim). 4K resolution, 16:9 aspect ratio."
+    },
+    "F10": {
+      "name": "Value Metric Hero",
+      "role": "End Frame for S9 / Start Frame for S10",
+      "note": "Previously F11 in v1. Content unchanged.",
+      "consistency_note": "The exact on-screen text must remain: \"4.3x\", \"customer value-to-cost ratio\", \"$17.5T balance with low APY\", and \"77% profit margin・Month 12 Breakeven\".",
+      "prompt": "Create a 4K high-fidelity typographic hero frame. The environment is an infinite deep dark-mode studio void (#050510) with a highly polished black acrylic floor casting soft inverted reflections. The full Poseidon dashboard is pushed far into the background, dimmed to 20% opacity, completely defocused into abstract glassmorphic shapes — just enough to provide ambient colored glow.\n\nDominating the center of the frame, large bold white sans-serif display text (the largest text in the entire video):\n\nExact text — \"4.3x\"\n\nThe \"4.3x\" is at 100% opacity, full white, bold weight 800. The characters have a subtle cyan (#00F0FF) text-shadow glow.\n\nExact text — Below \"4.3x\", medium text at 80% opacity: \"customer value-to-cost ratio\"\n\nExact text — Below that, separated by a thin 1-pixel cyan line at 30% opacity, bold cyan (#00F0FF) text: \"$17.5T balance with low APY\"\n\nExact text — Below that, smaller text at 40% opacity: \"77% profit margin・Month 12 Breakeven\"\n\nThe \"4.3x\" text floats above the polished floor, casting a soft cyan-tinted reflection. Virtual macro lens at f/1.4 — the \"4.3x\" in razor-sharp focus. Large soft key light (high, off-axis). The environment is pure, minimal — just this metric commanding the frame. Cinematic, authoritative, premium. 4K resolution, 16:9 aspect ratio."
+    },
+    "F11": {
+      "name": "Brand Resolution",
+      "role": "End Frame for S10 — Final Frame",
+      "reference_image_required": true,
+      "reference_image_instruction": "Upload the provided Poseidon trident logo image as reference. NBP must match the trident shape, proportions, and style from the reference image exactly.",
+      "note": "Previously F12 in v1. Uses reference image for trident logo.",
+      "consistency_note": "The trident structure must match the provided reference image. Engine colors inside the trident must match brand_constants.engine_colors hex values exactly.",
+      "prompt": "Create a 4K high-fidelity final brand lockup frame. The environment is an infinite deep dark-mode studio void (#050510) with a highly polished black acrylic floor casting soft inverted reflections.\n\nCenter of frame: The Poseidon trident logomark. CRITICAL: Use the provided reference image as the definitive source for the trident shape and proportions. The trident must match the reference image exactly — three swept, curved prongs that arc outward with fluid, organic lines (NOT straight or rigidly geometric). The prongs taper to sharp points at the top and merge into a tapered shaft at the bottom. Material: frosted translucent glass with a cyan-to-blue gradient (#00F0FF at the prong tips transitioning to #3B82F6 at the base). A bright glowing emission point radiates from the center where the prongs converge. The trident glass now contains subtle internal color — four engine colors glow faintly within the glass material: green (#22C55E) in the left prong, violet (#8B5CF6) and amber (#EAB308) in the center prong (blended), blue (#3B82F6) in the right prong. The outer edge specular highlights remain cyan (#00F0FF), tracing every beveled edge.\n\nExact text — Below the trident, the wordmark \"POSEIDON\" in bold white sans-serif (weight 700, letter-spacing -0.04em). Below the wordmark, a thin 1-pixel cyan line at 30% opacity.\n\nBelow the line, two lines of text:\nExact text — Line 1 (60% white opacity): \"The Trusted AI-Native Money Platform\"\nExact text — Line 2 (40% white opacity, smaller): \"MIT CTO Program · Group 7 · 2026\"\n\nThe trident and text float above the polished floor, casting soft multi-colored reflections — a subtle blend of all four engine colors reflected in the acrylic. The environment is pristine, silent, conclusive. Virtual macro lens at f/2.8 with the \"POSEIDON\" wordmark in sharpest focus. Large soft key light (high, off-axis). Specular rim kickers behind the trident. The mood is resolution, confidence, authority. 4K resolution, 16:9 aspect ratio."
+    }
+  },
+  "veo_segments": {
+    "format_note": "Each prompt is used with Veo 3.1 in Start & End Frame mode. Upload the corresponding NBP frames as First Frame and Last Frame. The prompt drives interpolation — camera path, motion physics, UI animation, and synchronized audio. Format: [Cinematography] + [Action] + [Audio/SFX]",
+    "V01": {
+      "name": "Void to Trident",
+      "timecode": "0.0s–3.0s",
+      "frames": "F01 → F02",
+      "duration": "3.0 seconds",
+      "reference_image_note": "F02 uses the provided trident logo reference image. Veo must interpolate toward the reference-matched trident shape.",
+      "prompt": "[Cinematography] Static centered camera holds on the black void for 0.5 seconds. Then a smooth, slow push-in begins toward the emerging cyan light point. As the light expands, the camera accelerates gently — the push-in transitions from slow to medium speed. The trident materializes from the light, its glass edges catching specular highlights as if being struck by studio lighting for the first time. The camera continues pushing in to an extreme macro close-up of the trident tip — shallow depth of field at f/1.4 causes the base and wordmark to dissolve into creamy bokeh. At the final position, the \"POSEIDON\" wordmark fades in below with an exponential ease-out opacity transition. Cinematic realism, dark mode studio, shifting specular reflections track the camera movement on the glass surfaces.\n\n[Action] The cyan light point pulses twice (heartbeat rhythm) then rapidly expands outward. The trident's glass geometry assembles via decoupled Z-axis — the three prongs materialize first (sliding down from above with exponential ease-out), then the base solidifies, then the specular edge highlights ignite in sequence from tip to base. The wordmark text fades in 200ms after the trident completes.\n\n[Audio] Silence for 0.3 seconds. Then a deep, resonant sub-bass sweep (30-60Hz) rises gradually from nothing, building tension. SFX: At the moment the trident solidifies, a crisp, subtle glass surface contact click — like a crystal wine glass being gently tapped. The sub-bass continues to swell. SFX: A faint digital hum — low, pulsing electronic ambience like a server room powering on. The sub-bass peaks at the final frame and cuts sharply. 200ms of pure silence as punctuation."
+    },
+    "V02": {
+      "name": "Trident Macro to Chaos",
+      "timecode": "3.0s–6.0s",
+      "frames": "F02 → F03",
+      "duration": "3.0 seconds",
+      "note": "REWRITTEN from v1. Previously F03→F04, now F02→F03. The transition starts from the extreme macro trident close-up (F02) and pulls back aggressively while transforming into the fragmented chaos (F03). This eliminates the F03 wide establishing shot that caused merge artifacts with V01.",
+      "prompt": "[Cinematography] The camera begins on the extreme macro close-up of the Poseidon trident — center prong tip in razor-sharp focus, wordmark in bokeh below. The camera executes a rapid pull-back combined with a dramatic 45-degree isometric arc upward — sweeping away from the trident as it shrinks and recedes into the background. The pull-back accelerates aggressively, inducing a slight motion blur on the edges. As the camera swoops backward and upward, the trident dissolves into the void and five fragmented financial app tiles slide into frame from different directions — top, bottom, sides — each at slightly different speeds, emphasizing disconnection and chaos. The camera settles at a 45-degree isometric overhead position looking down at the scattered tiles. Parallax effect: foreground tiles move faster than background tiles. Cinematic realism, dark mode studio lighting, no glassmorphism on the tiles — they are flat, dull, dated.\n\n[Action] The Poseidon trident and wordmark dissolve backward with exponential ease-in — the macro trident shrinks rapidly, its specular highlights dimming and its glass material losing translucency as it fades to 5% opacity. The five financial tiles enter from scattered directions with linear, mechanical motion — deliberately NOT smooth, deliberately jarring. Each tile rotates slightly on entry (5-10 degrees), landing at random angles. Notification badges pulse red. An overdraft warning on the banking tile flashes twice. The tiles do not align into a grid — they remain chaotic, overlapping edges, different z-heights.\n\n[Audio] SFX: A rapid, airy whoosh as the camera swoops backward — digital wind rushing past, reversing the intimate macro energy into expansive chaos. A fast-paced electronic ticking begins — like a metronome at 140 BPM, mechanical and urgent. SFX: Each tile arrival triggers a dull, dissonant notification chime — five different tones stacking cacophonously. The ticking accelerates slightly. SFX: The overdraft flash emits a harsh, buzzy alert tone. The overall audio mood is friction, noise, systemic inefficiency."
+    },
+    "V03": {
+      "name": "Chaos to Cost Cards",
+      "timecode": "6.0s–9.0s",
+      "frames": "F03 → F04",
+      "duration": "3.0 seconds",
+      "prompt": "[Cinematography] The camera holds the 45-degree isometric view, then begins a slow, controlled push-in toward the center of the frame. As it pushes in, the chaotic financial tiles crack, fragment, and dissolve into particles — disintegrating like shattering glass. Through the dissolving chaos, three glassmorphic stat cards assemble in sequence from left to right. The camera adjusts to bring the center \"$12B\" card into sharpest macro focus. Cinematic realism, dark mode studio, the transition from flat chaos to Liquid Glass is the key visual contrast.\n\n[Action] Decoupled Z-axis assembly for each stat card — the frosted glass base panel slides upward from below with exponential ease-out (cubic-bezier 0.2, 0.0, 0.0, 1.0), then the glow border ignites, then the dollar figure rolls in via kinetic odometer typography (digits spinning upward rapidly and settling). Assembly is staggered: Card 1 ($12.5B) assembles first, Card 2 ($12B) 300ms later, Card 3 ($133/mo) 300ms after that. The \"$\" signs appear first, then digits roll from 0 to their final values. The fragmented tiles behind dissolve into floating particles that drift upward and fade. Red, amber, and orange accent glows pulse once as each card locks into position.\n\n[Audio] A fast-paced electronic ticking (metronome at 130 BPM, decelerating with each card arrival) underlies the segment. SFX: Each card arrival triggers a deep, muffled sub-bass thud — like a heavy glass panel dropping onto a padded surface. SFX: The odometer digit rolls produce a rapid, subtle mechanical clicking — like a premium mechanical counter. SFX: The shattering tiles produce a sharp, resonant glass crack that transitions into crystalline particles tinkling. SFX: Each card's glow border ignition produces a soft, high-frequency electronic hum that sustains briefly."
+    },
+    "V04": {
+      "name": "Cost Cards to Thesis",
+      "timecode": "9.0s–12.0s",
+      "frames": "F04 → F05",
+      "duration": "3.0 seconds",
+      "prompt": "[Cinematography] A slow, elegant push-in toward the center gap between the three stat cards. The camera narrows its focal plane — depth of field becomes extremely shallow (f/1.4), causing the cards to gradually dissolve into beautiful bokeh. The camera pushes through the bokeh gap into the void beyond, where the thesis text materializes. The final camera position is static, centered on the text. Cinematic realism, dark mode studio, the transition from data-dense cards to stark typographic void creates a dramatic tonal shift.\n\n[Action] The three stat cards drift apart slowly (exponential ease-in, 2000ms duration) and simultaneously defocus into bokeh blur, moving backward in Z-space. The thesis text assembles via kinetic typography: \"Data aggregation is solved.\" types in left-to-right, each word appearing with a crisp exponential ease-out snap. A 400ms pause. Then \"Coordination is not.\" types in the same way, but as each letter appears, it gains the cyan text-shadow glow — building the neon effect letter by letter. The thin cyan separator line draws itself from center outward in both directions. The Mint subtext fades in last at 50% opacity with a gentle 800ms fade.\n\n[Audio] The segment opens with abrupt silence — no ticking, no music. Only a low, barely audible ambient hum. SFX: A sharp resonant glass crack as the cards begin separating — the sound of certainty breaking. Then 500ms of near-silence — only a low, barely audible ambient hum. SFX: Each word of the thesis snaps in with a crisp mechanical switch click — precise, authoritative, like typewriter keys on a premium keyboard. SFX: The cyan glow on \"Coordination is not.\" produces a soft, rising electronic tone — a frequency that builds anticipation. Then stillness. Only ambient hum remains."
+    },
+    "V05": {
+      "name": "Thesis to Dashboard Transformation",
+      "timecode": "12.0s–15.0s",
+      "frames": "F05 → F06",
+      "duration": "3.0 seconds",
+      "prompt": "[Cinematography] The camera holds on the thesis text for 300ms, then executes a dramatic 45-degree isometric arc — sweeping upward and rotating around the scene. During the arc, the text dissolves and four colored light beams (green #22C55E, violet #8B5CF6, amber #EAB308, blue #3B82F6) streak in from the four corners of the frame, converging at the center. At the convergence point, an explosive burst of light transitions into the Poseidon Command Center dashboard materializing. The camera completes its arc, settling at a 45-degree isometric overhead view of the full dashboard. Cinematic realism, dark mode studio with shifting specular reflections tracking the camera movement across every glass surface.\n\n[Action] The thesis text shatters outward into typographic particles (exponential ease-out dispersal). Four engine-colored light beams (green, violet, amber, blue) streak inward along curved paths — each leaving a fading light trail of its engine color. The beams converge and flash. From the flash, the dashboard assembles via aggressive decoupled Z-axis build: First, the frosted glass base panels slide upward from below (staggered, 80ms apart, exponential ease-out). Then the background data layers fade in with blur. Then the KPI card typography and accent elements float down into position from above. The 4 engine border glows (green, violet, amber, blue) ignite in clockwise sequence. Total build duration: 1800ms. The build feels like architecture assembling itself.\n\n[Audio] SFX: The text shattering produces a crisp, crystalline break — glass fragmenting. SFX: The four light beams produce a rapid, layered airy whoosh — digital wind from four directions converging. SFX: At convergence, a deep resonant impact — a cinematic sub-bass boom. Then immediately, an expansive, swelling cinematic synth chord begins — a major chord (root, third, fifth) using warm analog synth tones, building hope and authority. SFX: Each glass panel snapping into place produces a cascading series of subtle glass surface contact clicks (3-4 overlapping, staggered by 80ms). SFX: Each engine border glow ignition adds a soft tonal ping at a unique frequency — green (higher), violet (mid-high), amber (mid), blue (lower) — creating a brief ascending arpeggio."
+    },
+    "V06": {
+      "name": "Dashboard to Engine Close-Up",
+      "timecode": "15.0s–18.0s",
+      "frames": "F06 → F07",
+      "duration": "3.0 seconds",
+      "prompt": "[Cinematography] A smooth, cinematic tracking shot. The camera begins at the 45-degree isometric wide view of the full dashboard, then glides forward and slightly downward — transitioning from 45 degrees to 30 degrees — pushing in toward the 2×2 engine grid. The tracking movement is horizontal with a gentle arc, creating parallax between the foreground engine panels and the background KPI cards. The KPI row drifts upward and out of frame as the camera descends. Depth of field gradually shallows — background elements dissolve into bokeh as we approach the engine panels. The camera settles at a 30-degree close-up composition with all four engine panels clearly readable. Cinematic realism, dark mode studio lighting, specular reflections shift across glass surfaces as the camera tracks.\n\n[Action] As the camera tracks forward, the data inside each engine panel animates: PROTECT's threat feed lines type in sequentially (3 lines, staggered 200ms). GROW's sparkline chart draws itself left-to-right in violet. EXECUTE's progress indicator fills from 0 to 2/5. GOVERN's trust score \"97/100\" rolls in via kinetic odometer typography. The engine border glows pulse subtly once as the camera passes each panel. The compliance badges on GOVERN (GDPR, EU AI Act, SOC 2) fade in sequentially with 150ms stagger.\n\n[Audio] A warm cinematic synth chord (major key, root-third-fifth, analog tone) sustains throughout, slowly evolving with additional harmonic overtones as the camera pushes in. SFX: Each engine panel that the camera passes triggers a distinct tonal ping at its engine frequency — green ping (PROTECT), violet ping (GROW), amber ping (EXECUTE), blue ping (GOVERN) — creating a four-note melodic motif. SFX: The sparkline drawing produces a soft, ascending electronic whistle. SFX: The odometer roll on \"97/100\" produces rapid mechanical clicking. SFX: The compliance badges fade in with subtle laptop keyboard clicks — three crisp taps."
+    },
+    "V07": {
+      "name": "Engine Grid to PROTECT Decision Screen (Two-Panel + Action Bar)",
+      "timecode": "18.0s–21.0s",
+      "frames": "F07 → F08",
+      "duration": "3.0 seconds",
+      "note": "Updated for v2.1: F08 is now a two-panel PROTECT decision screen (DECISION DRIVERS + EVIDENCE ANALYSIS) with an action bar containing 'Block & Dispute' (red) and 'This was Me' (outline). Matches actual product UI.",
+      "prompt": "[Cinematography] An extreme macro push-in. The camera accelerates from the 30-degree engine grid view directly toward the PROTECT panel (top-left). The push-in is aggressive — the camera dives into the panel as if entering a microscopic world. GROW, EXECUTE, and GOVERN panels rapidly dissolve into beautiful, soft bokeh blur as they fall out of the narrowing depth of field. The PROTECT panel fills the entire frame, revealing a two-panel side-by-side layout: DECISION DRIVERS (left) and EVIDENCE ANALYSIS (right). The camera settles with both panels readable and the action bar at the bottom — 'Block & Dispute' and 'This was Me' buttons — in sharp focus. Virtual macro lens at f/1.4. Cinematic realism, dark mode studio, green (#22C55E) rim accent lighting dominates.\n\n[Action] The two-panel layout assembles via decoupled Z-axis — the left panel (DECISION DRIVERS) slides in from the left with exponential ease-out, the right panel (EVIDENCE ANALYSIS) slides in from the right 150ms later. LEFT PANEL: The SHAP waterfall chart animates bar by bar — each horizontal bar extends cumulatively with exponential ease-out motion. The top risk factors (Unusual Spending +0.22, Known Fraud Pattern +0.21, etc.) extend in red (#EF4444), risk decreases extend in blue (#3B82F6). After all feature bars complete, the final green bar draws to 0.94 and the value rolls via rapid odometer, then a green glow pulse radiates outward. RIGHT PANEL: Evidence cards stack in from top with 100ms stagger. The top card (Unusual Spending, +0.22) is expanded, showing the detail text about $2,847 being 3.2× the 180-day mean. Other cards show collapsed. ACTION BAR (FINAL ELEMENT): The recommendation text 'AI recommends blocking (0.94 confidence)' types in. Then two buttons materialize simultaneously — 'Block & Dispute' (red #EF4444 filled, x-circle icon) ignites on the left, 'This was Me' (outline/ghost, checkmark-circle icon) fades in on the right. A subtle red pulse radiates from the 'Block & Dispute' button.\n\n[Audio] A warm analog synth chord sustains at reduced volume — intimate, precise, analytical. SFX: Each SHAP bar extension produces a crisp mechanical switch click — precise, clinical. SFX: The odometer rolls produce soft, rapid ticking at different pitches per bar. SFX: The '0.94' final risk score reveal produces a satisfying, resonant chime — clean, bell-like, 800ms duration. SFX: Evidence cards stacking in produce soft glass surface contact clicks. SFX: The 'Block & Dispute' button materialization produces a distinct low-frequency alert ping — urgent but controlled, in the red tonal range. The 'This was Me' button fades in silently. A brief green-tinted electronic hum sustains beneath everything."
+    },
+    "V08": {
+      "name": "PROTECT Decision Screen to GROW Move Idle Cash + Execute Auto Steps",
+      "timecode": "21.0s–24.0s",
+      "frames": "F08 → F09",
+      "duration": "3.0 seconds",
+      "note": "NEW SEGMENT — replaces old V08 (Governance Cascade). Transitions from PROTECT's two-panel decision screen to GROW's 'Move Idle Cash to High-Yield' recommendation with 3-step execution plan. Both frames feature action buttons, visually demonstrating cross-engine coordination. Content matches actual product UI screenshots.",
+      "prompt": "[Cinematography] A smooth, controlled pull-back from the PROTECT decision screen. The camera reverses from the two-panel macro view, the green PROTECT panels receding. As the camera pulls back, it simultaneously executes a lateral arc — tracking rightward toward the GROW panel position. The camera's path traces a gentle S-curve: pulling back from PROTECT, passing through a brief moment of the full engine grid (visible at 40% opacity in transition), then pushing forward into the GROW panel at the same macro intensity. The GROW panel fills the frame — a violet (#8B5CF6) world replacing the green one. The camera settles on the TAKE ACTION steps and the 'Execute Auto Steps' button in sharp focus. Virtual macro lens at f/1.4. Cinematic realism, dark mode studio, violet (#8B5CF6) rim accent lighting dominates.\n\n[Action] The PROTECT two-panel layout and 'Block & Dispute' / 'This was Me' buttons fade backward with exponential ease-in (800ms). During the transition, a brief flash of the full engine grid is visible — GROW's violet border pulses twice, drawing the eye. The GROW panel expands to fill the frame. Inside, the recommendation flow assembles sequentially: The title 'Move Idle Cash to High-Yield' types in with kinetic typography, the '88%' confidence bar fills in violet. The savings strategy section slides up — 'Chase Savings' row with '$8,200 balance · 0.5% APY' appears, the amber 'REVIEW' badge pulses once. Then the insight text fades in: '$353/year more in interest.' The TAKE ACTION section assembles — three numbered steps stack in with 150ms stagger, each violet circled number igniting sequentially: Step 1 'Open HYSA', Step 2 'Transfer $8,200', Step 3 'Set up $200/mo auto-transfer'. Each step's 'AUTO' badge glows as it appears. FINAL ELEMENT: The 'Execute Auto Steps' button materializes — violet (#8B5CF6) filled background ignites, play-circle icon appears, then 'Execute Auto Steps' text snaps into place. A subtle violet pulse radiates outward. The ghost 'Add to Execute Queue' button fades in beside it.\n\n[Audio] The warm analog synth chord transitions — shifting from the tighter, analytical character of the PROTECT segment to a warmer, more expansive tone with violet-tinged overtones. SFX: The transition swoosh between panels produces a layered digital wind sound — green frequency fading out, violet frequency fading in. SFX: The recommendation title arrival produces a soft sub-bass thud — lighter than the heavy dashboard build, conveying opportunity rather than weight. SFX: The '$8,200' figure rolls in with optimistic mechanical clicking — faster and higher-pitched than the SHAP risk values. SFX: Each TAKE ACTION step stacking in produces a crisp, ascending three-note sequence — step 1 (low), step 2 (mid), step 3 (high) — conveying systematic progression. SFX: The 'Execute Auto Steps' button produces a satisfying violet-toned chime — a resonant ping that mirrors V07's action bar sound but in the violet frequency range, creating sonic continuity between the two engine showcases."
+    },
+    "V09": {
+      "name": "Grow to Value Metric",
+      "timecode": "24.0s–27.0s",
+      "frames": "F09 → F10",
+      "duration": "3.0 seconds",
+      "note": "Previously V09 in v1 (was F10→F11). Adjusted timing from 2.5s to 3.0s. Transition now exits from the Grow recommendation flow instead of the governance cascade.",
+      "prompt": "[Cinematography] A slow, elegant forward push-in combined with a gradual Z-depth transition. The camera pushes through the Grow recommendation panel — the violet content parts gently, like a curtain being drawn — and moves toward the center void beyond. As it pushes in, all dashboard UI elements simultaneously dim to 20% opacity and defocus into abstract colored bokeh shapes. Through the dissolving interface, the \"4.3x\" business-metric stack materializes in the center — the camera settles into a perfectly centered, static composition with the metric in razor-sharp macro focus. Virtual lens at f/1.4. The transition is dreamlike — from detailed recommendation flow to a single, powerful business signal. Cinematic realism, dark studio void.\n\n[Action] The Grow panel elements fade out with a uniform 800ms exponential ease-in (all elements together, moving backward in Z-space). The metric stack assembles in sequence: First, \"4.3\" appears via dramatic kinetic odometer typography — digits roll upward from \"0.0\" through intermediate values, decelerating with exponential ease-out to settle on \"4.3\". The trailing \"x\" snaps into place last with a crisp accent. A cyan text-shadow glow ignites around the final \"4.3x\" with a soft pulse. Below, \"customer value-to-cost ratio\" fades in (400ms ease-out). The cyan separator line draws from center outward. Then \"$17.5T balance with low APY\" appears with a crisp snap as the cyan emphasis line. Finally, \"77% profit margin・Month 12 Breakeven\" fades in at 40% opacity as the footer line. The polished floor reflection of \"4.3x\" shimmers with cyan light.\n\n[Audio] A deep, confident sustained bass note holds throughout the segment — a held analog tone conveying permanence. SFX: As the Grow panel dims and the camera pushes through, a sweeping low-pass filter transition creates a sense of moving through a threshold. SFX: The odometer roll on \"4.3\" produces the most dramatic mechanical counting sound of the video — rapid clicking that decelerates as the number settles, like a premium instrument landing on a precise readout. SFX: When \"4.3x\" locks into place, a crisp, premium glass chime rings — the most satisfying, resonant sound in the entire video. A clean, bell-like tone at a bright frequency that sustains for 1200ms. SFX: The trailing \"x\" snaps in with a single crisp mechanical switch click. A subtle rising tonal accent accompanies the metric, creating a feeling of achievement."
+    },
+    "V10": {
+      "name": "Value Metric to Brand Resolution",
+      "timecode": "27.0s–30.0s",
+      "frames": "F10 → F11",
+      "duration": "3.0 seconds",
+      "note": "Previously V10 in v1 (was F11→F12). Adjusted timing from 2.5s to 3.0s. F11 uses reference image for trident logo.",
+      "reference_image_note": "F11 uses the provided trident logo reference image. Veo must interpolate toward the reference-matched trident shape.",
+      "prompt": "[Cinematography] A slow, graceful pull-back. The camera reverses smoothly from the full \"4.3x\" business-metric stack, led by the large \"4.3x\" numeral, which shrinks and fades as the camera retreats. The movement is the slowest camera motion in the entire video — deliberate, elegant, conclusive. As the camera pulls back, the Poseidon trident logomark fades in at the center — the engine-colored glass catching light as studio rim lights illuminate it. The wordmark and tagline materialize below. The camera settles into a perfectly centered, static medium-wide composition — the brand lockup floating above the polished floor. The final 500ms is completely static — no camera movement, just the brand breathing in the space. Cinematic realism, dark studio void, multi-engine colored rim lighting.\n\n[Action] The full F10 metric stack fades backward together with exponential ease-in (1000ms), led by the large \"4.3x\" numeral shrinking and losing opacity first while \"customer value-to-cost ratio\", \"$17.5T balance with low APY\", and \"77% profit margin・Month 12 Breakeven\" recede in sync beneath it. The trident logomark fades in from 0% to 100% opacity over 800ms with an exponential ease-out. The four engine colors within the trident glass illuminate sequentially: green (left prong), then violet and amber (center prong, blended), then blue (right prong) — each igniting with 200ms stagger, creating a brief, subtle engine activation sequence. The outer cyan specular edge glows last. The \"POSEIDON\" wordmark fades in 300ms after the trident. The tagline and MIT line fade in 200ms after the wordmark. The polished floor reflection shows the multi-colored trident glow. The final state is completely still — no animation, no movement, absolute confidence.\n\n[Audio] A deep sustained bass note holds at decreasing volume, fading toward silence over the segment's duration. SFX: As the trident materializes, a subtle glass surface contact sound — gentle, like setting down a crystal object on a velvet surface. SFX: Each engine color ignition within the trident produces a soft, warm tonal ping — the same four-note arpeggio (green, violet, amber, blue) but slower, quieter, more reflective. SFX: As the wordmark \"POSEIDON\" appears, a final, resonant acoustic chime — a rich, bell-like tone that combines the bass depth of authority with the brightness of clarity. This chime sustains for 1500ms, slowly fading. The synth pad fades to silence over the final 800ms. SFX: The last 300ms is pure silence — no sound, no ambience, no hum. Complete stillness. The silence itself is the final statement."
+    }
+  },
+  "voiceover": {
+    "note": "Layer as a separate audio track over the Veo 3.1 segments. Record with a calm, authoritative voice — measured pace, confident tone.",
+    "lines": [
+      {
+        "timecode": "0.0–3.0s",
+        "text": "(Silence — no voiceover)",
+        "delivery": "Let the visual hook command attention"
+      },
+      {
+        "timecode": "3.0–5.5s",
+        "text": "Your finances live across five institutions. None of them talk to each other.",
+        "delivery": "Calm, factual. Slightly faster pace to match camera urgency"
+      },
+      {
+        "timecode": "6.0–8.5s",
+        "text": "Twelve and a half billion in fraud. Twelve billion in fees. A hundred thirty-three dollars a month — wasted.",
+        "delivery": "Deliberate emphasis on each number. Pause at the em-dash"
+      },
+      {
+        "timecode": "9.0–11.5s",
+        "text": "Data aggregation is solved. Coordination is not.",
+        "delivery": "Slower pace. Pause between sentences. 'Coordination is not' is the most authoritative line delivery"
+      },
+      {
+        "timecode": "12.0–14.5s",
+        "text": "Poseidon is the coordination layer.",
+        "delivery": "Single declarative sentence. Calm confidence"
+      },
+      {
+        "timecode": "15.0–17.5s",
+        "text": "Four engines — Protect, Grow, Execute, Govern — working as one.",
+        "delivery": "List the engines clearly. 'Working as one' lands with weight"
+      },
+      {
+        "timecode": "18.0–20.5s",
+        "text": "Every decision — explained. Every factor — visible. Every action — yours to approve.",
+        "delivery": "Tricolon rhetoric. Pause at each em-dash. The final clause emphasizes human-in-the-loop"
+      },
+      {
+        "timecode": "21.0–23.5s",
+        "text": "Your money grows when AI recommends and you decide.",
+        "delivery": "Warm, confident. Emphasizes the GROW→EXECUTE→human approval loop"
+      },
+      {
+        "timecode": "24.0–27.0s",
+        "text": "That is 4.3x customer value-to-cost against $17.5 trillion in low-APY balances, with 77% profit margin and Month 12 breakeven.",
+        "delivery": "Single smooth sentence, brisk but controlled, matching the business-metric reveal."
+      },
+      {
+        "timecode": "27.0–29.5s",
+        "text": "Poseidon. The trusted AI-native money platform.",
+        "delivery": "Slowest delivery. Pause after 'Poseidon.' Let the name land"
+      }
+    ]
+  },
+  "production_checklist": {
+    "pre_production": [
+      "Prepare the Poseidon trident logo reference image for upload to NBP and Veo 3.1",
+      "Prepare PROTECT product screenshot (two-panel decision screen) as reference image for F08",
+      "Prepare GROW product screenshots (recommendation view + TAKE ACTION execution view) as reference images for F09",
+      "Generate all 11 NBP frames (F01–F11) at 4K resolution — upload reference images for F02, F08, F09, and F11",
+      "QA each frame: verify exact text strings, color accuracy, isometric consistency",
+      "QA F02 and F11: verify trident matches the reference image in shape, proportions, and style",
+      "QA F05: verify ghost grid retains all four engine quadrants including GOVERN (blue #3B82F6)",
+      "QA F08: verify two-panel layout (DECISION DRIVERS left + EVIDENCE ANALYSIS right) with 'Block & Dispute' (red #EF4444) and 'This was Me' (outline) buttons — must match actual PROTECT product screenshot",
+      "QA F09: verify 'Move Idle Cash to High-Yield' recommendation, savings strategy, 3-step TAKE ACTION, and 'Execute Auto Steps' (violet #8B5CF6) button — must match actual GROW product screenshots",
+      "Re-generate any frames with typographic hallucinations or spatial errors"
+    ],
+    "production_veo": [
+      "Upload reference logo image alongside F02 and F11 when rendering V01, V02, and V10",
+      "Upload PROTECT product screenshot alongside F08 when rendering V07",
+      "Upload GROW product screenshots alongside F09 when rendering V08",
+      "Render V01–V10 segments using Start & End Frame mode",
+      "CRITICAL: Test V01→V02 merge point (F02 is shared end/start frame) — this was the v1 discontinuity fix",
+      "Verify V07: Two-panel PROTECT layout assembles correctly — left panel SHAP waterfall, right panel evidence cards, action bar with 'Block & Dispute' / 'This was Me' materializes last",
+      "Verify V08: Transition from PROTECT two-panel to GROW recommendation is smooth — 3-step TAKE ACTION stacks correctly, 'Execute Auto Steps' button materializes last",
+      "Verify each segment: camera path matches prompt, no hallucinated elements",
+      "Verify audio sync: SFX aligns with visual beats (glass clicks on panel arrivals, amber pings on execute buttons)",
+      "Re-render any segments where Veo hallucinated new UI elements not in the source frames"
+    ],
+    "post_production": [
+      "Stitch V01–V10 into single 30-second timeline",
+      "CRITICAL: Verify V01→V02 junction is seamless (the primary fix in v2)",
+      "Layer voiceover audio track with precise timecode alignment",
+      "Mix audio levels: Veo native SFX at 70%, voiceover at 100%, synth at 50%",
+      "Color grade: ensure consistent black levels (#050510) across all segments",
+      "Final QA at 4K: typography legibility, color accuracy, audio sync",
+      "Verify S7 action bar: 'Block & Dispute' (red #EF4444 filled) and 'This was Me' (outline) are clearly visible and match product UI",
+      "Verify S8 action bar: 'Execute Auto Steps' (violet #8B5CF6 filled) and 'Add to Execute Queue' (outline) are clearly visible and match product UI",
+      "Export: 4K UHD (3840×2160), H.265, 30fps, AAC audio"
+    ],
+    "contingency": [
+      "If Veo 3.1 audio generation is inconsistent, extract SFX separately and mix in post",
+      "If NBP text rendering has errors on any frame, regenerate with explicit 'Exact text:' prefix",
+      "If transitions between segments show visible cuts, add 100ms cross-dissolve at junctions",
+      "If NBP does not match the trident reference image accurately, increase reference image weight or regenerate with more explicit shape constraints",
+      "If the V01→V02 merge still shows discontinuity, add a 200ms cross-dissolve specifically at the 3.0s mark",
+      "Total runtime must not exceed 30.0 seconds — trim V09–V10 if over"
+    ]
+  },
+  "changelog_v1_to_v2": {
+    "frame_changes": {
+      "removed": [
+        "F03 (Trident Wide Establishing) — eliminated to fix V01→V02 merge discontinuity"
+      ],
+      "added": [
+        "F09 (Grow Engine — Move Idle Cash to High-Yield recommendation + Execute Auto Steps button, matching actual product UI)"
+      ],
+      "modified": [
+        "F02 — added reference_image_required flag for trident logo",
+        "F05 — ghost grid retains all four engine quadrants including GOVERN (blue #3B82F6)",
+        "F08 (was F09) — completely rewritten as two-panel PROTECT decision screen (DECISION DRIVERS + EVIDENCE ANALYSIS) with 'Block & Dispute' / 'This was Me' action bar, matching actual product UI",
+        "F09 — reference_image_required flag added for GROW product screenshots",
+        "F11 (was F12) — added reference_image_required flag for trident logo"
+      ],
+      "renumbered": "All frames after removed F03 shifted down by 1. Old F10 (Governance) replaced by new F09 (Grow). Old F11→F10, old F12→F11."
+    },
+    "segment_changes": {
+      "S2": "Now F02→F03 (was F03→F04). V02 completely rewritten for macro-trident-to-chaos transition.",
+      "S7": "Completely rewritten. F08 now shows two-panel PROTECT decision screen (DECISION DRIVERS + EVIDENCE ANALYSIS) with 'Block & Dispute' (red) / 'This was Me' (outline) action bar. V07 updated for two-panel animation. Matches actual product UI.",
+      "S8": "Completely replaced. Was Governance Layer (F09→F10, V08). Now Grow Engine 'Move Idle Cash to High-Yield' recommendation with 3-step TAKE ACTION and 'Execute Auto Steps' button (F08→F09, V08). Matches actual product UI.",
+      "S9": "Timing adjusted from 25.0–27.5s to 24.0–27.0s (3.0s instead of 2.5s).",
+      "S10": "Timing adjusted from 27.5–30.0s to 27.0–30.0s (3.0s instead of 2.5s)."
+    },
+    "voiceover_changes": {
+      "18.0–20.5s": "Changed from tricolon about audit/immutability to tricolon about explanation/visibility/approval — emphasizing human-in-the-loop. v2.1: Aligns with two-panel PROTECT decision screen showing the explain→decide flow.",
+      "21.0–23.5s": "Changed from governance mandate ('Mandatory from day one') to Grow+Execute narrative ('Your money grows when AI recommends and you decide'). v2.1: Aligns with actual GROW product showing 'Move Idle Cash to High-Yield' → 'Execute Auto Steps'."
+    },
+    "timing_changes": "All segments now 3.0 seconds each (previously S8 was 4.0s, S9 and S10 were 2.5s). Total remains 30.0 seconds."
+  },
+  "changelog_v2_1_to_v2_2": {
+    "purpose": "Cross-video consistency audit — eliminate all wording mismatches that could confuse audience or undermine credibility",
+    "fixes": [
+      {
+        "id": "C1",
+        "severity": "CRITICAL",
+        "description": "Voiceover S3 said 'Twelve billion' but F04 visual shows '$12.5B' — audience hears one number, sees another",
+        "fix": "Changed VO to 'Twelve and a half billion in fraud' to match F04's '$12.5B'"
+      },
+      {
+        "id": "C2",
+        "severity": "MODERATE",
+        "description": "Canonical grow step 2 title 'Transfer existing savings' diverged from F09 frame prompt 'Transfer $8,200'",
+        "fix": "Updated canonical to 'Transfer $8,200' — concrete amount is more impactful in 30-second video"
+      },
+      {
+        "id": "C3",
+        "severity": "MODERATE",
+        "description": "Canonical grow step 3 title 'Set up auto-transfer' diverged from F09 frame prompt 'Set up $200/mo auto-transfer'",
+        "fix": "Updated canonical to 'Set up $200/mo auto-transfer' — specificity reinforces actionability"
+      },
+      {
+        "id": "C4",
+        "severity": "LOW",
+        "description": "F09 renders 2 of 3 canonical insight cards (card 1 is visually redundant with savings_strategy section)",
+        "fix": "Added note + f09_rendered field to insight_cards canonical object documenting intentional omission"
+      },
+      {
+        "id": "C5",
+        "severity": "LOW",
+        "description": "Assembly order S7 phase label 'SHAP Explainability + Execute' was stale after F08 rewrite to two-panel PROTECT decision screen",
+        "fix": "Updated to 'PROTECT Decision + Execute' — accurately describes the full decision screen"
+      }
+    ],
+    "verified_consistent": [
+      "All engine hex codes match brand_constants across all frames and Veo segments",
+      "All SHAP bar values sum correctly to 0.94 in both canonical and F08 prompt",
+      "Engine names capitalized consistently (PROTECT, GROW, EXECUTE, GOVERN in UI; Protect, Grow, Execute, Govern in prose)",
+      "Button labels identical everywhere: 'Block & Dispute', 'This was Me', 'Execute Auto Steps', 'Add to Execute Queue'",
+      "KPI values ($847/mo, 92%, 5, 96/100) identical across canonical, F06, F07",
+      "$353/year interest math validated: $8,200 × (4.8% − 0.5%) = $352.60 ≈ $353",
+      "Voiceover '$640 saved per user' matches F10 visual '$640'",
+      "Compliance Score (96/100) in KPI and Trust Score (97/100) in GOVERN are distinct metrics — no conflict"
+    ]
+  }
+}

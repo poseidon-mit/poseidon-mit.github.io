@@ -51,8 +51,8 @@ export const LogoIcon: React.FC<LogoIconProps> = ({
                 fontFamily: theme.typography.fontHeader,
             }}
         >
-            {/* Layer 0: Aurora background (if not transparent) */}
-            {background !== 'transparent' && (
+            {/* Layer 0: Aurora background (only if abyss, skip for navy per user request for flat icon) */}
+            {background === 'abyss' && (
                 <>
                     <div style={{
                         position: 'absolute', inset: '-12% -8% -6% -8%',

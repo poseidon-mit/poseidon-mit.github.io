@@ -1,0 +1,268 @@
+{
+  "google_flow": {
+    "common": {
+      "settings": {
+        "resolution": "720p or 1080p (NOT 4K)",
+        "duration": "3 seconds per segment",
+        "fps": "24fps",
+        "input_mode": "First Frame + Last Frame + text prompt"
+      },
+      "global_rules": [
+        "Preserve the exact geometry and layout of the uploaded frames.",
+        "Interpolate only between visible elements already present in the uploaded frames.",
+        "Do not introduce alternate branding, new UI elements, or new symbols.",
+        "Each panel's internal content may refine only within its own boundary — no cross-panel content migration."
+      ],
+      "banned_words": {
+        "safety_filter_triggers": [
+          "shatter",
+          "crack",
+          "break",
+          "destroy",
+          "explode"
+        ],
+        "use_instead": [
+          "dissolve",
+          "fade",
+          "transform"
+        ],
+        "finance_filter_triggers": [
+          "block",
+          "threat"
+        ],
+        "finance_replacements": {
+          "block": "resolve",
+          "threat": "risk"
+        }
+      },
+      "general_tips": [
+        "Do NOT describe what is IN the frames — only camera path, transformation, and ambient sound mood",
+        "Do NOT mention specific UI text, numbers, or labels — the frames carry that",
+        "Do NOT mention buttons you do NOT want pressed (Pink Elephant problem)",
+        "One primary camera movement per prompt — keep it simple",
+        "Start simple, regenerate with more detail if first attempt is too generic"
+      ],
+      "logo_shots_V01_V10": {
+        "asset_lock": "If Google Flow supports 'Ingredients to Video', upload the clean Poseidon trident logo as a locked persistent asset for V01 and V10.",
+        "compositing_fallback": "If logo still hallucinates after 2-3 attempts: render clean background motion only, composite the exact logo as PNG/SVG overlay in post (Premiere / After Effects / CapCut)."
+      }
+    },
+    "segments": [
+      {
+        "id": "V01",
+        "name": "Void to Trident",
+        "timecode": "0.0–3.0s",
+        "first_frame": "F01 (Void Emergence)",
+        "last_frame": "F02 (Trident Logomark Macro)",
+        "asset_lock": true,
+        "prompt": "Slow cinematic push-in from complete darkness toward a single glowing cyan light point at center frame. The camera starts static for half a second, then accelerates gently forward. Shallow depth of field at f/1.4 creates soft bokeh. As the light expands, three curved organic lines emerge outward from the center — sweeping, fluid arcs like calligraphy strokes, NOT straight geometric prongs. The lines have no handle or stem below them. Studio lighting reveals glass-like reflective surfaces with cyan-to-blue specular highlights. The camera settles on an extreme close-up of the final composition. Deep sub-bass tone rises gradually from silence. Dark mode studio environment with polished reflective floor. CRITICAL: No classical trident shape, no straight prongs, no handle, no shaft, no arrow tips at any intermediate frame.",
+        "words": 119,
+        "qc": [
+          "No classical trident shape at any intermediate frame — prongs must be curved and organic",
+          "No handle, shaft, or stem artifact below the logo at any point",
+          "No straight prongs or arrow-tip shapes",
+          "Final frame matches F02 exactly"
+        ]
+      },
+      {
+        "id": "V02",
+        "name": "Trident Macro to Chaos",
+        "timecode": "3.0–6.0s",
+        "first_frame": "F02 (Trident Logomark Macro)",
+        "last_frame": "F03 (Fragmented Financial Chaos)",
+        "prompt": "Rapid camera retreat from the extreme macro. As the camera accelerates backward, horizontal anamorphic lens streaks stretch across the frame from the glass surfaces — elongated cyan light trails spanning edge to edge. The camera sweeps upward in a 45-degree arc while the anamorphic streaks gradually shorten and dissolve. Motion blur intensifies during peak acceleration then softens as the camera decelerates. The camera settles at a 45-degree isometric overhead view. Cinematic shallow depth of field throughout. Dark studio void with no physical surfaces. Sound: rushing digital wind with a harmonic pitch-rise, then dissonant notification tones as the view widens.",
+        "words": 97,
+        "qc": [
+          "Prompt contains ZERO content descriptions — only camera path, anamorphic streaks, DOF, and sound",
+          "All content carried entirely by First Frame (F02) and Last Frame (F03) images",
+          "Anamorphic streaks bridge F02 macro to F03 wide shot structurally",
+          "No physical floor or ground surface",
+          "45-degree isometric final angle"
+        ]
+      },
+      {
+        "id": "V03",
+        "name": "Chaos to Cost Cards",
+        "timecode": "6.0–9.0s",
+        "first_frame": "F03 (Fragmented Financial Chaos)",
+        "last_frame": "F04 (Three Cost Stat Cards)",
+        "prompt": "Camera begins a slow push-in from the isometric overhead view. Simultaneously, ambient light dims progressively from the edges of the frame inward — a gradual luminance collapse. The outermost elements darken first into silhouettes, then the inner elements follow. Color desaturates toward monochrome as energy drains from the scene. Only a warm concentrated glow persists at the center of the frame. The camera continues forward through the dimming space toward the central light source. Depth of field narrows to f/1.4 with the center composition emerging in sharp warm focus against surrounding darkness. Dark studio environment. Sound: descending filtered tones, each frequency cutting out one by one, final deep resonant pulse.",
+        "words": 109,
+        "qc": [
+          "Prompt contains ZERO content descriptions — only camera, luminance, DOF, and sound",
+          "All card content carried entirely by First Frame (F03) and Last Frame (F04) images",
+          "Light drains edge-to-center: outermost elements darken first, innermost last",
+          "Center in sharp warm focus, edges in darkness",
+          "No banned words used"
+        ]
+      },
+      {
+        "id": "V04",
+        "name": "Cost Cards to Thesis",
+        "timecode": "9.0–12.0s",
+        "first_frame": "F04 (Three Cost Stat Cards)",
+        "last_frame": "F05 (Thesis Statement)",
+        "prompt": "Slow elegant push-in toward the center glass card. The camera targets the middle element directly. As the camera advances, progressive gaussian blur spreads across the entire frame — edges soften first, then the full composition dissolves into an abstract luminous field. The camera continues forward through the blurred field into a clean dark void. The text \"Data aggregation is solved.\" fades in at center frame in crisp white. The camera holds static. Then the text \"Coordination is not.\" appears below it — this second line ignites with a vivid cyan-to-magenta gradient glow that pulses once and settles into a luminous steady radiance. A soft cyan rim light along the frame border intensifies in sync with the second line. The camera remains perfectly centered and static. Sound: glass resonance fading to silence, crisp mechanical click on the first line, deep sub-bass pulse with a bright crystalline shimmer on the second line.",
+        "words": 140,
+        "qc": [
+          "Camera targets CENTER card directly — NOT the gap between cards",
+          "Progressive full-frame blur bridges F04 cards to dark void",
+          "First line: white, clean fade-in — no color effect",
+          "Second line: cyan-to-magenta gradient glow, pulses once then settles — vivid but not a flash",
+          "Text matches F05 Last Frame exactly: Line 1 = Data aggregation is solved. Line 2 = Coordination is not.",
+          "Cyan rim light intensifies in sync with second line appearance"
+        ]
+      },
+      {
+        "id": "V05",
+        "name": "Thesis to Dashboard Transformation",
+        "timecode": "12.0–15.0s",
+        "first_frame": "F05 (Thesis Statement)",
+        "last_frame": "F06 (Poseidon Command Center)",
+        "prompt": "Camera holds static on the centered composition for one beat. Then the camera slowly pushes in — the frame compresses inward, edges darkening as the view narrows to an extreme close-up. The compression holds for one beat of complete silence. Then the camera smoothly reverses into a pull-back, expanding outward in a sweeping 45-degree arc upward. During the entire pull-back, heavy gaussian blur covers the full frame — all emerging elements remain completely unreadable soft shapes. The blur persists throughout the expansion. Only in the final half-second does the blur rapidly clear, snapping the isometric overhead composition into sharp focus. Polished reflective floor visible. Dark studio throughout — no added brightness. Sound: compressed silence during the push-in, a single deep sub-bass release on the pull-back, then a quiet sustained warm chord as focus snaps sharp.",
+        "words": 131,
+        "qc": [
+          "Prompt contains ZERO content descriptions — no dashboard layout, no KPI values, no panel names",
+          "All dashboard content carried entirely by Last Frame (F06)",
+          "CRITICAL: heavy full-frame blur persists during entire pull-back phase — content never readable until final snap",
+          "Blur clears only in the final half-second — prevents Veo from rendering intermediate content",
+          "Exhale pattern: push-in compression → hold → blurred pull-back expansion → sharp snap",
+          "No light trails, no bloom — dark throughout"
+        ]
+      },
+      {
+        "id": "V06",
+        "name": "Dashboard to Engine Close-Up",
+        "timecode": "15.0–18.0s",
+        "first_frame": "F06 (Poseidon Command Center)",
+        "last_frame": "F07 (Four Engines Close-Up)",
+        "prompt": "Smooth cinematic tracking shot. Camera glides forward and slightly downward, transitioning from 45-degree to 30-degree angle, pushing toward the lower four-panel grid. The top row of smaller cards drifts upward and out of frame. Depth of field gradually shallows — background dissolves into colored bokeh. The camera settles at a 30-degree close-up of four equal glass panels in a 2×2 grid. All panel content is frozen and identical to the start and end frames throughout the entire motion. PROTECT (green edge) keeps its threat list. GROW (violet edge) keeps its smooth clean line graph with no added arrows or dots. EXECUTE (amber edge) keeps its exact same three horizontal bars and text. GOVERN (blue edge) keeps 97/100 with compliance badges. Only the camera angle changes — panel interiors are static. Sound: sustained warm synth chord with four distinct tonal pings.",
+        "words": 130,
+        "qc": [
+          "All panel content is frozen throughout — only camera angle changes",
+          "GROW line graph has no added arrows, dots, markers, or shape changes — smooth clean line only",
+          "EXECUTE bars remain at exact same fill levels — no bar length changes or text changes",
+          "KPI row cards exit cleanly upward",
+          "Final layout matches F07",
+          "Panel sizes remain equal throughout — no panel grows or shrinks relative to others"
+        ]
+      },
+      {
+        "id": "V07",
+        "name": "Engine Grid to PROTECT Zoom",
+        "timecode": "18.0–21.0s",
+        "first_frame": "F07 (Four Engines Close-Up)",
+        "last_frame": "F07 zoomed into PROTECT panel (use a cropped version of F07 showing only the top-left green-bordered panel filling the frame)",
+        "compositing_required": true,
+        "compositing_instruction": "Veo cannot interpolate between F07 and F08 (structurally different layouts). Instead: (1) Use F07 as First Frame and a zoomed crop of F07's PROTECT panel as Last Frame — this gives Veo a pure camera zoom on identical content. (2) In post-production (Premiere / After Effects / CapCut), trim V07 to end just as the PROTECT panel fills the frame, then add a 0.3–0.5s dissolve transition to F08 (static). (3) Overlay a cursor-click animation on F08 in post — white cursor taps the red Block & Dispute button with a circular glow ripple.",
+        "prompt": "Slow cinematic push-in toward the top-left panel. Camera starts at a 30-degree isometric overview, then gradually narrows focus on the green-bordered region. Depth of field shallows progressively — the three surrounding panels soften into colored bokeh. The green-bordered area fills the entire frame. Lighting shifts from balanced four-color to dominant green accent rim glow. Dark studio background throughout. Sound: sustained warm tone narrowing to a single green frequency, then silence.",
+        "words": 68,
+        "qc": [
+          "First Frame and Last Frame are BOTH derived from F07 — same content, different zoom level",
+          "Veo only interpolates a camera zoom — zero layout changes, zero content changes",
+          "F08 appearance and cursor click are added in post-production via compositing",
+          "Dark background throughout"
+        ]
+      },
+      {
+        "id": "V08",
+        "name": "PROTECT to GROW Recommendation",
+        "timecode": "21.0–24.0s",
+        "first_frame": "F08 (PROTECT Decision Screen)",
+        "last_frame": "F09 (GROW Recommendation Flow)",
+        "prompt": "Smooth controlled pull-back from the current macro view. The camera reverses and executes a lateral arc tracking rightward, tracing a gentle S-curve through space. Depth of field stays shallow throughout — everything outside the camera's focal point remains in soft bokeh. Accent rim lighting transitions gradually from green to violet as the camera moves rightward. The camera completes its arc and pushes forward into a new macro composition matching the final frame. The violet glow dominates the frame edges. Dark studio background. Sound: green frequency fades out, violet frequency fades in, ascending progression tones, soft glass chime at the end.",
+        "words": 100,
+        "qc": [
+          "Prompt contains ZERO content descriptions — only camera path, lighting color, depth of field, and sound",
+          "All content is carried entirely by the First Frame (F08) and Last Frame (F09) images",
+          "Green-to-violet lighting transition matches the engine color shift",
+          "Dark background throughout"
+        ]
+      },
+      {
+        "id": "V09",
+        "name": "Grow to Value Metric",
+        "timecode": "24.0–27.0s",
+        "first_frame": "F09 (GROW Recommendation Flow)",
+        "last_frame": "F10 (Key Metric Hero)",
+        "prompt": "Slow elegant forward push-in. The camera pushes through the current frame as all visible elements simultaneously dim to 20% opacity and defocus into abstract colored bokeh shapes. The camera continues forward through the dissolving bokeh into a clean centered composition. Depth of field narrows to razor-sharp macro focus at center frame with f/1.4 aperture. Accent lighting shifts from violet to neutral cyan glow. The camera settles into a perfectly static centered position above a polished reflective floor. Sound: deep sustained bass note, sweeping low-pass filter, then a premium glass chime.",
+        "words": 90,
+        "qc": [
+          "Prompt contains ZERO content descriptions — only camera, lighting, depth of field, and sound",
+          "All content carried entirely by First Frame (F09) and Last Frame (F10) images",
+          "Final composition is perfectly centered and static",
+          "Polished reflective floor visible"
+        ]
+      },
+      {
+        "id": "V10",
+        "name": "Value Metric to Brand Resolution",
+        "timecode": "27.0–30.0s",
+        "first_frame": "F10 (Key Metric Hero)",
+        "last_frame": "F11 (Brand Resolution)",
+        "asset_lock": true,
+        "prompt": "Slow graceful pull-back — the slowest camera motion in the entire video. The central number shrinks and fades as the camera retreats smoothly. A logo form with three curved organic prongs gradually materializes at center — the prongs are swept fluid arcs, NOT straight geometric lines, with NO handle or shaft below. Glass surfaces catch multi-colored rim lighting. Text appears below the logo. The camera settles into a perfectly centered static medium-wide composition above a polished reflective floor. The final 500 milliseconds are completely static — absolute confident stillness. Sound: deep sustained tone fading toward silence, gentle glass placement sound, then complete silence. CRITICAL: No classical trident shape, no straight prongs, no handle, no shaft at any intermediate frame.",
+        "words": 122,
+        "qc": [
+          "All intermediate logo frames show curved organic prongs — not classical trident",
+          "No handle, shaft, or stem artifact at any point",
+          "No straight prongs or arrow-tip shapes",
+          "Final mark matches F11",
+          "Last 500ms completely static"
+        ]
+      }
+    ]
+  },
+  "voiceover": [
+    {
+      "timecode": "0.0–3.0s",
+      "text": "(Silence — no voiceover)",
+      "delivery": "Let the visual hook command attention"
+    },
+    {
+      "timecode": "3.0–5.5s",
+      "text": "Your finances live across five institutions. None of them talk to each other.",
+      "delivery": "Calm, factual. Slightly faster pace to match camera urgency"
+    },
+    {
+      "timecode": "6.0–8.5s",
+      "text": "Twelve and a half billion in fraud. Six billion in fees. A hundred thirty-three dollars a month — wasted.",
+      "delivery": "Deliberate emphasis on each number. Pause at the em-dash"
+    },
+    {
+      "timecode": "9.0–11.5s",
+      "text": "Data aggregation is solved. Coordination is not.",
+      "delivery": "Slower pace. Pause between sentences. 'Coordination is not' is the most authoritative line delivery"
+    },
+    {
+      "timecode": "12.0–14.5s",
+      "text": "Poseidon is the coordination layer.",
+      "delivery": "Single declarative sentence. Calm confidence"
+    },
+    {
+      "timecode": "15.0–17.5s",
+      "text": "Four engines — Protect, Grow, Execute, Govern — working as one.",
+      "delivery": "List the engines clearly. 'Working as one' lands with weight"
+    },
+    {
+      "timecode": "18.0–20.5s",
+      "text": "Every decision — explained. Every factor — visible. Every action — yours to approve.",
+      "delivery": "Tricolon rhetoric. Pause at each em-dash. The final clause emphasizes human-in-the-loop"
+    },
+    {
+      "timecode": "21.0–23.5s",
+      "text": "Your money grows when AI recommends and you decide.",
+      "delivery": "Warm, confident. Emphasizes the GROW→EXECUTE→human approval loop"
+    },
+    {
+      "timecode": "24.0–26.5s",
+      "text": "Four point three times the value returned. Seventeen and a half trillion dollars — waiting.",
+      "delivery": "Numbers spoken clearly. Pause at the em-dash. 'Waiting' lands as the kicker — implies massive untapped opportunity"
+    },
+    {
+      "timecode": "27.0–29.5s",
+      "text": "Poseidon. The trusted AI-native money platform.",
+      "delivery": "Slowest delivery. Pause after 'Poseidon.' Let the name land"
+    }
+  ]
+}

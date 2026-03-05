@@ -31,8 +31,7 @@ export const PoseidonLogo: React.FC<PoseidonLogoProps> = ({
                 style={{
                     width: '100%',
                     height: '100%',
-                    objectFit: 'contain',
-                    filter: 'drop-shadow(0 0 10px rgba(0,240,255,0.5))'
+                    objectFit: 'contain'
                 }}
             />
         </div>
