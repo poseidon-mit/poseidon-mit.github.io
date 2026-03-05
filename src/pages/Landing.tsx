@@ -57,9 +57,13 @@ export default function Landing() {
               loop
               muted
               playsInline
+              preload="metadata"
+              poster="/videos/hero-theme-poster-v2.jpg"
               className="w-full h-full object-cover opacity-80"
-              src="/videos/hero-theme-desktop.mp4"
-            />
+            >
+              <source src="/videos/hero-theme-mobile-v2.mp4" media="(max-width: 767px)" type="video/mp4" />
+              <source src="/videos/hero-theme-desktop-v2.mp4" type="video/mp4" />
+            </video>
             {/* Fade out bottom to blend with background */}
             <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#05050A] to-transparent" />
 

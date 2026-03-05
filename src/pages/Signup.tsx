@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { DEMO_USER } from '@/lib/demo-user'
 import { usePageTitle } from '@/hooks/use-page-title'
+import { DemoSkipButton } from '@/components/auth/DemoSkipButton'
 
 export default function SignupPage() {
   usePageTitle('Sign Up')
@@ -19,23 +20,36 @@ export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  const startDemoFlow = (nextPath: '/onboarding' | '/dashboard', preferredEmail?: string) => {
+    beginDemoSession({ method: 'skip', email: preferredEmail || DEMO_USER.email })
+    updateOnboarding({ completed: false, completedAt: null })
+    navigate(nextPath)
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    beginDemoSession({ method: 'skip', email: email || DEMO_USER.email })
-    updateOnboarding({ completed: false, completedAt: null })
-    navigate('/onboarding')
+    startDemoFlow('/onboarding', email)
   }
 
   const handleSocialSignup = () => {
-    beginDemoSession({ method: 'skip', email: DEMO_USER.email })
-    updateOnboarding({ completed: false, completedAt: null })
-    navigate('/onboarding')
+    startDemoFlow('/onboarding', DEMO_USER.email)
+  }
+
+  const handleSkipToDashboard = () => {
+    startDemoFlow('/dashboard', email)
   }
 
   return (
     <>
       <PublicTopBar />
-      <AuthShell title="" subtitle="Create your profile" hideLogo>
+      <AuthShell
+        title=""
+        subtitle="Create your profile"
+        hideLogo
+        afterCard={(
+          <DemoSkipButton onClick={handleSkipToDashboard} />
+        )}
+      >
         <div>
           <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex flex-col">
 
@@ -113,7 +127,7 @@ export default function SignupPage() {
 
               <Button
                 type="submit"
-                className="w-full rounded-xl py-6 mt-2 text-base font-semibold bg-gradient-to-r from-[#10B981] to-[#8B5CF6] text-white hover:opacity-90 transition-opacity flex justify-center items-center gap-2"
+                className="w-full rounded-xl border border-white/15 py-6 mt-2 text-base font-semibold bg-gradient-to-r from-[#0f766e] to-[#6366f1] text-white/95 transition-all duration-300 hover:brightness-110 flex justify-center items-center gap-2"
               >
                 Create Account
                 <ArrowRight className="w-4 h-4" />

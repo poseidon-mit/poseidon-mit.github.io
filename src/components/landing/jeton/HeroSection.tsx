@@ -12,9 +12,9 @@ import { useDemoState } from '@/lib/demo-state/provider';
 import { useJetonHeroVideoEnabled } from './hooks/useJetonWebGLEnabled';
 import { JETON_EASING } from './jeton-config';
 
-const HERO_VIDEO_DESKTOP_SRC = '/videos/hero-theme-desktop.mp4';
-const HERO_VIDEO_MOBILE_SRC = '/videos/hero-theme-mobile.mp4';
-const HERO_VIDEO_POSTER_SRC = '/videos/hero-theme-poster.jpg';
+const HERO_VIDEO_DESKTOP_SRC = '/videos/hero-theme-desktop-v2.mp4';
+const HERO_VIDEO_MOBILE_SRC = '/videos/hero-theme-mobile-v2.mp4';
+const HERO_VIDEO_POSTER_SRC = '/videos/hero-theme-poster-v2.jpg';
 
 function useHeroVideoSrc() {
   const [src, setSrc] = useState(() =>

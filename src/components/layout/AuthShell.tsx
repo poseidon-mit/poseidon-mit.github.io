@@ -11,6 +11,7 @@ export interface AuthShellProps {
   title: string
   subtitle: string
   children: ReactNode
+  afterCard?: ReactNode
   className?: string
   formClassName?: string
   eyebrow?: string
@@ -24,6 +25,7 @@ export function AuthShell({
   title,
   subtitle,
   children,
+  afterCard,
   className,
   formClassName,
   hideLogo,
@@ -63,6 +65,12 @@ export function AuthShell({
           </div>
           <div className="mt-8">{children}</div>
         </section>
+
+        {afterCard ? (
+          <div className="mt-4 w-full">
+            {afterCard}
+          </div>
+        ) : null}
       </div>
     </main>
   )
