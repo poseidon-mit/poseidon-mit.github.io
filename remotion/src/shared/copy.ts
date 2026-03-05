@@ -11,7 +11,6 @@ const TEAM = [
   { id: 'member-01', name: 'Shinji Fujiwara', initials: 'SF', contribution: 'System Architecture' },
   { id: 'member-02', name: 'Sean Beecroft', initials: 'SB', contribution: 'Fraud Models' },
   { id: 'member-03', name: 'Michael Hinckley', initials: 'MH', contribution: 'EU AI Act' },
-  { id: 'member-04', name: 'Arun Kumar', initials: 'AK', contribution: 'Design System' },
 ] as const;
 
 export const copy = {
@@ -380,6 +379,14 @@ export const copy = {
     title: 'Introduction Video',
     subtitle: 'The Guardian in Action.',
     caption: 'Protect -> Grow -> Execute -> Govern',
+    youtubeCta: {
+      url: 'https://www.youtube.com/watch?v=ymwtd7X3CYI',
+      badge: 'YOUTUBE',
+      title: '',
+      subtitle: '',
+      note: 'Recommended when in-room audio is muted',
+      displayUrl: 'youtube.com/watch?v=ymwtd7X3CYI',
+    },
     phases: ['Protect', 'Grow', 'Execute', 'Govern'],
     tstimeline: [
       { id: 'dashboard', time: '0-7s', label: 'Dashboard', desc: 'Unified view of all accounts', icon: 'data-grid', color: 'rgba(255,255,255,0.5)' },
@@ -587,7 +594,7 @@ export const copy = {
     market: {
       items: [
         { label: 'US retail banking profit', value: '$750B/yr', detail: '' },
-        { label: 'Balance with low ARP', value: '$17.5T', detail: '' },
+        { label: 'Balance with low APY', value: '$17.5T', detail: '' },
         { label: '3-Year Capture', value: '$46M', detail: 'Conservative 1.3% penetration' },
       ],
       citation: '(McKinsey 2024)',

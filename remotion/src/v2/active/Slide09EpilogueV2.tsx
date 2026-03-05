@@ -5,7 +5,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import QRCode from 'qrcode';
 import { staticFile } from 'remotion';
-import { IconTrident } from '../../shared/icons/IconTrident';
 import { IconPoseidonWordmark } from '../../shared/icons/IconPoseidonWordmark';
 import { SlideFrame } from '../../shared/SlideFrame';
 import { copy } from '../../shared/copy';
@@ -332,11 +331,21 @@ export const Slide09EpilogueV2: React.FC<Slide09EpilogueV2Props> = ({
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <div style={{ overflow: 'hidden', width: 160, height: 220, flexShrink: 0 }}>
-                <IconTrident
-                  size={400}
-                  neon={false}
-                  style={{ width: 220, height: 220 }}
+              <div
+                style={{
+                  overflow: 'hidden',
+                  width: 180,
+                  height: 220,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <img
+                  src={staticFile('assets/png/logo-webui.png')}
+                  alt="Poseidon trident icon"
+                  style={{ width: 140, height: 140, transform: 'translateX(10px)', objectFit: 'contain', display: 'block' }}
                 />
               </div>
               <IconPoseidonWordmark

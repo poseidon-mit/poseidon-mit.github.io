@@ -3,6 +3,7 @@
  * Light polish with tighter opening hierarchy.
  */
 import React from 'react';
+import { staticFile } from 'remotion';
 import { SlideFrame } from '../../shared/SlideFrame';
 import { copy } from '../../shared/copy';
 import { theme } from '../../shared/theme';
@@ -11,7 +12,6 @@ import { NeonText } from '../../shared/NeonText';
 import { v4Presets } from '../../shared/backgroundPresets.v4';
 import { getSlideHeaderColors, recolorBackgroundLayers } from '../../shared/slideThemeColor';
 import { slideLayouts, v2Policy } from '../../shared/slideLayouts';
-import { IconTrident } from '../../shared/icons/IconTrident';
 import { IconPoseidonWordmark } from '../../shared/icons/IconPoseidonWordmark';
 
 import { DustMotes } from '../../shared/effects/FloatingParticles';
@@ -66,14 +66,16 @@ export const Slide01TitleV2: React.FC<Slide01TitleV2Props> = ({
           }}
           data-debug-id="slide01v2.logoWrap"
         >
-          <IconTrident
-            size={400}
-            neon={false}
+          <img
+            src={staticFile('assets/png/logo-webui.png')}
+            alt="Poseidon trident icon"
             style={{
-              width: 320,
-              height: 320,
-              marginRight: -80,
+              width: 240,
+              height: 240,
+              marginRight: -40,
+              transform: 'translateX(-20px)',
               flexShrink: 0,
+              objectFit: 'contain',
             }}
           />
           <IconPoseidonWordmark
