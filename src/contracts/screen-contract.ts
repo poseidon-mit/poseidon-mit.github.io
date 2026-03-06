@@ -114,6 +114,7 @@ export type RequiredSlot =
   | 'hero_message'
   | 'proof_line'
   | 'kpi_grid'
+  | 'coordination_hero'
   | 'primary_feed'
   | 'decision_rail'
   | 'govern_controls'
@@ -139,6 +140,7 @@ export type RequiredWidget =
   // Dashboard
   | 'DashboardInsightsPanel'
   | 'KPIContractCard'
+  | 'DashboardCoordinationProof'
   // Governance
   | 'GovernVerifiedBadge'
   | 'AuditLinkChip'
@@ -210,6 +212,7 @@ export const REQUIRED_SLOTS: RequiredSlot[] = [
   'hero_message',
   'proof_line',
   'kpi_grid',
+  'coordination_hero',
   'primary_feed',
   'decision_rail',
   'govern_controls',

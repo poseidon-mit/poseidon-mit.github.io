@@ -75,7 +75,7 @@ export default function SettingsPage() {
   ] as const
 
   const [protectAlertNotify, setProtectAlertNotify] = useState(true)
-  const [protectAutoBlock, setProtectAutoBlock] = useState(true)
+  const [protectAutoEscalate, setProtectAutoEscalate] = useState(true)
   const [protectSeverityFilter, setProtectSeverityFilter] = useState(false)
   const [growWeeklyGoalDigest, setGrowWeeklyGoalDigest] = useState(true)
   const [growAutoRebalance, setGrowAutoRebalance] = useState(false)
@@ -212,7 +212,7 @@ export default function SettingsPage() {
                 </div>
               </div>
               <SettingToggle label="Immediate threat alerts" desc="Push notification for every detected threat" checked={protectAlertNotify} onChange={setProtectAlertNotify} />
-              <SettingToggle label="Auto-block suspicious activity" desc="Automatically block transactions above confidence threshold" checked={protectAutoBlock} onChange={setProtectAutoBlock} />
+              <SettingToggle label="Queue threats for Execute approval" desc="Automatically escalate high-confidence threats to your Execute approval queue" checked={protectAutoEscalate} onChange={setProtectAutoEscalate} />
               <SettingToggle label="Low-severity filter" desc="Suppress alerts below Medium severity" checked={protectSeverityFilter} onChange={setProtectSeverityFilter} />
             </div>
           </div>

@@ -43,3 +43,21 @@ export { StatRow, type StatRowProps } from './stat-row'
 
 /* ── Sub-page Navigation ── */
 export { SubPageNav, type SubPageNavProps } from './sub-page-nav'
+
+/* ── Cohort Fraud Trend ── */
+export { CohortFraudTrend, type CohortFraudTrendProps } from './cohort-fraud-trend'
+
+/* ── Protect Hero ── */
+export { ProtectAnomalyRadar, type ProtectAnomalyRadarProps, ProtectThreatPosture, type ProtectThreatPostureProps } from './protect-hero'
+
+/* ── Grow Hero ── */
+export { GrowGrowthAdvantage, type GrowGrowthAdvantageProps } from './grow-hero'
+
+/* ── Dashboard Hero ── */
+export { DashboardCoordinationProof, type DashboardCoordinationProofProps } from './dashboard-hero'
+
+/* ── Execute Hero ── */
+export { ExecuteApprovalCommandDeck, type ExecuteApprovalCommandDeckProps } from './execute-hero'
+
+/* ── Govern Hero ── */
+export { GovernImmutableLedger, type GovernImmutableLedgerProps } from './govern-hero'

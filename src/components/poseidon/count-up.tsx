@@ -14,6 +14,7 @@ export interface CountUpProps {
   decimals?: number      // default 0
   prefix?: string        // "$", etc.
   suffix?: string        // "%", "M", etc.
+  locale?: boolean       // default false — when true, uses toLocaleString()
   className?: string
 }
 
@@ -23,6 +24,7 @@ export function CountUp({
   decimals = 0,
   prefix = '',
   suffix = '',
+  locale = false,
   className,
 }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null)
@@ -55,11 +57,12 @@ export function CountUp({
     return () => cancelAnimationFrame(raf)
   }, [inView, value, duration, prefersReduced])
 
-  const formatted = `${prefix}${display.toFixed(decimals)}${suffix}`
+  const fmt = (n: number) =>
+    locale ? `${prefix}${Math.round(n).toLocaleString()}${suffix}` : `${prefix}${n.toFixed(decimals)}${suffix}`
 
   return (
-    <span ref={ref} className={className} aria-label={`${prefix}${value.toFixed(decimals)}${suffix}`}>
-      {formatted}
+    <span ref={ref} className={className} aria-label={fmt(value)}>
+      {fmt(display)}
     </span>
   )
 }

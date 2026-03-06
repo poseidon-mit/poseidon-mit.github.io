@@ -4,11 +4,17 @@ import { describe, expect, it } from 'vitest'
 import { CROSS_SCREEN_DATA_THREAD } from '../contracts/rebuild-contracts'
 import { DEMO_THREAD } from '../lib/demo-thread'
 import {
+  getCanonicalUniverse,
+  selectDashboardView,
+  selectGovernAuditEntries,
   selectGovernAuditSummaryView,
+  selectGovernLedgerPreview,
   selectGovernSummaryView,
   validateCanonicalUniverse,
   CANONICAL_UNIVERSE,
 } from '../domain/poseidon-universe'
+import { TRUST_POLICIES, TRUST_BAR_ITEMS } from '../content/trust-policies'
+import { LANDING_COPY } from '../content/landing-copy'
 
 const repoRoot = resolve(__dirname, '..', '..')
 
@@ -54,14 +60,163 @@ describe('demo coherence invariants', () => {
     }
   })
 
-  it('keeps SOC 2 wording consistently in-progress in landing copy', () => {
+  it('keeps SOC 2 wording consistently in-progress in landing copy (jeton)', () => {
     const source = readSource('src/content/landing-copy-jeton.ts')
     expect(source).toContain('SOC 2 Type II in progress')
     expect(source).not.toMatch(/SOC 2 certified/i)
     expect(source).not.toMatch(/SOC 2 compliance maintained/i)
   })
 
+  it('keeps SOC 2 wording consistently in-progress across trust policies', () => {
+    expect(TRUST_POLICIES.soc2).toContain('SOC 2 Type II in progress')
+    expect(TRUST_POLICIES.soc2).not.toMatch(/SOC 2 certified/i)
+    expect(TRUST_POLICIES.soc2).not.toMatch(/SOC 2 compliance maintained/i)
+  })
+
   it('validates canonical universe invariants', () => {
     expect(validateCanonicalUniverse(CANONICAL_UNIVERSE)).toEqual([])
+  })
+
+  it('keeps Dashboard hero savings tied to canonical potential savings', () => {
+    const dashboard = selectDashboardView()
+    const universe = getCanonicalUniverse()
+    expect(dashboard.monthlySavingsPotentialUsd).toBe(
+      universe.metrics.monthlySavingsPotentialUsd,
+    )
+    expect(dashboard.recommendationCount).toBe(
+      universe.entities.recommendations.length,
+    )
+  })
+
+  it('uses selectCohortMetrics on downstream pages', () => {
+    const cohortPages = [
+      { file: 'src/pages/Landing.tsx', selector: 'selectCohortMetrics' },
+      { file: 'src/pages/Grow.tsx', selector: 'selectCohortMetrics' },
+      { file: 'src/pages/protect/Protect.tsx', selector: 'selectCohortMetrics' },
+      { file: 'src/pages/Dashboard.tsx', selector: 'selectCohortMetrics' },
+    ]
+
+    for (const { file, selector } of cohortPages) {
+      const source = readSource(file)
+      expect(source).toContain(selector)
+    }
+  })
+
+  it('keeps cohort contract values tied to canonical universe', () => {
+    const cohort = CANONICAL_UNIVERSE.metrics.cohort
+    expect(CROSS_SCREEN_DATA_THREAD.cohort_acceptance_rate.value).toBe(cohort.recommendationAcceptanceRate)
+    expect(CROSS_SCREEN_DATA_THREAD.cohort_avg_savings.value).toBe(cohort.avgMonthlySavingsUsd)
+    expect(CROSS_SCREEN_DATA_THREAD.projected_3y_advantage.value).toBe(cohort.projected3yAdvantageUsd)
+    const trendContract = CROSS_SCREEN_DATA_THREAD.cohort_fraud_trend.value as { label: string; changePercent: number; period: string }
+    expect(trendContract.label).toBe(cohort.fraudTrend.label)
+    expect(trendContract.changePercent).toBe(cohort.fraudTrend.changePercent)
+    expect(trendContract.period).toBe(cohort.fraudTrend.period)
+  })
+
+  it('derives ledger preview from audit entries (single source of truth)', () => {
+    const ledger = selectGovernLedgerPreview()
+    const audit = selectGovernAuditEntries()
+    expect(ledger.length).toBe(audit.length)
+    for (let i = 0; i < audit.length; i++) {
+      expect(ledger[i].id).toBe(audit[i].id)
+      expect(ledger[i].action).toBe(audit[i].action)
+      expect(ledger[i].type).toBe(audit[i].type)
+      expect(ledger[i].confidence).toBe(audit[i].confidence)
+    }
+  })
+
+  it('keeps architectural trust invariants tied to canonical universe', () => {
+    const trust = CANONICAL_UNIVERSE.metrics.architecturalTrust
+    expect(trust.autoExecutionsWithoutConsent).toBe(0)
+    expect(trust.auditCoveragePercent).toBe(100)
+    expect(trust.llmRetentionDays).toBe(0)
+    expect(trust.llmTrainingOptOut).toBe(true)
+    expect(CROSS_SCREEN_DATA_THREAD.zero_auto_executions.value).toBe(trust.autoExecutionsWithoutConsent)
+    expect(CROSS_SCREEN_DATA_THREAD.audit_coverage_percent.value).toBe(trust.auditCoveragePercent)
+  })
+
+  it('binds landing trust bar to shared trust policies (closed loop)', () => {
+    expect(LANDING_COPY.hero.trustItems).toBe(TRUST_BAR_ITEMS)
+    expect(TRUST_BAR_ITEMS).toContain(TRUST_POLICIES.llmZeroRetention)
+    expect(CANONICAL_UNIVERSE.metrics.architecturalTrust.llmRetentionDays).toBe(0)
+  })
+
+  it('uses selectArchitecturalTrust on downstream pages', () => {
+    for (const file of ['src/pages/Landing.tsx', 'src/pages/Execute.tsx', 'src/pages/Govern.tsx']) {
+      expect(readSource(file)).toContain('selectArchitecturalTrust')
+    }
+  })
+
+  it('Landing.tsx renders trust bar from shared source, not hardcoded', () => {
+    const landingSource = readSource('src/pages/Landing.tsx')
+    expect(landingSource).toContain('LANDING_COPY.hero.trustItems')
+    expect(landingSource).not.toMatch(/Read-Only Bank APIs/)
+    expect(landingSource).not.toMatch(/LLM Zero-Retention/)
+  })
+
+  it('Govern.tsx renders privacy mandates from shared source', () => {
+    const governSource = readSource('src/pages/Govern.tsx')
+    expect(governSource).toContain('PRIVACY_MANDATES')
+  })
+
+  it('keeps risk incidents flagged tied to canonical via contract', () => {
+    const perf = CANONICAL_UNIVERSE.metrics.cohort.protectPerformance
+    expect(CROSS_SCREEN_DATA_THREAD.risk_incidents_flagged.value).toBe(perf.riskIncidentsFlagged)
+  })
+
+  it('keeps avg monthly exposure tied to canonical via contract', () => {
+    const perf = CANONICAL_UNIVERSE.metrics.cohort.protectPerformance
+    expect(CROSS_SCREEN_DATA_THREAD.avg_monthly_exposure.value).toBe(perf.avgMonthlyExposureUsd)
+  })
+
+  it('keeps platform profile count tied to canonical via contract', () => {
+    expect(CROSS_SCREEN_DATA_THREAD.platform_profile_count.value).toBe(
+      CANONICAL_UNIVERSE.metrics.platformProfileCount,
+    )
+  })
+
+  it('aligns platformProfileCount to roadmap Phase 3 (~180K)', () => {
+    const count = CANONICAL_UNIVERSE.metrics.platformProfileCount
+    expect(count).toBeGreaterThanOrEqual(180_000)
+    expect(count).toBeLessThanOrEqual(200_000)
+  })
+
+  it('keeps platformProfileCount distinct from cohortSize', () => {
+    expect(CANONICAL_UNIVERSE.metrics.platformProfileCount).toBeGreaterThan(
+      CANONICAL_UNIVERSE.metrics.cohort.cohortSize,
+    )
+  })
+
+  it('anchors protect proof thread to sidebar (always visible)', () => {
+    const src = readSource('src/pages/protect/Protect.tsx')
+    expect(src).toContain('selectProtectPerformance')
+    expect(src).toMatch(/riskIncidentsFlagged|perf\.riskIncidentsFlagged/)
+  })
+
+  it('renders platform profile count on downstream grow page', () => {
+    expect(readSource('src/components/poseidon/grow-hero.tsx')).toContain('platformProfileCount')
+  })
+
+  it('uses read-only honest language — no "block" in user-facing copy', () => {
+    const BANNED_SOURCE_PATTERNS = [
+      /blockedCount/,
+      /[Aa]uto[- ]?[Bb]lock/,
+      /[Bb]locked\b/,
+      /[Bb]locking\b/,
+    ]
+
+    for (const file of [
+      'src/pages/protect/Protect.tsx',
+      'src/components/poseidon/protect-hero.tsx',
+      'src/pages/Notifications.tsx',
+      'src/pages/Settings.tsx',
+      'src/domain/poseidon-universe/canonical.ts',
+      'src/lib/govern-audit-data.ts',
+    ]) {
+      const src = readSource(file)
+      for (const pattern of BANNED_SOURCE_PATTERNS) {
+        expect(src, `${pattern} found in ${file}`).not.toMatch(pattern)
+      }
+    }
   })
 })

@@ -1,0 +1,443 @@
+/**
+ * Grow Hero — "Advantage Zone" bento hero for the /grow page.
+ *
+ * Full-width layout with stacked area chart showing the true
+ * advantage band between baseline and AI-optimized trajectories.
+ *
+ * Internal sub-components:
+ * - HeroHeadline: big gain number + subtitle + replay button
+ * - HeroChart: stacked area chart with Advantage Zone
+ * - HeroKpiStrip: 3 KPI cards (savings, cohort, top action)
+ */
+import { useState, useMemo, useCallback } from 'react'
+import { motion } from 'framer-motion'
+import { ArrowRight, Zap, RotateCcw } from 'lucide-react'
+import {
+  AreaChart, Area, Line, XAxis, YAxis,
+  ReferenceDot, Label, ResponsiveContainer,
+} from 'recharts'
+import { AuroraPulse, ConfidenceIndicator } from '@/components/poseidon'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
+import { getMotionPreset } from '@/lib/motion-presets'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+
+/* ── Types ── */
+
+export interface GrowGrowthAdvantageProps {
+  projectedGain: number
+  totalMonthlySavings: number
+  avgConfidence: number
+  recommendationCount: number
+  simulationData: { year: string; baseline: number; aiOptimized: number }[]
+  currentPercentile: number
+  projectedPercentile: number
+  cohortBracket: string
+  topRecommendation: {
+    rank: number
+    title: string
+    monthlySavings: number
+    confidence: number
+  } | null
+  onViewRecommendations: () => void
+  onQueueTopAction: (() => void) | null
+  cohortAcceptanceRate?: number
+  platformProfileCount?: number
+}
+
+/* ── Helpers ── */
+
+function ordinal(n: number): string {
+  const s = ['th', 'st', 'nd', 'rd']
+  const v = n % 100
+  return n + (s[(v - 20) % 10] || s[v] || s[0])
+}
+
+const formatDollarK = (v: number) => `$${Math.round(v / 1000)}k`
+
+/* ── Chart tooltip ── */
+
+interface TooltipPayloadEntry {
+  payload: { year: string; baseline: number; band: number }
+}
+
+function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: TooltipPayloadEntry[]; label?: string }) {
+  if (!active || !payload?.length) return null
+  const data = payload[0]?.payload
+  if (!data) return null
+  const aiOptimized = data.baseline + data.band
+  return (
+    <div className="rounded-xl border border-white/10 bg-[#0F1D32]/95 backdrop-blur-md px-4 py-3 shadow-xl text-xs">
+      <p className="font-semibold text-white/90 mb-2">{label}</p>
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-[#94A3B8]" />
+          <span className="text-white/50">Status Quo:</span>
+          <span className="ml-auto font-mono text-white/90">${data.baseline.toLocaleString()}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-[var(--engine-grow)]" />
+          <span className="text-white/50">AI Optimized:</span>
+          <span className="ml-auto font-mono text-[var(--engine-grow)]">${aiOptimized.toLocaleString()}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ── HeroHeadline ── */
+
+function HeroHeadline({
+  projectedGain,
+  onReplay,
+  showReplay,
+}: {
+  projectedGain: number
+  onReplay: () => void
+  showReplay: boolean
+}) {
+  return (
+    <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-1">
+        <span
+          className="text-4xl md:text-5xl font-mono font-bold tabular-nums drop-shadow-[0_0_15px_var(--engine-grow)]"
+          style={{ color: 'var(--engine-grow)' }}
+        >
+          +${projectedGain.toLocaleString()}
+        </span>
+        <span className="text-xs font-medium uppercase tracking-widest text-white/40">
+          Projected 3-year advantage
+        </span>
+      </div>
+      {showReplay && (
+        <button
+          onClick={onReplay}
+          aria-label="Replay growth animation"
+          className="flex-shrink-0 flex items-center justify-center w-10 h-10 min-h-[44px] min-w-[44px] rounded-full bg-white/[0.04] border border-white/[0.08] text-white/40 hover:text-[var(--engine-grow)] hover:border-[var(--engine-grow)]/30 transition-colors"
+        >
+          <RotateCcw size={14} />
+        </button>
+      )}
+    </div>
+  )
+}
+
+/* ── HeroChart ── */
+
+function HeroChart({
+  chartData,
+  finalBaseline,
+  finalAiOptimized,
+  isReplaying,
+  replayKey,
+}: {
+  chartData: { year: string; baseline: number; band: number }[]
+  finalBaseline: number
+  finalAiOptimized: number
+  isReplaying: boolean
+  replayKey: number
+}) {
+  return (
+    <div
+      className="h-[200px] md:h-[260px]"
+      role="img"
+      aria-label={`3-year growth: baseline $${finalBaseline.toLocaleString()}, AI optimized $${finalAiOptimized.toLocaleString()}, advantage +$${(finalAiOptimized - finalBaseline).toLocaleString()}`}
+    >
+      <ResponsiveContainer key={replayKey} width="100%" height="100%">
+        <AreaChart data={chartData} margin={{ top: 10, right: 55, left: 5, bottom: 5 }}>
+          <defs>
+            <linearGradient id="advantageZoneGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="var(--engine-grow)" stopOpacity={0.35} />
+              <stop offset="100%" stopColor="var(--engine-grow)" stopOpacity={0.05} />
+            </linearGradient>
+          </defs>
+          <XAxis
+            dataKey="year"
+            tick={{ fill: '#64748B', fontSize: 11 }}
+            axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
+            tickLine={false}
+          />
+          <YAxis
+            hide
+            domain={[(d: number) => Math.round(d * 0.88), (d: number) => Math.round(d * 1.06)]}
+          />
+
+          {/* Layer 1: invisible baseline area (lifts the band up) */}
+          <Area
+            type="monotone"
+            dataKey="baseline"
+            stackId="advantage"
+            fill="transparent"
+            stroke="none"
+            isAnimationActive={isReplaying}
+            animationDuration={1200}
+            animationEasing="ease-out"
+          />
+
+          {/* Layer 2: violet advantage band (delta between AI and baseline) */}
+          <Area
+            type="monotone"
+            dataKey="band"
+            stackId="advantage"
+            fill="url(#advantageZoneGradient)"
+            stroke="var(--engine-grow)"
+            strokeWidth={2.5}
+            dot={{ r: 4, fill: '#0F1D32', stroke: 'var(--engine-grow)', strokeWidth: 2 }}
+            activeDot={{ r: 5, fill: 'var(--engine-grow)' }}
+            isAnimationActive={isReplaying}
+            animationDuration={1200}
+            animationEasing="ease-out"
+          />
+
+          {/* Layer 3: visible dashed baseline line */}
+          <Line
+            type="monotone"
+            dataKey="baseline"
+            stroke="#94A3B8"
+            strokeWidth={2}
+            strokeDasharray="6 3"
+            dot={{ r: 4, fill: '#0F1D32', stroke: '#94A3B8', strokeWidth: 2, strokeDasharray: 'none' }}
+            activeDot={{ r: 5, fill: '#94A3B8', strokeDasharray: 'none' }}
+            isAnimationActive={false}
+          />
+
+          {/* End-value labels */}
+          <ReferenceDot x={chartData[chartData.length - 1]?.year} y={finalAiOptimized} r={0} ifOverflow="extendDomain">
+            <Label value={formatDollarK(finalAiOptimized)} position="right" offset={8} fill="#8B5CF6" fontSize={12} fontWeight={600} fontFamily="var(--font-mono, ui-monospace, monospace)" />
+          </ReferenceDot>
+          <ReferenceDot x={chartData[chartData.length - 1]?.year} y={finalBaseline} r={0} ifOverflow="extendDomain">
+            <Label value={formatDollarK(finalBaseline)} position="right" offset={8} fill="#64748B" fontSize={11} fontFamily="var(--font-mono, ui-monospace, monospace)" />
+          </ReferenceDot>
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  )
+}
+
+/* ── HeroKpiStrip ── */
+
+function HeroKpiStrip({
+  totalMonthlySavings,
+  recommendationCount,
+  currentPercentile,
+  projectedPercentile,
+  cohortBracket,
+  topRecommendation,
+  onQueueTopAction,
+  cohortAcceptanceRate,
+  platformProfileCount,
+}: {
+  totalMonthlySavings: number
+  recommendationCount: number
+  currentPercentile: number
+  projectedPercentile: number
+  cohortBracket: string
+  topRecommendation: GrowGrowthAdvantageProps['topRecommendation']
+  onQueueTopAction: (() => void) | null
+  cohortAcceptanceRate?: number
+  platformProfileCount?: number
+}) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+      {/* Card 1: Savings */}
+      <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-2">
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
+          Monthly Savings
+        </span>
+        <span className="text-xl font-mono font-semibold tabular-nums" style={{ color: 'var(--engine-grow)' }}>
+          ${totalMonthlySavings.toLocaleString()}/mo
+        </span>
+        <span className="text-xs text-white/40">
+          {recommendationCount} recommendations
+        </span>
+      </div>
+
+      {/* Card 2: Cohort */}
+      <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-3">
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
+          Cohort Intelligence
+        </span>
+        <p className="text-sm text-white/70">
+          {ordinal(currentPercentile)} &rarr; {ordinal(projectedPercentile)} percentile in {cohortBracket}
+        </p>
+        {/* Percentile bar */}
+        <div className="relative h-1.5 rounded-full bg-white/[0.04]">
+          <div
+            className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white/30 border border-white/10"
+            style={{ left: `${currentPercentile}%` }}
+          />
+          <div
+            className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full border border-[var(--engine-grow)]/40"
+            style={{
+              left: `${projectedPercentile}%`,
+              background: 'var(--engine-grow)',
+              boxShadow: '0 0 8px var(--engine-grow)',
+            }}
+          />
+          <div
+            className="absolute top-1/2 -translate-y-1/2 h-0.5 rounded-full"
+            style={{
+              left: `${currentPercentile}%`,
+              width: `${projectedPercentile - currentPercentile}%`,
+              background: 'linear-gradient(to right, rgba(255,255,255,0.1), var(--engine-grow))',
+            }}
+          />
+        </div>
+        {cohortAcceptanceRate != null && (
+          <p className="text-xs text-white/40 mt-1">
+            {Math.round(cohortAcceptanceRate * 100)}% cohort acceptance rate
+          </p>
+        )}
+        {platformProfileCount != null && (
+          <p className="text-[10px] text-white/25 font-mono mt-2">
+            Across {platformProfileCount.toLocaleString()} active profiles
+          </p>
+        )}
+      </div>
+
+      {/* Card 3: Top Action */}
+      {topRecommendation && onQueueTopAction && (
+        <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-3">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
+            Next Best Action
+          </span>
+          <div className="flex items-start gap-3">
+            <div
+              className="flex-shrink-0 w-8 h-8 rounded-full border border-[var(--engine-grow)]/30 bg-[var(--engine-grow)]/10 flex items-center justify-center text-xs font-semibold tabular-nums"
+              style={{ color: 'var(--engine-grow)' }}
+            >
+              {topRecommendation.rank}
+            </div>
+            <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+              <p className="text-sm font-semibold text-white/90 leading-snug line-clamp-2">
+                {topRecommendation.title}
+              </p>
+              <span className="text-xs font-mono" style={{ color: 'var(--engine-grow)' }}>
+                ${topRecommendation.monthlySavings}/mo
+              </span>
+              <ConfidenceIndicator value={topRecommendation.confidence} accentColor="var(--engine-grow)" format="percent" />
+            </div>
+          </div>
+          <button
+            onClick={onQueueTopAction}
+            className={cn(
+              buttonVariants({ variant: 'default', size: 'sm' }),
+              'w-full rounded-xl px-5 py-2.5 min-h-[44px]',
+              'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950',
+              'font-semibold tracking-wide text-xs',
+              'hover:from-amber-400 hover:to-yellow-400 transition-all',
+              'flex items-center justify-center gap-2',
+            )}
+          >
+            Queue for Execution <Zap size={14} />
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════
+   GROWTH ADVANTAGE HERO
+   ═══════════════════════════════════════════════════════ */
+
+export function GrowGrowthAdvantage({
+  projectedGain,
+  totalMonthlySavings,
+  avgConfidence,
+  recommendationCount,
+  simulationData,
+  currentPercentile,
+  projectedPercentile,
+  cohortBracket,
+  topRecommendation,
+  onViewRecommendations,
+  onQueueTopAction,
+  cohortAcceptanceRate,
+  platformProfileCount,
+}: GrowGrowthAdvantageProps) {
+  const prefersReducedMotion = useReducedMotionSafe()
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
+
+  const [replayKey, setReplayKey] = useState(0)
+  const isReplaying = replayKey > 0
+  const handleReplay = useCallback(() => setReplayKey(k => k + 1), [])
+
+  const finalData = simulationData[simulationData.length - 1]
+
+  const chartData = useMemo(
+    () => simulationData.map(d => ({
+      year: d.year,
+      baseline: d.baseline,
+      band: d.aiOptimized - d.baseline,
+    })),
+    [simulationData],
+  )
+
+  return (
+    <div className="relative glass-card rounded-[32px] border border-[var(--engine-grow)]/20 overflow-hidden">
+      <AuroraPulse color="var(--engine-grow)" intensity="normal" className="absolute inset-0 pointer-events-none" />
+
+      <motion.div
+        className="relative z-10 p-6 md:p-8 lg:p-10 flex flex-col gap-5"
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainerVariant}
+      >
+        {/* Headline */}
+        <motion.div variants={fadeUpVariant}>
+          <HeroHeadline
+            projectedGain={projectedGain}
+            onReplay={handleReplay}
+            showReplay={!prefersReducedMotion}
+          />
+        </motion.div>
+
+        {/* Chart */}
+        <motion.div variants={fadeUpVariant}>
+          <HeroChart
+            chartData={chartData}
+            finalBaseline={finalData?.baseline ?? 0}
+            finalAiOptimized={finalData?.aiOptimized ?? 0}
+            isReplaying={isReplaying && !prefersReducedMotion}
+            replayKey={replayKey}
+          />
+        </motion.div>
+
+        {/* Summary stats */}
+        <motion.div variants={fadeUpVariant} className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/40 font-mono">
+          <span><span style={{ color: 'var(--engine-grow)' }}>${totalMonthlySavings.toLocaleString()}/mo</span> savings</span>
+          <span className="text-white/20">&middot;</span>
+          <span>{recommendationCount} recommendations</span>
+          <span className="text-white/20">&middot;</span>
+          <span>{Math.round(avgConfidence * 100)}% avg confidence</span>
+        </motion.div>
+
+        {/* KPI Strip */}
+        <motion.div variants={fadeUpVariant}>
+          <HeroKpiStrip
+            totalMonthlySavings={totalMonthlySavings}
+            recommendationCount={recommendationCount}
+            currentPercentile={currentPercentile}
+            projectedPercentile={projectedPercentile}
+            cohortBracket={cohortBracket}
+            topRecommendation={topRecommendation}
+            onQueueTopAction={onQueueTopAction}
+            cohortAcceptanceRate={cohortAcceptanceRate}
+            platformProfileCount={platformProfileCount}
+          />
+        </motion.div>
+
+        {/* Single CTA */}
+        <motion.div variants={fadeUpVariant} className="flex justify-center pt-2">
+          <button
+            onClick={onViewRecommendations}
+            className="flex items-center gap-1.5 text-sm font-medium text-[var(--engine-grow)] hover:text-[var(--engine-grow)]/80 transition-colors min-h-[44px]"
+          >
+            View all {recommendationCount} recommendations <ArrowRight size={14} />
+          </button>
+        </motion.div>
+      </motion.div>
+    </div>
+  )
+}

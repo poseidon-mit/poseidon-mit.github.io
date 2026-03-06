@@ -9,12 +9,12 @@ import {
   Filter,
   Bot,
   User,
-  AlertTriangle,
   Timer,
   XCircle,
+  Lock,
 } from 'lucide-react'
 import { useRouter, Link } from '@/router'
-import { EmptyState, EngineBadge, KpiCard, ConfidenceIndicator, StatRow } from '@/components/poseidon'
+import { EmptyState, EngineBadge, ExecuteApprovalCommandDeck, ConfidenceIndicator, StatRow } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { ENGINE_BADGE_CLASS, ENGINE_COLOR_MAP } from '@/lib/engine-color-map'
 import { EXECUTION_TYPE_BADGE } from '@/lib/execution-type-config'
@@ -31,12 +31,11 @@ import { useToast } from '@/hooks/useToast'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import {
-  formatUsd,
   selectExecuteActionsView,
-  selectExecuteSavingsView,
+  selectArchitecturalTrust,
 } from '@/domain/poseidon-universe'
-import type { ExecuteActionEntity, ExecutionType, UrgencyLevel } from '@/domain/poseidon-universe'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
+import type { ExecuteActionEntity, ExecuteEngineName, ExecutionType, UrgencyLevel } from '@/domain/poseidon-universe'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 
 /* ═══════════════════════════════════════════
    CONSTANTS
@@ -85,6 +84,7 @@ export default function ExecutePage() {
   const { navigate } = useRouter()
   const { state, setExecuteDecision } = useDemoState()
   const { showToast } = useToast()
+  const trust = selectArchitecturalTrust()
 
   // Filter/sort state
   const [urgencyFilter, setUrgencyFilter] = useState<UrgencyLevel | 'all'>('all')
@@ -95,7 +95,6 @@ export default function ExecutePage() {
   const pendingCount = getPendingExecuteCount(state)
   const completedCount = getCompletedExecuteCount(state)
   const deferredCount = getDeferredExecuteCount(state)
-  const executeSavings = selectExecuteSavingsView()
 
   const allActions = useMemo(() => selectExecuteActionsView(), [])
 
@@ -107,6 +106,48 @@ export default function ExecutePage() {
       }),
     [allActions, state.execute.actionStates],
   )
+
+  // ── Hero data (page-global, NOT affected by list filters) ──
+  const allPending = useMemo(
+    () => queue.filter((a) => a.status === 'pending'),
+    [queue],
+  )
+
+  const featuredAction = useMemo(() => {
+    if (!allPending.length) return null
+    const parseExpiry = (e: string | null): number => {
+      if (!e) return Infinity
+      const n = parseInt(e)
+      if (e.includes('d')) return n * 24
+      return n
+    }
+    return [...allPending].sort((a, b) => {
+      const urgDiff = URGENCY_ORDER[a.urgency] - URGENCY_ORDER[b.urgency]
+      if (urgDiff !== 0) return urgDiff
+      return parseExpiry(a.expiresIn) - parseExpiry(b.expiresIn)
+        || b.confidence - a.confidence
+    })[0]
+  }, [allPending])
+
+  const agentStepsCompleted = featuredAction
+    ? featuredAction.steps.filter((s) => s.actor === 'agent' && s.status === 'completed').length : 0
+  const agentStepsTotal = featuredAction
+    ? featuredAction.steps.filter((s) => s.actor === 'agent').length : 0
+
+  const heroUrgentCount = useMemo(
+    () => allPending.filter((a) => a.urgency === 'high').length,
+    [allPending],
+  )
+
+  const engineSources = useMemo(() => {
+    const counts: Record<string, number> = {}
+    for (const a of allPending) counts[a.sourceEngine] = (counts[a.sourceEngine] || 0) + 1
+    return Object.entries(counts).map(([engine, count]) => ({
+      engine: engine as ExecuteEngineName,
+      count,
+      color: ENGINE_COLOR_MAP[engine as keyof typeof ENGINE_COLOR_MAP],
+    }))
+  }, [allPending])
 
   const pendingActions = useMemo(() => {
     let items = queue.filter((item) => item.status === 'pending')
@@ -136,20 +177,31 @@ export default function ExecutePage() {
         {/* Hero */}
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
           <motion.div variants={fadeUpVariant}><EngineBadge engine="execute" icon={Zap} label="Execute Engine" className="self-start" /></motion.div>
-          <motion.h1 variants={fadeUpVariant} className="text-2xl md:text-3xl lg:text-5xl font-light tracking-tight text-white leading-tight mb-2" style={PAGE_HEADING_STYLE}>
-            {pendingCount} actions queued — <span className="bg-gradient-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent">{formatUsd(executeSavings.potentialMonthlySavingsUsd)}/mo</span> in potential savings.
-          </motion.h1>
-
-          {/* KPI Strip */}
-          <motion.div variants={fadeUpVariant} className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-            {[
-              { label: 'Pending', value: pendingCount, color: 'var(--state-warning)' },
-              { label: 'Completed', value: completedCount, color: 'var(--state-healthy)' },
-              { label: 'Deferred', value: deferredCount, color: 'var(--engine-govern)' },
-              { label: 'Savings/mo', value: formatUsd(executeSavings.potentialMonthlySavingsUsd), color: 'var(--engine-execute)' },
-            ].map((kpi) => (
-              <KpiCard key={kpi.label} label={kpi.label} value={kpi.value} color={kpi.color} />
-            ))}
+          <motion.div variants={fadeUpVariant} className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-white/30">
+            <Lock size={10} className="text-amber-400/50" />
+            <span>System Status: <span className="text-amber-400/70">{trust.autoExecutionsWithoutConsent}</span> auto-executions · Your final approval is always required</span>
+          </motion.div>
+          <motion.div variants={fadeUpVariant}>
+            <ExecuteApprovalCommandDeck
+              queueTotal={allPending.length}
+              urgentCount={heroUrgentCount}
+              agentStepsCompleted={agentStepsCompleted}
+              agentStepsTotal={agentStepsTotal}
+              featuredAction={featuredAction ? {
+                id: featuredAction.id,
+                title: featuredAction.title,
+                amountLabel: featuredAction.amountLabel,
+                confidence: featuredAction.confidence,
+                engine: featuredAction.engine,
+                sourceEngine: featuredAction.sourceEngine,
+                expiresIn: featuredAction.expiresIn ?? null,
+                rollbackHours: featuredAction.rollbackWindowHours ?? null,
+              } : null}
+              engineSources={engineSources}
+              onReviewApproval={featuredAction
+                ? () => navigate(`/execute/approval?actionId=${featuredAction.id}`)
+                : null}
+            />
           </motion.div>
         </motion.section>
 

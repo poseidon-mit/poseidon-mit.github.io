@@ -34,7 +34,7 @@ const metricsData = [
   },
   {
     label: 'Decisions Audited',
-    value: '1,247',
+    value: '10,249',
     color: 'var(--engine-govern)',
     spark: [2, 4, 5, 7, 8, 9, 10, 11, 12, 12.5],
   },
@@ -93,7 +93,7 @@ const governancePillars = [
   {
     icon: ScrollText,
     title: 'Auditable',
-    desc: '1,247 decisions with full audit trails.',
+    desc: '10,249 decisions with full audit trails.',
     color: 'var(--engine-govern)',
   },
   {

@@ -53,7 +53,7 @@ function readCriticalAlert(value: unknown): CriticalAlertThread {
 
 export const DEMO_THREAD = {
   systemConfidence: readNumber(CROSS_SCREEN_DATA_THREAD.system_confidence.value, 0.92),
-  decisionsAudited: readNumber(CROSS_SCREEN_DATA_THREAD.decisions_audited.value, 1247),
+  decisionsAudited: readNumber(CROSS_SCREEN_DATA_THREAD.decisions_audited.value, 10249),
   complianceScore: readNumber(CROSS_SCREEN_DATA_THREAD.compliance_score.value, 96),
   pendingActions: readNumber(CROSS_SCREEN_DATA_THREAD.pending_actions.value, 5),
   monthlySavings: readNumber(CROSS_SCREEN_DATA_THREAD.monthly_savings.value, 847),

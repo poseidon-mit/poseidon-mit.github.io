@@ -1,16 +1,16 @@
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { PROJECTED_3Y_ADVANTAGE } from '@/lib/grow-simulation-data'
 import { recommendationDetails } from '@/pages/grow/recommendation-detail-data'
 import type {
   CanonicalUniverseV1,
   DashboardActivityEntity,
   ExecuteActionEntity,
   GovernAuditEntryEntity,
-  GovernLedgerEntryEntity,
   ProtectThreatEntity,
   RecommendationEntity,
 } from './types'
 
-const VERIFIED_DECISIONS = 1189
+const VERIFIED_DECISIONS = 10191
 const PENDING_REVIEW_DECISIONS = 55
 const FLAGGED_DECISIONS = 3
 
@@ -18,7 +18,7 @@ const DASHBOARD_ACTIVITIES: DashboardActivityEntity[] = [
   {
     id: 'ACT-001',
     kind: 'protect',
-    label: `Blocked suspicious transfer to ${DEMO_THREAD.criticalAlert.merchant}`,
+    label: `Flagged suspicious transfer to ${DEMO_THREAD.criticalAlert.merchant}`,
     relativeTime: '2m ago',
   },
   {
@@ -138,13 +138,13 @@ const EXECUTE_ACTIONS: ExecuteActionEntity[] = [
       { id: 'EXE-001-S1', label: 'Analyze current allocation', description: 'AI scans portfolio drift against target allocation model', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '2s' },
       { id: 'EXE-001-S2', label: 'Calculate optimal rebalance', description: 'Determine minimum-trade path to restore target weights', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '3s' },
       { id: 'EXE-001-S3', label: 'Review transfer plan', description: 'You review the $12,400 transfer details and tax impact', actor: 'user', status: 'current', requiresConsent: true, estimatedDuration: '~2 min' },
-      { id: 'EXE-001-S4', label: 'Execute transfers', description: 'Agent submits transfer orders to brokerage API', actor: 'agent', status: 'waiting', requiresConsent: false, estimatedDuration: '5s' },
+      { id: 'EXE-001-S4', label: 'Queue transfers for approval', description: 'Transfer orders queued for your brokerage confirmation', actor: 'agent', status: 'waiting', requiresConsent: false, estimatedDuration: '5s' },
       { id: 'EXE-001-S5', label: 'Confirm and log', description: 'Transaction receipts are logged to the immutable audit ledger', actor: 'agent', status: 'waiting', requiresConsent: false, estimatedDuration: '1s' },
     ],
   },
   {
     id: 'EXE-002',
-    title: 'Block wire transfer',
+    title: 'Flag suspicious wire transfer',
     engine: 'Protect',
     amountLabel: formatUsd(DEMO_THREAD.criticalAlert.amount),
     confidence: DEMO_THREAD.criticalAlert.confidence,
@@ -152,7 +152,7 @@ const EXECUTE_ACTIONS: ExecuteActionEntity[] = [
     description: `Suspicious ${formatUsd(DEMO_THREAD.criticalAlert.amount)} wire transfer from Checking to ${DEMO_THREAD.criticalAlert.merchant}`,
     urgency: 'high',
     impact: {
-      approved: 'Wire transfer is blocked and dispute workflow opens automatically.',
+      approved: 'Wire transfer flagged and dispute workflow queued for your review.',
       deferred: 'Transaction remains active and fraud exposure window extends.',
     },
     reversible: true,
@@ -169,8 +169,8 @@ const EXECUTE_ACTIONS: ExecuteActionEntity[] = [
     rollbackWindowHours: 48,
     steps: [
       { id: 'EXE-002-S1', label: 'Detect anomaly', description: 'AI flagged suspicious pattern matching known fraud vectors', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '1s' },
-      { id: 'EXE-002-S2', label: 'Freeze transaction', description: 'Temporary hold placed on the pending wire transfer', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '2s' },
-      { id: 'EXE-002-S3', label: 'Approve permanent block', description: 'You confirm the block and initiate dispute workflow', actor: 'user', status: 'current', requiresConsent: true, estimatedDuration: '~1 min' },
+      { id: 'EXE-002-S2', label: 'Flag transaction', description: 'Transaction flagged for your review with supporting evidence', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '2s' },
+      { id: 'EXE-002-S3', label: 'Approve fraud flag & dispute', description: 'You confirm the flag and initiate dispute workflow', actor: 'user', status: 'current', requiresConsent: true, estimatedDuration: '~1 min' },
       { id: 'EXE-002-S4', label: 'File dispute', description: 'Agent auto-files dispute with card issuer and logs evidence', actor: 'agent', status: 'waiting', requiresConsent: false, estimatedDuration: '8s' },
     ],
   },
@@ -181,7 +181,7 @@ const EXECUTE_ACTIONS: ExecuteActionEntity[] = [
     amountLabel: 'Save $140/mo',
     confidence: 0.89,
     timestampLabel: '13:52',
-    description: 'Cancel 3 overlapping media subscriptions to save $140/mo',
+    description: '3 overlapping media subscriptions detected — consolidation saves $140/mo',
     urgency: 'medium',
     impact: {
       approved: 'Estimated savings of $140/mo are queued for execution.',
@@ -192,7 +192,7 @@ const EXECUTE_ACTIONS: ExecuteActionEntity[] = [
     factors: [
       { label: 'Cost reduction', value: 0.92 },
       { label: 'Overlap confidence', value: 0.88 },
-      { label: 'Usage parity', value: 0.82 },
+      { label: 'Billing category match', value: 0.82 },
     ],
     executionType: 'hybrid',
     category: 'savings',
@@ -200,24 +200,24 @@ const EXECUTE_ACTIONS: ExecuteActionEntity[] = [
     sourceEntityId: 'REC-002',
     rollbackWindowHours: 72,
     steps: [
-      { id: 'EXE-003-S1', label: 'Identify overlaps', description: 'AI analyzed usage patterns across 12 active subscriptions', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '4s' },
+      { id: 'EXE-003-S1', label: 'Identify overlaps', description: 'AI analyzed billing categories and merchant codes across 12 active subscriptions', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '4s' },
       { id: 'EXE-003-S2', label: 'Propose cancellations', description: '3 subscriptions identified with 88% content overlap', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '2s' },
       { id: 'EXE-003-S3', label: 'Review cancellation list', description: 'You confirm which subscriptions to cancel', actor: 'user', status: 'current', requiresConsent: true, estimatedDuration: '~3 min' },
-      { id: 'EXE-003-S4', label: 'Process cancellations', description: 'Agent submits cancellation requests to each provider', actor: 'agent', status: 'waiting', requiresConsent: false, estimatedDuration: '15s' },
-      { id: 'EXE-003-S5', label: 'Verify and log savings', description: 'Confirm cancellations processed and project $140/mo savings', actor: 'agent', status: 'waiting', requiresConsent: false, estimatedDuration: '3s' },
+      { id: 'EXE-003-S4', label: 'Queue cancellation requests', description: 'Cancellation requests queued for your confirmation', actor: 'agent', status: 'waiting', requiresConsent: false, estimatedDuration: '15s' },
+      { id: 'EXE-003-S5', label: 'Verify and log savings', description: 'Log confirmed cancellations and project $140/mo savings to ledger', actor: 'agent', status: 'waiting', requiresConsent: false, estimatedDuration: '3s' },
     ],
   },
   {
     id: 'EXE-004',
-    title: 'Archive invoices',
+    title: 'Recommend invoice archive',
     engine: 'Execute',
     amountLabel: '-',
     confidence: 0.78,
     timestampLabel: '11:20',
-    description: 'Batch archive 47 paid Q3 invoices to compliance cold storage',
+    description: '47 paid Q3 invoices identified for compliance cold-storage archive',
     urgency: 'medium',
     impact: {
-      approved: 'Legacy invoices are archived and indexed for governance audit.',
+      approved: 'Invoice archive queued for your confirmation and governance logging.',
       deferred: 'Invoice archive remains unchanged and queue re-checks in 24h.',
     },
     reversible: false,
@@ -233,7 +233,7 @@ const EXECUTE_ACTIONS: ExecuteActionEntity[] = [
     steps: [
       { id: 'EXE-004-S1', label: 'Scan invoice queue', description: 'AI identified 47 fully paid invoices older than 90 days', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '6s' },
       { id: 'EXE-004-S2', label: 'Approve archive batch', description: 'You confirm the batch archive is acceptable', actor: 'user', status: 'current', requiresConsent: true, estimatedDuration: '~1 min' },
-      { id: 'EXE-004-S3', label: 'Archive and index', description: 'Agent moves documents to cold storage with search metadata', actor: 'agent', status: 'waiting', requiresConsent: false, estimatedDuration: '30s' },
+      { id: 'EXE-004-S3', label: 'Queue archive and index', description: 'Archive batch queued for your confirmation and metadata indexing', actor: 'agent', status: 'waiting', requiresConsent: false, estimatedDuration: '30s' },
     ],
   },
   {
@@ -269,69 +269,6 @@ const EXECUTE_ACTIONS: ExecuteActionEntity[] = [
   },
 ]
 
-const GOVERN_LEDGER_PREVIEW: GovernLedgerEntryEntity[] = [
-  {
-    id: 'GV-2026-0319-847',
-    type: 'Protect',
-    action: `Block wire - ${DEMO_THREAD.criticalAlert.merchant}`,
-    confidence: DEMO_THREAD.criticalAlert.confidence,
-    status: 'Flagged',
-    timestampIso: '2026-03-19T14:28:00-04:00',
-  },
-  {
-    id: 'GV-2026-0319-846',
-    type: 'Protect',
-    action: 'Flag - Unknown Vendor',
-    confidence: 0.87,
-    status: 'Pending review',
-    timestampIso: '2026-03-19T14:15:00-04:00',
-  },
-  {
-    id: 'GV-2026-0319-845',
-    type: 'Grow',
-    action: 'Increase contribution by $420',
-    confidence: 0.89,
-    status: 'Pending review',
-    timestampIso: '2026-03-19T13:52:00-04:00',
-  },
-  {
-    id: 'GV-2026-0319-844',
-    type: 'Protect',
-    action: 'High-risk category - Crypto Exchange',
-    confidence: 0.91,
-    status: 'Flagged',
-    timestampIso: '2026-03-19T11:20:00-04:00',
-  },
-  {
-    id: 'GV-2026-0318-843',
-    type: 'Protect',
-    action: 'International wire - Travel Agency XYZ',
-    confidence: 0.72,
-    timestampIso: '2026-03-18T16:42:00-04:00',
-  },
-  {
-    id: 'GV-2026-0318-842',
-    type: 'Grow',
-    action: 'Maintain current savings rate',
-    confidence: 0.94,
-    timestampIso: '2026-03-18T09:40:00-04:00',
-  },
-  {
-    id: 'GV-2026-0318-841',
-    type: 'Protect',
-    action: 'Unusual ATM withdrawal - Gas Station',
-    confidence: 0.65,
-    timestampIso: '2026-03-18T08:15:00-04:00',
-  },
-  {
-    id: 'GV-2026-0317-840',
-    type: 'Grow',
-    action: 'No action needed - Home down payment',
-    confidence: 0.91,
-    timestampIso: '2026-03-17T15:30:00-04:00',
-  },
-]
-
 const GOVERN_AUDIT_ENTRIES: GovernAuditEntryEntity[] = [
   {
     id: 'GV-2026-0319-847',
@@ -346,7 +283,7 @@ const GOVERN_AUDIT_ENTRIES: GovernAuditEntryEntity[] = [
     id: 'GV-2026-0319-846',
     timestampIso: '2026-03-19T14:15:00-04:00',
     type: 'Protect',
-    action: `Block wire transfer (${formatUsd(DEMO_THREAD.criticalAlert.amount)})`,
+    action: `Flag suspicious wire transfer (${formatUsd(DEMO_THREAD.criticalAlert.amount)})`,
     confidence: DEMO_THREAD.criticalAlert.confidence,
     evidence: 9,
     status: 'Verified',
@@ -364,7 +301,7 @@ const GOVERN_AUDIT_ENTRIES: GovernAuditEntryEntity[] = [
     id: 'GV-2026-0319-844',
     timestampIso: '2026-03-19T11:20:00-04:00',
     type: 'Execute',
-    action: 'Archive invoices',
+    action: 'Invoice archive recommended',
     confidence: 0.78,
     evidence: 5,
     status: 'Pending review',
@@ -391,7 +328,7 @@ const GOVERN_AUDIT_ENTRIES: GovernAuditEntryEntity[] = [
     id: 'GV-2026-0317-841',
     timestampIso: '2026-03-17T14:12:00-04:00',
     type: 'Execute',
-    action: 'Payment processed',
+    action: 'Scheduled payment verified',
     confidence: 0.91,
     evidence: 8,
     status: 'Verified',
@@ -408,7 +345,7 @@ const GOVERN_AUDIT_ENTRIES: GovernAuditEntryEntity[] = [
 ]
 
 export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
-  schemaVersion: '1.0.0',
+  schemaVersion: '1.1.0',
   generatedAt: '2026-03-19T14:30:00-04:00',
   metrics: {
     systemConfidence: DEMO_THREAD.systemConfidence,
@@ -425,6 +362,35 @@ export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
       currentUsd: DEMO_THREAD.emergencyFund.current,
       targetUsd: DEMO_THREAD.emergencyFund.target,
     },
+    engineBreakdown: { Protect: 4102, Grow: 3287, Execute: 1850, Govern: 1010 },
+    platformProfileCount: 184_290,
+    architecturalTrust: {
+      autoExecutionsWithoutConsent: 0,
+      auditCoveragePercent: 100,
+      falsePositiveRate: 0.001,
+      llmRetentionDays: 0,
+      llmTrainingOptOut: true,
+    },
+    cohort: {
+      recommendationAcceptanceRate: 0.89,
+      avgMonthlySavingsUsd: 583,
+      fraudTrend: {
+        label: 'Card-not-present fraud up 23% this quarter',
+        changePercent: 23,
+        period: 'Q1 2026',
+        factors: [
+          { label: 'Online merchant category risk', value: 0.82 },
+          { label: 'Cross-border transaction velocity', value: 0.74 },
+          { label: 'New device fingerprint frequency', value: 0.68 },
+        ],
+      },
+      cohortSize: 12847,
+      projected3yAdvantageUsd: PROJECTED_3Y_ADVANTAGE,
+      protectPerformance: {
+        riskIncidentsFlagged: 24,
+        avgMonthlyExposureUsd: 280,
+      },
+    },
   },
   entities: {
     criticalAlert: {
@@ -438,7 +404,6 @@ export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
     protectThreats: PROTECT_THREATS,
     recommendations: RECOMMENDATIONS,
     executeActions: EXECUTE_ACTIONS,
-    governLedgerPreview: GOVERN_LEDGER_PREVIEW,
     governAuditEntries: GOVERN_AUDIT_ENTRIES,
     dashboardActivities: DASHBOARD_ACTIVITIES,
   },

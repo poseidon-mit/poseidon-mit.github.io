@@ -33,7 +33,7 @@ const staggerContainer = {
 
 const metrics = [
   { label: 'System Confidence', value: '0.92', color: '#2dd4bf', data: [3, 5, 4, 7, 6, 8, 7, 9, 8, 9.2] },
-  { label: 'Decisions Audited', value: '1,247', color: '#818cf8', data: [2, 4, 5, 3, 6, 7, 8, 7, 10, 12] },
+  { label: 'Decisions Audited', value: '10,249', color: '#818cf8', data: [2, 4, 5, 3, 6, 7, 8, 7, 10, 12] },
   { label: 'Threats Blocked', value: '23', color: '#fbbf24', data: [1, 0, 2, 1, 3, 2, 1, 3, 2, 2.3] },
   { label: 'Response Time', value: '<200ms', color: '#60a5fa', data: [5, 4, 3, 4, 3, 2, 3, 2, 2, 1.8] },
 ];

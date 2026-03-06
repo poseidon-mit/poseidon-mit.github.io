@@ -1,25 +1,43 @@
 import { useMemo, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Link } from '@/router'
+import { Link, useRouter } from '@/router'
 import {
   Shield,
   ShieldCheck,
   AlertTriangle,
   ArrowRight,
 } from "lucide-react"
-import { EmptyState, EngineBadge, ConfidenceIndicator } from '@/components/poseidon'
+import { EmptyState, EngineBadge, ConfidenceIndicator, CohortFraudTrend } from '@/components/poseidon'
+import { ProtectAnomalyRadar, ProtectThreatPosture } from '@/components/poseidon/protect-hero'
+import { selectAlertAuditChain, selectCohortMetrics, selectProtectPerformance } from '@/domain/poseidon-universe'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
-import { THREATS, severityConfig, severityToneColor, riskBreakdown } from './protect-data'
+import { THREATS, severityConfig, severityToneColor, riskBreakdown, ALERT_FACTOR_ITEMS, deriveFactors } from './protect-data'
+import type { ThreatRow, ThreatSeverity } from './protect-data'
 import { useDismissedAlerts } from './useDismissedAlerts'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
 
 /* ── Types ── */
 type SortField = "severity" | "confidence" | "time" | "amount"
 type SortDir = "asc" | "desc"
+
+/* ── Helpers ── */
+type Pickable = { id: string; severity: ThreatSeverity; confidence: number }
+
+/** Deterministic top-alert selection: severity desc → confidence desc → id asc. */
+export function pickTopAlert<T extends Pickable>(threats: T[]): T | null {
+  if (threats.length === 0) return null
+  return threats.reduce((best, t) => {
+    const orderCmp = severityConfig[t.severity].order - severityConfig[best.severity].order
+    if (orderCmp !== 0) return orderCmp > 0 ? t : best
+    const confCmp = t.confidence - best.confidence
+    if (confCmp !== 0) return confCmp > 0 ? t : best
+    return t.id < best.id ? t : best
+  })
+}
 
 /* ═══════════════════════════════════════════════════════
    PROTECT PAGE
@@ -28,10 +46,13 @@ type SortDir = "asc" | "desc"
 export default function ProtectPage() {
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
+  const { navigate } = useRouter()
   usePageTitle('Protect Engine')
   const [sortField, setSortField] = useState<SortField>("severity")
   const [sortDir, setSortDir] = useState<SortDir>("desc")
 
+  const cohort = selectCohortMetrics()
+  const perf = selectProtectPerformance()
   const { dismissed } = useDismissedAlerts()
   const activeThreats = useMemo(() => THREATS.filter(t => !dismissed.has(t.id)), [dismissed])
 
@@ -52,6 +73,57 @@ export default function ProtectPage() {
   const criticalCount = activeThreats.filter((t) => t.severity === "Critical").length
   const highCount = activeThreats.filter((t) => t.severity === "High").length
 
+  /* ── Hero data ── */
+  const criticalAlert = useMemo(
+    () => pickTopAlert(activeThreats.filter(t => t.severity === 'Critical')),
+    [activeThreats],
+  )
+
+  // Radar axes: derived contribution values on fixed 0-0.30 scale
+  const radarAxes = useMemo(() => {
+    if (!criticalAlert) return []
+    const items = ALERT_FACTOR_ITEMS[criticalAlert.id]
+    if (!items) return []
+    const derived = deriveFactors(items, criticalAlert.confidence)
+    return derived
+      .filter(f => !f.mitigating)
+      .map(f => ({
+        label: f.title.replace('Unusual ', '').replace('Known ', ''),
+        value: f.value,
+        maxValue: 0.30,
+        color: f.value >= 0.20 ? 'var(--state-critical)' : 'var(--state-warning)',
+      }))
+  }, [criticalAlert])
+
+  // Evidence cues from authored heroCue field
+  const evidenceCues = useMemo(() => {
+    if (!criticalAlert) return []
+    const items = ALERT_FACTOR_ITEMS[criticalAlert.id]
+    if (!items) return []
+    return items
+      .filter(i => !i.mitigating && i.heroCue)
+      .sort((a, b) => b.weight - a.weight)
+      .slice(0, 3)
+      .map(i => i.heroCue!)
+  }, [criticalAlert])
+
+  // Audit chain from canonical relations (strict: null if ambiguous)
+  const auditChain = useMemo(
+    () => criticalAlert ? selectAlertAuditChain(criticalAlert.id) : null,
+    [criticalAlert],
+  )
+
+  const topAlert = useMemo(() => pickTopAlert(activeThreats), [activeThreats])
+
+  const totalExposure = useMemo(
+    () => activeThreats.reduce((sum, t) => sum + t.numericAmount, 0),
+    [activeThreats],
+  )
+
+  const feedThreats = criticalAlert
+    ? sorted.filter(t => t.id !== criticalAlert.id)
+    : sorted
+
   return (
     <>
 
@@ -59,15 +131,39 @@ export default function ProtectPage() {
 
         {/* ── Hero ── */}
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 mb-8">
-          <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 mb-2">
-              <EngineBadge engine="protect" icon={ShieldCheck} label="Engine status: Good" />
-            </div>
-            <h1 className="text-2xl md:text-3xl lg:text-5xl font-light tracking-tight text-white leading-tight max-w-4xl" style={PAGE_HEADING_STYLE}>
-              {activeThreats.length} active threats — <span className="bg-gradient-to-r from-[var(--engine-protect)] to-emerald-300 bg-clip-text text-transparent">{criticalCount} critical</span> flagged for review.
-            </h1>
-
+          <motion.div variants={fadeUpVariant} className="flex items-center gap-2">
+            <EngineBadge engine="protect" icon={ShieldCheck} label="Engine status: Good" />
           </motion.div>
+          <h1 className="sr-only">Protect Engine</h1>
+
+          {criticalAlert ? (
+            <motion.div variants={fadeUpVariant}>
+              <ProtectAnomalyRadar
+                alert={criticalAlert}
+                radarAxes={radarAxes}
+                evidenceCues={evidenceCues}
+                auditChain={auditChain}
+                remainingCount={activeThreats.length - 1}
+                totalExposure={totalExposure}
+                fpRate="0.01%"
+                onReviewSignal={() => navigate(`/protect/alert-detail?alertId=${criticalAlert.id}`)}
+              />
+            </motion.div>
+          ) : (
+            <motion.div variants={fadeUpVariant}>
+              <ProtectThreatPosture
+                activeCount={activeThreats.length}
+                highCount={highCount}
+                mediumCount={activeThreats.filter(t => t.severity === 'Medium').length}
+                lowCount={activeThreats.filter(t => t.severity === 'Low').length}
+                resolvedCount={dismissed.size}
+                fpRate="0.01%"
+                modelUpdate="2d ago"
+                topAlert={topAlert}
+                onOpenTopAlert={topAlert ? () => navigate(`/protect/alert-detail?alertId=${topAlert.id}`) : null}
+              />
+            </motion.div>
+          )}
         </motion.section>
 
         {/* ── Content: Table + Sidebar ── */}
@@ -100,8 +196,8 @@ export default function ProtectPage() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3">
-                {sorted.length === 0 && (
+              <div className="flex flex-col gap-3" aria-label="Live Threat Feed">
+                {feedThreats.length === 0 && !criticalAlert && (
                   <div className="glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-3 transition-opacity">
                     <EmptyState
                       icon={Shield}
@@ -111,8 +207,18 @@ export default function ProtectPage() {
                     />
                   </div>
                 )}
+                {feedThreats.length === 0 && criticalAlert && (
+                  <div className="glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-3 transition-opacity">
+                    <EmptyState
+                      icon={Shield}
+                      title="No additional threats"
+                      description="Only the spotlighted alert remains active."
+                      accentColor="var(--engine-protect)"
+                    />
+                  </div>
+                )}
                 <AnimatePresence>
-                  {sorted.map((t) => {
+                  {feedThreats.map((t) => {
                     const theme = severityConfig[t.severity]
                     return (
                       <motion.div key={t.id} variants={fadeUpVariant} exit={{ opacity: 0, height: 0 }}>
@@ -179,7 +285,7 @@ export default function ProtectPage() {
                 </div>
 
                 <div className="flex flex-col gap-4 relative z-10">
-                  {[{ label: "Active threats", value: String(activeThreats.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Blocked today", value: String(dismissed.size), color: "var(--state-healthy)" }].map((d, i) => (
+                  {[{ label: "Active threats", value: String(activeThreats.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Resolved today", value: String(dismissed.size), color: "var(--state-healthy)" }].map((d, i) => (
                     <div key={d.label} className={`flex items-center justify-between ${i !== 0 ? 'pt-4 border-t border-white/[0.04]' : ''}`}>
                       <span className="text-xs md:text-sm xl:text-base font-medium text-white/60 tracking-wide">{d.label}</span>
                       <span className="text-base xl:text-lg font-mono font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" style={{ color: d.color || "rgba(255,255,255,0.9)" }}>{d.value}</span>
@@ -210,11 +316,22 @@ export default function ProtectPage() {
                 </div>
               </motion.div>
 
+              {/* Platform Fraud Trends */}
+              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-[32px] p-5 md:p-6 lg:p-8 transition-colors">
+                <CohortFraudTrend
+                  label={cohort.fraudTrend.label}
+                  changePercent={cohort.fraudTrend.changePercent}
+                  period={cohort.fraudTrend.period}
+                  factors={cohort.fraudTrend.factors}
+                />
+              </motion.div>
+
               {/* AI Defense Posture */}
               <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-[32px] p-5 md:p-6 lg:p-8 flex flex-col gap-6 transition-colors">
                 <h3 className="text-xs xl:text-sm font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 relative z-10">AI Defense Posture</h3>
                 <div className="flex flex-col gap-4 relative z-10">
-                  <div className="flex items-center justify-between"><span className="text-xs md:text-sm xl:text-base text-white/60 tracking-wide">Threats blocked (30d)</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">1</span></div>
+                  <div className="flex items-center justify-between"><span className="text-xs md:text-sm xl:text-base text-white/60 tracking-wide">Risk incidents flagged (30d)</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">{perf.riskIncidentsFlagged}</span></div>
+                  <div className="flex items-center justify-between"><span className="text-xs md:text-sm xl:text-base text-white/60 tracking-wide">Avg exposure identified</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">${perf.avgMonthlyExposureUsd}/mo</span></div>
                   <div className="flex items-center justify-between"><span className="text-xs md:text-sm xl:text-base text-white/60 tracking-wide">False positive rate</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">0.01%</span></div>
                   <div className="flex items-center justify-between"><span className="text-xs md:text-sm xl:text-base text-white/60 tracking-wide">Last model update</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">2d ago</span></div>
                 </div>

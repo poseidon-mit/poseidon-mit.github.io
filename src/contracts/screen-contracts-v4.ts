@@ -35,7 +35,7 @@ const SCREEN_WIDGETS: Record<ScreenId, RequiredWidget[]> = {
   'S-V3-ACT07': ['MissionSectionHeader', 'ProofLine'],
 
   // Core
-  'S-V3-CORE01': ['MissionSectionHeader', 'ProofLine', 'DefinitionLine', 'KPIContractCard', 'ExplainableInsightPanel', 'DashboardInsightsPanel', ...GOVERN_CONTRACT_WIDGETS],
+  'S-V3-CORE01': ['MissionSectionHeader', 'ProofLine', 'DefinitionLine', 'DashboardCoordinationProof', 'ExplainableInsightPanel', 'DashboardInsightsPanel', ...GOVERN_CONTRACT_WIDGETS],
   'S-V3-CORE02': ['MissionSectionHeader', 'ProofLine', 'DefinitionLine', 'SignalRow', ...GOVERN_CONTRACT_WIDGETS],
   'S-V3-CORE03': ['MissionSectionHeader', 'ProofLine', 'DefinitionLine', 'ExplainableInsightPanel', 'FactorsDropdown', ...GOVERN_CONTRACT_WIDGETS],
   'S-V3-CORE04': ['MissionSectionHeader', 'ProofLine', 'StatusTimeline'],
@@ -88,7 +88,7 @@ const SCREEN_SLOTS: Record<ScreenId, RequiredSlot[]> = {
   'S-V3-ACT05': ['hero_message', 'proof_line', 'transition_cue'],
   'S-V3-ACT06': ['hero_message', 'proof_line', 'consent_scope', 'transition_cue'],
   'S-V3-ACT07': ['hero_message', 'proof_line', 'transition_cue'],
-  'S-V3-CORE01': ['hero_message', 'proof_line', 'kpi_grid', 'primary_feed', 'govern_controls', 'transition_cue'],
+  'S-V3-CORE01': ['hero_message', 'proof_line', 'coordination_hero', 'primary_feed', 'govern_controls', 'transition_cue'],
   'S-V3-CORE02': ['hero_message', 'proof_line', 'primary_feed', 'govern_controls', 'transition_cue'],
   'S-V3-CORE03': ['hero_message', 'proof_line', 'explainable_panel', 'factors_dropdown', 'govern_controls', 'transition_cue'],
   'S-V3-CORE04': ['hero_message', 'proof_line', 'primary_feed', 'transition_cue'],

@@ -27,13 +27,13 @@ interface Notification {
 }
 
 const notifications: Notification[] = [
-  { id: 'N-001', engine: 'Protect', category: 'security', title: 'Suspicious transaction blocked', body: `Card ending ${DEMO_THREAD.criticalAlert.cardLast4} temporarily frozen after unrecognized $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} charge.`, time: 'Just now', read: false, actionLink: '/protect/alert-detail' },
+  { id: 'N-001', engine: 'Protect', category: 'security', title: 'Suspicious transaction flagged', body: `Card ending ${DEMO_THREAD.criticalAlert.cardLast4} flagged for your review after unrecognized $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} charge.`, time: 'Just now', read: false, actionLink: '/protect/alert-detail' },
   { id: 'N-002', engine: 'Protect', category: 'security', title: 'Login from new device detected', body: 'IP 203.0.113.42 — if this was you, no action needed.', time: '12m ago', read: false, actionLink: '/protect' },
   { id: 'N-003', engine: 'Grow', category: 'growth', title: `Emergency fund milestone — $${DEMO_THREAD.emergencyFund.current.toLocaleString()} reached`, body: `You are now ${DEMO_THREAD.emergencyFund.percent}% toward your $${DEMO_THREAD.emergencyFund.target.toLocaleString()} goal.`, time: '1h ago', read: false },
   { id: 'N-004', engine: 'Grow', category: 'growth', title: 'New savings recommendation available', body: 'Subscription consolidation could save $140/mo.', time: '2h ago', read: false },
   { id: 'N-005', engine: 'Execute', category: 'actions', title: 'Action approved — Bill negotiation sent', body: 'Internet bill renegotiation request submitted to ISP.', time: '3h ago', read: true, actionLink: '/execute/history' },
   { id: 'N-006', engine: 'Execute', category: 'actions', title: '2 actions expiring soon', body: 'Streaming consolidation and card freeze expire in 18h.', time: '4h ago', read: true, actionLink: '/execute/approval' },
-  { id: 'N-007', engine: 'Govern', category: 'system', title: 'Weekly audit report ready', body: '1,247 decisions audited. 100% coverage maintained.', time: '6h ago', read: true, actionLink: '/govern/audit' },
+  { id: 'N-007', engine: 'Govern', category: 'system', title: 'Weekly audit report ready', body: '10,249 decisions audited. 100% coverage maintained.', time: '6h ago', read: true, actionLink: '/govern/audit' },
   { id: 'N-008', engine: 'Govern', category: 'system', title: 'Model update — FraudDetection v3.3', body: 'New model deployed with 0.2% accuracy improvement.', time: '8h ago', read: true }];
 
 

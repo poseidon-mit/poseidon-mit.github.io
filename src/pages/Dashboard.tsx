@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Link } from '@/router'
+import { Link, useRouter } from '@/router'
 import { motion, type Variants } from 'framer-motion'
 import {
   Shield,
@@ -7,7 +7,6 @@ import {
   Zap,
   Scale,
   AlertTriangle,
-  Activity,
   ChevronRight,
   CheckCircle,
   type LucideIcon,
@@ -18,8 +17,11 @@ import { usePageTitle } from '@/hooks/use-page-title'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { getPendingExecuteCount } from '@/lib/demo-state/selectors'
 import {
+  selectCohortMetrics,
   selectDashboardView,
   selectExecuteActionsView,
+  selectGovernAuditSummaryView,
+  selectGovernAuditEntries,
   formatUsd,
 } from '@/domain/poseidon-universe'
 import type { ExecuteActionEntity } from '@/domain/poseidon-universe'
@@ -33,7 +35,19 @@ import {
 import { useDismissedAlerts } from '@/pages/protect/useDismissedAlerts'
 import { RECOMMENDATIONS_SUMMARY } from '@/pages/grow/recommendation-detail-data'
 import { ENGINE_COLOR_MAP, type EngineLabel } from '@/lib/engine-color-map'
-import { EngineBadge, KpiCard, SeverityBadge, EmptyState } from '@/components/poseidon'
+import { EngineBadge, SeverityBadge, EmptyState, DashboardCoordinationProof } from '@/components/poseidon'
+
+/* ── Urgency sort helpers ── */
+
+const URGENCY_ORDER: Record<string, number> = { high: 0, medium: 1, low: 2 }
+
+function expiryToHours(s: string | null | undefined): number {
+  if (!s) return Infinity
+  const match = s.match(/^(\d+)(h|d)$/)
+  if (!match) return Infinity
+  const n = Number(match[1])
+  return match[2] === 'd' ? n * 24 : n
+}
 
 /* ── Activity Feed tone map ── */
 
@@ -341,7 +355,7 @@ export default function DashboardPage() {
   )
 
   const allActions = useMemo(() => selectExecuteActionsView(), [])
-  const pendingActions = useMemo(
+  const sortedPendingActions = useMemo(
     () =>
       allActions
         .filter(
@@ -349,9 +363,28 @@ export default function DashboardPage() {
             (state.execute.actionStates[a.id]?.status ?? 'pending') ===
             'pending',
         )
-        .slice(0, 3),
+        .sort((a, b) => {
+          const urgDiff = (URGENCY_ORDER[a.urgency] ?? 2) - (URGENCY_ORDER[b.urgency] ?? 2)
+          if (urgDiff !== 0) return urgDiff
+          return expiryToHours(a.expiresIn) - expiryToHours(b.expiresIn)
+        }),
     [allActions, state.execute.actionStates],
   )
+  const topPendingAction = sortedPendingActions[0] ?? null
+
+  const { navigate } = useRouter()
+  const cohort = selectCohortMetrics()
+  const governSummary = useMemo(() => selectGovernAuditSummaryView(), [])
+  const auditStreamEntries = useMemo(
+    () => selectGovernAuditEntries().map((e) => ({
+      id: e.id,
+      type: e.type,
+      action: e.action,
+      confidence: e.confidence,
+    })),
+    [],
+  )
+  const topThreat = topThreats[0] ?? null
 
   return (
     <div className="selection:bg-cyan-500/30">
@@ -363,47 +396,38 @@ export default function DashboardPage() {
         initial="hidden"
         animate="visible"
       >
-        {/* ── Hero ── */}
-        <motion.section variants={itemVariants} className="mb-8">
-          <div className="flex flex-col gap-4">
-            <h1
-              className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-white"
-              style={{ fontFamily: 'var(--font-display)' }}
-            >
-              Your finances, intelligently coordinated.
-            </h1>
-            <p className="text-sm text-white/40 tracking-wide">
-              {activeThreats.length} flagged · {pendingCount} queued ·{' '}
-              {formatUsd(totalMonthlySavings)}/mo found
-            </p>
-          </div>
-        </motion.section>
-
-        {/* ── KPI Strip ── */}
-        <motion.section
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10"
-          variants={itemVariants}
-          aria-label="Key performance indicators"
-        >
-          <KpiCard
-            label="System Confidence"
-            value={`${Math.round(dashboardView.systemConfidence * 100)}%`}
-            color="var(--engine-dashboard)"
-          />
-          <KpiCard
-            label="Monthly Savings"
-            value={`${formatUsd(dashboardView.monthlySavingsCurrentUsd)}/mo`}
-            color="var(--engine-grow)"
-          />
-          <KpiCard
-            label="Pending Actions"
-            value={String(pendingCount)}
-            color="var(--engine-execute)"
-          />
-          <KpiCard
-            label="Compliance"
-            value={`${dashboardView.complianceScore}/100`}
-            color="var(--engine-govern)"
+        {/* ── Coordination Proof Hero ── */}
+        <motion.section variants={itemVariants} className="mb-10">
+          <DashboardCoordinationProof
+            activeThreats={activeThreats.length}
+            monthlySavings={dashboardView.monthlySavingsPotentialUsd}
+            pendingActions={pendingCount}
+            decisionsAudited={governSummary.total}
+            decisionsVerified={governSummary.verified}
+            recommendationCount={dashboardView.recommendationCount}
+            criticalSignal={topThreat ? {
+              id: topThreat.id,
+              merchant: topThreat.merchant,
+              amount: topThreat.amount,
+              confidence: topThreat.confidence,
+              severity: topThreat.severity,
+            } : null}
+            nextApproval={topPendingAction ? {
+              id: topPendingAction.id,
+              title: topPendingAction.title,
+              amountLabel: topPendingAction.amountLabel,
+              engine: topPendingAction.engine,
+              urgency: topPendingAction.urgency,
+            } : null}
+            auditStreamEntries={auditStreamEntries}
+            onReviewSignal={topThreat
+              ? () => navigate(`/protect/alert-detail?alertId=${topThreat.id}`)
+              : null}
+            onReviewApproval={topPendingAction
+              ? () => navigate(`/execute/approval?actionId=${topPendingAction.id}`)
+              : null}
+            onViewRecommendations={() => navigate('/grow/recommendations')}
+            cohortAvgSavingsUsd={cohort.avgMonthlySavingsUsd}
           />
         </motion.section>
 
@@ -423,7 +447,7 @@ export default function DashboardPage() {
 
         {/* ── Execute ── */}
         <ExecutePanel
-          actions={pendingActions}
+          actions={sortedPendingActions.slice(0, 3)}
           pendingCount={pendingCount}
           itemVariants={itemVariants}
         />

@@ -373,7 +373,7 @@ export function ExecuteApproval() {
               </div>
 
               <p className="text-[10px] text-white/25 text-center">
-                Confidence {action.confidence} · {action.reversible ? 'Reversible' : 'Irreversible'} · {action.steps.length} steps
+                Confidence {Math.round(action.confidence * 100)}% · {action.reversible ? 'Reversible' : 'Irreversible'} · {action.steps.length} steps
               </p>
             </div>
           </DialogContent>

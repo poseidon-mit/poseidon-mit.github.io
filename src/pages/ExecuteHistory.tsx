@@ -11,7 +11,7 @@ import {
   Filter,
 } from 'lucide-react'
 import { Link, useRouter } from '@/router'
-import { EmptyState, EngineBadge, KpiCard } from '@/components/poseidon'
+import { EmptyState, EngineBadge } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -119,15 +119,25 @@ export default function ExecuteHistoryPage() {
           </motion.div>
 
           {/* Stats Strip */}
-          <motion.div variants={fadeUp} className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-            {[
-              { label: 'Total Decisions', value: totalDecisions, color: 'var(--engine-execute)' },
-              { label: 'Approval Rate', value: totalDecisions > 0 ? `${approvalRate}%` : '-', color: 'var(--state-healthy)' },
-              { label: 'Monthly Savings', value: formatUsd(savings.currentMonthlySavingsUsd), color: 'var(--engine-execute)' },
-              { label: 'Compliance', value: `${DEMO_THREAD.complianceScore}/100`, color: 'var(--engine-govern)' },
-            ].map((kpi) => (
-              <KpiCard key={kpi.label} label={kpi.label} value={kpi.value} color={kpi.color} />
-            ))}
+          <motion.div variants={fadeUp} className="glass-card rounded-2xl p-5 md:p-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6">
+              {[
+                { label: 'Total Decisions', value: String(totalDecisions), color: 'var(--engine-execute)' },
+                { label: 'Approval Rate', value: totalDecisions > 0 ? `${approvalRate}%` : '-', color: 'var(--state-healthy)' },
+                { label: 'Monthly Savings', value: formatUsd(savings.currentMonthlySavingsUsd), color: 'var(--engine-execute)' },
+                { label: 'Compliance', value: `${DEMO_THREAD.complianceScore}/100`, color: 'var(--engine-govern)' },
+              ].map((kpi, i) => (
+                <div key={kpi.label} className={cn('flex flex-col gap-1.5', i > 0 && 'md:border-l md:border-white/[0.06] md:pl-6')}>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-white/40">{kpi.label}</span>
+                  <span
+                    className="text-2xl md:text-3xl font-mono tabular-nums font-medium"
+                    style={{ color: kpi.color, textShadow: `0 0 10px ${kpi.color}40` }}
+                  >
+                    {kpi.value}
+                  </span>
+                </div>
+              ))}
+            </div>
           </motion.div>
         </motion.section>
 

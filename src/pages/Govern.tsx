@@ -2,7 +2,6 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRouter } from '@/router'
 import {
-  ShieldCheck,
   Clock,
   AlertTriangle,
   ArrowUpRight,
@@ -12,14 +11,16 @@ import {
   ChevronDown,
   type LucideIcon,
 } from "lucide-react"
-import { EngineBadge, KpiCard } from '@/components/poseidon'
+import { GovernImmutableLedger } from '@/components/poseidon'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { getMotionPreset, accordionVariants, accordionTransition } from '@/lib/motion-presets'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
-import { selectGovernLedgerPreview, selectGovernSummaryView } from '@/domain/poseidon-universe'
+import { selectGovernAuditEntries, selectGovernAuditSummaryView, selectGovernEngineBreakdown, selectGovernLedgerPreview, selectArchitecturalTrust } from '@/domain/poseidon-universe'
 import { ENGINE_COLOR_MAP, type EngineLabel } from '@/lib/engine-color-map'
+import { AUDIT_DECISIONS } from '@/lib/govern-audit-data'
+import { PRIVACY_MANDATES } from '@/content/trust-policies'
 import type { DecisionStatus } from '@/components/poseidon'
 
 /* ── Data ── */
@@ -36,7 +37,24 @@ export default function GovernPage() {
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const { navigate } = useRouter()
   const [historyOpen, setHistoryOpen] = useState(false)
-  const governSummary = selectGovernSummaryView()
+  const trust = selectArchitecturalTrust()
+  const auditSummary = selectGovernAuditSummaryView()
+  const engineBreakdown = selectGovernEngineBreakdown()
+  const auditEntries = selectGovernAuditEntries()
+  const flightRecorderEntries = auditEntries.slice(0, 3).map((entry) => {
+    const detail = AUDIT_DECISIONS[entry.id as keyof typeof AUDIT_DECISIONS]
+    return {
+      id: entry.id,
+      engine: entry.type,
+      engineColor: ENGINE_COLOR_MAP[entry.type as EngineLabel],
+      action: entry.action,
+      confidence: entry.confidence,
+      time: formatDemoTimestamp(entry.timestampIso),
+      status: entry.status,
+      modelVersion: detail ? `${detail.model.name} v${detail.model.version}` : 'Unknown',
+      topFactor: detail?.topFactors[0]?.label ?? 'N/A',
+    }
+  })
   const ledgerEntries = selectGovernLedgerPreview().map((entry) => ({
     id: entry.id,
     type: entry.type as DecisionType,
@@ -51,34 +69,14 @@ export default function GovernPage() {
 
       <motion.div id="main-content" className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12`} style={PAGE_CONTENT_STYLE} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
 
-        {/* ── Hero ── */}
-        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
-          <motion.div variants={fadeUpVariant}>
-            <EngineBadge engine="govern" icon={ShieldCheck} label="Engine status: Good" />
-          </motion.div>
-          <h1 className={`${PAGE_HEADING_CLASS} mb-2`} style={PAGE_HEADING_STYLE}>
-            <span className="bg-gradient-to-r from-[var(--engine-govern)] to-[var(--engine-grow)] bg-clip-text text-transparent">100% auditability</span> for every AI decision
-          </h1>
-        </motion.section>
-
-        {/* ── Compliance score ring + stats ── */}
+        {/* ── Hero: Immutable Audit Ledger ── */}
         <motion.div variants={fadeUpVariant}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 w-full">
-            {[
-              { label: "Decision auditable", value: governSummary.decisionsAuditedTotal.toLocaleString(), color: "white" },
-              { label: "Review Recommended", value: String(governSummary.pendingReviewDecisions), color: "var(--state-warning)" },
-              { label: "Flagged", value: String(governSummary.flaggedDecisions), color: "var(--state-critical)" },
-            ].map(d => (
-              <KpiCard
-                key={d.label}
-                label={d.label}
-                value={d.value}
-                color={d.color}
-                size="lg"
-                gradient={<div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-govern)]/5 to-transparent pointer-events-none" />}
-              />
-            ))}
-          </div>
+          <GovernImmutableLedger
+            decisionsAudited={auditSummary.total}
+            engineBreakdown={engineBreakdown}
+            flightRecorderEntries={flightRecorderEntries}
+            onOpenLedger={() => navigate('/govern/audit')}
+          />
         </motion.div>
 
         {/* ── Decision Ledger ── */}
@@ -120,6 +118,37 @@ export default function GovernPage() {
                   )
                 })}
               </div>
+            </div>
+          </motion.section>
+
+          {/* ── Privacy & Model Ethics ── */}
+          <motion.section variants={fadeUpVariant} className="mt-8">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 px-2 mb-6">
+              Privacy & Model Ethics
+            </h2>
+            {/* Zone A — governed metrics */}
+            <div className="glass-card glass-card-overlay rounded-[32px] p-6 md:p-8 relative z-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-2xl font-mono font-semibold text-blue-400">{trust.auditCoveragePercent}%</span>
+                  <span className="text-xs text-white/40">AI decisions audited & logged</span>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-2xl font-mono font-semibold text-blue-400">{trust.llmRetentionDays} Days</span>
+                  <span className="text-xs text-white/40">LLM inference data retained</span>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-2xl font-mono font-semibold text-blue-400">{trust.llmTrainingOptOut ? 'Never' : 'Permitted'}</span>
+                  <span className="text-xs text-white/40">User data used for model training</span>
+                </div>
+              </div>
+            </div>
+            {/* Zone B — static policy prose */}
+            <div className="mt-4 rounded-2xl border border-white/[0.04] bg-white/[0.02] p-5 md:p-6">
+              <p className="text-[11px] font-mono uppercase tracking-widest text-white/25 mb-3">Data & Privacy Mandates</p>
+              <ul className="space-y-2 text-xs text-white/40 leading-relaxed">
+                {PRIVACY_MANDATES.map((text) => <li key={text}>{text}</li>)}
+              </ul>
             </div>
           </motion.section>
 

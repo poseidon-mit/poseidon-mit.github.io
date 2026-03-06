@@ -18,7 +18,16 @@ export type CrossThreadKey =
   | 'compliance_score'
   | 'pending_actions'
   | 'monthly_savings'
-  | 'emergency_fund_progress';
+  | 'emergency_fund_progress'
+  | 'cohort_acceptance_rate'
+  | 'cohort_avg_savings'
+  | 'cohort_fraud_trend'
+  | 'projected_3y_advantage'
+  | 'zero_auto_executions'
+  | 'audit_coverage_percent'
+  | 'risk_incidents_flagged'
+  | 'avg_monthly_exposure'
+  | 'platform_profile_count';
 
 export interface CtaBudget {
   primary: 1;
@@ -975,8 +984,8 @@ export const CROSS_SCREEN_DATA_THREAD: Record<CrossThreadKey, CrossThreadDatum> 
   },
   decisions_audited: {
     key: 'decisions_audited',
-    value: 1247,
-    displayFormat: '1,247',
+    value: 10249,
+    displayFormat: '10,249',
     ownerRoutes: ['/', '/govern', '/govern/audit'],
     description: 'Total immutable decision records visible in trust-facing screens.',
   },
@@ -991,7 +1000,7 @@ export const CROSS_SCREEN_DATA_THREAD: Record<CrossThreadKey, CrossThreadDatum> 
       signalId: 'PRT-2026-0216-003',
     },
     displayFormat: 'THR-001 · $2,847 · TechElectro Store · 0.94',
-    ownerRoutes: ['/dashboard', '/protect', '/protect/alert-detail', '/execute'],
+    ownerRoutes: ['/', '/dashboard', '/protect', '/protect/alert-detail', '/execute'],
     description: 'Canonical high-severity alert used to prove cross-engine continuity.',
   },
   compliance_score: {
@@ -1005,14 +1014,14 @@ export const CROSS_SCREEN_DATA_THREAD: Record<CrossThreadKey, CrossThreadDatum> 
     key: 'pending_actions',
     value: 5,
     displayFormat: '5 pending actions',
-    ownerRoutes: ['/dashboard', '/execute'],
+    ownerRoutes: ['/', '/dashboard', '/execute'],
     description: 'Action queue volume linking monitor and approval experiences.',
   },
   monthly_savings: {
     key: 'monthly_savings',
     value: 847,
     displayFormat: '$847/month',
-    ownerRoutes: ['/dashboard', '/execute', '/execute/history'],
+    ownerRoutes: ['/', '/dashboard', '/execute', '/execute/history'],
     description: 'Savings metric used across recommendation and execution reporting.',
   },
   emergency_fund_progress: {
@@ -1025,6 +1034,69 @@ export const CROSS_SCREEN_DATA_THREAD: Record<CrossThreadKey, CrossThreadDatum> 
     displayFormat: '73% · $7,300 / $10,000',
     ownerRoutes: ['/dashboard', '/grow', '/grow/goal', '/grow/scenarios'],
     description: 'Shared growth KPI to keep planning and scenario routes consistent.',
+  },
+  cohort_acceptance_rate: {
+    key: 'cohort_acceptance_rate',
+    value: 0.89,
+    displayFormat: '89%',
+    ownerRoutes: ['/', '/grow'],
+    description: 'Platform-wide recommendation acceptance rate shown on landing and grow.',
+  },
+  cohort_avg_savings: {
+    key: 'cohort_avg_savings',
+    value: 583,
+    displayFormat: '$583/mo',
+    ownerRoutes: ['/', '/dashboard'],
+    description: 'Cohort average monthly savings shown on landing and dashboard (Grow uses user-specific $612).',
+  },
+  cohort_fraud_trend: {
+    key: 'cohort_fraud_trend',
+    value: { label: 'Card-not-present fraud up 23% this quarter', changePercent: 23, period: 'Q1 2026' },
+    displayFormat: 'CNP fraud +23% Q1 2026',
+    ownerRoutes: ['/', '/protect'],
+    description: 'Platform-level fraud trend intelligence shown on landing and protect.',
+  },
+  projected_3y_advantage: {
+    key: 'projected_3y_advantage',
+    value: 24437,
+    displayFormat: '+$24,437',
+    ownerRoutes: ['/', '/grow'],
+    description: 'Projected 3-year advantage from grow simulation, shown on landing hero and grow hero.',
+  },
+  zero_auto_executions: {
+    key: 'zero_auto_executions',
+    value: 0,
+    displayFormat: '0',
+    ownerRoutes: ['/', '/execute'],
+    description: 'Architectural guarantee: zero auto-executions without human consent.',
+  },
+  audit_coverage_percent: {
+    key: 'audit_coverage_percent',
+    value: 100,
+    displayFormat: '100%',
+    ownerRoutes: ['/', '/govern'],
+    description: 'Architectural guarantee: 100% of AI decisions audited and logged.',
+  },
+  risk_incidents_flagged: {
+    key: 'risk_incidents_flagged',
+    value: 24,
+    displayFormat: '24 flagged',
+    ownerRoutes: ['/protect'],
+    description: 'Rolling 30d risk incidents flagged by Protect engine.',
+  },
+  avg_monthly_exposure: {
+    key: 'avg_monthly_exposure',
+    value: 280,
+    displayFormat: '$280/mo',
+    ownerRoutes: ['/protect'],
+    description: 'Avg monthly loss exposure identified by Protect engine.',
+  },
+  platform_profile_count: {
+    key: 'platform_profile_count',
+    value: 184_290,
+    displayFormat: '184,290 profiles',
+    ownerRoutes: ['/', '/grow'],
+    description: 'Total active platform profiles aligned to roadmap Phase 3 (~180K).',
   },
 };
 
@@ -1042,7 +1114,13 @@ export const ROUTE_PROMPT_BLUEPRINTS: Record<string, RoutePromptBlueprint> = {
     mustBuild: ['PublicTopBar', 'First5sMessageBlock', 'MetricsStrip', 'PrimaryActionBar'],
     shouldBuild: ['EngineCards', 'GovernanceProofBar'],
     decisionPoint: 'Decide whether to enter the command center immediately.',
-    crossThreadKeys: ['system_confidence', 'decisions_audited'],
+    crossThreadKeys: [
+      'system_confidence', 'decisions_audited', 'critical_alert_thr001', 'pending_actions',
+      'monthly_savings', 'cohort_acceptance_rate', 'cohort_avg_savings',
+      'cohort_fraud_trend', 'projected_3y_advantage',
+      'zero_auto_executions', 'audit_coverage_percent',
+      'platform_profile_count',
+    ],
     initialDisclosure: 'summary-first',
     initialBlockCap: 3,
   },
@@ -1188,11 +1266,11 @@ export const ROUTE_PROMPT_BLUEPRINTS: Record<string, RoutePromptBlueprint> = {
     primaryProfiles: ['mit-faculty', 'cto-peer'],
     scenarioRoles: ['wow-30s', 'engine-proof-120s'],
     sectionMap: [
-      { id: 'command', title: 'First 5s command summary + CTA', layout: 'full', priority: 1 },
-      { id: 'kpi', title: 'KPI + engine health strip', layout: 'grid', priority: 2 },
-      { id: 'next', title: 'Critical feed + decision rail', layout: 'two-col', priority: 3 },
+      { id: 'hero', title: 'Coordination Proof bento (headline + narrative + KPIs + critical signal + next approval)', layout: 'full', priority: 1 },
+      { id: 'engines', title: 'Protect + Grow panels (side-by-side)', layout: 'two-col', priority: 2 },
+      { id: 'execute-activity', title: 'Execute pending actions grid + recent activity feed', layout: 'grid', priority: 3 },
     ],
-    mustBuild: ['EnginePageFrame', 'BentoGrid', 'EngineHealthStrip', 'PrimaryActionBar', 'GovernFooter'],
+    mustBuild: ['EnginePageFrame', 'DashboardCoordinationProof', 'PrimaryActionBar', 'GovernFooter'],
     shouldBuild: ['ProofLine', 'AuroraPulse'],
     decisionPoint: 'Select the first high-impact path to investigate.',
     crossThreadKeys: [
@@ -1202,6 +1280,7 @@ export const ROUTE_PROMPT_BLUEPRINTS: Record<string, RoutePromptBlueprint> = {
       'pending_actions',
       'monthly_savings',
       'emergency_fund_progress',
+      'cohort_avg_savings',
     ],
     initialDisclosure: 'summary-first',
     initialBlockCap: 3,
@@ -1212,14 +1291,14 @@ export const ROUTE_PROMPT_BLUEPRINTS: Record<string, RoutePromptBlueprint> = {
     primaryProfiles: ['mit-faculty', 'cto-peer'],
     scenarioRoles: ['engine-proof-120s'],
     sectionMap: [
-      { id: 'hero', title: 'Threat posture summary + top alert CTA', layout: 'full', priority: 1 },
+      { id: 'hero', title: 'Critical alert spotlight (or threat posture summary) + top alert CTA', layout: 'full', priority: 1 },
       { id: 'threats', title: 'Threat table prioritized by severity', layout: 'two-col', priority: 2 },
       { id: 'evidence', title: 'Risk ring + proof line', layout: 'two-col', priority: 3 },
     ],
     mustBuild: ['EnginePageFrame', 'ThreatTable', 'RiskScoreRing', 'PrimaryActionBar', 'GovernFooter'],
     shouldBuild: ['ConfidenceIndicator', 'ProofLine'],
     decisionPoint: 'Inspect the critical alert before approving action.',
-    crossThreadKeys: ['critical_alert_thr001'],
+    crossThreadKeys: ['critical_alert_thr001', 'cohort_fraud_trend', 'risk_incidents_flagged', 'avg_monthly_exposure'],
     initialDisclosure: 'summary-first',
     initialBlockCap: 3,
   },
@@ -1246,14 +1325,14 @@ export const ROUTE_PROMPT_BLUEPRINTS: Record<string, RoutePromptBlueprint> = {
     primaryProfiles: ['industry-evaluator', 'cto-peer'],
     scenarioRoles: ['engine-proof-120s'],
     sectionMap: [
-      { id: 'hero', title: 'Growth summary + primary plan CTA', layout: 'full', priority: 1 },
+      { id: 'hero', title: 'Growth Advantage bento (projected gain + cohort intelligence + next best action)', layout: 'full', priority: 1 },
       { id: 'kpi', title: 'Goal and forecast KPIs', layout: 'grid', priority: 2 },
       { id: 'next', title: 'Top growth recommendations', layout: 'two-col', priority: 3 },
     ],
     mustBuild: ['EnginePageFrame', 'GoalKpiGrid', 'PrimaryActionBar', 'GovernFooter'],
     shouldBuild: ['ForecastPreview', 'ProofLine'],
     decisionPoint: 'Choose whether to inspect scenarios before execution.',
-    crossThreadKeys: ['emergency_fund_progress'],
+    crossThreadKeys: ['emergency_fund_progress', 'cohort_acceptance_rate', 'projected_3y_advantage', 'platform_profile_count'],
     initialDisclosure: 'summary-first',
     initialBlockCap: 3,
   },
@@ -1304,7 +1383,7 @@ export const ROUTE_PROMPT_BLUEPRINTS: Record<string, RoutePromptBlueprint> = {
     mustBuild: ['EnginePageFrame', 'ActionQueueCards', 'PrimaryActionBar', 'GovernFooter'],
     shouldBuild: ['ConfidenceIndicator', 'ProofLine'],
     decisionPoint: 'Approve or defer high-impact actions with full context.',
-    crossThreadKeys: ['critical_alert_thr001', 'pending_actions', 'monthly_savings'],
+    crossThreadKeys: ['critical_alert_thr001', 'pending_actions', 'monthly_savings', 'zero_auto_executions'],
     initialDisclosure: 'summary-first',
     initialBlockCap: 3,
   },
@@ -1338,7 +1417,7 @@ export const ROUTE_PROMPT_BLUEPRINTS: Record<string, RoutePromptBlueprint> = {
     mustBuild: ['EnginePageFrame', 'ComplianceScoreRing', 'LedgerPreview', 'PrimaryActionBar', 'GovernFooter'],
     shouldBuild: ['ProofLine', 'AuditChip'],
     decisionPoint: 'Confirm governance integrity before deep audit.',
-    crossThreadKeys: ['compliance_score', 'decisions_audited'],
+    crossThreadKeys: ['compliance_score', 'decisions_audited', 'audit_coverage_percent'],
     initialDisclosure: 'summary-first',
     initialBlockCap: 3,
   },

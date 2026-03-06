@@ -41,3 +41,14 @@
     --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
   }
 }
+
+/* ── Audit Stream Animation ── */
+
+@keyframes audit-scroll {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audit-stream-scroll { animation: none !important; }
+}

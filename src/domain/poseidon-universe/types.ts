@@ -103,8 +103,37 @@ export interface DashboardActivityEntity {
   relativeTime: string
 }
 
+export interface CohortFraudTrendData {
+  label: string
+  changePercent: number
+  period: string
+  factors: Array<{ label: string; value: number }>
+}
+
+export interface ProtectPerformance {
+  riskIncidentsFlagged: number
+  avgMonthlyExposureUsd: number
+}
+
+export interface CohortMetrics {
+  recommendationAcceptanceRate: number
+  avgMonthlySavingsUsd: number
+  fraudTrend: CohortFraudTrendData
+  cohortSize: number
+  projected3yAdvantageUsd: number
+  protectPerformance: ProtectPerformance
+}
+
+export interface ArchitecturalTrust {
+  autoExecutionsWithoutConsent: number
+  auditCoveragePercent: number
+  falsePositiveRate: number
+  llmRetentionDays: number
+  llmTrainingOptOut: boolean
+}
+
 export interface CanonicalUniverseV1 {
-  schemaVersion: '1.0.0'
+  schemaVersion: '1.1.0'
   generatedAt: string
   metrics: {
     systemConfidence: number
@@ -121,13 +150,16 @@ export interface CanonicalUniverseV1 {
       currentUsd: number
       targetUsd: number
     }
+    engineBreakdown: Record<'Protect' | 'Grow' | 'Execute' | 'Govern', number>
+    platformProfileCount: number
+    cohort: CohortMetrics
+    architecturalTrust: ArchitecturalTrust
   }
   entities: {
     criticalAlert: CriticalAlertEntity
     protectThreats: ProtectThreatEntity[]
     recommendations: RecommendationEntity[]
     executeActions: ExecuteActionEntity[]
-    governLedgerPreview: GovernLedgerEntryEntity[]
     governAuditEntries: GovernAuditEntryEntity[]
     dashboardActivities: DashboardActivityEntity[]
   }

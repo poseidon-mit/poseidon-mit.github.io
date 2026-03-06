@@ -1,4 +1,5 @@
 import { CANONICAL_UNIVERSE } from './canonical'
+import { ENGINE_COLOR_MAP, type EngineLabel } from '@/lib/engine-color-map'
 import type {
   CanonicalUniverseV1,
   ExecuteActionEntity,
@@ -23,6 +24,8 @@ export function selectDashboardView(pendingActionsOverride?: number) {
         ? pendingActionsOverride
         : universe.metrics.pendingActions,
     monthlySavingsCurrentUsd: universe.metrics.monthlySavingsCurrentUsd,
+    monthlySavingsPotentialUsd: universe.metrics.monthlySavingsPotentialUsd,
+    recommendationCount: universe.entities.recommendations.length,
     criticalAlert: universe.entities.criticalAlert,
     activities: universe.entities.dashboardActivities,
   }
@@ -84,7 +87,14 @@ export function selectGovernSummaryView() {
 }
 
 export function selectGovernLedgerPreview(): GovernLedgerEntryEntity[] {
-  return getCanonicalUniverse().entities.governLedgerPreview
+  return getCanonicalUniverse().entities.governAuditEntries.map((e) => ({
+    id: e.id,
+    type: e.type,
+    action: e.action,
+    confidence: e.confidence,
+    timestampIso: e.timestampIso,
+    status: e.status === 'Verified' ? undefined : e.status,
+  }))
 }
 
 export function selectGovernAuditEntries(): GovernAuditEntryEntity[] {
@@ -108,6 +118,56 @@ export function selectGovernAuditSummaryView() {
     flaggedPercent: Math.round((flagged / total) * 100),
     complianceScore: universe.metrics.complianceScore,
   }
+}
+
+export function selectGovernEngineBreakdown() {
+  const { engineBreakdown } = getCanonicalUniverse().metrics
+  const total = Object.values(engineBreakdown).reduce((s, n) => s + n, 0)
+  return Object.entries(engineBreakdown).map(([engine, count]) => ({
+    engine,
+    count,
+    percent: Math.round((count / total) * 100),
+    color: ENGINE_COLOR_MAP[engine as EngineLabel],
+  }))
+}
+
+/* ── Audit Chain Selector ── */
+
+export interface AlertAuditChain {
+  alertId: string
+  actionId: string
+  decisionId: string
+}
+
+/**
+ * Resolve an unambiguous audit chain: alert → action → decision.
+ * Returns null if the alert has no relations, or if it fans out to
+ * multiple actions or decisions (ambiguous chain).
+ */
+export function selectAlertAuditChain(alertId: string): AlertAuditChain | null {
+  const universe = getCanonicalUniverse()
+  const actionIds = universe.relations.alertToAction[alertId]
+  if (!actionIds || actionIds.length !== 1) return null
+  const actionId = actionIds[0]
+  const decisionIds = universe.relations.actionToDecision[actionId]
+  if (!decisionIds || decisionIds.length !== 1) return null
+  return { alertId, actionId, decisionId: decisionIds[0] }
+}
+
+export function selectCohortMetrics() {
+  return getCanonicalUniverse().metrics.cohort
+}
+
+export function selectProtectPerformance() {
+  return getCanonicalUniverse().metrics.cohort.protectPerformance
+}
+
+export function selectPlatformProfileCount() {
+  return getCanonicalUniverse().metrics.platformProfileCount
+}
+
+export function selectArchitecturalTrust() {
+  return getCanonicalUniverse().metrics.architecturalTrust
 }
 
 export function formatUsd(value: number): string {
