@@ -1,52 +1,100 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Shield, TrendingUp, Zap, Scale, ArrowRight, Play, X, ExternalLink } from 'lucide-react'
+import { Shield, TrendingUp, Zap, Scale, ArrowRight, ExternalLink, Play, Presentation } from 'lucide-react'
 import { PublicTopBar } from '@/components/landing/PublicTopBar'
 import { Link } from '@/router'
 import { CountUp, CohortFraudTrend } from '@/components/poseidon'
-import { selectCohortMetrics, selectArchitecturalTrust, selectPlatformProfileCount } from '@/domain/poseidon-universe'
+import { selectCohortMetrics, selectArchitecturalTrust } from '@/domain/poseidon-universe'
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { LANDING_COPY } from '@/content/landing-copy'
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } },
-}
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
-}
+import { getMotionPreset } from '@/lib/motion-presets'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 export default function Landing() {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [videoOpen, setVideoOpen] = useState(false)
+  const heroSectionRef = useRef<HTMLElement>(null)
+  const prefersReduced = useReducedMotionSafe()
+  const isSafari =
+    typeof navigator !== 'undefined' &&
+    /Safari/i.test(navigator.userAgent) &&
+    !/Chrome|Chromium|CriOS|Edg|EdgiOS|FxiOS|OPR|Android/i.test(navigator.userAgent)
+  const prefersCalmMotion = prefersReduced || isSafari
+  const { fadeUp, staggerContainer: stagger } = getMotionPreset(prefersCalmMotion)
   const cohort = selectCohortMetrics()
   const trust = selectArchitecturalTrust()
-  const platformProfileCount = selectPlatformProfileCount()
-
-  useEffect(() => {
-    if (!videoOpen) return
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setVideoOpen(false) }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [videoOpen])
+  const sectionRevealProps = prefersCalmMotion
+    ? ({ initial: false, animate: 'visible' } as const)
+    : ({ initial: 'hidden', whileInView: 'visible', viewport: { once: true, margin: '-80px' } } as const)
 
   useEffect(() => {
     const video = videoRef.current
-    if (!video) return
+    const heroSection = heroSectionRef.current
+    if (!video || !heroSection) return
     video.defaultMuted = true
     video.muted = true
+
+    let visible = document.visibilityState === 'visible'
+    let intersecting = true
+    let disposed = false
+    let abortRetryScheduled = false
+
     const tryPlay = () => {
+      if (!visible || !intersecting || disposed) {
+        try {
+          video.pause()
+        } catch {
+          // Ignore browsers/test environments that do not implement media pause.
+        }
+        return
+      }
       video.play().catch((err: DOMException) => {
-        if (err.name === 'AbortError') {
+        if (disposed) return
+        if (err.name === 'AbortError' && !abortRetryScheduled) {
+          abortRetryScheduled = true
           setTimeout(() => { video.play().catch(() => {}) }, 200)
+        } else if (err.name !== 'NotAllowedError') {
+          try {
+            video.pause()
+          } catch {
+            // Ignore browsers/test environments that do not implement media pause.
+          }
         }
       })
     }
+
+    const handleVisibilityChange = () => {
+      visible = document.visibilityState === 'visible'
+      tryPlay()
+    }
+
+    let observer: IntersectionObserver | null = null
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          intersecting = entry?.isIntersecting ?? true
+          tryPlay()
+        },
+        { threshold: 0.15, rootMargin: '160px 0px' },
+      )
+      observer.observe(heroSection)
+    }
+
     if (video.readyState >= 3) tryPlay()
     else video.addEventListener('canplay', tryPlay, { once: true })
-    return () => { video.removeEventListener('canplay', tryPlay); video.pause() }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      disposed = true
+      observer?.disconnect()
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      video.removeEventListener('canplay', tryPlay)
+      try {
+        video.pause()
+      } catch {
+        // Ignore browsers/test environments that do not implement media pause.
+      }
+    }
   }, [])
 
   useEffect(() => { window.scrollTo(0, 0) }, [])
@@ -61,9 +109,9 @@ export default function Landing() {
       {/* Background depth */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
         <div className="landing-grid-overlay absolute inset-0" />
-        <div className="absolute top-[40%] left-[15%] w-[500px] h-[500px] rounded-full bg-green-500/[0.03] blur-[120px]" />
-        <div className="absolute top-[55%] right-[10%] w-[600px] h-[600px] rounded-full bg-violet-500/[0.03] blur-[120px]" />
-        <div className="absolute top-[75%] left-[40%] w-[400px] h-[400px] rounded-full bg-cyan-500/[0.02] blur-[120px]" />
+        <div className="hidden md:block absolute top-[40%] left-[15%] w-[500px] h-[500px] rounded-full bg-green-500/[0.03] blur-[120px]" />
+        <div className="hidden md:block absolute top-[55%] right-[10%] w-[600px] h-[600px] rounded-full bg-violet-500/[0.03] blur-[120px]" />
+        <div className="hidden md:block absolute top-[75%] left-[40%] w-[400px] h-[400px] rounded-full bg-cyan-500/[0.02] blur-[120px]" />
       </div>
 
       <div className="relative z-10 w-full">
@@ -71,7 +119,7 @@ export default function Landing() {
 
         <main id="main-content" role="main">
           {/* ═══ Section 1: Hero ═══ */}
-          <section className="relative w-full min-h-screen flex flex-col items-center justify-center pt-[102px] px-6">
+          <section ref={heroSectionRef} className="relative w-full min-h-screen flex flex-col items-center justify-center pt-[102px] px-6">
             {/* Background video */}
             <div className="absolute inset-0 z-0 pointer-events-none">
               <video
@@ -94,7 +142,7 @@ export default function Landing() {
             </div>
 
             <motion.div
-              className="relative z-10 flex flex-col items-center max-w-[900px] gap-8 mt-12 md:mt-24"
+              className="relative z-10 flex flex-col items-center max-w-[900px] gap-5 md:gap-8 mt-6 md:mt-24"
               initial="hidden"
               animate="visible"
               variants={stagger}
@@ -125,25 +173,18 @@ export default function Landing() {
                 <div className="rounded-2xl border border-green-500/20 bg-white/[0.03] backdrop-blur-sm p-4">
                   <div className="flex items-center gap-1.5 mb-3">
                     <Shield size={12} className="text-green-400" />
-                    <span className="text-[10px] font-semibold uppercase tracking-widest text-green-400/60">Protect</span>
+                    <span className="text-[11px] font-semibold uppercase tracking-widest text-green-400/60">Protect</span>
                   </div>
-                  <div className="flex flex-col gap-1.5 mb-3">
+                  <div className="flex flex-col gap-1.5">
                     <span className="text-sm font-mono font-bold text-green-400">
-                      {LANDING_COPY.hero.protectProof.headline}
+                      ${DEMO_THREAD.criticalAlert.amount.toLocaleString()} Suspicious Charge Flagged
                     </span>
                     <span className="text-xs text-white/40">
+                      {Math.round(DEMO_THREAD.criticalAlert.confidence * 100)}% confidence · {DEMO_THREAD.criticalAlert.merchant}
+                    </span>
+                    <span className="hidden md:block text-xs text-white/25">
                       {LANDING_COPY.hero.protectProof.sublabel}
                     </span>
-                  </div>
-                  <div className="pt-3 border-t border-white/[0.06]">
-                    <CohortFraudTrend
-                      variant="compact"
-                      label={cohort.fraudTrend.label}
-                      changePercent={cohort.fraudTrend.changePercent}
-                      period={cohort.fraudTrend.period}
-                      factors={cohort.fraudTrend.factors}
-                      accentColor="var(--engine-protect)"
-                    />
                   </div>
                 </div>
 
@@ -151,48 +192,58 @@ export default function Landing() {
                 <div className="rounded-2xl border border-violet-500/20 bg-white/[0.03] backdrop-blur-sm p-4">
                   <div className="flex items-center gap-1.5 mb-3">
                     <TrendingUp size={12} className="text-violet-400" />
-                    <span className="text-[10px] font-semibold uppercase tracking-widest text-violet-400/60">Grow</span>
+                    <span className="text-[11px] font-semibold uppercase tracking-widest text-violet-400/60">Grow</span>
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <span className="text-sm font-mono font-bold text-violet-400">
-                      +${(cohort.avgMonthlySavingsUsd * platformProfileCount).toLocaleString()}/mo
+                      +${cohort.projected3yAdvantageUsd.toLocaleString()}
                     </span>
                     <span className="text-xs text-white/40">
-                      {LANDING_COPY.hero.growProof.sublabel}
-                    </span>
-                    <span className="text-[10px] text-white/25 font-mono mt-1">
-                      {LANDING_COPY.hero.growProof.formulaNote}: ${cohort.avgMonthlySavingsUsd.toLocaleString()}/mo × {platformProfileCount.toLocaleString()} profiles
+                      {LANDING_COPY.hero.growProof.sublabel} · {Math.round(cohort.recommendationAcceptanceRate * 100)}% acceptance
                     </span>
                   </div>
                 </div>
               </motion.div>
 
-              {/* CTAs */}
+              {/* CTAs — primary=1, secondary=1 per route contract */}
               <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
                 <Link
-                  to="/signup"
+                  to="/dashboard"
                   className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-8 py-4 min-h-[44px] text-sm font-semibold text-slate-950 hover:from-emerald-400 hover:to-cyan-400 transition-all cta-primary-glow"
                 >
                   {LANDING_COPY.hero.primaryCta} <ArrowRight size={16} />
                 </Link>
                 <Link
-                  to="/deck"
+                  to="/signup"
                   className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl px-8 py-4 min-h-[44px] text-sm font-medium text-white hover:bg-white/10 transition-colors"
                 >
                   {LANDING_COPY.hero.secondaryCta} <ArrowRight size={14} />
+                </Link>
+              </motion.div>
+
+              {/* Deliverables */}
+              <motion.div variants={fadeUp} className="flex items-center justify-center gap-3">
+                <Link
+                  to="/deck"
+                  className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur-md px-5 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 hover:border-white/25 transition-all"
+                >
+                  <Presentation size={14} className="text-cyan-400/70" />
+                  Presentation
                 </Link>
                 <a
                   href={LANDING_COPY.hero.videoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl px-8 py-4 min-h-[44px] text-sm font-medium text-white hover:bg-white/10 transition-colors"
+                  className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur-md px-5 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 hover:border-white/25 transition-all"
                 >
-                  {LANDING_COPY.hero.videoCta} <ExternalLink size={14} />
+                  <Play size={14} className="text-red-400/70" />
+                  Video
+                  <ExternalLink size={10} className="text-white/30" />
                 </a>
               </motion.div>
 
               {/* Trust bar */}
-              <motion.div variants={fadeUp} className="flex flex-wrap md:flex-nowrap items-center justify-center gap-x-3 gap-y-2 text-[10px] md:text-xs text-white/30 font-mono uppercase tracking-widest mt-4">
+              <motion.div variants={fadeUp} className="flex flex-wrap md:flex-nowrap items-center justify-center gap-x-3 gap-y-2 text-[11px] md:text-xs text-white/30 font-mono uppercase tracking-widest mt-4">
                 {LANDING_COPY.hero.trustItems.map((item, i) => (
                   <span key={item} className="flex items-center gap-2">
                     {i > 0 && <span className="text-white/10">//</span>}
@@ -207,10 +258,8 @@ export default function Landing() {
           <section className="relative w-full py-20 px-6">
             <motion.div
               className="max-w-5xl mx-auto"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-80px' }}
               variants={stagger}
+              {...sectionRevealProps}
             >
               <div className="flex items-center justify-center gap-3 mb-10">
                 <div className="h-px w-8 bg-cyan-400/30" />
@@ -222,25 +271,25 @@ export default function Landing() {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                 {/* Govern — Decisions audited */}
-                <motion.div variants={fadeUp} className="relative rounded-2xl border border-blue-500/15 bg-white/[0.02] backdrop-blur-md p-5 text-center overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(59,130,246,0.1)]">
+                <motion.div variants={fadeUp} className="relative rounded-2xl border border-blue-500/15 bg-white/[0.03] p-5 text-center overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(59,130,246,0.1)]">
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                   <CountUp value={DEMO_THREAD.decisionsAudited} locale className="text-2xl md:text-3xl font-mono font-semibold text-white/90" />
                   <p className="text-xs text-white/40 mt-2">Decisions audited & logged</p>
                 </motion.div>
                 {/* Grow — Cohort savings */}
-                <motion.div variants={fadeUp} className="relative rounded-2xl border border-violet-500/15 bg-white/[0.02] backdrop-blur-md p-5 text-center overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(139,92,246,0.1)]">
+                <motion.div variants={fadeUp} className="relative rounded-2xl border border-violet-500/15 bg-white/[0.03] p-5 text-center overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(139,92,246,0.1)]">
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
                   <CountUp value={cohort.avgMonthlySavingsUsd} prefix="$" locale className="text-2xl md:text-3xl font-mono font-semibold text-white/90" />
                   <p className="text-xs text-white/40 mt-2">Avg cohort savings found</p>
                 </motion.div>
                 {/* Execute — Zero auto-executions */}
-                <motion.div variants={fadeUp} className="relative rounded-2xl border border-amber-500/15 bg-white/[0.02] backdrop-blur-md p-5 text-center overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(234,179,8,0.1)]">
+                <motion.div variants={fadeUp} className="relative rounded-2xl border border-amber-500/15 bg-white/[0.03] p-5 text-center overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(234,179,8,0.1)]">
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
                   <span className="text-2xl md:text-3xl font-mono font-semibold text-white/90">{trust.autoExecutionsWithoutConsent}</span>
                   <p className="text-xs text-white/40 mt-2">Auto-executions without human consent</p>
                 </motion.div>
                 {/* Govern — Audit coverage */}
-                <motion.div variants={fadeUp} className="relative rounded-2xl border border-blue-500/15 bg-white/[0.02] backdrop-blur-md p-5 text-center overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(59,130,246,0.1)]">
+                <motion.div variants={fadeUp} className="relative rounded-2xl border border-blue-500/15 bg-white/[0.03] p-5 text-center overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(59,130,246,0.1)]">
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                   <span className="text-2xl md:text-3xl font-mono font-semibold text-white/90">{trust.auditCoveragePercent}%</span>
                   <p className="text-xs text-white/40 mt-2">AI decisions fully audited</p>
@@ -253,10 +302,8 @@ export default function Landing() {
           <section className="relative w-full py-24 px-6 border-y border-white/[0.04]">
             <motion.div
               className="max-w-4xl mx-auto text-center"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-80px' }}
               variants={stagger}
+              {...sectionRevealProps}
             >
               <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-light tracking-tight text-white mb-4">
                 {LANDING_COPY.gap.title}
@@ -270,7 +317,7 @@ export default function Landing() {
                   <motion.div key={i} variants={fadeUp} className="flex flex-col items-center">
                     <span className="text-4xl md:text-5xl font-mono font-bold text-white/80 mb-2">{stat.value}</span>
                     <span className="text-sm text-white/50 mb-1">{stat.label}</span>
-                    <span className="text-[10px] text-white/25 font-mono">{stat.source}</span>
+                    <span className="text-[11px] text-white/25 font-mono">{stat.source}</span>
                   </motion.div>
                 ))}
               </div>
@@ -281,10 +328,8 @@ export default function Landing() {
           <section className="relative w-full py-24 px-6">
             <motion.div
               className="max-w-4xl mx-auto"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-80px' }}
               variants={stagger}
+              {...sectionRevealProps}
             >
               <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-light tracking-tight text-white text-center mb-4">
                 {LANDING_COPY.architecture.title}
@@ -301,7 +346,7 @@ export default function Landing() {
                     className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 flex flex-col gap-3"
                   >
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center text-[10px] font-mono font-bold text-white/50">
+                      <span className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center text-[11px] font-mono font-bold text-white/50">
                         {i + 1}
                       </span>
                       <span className="text-sm font-semibold text-white/80">{step.label}</span>
@@ -317,10 +362,8 @@ export default function Landing() {
           <section className="relative w-full py-24 px-6">
             <motion.div
               className="max-w-5xl mx-auto"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-80px' }}
               variants={stagger}
+              {...sectionRevealProps}
             >
               <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-light tracking-tight text-white text-center mb-16">
                 {LANDING_COPY.engines.title}
@@ -333,7 +376,7 @@ export default function Landing() {
                   <div className="flex items-center gap-2">
                     <Shield size={16} className="text-green-400" />
                     <span className="text-xs font-semibold uppercase tracking-widest text-white/30">Protect</span>
-                    <span className="ml-auto text-[10px] font-mono text-green-400/60 bg-green-500/10 px-2 py-0.5 rounded-full">Flagged for Review</span>
+                    <span className="ml-auto text-[11px] font-mono text-green-400/60 bg-green-500/10 px-2 py-0.5 rounded-full">Flagged for Review</span>
                   </div>
                   <CohortFraudTrend
                     variant="compact"
@@ -381,7 +424,7 @@ export default function Landing() {
                   <div className="flex items-center gap-2">
                     <Zap size={16} className="text-amber-400" />
                     <span className="text-xs font-semibold uppercase tracking-widest text-white/30">Execute</span>
-                    <span className="ml-auto text-[10px] font-mono text-amber-400/60 bg-amber-500/10 px-2 py-0.5 rounded-full">Requires Your Approval</span>
+                    <span className="ml-auto text-[11px] font-mono text-amber-400/60 bg-amber-500/10 px-2 py-0.5 rounded-full">Requires Your Approval</span>
                   </div>
                   <div className="flex items-baseline gap-3">
                     <span className="text-2xl font-mono font-semibold text-amber-400">{DEMO_THREAD.pendingActions}</span>
@@ -391,7 +434,7 @@ export default function Landing() {
                   </div>
                   <div className="flex flex-col gap-1.5 text-xs text-white/30 font-mono">
                     <span>EXE-001 Portfolio rebalance — $12,400</span>
-                    <span>EXE-002 Flag suspicious transfer — ${DEMO_THREAD.criticalAlert.amount.toLocaleString()}</span>
+                    <span>EXE-002 Flag suspicious charge — ${DEMO_THREAD.criticalAlert.amount.toLocaleString()}</span>
                   </div>
                 </motion.div>
 
@@ -412,9 +455,9 @@ export default function Landing() {
                       <span className="text-xs text-white/30 ml-1.5">fully audited</span>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-1 text-[10px] text-white/25 font-mono overflow-hidden max-h-16">
+                  <div className="flex flex-col gap-1 text-[11px] text-white/25 font-mono overflow-hidden max-h-16">
                     <span>GV-2026-0319-847 Portfolio rebalance · 0.97</span>
-                    <span>GV-2026-0319-846 Flag wire transfer · {DEMO_THREAD.criticalAlert.confidence}</span>
+                    <span>GV-2026-0319-846 Flag merchant charge · {DEMO_THREAD.criticalAlert.confidence}</span>
                     <span>GV-2026-0319-845 Subscription consolidation · 0.89</span>
                   </div>
                 </motion.div>
@@ -426,17 +469,15 @@ export default function Landing() {
           <section className="relative w-full py-24 px-6">
             <motion.div
               className="max-w-2xl mx-auto text-center"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-80px' }}
               variants={stagger}
+              {...sectionRevealProps}
             >
               <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-light tracking-tight text-white mb-8">
                 {LANDING_COPY.cta.title}
               </motion.h2>
               <motion.div variants={fadeUp}>
                 <Link
-                  to="/signup"
+                  to="/dashboard"
                   className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-10 py-4 min-h-[44px] text-base font-semibold text-slate-950 hover:from-emerald-400 hover:to-cyan-400 transition-all cta-primary-glow"
                 >
                   {LANDING_COPY.cta.button} <ArrowRight size={18} />
@@ -447,36 +488,30 @@ export default function Landing() {
         </main>
 
         {/* Footer */}
-        <footer className="w-full py-8 flex justify-center text-white/30 font-mono text-xs tracking-wider uppercase">
-          2026 MAR MIT CTO PROGRAM CAPSTONE - GROUP7
+        <footer className="w-full border-t border-white/[0.06] py-12 px-6">
+          <div className="max-w-5xl mx-auto flex flex-col gap-6 items-center text-center">
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/40">
+              <Link to="/deck" className="hover:text-white transition-colors">Presentation</Link>
+              <a href={LANDING_COPY.hero.videoUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1">
+                Video <ExternalLink size={10} />
+              </a>
+              <Link to="/login" className="hover:text-white transition-colors">Sign In</Link>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-white/20 font-mono uppercase tracking-widest">
+              {LANDING_COPY.hero.trustItems.map((item, i) => (
+                <span key={item} className="flex items-center gap-2">
+                  {i > 0 && <span className="text-white/10">//</span>}
+                  {item}
+                </span>
+              ))}
+            </div>
+            <p className="text-[11px] text-white/20 font-mono tracking-wider uppercase">
+              2026 MAR MIT CTO PROGRAM CAPSTONE - GROUP7
+            </p>
+          </div>
         </footer>
       </div>
 
-      {/* Video Modal */}
-      {videoOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
-          onClick={() => setVideoOpen(false)}
-        >
-          <div
-            className="relative w-full max-w-4xl aspect-video rounded-2xl overflow-hidden shadow-2xl"
-            onClick={e => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setVideoOpen(false)}
-              className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <iframe
-              src="https://www.youtube.com/embed/ymwtd7X3CYI?autoplay=1"
-              allow="autoplay; encrypted-media; fullscreen"
-              allowFullScreen
-              className="w-full h-full"
-            />
-          </div>
-        </div>
-      )}
     </div>
   )
 }

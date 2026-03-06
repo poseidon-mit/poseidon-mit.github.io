@@ -13,19 +13,15 @@ export const LANDING_COPY = {
     titleA: 'See the risk. See the upside.',
     titleB: 'Approve with confidence.',
     subtitle: 'The AI-native money platform that shows its work before it asks for trust.',
-    primaryCta: 'Get Started',
-    secondaryCta: 'Presentation',
-    videoCta: 'Video',
+    primaryCta: 'Explore Demo',
+    secondaryCta: 'Get Started',
     videoUrl: 'https://youtu.be/ymwtd7X3CYI?si=QDTH_Yvul-gLER-8',
     trustItems: TRUST_BAR_ITEMS,
     protectProof: {
-      headline: '2.4x Higher Credential Leak Risk',
-      sublabel: 'Spike detected across your merchant network',
+      sublabel: 'Evidence: spending anomaly, timing burst, merchant dispute rate',
     },
     growProof: {
-      label: 'Projected 3-Year Advantage',
-      sublabel: 'platform-wide savings identified',
-      formulaNote: 'avgMonthlySavings × activeProfiles',
+      sublabel: 'Projected 3-year advantage per user',
     },
   },
   gap: {
@@ -52,6 +48,6 @@ export const LANDING_COPY = {
   },
   cta: {
     title: 'Start your demo in under 60 seconds.',
-    button: 'Get Started — Free',
+    button: 'Explore Demo',
   },
 } as const

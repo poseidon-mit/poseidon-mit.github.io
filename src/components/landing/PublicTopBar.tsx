@@ -1,4 +1,6 @@
+import { ExternalLink } from 'lucide-react'
 import { Link } from '@/router'
+import { LANDING_COPY } from '@/content/landing-copy'
 
 interface PublicTopBarProps {
   variant?: 'minimal' | 'landing'
@@ -7,7 +9,7 @@ interface PublicTopBarProps {
 export function PublicTopBar({ variant = 'minimal' }: PublicTopBarProps) {
   return (
     <nav
-      className="glass-header fixed top-0 left-0 right-0 z-50 border-b border-white/[0.06] bg-black/40 backdrop-blur-3xl"
+      className="glass-header fixed top-0 left-0 right-0 z-50 border-b border-white/[0.06] bg-black/40"
       role="navigation"
       aria-label="Main navigation"
     >
@@ -30,32 +32,27 @@ export function PublicTopBar({ variant = 'minimal' }: PublicTopBarProps) {
         </Link>
 
         {variant === 'landing' && (
-          <>
-            {/* Desktop: full action cluster */}
+          <div className="flex items-center gap-6">
             <div className="hidden md:flex items-center gap-6">
               <Link to="/deck" className="text-sm text-slate-300 hover:text-white transition-colors">
                 Presentation
               </Link>
-              <Link to="/login" className="text-sm text-slate-300 hover:text-white transition-colors">
-                Sign In
-              </Link>
-              <Link
-                to="/signup"
-                className="rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 px-5 py-2 text-sm font-semibold text-slate-950 hover:from-teal-400 hover:to-cyan-300 transition-all"
+              <a
+                href={LANDING_COPY.hero.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-slate-300 hover:text-white transition-colors flex items-center gap-1"
               >
-                Get Started
-              </Link>
+                Video <ExternalLink size={10} />
+              </a>
             </div>
-            {/* Mobile: Sign In always accessible (Get Started via hero CTA) */}
-            <div className="flex md:hidden items-center">
-              <Link
-                to="/login"
-                className="text-sm text-slate-300 hover:text-white min-h-[44px] flex items-center transition-colors"
-              >
-                Sign In
-              </Link>
-            </div>
-          </>
+            <Link
+              to="/login"
+              className="text-sm text-slate-300 hover:text-white min-h-[44px] flex items-center transition-colors"
+            >
+              Sign In
+            </Link>
+          </div>
         )}
       </div>
     </nav>
