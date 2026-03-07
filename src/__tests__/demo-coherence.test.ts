@@ -15,6 +15,8 @@ import {
 } from '../domain/poseidon-universe'
 import { TRUST_POLICIES, TRUST_BAR_ITEMS } from '../content/trust-policies'
 import { LANDING_COPY } from '../content/landing-copy'
+import { ALERT_FACTOR_ITEMS } from '../pages/protect/protect-data'
+import { recommendationDetails } from '../pages/grow/recommendation-detail-data'
 
 const repoRoot = resolve(__dirname, '..', '..')
 
@@ -218,5 +220,31 @@ describe('demo coherence invariants', () => {
         expect(src, `${pattern} found in ${file}`).not.toMatch(pattern)
       }
     }
+  })
+
+  it('THR-005 does not frame crypto as inherently suspicious', () => {
+    const thr005 = CANONICAL_UNIVERSE.entities.protectThreats.find(t => t.id === 'THR-005')!
+    expect(thr005.description).not.toMatch(/high-risk category/i)
+    expect(thr005.description).toMatch(/first-time|novel|new/i)
+    const factors = ALERT_FACTOR_ITEMS['THR-005']
+    const allText = factors.map(f => `${(f as any).heroCue ?? ''} ${f.details}`).join(' ')
+    expect(allText).not.toMatch(/inherently suspicious/i)
+  })
+
+  it('EXE-003 does not claim content overlap from billing data', () => {
+    const exe003 = CANONICAL_UNIVERSE.entities.executeActions.find(a => a.id === 'EXE-003')!
+    expect(exe003.description).not.toMatch(/content overlap/i)
+    const overlapFactor = exe003.factors.find(f => /overlap/i.test(f.label))
+    expect(overlapFactor).toBeUndefined()
+    const allStepText = exe003.steps.map(s => s.description).join(' ')
+    expect(allStepText).not.toMatch(/88%.*overlap|content overlap/i)
+  })
+
+  it('REC-002 does not claim write access for cancellation', () => {
+    const rec002 = recommendationDetails.find(r => r.id === 2)!
+    const allStepText = rec002.steps.map(s => `${s.description} ${s.type}`).join(' ')
+    expect(allStepText).not.toMatch(/Poseidon will submit/i)
+    const ytStep = rec002.steps.find(s => /YouTube/i.test(s.title))!
+    expect(ytStep.type).not.toBe('auto')
   })
 })

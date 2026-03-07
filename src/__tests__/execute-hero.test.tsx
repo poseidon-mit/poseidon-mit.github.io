@@ -82,11 +82,19 @@ describe('ExecuteApprovalCommandDeck', () => {
     expect(within(hero).getByText('48h reversible')).toBeInTheDocument()
   })
 
-  it('renders queue summary', () => {
-    const { hero } = renderHero()
-    const summaryText = hero.textContent
-    expect(summaryText).toContain('5 queued')
-    expect(summaryText).toContain('2 urgent')
+  it('displays queue total as hero number', () => {
+    const { hero } = renderHero({ queueTotal: 5 })
+    const heroNumber = hero.querySelector('.text-4xl')
+    expect(heroNumber?.textContent).toBe('5')
+    expect(within(hero).getByText(/5 actions pending/)).toBeInTheDocument()
+  })
+
+  it('uses singular "action" when queueTotal is 1', () => {
+    const { hero } = renderHero({ queueTotal: 1 })
+    // Hero number renders as "1" in the large text span
+    const heroNumber = hero.querySelector('.text-4xl')
+    expect(heroNumber?.textContent).toBe('1')
+    expect(within(hero).getByText(/1 action pending/)).toBeInTheDocument()
   })
 
   it('fires onReviewApproval on CTA click', () => {
@@ -141,7 +149,7 @@ describe('ExecutePage featured action selection', () => {
   it('selects EXE-002 as initial featured action (high urgency, shortest expiry)', () => {
     const { container } = renderExecute()
     const hero = container.querySelector('[role="region"]') as HTMLElement
-    expect(within(hero).getByText('Flag suspicious wire transfer')).toBeInTheDocument()
+    expect(within(hero).getByText('Flag suspicious merchant charge')).toBeInTheDocument()
   })
 })
 
@@ -187,29 +195,30 @@ describe('ExecutePage hero state mutation', () => {
     const hero = container.querySelector('[role="region"]') as HTMLElement
 
     // Before: EXE-002
-    expect(within(hero).getByText('Flag suspicious wire transfer')).toBeInTheDocument()
+    expect(within(hero).getByText('Flag suspicious merchant charge')).toBeInTheDocument()
 
     // Approve EXE-002
     fireEvent.click(screen.getByTestId('approve-exe002'))
 
     // After: next featured action should be EXE-001 (high urgency, 14h expiry)
     expect(within(hero).getByText('Portfolio rebalance')).toBeInTheDocument()
-    expect(within(hero).queryByText('Flag suspicious wire transfer')).not.toBeInTheDocument()
+    expect(within(hero).queryByText('Flag suspicious merchant charge')).not.toBeInTheDocument()
   })
 
-  it('updates queue summary after approving EXE-002', () => {
+  it('updates hero number and subtitle after approving EXE-002', () => {
     const { container } = renderWithState()
     const hero = container.querySelector('[role="region"]') as HTMLElement
 
-    // Before: 5 queued · 2 urgent
-    expect(hero.textContent).toContain('5 queued')
-    expect(hero.textContent).toContain('2 urgent')
+    // Before: hero number = 5
+    const heroNumber = hero.querySelector('.text-4xl')
+    expect(heroNumber?.textContent).toBe('5')
+    expect(hero.textContent).toContain('5 actions pending')
 
     fireEvent.click(screen.getByTestId('approve-exe002'))
 
-    // After: 4 queued · 1 urgent
-    expect(hero.textContent).toContain('4 queued')
-    expect(hero.textContent).toContain('1 urgent')
+    // After: hero number = 4
+    expect(heroNumber?.textContent).toBe('4')
+    expect(hero.textContent).toContain('4 actions pending')
   })
 })
 
@@ -246,5 +255,82 @@ describe('ExecutePage hero navigation', () => {
     renderExecute()
     expect(screen.getByText(/auto-executions/)).toBeInTheDocument()
     expect(screen.getByText(/Your final approval is always required/)).toBeInTheDocument()
+  })
+
+  it('renders prelude in correct order: badge → h1 → status row → hero card', () => {
+    const { container } = renderExecute()
+    const heroSection = container.querySelector('section')!
+    const badge = screen.getByText('Engine status: Good')
+    const h1 = screen.getByRole('heading', { level: 1 })
+    const statusRow = container.querySelector('[data-testid="system-status-row"]')!
+    const heroCard = container.querySelector('[role="region"]')!
+
+    // All exist
+    expect(badge).toBeInTheDocument()
+    expect(h1).toHaveClass('sr-only')
+    expect(statusRow).toBeInTheDocument()
+
+    // DOM order: badge → h1 → status row → hero card
+    const allNodes = heroSection.querySelectorAll('*')
+    const nodeList = Array.from(allNodes)
+    const badgeIdx = nodeList.indexOf(badge)
+    const h1Idx = nodeList.indexOf(h1)
+    const statusIdx = nodeList.indexOf(statusRow)
+    const heroIdx = nodeList.indexOf(heroCard)
+    expect(badgeIdx).toBeLessThan(h1Idx)
+    expect(h1Idx).toBeLessThan(statusIdx)
+    expect(statusIdx).toBeLessThan(heroIdx)
+  })
+})
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 5: EMPTY QUEUE STATE
+   ═══════════════════════════════════════════════════════ */
+
+describe('ExecutePage empty queue state', () => {
+  beforeEach(() => {
+    resetDemoStateStorage()
+  })
+
+  function FullApprovalHarness() {
+    const { setExecuteDecision } = useDemoState()
+    const actionIds = ['EXE-001', 'EXE-002', 'EXE-003', 'EXE-004', 'EXE-005']
+    return (
+      <>
+        {actionIds.map((id) => (
+          <button
+            key={id}
+            data-testid={`approve-${id.toLowerCase()}`}
+            onClick={() => setExecuteDecision({
+              actionId: id,
+              actionTitle: id,
+              decision: 'approved',
+            })}
+          />
+        ))}
+        <ExecutePage />
+      </>
+    )
+  }
+
+  it('shows empty state when all actions are approved via page state', () => {
+    window.history.pushState({}, '', '/execute')
+    const { container } = render(
+      <DemoStateProvider>
+        <RouterProvider>
+          <FullApprovalHarness />
+        </RouterProvider>
+      </DemoStateProvider>,
+    )
+    const hero = container.querySelector('[role="region"]') as HTMLElement
+
+    // Approve all 5 actions
+    for (const id of ['exe-001', 'exe-002', 'exe-003', 'exe-004', 'exe-005']) {
+      fireEvent.click(screen.getByTestId(`approve-${id}`))
+    }
+
+    // Empty state reached via page-level state derivation
+    expect(within(hero).getByText('Queue clear')).toBeInTheDocument()
+    expect(within(hero).queryByText(/actions pending/)).not.toBeInTheDocument()
   })
 })

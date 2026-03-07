@@ -1,9 +1,11 @@
 import { DEMO_USER, type DemoUser } from '@/lib/demo-user'
 
-export const DEMO_STATE_VERSION = 2
+export const DEMO_STATE_VERSION = 3
 
-export type DemoAuthMethod = 'skip' | 'form' | 'google' | 'apple'
+export type DemoAuthMethod = 'skip' | 'form' | 'google' | 'apple' | 'passkey'
+export type EntryIntent = 'express' | 'agentic'
 export type DemoExecuteDecision = 'approved' | 'deferred' | 'rejected' | 'pending'
+export type DemoAuditDecision = Exclude<DemoExecuteDecision, 'pending'> | 'undo'
 export type DemoGovernEngine = 'Protect' | 'Grow' | 'Execute' | 'Govern'
 
 export interface DemoAuthState {
@@ -11,6 +13,7 @@ export interface DemoAuthState {
   method: DemoAuthMethod | null
   lastSignInAt: string | null
   email: string
+  entryIntent: EntryIntent | null
 }
 
 export interface DemoOnboardingState {
@@ -31,7 +34,7 @@ export interface DemoAuditEvent {
   id: string
   actionId: string
   actionTitle: string
-  decision: Exclude<DemoExecuteDecision, 'pending'>
+  decision: DemoAuditDecision
   createdAt: string
   engine?: string
   amountLabel?: string
@@ -100,6 +103,7 @@ export function createDefaultDemoState(): DemoState {
       method: null,
       lastSignInAt: null,
       email: DEMO_USER.email,
+      entryIntent: null,
     },
     onboarding: {
       connectedAccountIds: [],

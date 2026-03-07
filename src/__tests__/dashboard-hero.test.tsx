@@ -193,4 +193,24 @@ describe('DashboardPage integration', () => {
     fireEvent.click(btns[0])
     expect(window.location.pathname).toBe('/execute/approval')
   })
+
+  it('renders Command Center badge above hero', () => {
+    renderDashboard()
+    expect(screen.getByText('Command Center')).toBeInTheDocument()
+  })
+
+  it('does not render duplicate h1 elements', () => {
+    renderDashboard()
+    const headings = screen.getAllByRole('heading', { level: 1 })
+    expect(headings).toHaveLength(1)
+  })
+
+  it('renders Command Center badge before hero card', () => {
+    renderDashboard()
+    const badge = screen.getByText('Command Center')
+    const heroCard = screen.getByRole('heading', { level: 1 }).closest('[class*="glass-card"]')!
+
+    // Badge appears before hero card in DOM
+    expect(badge.compareDocumentPosition(heroCard) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
 })

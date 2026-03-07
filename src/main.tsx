@@ -14,7 +14,7 @@ import './styles/tailwind.css';
 import './styles/app.css';
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
-  state = { error: null };
+  state: { error: Error | null } = { error: null };
   static getDerivedStateFromError(error: Error) {
     return { error };
   }
@@ -36,6 +36,11 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
           <div>
             <div style={{ fontSize: '2rem', marginBottom: '8px' }}>⚠</div>
             <p style={{ color: '#e2e8f0', fontWeight: 600, marginBottom: '4px' }}>Something went wrong</p>
+            <pre style={{ textAlign: 'left', maxWidth: '600px', fontSize: '12px', background: 'rgba(0,0,0,0.5)', padding: '12px', borderRadius: '8px', overflow: 'auto', maxHeight: '200px', color: '#f87171' }}>
+              {this.state.error?.message}
+              {'\n'}
+              {this.state.error?.stack?.slice(0, 500)}
+            </pre>
             <button
               onClick={() => window.location.replace('/')}
               style={{ marginTop: '16px', padding: '8px 20px', borderRadius: '8px', background: 'var(--accent-cyan)', color: 'var(--bg-oled)', fontWeight: 600, border: 'none', cursor: 'pointer' }}
@@ -151,12 +156,19 @@ function RouterOutlet() {
   useEffect(() => {
     if (!requiresSession || state.auth.sessionStarted) return;
     if (SELF_GUIDED_QR_MODE) {
-      beginDemoSession({ method: 'skip' });
+      beginDemoSession({ method: 'skip', entryIntent: 'express' });
       return;
     }
     const next = encodeURIComponent(`${path}${search}`);
     navigate(`/login?next=${next}`);
   }, [requiresSession, state.auth.sessionStarted, path, search, navigate, beginDemoSession]);
+
+  // Track previous path for drawer intent override (Landing back-nav edge case)
+  useEffect(() => {
+    return () => {
+      try { sessionStorage.setItem('poseidon-prev-path', path); } catch { /* noop */ }
+    };
+  }, [path]);
 
   if (!PageComponent) return <RouteLoadingFallback />;
   if (requiresSession && !state.auth.sessionStarted) return <RouteLoadingFallback />;

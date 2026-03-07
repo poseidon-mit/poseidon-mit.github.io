@@ -13,10 +13,6 @@ export const ROUTE_SCREEN_MAP: Record<string, ScreenId> = {
   '/signup': 'S-V3-ACT01',
   '/login': 'S-V3-ACT02',
   '/recovery': 'S-V3-ACT03',
-  '/onboarding/connect': 'S-V3-ACT04',
-  '/onboarding/goals': 'S-V3-ACT05',
-  '/onboarding/consent': 'S-V3-ACT06',
-  '/onboarding/complete': 'S-V3-ACT07',
 
   // Core
   '/dashboard': 'S-V3-CORE01',
@@ -70,8 +66,6 @@ export const COMPAT_ROUTE_ALIASES: Record<string, string> = {
   '/govern-v2': '/govern',
   '/engines': '/dashboard',
   '/v3': '/dashboard',
-  '/onboarding': '/onboarding/connect',
-  '/onboarding-v2': '/onboarding/connect',
 };
 
 // ─── Slug → ScreenId mapping ─────────────────────────────────────────────────
@@ -83,11 +77,6 @@ const SLUG_SCREEN_MAP: Record<RouteScreenSlug, ScreenId> = {
   'signup': 'S-V3-ACT01',
   'login': 'S-V3-ACT02',
   'recovery': 'S-V3-ACT03',
-  'onboarding': 'S-V3-ACT04',
-  'onboarding-connect': 'S-V3-ACT04',
-  'onboarding-goals': 'S-V3-ACT05',
-  'onboarding-consent': 'S-V3-ACT06',
-  'onboarding-complete': 'S-V3-ACT07',
   'dashboard': 'S-V3-CORE01',
   'alerts-hub': 'S-V3-CORE02',
   'insights-feed': 'S-V3-CORE03',
@@ -123,20 +112,7 @@ export function getRouteScreenId(slug: RouteScreenSlug): ScreenId {
   return SLUG_SCREEN_MAP[slug];
 }
 
-interface OnboardingContext {
-  onboardingStepIndex?: number;
-  onboardingCompleted?: boolean;
-}
-
-export function getRouteScreenContract(slug: RouteScreenSlug, ctx?: OnboardingContext): ScreenContract {
-  if (slug === 'onboarding' && ctx) {
-    if (ctx.onboardingCompleted) {
-      return screenContractsV4[SLUG_SCREEN_MAP['onboarding-complete']];
-    }
-    const stepSlugs: RouteScreenSlug[] = ['onboarding-connect', 'onboarding-goals', 'onboarding-consent', 'onboarding-complete'];
-    const resolvedSlug = stepSlugs[ctx.onboardingStepIndex ?? 0] ?? 'onboarding-connect';
-    return screenContractsV4[SLUG_SCREEN_MAP[resolvedSlug]];
-  }
+export function getRouteScreenContract(slug: RouteScreenSlug): ScreenContract {
   const screenId = getRouteScreenId(slug);
   return screenContractsV4[screenId];
 }

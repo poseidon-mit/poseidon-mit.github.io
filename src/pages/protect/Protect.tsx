@@ -6,6 +6,8 @@ import {
   ShieldCheck,
   AlertTriangle,
   ArrowRight,
+  Search,
+  UserCheck,
 } from "lucide-react"
 import { EmptyState, EngineBadge, ConfidenceIndicator, CohortFraudTrend } from '@/components/poseidon'
 import { ProtectAnomalyRadar, ProtectThreatPosture } from '@/components/poseidon/protect-hero'
@@ -15,6 +17,8 @@ import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+import { useIsMobileSheet } from '@/hooks/use-mobile-action-sheet'
+import { ActionSheet, ActionSheetContent, ActionSheetHeader, ActionSheetBody, ActionSheetFooter } from '@/components/ui/action-sheet'
 import { THREATS, severityConfig, severityToneColor, riskBreakdown, ALERT_FACTOR_ITEMS, deriveFactors } from './protect-data'
 import type { ThreatRow, ThreatSeverity } from './protect-data'
 import { useDismissedAlerts } from './useDismissedAlerts'
@@ -51,9 +55,12 @@ export default function ProtectPage() {
   const [sortField, setSortField] = useState<SortField>("severity")
   const [sortDir, setSortDir] = useState<SortDir>("desc")
 
+  const isMobile = useIsMobileSheet()
+  const [sheetThreat, setSheetThreat] = useState<ThreatRow | null>(null)
+
   const cohort = selectCohortMetrics()
   const perf = selectProtectPerformance()
-  const { dismissed } = useDismissedAlerts()
+  const { dismissed, dismiss } = useDismissedAlerts()
   const activeThreats = useMemo(() => THREATS.filter(t => !dismissed.has(t.id)), [dismissed])
 
   const sorted = useMemo(
@@ -167,7 +174,7 @@ export default function ProtectPage() {
         </motion.section>
 
         {/* ── Content: Table + Sidebar ── */}
-        <div className="flex flex-col gap-6 lg:flex-row lg:gap-5">
+        {false && (<div className="flex flex-col gap-6 lg:flex-row lg:gap-5">
           {/* Threat Table */}
           <div className="flex-1 min-w-0 lg:w-2/3">
             {/* Threat Cards */}
@@ -220,16 +227,20 @@ export default function ProtectPage() {
                 <AnimatePresence>
                   {feedThreats.map((t) => {
                     const theme = severityConfig[t.severity]
+                    const ThreatWrapper = isMobile ? 'button' as const : Link
+                    const wrapperProps = isMobile
+                      ? { onClick: () => setSheetThreat(t), className: 'group block w-full text-left focus:outline-none focus:ring-2 focus:ring-[var(--engine-protect)] rounded-[24px] cursor-pointer' }
+                      : { to: `/protect/alert-detail?alertId=${t.id}`, className: 'group block focus:outline-none focus:ring-2 focus:ring-[var(--engine-protect)] rounded-[24px]' }
                     return (
                       <motion.div key={t.id} variants={fadeUpVariant} exit={{ opacity: 0, height: 0 }}>
-                        <Link to={`/protect/alert-detail?alertId=${t.id}`} className="group block focus:outline-none focus:ring-2 focus:ring-[var(--engine-protect)] rounded-[24px]">
+                        {/* @ts-expect-error — conditional element type */}
+                        <ThreatWrapper {...wrapperProps}>
                           <div className="glass-card rounded-[24px] p-5 md:p-6 lg:p-8 transition-all hover:bg-white/[0.04]">
-                            <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ backgroundImage: `linear-gradient(to right, ${theme.bg}, transparent)` }} />
                             {/* Mobile layout */}
                             <div className="flex flex-col gap-4 md:hidden relative z-10">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                  <span className="inline-flex items-center justify-center rounded-xl text-xs font-bold font-mono tabular-nums shadow-[0_0_15px_currentColor] border border-[currentColor]/30 bg-[currentColor]/10" style={{ color: theme.color, width: 44, height: 28 }}>{t.confidence.toFixed(2)}</span>
+                                  <span className="inline-flex items-center justify-center rounded-xl text-xs font-bold font-mono tabular-nums border border-[currentColor]/30 bg-[currentColor]/10" style={{ color: theme.color, width: 44, height: 28 }}>{t.confidence.toFixed(2)}</span>
                                   <span className="text-[10px] font-medium uppercase tracking-widest text-white/40">Confidence</span>
                                 </div>
                                 <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest">{t.time}</span>
@@ -246,7 +257,7 @@ export default function ProtectPage() {
                             {/* Desktop layout */}
                             <div className="hidden md:grid md:grid-cols-5 lg:grid-cols-6 items-center gap-4 relative z-10">
                               <div className="col-span-2 flex flex-col gap-1">
-                                <span className="text-xs font-mono font-medium drop-shadow-[0_0_5px_currentColor]" style={{ color: "var(--engine-protect)" }}>{t.id}</span>
+                                <span className="text-xs font-mono font-medium" style={{ color: "var(--engine-protect)" }}>{t.id}</span>
                                 <h3 className="text-base font-medium text-white/90 truncate mr-4">{t.merchant}</h3>
                                 <span className="text-xs text-white/40">{t.description}</span>
                               </div>
@@ -264,7 +275,7 @@ export default function ProtectPage() {
                               </div>
                             </div>
                           </div>
-                        </Link>
+                        </ThreatWrapper>
                       </motion.div>
                     )
                   })}
@@ -288,7 +299,7 @@ export default function ProtectPage() {
                   {[{ label: "Active threats", value: String(activeThreats.length) }, { label: "Critical", value: String(criticalCount), color: "var(--state-critical)" }, { label: "High", value: String(highCount), color: "var(--state-warning)" }, { label: "Resolved today", value: String(dismissed.size), color: "var(--state-healthy)" }].map((d, i) => (
                     <div key={d.label} className={`flex items-center justify-between ${i !== 0 ? 'pt-4 border-t border-white/[0.04]' : ''}`}>
                       <span className="text-xs md:text-sm xl:text-base font-medium text-white/60 tracking-wide">{d.label}</span>
-                      <span className="text-base xl:text-lg font-mono font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" style={{ color: d.color || "rgba(255,255,255,0.9)" }}>{d.value}</span>
+                      <span className="text-base xl:text-lg font-mono font-bold " style={{ color: d.color || "rgba(255,255,255,0.9)" }}>{d.value}</span>
                     </div>
                   ))}
                 </div>
@@ -306,10 +317,10 @@ export default function ProtectPage() {
                     <div key={r.label} className="flex flex-col gap-2.5">
                       <div className="flex items-center justify-between">
                         <span className="text-xs md:text-sm xl:text-base font-medium text-white/70 tracking-wide">{r.label}</span>
-                        <span className="text-xs xl:text-sm font-mono font-bold drop-shadow-[0_0_5px_currentColor]" style={{ color: r.color }}>{r.pct}%</span>
+                        <span className="text-xs xl:text-sm font-mono font-bold " style={{ color: r.color }}>{r.pct}%</span>
                       </div>
                       <div className="h-2 rounded-full overflow-hidden bg-white/[0.04] border border-white/[0.02]">
-                        <div className="h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_currentColor]" style={{ width: `${r.pct}%`, background: r.color, color: r.color }} />
+                        <div className="h-full rounded-full transition-all duration-1000 " style={{ width: `${r.pct}%`, background: r.color, color: r.color }} />
                       </div>
                     </div>
                   ))}
@@ -341,9 +352,80 @@ export default function ProtectPage() {
               </motion.div>
             </div>
           </aside>
-        </div>
+        </div>)}
 
       </motion.div>
+
+      {false && (<ActionSheet open={!!sheetThreat} onOpenChange={(open) => { if (!open) setSheetThreat(null) }}>
+        <ActionSheetContent>
+          {sheetThreat && (() => {
+            const theme = severityConfig[sheetThreat.severity]
+            const factors = ALERT_FACTOR_ITEMS[sheetThreat.id]
+            const derivedFactors = factors ? deriveFactors(factors, sheetThreat.confidence) : []
+            return (
+              <>
+                <ActionSheetHeader>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-sm font-mono font-medium" style={{ color: 'var(--engine-protect)' }}>{sheetThreat.id}</span>
+                    <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: theme.bg, color: theme.color }}>
+                      {sheetThreat.severity === 'Critical' && <AlertTriangle size={10} />}
+                      {sheetThreat.severity}
+                    </span>
+                  </div>
+                  <h2 className="text-lg font-light text-white">{sheetThreat.merchant}</h2>
+                  <p className="text-sm text-white/50 mt-1">{sheetThreat.description}</p>
+                </ActionSheetHeader>
+                <ActionSheetBody>
+                  <div className="flex items-center gap-4 mb-4 py-3 border-b border-white/[0.06]">
+                    <span className="text-xl font-mono font-light tabular-nums text-white/90">{sheetThreat.amount}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs uppercase tracking-widest text-white/40">Confidence</span>
+                      <ConfidenceIndicator value={sheetThreat.confidence} colorOverride={severityToneColor[sheetThreat.severity]} size="sm" glow />
+                    </div>
+                    <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest ml-auto">{sheetThreat.time}</span>
+                  </div>
+                  {/* Top SHAP factors */}
+                  {derivedFactors.length > 0 && (
+                    <div className="flex flex-col gap-2">
+                      <span className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">Key Factors</span>
+                      {derivedFactors.filter(f => !f.mitigating).slice(0, 3).map((f, i) => (
+                        <div key={i} className="flex items-center justify-between py-2 border-b border-white/[0.04]">
+                          <span className="text-sm text-white/70">{f.title}</span>
+                          <span className="text-sm font-mono" style={{ color: f.value >= 0.15 ? 'var(--state-critical)' : 'var(--state-warning)' }}>
+                            {(f.value * 100).toFixed(0)}%
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </ActionSheetBody>
+                <ActionSheetFooter>
+                  <button
+                    onClick={() => {
+                      setSheetThreat(null)
+                      navigate(`/protect/alert-detail?alertId=${sheetThreat.id}`)
+                    }}
+                    className="w-full py-3.5 rounded-2xl text-sm font-semibold bg-[var(--engine-protect)] text-black hover:opacity-90 transition-all cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Search size={16} />
+                    Investigate
+                  </button>
+                  <button
+                    onClick={() => {
+                      dismiss(sheetThreat.id)
+                      setSheetThreat(null)
+                    }}
+                    className="w-full py-3 rounded-2xl text-sm font-medium border border-white/10 text-white/50 hover:text-white hover:bg-white/[0.05] transition-colors cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <UserCheck size={16} />
+                    This was Me
+                  </button>
+                </ActionSheetFooter>
+              </>
+            )
+          })()}
+        </ActionSheetContent>
+      </ActionSheet>)}
     </>
   )
 }

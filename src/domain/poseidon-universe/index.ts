@@ -22,8 +22,10 @@ export {
   selectPlatformProfileCount,
   selectProtectPerformance,
   selectProtectThreats,
+  computeFinancialHealthScore,
+  selectCrossEngineChains,
 } from './selectors'
-export type { AlertAuditChain } from './selectors'
+export type { AlertAuditChain, CrossEngineChain } from './selectors'
 export type {
   ArchitecturalTrust,
   CanonicalUniverseV1,

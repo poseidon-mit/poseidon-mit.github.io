@@ -84,7 +84,7 @@
 }
 
 .btn-primary:hover {
-  box-shadow: 0 16px 40px rgba(0,198,255,0.35), 0 0 20px rgba(21,225,194,0.25);
+  box-shadow: 0 16px 40px rgba(0, 198, 255, 0.35), 0 0 20px rgba(21, 225, 194, 0.25);
   transform: translateY(-1px);
 }
 
@@ -96,7 +96,7 @@
 
 .btn-soft:hover {
   background: rgba(21, 225, 194, 0.18);
-  box-shadow: 0 0 16px rgba(21,225,194,0.12);
+  box-shadow: 0 0 16px rgba(21, 225, 194, 0.12);
 }
 
 .btn-large {

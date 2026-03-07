@@ -4,7 +4,6 @@ import { describe, expect, it } from 'vitest';
 import {
   CROSS_SCREEN_DATA_THREAD,
   EVIDENCE_CONTRACT,
-  ONBOARDING_FLOW_CONTRACT,
   ROUTE_PROMPT_BLUEPRINTS,
   ROUTE_META_CONTRACT,
   SCREEN_BLUEPRINTS,
@@ -30,10 +29,13 @@ const ROUTE_PAGE_FILES: Record<RoutePath, string | null> = {
   '/signup': 'src/pages/Signup.tsx',
   '/login': 'src/pages/Login.tsx',
   '/recovery': 'src/pages/Recovery.tsx',
-  '/onboarding/connect': 'src/pages/Onboarding.tsx',
-  '/onboarding/goals': 'src/pages/OnboardingGoals.tsx',
-  '/onboarding/consent': 'src/pages/OnboardingConsent.tsx',
-  '/onboarding/complete': 'src/pages/OnboardingComplete.tsx',
+  '/onboarding/connect': 'src/pages/OnboardingRedirect.tsx',
+  '/onboarding/goals': 'src/pages/OnboardingRedirect.tsx',
+  '/onboarding/consent': 'src/pages/OnboardingRedirect.tsx',
+  '/onboarding/complete': 'src/pages/OnboardingRedirect.tsx',
+  '/onboarding/priorities': 'src/pages/OnboardingRedirect.tsx',
+  '/onboarding/activate': 'src/pages/OnboardingRedirect.tsx',
+  '/onboarding-v2': 'src/pages/OnboardingRedirect.tsx',
   '/dashboard': 'src/pages/Dashboard.tsx',
   '/dashboard/alerts': 'src/pages/AlertsHub.tsx',
   '/dashboard/insights': 'src/pages/InsightsFeed.tsx',
@@ -41,6 +43,7 @@ const ROUTE_PAGE_FILES: Record<RoutePath, string | null> = {
   '/dashboard/notifications': 'src/pages/Notifications.tsx',
   '/protect': 'src/pages/protect/Protect.tsx',
   '/protect/alert-detail': 'src/pages/protect/ProtectAlertDetail.tsx',
+  '/protect/threats': 'src/pages/protect/ProtectThreats.tsx',
   '/grow': 'src/pages/Grow.tsx',
   '/grow/goal': 'src/pages/GrowGoalDetail.tsx',
   '/grow/scenarios': 'src/pages/GrowScenarios.tsx',
@@ -48,6 +51,7 @@ const ROUTE_PAGE_FILES: Record<RoutePath, string | null> = {
   '/execute': 'src/pages/Execute.tsx',
   '/execute/approval': 'src/pages/ExecuteApproval.tsx',
   '/execute/history': 'src/pages/ExecuteHistory.tsx',
+  '/execute/queue': 'src/pages/ExecuteQueue.tsx',
   '/govern': 'src/pages/Govern.tsx',
   '/govern/trust': 'src/pages/GovernTrust.tsx',
   '/govern/audit': 'src/pages/GovernAuditLedger.tsx',
@@ -60,7 +64,9 @@ const ROUTE_PAGE_FILES: Record<RoutePath, string | null> = {
   '/settings/integrations': 'src/pages/SettingsIntegrations.tsx',
   '/settings/rights': 'src/pages/SettingsRights.tsx',
   '/help': 'src/pages/HelpSupport.tsx',
-  '/onboarding': 'src/pages/Onboarding.tsx',
+  '/share': 'src/pages/ShareFiles.tsx',
+  '/grow/recommendation': 'src/pages/grow/GrowRecommendationDetail.tsx',
+  '/onboarding': 'src/pages/OnboardingRedirect.tsx',
   '/404': 'src/pages/NotFound.tsx',
   '/test/spectacular': 'src/pages/TestSpectacular.tsx',
 };
@@ -104,10 +110,6 @@ describe('target scope routing contract', () => {
     const goldenPathRoutes: RoutePath[] = [
       '/',
       '/signup',
-      '/onboarding/connect',
-      '/onboarding/goals',
-      '/onboarding/consent',
-      '/onboarding/complete',
       '/dashboard',
       '/dashboard/alerts',
       '/dashboard/insights',
@@ -193,36 +195,6 @@ describe('route meta and governance contract', () => {
       expect(blueprint.mustBuild).toContain('PrimaryActionBar');
     }
     expect(ROUTE_PROMPT_BLUEPRINTS['/protect/alert-detail'].mustBuild).toContain('ShapWaterfall');
-  });
-});
-
-describe('onboarding flow contract', () => {
-  it('defines exactly four ordered onboarding steps', () => {
-    expect(ONBOARDING_FLOW_CONTRACT.routeGroup).toBe('/onboarding');
-    expect(ONBOARDING_FLOW_CONTRACT.steps).toHaveLength(4);
-    expect(ONBOARDING_FLOW_CONTRACT.steps.map((s) => s.route)).toEqual([
-      '/onboarding/connect',
-      '/onboarding/goals',
-      '/onboarding/consent',
-      '/onboarding/complete',
-    ]);
-  });
-
-  it('renders progress UI on every onboarding step route', () => {
-    const stepRoutes: RoutePath[] = [
-      '/onboarding/connect',
-      '/onboarding/goals',
-      '/onboarding/consent',
-      '/onboarding/complete',
-    ];
-
-    for (const route of stepRoutes) {
-      const source = readPageSource(route);
-      const hasInlineProgress = source.includes('OnboardingProgress');
-      const hasSharedOnboardingShell = source.includes('OnboardingShell');
-      expect(hasInlineProgress || hasSharedOnboardingShell).toBe(true);
-      expect(source).toContain('step={');
-    }
   });
 });
 

@@ -34,10 +34,10 @@ export default function LoginPage() {
     setTimeout(() => {
       setAuthState('success');
       setTimeout(() => {
-        beginDemoSession({ method: 'skip', email: DEMO_USER.email })
+        beginDemoSession({ method: 'skip', email: DEMO_USER.email, entryIntent: 'express' })
         navigate(nextPath)
-      }, 800)
-    }, 1500)
+      }, 400)
+    }, 600)
   }
 
   return (
@@ -123,6 +123,16 @@ export default function LoginPage() {
                   'Entering...'
                 )}
               </Button>
+              <button
+                type="button"
+                onClick={() => {
+                  beginDemoSession({ method: 'skip', email: DEMO_USER.email, entryIntent: 'express' })
+                  navigate(nextPath)
+                }}
+                className="block mx-auto mt-3 text-sm text-slate-400 hover:text-slate-200 transition-colors"
+              >
+                Skip to demo
+              </button>
             </motion.div>
 
           </motion.div>

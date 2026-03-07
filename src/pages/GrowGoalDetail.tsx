@@ -118,13 +118,13 @@ export default function GrowGoalPage() {
                   <div className="flex items-center gap-4 flex-1 justify-end">
                     <div className="w-full max-w-[120px] h-2 rounded-full overflow-hidden bg-white/[0.05] border border-white/[0.02]">
                       <div
-                        className="h-full rounded-full shadow-[0_0_10px_rgba(139,92,246,0.6)]"
+                        className="h-full rounded-full"
                         style={{
                           width: `${c.amount / 450 * 100}%`,
                           background: "var(--engine-grow)"
                         }} />
                     </div>
-                    <span className="text-sm font-mono font-bold flex-shrink-0 w-12 text-right text-[var(--engine-grow)] drop-shadow-[0_0_5px_rgba(139,92,246,0.4)]">
+                    <span className="text-sm font-mono font-bold flex-shrink-0 w-12 text-right text-[var(--engine-grow)]">
                       ${c.amount}
                     </span>
                   </div>
@@ -142,7 +142,7 @@ export default function GrowGoalPage() {
               </h3>
             </div>
             <div className="relative z-10 flex-1 flex flex-col justify-center gap-4">
-              <ForecastBand data={FORECAST_DATA} width={600} height={180} engine="grow" className="w-full drop-shadow-[0_0_15px_rgba(139,92,246,0.3)]" />
+              <ForecastBand data={FORECAST_DATA} width={600} height={180} engine="grow" className="w-full" />
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/[0.04]">
                 <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest px-2">Now</span>
                 <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest px-2">+12 months</span>
@@ -158,7 +158,7 @@ export default function GrowGoalPage() {
             <div className="absolute left-0 top-0 bottom-0 w-1.5 opacity-70 transition-opacity group-hover:opacity-100" style={{ background: "var(--engine-grow)" }} />
             <div className="relative z-10 max-w-2xl pl-2">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-[var(--engine-grow)]/20 border border-[var(--engine-grow)]/30 flex items-center justify-center text-[var(--engine-grow)] shadow-[0_0_20px_rgba(139,92,246,0.2)]">
+                <div className="w-10 h-10 rounded-xl bg-[var(--engine-grow)]/20 border border-[var(--engine-grow)]/30 flex items-center justify-center text-[var(--engine-grow)]">
                   <TrendingUp size={20} />
                 </div>
                 <p className="text-2xl md:text-3xl font-light text-white leading-tight tracking-wide">
@@ -166,7 +166,7 @@ export default function GrowGoalPage() {
                 </p>
               </div>
               <p className="text-base text-white/50 leading-relaxed tracking-wide mt-2">
-                Increasing your monthly transfer by <span className="font-mono text-[var(--engine-grow)] font-bold drop-shadow-[0_0_10px_rgba(139,92,246,0.5)] text-lg px-2 bg-white/[0.05] rounded-md border border-[var(--engine-grow)]/20">$60</span> would accelerate your target by <strong className="text-white/80 font-medium">3 weeks</strong>.
+                Increasing your monthly transfer by <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-white/[0.05] rounded-md border border-[var(--engine-grow)]/20">$60</span> would accelerate your target by <strong className="text-white/80 font-medium">3 weeks</strong>.
               </p>
             </div>
             <div className="relative z-10 flex flex-wrap items-center gap-4 md:ml-auto">

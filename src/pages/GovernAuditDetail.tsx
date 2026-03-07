@@ -61,7 +61,7 @@ export function GovernAuditDetail() {
                   <div className="relative z-10 flex flex-col gap-1.5">
                     <p className="text-[9px] md:text-[10px] uppercase tracking-widest font-semibold text-white/50">{kpi.label}</p>
                     <div className="flex flex-col">
-                      <p className="text-lg md:text-xl font-light font-mono truncate" style={{ color: kpi.color, textShadow: kpi.color !== 'white' ? `0 0 15px ${kpi.color}60` : 'none' }}>{kpi.value}</p>
+                      <p className="text-lg md:text-xl font-light font-mono truncate" style={{ color: kpi.color }}>{kpi.value}</p>
                       {kpi.subValue && <p className="text-[10px] text-white/40 mt-0.5">{kpi.subValue}</p>}
                     </div>
                   </div>
@@ -80,7 +80,7 @@ export function GovernAuditDetail() {
                   {metaRows.map((row) =>
                     <div key={row.label} className="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-white/[0.04] last:border-0 gap-2 sm:gap-4">
                       <span className="text-[10px] uppercase tracking-widest text-white/50 shrink-0">{row.label}</span>
-                      <span className={`text-sm tracking-wide sm:text-right break-words ${row.highlight ? 'text-[var(--engine-govern)] font-medium drop-shadow-[0_0_8px_rgba(20,184,166,0.3)]' : 'text-white/80 font-light'}`}>{row.value}</span>
+                      <span className={`text-sm tracking-wide sm:text-right break-words ${row.highlight ? 'text-[var(--engine-govern)] font-medium' : 'text-white/80 font-light'}`}>{row.value}</span>
                     </div>
                   )}
                 </div>

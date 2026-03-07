@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Poseidon.AI — Orchestrator Workbench (Full Prototype)</title>
+<style>
+/* ══════════════════════════════════════════════════════
+   RESET & DESIGN TOKENS
+   ══════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg-deep: #0a0e1a;
+  --bg-surface: #111827;
+  --bg-card: rgba(17, 24, 39, 0.7);
+  --bg-hover: rgba(30, 41, 59, 0.6);
+  --bg-input: rgba(15, 23, 42, 0.8);
+  --border: rgba(148, 163, 184, 0.12);
+  --border-active: rgba(148, 163, 184, 0.25);
+  --border-focus: rgba(139, 92, 246, 0.5);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-dim: #475569;
+  --engine-dashboard: #00F0FF;
+  --engine-protect: #22C55E;
+  --engine-grow: #8B5CF6;
+  --engine-execute: #EAB308;
+  --engine-govern: #3B82F6;
+  --danger: #ef4444;
+  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-border: rgba(148, 163, 184, 0.1);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-xs: 4px;
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+  --shadow-glow-cyan: 0 0 20px rgba(0, 240, 255, 0.15);
+  --shadow-glow-violet: 0 0 20px rgba(139, 92, 246, 0.15);
+  --shadow-glow-green: 0 0 20px rgba(34, 197, 94, 0.15);
+  --transition: all 0.2s ease;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  height: 100vh;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.5;
+}
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ══════════════════════════════════════════════════════
+   APP SHELL — 3-Column Grid
+   ══════════════════════════════════════════════════════ */
+.app-shell {
+  display: grid;
+  grid-template-columns: 220px 1fr 320px;
+  grid-template-rows: 52px 1fr 28px;
+  height: 100vh;
+}
+
+/* ── Top Bar ── */
+.top-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  z-index: 20;
+}
+.top-bar-left { display: flex; align-items: center; gap: 14px; }
+.logo {
+  font-size: 15px; font-weight: 700;
+  background: linear-gradient(135deg, var(--engine-dashboard), var(--engine-grow));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+.pipeline-name {
+  font-size: 11px; padding: 3px 10px; border-radius: 999px;
+  background: rgba(139, 92, 246, 0.12); color: var(--engine-grow);
+  border: 1px solid rgba(139, 92, 246, 0.25); font-weight: 600;
+}
+.enforcement-toggle { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-secondary); }
+.pill { display: flex; border-radius: 999px; overflow: hidden; border: 1px solid var(--border); }
+.pill button {
+  background: transparent; color: var(--text-muted); border: none;
+  padding: 3px 10px; font-size: 10px; cursor: pointer; transition: var(--transition);
+}
+.pill button.active { background: rgba(234, 179, 8, 0.15); color: var(--engine-execute); font-weight: 600; }
+.pill button:hover:not(.active) { color: var(--text-secondary); }
+.top-bar-right { display: flex; align-items: center; gap: 10px; }
+.sel {
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-secondary); font-size: 11px; padding: 4px 8px;
+  border-radius: var(--radius-sm); cursor: pointer;
+}
+.btn {
+  font-size: 11px; padding: 5px 12px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--bg-card);
+  color: var(--text-secondary); cursor: pointer; transition: var(--transition);
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--border-active); color: var(--text-primary); }
+.btn-primary {
+  background: linear-gradient(135deg, var(--engine-grow), #6d28d9);
+  color: white; border: none; font-weight: 600;
+}
+.btn-primary:hover { opacity: 0.9; }
+.btn-danger { border-color: rgba(239,68,68,0.3); color: var(--danger); }
+
+/* ── Status Bar (Bottom) ── */
+.status-bar {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px;
+  background: var(--bg-surface); border-top: 1px solid var(--border);
+  font-size: 10px; color: var(--text-muted);
+}
+.status-bar-left, .status-bar-right { display: flex; gap: 16px; align-items: center; }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+.status-dot.green { background: var(--engine-protect); }
+.status-dot.yellow { background: var(--engine-execute); }
+
+/* ══════════════════════════════════════════════════════
+   PHASE RAIL (Left)
+   ══════════════════════════════════════════════════════ */
+.phase-rail {
+  background: var(--bg-surface); border-right: 1px solid var(--border);
+  overflow-y: auto; padding: 8px 0;
+  display: flex; flex-direction: column;
+}
+.rail-label {
+  font-size: 9px; text-transform: uppercase; letter-spacing: 1.2px;
+  color: var(--text-muted); padding: 10px 14px 4px; font-weight: 700;
+}
+.phase-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; cursor: pointer; transition: var(--transition);
+  position: relative; font-size: 12px; color: var(--text-secondary);
+}
+.phase-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.phase-item.active { background: rgba(139, 92, 246, 0.08); color: var(--text-primary); }
+.phase-item.active::before {
+  content: ''; position: absolute; left: 0; top: 3px; bottom: 3px;
+  width: 3px; background: var(--engine-grow); border-radius: 0 3px 3px 0;
+}
+.pn {
+  width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+  border-radius: 5px; font-size: 10px; font-weight: 700; flex-shrink: 0;
+}
+.pn.done { background: rgba(34, 197, 94, 0.12); color: var(--engine-protect); }
+.pn.cur { background: rgba(139, 92, 246, 0.15); color: var(--engine-grow); border: 1px solid rgba(139, 92, 246, 0.35); }
+.pn.pend { background: rgba(100, 116, 139, 0.1); color: var(--text-muted); }
+.phase-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.phase-sts { font-size: 10px; flex-shrink: 0; }
+.sts-ok { color: var(--engine-protect); }
+.sts-run { color: var(--engine-grow); }
+.gate-div {
+  margin: 4px 12px; padding: 4px 8px;
+  background: rgba(234, 179, 8, 0.06); border: 1px solid rgba(234, 179, 8, 0.12);
+  border-radius: 5px; font-size: 9px; color: var(--engine-execute);
+  font-weight: 700; text-align: center; letter-spacing: 0.5px;
+}
+.rail-bottom {
+  margin-top: auto; padding: 8px 12px; border-top: 1px solid var(--border);
+  display: flex; gap: 6px;
+}
+.rail-icon-btn {
+  flex: 1; padding: 6px; border-radius: var(--radius-sm);
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-muted); font-size: 14px; cursor: pointer;
+  text-align: center; transition: var(--transition);
+}
+.rail-icon-btn:hover { border-color: var(--border-active); color: var(--text-primary); }
+
+/* ══════════════════════════════════════════════════════
+   MAIN WORK AREA (Center)
+   ══════════════════════════════════════════════════════ */
+.main-area { overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.sec-header { display: flex; align-items: center; justify-content: space-between; }
+.sec-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.sec-title .icon { font-size: 18px; }
+.sec-sub { font-size: 11px; color: var(--text-muted); }
+
+/* Glass Card */
+.gc {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: var(--radius); backdrop-filter: blur(16px); padding: 16px;
+}
+.gc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.gc-title { font-size: 13px; font-weight: 600; }
+
+/* Tabs */
+.tabs { display: flex; border-bottom: 1px solid var(--border); }
+.tab {
+  padding: 8px 16px; font-size: 12px; color: var(--text-muted); cursor: pointer;
+  border: none; border-bottom: 2px solid transparent;
+  background: none; transition: var(--transition);
+}
+.tab:hover { color: var(--text-secondary); }
+.tab.active { color: var(--engine-grow); border-bottom-color: var(--engine-grow); font-weight: 600; }
+
+/* ── Phase-specific views (hidden by default) ── */
+.phase-view { display: none; flex-direction: column; gap: 16px; }
+.phase-view.active { display: flex; }
+
+/* ════ Phase 0: Chat UI ════ */
+.chat-container { display: flex; flex-direction: column; gap: 10px; flex: 1; min-height: 300px; }
+.chat-msg {
+  max-width: 80%; padding: 10px 14px; border-radius: var(--radius);
+  font-size: 12px; line-height: 1.6;
+}
+.chat-msg.user {
+  align-self: flex-end; background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.2); color: var(--text-primary);
+}
+.chat-msg.ai {
+  align-self: flex-start; background: var(--bg-card);
+  border: 1px solid var(--border); color: var(--text-secondary);
+}
+.chat-msg .sender { font-size: 10px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted); }
+.chat-input-row { display: flex; gap: 8px; margin-top: auto; }
+.chat-input {
+  flex: 1; padding: 10px 14px; border-radius: var(--radius);
+  background: var(--bg-input); border: 1px solid var(--border);
+  color: var(--text-primary); font-size: 12px; outline: none;
+}
+.chat-input:focus { border-color: var(--border-focus); }
+
+/* ════ Phase 1: Research Cards ════ */
+.research-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.research-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px; cursor: pointer;
+  transition: var(--transition);
+}
+.research-card:hover { border-color: var(--border-active); transform: translateY(-1px); }
+.rc-source { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+.rc-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.rc-excerpt { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+.rc-tags { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+.rc-tag {
+  font-size: 9px; padding: 2px 6px; border-radius: 3px;
+  background: rgba(0, 240, 255, 0.08); color: var(--engine-dashboard);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+}
+
+/* ════ Phase 2: Value Definition Wizard ════ */
+.wizard-steps { display: flex; gap: 4px; margin-bottom: 16px; }
+.wiz-step {
+  flex: 1; padding: 6px; text-align: center; font-size: 10px;
+  border-radius: var(--radius-xs); transition: var(--transition);
+  color: var(--text-muted); background: var(--bg-card); border: 1px solid var(--border);
+}
+.wiz-step.done { background: rgba(34, 197, 94, 0.08); border-color: rgba(34, 197, 94, 0.2); color: var(--engine-protect); }
+.wiz-step.cur { background: rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.3); color: var(--engine-grow); font-weight: 600; }
+.form-field { margin-bottom: 14px; }
+.form-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.form-label .ai-hint {
+  font-size: 9px; padding: 1px 5px; border-radius: 3px;
+  background: rgba(139, 92, 246, 0.1); color: var(--engine-grow); font-weight: 500;
+}
+.form-input, .form-textarea {
+  width: 100%; padding: 8px 12px; border-radius: var(--radius-sm);
+  background: var(--bg-input); border: 1px solid var(--border);
+  color: var(--text-primary); font-size: 12px; outline: none; transition: var(--transition);
+}
+.form-input:focus, .form-textarea:focus { border-color: var(--border-focus); }
+.form-textarea { min-height: 80px; resize: vertical; font-family: inherit; line-height: 1.6; }
+
+/* ════ Phase 3: Quick Adopt (reuse from v1) ════ */
+.adopt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.adopt-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px; cursor: pointer;
+  transition: var(--transition); position: relative;
+}
+.adopt-card:hover { border-color: var(--border-active); transform: translateY(-2px); }
+.adopt-card.rec { border-color: rgba(139, 92, 246, 0.35); box-shadow: var(--shadow-glow-violet); }
+.adopt-card-head { display: flex; align-items: start; justify-content: space-between; margin-bottom: 8px; }
+.model-badge { font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
+.mb-a { background: rgba(0, 240, 255, 0.1); color: var(--engine-dashboard); }
+.mb-b { background: rgba(139, 92, 246, 0.1); color: var(--engine-grow); }
+.mb-c { background: rgba(234, 179, 8, 0.1); color: var(--engine-execute); }
+.feas { font-size: 9px; padding: 2px 5px; border-radius: 3px; font-weight: 700; }
+.feas-h { background: rgba(34, 197, 94, 0.12); color: var(--engine-protect); }
+.feas-m { background: rgba(234, 179, 8, 0.12); color: var(--engine-execute); }
+.adopt-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+.adopt-meta { display: flex; flex-direction: column; gap: 3px; font-size: 10px; color: var(--text-muted); margin-bottom: 10px; }
+.adopt-btn {
+  width: 100%; padding: 7px; border-radius: var(--radius-sm); font-size: 11px;
+  font-weight: 600; cursor: pointer; transition: var(--transition);
+  border: 1px solid var(--border); background: transparent; color: var(--text-secondary);
+}
+.adopt-btn:hover { border-color: var(--engine-grow); color: var(--engine-grow); }
+.adopt-btn.primary { background: linear-gradient(135deg, var(--engine-grow), #6d28d9); color: white; border: none; }
+.rec-badge {
+  position: absolute; top: -7px; right: 10px; font-size: 9px;
+  padding: 2px 7px; border-radius: 3px; background: var(--engine-grow);
+  color: white; font-weight: 700;
+}
+
+/* ════ Phase 4: Merge Editor ════ */
+.merge-container { display: grid; grid-template-columns: 1fr 40px 1fr; gap: 0; min-height: 320px; }
+.merge-source, .merge-target {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+}
+.merge-header {
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px;
+}
+.merge-body { padding: 12px; max-height: 280px; overflow-y: auto; }
+.merge-item {
+  padding: 8px 10px; margin-bottom: 6px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); font-size: 11px; color: var(--text-secondary);
+  cursor: grab; transition: var(--transition); display: flex; align-items: center; gap: 6px;
+}
+.merge-item:hover { border-color: var(--border-active); background: var(--bg-hover); }
+.merge-item .drag-handle { color: var(--text-dim); cursor: grab; }
+.merge-item.selected { border-color: rgba(139, 92, 246, 0.4); background: rgba(139, 92, 246, 0.06); }
+.merge-arrows {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+}
+.merge-arrow-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-muted); cursor: pointer; display: flex;
+  align-items: center; justify-content: center; font-size: 14px;
+  transition: var(--transition);
+}
+.merge-arrow-btn:hover { border-color: var(--engine-grow); color: var(--engine-grow); }
+
+/* ════ Phase 5: Outline Editor ════ */
+.outline-list { display: flex; flex-direction: column; gap: 4px; }
+.outline-item {
+  display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+  border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--bg-card); transition: var(--transition);
+}
+.outline-item:hover { border-color: var(--border-active); }
+.outline-item.sub { margin-left: 28px; }
+.outline-item.sub2 { margin-left: 56px; }
+.ol-handle { color: var(--text-dim); cursor: grab; font-size: 12px; }
+.ol-check { width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--border); cursor: pointer; flex-shrink: 0; }
+.ol-check.done { background: var(--engine-protect); border-color: var(--engine-protect); }
+.ol-text { flex: 1; font-size: 12px; color: var(--text-secondary); }
+.ol-model {
+  font-size: 9px; padding: 2px 6px; border-radius: 3px;
+  background: rgba(139, 92, 246, 0.1); color: var(--engine-grow); font-weight: 600;
+}
+.ol-priority {
+  font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: 600;
+}
+.pri-high { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+.pri-mid { background: rgba(234, 179, 8, 0.1); color: var(--engine-execute); }
+
+/* ════ Phase 6: Diff Viewer ════ */
+.diff-container { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: 320px; }
+.diff-pane {
+  background: var(--bg-card); border: 1px solid var(--border); overflow: hidden;
+}
+.diff-pane:first-child { border-radius: var(--radius) 0 0 var(--radius); border-right: none; }
+.diff-pane:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+.diff-header {
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: space-between;
+}
+.diff-body { padding: 12px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; line-height: 1.8; max-height: 300px; overflow-y: auto; }
+.diff-line { padding: 1px 6px; border-radius: 2px; }
+.diff-add { background: rgba(34, 197, 94, 0.08); color: var(--engine-protect); }
+.diff-del { background: rgba(239, 68, 68, 0.08); color: var(--danger); text-decoration: line-through; }
+.diff-unchanged { color: var(--text-muted); }
+.review-badge {
+  font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: 600;
+}
+.rb-warn { background: rgba(234, 179, 8, 0.12); color: var(--engine-execute); }
+.rb-ok { background: rgba(34, 197, 94, 0.1); color: var(--engine-protect); }
+.review-comments { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.review-comment {
+  padding: 10px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); font-size: 11px;
+}
+.review-comment .rc-author { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+.review-comment .rc-body { color: var(--text-secondary); line-height: 1.5; }
+
+/* ════ Prompt Editor (shared) ════ */
+.prompt-editor { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.pe-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; background: rgba(30, 41, 59, 0.4); border-bottom: 1px solid var(--border);
+}
+.pe-toolbar-left { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-secondary); }
+.tmpl-badge { font-size: 10px; padding: 2px 7px; border-radius: 3px; background: rgba(139, 92, 246, 0.12); color: var(--engine-grow); font-weight: 600; }
+.pe-body {
+  padding: 14px; font-size: 12px; line-height: 1.7; color: var(--text-secondary);
+  min-height: 140px; max-height: 200px; overflow-y: auto;
+  white-space: pre-wrap; font-family: 'SF Mono', 'Fira Code', monospace;
+}
+.pe-var { background: rgba(139, 92, 246, 0.12); color: var(--engine-grow); padding: 1px 5px; border-radius: 3px; font-weight: 600; font-size: 11px; }
+.pe-h { color: var(--text-primary); font-weight: 700; }
+
+/* Model running indicators */
+.model-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.model-run {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  background: rgba(139, 92, 246, 0.04); border: 1px solid rgba(139, 92, 246, 0.12);
+  border-radius: var(--radius-sm);
+}
+.spinner {
+  width: 16px; height: 16px; border: 2px solid rgba(139, 92, 246, 0.15);
+  border-top-color: var(--engine-grow); border-radius: 50%;
+  animation: spin 0.8s linear infinite; flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.model-run-text { font-size: 11px; color: var(--text-secondary); }
+.model-run-text strong { color: var(--engine-grow); }
+
+/* Gate Panel */
+.gate-panel {
+  background: rgba(234, 179, 8, 0.03); border: 1px solid rgba(234, 179, 8, 0.12);
+  border-radius: var(--radius); padding: 14px;
+}
+.gate-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.gate-title { font-size: 13px; font-weight: 700; color: var(--engine-execute); display: flex; align-items: center; gap: 6px; }
+.gate-items { display: flex; flex-direction: column; gap: 6px; }
+.gate-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-secondary); }
+.gi {
+  width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; font-size: 10px; flex-shrink: 0;
+}
+.gi-pass { background: rgba(34, 197, 94, 0.12); color: var(--engine-protect); }
+.gi-warn { background: rgba(234, 179, 8, 0.12); color: var(--engine-execute); }
+.gi-fail { background: rgba(239, 68, 68, 0.12); color: var(--danger); }
+.gi-skip { background: rgba(100, 116, 139, 0.1); color: var(--text-muted); }
+.gate-opt { font-size: 9px; color: var(--text-muted); margin-left: auto; padding: 1px 5px; border: 1px solid var(--border); border-radius: 3px; }
+.gate-actions { margin-top: 10px; display: flex; gap: 8px; }
+
+/* ══════════════════════════════════════════════════════
+   CONTEXT PANEL (Right)
+   ══════════════════════════════════════════════════════ */
+.ctx-panel {
+  background: var(--bg-surface); border-left: 1px solid var(--border);
+  overflow-y: auto; display: flex; flex-direction: column;
+}
+.ctx-section { padding: 14px; border-bottom: 1px solid var(--border); }
+.ctx-title {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--text-muted); font-weight: 700; margin-bottom: 8px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+/* Progress ring */
+.prog-ring { display: flex; align-items: center; gap: 10px; padding: 8px; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px solid var(--border); }
+.ring-vis { width: 44px; height: 44px; position: relative; }
+.ring-vis svg { transform: rotate(-90deg); }
+.ring-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--engine-grow); }
+.ring-info { display: flex; flex-direction: column; gap: 1px; }
+.ring-label { font-size: 11px; color: var(--text-secondary); }
+.ring-detail { font-size: 9px; color: var(--text-muted); }
+/* Artifact list */
+.art-item { display: flex; align-items: center; gap: 7px; padding: 6px 8px; border-radius: var(--radius-sm); cursor: pointer; transition: background 0.15s; font-size: 11px; color: var(--text-secondary); }
+.art-item:hover { background: var(--bg-hover); }
+.art-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-size: 12px; flex-shrink: 0; }
+.art-name { font-weight: 500; }
+.art-phase { font-size: 9px; color: var(--text-muted); }
+/* Decision log */
+.dec-entry { padding: 8px; background: var(--bg-card); border-radius: var(--radius-sm); margin-bottom: 6px; border: 1px solid var(--border); }
+.dec-entry.draft { opacity: 0.5; border-style: dashed; }
+.dec-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.dec-phase { font-size: 9px; padding: 2px 5px; border-radius: 3px; background: rgba(139, 92, 246, 0.1); color: var(--engine-grow); font-weight: 600; }
+.dec-trigger { font-size: 9px; color: var(--text-muted); }
+.dec-text { font-size: 11px; color: var(--text-secondary); line-height: 1.4; }
+.dec-time { font-size: 9px; color: var(--text-muted); margin-top: 4px; }
+
+/* ══════════════════════════════════════════════════════
+   MODALS
+   ══════════════════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center; z-index: 100;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: var(--radius); width: 90%; max-width: 640px;
+  max-height: 80vh; overflow-y: auto; box-shadow: var(--shadow-lg);
+}
+.modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; border-bottom: 1px solid var(--border);
+}
+.modal-title { font-size: 15px; font-weight: 700; }
+.modal-close {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 18px; cursor: pointer; padding: 4px;
+}
+.modal-close:hover { color: var(--text-primary); }
+.modal-body { padding: 18px; }
+
+/* Gate Config Editor specifics */
+.preset-row { display: flex; gap: 6px; margin-bottom: 14px; }
+.preset-btn {
+  flex: 1; padding: 8px; border-radius: var(--radius-sm);
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-muted); font-size: 11px; cursor: pointer;
+  text-align: center; transition: var(--transition);
+}
+.preset-btn:hover { border-color: var(--border-active); color: var(--text-secondary); }
+.preset-btn.active { border-color: rgba(234, 179, 8, 0.4); color: var(--engine-execute); background: rgba(234, 179, 8, 0.06); font-weight: 600; }
+.cond-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.cond-check { width: 16px; height: 16px; accent-color: var(--engine-grow); }
+.cond-text { flex: 1; font-size: 12px; color: var(--text-secondary); }
+.cond-type { font-size: 9px; padding: 2px 5px; border-radius: 3px; background: var(--bg-card); color: var(--text-muted); border: 1px solid var(--border); }
+.cond-req-toggle {
+  font-size: 10px; padding: 3px 8px; border-radius: 3px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text-muted); cursor: pointer; transition: var(--transition);
+}
+.cond-req-toggle.required { background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.3); color: var(--engine-execute); }
+.cond-req-toggle.optional { background: transparent; }
+
+/* Decision Log Sheet */
+.sheet-overlay {
+  position: fixed; top: 0; left: 0; bottom: 0; width: 100%;
+  background: rgba(0,0,0,0.4); display: none; z-index: 90;
+  backdrop-filter: blur(2px);
+}
+.sheet-overlay.open { display: block; }
+.sheet {
+  position: fixed; top: 0; left: 0; bottom: 0; width: 420px;
+  background: var(--bg-surface); border-right: 1px solid var(--border);
+  z-index: 91; overflow-y: auto; transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+.sheet-overlay.open .sheet { transform: translateX(0); }
+.sheet-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px; border-bottom: 1px solid var(--border); position: sticky;
+  top: 0; background: var(--bg-surface); z-index: 1;
+}
+.sheet-body { padding: 16px; }
+.dl-entry {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px; margin-bottom: 10px;
+  transition: var(--transition); cursor: pointer;
+}
+.dl-entry:hover { border-color: var(--border-active); }
+.dl-entry.draft { border-style: dashed; opacity: 0.6; }
+.dl-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.dl-phase { font-size: 10px; padding: 2px 7px; border-radius: 4px; background: rgba(139, 92, 246, 0.1); color: var(--engine-grow); font-weight: 600; }
+.dl-trigger { font-size: 10px; color: var(--text-muted); }
+.dl-decision { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+.dl-rationale { font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-bottom: 4px; }
+.dl-meta { font-size: 10px; color: var(--text-dim); display: flex; justify-content: space-between; }
+.dl-edit { font-size: 10px; color: var(--engine-grow); cursor: pointer; }
+
+/* Artifact Manager Modal specifics */
+.artifact-tree { display: flex; flex-direction: column; gap: 2px; }
+.at-folder {
+  padding: 6px 10px; font-size: 11px; font-weight: 600;
+  color: var(--text-secondary); display: flex; align-items: center; gap: 6px;
+  cursor: pointer;
+}
+.at-file {
+  padding: 5px 10px 5px 32px; font-size: 11px; color: var(--text-muted);
+  display: flex; align-items: center; gap: 6px; cursor: pointer;
+  border-radius: var(--radius-xs); transition: var(--transition);
+}
+.at-file:hover { background: var(--bg-hover); color: var(--text-secondary); }
+.at-file.active { background: rgba(139, 92, 246, 0.08); color: var(--engine-grow); }
+.at-status { margin-left: auto; font-size: 10px; }
+.at-ok { color: var(--engine-protect); }
+.at-run { color: var(--engine-grow); }
+.at-wait { color: var(--text-dim); }
+.artifact-preview {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px; min-height: 200px;
+  font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px;
+  color: var(--text-muted); line-height: 1.7; white-space: pre-wrap;
+}
+
+/* ══════════════════════════════════════════════════════
+   TOAST
+   ══════════════════════════════════════════════════════ */
+.toast-box { position: fixed; bottom: 20px; right: 340px; z-index: 200; display: flex; flex-direction: column; gap: 6px; }
+.toast {
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 14px; font-size: 11px;
+  color: var(--text-secondary); display: flex; align-items: center; gap: 8px;
+  box-shadow: var(--shadow-lg); animation: slideUp 0.3s ease-out; min-width: 260px;
+}
+.toast-icon {
+  width: 18px; height: 18px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; font-size: 10px;
+  flex-shrink: 0; background: rgba(34, 197, 94, 0.12); color: var(--engine-protect);
+}
+.toast .undo { margin-left: auto; font-size: 10px; color: var(--engine-grow); cursor: pointer; text-decoration: underline; background: none; border: none; }
+@keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+<!-- ═══════════════════════════════════════════════════════
+     TOP BAR
+     ═══════════════════════════════════════════════════════ -->
+<header class="top-bar">
+  <div class="top-bar-left">
+    <span class="logo">⬡ Poseidon Orchestrator</span>
+    <span class="pipeline-name">Pipeline: Web再構築アーキテクチャ</span>
+    <div class="enforcement-toggle">
+      <span>Reviewer:</span>
+      <div class="pill">
+        <button onclick="togglePill(this)">Strict</button>
+        <button class="active" onclick="togglePill(this)">Warn</button>
+      </div>
+    </div>
+  </div>
+  <div class="top-bar-right">
+    <select class="sel" id="scaleSelect">
+      <option>Full (11 phases + all gates)</option>
+      <option selected>Standard (11 phases)</option>
+      <option>Light (5 phases)</option>
+      <option>Quick (3 phases)</option>
+    </select>
+    <button class="btn" onclick="openArtifactMgr()">📁 Artifacts</button>
+    <button class="btn" onclick="openSheet()">📋 Decision Log</button>
+    <button class="btn btn-primary" id="nextPhaseBtn">▶ 次のフェーズへ</button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════
+     PHASE RAIL
+     ═══════════════════════════════════════════════════════ -->
+<nav class="phase-rail">
+  <div class="rail-label">定義フェーズ</div>
+  <div class="phase-item" data-phase="0" onclick="switchPhase(0)">
+    <span class="pn done">0</span><span class="phase-name">問題定義</span><span class="phase-sts sts-ok">✓</span>
+  </div>
+  <div class="phase-item" data-phase="1" onclick="switchPhase(1)">
+    <span class="pn done">1</span><span class="phase-name">環境認識</span><span class="phase-sts sts-ok">✓</span>
+  </div>
+  <div class="phase-item" data-phase="2" onclick="switchPhase(2)">
+    <span class="pn done">2</span><span class="phase-name">価値定義</span><span class="phase-sts sts-ok">✓</span>
+  </div>
+  <div class="gate-div">▸ Gate A: 問題定義</div>
+
+  <div class="rail-label">探索フェーズ</div>
+  <div class="phase-item active" data-phase="3" onclick="switchPhase(3)">
+    <span class="pn cur">3</span><span class="phase-name">独立アイデア創出</span><span class="phase-sts sts-run">●</span>
+  </div>
+  <div class="phase-item" data-phase="4" onclick="switchPhase(4)">
+    <span class="pn pend">4</span><span class="phase-name">独立批評</span><span class="phase-sts"></span>
+  </div>
+  <div class="gate-div">▸ Gate B: 探索品質</div>
+
+  <div class="rail-label">統合フェーズ</div>
+  <div class="phase-item" data-phase="5" onclick="switchPhase(5)">
+    <span class="pn pend">5</span><span class="phase-name">交差検証</span><span class="phase-sts"></span>
+  </div>
+  <div class="phase-item" data-phase="6" onclick="switchPhase(6)">
+    <span class="pn pend">6</span><span class="phase-name">統合シンセシス</span><span class="phase-sts"></span>
+  </div>
+  <div class="phase-item" data-phase="7" onclick="switchPhase(7)">
+    <span class="pn pend">7</span><span class="phase-name">弱点補強</span><span class="phase-sts"></span>
+  </div>
+  <div class="gate-div">▸ Gate C: 統合品質</div>
+
+  <div class="rail-label">確定フェーズ</div>
+  <div class="phase-item" data-phase="8" onclick="switchPhase(8)">
+    <span class="pn pend">8</span><span class="phase-name">最終レビュー</span><span class="phase-sts"></span>
+  </div>
+  <div class="phase-item" data-phase="9" onclick="switchPhase(9)">
+    <span class="pn pend">9</span><span class="phase-name">メタ振り返り</span><span class="phase-sts"></span>
+  </div>
+  <div class="phase-item" data-phase="10" onclick="switchPhase(10)">
+    <span class="pn pend">10</span><span class="phase-name">実行計画</span><span class="phase-sts"></span>
+  </div>
+  <div class="phase-item" data-phase="11" onclick="switchPhase(11)">
+    <span class="pn pend">11</span><span class="phase-name">メタ認知ログ</span><span class="phase-sts"></span>
+  </div>
+
+  <div class="rail-bottom">
+    <button class="rail-icon-btn" onclick="openSheet()" title="Decision Log">📋</button>
+    <button class="rail-icon-btn" onclick="openArtifactMgr()" title="Artifacts">📁</button>
+    <button class="rail-icon-btn" onclick="openGateConfig()" title="Gate Config">⚙</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN WORK AREA
+     ═══════════════════════════════════════════════════════ -->
+<main class="main-area">
+
+<!-- ═══ Phase 0: Chat UI ═══ -->
+<div class="phase-view" id="phase-0">
+  <div class="sec-header">
+    <div class="sec-title"><span class="icon">💬</span> Phase 0 — 問題定義</div>
+    <span class="sec-sub">対話形式でプロジェクトブリーフを作成</span>
+  </div>
+  <div class="gc" style="flex: 1; display: flex; flex-direction: column;">
+    <div class="chat-container">
+      <div class="chat-msg ai">
+        <div class="sender">🤖 Orchestrator</div>
+        プロジェクトの概要を教えてください。どのような課題を解決したいですか？
+      </div>
+      <div class="chat-msg user">
+        <div class="sender">👤 Shinji</div>
+        Poseidon.AIのWebサイトを再構築したい。現在のReact SPAからパフォーマンスとSEOに最適化されたアーキテクチャに移行する。
+      </div>
+      <div class="chat-msg ai">
+        <div class="sender">🤖 Orchestrator</div>
+        了解しました。以下を確認させてください：<br>
+        1. 現在のトラフィック規模はどの程度ですか？<br>
+        2. 既存コンテンツの量は？（ページ数、動的コンテンツの割合）<br>
+        3. タイムラインの制約はありますか？
+      </div>
+      <div class="chat-msg user">
+        <div class="sender">👤 Shinji</div>
+        月間10万PV程度。約50ページ＋ダッシュボードUI。動的コンテンツは40%。3ヶ月以内に初回リリースしたい。
+      </div>
+      <div class="chat-msg ai">
+        <div class="sender">🤖 Orchestrator</div>
+        ブリーフをまとめます：<br><br>
+        <strong>Project Brief — Web再構築</strong><br>
+        ・課題: React SPA → SEO/パフォーマンス最適化アーキテクチャ移行<br>
+        ・規模: 50ページ + ダッシュボード (動的40%)<br>
+        ・トラフィック: 月間10万PV<br>
+        ・期限: 3ヶ月<br><br>
+        📄 <em>project-brief.md</em> を生成しました。次のフェーズに進みますか？
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-input" placeholder="メッセージを入力..." />
+      <button class="btn btn-primary">送信</button>
+    </div>
+  </div>
+  <!-- Gate at bottom -->
+  <div class="gate-panel">
+    <div class="gate-head">
+      <span class="gate-title">🔒 Phase 0 完了条件</span>
+    </div>
+    <div class="gate-items">
+      <div class="gate-item"><span class="gi gi-pass">✓</span> project-brief.md が生成済み</div>
+      <div class="gate-item"><span class="gi gi-pass">✓</span> 課題・規模・制約が明記されている</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Phase 1: Research Cards ═══ -->
+<div class="phase-view" id="phase-1">
+  <div class="sec-header">
+    <div class="sec-title"><span class="icon">🔍</span> Phase 1 — 環境認識</div>
+    <span class="sec-sub">DeepResearch + 手動調査の統合</span>
+  </div>
+  <div class="research-grid">
+    <div class="research-card">
+      <div class="rc-source">📊 Gartner 2025 Q4</div>
+      <div class="rc-title">Webフレームワーク市場動向</div>
+      <div class="rc-excerpt">Next.js/Nuxtが依然として主流。Astro/Qwikが急成長。RSC採用率は前年比180%増。</div>
+      <div class="rc-tags"><span class="rc-tag">framework</span><span class="rc-tag">trend</span><span class="rc-tag">RSC</span></div>
+    </div>
+    <div class="research-card">
+      <div class="rc-source">🌐 Web.dev Performance Report</div>
+      <div class="rc-title">Core Web Vitals ベンチマーク</div>
+      <div class="rc-excerpt">Islands Architecture採用サイトのLCP中央値は1.2s（SPA平均3.4s）。INP改善率200%。</div>
+      <div class="rc-tags"><span class="rc-tag">performance</span><span class="rc-tag">CWV</span></div>
+    </div>
+    <div class="research-card">
+      <div class="rc-source">📄 Vercel Engineering Blog</div>
+      <div class="rc-title">RSC Production Patterns</div>
+      <div class="rc-excerpt">Server Components + Edge Runtimeの組み合わせでTTFB 50ms以下を達成。ストリーミングSSRの実践パターン。</div>
+      <div class="rc-tags"><span class="rc-tag">RSC</span><span class="rc-tag">edge</span><span class="rc-tag">SSR</span></div>
+    </div>
+    <div class="research-card">
+      <div class="rc-source">🏢 競合分析（手動）</div>
+      <div class="rc-title">同業他社のアーキテクチャ選定</div>
+      <div class="rc-excerpt">Stripe → Next.js RSC移行完了。Linear → Remix。Notion → カスタムRSC。成功事例多数。</div>
+      <div class="rc-tags"><span class="rc-tag">competitive</span><span class="rc-tag">case-study</span></div>
+    </div>
+    <div class="research-card">
+      <div class="rc-source">📈 Lighthouse CI データ</div>
+      <div class="rc-title">現サイトのパフォーマンス分析</div>
+      <div class="rc-excerpt">現状 Performance: 42, SEO: 61, Accessibility: 78。主なボトルネック: バンドルサイズ2.8MB, ハイドレーション遅延。</div>
+      <div class="rc-tags"><span class="rc-tag">current-state</span><span class="rc-tag">bottleneck</span></div>
+    </div>
+    <div class="research-card">
+      <div class="rc-source">🔧 技術制約調査</div>
+      <div class="rc-title">既存インフラ・チーム制約</div>
+      <div class="rc-excerpt">Vercel hosting。React 19 + TypeScript。チーム4名（React経験者3名、Astro経験者0名）。CI/CD: GitHub Actions。</div>
+      <div class="rc-tags"><span class="rc-tag">constraints</span><span class="rc-tag">team</span></div>
+    </div>
+  </div>
+  <div class="gc">
+    <div class="gc-head">
+      <span class="gc-title">📝 research-synthesis.md</span>
+      <span class="sec-sub">自動生成済み</span>
+    </div>
+    <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+      <strong>環境認識サマリー:</strong> Web再構築の選択肢として RSC-First / Islands Architecture / Micro-Frontend の3パターンが有力。現チームのReact経験を活かすならRSC-First が最もリスクが低い。パフォーマンス改善の余地は大きく、LCP 3.4s → 1.2s への改善が現実的。
+    </div>
+  </div>
+  <div class="gate-panel">
+    <div class="gate-head"><span class="gate-title">🔒 Phase 1 完了条件</span></div>
+    <div class="gate-items">
+      <div class="gate-item"><span class="gi gi-pass">✓</span> 3つ以上の情報源からリサーチ完了</div>
+      <div class="gate-item"><span class="gi gi-pass">✓</span> research-synthesis.md が生成済み</div>
+      <div class="gate-item"><span class="gi gi-pass">✓</span> 競合分析データが含まれている</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Phase 2: Value Definition Wizard ═══ -->
+<div class="phase-view" id="phase-2">
+  <div class="sec-header">
+    <div class="sec-title"><span class="icon">🎯</span> Phase 2 — 価値定義</div>
+    <span class="sec-sub">構造化された価値定義ドキュメント作成</span>
+  </div>
+  <div class="wizard-steps">
+    <div class="wiz-step done">1. コアバリュー</div>
+    <div class="wiz-step done">2. 成功指標</div>
+    <div class="wiz-step cur">3. 制約条件</div>
+    <div class="wiz-step">4. 優先順位</div>
+    <div class="wiz-step">5. 最終確認</div>
+  </div>
+  <div class="gc">
+    <div class="gc-title" style="margin-bottom: 14px;">Step 3: 制約条件の定義</div>
+    <div class="form-field">
+      <div class="form-label">技術制約 <span class="ai-hint">✨ AI補完あり</span></div>
+      <div class="form-textarea" style="background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; min-height: 70px; color: var(--text-primary);">React 19 + TypeScript 必須。Vercel hosting 継続。既存UIコンポーネント（shadcn/ui）の移行性を確保。</div>
+    </div>
+    <div class="form-field">
+      <div class="form-label">チーム制約</div>
+      <div class="form-textarea" style="background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; min-height: 70px; color: var(--text-primary);">4名体制。React経験者3名。Astro/Qwik経験者なし。学習コスト2週間以内に抑制。</div>
+    </div>
+    <div class="form-field">
+      <div class="form-label">時間制約</div>
+      <div class="form-textarea" style="background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; min-height: 50px; color: var(--text-primary);">初回リリースまで3ヶ月。段階的移行を前提。</div>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-top: 12px;">
+      <button class="btn">← Step 2</button>
+      <button class="btn btn-primary">Step 4 →</button>
+    </div>
+  </div>
+  <div class="gate-panel">
+    <div class="gate-head"><span class="gate-title">🔒 Phase 2 完了条件</span></div>
+    <div class="gate-items">
+      <div class="gate-item"><span class="gi gi-pass">✓</span> コアバリューが3つ以上定義済み</div>
+      <div class="gate-item"><span class="gi gi-pass">✓</span> 成功指標がSMART基準を満たしている</div>
+      <div class="gate-item"><span class="gi gi-warn">!</span> Step 3-5 が未完了</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Phase 3: Ideation + Quick Adopt ═══ -->
+<div class="phase-view active" id="phase-3">
+  <div class="sec-header">
+    <div class="sec-title"><span class="icon">💡</span> Phase 3 — 独立アイデア創出</div>
+    <span class="sec-sub">3モデル並列実行中</span>
+  </div>
+  <!-- Prompt Editor -->
+  <div class="gc">
+    <div class="gc-head">
+      <span class="gc-title">プロンプトエディタ</span>
+      <span class="tmpl-badge">📝 4キャラ批判的思考会議</span>
+    </div>
+    <div class="prompt-editor">
+      <div class="pe-toolbar">
+        <div class="pe-toolbar-left">Template: phase3-ideation-meeting</div>
+        <button class="btn" style="font-size: 10px;">テンプレート変更</button>
+      </div>
+      <div class="pe-body"><span class="pe-h">## タスク</span>
+テーマについて関連する天才・初心者・ポジティブ・心配性なキャラ4人を作成し、
+批判的思考で非常に価値が高い架空の会議を進めてください。
+
+<span class="pe-h">## 会議ルール</span>
+* 登場人物のキャラ設定を詳細に記述してください
+* 議論は深掘りするか横展開するかのみです
+* 否定する場合は必ず代替案を出してください
+
+<span class="pe-h">## テーマ</span>
+### 価値定義  <span class="pe-var">{{value-definition}}</span>
+### 環境認識  <span class="pe-var">{{research-synthesis}}</span>
+### 検討課題  <span class="pe-var">{{ideation-focus}}</span></div>
+    </div>
+  </div>
+  <!-- Model execution -->
+  <div class="model-grid">
+    <div class="model-run"><div class="spinner" style="border-top-color: var(--engine-dashboard);"></div><div class="model-run-text"><strong>Claude</strong> — 42%</div></div>
+    <div class="model-run"><div class="spinner" style="border-top-color: var(--engine-grow);"></div><div class="model-run-text"><strong>GPT-4</strong> — 38%</div></div>
+    <div class="model-run"><div class="spinner" style="border-top-color: var(--engine-execute);"></div><div class="model-run-text"><strong>Gemini</strong> — 55%</div></div>
+  </div>
+  <!-- Quick Adopt -->
+  <div class="gc" style="padding: 0;">
+    <div class="tabs">
+      <button class="tab active">⚡ Quick Adopt</button>
+      <button class="tab">📊 詳細スコア</button>
+      <button class="tab">📄 全文</button>
+    </div>
+    <div style="padding: 14px;">
+      <div class="adopt-grid">
+        <div class="adopt-card">
+          <div class="adopt-card-head"><span class="model-badge mb-a">Claude</span><span class="feas feas-h">高</span></div>
+          <div class="adopt-title">Islands Architecture + Astro</div>
+          <div class="adopt-meta">
+            <span>🎯 島型コンポーネントで段階的ハイドレーション</span>
+            <span>📐 Astro + React Islands + Tailwind 4</span>
+            <span>💡 既存コンテンツの移行コスト最小化</span>
+          </div>
+          <button class="adopt-btn" onclick="toast('Claude案をAdopt — Decision Log記録済み')">Adopt →</button>
+        </div>
+        <div class="adopt-card rec">
+          <span class="rec-badge">★ 推薦</span>
+          <div class="adopt-card-head"><span class="model-badge mb-b">GPT-4</span><span class="feas feas-h">高</span></div>
+          <div class="adopt-title">RSC-First SPA + Edge SSR</div>
+          <div class="adopt-meta">
+            <span>🎯 React Server Components中心の設計</span>
+            <span>📐 Next.js 15 + RSC + Vercel Edge</span>
+            <span>💡 リアルタイムダッシュボードとの統合性</span>
+          </div>
+          <button class="adopt-btn primary" onclick="toast('GPT-4案をAdopt — Decision Log記録済み')">⚡ Adopt →</button>
+        </div>
+        <div class="adopt-card">
+          <div class="adopt-card-head"><span class="model-badge mb-c">Gemini</span><span class="feas feas-m">中</span></div>
+          <div class="adopt-title">Micro-Frontend Federation</div>
+          <div class="adopt-meta">
+            <span>🎯 Module Federationによる独立デプロイ</span>
+            <span>📐 Vite + Module Federation + Qwik</span>
+            <span>💡 チーム独立性とスケーラビリティ</span>
+          </div>
+          <button class="adopt-btn" onclick="toast('Gemini案をAdopt — Decision Log記録済み')">Adopt →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Gate B -->
+  <div class="gate-panel">
+    <div class="gate-head">
+      <span class="gate-title">🔒 Gate B — 探索品質</span>
+      <span class="sec-sub">preset: quick</span>
+    </div>
+    <div class="gate-items">
+      <div class="gate-item"><span class="gi gi-pass">✓</span> 3モデル以上の独立出力</div>
+      <div class="gate-item"><span class="gi gi-pass">✓</span> 構造化サマリーを含む</div>
+      <div class="gate-item"><span class="gi gi-warn">!</span> 批評（Phase 4）未完了 <span class="gate-opt">optional</span></div>
+      <div class="gate-item"><span class="gi gi-pass">✓</span> Generator ≠ Reviewer 分離</div>
+    </div>
+    <div class="gate-actions">
+      <button class="btn btn-primary" style="flex: 1;" onclick="toast('Gate B 通過 — Decision Log記録済み')">Gate Pass（warn付き）</button>
+      <button class="btn" onclick="openGateConfig()">⚙ 条件編集</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Phase 4: Merge Editor ═══ -->
+<div class="phase-view" id="phase-4">
+  <div class="sec-header">
+    <div class="sec-title"><span class="icon">🔀</span> Phase 4 — 独立批評 → 統合</div>
+    <span class="sec-sub">複数アイデアの要素をドラッグ&ドロップで統合</span>
+  </div>
+  <div class="merge-container">
+    <div class="merge-source">
+      <div class="merge-header">📥 ソース要素（Phase 3出力）</div>
+      <div class="merge-body">
+        <div class="merge-item selected"><span class="drag-handle">⋮⋮</span> 🎯 RSC-First設計方針 <span class="model-badge mb-b" style="margin-left:auto;">GPT-4</span></div>
+        <div class="merge-item"><span class="drag-handle">⋮⋮</span> 📐 Astro Islands パターン <span class="model-badge mb-a" style="margin-left:auto;">Claude</span></div>
+        <div class="merge-item selected"><span class="drag-handle">⋮⋮</span> 💡 Edge Runtime活用 <span class="model-badge mb-b" style="margin-left:auto;">GPT-4</span></div>
+        <div class="merge-item"><span class="drag-handle">⋮⋮</span> 📐 Module Federation <span class="model-badge mb-c" style="margin-left:auto;">Gemini</span></div>
+        <div class="merge-item selected"><span class="drag-handle">⋮⋮</span> 💡 段階的移行戦略 <span class="model-badge mb-a" style="margin-left:auto;">Claude</span></div>
+        <div class="merge-item"><span class="drag-handle">⋮⋮</span> ⚠ Qwik学習コストリスク <span class="model-badge mb-c" style="margin-left:auto;">Gemini</span></div>
+      </div>
+    </div>
+    <div class="merge-arrows">
+      <button class="merge-arrow-btn" title="選択要素を統合に追加">→</button>
+      <button class="merge-arrow-btn" title="統合から除外">←</button>
+    </div>
+    <div class="merge-target">
+      <div class="merge-header" style="color: var(--engine-grow);">📤 統合ドキュメント</div>
+      <div class="merge-body">
+        <div class="merge-item"><span class="drag-handle">⋮⋮</span> 🎯 RSC-First設計方針</div>
+        <div class="merge-item"><span class="drag-handle">⋮⋮</span> 💡 Edge Runtime活用</div>
+        <div class="merge-item"><span class="drag-handle">⋮⋮</span> 💡 段階的移行戦略</div>
+        <div style="padding: 12px; text-align: center; font-size: 11px; color: var(--text-dim); border: 1px dashed var(--border); border-radius: var(--radius-sm); margin-top: 8px;">
+          ↓ ドラッグで要素を追加 ↓
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="gate-panel">
+    <div class="gate-head"><span class="gate-title">🔒 Phase 4 完了条件</span></div>
+    <div class="gate-items">
+      <div class="gate-item"><span class="gi gi-pass">✓</span> 2つ以上のモデルから要素を統合</div>
+      <div class="gate-item"><span class="gi gi-warn">!</span> 統合ドキュメントのレビュー未完了</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Phase 5: Outline Editor ═══ -->
+<div class="phase-view" id="phase-5">
+  <div class="sec-header">
+    <div class="sec-title"><span class="icon">📋</span> Phase 5 — 実行計画</div>
+    <span class="sec-sub">階層的タスクリスト + モデル割り当て</span>
+  </div>
+  <div class="gc">
+    <div class="gc-head">
+      <span class="gc-title">実行計画アウトライン</span>
+      <button class="btn" style="font-size: 10px;">+ タスク追加</button>
+    </div>
+    <div class="outline-list">
+      <div class="outline-item"><span class="ol-handle">⋮⋮</span><span class="ol-check done"></span><span class="ol-text"><strong>1. プロジェクト基盤構築</strong></span><span class="ol-priority pri-high">P0</span></div>
+      <div class="outline-item sub"><span class="ol-handle">⋮⋮</span><span class="ol-check done"></span><span class="ol-text">1.1 Next.js 15 + RSC セットアップ</span><span class="ol-model">Claude</span></div>
+      <div class="outline-item sub"><span class="ol-handle">⋮⋮</span><span class="ol-check done"></span><span class="ol-text">1.2 Tailwind 4 + shadcn/ui 統合</span><span class="ol-model">Claude</span></div>
+      <div class="outline-item sub"><span class="ol-handle">⋮⋮</span><span class="ol-check"></span><span class="ol-text">1.3 CI/CD パイプライン構築</span><span class="ol-model">GPT-4</span></div>
+      <div class="outline-item"><span class="ol-handle">⋮⋮</span><span class="ol-check"></span><span class="ol-text"><strong>2. コアページ移行</strong></span><span class="ol-priority pri-high">P0</span></div>
+      <div class="outline-item sub"><span class="ol-handle">⋮⋮</span><span class="ol-check"></span><span class="ol-text">2.1 ランディングページ RSC化</span><span class="ol-model">GPT-4</span></div>
+      <div class="outline-item sub"><span class="ol-handle">⋮⋮</span><span class="ol-check"></span><span class="ol-text">2.2 ダッシュボード Client Component分離</span><span class="ol-model">Claude</span></div>
+      <div class="outline-item"><span class="ol-handle">⋮⋮</span><span class="ol-check"></span><span class="ol-text"><strong>3. パフォーマンス最適化</strong></span><span class="ol-priority pri-mid">P1</span></div>
+      <div class="outline-item sub"><span class="ol-handle">⋮⋮</span><span class="ol-check"></span><span class="ol-text">3.1 Edge Runtime デプロイ</span><span class="ol-model">Gemini</span></div>
+      <div class="outline-item sub"><span class="ol-handle">⋮⋮</span><span class="ol-check"></span><span class="ol-text">3.2 画像最適化 + Lazy Loading</span><span class="ol-model">Claude</span></div>
+      <div class="outline-item sub"><span class="ol-handle">⋮⋮</span><span class="ol-check"></span><span class="ol-text">3.3 Core Web Vitals ベンチマーク</span><span class="ol-model">GPT-4</span></div>
+      <div class="outline-item"><span class="ol-handle">⋮⋮</span><span class="ol-check"></span><span class="ol-text"><strong>4. QA + リリース</strong></span><span class="ol-priority pri-mid">P1</span></div>
+      <div class="outline-item sub"><span class="ol-handle">⋮⋮</span><span class="ol-check"></span><span class="ol-text">4.1 E2Eテスト作成</span><span class="ol-model">Claude</span></div>
+      <div class="outline-item sub"><span class="ol-handle">⋮⋮</span><span class="ol-check"></span><span class="ol-text">4.2 段階的ロールアウト計画</span><span class="ol-model">GPT-4</span></div>
+    </div>
+  </div>
+  <div class="gate-panel">
+    <div class="gate-head"><span class="gate-title">🔒 Phase 5 完了条件</span></div>
+    <div class="gate-items">
+      <div class="gate-item"><span class="gi gi-pass">✓</span> 全タスクにモデル割り当て済み</div>
+      <div class="gate-item"><span class="gi gi-pass">✓</span> 優先順位（P0/P1/P2）が設定済み</div>
+      <div class="gate-item"><span class="gi gi-warn">!</span> 所要時間の見積りが未記入</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Phase 6: Diff Viewer ═══ -->
+<div class="phase-view" id="phase-6">
+  <div class="sec-header">
+    <div class="sec-title"><span class="icon">👁</span> Phase 6 — 最終レビュー</div>
+    <div style="display: flex; gap: 6px; align-items: center;">
+      <span class="review-badge rb-ok">✅ Reviewer分離: 充足</span>
+      <span class="sec-sub">Claude(Generator) → GPT-4(Reviewer)</span>
+    </div>
+  </div>
+  <div class="diff-container">
+    <div class="diff-pane">
+      <div class="diff-header">
+        📄 implementation-plan-v1.md
+        <span class="sec-sub">Draft</span>
+      </div>
+      <div class="diff-body">
+        <div class="diff-unchanged"># Web再構築 実行計画</div>
+        <div class="diff-unchanged">## 1. アーキテクチャ選定</div>
+        <div class="diff-del">- 方針: Next.js 14 + App Router</div>
+        <div class="diff-unchanged">- ランタイム: Edge Runtime</div>
+        <div class="diff-unchanged">## 2. 移行戦略</div>
+        <div class="diff-del">- 全ページ一括移行（ビッグバン方式）</div>
+        <div class="diff-del">- 移行期間: 2ヶ月</div>
+        <div class="diff-unchanged">## 3. テスト計画</div>
+        <div class="diff-unchanged">- E2E: Playwright</div>
+        <div class="diff-del">- カバレッジ目標: 60%</div>
+      </div>
+    </div>
+    <div class="diff-pane">
+      <div class="diff-header">
+        📄 implementation-plan-v2.md
+        <span class="sec-sub" style="color: var(--engine-protect);">Reviewed</span>
+      </div>
+      <div class="diff-body">
+        <div class="diff-unchanged"># Web再構築 実行計画</div>
+        <div class="diff-unchanged">## 1. アーキテクチャ選定</div>
+        <div class="diff-add">+ 方針: Next.js 15 + RSC-First</div>
+        <div class="diff-unchanged">- ランタイム: Edge Runtime</div>
+        <div class="diff-unchanged">## 2. 移行戦略</div>
+        <div class="diff-add">+ 段階的移行（Strangler Fig パターン）</div>
+        <div class="diff-add">+ Phase 1: LP → Phase 2: Dashboard → Phase 3: Settings</div>
+        <div class="diff-add">+ 移行期間: 3ヶ月（月1フェーズ）</div>
+        <div class="diff-unchanged">## 3. テスト計画</div>
+        <div class="diff-unchanged">- E2E: Playwright</div>
+        <div class="diff-add">+ カバレッジ目標: 80%（重要パス100%）</div>
+      </div>
+    </div>
+  </div>
+  <div class="review-comments">
+    <div class="review-comment">
+      <div class="rc-author">🤖 GPT-4 (Reviewer) — 14:52</div>
+      <div class="rc-body">ビッグバン移行は3ヶ月の制約下でリスクが高い。Strangler Figパターンで段階的に移行することを推奨。Next.js 14→15のアップグレードも含めて提案。</div>
+    </div>
+    <div class="review-comment">
+      <div class="rc-author">🤖 GPT-4 (Reviewer) — 14:53</div>
+      <div class="rc-body">テストカバレッジ60%は不十分。クリティカルパス（認証、決済、ダッシュボード）は100%カバレッジを必須とすべき。全体80%を推奨。</div>
+    </div>
+  </div>
+  <div class="gate-panel" style="margin-top: 12px;">
+    <div class="gate-head"><span class="gate-title">🔒 Phase 6 完了条件</span></div>
+    <div class="gate-items">
+      <div class="gate-item"><span class="gi gi-pass">✓</span> Reviewer分離が維持されている</div>
+      <div class="gate-item"><span class="gi gi-pass">✓</span> レビューコメントが2件以上</div>
+      <div class="gate-item"><span class="gi gi-pass">✓</span> 全コメントに対応済み（v2反映）</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Placeholder phases (7-11) ═══ -->
+<div class="phase-view" id="phase-7"><div class="sec-header"><div class="sec-title"><span class="icon">🛡</span> Phase 7 — 弱点補強</div></div><div class="gc" style="min-height:200px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">統合案の弱点を特定し補強する。Phase 6のレビュー完了後にアクティブ化。</div></div>
+<div class="phase-view" id="phase-8"><div class="sec-header"><div class="sec-title"><span class="icon">✅</span> Phase 8 — 最終レビュー</div></div><div class="gc" style="min-height:200px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">全フェーズ成果物の最終確認。ステークホルダー承認フロー。</div></div>
+<div class="phase-view" id="phase-9"><div class="sec-header"><div class="sec-title"><span class="icon">🪞</span> Phase 9 — メタ振り返り</div></div><div class="gc" style="min-height:200px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">オーケストレーションプロセス自体の振り返り。改善点の抽出。</div></div>
+<div class="phase-view" id="phase-10"><div class="sec-header"><div class="sec-title"><span class="icon">🚀</span> Phase 10 — 実行計画確定</div></div><div class="gc" style="min-height:200px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">最終実行計画の確定とタイムライン設定。</div></div>
+<div class="phase-view" id="phase-11"><div class="sec-header"><div class="sec-title"><span class="icon">📊</span> Phase 11 — メタ認知ログ</div></div><div class="gc" style="min-height:200px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">プロジェクト全体の判断履歴と学習ログの生成。</div></div>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════
+     CONTEXT PANEL (Right)
+     ═══════════════════════════════════════════════════════ -->
+<aside class="ctx-panel">
+  <div class="ctx-section">
+    <div class="ctx-title">パイプライン進捗</div>
+    <div class="prog-ring">
+      <div class="ring-vis">
+        <svg width="44" height="44" viewBox="0 0 44 44">
+          <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(139,92,246,0.12)" stroke-width="4" />
+          <circle cx="22" cy="22" r="18" fill="none" stroke="var(--engine-grow)" stroke-width="4" stroke-dasharray="113.1" stroke-dashoffset="80" stroke-linecap="round" />
+        </svg>
+        <div class="ring-num" id="progressPct">27%</div>
+      </div>
+      <div class="ring-info">
+        <span class="ring-label" id="progressLabel">Phase 3 / 11</span>
+        <span class="ring-detail">Gate A 通過済み · Gate B 判定中</span>
+      </div>
+    </div>
+  </div>
+  <div class="ctx-section">
+    <div class="ctx-title">アーティファクト <span style="font-size:9px;color:var(--text-dim);">4 files</span></div>
+    <div class="art-item"><div class="art-icon" style="background:rgba(0,240,255,0.08);color:var(--engine-dashboard);">📄</div><div><div class="art-name">project-brief.md</div><div class="art-phase">Phase 0</div></div></div>
+    <div class="art-item"><div class="art-icon" style="background:rgba(0,240,255,0.08);color:var(--engine-dashboard);">📄</div><div><div class="art-name">research-synthesis.md</div><div class="art-phase">Phase 1</div></div></div>
+    <div class="art-item"><div class="art-icon" style="background:rgba(139,92,246,0.08);color:var(--engine-grow);">📄</div><div><div class="art-name">value-definition.md</div><div class="art-phase">Phase 2</div></div></div>
+    <div class="art-item"><div class="art-icon" style="background:rgba(0,240,255,0.08);color:var(--engine-dashboard);">💡</div><div><div class="art-name">ideation-claude.md</div><div class="art-phase">Phase 3 · 生成中…</div></div></div>
+  </div>
+  <div class="ctx-section" style="flex: 1; border-bottom: none;">
+    <div class="ctx-title">Decision Log <span style="font-size:9px;color:var(--text-dim);">3 entries</span></div>
+    <div class="dec-entry">
+      <div class="dec-head"><span class="dec-phase">Phase 2</span><span class="dec-trigger">gate-pass</span></div>
+      <div class="dec-text">Gate A 通過: 問題定義の質が基準達成</div>
+      <div class="dec-time">14:32 · 自動記録</div>
+    </div>
+    <div class="dec-entry">
+      <div class="dec-head"><span class="dec-phase">Phase 1</span><span class="dec-trigger">manual</span></div>
+      <div class="dec-text">Gartner 2025 Q4レポートを参照に追加</div>
+      <div class="dec-time">14:15 · 手動記録</div>
+    </div>
+    <div class="dec-entry draft">
+      <div class="dec-head"><span class="dec-phase">Phase 3</span><span class="dec-trigger">auto-skeleton</span></div>
+      <div class="dec-text" style="font-style:italic;">Phase 3 開始 — 3モデル並列実行</div>
+      <div class="dec-time">14:35 · ドラフト</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════════
+     STATUS BAR (Bottom)
+     ═══════════════════════════════════════════════════════ -->
+<footer class="status-bar">
+  <div class="status-bar-left">
+    <span><span class="status-dot green"></span>接続中</span>
+    <span>artifacts: 4</span>
+    <span>current: claude-opus-4</span>
+  </div>
+  <div class="status-bar-right">
+    <span>tokens: ~12,400</span>
+    <span>pipeline: standard</span>
+    <span>enforcement: warn</span>
+  </div>
+</footer>
+</div><!-- /app-shell -->
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: Gate Config Editor
+     ═══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="gateConfigModal">
+  <div class="modal" style="max-width: 560px;">
+    <div class="modal-head">
+      <span class="modal-title">⚙ Gate条件エディタ — Phase 3</span>
+      <button class="modal-close" onclick="closeModal('gateConfigModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">プリセット</div>
+      <div class="preset-row">
+        <button class="preset-btn">Full 標準</button>
+        <button class="preset-btn active">Standard</button>
+        <button class="preset-btn">Light 最小</button>
+        <button class="preset-btn" style="border-color: rgba(234,179,8,0.3); color: var(--engine-execute);">⚡ Quick</button>
+      </div>
+      <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">自動チェック条件</div>
+      <div class="cond-row">
+        <input type="checkbox" class="cond-check" checked />
+        <span class="cond-text">3モデル以上の独立出力が存在する</span>
+        <span class="cond-type">auto</span>
+        <button class="cond-req-toggle required">required</button>
+      </div>
+      <div class="cond-row">
+        <input type="checkbox" class="cond-check" checked />
+        <span class="cond-text">各出力が1000トークン以上</span>
+        <span class="cond-type">auto</span>
+        <button class="cond-req-toggle required">required</button>
+      </div>
+      <div class="cond-row">
+        <input type="checkbox" class="cond-check" checked />
+        <span class="cond-text">構造化サマリーが含まれている</span>
+        <span class="cond-type">auto</span>
+        <button class="cond-req-toggle optional">optional</button>
+      </div>
+      <div style="font-size: 11px; color: var(--text-muted); margin: 12px 0 8px;">手動チェック条件</div>
+      <div class="cond-row">
+        <input type="checkbox" class="cond-check" />
+        <span class="cond-text">構造的差異が存在することを確認</span>
+        <span class="cond-type">manual</span>
+        <button class="cond-req-toggle optional">optional</button>
+      </div>
+      <div class="cond-row">
+        <input type="checkbox" class="cond-check" />
+        <span class="cond-text">批評（Phase 4）が完了している</span>
+        <span class="cond-type">manual</span>
+        <button class="cond-req-toggle optional">optional</button>
+      </div>
+      <div class="cond-row">
+        <input type="checkbox" class="cond-check" checked />
+        <span class="cond-text">Generator ≠ Reviewer 分離が維持</span>
+        <span class="cond-type">auto</span>
+        <button class="cond-req-toggle required">required</button>
+      </div>
+      <div style="text-align: center; margin-top: 10px;">
+        <button class="btn" style="font-size: 11px; color: var(--engine-grow);">+ 条件を追加</button>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border);">
+        <button class="btn btn-danger" style="font-size: 11px;">リセット</button>
+        <button class="btn btn-primary" onclick="closeModal('gateConfigModal'); toast('Gate条件を保存しました')">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: Artifact Manager
+     ═══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="artifactModal">
+  <div class="modal" style="max-width: 700px;">
+    <div class="modal-head">
+      <span class="modal-title">📁 アーティファクトマネージャ</span>
+      <button class="modal-close" onclick="closeModal('artifactModal')">✕</button>
+    </div>
+    <div class="modal-body" style="display: grid; grid-template-columns: 240px 1fr; gap: 16px;">
+      <div class="artifact-tree">
+        <div class="at-folder">📁 00_brief/</div>
+        <div class="at-file active">📄 project-brief.md <span class="at-status at-ok">✓</span></div>
+        <div class="at-folder">📁 01_research/</div>
+        <div class="at-file">📄 research-deepresearch.md <span class="at-status at-ok">✓</span></div>
+        <div class="at-file">📄 research-synthesis.md <span class="at-status at-ok">✓</span></div>
+        <div class="at-folder">📁 02_value/</div>
+        <div class="at-file">📄 value-definition.md <span class="at-status at-ok">✓</span></div>
+        <div class="at-folder">📁 03_ideation/</div>
+        <div class="at-file">💡 idea-model-a.md <span class="at-status at-run">●</span></div>
+        <div class="at-file">💡 idea-model-b.md <span class="at-status at-run">●</span></div>
+        <div class="at-file">💡 idea-model-c.md <span class="at-status at-run">●</span></div>
+        <div class="at-folder">📁 04_critique/</div>
+        <div class="at-file">📄 critique-matrix.md <span class="at-status at-wait">○</span></div>
+        <div class="at-folder">📁 05_synthesis/</div>
+        <div class="at-file">📄 synthesis-plan.md <span class="at-status at-wait">○</span></div>
+        <div class="at-folder">📁 06_review/</div>
+        <div class="at-file">📄 final-review.md <span class="at-status at-wait">○</span></div>
+        <div class="at-folder">📁 07_log/</div>
+        <div class="at-file">📋 decision-log.json <span class="at-status at-ok">✓</span></div>
+        <div class="at-file">📊 meta-cognition.md <span class="at-status at-wait">○</span></div>
+      </div>
+      <div>
+        <div style="font-size: 12px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+          project-brief.md
+          <div style="display: flex; gap: 6px;">
+            <button class="btn" style="font-size: 10px;">📋 Copy</button>
+            <button class="btn" style="font-size: 10px;">📌 Pin</button>
+          </div>
+        </div>
+        <div class="artifact-preview"># Project Brief — Web再構築
+
+## 課題
+Poseidon.AI の現行 React SPA を SEO /
+パフォーマンス最適化アーキテクチャに移行する。
+
+## 規模
+- 約50ページ + ダッシュボード UI
+- 動的コンテンツ比率: 40%
+- 月間トラフィック: 10万 PV
+
+## 制約
+- 期限: 3ヶ月（初回リリース）
+- チーム: 4名（React経験者3名）
+- ホスティング: Vercel 継続
+
+## 成功指標
+- LCP < 1.5s（現状 3.4s）
+- SEO スコア > 90（現状 61）
+- 移行中のダウンタイム: 0</div>
+      </div>
+    </div>
+    <div style="padding: 12px 18px; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+      <span style="font-size: 11px; color: var(--text-muted);">✓ 4  ● 3  ○ 4  — 合計 11 files</span>
+      <div style="display: flex; gap: 6px;">
+        <button class="btn" style="font-size: 10px;">Export Markdown</button>
+        <button class="btn" style="font-size: 10px;">Export JSON</button>
+        <button class="btn btn-primary" style="font-size: 10px;">📦 Export ZIP</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SHEET: Decision Log (Full Panel)
+     ═══════════════════════════════════════════════════════ -->
+<div class="sheet-overlay" id="decisionSheet" onclick="closeSheet(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-head">
+      <span style="font-size: 15px; font-weight: 700;">📋 Decision Log</span>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button class="btn" style="font-size: 10px;">+ 記録</button>
+        <button class="modal-close" onclick="closeSheetForce()">✕</button>
+      </div>
+    </div>
+    <div class="sheet-body">
+      <div class="dl-entry">
+        <div class="dl-head"><span class="dl-phase">Phase 2 → 3</span><span class="dl-trigger">gate-pass</span></div>
+        <div class="dl-decision">Gate A 通過: 問題定義の質が基準を満たしている</div>
+        <div class="dl-rationale">コアバリュー3項目、成功指標SMART基準クリア。制約条件も明確化済み。</div>
+        <div class="dl-meta"><span>Shinji · 2026-03-06 14:32 · 自動記録</span><span class="dl-edit">✏ 編集</span></div>
+      </div>
+      <div class="dl-entry">
+        <div class="dl-head"><span class="dl-phase">Phase 1</span><span class="dl-trigger">manual</span></div>
+        <div class="dl-decision">競合分析データソースを追加</div>
+        <div class="dl-rationale">Gartner 2025 Q4レポートを参照に含める。WebフレームワークのMQ最新データが必要と判断。</div>
+        <div class="dl-meta"><span>Shinji · 2026-03-06 14:15 · 手動記録</span><span class="dl-edit">✏ 編集</span></div>
+      </div>
+      <div class="dl-entry">
+        <div class="dl-head"><span class="dl-phase">Phase 0</span><span class="dl-trigger">gate-pass</span></div>
+        <div class="dl-decision">問題定義完了: project-brief.md 生成</div>
+        <div class="dl-rationale">課題・規模・制約の3要素が全て含まれている。</div>
+        <div class="dl-meta"><span>auto · 2026-03-06 13:50 · 自動記録</span><span class="dl-edit">✏ 編集</span></div>
+      </div>
+      <div class="dl-entry draft">
+        <div class="dl-head"><span class="dl-phase">Phase 3</span><span class="dl-trigger">auto-skeleton</span></div>
+        <div class="dl-decision" style="font-style:italic;">Phase 3 開始 — 3モデル並列実行を選択</div>
+        <div class="dl-rationale" style="color: var(--text-dim);">（補足未記入 — 編集で追記してください）</div>
+        <div class="dl-meta"><span>auto · 2026-03-06 14:35 · ドラフト</span><span class="dl-edit">✏ 編集</span></div>
+      </div>
+
+      <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+        <span style="font-size: 11px; color: var(--text-muted);">4 entries (1 draft)</span>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn" style="font-size: 10px;">Export Markdown</button>
+          <button class="btn" style="font-size: 10px;">Export JSON</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-box" id="toastBox"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════════════════ -->
+<script>
+// Phase switching
+function switchPhase(n) {
+  document.querySelectorAll('.phase-item').forEach(el => el.classList.remove('active'));
+  document.querySelector(`.phase-item[data-phase="${n}"]`).classList.add('active');
+  document.querySelectorAll('.phase-view').forEach(v => v.classList.remove('active'));
+  const view = document.getElementById(`phase-${n}`);
+  if (view) view.classList.add('active');
+  // Update progress
+  const pct = Math.round((n / 11) * 100);
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressLabel').textContent = `Phase ${n} / 11`;
+}
+
+// Pill toggle
+function togglePill(btn) {
+  btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Modals
+function openGateConfig() { document.getElementById('gateConfigModal').classList.add('open'); }
+function openArtifactMgr() { document.getElementById('artifactModal').classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(ov => {
+  ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); });
+});
+
+// Sheet
+function openSheet() { document.getElementById('decisionSheet').classList.add('open'); }
+function closeSheet(e) { if (e.target.id === 'decisionSheet') e.target.classList.remove('open'); }
+function closeSheetForce() { document.getElementById('decisionSheet').classList.remove('open'); }
+
+// Toast
+function toast(msg) {
+  const box = document.getElementById('toastBox');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<span class="toast-icon">✓</span><span>${msg}</span><button class="undo" onclick="this.parentElement.remove()">取消</button>`;
+  box.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateY(8px)'; t.style.transition='all 0.3s'; setTimeout(()=>t.remove(),300); }, 4500);
+}
+
+// Preset toggle
+document.querySelectorAll('.preset-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.parentElement.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// Condition required/optional toggle
+document.querySelectorAll('.cond-req-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.classList.contains('required')) {
+      btn.classList.remove('required'); btn.classList.add('optional'); btn.textContent = 'optional';
+    } else {
+      btn.classList.remove('optional'); btn.classList.add('required'); btn.textContent = 'required';
+    }
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import {
   Zap,
@@ -22,6 +22,7 @@ import { useToast } from '@/hooks/useToast'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { selectExecuteActionById } from '@/domain/poseidon-universe'
 import type { ExecuteActionEntity, ExecutionStep } from '@/domain/poseidon-universe'
+import { useExecuteApprovalFlow } from './useExecuteApprovalFlow'
 import { ENGINE_BADGE_CLASS } from '@/lib/engine-color-map'
 import { EXECUTION_TYPE_BADGE } from '@/lib/execution-type-config'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
@@ -40,10 +41,8 @@ export function ExecuteApproval() {
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp: fadeUpVariant, staggerContainer: stagger } = getMotionPreset(prefersReducedMotion)
   const { state, setExecuteDecision } = useDemoState()
-  const { showToast } = useToast()
   const { search, navigate } = useRouter()
-  const [consentReviewed, setConsentReviewed] = useState(false)
-  const [confirmAction, setConfirmAction] = useState<{ type: 'approve' | 'defer' } | null>(null)
+  const { showToast } = useToast()
 
   const actionId = useMemo(() => new URLSearchParams(search).get('actionId'), [search])
   const action = useMemo(() => (actionId ? selectExecuteActionById(actionId) : undefined), [actionId])
@@ -53,23 +52,19 @@ export function ExecuteApproval() {
   const actionStatus = actionId ? state.execute.actionStates[actionId]?.status ?? 'pending' : 'pending'
   const isAlreadyDecided = actionStatus !== 'pending'
 
-  const handleConfirm = () => {
-    if (!confirmAction || !action) return
-    const decision = confirmAction.type === 'approve' ? 'approved' : 'deferred'
-    setExecuteDecision({
-      actionId: action.id,
-      actionTitle: action.title,
-      decision,
-    })
-    showToast({
-      variant: decision === 'approved' ? 'success' : 'info',
-      message: decision === 'approved'
-        ? `${action.id} approved and logged to governance.`
-        : `${action.id} deferred and queued for review.`,
-    })
-    setConfirmAction(null)
-    navigate('/execute')
-  }
+  const {
+    consentReviewed,
+    setConsentReviewed,
+    confirmAction,
+    setConfirmAction,
+    handleConfirm,
+  } = useExecuteApprovalFlow(action, (decision) => {
+    if (decision === 'approved') {
+      navigate(`/execute?undo=${action!.id}`)
+    } else {
+      navigate('/execute')
+    }
+  })
 
   // No action found — show empty state
   if (!action) {
@@ -183,11 +178,11 @@ export function ExecuteApproval() {
                   Expected Outcome
                 </h2>
                 <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="rounded-[16px] bg-emerald-500/5 border border-emerald-500/20 p-5 shadow-[0_0_15px_rgba(16,185,129,0.05)]">
+                  <div className="rounded-[16px] bg-emerald-500/5 border border-emerald-500/20 p-5 ">
                     <p className="text-[10px] font-semibold text-emerald-400 uppercase tracking-widest mb-3">If approved</p>
                     <p className="text-base text-white/80 font-light tracking-wide leading-relaxed">{action.impact.approved}</p>
                   </div>
-                  <div className="rounded-[16px] bg-amber-500/5 border border-amber-500/20 p-5 shadow-[0_0_15px_rgba(245,158,11,0.05)]">
+                  <div className="rounded-[16px] bg-amber-500/5 border border-amber-500/20 p-5 ">
                     <p className="text-[10px] font-semibold text-amber-400 uppercase tracking-widest mb-3">If deferred</p>
                     <p className="text-base text-white/80 font-light tracking-wide leading-relaxed">{action.impact.deferred}</p>
                   </div>
@@ -206,7 +201,7 @@ export function ExecuteApproval() {
                         <div key={f.label} className="flex items-center gap-4">
                           <span className="text-sm font-medium tracking-wide text-white/80 w-28 md:w-40 shrink-0 truncate">{f.label}</span>
                           <div className="flex-1 h-2 rounded-full overflow-hidden bg-white/10 shadow-inner">
-                            <div className="h-full rounded-full shadow-[0_0_10px_currentColor] bg-amber-500/80" style={{ width: `${f.value * 100}%` }} />
+                            <div className="h-full rounded-full bg-amber-500/80" style={{ width: `${f.value * 100}%` }} />
                           </div>
                           <span className="text-sm font-mono text-white/70 w-12 text-right">{f.value.toFixed(2)}</span>
                         </div>
@@ -287,6 +282,17 @@ export function ExecuteApproval() {
                           onClick={() => setConfirmAction({ type: 'defer' })}
                         >
                           Defer
+                        </button>
+                        <button
+                          type="button"
+                          className="w-full text-xs text-red-400/60 hover:text-red-400 transition-colors cursor-pointer py-1"
+                          onClick={() => {
+                            setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'rejected' })
+                            showToast({ message: `${action.id} rejected`, variant: 'info' })
+                            navigate('/execute')
+                          }}
+                        >
+                          Reject this action
                         </button>
                       </div>
 
@@ -399,7 +405,7 @@ function StepperRow({ step, index, isLast }: { step: ExecutionStep; index: numbe
         <div className={cn(
           'w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-bold border-2',
           isCompleted && 'border-[var(--state-healthy)] bg-[var(--state-healthy)]/15 text-[var(--state-healthy)]',
-          isCurrent && 'border-[var(--engine-execute)] bg-[var(--engine-execute)]/15 text-[var(--engine-execute)] shadow-[0_0_12px_rgba(251,191,36,0.3)]',
+          isCurrent && 'border-[var(--engine-execute)] bg-[var(--engine-execute)]/15 text-[var(--engine-execute)]',
           isWaiting && 'border-white/15 bg-white/5 text-white/30',
         )}>
           {isCompleted ? <CheckCircle2 size={14} /> : index + 1}

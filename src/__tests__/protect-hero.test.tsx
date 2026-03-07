@@ -165,6 +165,56 @@ describe('ProtectThreatPosture', () => {
     expect(onOpen).toHaveBeenCalledOnce()
   })
 
+  it('renders editorial heading with font-display and no adjacent icon (Calm Monitoring)', () => {
+    render(
+      <ProtectThreatPosture
+        activeCount={4} highCount={1} mediumCount={2} lowCount={1}
+        resolvedCount={1} fpRate="0.01%" modelUpdate="2d ago"
+        topAlert={{ id: 'THR-002', merchant: 'Unknown Vendor', severity: 'High' }}
+        onOpenTopAlert={vi.fn()}
+      />,
+    )
+    const heading = screen.getByRole('heading', { level: 2 })
+    // Typography: editorial font-light + display font
+    expect(heading).toHaveClass('font-light', 'tracking-tight')
+    expect(heading.style.fontFamily).toContain('var(--font-display)')
+    // Icon removal: no SVG siblings before the heading
+    const parent = heading.parentElement!
+    const headingIndex = Array.from(parent.children).indexOf(heading)
+    const svgsBefore = Array.from(parent.children)
+      .filter((el, i) => i < headingIndex && (el.tagName === 'svg' || el.querySelector('svg')))
+    expect(svgsBefore).toHaveLength(0)
+  })
+
+  it('renders filled gradient CTA with h-auto, not glass variant', () => {
+    render(
+      <ProtectThreatPosture
+        activeCount={4} highCount={1} mediumCount={2} lowCount={1}
+        resolvedCount={1} fpRate="0.01%" modelUpdate="2d ago"
+        topAlert={{ id: 'THR-002', merchant: 'Unknown Vendor', severity: 'High' }}
+        onOpenTopAlert={vi.fn()}
+      />,
+    )
+    const btn = screen.getByRole('button', { name: /review top alert/i })
+    // New common CTA shape
+    expect(btn.className).toContain('rounded-2xl')
+    expect(btn.className).toContain('bg-gradient-to-r')
+    expect(btn.className).toContain('h-auto')
+    expect(btn.className).toContain('from-emerald-500')
+    // Old glass variant must be fully absent
+    const glassSignatures = [
+      'bg-white/5',
+      'backdrop-blur',
+      'border-white/10',
+      'shadow-[0_0_15px_rgba(255,255,255',
+      'hover:bg-white/10',
+      'hover:shadow-[0_0_25px',
+    ]
+    for (const sig of glassSignatures) {
+      expect(btn.className).not.toContain(sig)
+    }
+  })
+
   it('shows "All clear" when activeCount is 0', () => {
     render(
       <ProtectThreatPosture

@@ -1,48 +1,197 @@
-import React, { useState } from "react"
-import { motion } from "framer-motion"
+import { useMemo, useState } from 'react'
+import { motion } from 'framer-motion'
 import { Link } from '@/router'
 import {
   ShieldCheck,
-  Shield,
   Search,
   CheckCircle2,
   Clock,
   AlertTriangle,
-  Download,
-  ArrowUpDown,
-  ArrowDown,
-  ArrowUp,
-  CircleDot,
-  FileText,
-  User,
+  ArrowRight,
   ArrowLeft,
+  CircleDot,
   type LucideIcon,
-} from "lucide-react"
-import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
-import { EmptyState, PreviewBadge, EngineBadge } from '@/components/poseidon'
+} from 'lucide-react'
+import { formatDemoTimestamp } from '@/lib/demo-date'
+import { EmptyState, EngineBadge } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
-import { useRouter } from '@/router'
-import {
-  selectGovernAuditEntries,
-  selectGovernAuditSummaryView,
-} from '@/domain/poseidon-universe'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
+import { selectGovernAuditEntries } from '@/domain/poseidon-universe'
 
-/* ── Data ── */
-type DecisionType = "Protect" | "Grow" | "Execute" | "Govern"
-type DecisionStatus = "Verified" | "Pending review" | "Flagged"
-type FilterTab = "All" | "Verified" | "Pending review" | "Flagged"
-type SortField = "id" | "timestamp" | "confidence" | "evidence"
-type SortDir = "asc" | "desc"
+/* ── Types ── */
+type DecisionType = 'Protect' | 'Grow' | 'Execute' | 'Govern'
+type DecisionStatus = 'Verified' | 'Pending review' | 'Flagged'
+type FilterTab = 'All' | 'Verified' | 'Pending review' | 'Flagged'
 
-interface AuditEntry {
+const FILTER_TABS: FilterTab[] = ['All', 'Verified', 'Pending review', 'Flagged']
+
+const typeColor: Record<DecisionType, string> = {
+  Protect: 'var(--engine-protect)',
+  Grow: 'var(--engine-grow)',
+  Execute: 'var(--engine-execute)',
+  Govern: 'var(--engine-govern)',
+}
+const typeBg: Record<DecisionType, string> = {
+  Protect: 'rgba(34,197,94,0.12)',
+  Grow: 'rgba(139,92,246,0.12)',
+  Execute: 'rgba(234,179,8,0.12)',
+  Govern: 'rgba(59,130,246,0.12)',
+}
+const statusCfg: Record<DecisionStatus, { color: string; bg: string; icon: LucideIcon }> = {
+  Verified: { color: 'var(--engine-govern)', bg: 'rgba(59,130,246,0.12)', icon: CheckCircle2 },
+  'Pending review': { color: 'var(--state-warning)', bg: 'rgba(245,158,11,0.12)', icon: Clock },
+  Flagged: { color: 'var(--state-critical)', bg: 'rgba(239,68,68,0.12)', icon: AlertTriangle },
+}
+
+const toTimestamp = (iso: string) =>
+  formatDemoTimestamp(iso, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })
+
+/* ════════════════════════════════════════════════
+   GOVERN AUDIT LEDGER
+   Anchored to demo dataset: 2026-03-19
+   ════════════════════════════════════════════════ */
+
+export default function GovernAuditPage() {
+  usePageTitle('Audit Ledger')
+  const prefersReducedMotion = useReducedMotionSafe()
+  const { fadeUp, staggerContainer } = getMotionPreset(prefersReducedMotion)
+  const [search, setSearch] = useState('')
+  const [activeFilter, setActiveFilter] = useState<FilterTab>('All')
+
+  const entries = useMemo(() => {
+    return selectGovernAuditEntries()
+      .map(e => ({
+        id: e.id,
+        timestamp: toTimestamp(e.timestampIso),
+        sortTime: new Date(e.timestampIso).getTime(),
+        type: e.type as DecisionType,
+        action: e.action,
+        confidence: e.confidence,
+        evidence: e.evidence,
+        status: e.status as DecisionStatus,
+      }))
+      .sort((a, b) => b.sortTime - a.sortTime)
+  }, [])
+
+  // Dataset-level header counts (always shows full dataset totals)
+  const verified = entries.filter(e => e.status === 'Verified').length
+  const pending = entries.filter(e => e.status === 'Pending review').length
+
+  const filtered = useMemo(() => {
+    let list = entries
+    if (activeFilter !== 'All') list = list.filter(e => e.status === activeFilter)
+    if (search) {
+      const q = search.toLowerCase()
+      list = list.filter(e =>
+        e.id.toLowerCase().includes(q) ||
+        e.type.toLowerCase().includes(q) ||
+        e.action.toLowerCase().includes(q),
+      )
+    }
+    return list
+  }, [entries, activeFilter, search])
+
+  return (
+    <motion.main
+      id="main-content"
+      role="main"
+      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 pb-12`}
+      style={PAGE_CONTENT_STYLE}
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Header */}
+      <motion.section variants={staggerContainer} className="flex flex-col gap-5">
+        <div>
+          <Link
+            to="/govern"
+            className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors text-sm"
+          >
+            <ArrowLeft size={16} />
+            Back to Govern
+          </Link>
+        </div>
+
+        <motion.div variants={fadeUp} className="flex flex-col gap-3">
+          <EngineBadge engine="govern" icon={ShieldCheck} label="Govern · Audit Ledger" className="self-start" />
+          <h1 className="text-2xl md:text-3xl font-light tracking-tight text-white">
+            Audit Ledger
+          </h1>
+          <p className="text-white/50 text-base">
+            {entries.length} decisions · {verified} verified
+            {pending > 0 ? ` · ${pending} pending review` : ''}
+          </p>
+        </motion.div>
+
+        {/* Search + filter bar */}
+        <motion.div variants={fadeUp} className="flex flex-col gap-3">
+          <div className="flex items-center gap-3 rounded-2xl border border-white/[0.08] px-4 py-3 bg-white/[0.02] focus-within:border-[var(--engine-govern)]/50 transition-all">
+            <Search size={16} className="text-white/40 shrink-0" />
+            <input
+              type="search"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search ID, type, or action…"
+              className="flex-1 bg-transparent text-sm outline-none placeholder:text-white/30 text-white"
+              aria-label="Search audit ledger"
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {FILTER_TABS.map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveFilter(tab)}
+                className={cn(
+                  'px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors',
+                  activeFilter === tab
+                    ? 'bg-[var(--engine-govern)]/15 text-[var(--engine-govern)] border-[var(--engine-govern)]/30'
+                    : 'bg-white/[0.04] text-white/40 border-white/10 hover:border-white/20 hover:text-white/60',
+                )}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {filtered.length < entries.length && (
+            <p className="text-xs text-white/30">
+              Showing {filtered.length} of {entries.length}
+            </p>
+          )}
+        </motion.div>
+      </motion.section>
+
+      {/* Entry list */}
+      {filtered.length === 0 ? (
+        <motion.div variants={fadeUp}>
+          <div className="glass-card glass-card-overlay rounded-[24px] p-12 flex items-center justify-center">
+            <EmptyState
+              icon={Search}
+              title="No matching decisions"
+              description="Try adjusting filters or using a different search term."
+              accentColor="var(--engine-govern)"
+            />
+          </div>
+        </motion.div>
+      ) : (
+        <motion.div variants={fadeUp} className="flex flex-col gap-3">
+          {filtered.map(entry => (
+            <AuditEntryCard key={entry.id} entry={entry} />
+          ))}
+        </motion.div>
+      )}
+    </motion.main>
+  )
+}
+
+type AuditEntryRow = {
   id: string
   timestamp: string
-  sortTime: number
   type: DecisionType
   action: string
   confidence: number
@@ -50,309 +199,68 @@ interface AuditEntry {
   status: DecisionStatus
 }
 
-const toAuditTimestamp = (value: string) =>
-  formatDemoTimestamp(value, {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  })
-
-const typeColor: Record<DecisionType, string> = { Protect: "var(--engine-protect)", Grow: "var(--engine-grow)", Execute: "var(--engine-execute)", Govern: "var(--engine-govern)" }
-const typeBg: Record<DecisionType, string> = { Protect: "rgba(34,197,94,0.12)", Grow: "rgba(139,92,246,0.12)", Execute: "rgba(234,179,8,0.12)", Govern: "rgba(59,130,246,0.12)" }
-const statusCfg: Record<DecisionStatus, { color: string; bg: string; icon: LucideIcon }> = {
-  Verified: { color: "var(--engine-govern)", bg: "rgba(59,130,246,0.12)", icon: CheckCircle2 },
-  "Pending review": { color: "var(--state-warning)", bg: "rgba(245,158,11,0.12)", icon: Clock },
-  Flagged: { color: "var(--state-critical)", bg: "rgba(239,68,68,0.12)", icon: AlertTriangle },
-}
-
-function getConfidenceColor(c: number) { return c >= 0.9 ? "var(--state-healthy)" : c >= 0.8 ? "var(--engine-govern)" : c >= 0.7 ? "var(--state-warning)" : "var(--state-critical)" }
-
-/* ═══════════════════════════════════════════════════════
-   GOVERN AUDIT LEDGER PAGE
-   CTA: "Back to govern overview" -> /govern (line 696-697)
-   ═══════════════════════════════════════════════════════ */
-
-export default function GovernAuditPage() {
-  const prefersReducedMotion = useReducedMotionSafe()
-  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
-  usePageTitle('Audit Ledger')
-  const { navigate } = useRouter()
-  const [searchQuery, setSearchQuery] = useState("")
-  const [activeFilter, setActiveFilter] = useState<FilterTab>("All")
-  const [sortField, setSortField] = useState<SortField>("timestamp")
-  const [sortDir, setSortDir] = useState<SortDir>("desc")
-  const auditSummary = selectGovernAuditSummaryView()
-  const filterTabs: { label: FilterTab; count?: number }[] = [
-    { label: "All" },
-    { label: "Verified", count: auditSummary.verified },
-    { label: "Pending review", count: auditSummary.pending },
-    { label: "Flagged", count: auditSummary.flagged },
-  ]
-  const auditEntries: AuditEntry[] = selectGovernAuditEntries().map((entry) => ({
-    id: entry.id,
-    timestamp: toAuditTimestamp(entry.timestampIso),
-    sortTime: new Date(entry.timestampIso).getTime(),
-    type: entry.type,
-    action: entry.action,
-    confidence: entry.confidence,
-    evidence: entry.evidence,
-    status: entry.status,
-  }))
-
-  const handleSort = (field: SortField) => {
-    if (sortField === field) { setSortDir(d => d === "asc" ? "desc" : "asc") }
-    else { setSortField(field); setSortDir("desc") }
-  }
-
-  let filtered = auditEntries as AuditEntry[]
-  if (activeFilter !== "All") { filtered = filtered.filter(e => e.status === activeFilter) }
-  if (searchQuery) {
-    const q = searchQuery.toLowerCase()
-    filtered = filtered.filter(e => e.id.toLowerCase().includes(q) || e.type.toLowerCase().includes(q) || e.action.toLowerCase().includes(q) || e.timestamp.toLowerCase().includes(q))
-  }
-
-  const sorted = [...filtered].sort((a, b) => {
-    let cmp = 0
-    switch (sortField) {
-      case "id": cmp = a.id.localeCompare(b.id); break
-      case "timestamp": cmp = a.sortTime - b.sortTime; break
-      case "confidence": cmp = a.confidence - b.confidence; break
-      case "evidence": cmp = a.evidence - b.evidence; break
-    }
-    return sortDir === "asc" ? cmp : -cmp
-  })
-
-  const SortIndicator = ({ field }: { field: SortField }) => {
-    if (sortField !== field) return <ArrowUpDown size={11} style={{ color: "#475569" }} />
-    return sortDir === "asc" ? <ArrowUp size={11} style={{ color: "var(--engine-govern)" }} /> : <ArrowDown size={11} style={{ color: "var(--engine-govern)" }} />
-  }
+function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
+  const sCfg = statusCfg[entry.status]
+  const StatusIcon = sCfg.icon
 
   return (
-    <>
-
-      <motion.div
-        id="main-content"
-        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12 pt-8 lg:pt-12`}
-        style={PAGE_CONTENT_STYLE}
-        variants={staggerContainerVariant}
-        initial="hidden"
-        animate="visible"
-        role="main"
+    <div
+      className="glass-card glass-card-overlay rounded-[20px] p-5 lg:p-6 flex items-center gap-4 hover:border-white/[0.12] transition-colors border-l-2"
+      style={{ borderLeftColor: 'var(--engine-govern)' }}
+    >
+      {/* Type icon */}
+      <div
+        className="w-10 h-10 rounded-xl flex items-center justify-center border shrink-0"
+        style={{
+          borderColor: `color-mix(in srgb, ${typeColor[entry.type]} 30%, transparent)`,
+          background: typeBg[entry.type],
+        }}
       >
+        <CircleDot size={16} style={{ color: typeColor[entry.type] }} />
+      </div>
 
-        {/* ── Hero ── */}
-        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
-          <motion.div variants={fadeUpVariant} className="flex items-center justify-between">
-            <Link to="/govern" className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] text-white/70 hover:text-white backdrop-blur-md">
-              <ArrowLeft size={16} />Back to Govern
-            </Link>
-            <EngineBadge engine="govern" icon={ShieldCheck} label="Audit Ledger" />
-          </motion.div>
-          <motion.div variants={fadeUpVariant} className="flex flex-col gap-2">
-            <h1 className={`${PAGE_HEADING_CLASS} mb-2`} style={PAGE_HEADING_STYLE}>Audit Ledger</h1>
-
-          </motion.div>
-
-          <motion.div variants={fadeUpVariant} className="flex flex-col md:flex-row gap-4 items-center justify-between w-full mt-4">
-            {/* Search */}
-            <div className="flex items-center gap-3 rounded-2xl border border-white/[0.08] px-4 py-3 bg-white/[0.02] backdrop-blur-xl w-full md:max-w-md focus-within:border-[var(--engine-govern)]/50 focus-within:bg-white/[0.04] transition-all shadow-inner">
-              <Search size={18} className="text-white/40" aria-hidden="true" />
-              <input type="search" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search ID, type, or date..." className="flex-1 bg-transparent text-sm md:text-base outline-none placeholder:text-white/30 text-white font-light tracking-wide" aria-label="Search audit ledger" />
-            </div>
-
-            {/* Filter pills */}
-            <div className="flex flex-wrap gap-2 w-full md:w-auto" role="tablist" aria-label="Filter decisions">
-              {filterTabs.map(f => {
-                const isActive = f.label === activeFilter
-                return (
-                  <button key={f.label} role="tab" aria-selected={isActive} onClick={() => setActiveFilter(f.label)} className={cn(buttonVariants({ variant: isActive ? "default" : "glass", size: "sm" }), `rounded-full text-xs transition-all cursor-pointer ${isActive ? 'bg-[var(--engine-govern)] text-black font-semibold shadow-[0_0_15px_rgba(20,184,166,0.4)] border-none hover:opacity-90' : 'text-white/70 hover:text-white'}`)}>
-                    {f.label}
-                    {f.count != null && <span className={`text-[10px] ml-1.5 px-1.5 py-0.5 rounded-full ${isActive ? 'bg-black/20 text-black' : 'bg-white/10 text-white/50'}`}>{f.count}</span>}
-                  </button>
-                )
-              })}
-            </div>
-          </motion.div>
-        </motion.section>
-
-        {/* ── Table + Sidebar ── */}
-        <div className="flex flex-col lg:flex-row gap-8 mt-4">
-          <div className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-6">
-            {/* Desktop table */}
-            <div className="hidden md:block">
-              <div className="glass-card glass-card-overlay rounded-[32px] p-0">
-                {sorted.length === 0 ? (
-                  <div className="p-12 relative z-10">
-                    <EmptyState
-                      icon={Search}
-                      title="No matching decisions"
-                      description="Try adjusting filters or using a different search term."
-                      accentColor="var(--engine-govern)"
-                    />
-                  </div>
-                ) : null}
-                <div className="overflow-x-auto relative z-10">
-                  <table className="w-full text-left" role="table">
-                    <thead>
-                      <tr className="bg-white/[0.02] border-b border-white/[0.06]">
-                        <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold cursor-pointer select-none text-white/50 hover:text-white/80 transition-colors" scope="col" onClick={() => handleSort("id")}><div className="flex items-center gap-2">{"Decision ID"} <SortIndicator field="id" /></div></th>
-                        <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold cursor-pointer select-none text-white/50 hover:text-white/80 transition-colors" scope="col" onClick={() => handleSort("timestamp")}><div className="flex items-center gap-2">Timestamp <SortIndicator field="timestamp" /></div></th>
-                        <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold text-white/50" scope="col">Type</th>
-                        <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold text-white/50" scope="col">Action</th>
-                        <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold cursor-pointer select-none text-white/50 hover:text-white/80 transition-colors" scope="col" onClick={() => handleSort("confidence")}><div className="flex items-center gap-2">Confidence <SortIndicator field="confidence" /></div></th>
-                        <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold cursor-pointer select-none text-white/50 hover:text-white/80 transition-colors" scope="col" onClick={() => handleSort("evidence")}><div className="flex items-center gap-2">Evidence <SortIndicator field="evidence" /></div></th>
-                        <th className="px-6 py-4 text-xs uppercase tracking-widest font-semibold text-white/50" scope="col">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/[0.04]">
-                      {sorted.map(entry => {
-                        const sCfg = statusCfg[entry.status]
-                        const SIcon = sCfg.icon
-                        return (
-                          <motion.tr
-                            key={entry.id}
-                            variants={fadeUpVariant}
-                            className="group cursor-pointer transition-colors hover:bg-white/[0.04] focus-within:bg-white/[0.04]"
-                            onClick={() => navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)}
-                            onKeyDown={(event) => {
-                              if (event.key === 'Enter' || event.key === ' ') {
-                                event.preventDefault()
-                                navigate(`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`)
-                              }
-                            }}
-                            tabIndex={0}
-                            aria-label={`Open audit detail for ${entry.id}`}
-                          >
-                            <td className="px-6 py-4">
-                              <Link
-                                to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
-                                className="text-sm font-mono tracking-wide underline-offset-4 hover:underline focus-visible:underline text-[var(--engine-govern)] transition-all group-hover:text-teal-300"
-                                aria-label={`Open audit detail for ${entry.id}`}
-                              >
-                                {entry.id}
-                              </Link>
-                            </td>
-                            <td className="px-6 py-4"><span className="text-xs tracking-wide text-white/60">{entry.timestamp}</span></td>
-                            <td className="px-6 py-4"><span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase font-bold tracking-widest border border-white/[0.05]" style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}><CircleDot size={12} />{entry.type}</span></td>
-                            <td className="px-6 py-4"><span className="text-sm tracking-wide text-white/90 font-light">{entry.action}</span></td>
-                            <td className="px-6 py-4"><span className="text-sm font-mono tracking-widest" style={{ color: getConfidenceColor(entry.confidence), textShadow: `0 0 10px ${getConfidenceColor(entry.confidence)}50` }}>{formatConfidence(entry.confidence)}</span></td>
-                            <td className="px-6 py-4"><span className="text-sm font-mono tracking-widest text-white/80">{entry.evidence}</span></td>
-                            <td className="px-6 py-4"><span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase font-bold tracking-widest border border-white/[0.05]" style={{ background: sCfg.bg, color: sCfg.color }}><SIcon size={12} />{entry.status}</span></td>
-                          </motion.tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile cards */}
-            <div className="flex flex-col gap-4 md:hidden">
-              {sorted.length === 0 ? (
-                <div className="glass-card glass-card-overlay rounded-[32px] p-8">
-                  <div className="relative z-10">
-                    <EmptyState
-                      icon={Search}
-                      title="No matching decisions"
-                      description="Try adjusting filters or using a different search term."
-                      accentColor="var(--engine-govern)"
-                    />
-                  </div>
-                </div>
-              ) : null}
-              {sorted.map(entry => {
-                const sCfg = statusCfg[entry.status]
-                const SIcon = sCfg.icon
-                return (
-                  <motion.div key={entry.id} variants={fadeUpVariant}>
-                    <div className="glass-card glass-card-overlay rounded-[24px] p-5 flex flex-col gap-4">
-                      <div className="relative z-10 flex items-center gap-2 flex-wrap pb-3 border-b border-white/[0.06]">
-                        <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase font-bold tracking-widest border border-white/[0.05]" style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}><CircleDot size={12} />{entry.type}</span>
-                        <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] uppercase font-bold tracking-widest border border-white/[0.05]" style={{ background: sCfg.bg, color: sCfg.color }}><SIcon size={12} />{entry.status}</span>
-                        <span className="ml-auto text-[10px] uppercase tracking-widest text-white/40">{entry.timestamp}</span>
-                      </div>
-                      <div className="relative z-10 flex flex-col gap-1">
-                        <Link
-                          to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
-                          className="text-base font-mono font-medium tracking-wide underline-offset-4 hover:underline focus-visible:underline text-[var(--engine-govern)]"
-                          aria-label={`Open audit detail for ${entry.id}`}
-                        >
-                          {entry.id}
-                        </Link>
-                        <span className="text-sm font-light tracking-wide text-white/90">{entry.action}</span>
-                      </div>
-                      <div className="relative z-10 flex items-center justify-between pt-3 border-t border-white/[0.06]">
-                        <span className="text-xs text-white/50 tracking-wide">{entry.evidence} evidence pts</span>
-                        <span className="text-xs font-mono tracking-widest" style={{ color: getConfidenceColor(entry.confidence), textShadow: `0 0 10px ${getConfidenceColor(entry.confidence)}50` }}>Conf: {formatConfidence(entry.confidence)}</span>
-                      </div>
-                    </div>
-                  </motion.div>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <aside className="w-full lg:w-[360px] shrink-0 flex flex-col gap-6" aria-label="Audit sidebar">
-            <div className="sticky top-24 flex flex-col gap-6">
-              {/* Summary */}
-              <div className="glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-5">
-                <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Audit Summary</h3>
-                <div className="relative z-10 flex flex-col gap-4">
-                  {[
-                    { label: "Total decisions", value: auditSummary.total.toLocaleString() },
-                    { label: "Verified", value: `${auditSummary.verified.toLocaleString()} (${auditSummary.verifiedPercent}%)`, color: "var(--state-healthy)" },
-                    { label: "Pending", value: `${auditSummary.pending.toLocaleString()} (${auditSummary.pendingPercent}%)`, color: "var(--state-warning)" },
-                    { label: "Flagged", value: `${auditSummary.flagged.toLocaleString()} (${auditSummary.flaggedPercent}%)`, color: "var(--state-critical)" },
-                    { label: "Avg evidence", value: "8.4 pts" },
-                    { label: "Compliance", value: `${auditSummary.complianceScore}%`, color: "var(--state-healthy)" },
-                  ].map(d => (
-                    <div key={d.label} className="flex items-center justify-between">
-                      <span className="text-xs tracking-wide text-white/60">{d.label}</span>
-                      <span className="text-sm font-mono tracking-widest" style={{ color: d.color || "white", textShadow: d.color ? `0 0 10px ${d.color}60` : 'none' }}>{d.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Evidence flow */}
-              <div className="glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-4">
-                <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Evidence Flow</h3>
-                <div className="relative z-10 flex flex-col gap-3 mt-2">
-                  {["Data Source", "AI Analysis", "Evidence Aggregation", "Confidence Score", "Audit Record"].map((step, i, arr) => (
-                    <React.Fragment key={step}>
-                      <div className="w-full flex items-center justify-center rounded-2xl px-4 py-3 text-xs font-bold uppercase tracking-widest border border-[var(--engine-govern)]/30 bg-[var(--engine-govern)]/10 text-[var(--engine-govern)] shadow-inner">{step}</div>
-                      {i < arr.length - 1 && <div className="flex items-center justify-center -my-1" aria-hidden="true"><ArrowDown size={16} className="text-[var(--engine-govern)]/50 drop-shadow-[0_0_8px_rgba(20,184,166,0.5)]" /></div>}
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
-
-              {/* Export */}
-              <div className="glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-5">
-                <h3 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Export Options</h3>
-                <div className="relative z-10 flex flex-col gap-3">
-                  <button disabled title="Export available in production release" className={cn(buttonVariants({ variant: "glass" }), "w-full rounded-2xl text-sm py-4 cursor-not-allowed opacity-60 border border-white/[0.08] hover:border-white/[0.08]")} aria-label="Export full ledger preview only">
-                    <Download size={16} className="mr-2" />Export full ledger (CSV)<PreviewBadge className="ml-2" />
-                  </button>
-                  <button disabled title="Export available in production release" className={cn(buttonVariants({ variant: "glass" }), "w-full rounded-2xl text-sm py-4 cursor-not-allowed opacity-60 border border-white/[0.08] hover:border-white/[0.08]")} aria-label="Generate compliance report preview only">
-                    <FileText size={16} className="mr-2" />Generate report (PDF)<PreviewBadge className="ml-2" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Primary CTA: Back to govern overview -> /govern */}
-              <Link to="/govern" className={cn(buttonVariants({ variant: "glass", size: "lg" }), "w-full rounded-2xl text-lg px-6 py-5 shadow-[0_0_20px_rgba(20,184,166,0.15)] hover:shadow-[0_0_30px_rgba(20,184,166,0.3)] transition-all bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] text-white font-semibold flex items-center justify-center gap-2")}>
-                <ArrowLeft size={18} />Back to govern overview
-              </Link>
-            </div>
-          </aside>
+      {/* Info */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap mb-1">
+          <span className="text-xs font-mono font-medium" style={{ color: 'var(--engine-govern)' }}>
+            {entry.id}
+          </span>
+          <span
+            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest"
+            style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}
+          >
+            {entry.type}
+          </span>
+          <span
+            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest"
+            style={{ background: sCfg.bg, color: sCfg.color }}
+          >
+            <StatusIcon size={9} />
+            {entry.status}
+          </span>
+          <span className="text-[10px] text-white/30 ml-auto shrink-0">{entry.timestamp}</span>
         </div>
+        <p className="text-sm text-white/70 truncate mb-1">{entry.action}</p>
+        <div className="flex items-center gap-3 text-xs text-white/40">
+          <span>{Math.round(entry.confidence * 100)}% confidence</span>
+          <span>·</span>
+          <span>{entry.evidence} evidence</span>
+        </div>
+      </div>
 
-      </motion.div>
-    </>
+      {/* CTA */}
+      <Link
+        to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
+        className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
+        style={{
+          borderColor: 'color-mix(in srgb, var(--engine-govern) 30%, transparent)',
+          color: 'var(--engine-govern)',
+          background: 'color-mix(in srgb, var(--engine-govern) 10%, transparent)',
+        }}
+      >
+        Trace decision
+        <ArrowRight size={12} />
+      </Link>
+    </div>
   )
 }

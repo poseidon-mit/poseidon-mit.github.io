@@ -85,8 +85,7 @@ export default function GrowPage() {
           </motion.div>
         </motion.section>
 
-        {/* ── AI Recommendations List ── */}
-        <motion.section
+        {false && (<motion.section
           variants={staggerContainerVariant}
           className="flex flex-col gap-4 mb-12"
           aria-label="AI Recommendations"
@@ -103,33 +102,33 @@ export default function GrowPage() {
           <div className="flex flex-col gap-3">
             {RECOMMENDATIONS_SUMMARY.map((rec) => (
               <Link key={rec.rank} to={`/grow/recommendation?id=${rec.rank}`} className="block">
-              <motion.div
-                variants={fadeUpVariant}
-                className="glass-card glass-card-overlay rounded-2xl p-5 md:p-6 flex items-start gap-4 transition-colors cursor-pointer"
-              >
-                {/* Rank badge */}
-                <div
-                  className="flex-shrink-0 w-10 h-10 rounded-full border border-[var(--engine-grow)]/30 bg-[var(--engine-grow)]/10 flex items-center justify-center text-sm font-semibold tabular-nums"
-                  style={{ color: 'var(--engine-grow)' }}
+                <motion.div
+                  variants={fadeUpVariant}
+                  className="glass-card glass-card-overlay rounded-2xl p-5 md:p-6 flex items-start gap-4 transition-colors cursor-pointer hover:bg-white/[0.02]"
                 >
-                  {rec.rank}
-                </div>
+                  {/* Rank badge */}
+                  <div
+                    className="flex-shrink-0 w-10 h-10 rounded-full border border-[var(--engine-grow)]/30 bg-[var(--engine-grow)]/10 flex items-center justify-center text-sm font-semibold tabular-nums"
+                    style={{ color: 'var(--engine-grow)' }}
+                  >
+                    {rec.rank}
+                  </div>
 
-                {/* Content */}
-                <div className="flex-1 min-w-0 flex flex-col gap-2">
-                  <p className="text-sm md:text-base font-semibold text-white/90 leading-snug line-clamp-2">{rec.title}</p>
-                  <p className="text-xs text-white/40 flex flex-wrap items-center gap-x-1.5">
-                    <span className="font-mono font-semibold" style={{ color: 'var(--engine-grow)' }}>${rec.monthly}/mo</span>
-                    <span className="text-white/20">&middot;</span>
-                    <span className="font-mono">${rec.annual.toLocaleString()}/yr</span>
-                  </p>
-                  <ConfidenceIndicator value={rec.confidence} accentColor="var(--engine-grow)" format="percent" />
-                </div>
-              </motion.div>
+                  {/* Content */}
+                  <div className="flex-1 min-w-0 flex flex-col gap-2">
+                    <p className="text-sm md:text-base font-semibold text-white/90 leading-snug line-clamp-2">{rec.title}</p>
+                    <p className="text-xs text-white/40 flex flex-wrap items-center gap-x-1.5">
+                      <span className="font-mono font-semibold" style={{ color: 'var(--engine-grow)' }}>${rec.monthly}/mo</span>
+                      <span className="text-white/20">&middot;</span>
+                      <span className="font-mono">${rec.annual.toLocaleString()}/yr</span>
+                    </p>
+                    <ConfidenceIndicator value={rec.confidence} accentColor="var(--engine-grow)" format="percent" />
+                  </div>
+                </motion.div>
               </Link>
             ))}
           </div>
-        </motion.section>
+        </motion.section>)}
 
       </motion.div>
     </>

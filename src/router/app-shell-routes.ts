@@ -6,6 +6,7 @@ export const APP_SHELL_PREFIXES = [
   '/govern',
   '/settings',
   '/help',
+  '/orchestrator',
 ] as const
 
 export function isAppRoute(path: string): boolean {

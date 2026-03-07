@@ -58,6 +58,7 @@ describe('Infrastructure integrity', () => {
     const tier2 = [
       '/grow',
       '/protect/alert-detail',
+      '/protect/threats',
       '/execute/history',
       '/govern/audit',
       '/settings',
@@ -92,7 +93,7 @@ describe('Infrastructure integrity', () => {
 
   it('self-guided QR mode bootstraps demo session', () => {
     expect(mainSrc).toContain('const SELF_GUIDED_QR_MODE = true;');
-    expect(mainSrc).toContain("beginDemoSession({ method: 'skip' });");
+    expect(mainSrc).toContain("beginDemoSession({ method: 'skip', entryIntent: 'express' });");
   });
 
   it('govern audit ledger links to audit detail route with decision query', () => {
@@ -114,6 +115,7 @@ describe('Architecture guards', () => {
     'src/pages/Notifications.tsx',
     'src/pages/protect/Protect.tsx',
     'src/pages/protect/ProtectAlertDetail.tsx',
+    'src/pages/protect/ProtectThreats.tsx',
     'src/pages/Grow.tsx',
     'src/pages/GrowGoalDetail.tsx',
     'src/pages/GrowScenarios.tsx',
@@ -122,10 +124,14 @@ describe('Architecture guards', () => {
     'src/pages/Execute.tsx',
     'src/pages/ExecuteApproval.tsx',
     'src/pages/ExecuteHistory.tsx',
+    'src/pages/ExecuteQueue.tsx',
     'src/pages/Govern.tsx',
     'src/pages/GovernAuditLedger.tsx',
     'src/pages/GovernAuditDetail.tsx',
     'src/pages/Settings.tsx',
+    'src/pages/SettingsAI.tsx',
+    'src/pages/SettingsIntegrations.tsx',
+    'src/pages/SettingsRights.tsx',
   ] as const;
 
   const pageSources = APP_ROUTE_PAGES.map((p) => ({ path: p, src: read(p) }));

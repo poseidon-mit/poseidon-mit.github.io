@@ -70,11 +70,6 @@ export type RouteScreenSlug =
   | 'signup'
   | 'login'
   | 'recovery'
-  | 'onboarding'
-  | 'onboarding-connect'
-  | 'onboarding-goals'
-  | 'onboarding-consent'
-  | 'onboarding-complete'
   | 'dashboard'
   | 'alerts-hub'
   | 'insights-feed'
@@ -162,7 +157,11 @@ export type RequiredWidget =
   | 'AuditLedgerTable'
   | 'OversightQueueTable'
   | 'PolicyModelCards'
-  | 'DataRightsPanel';
+  | 'DataRightsPanel'
+  | 'AuditEntryList'
+  | 'StatusFilterBar'
+  | 'RecommendationList'
+  | 'CategoryFilterBar';
 
 // ─── Screen Contract ──────────────────────────────────────────────────────────
 

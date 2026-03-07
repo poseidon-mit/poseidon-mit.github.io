@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   Clock,
   XCircle,
+  RotateCcw,
   Zap,
   ExternalLink,
   Filter,
@@ -32,18 +33,21 @@ const DECISION_ICON: Record<string, typeof CheckCircle2> = {
   approved: CheckCircle2,
   deferred: Clock,
   rejected: XCircle,
+  undo: RotateCcw,
 }
 
 const DECISION_COLOR: Record<string, string> = {
   approved: 'var(--state-healthy)',
   deferred: 'var(--state-warning)',
   rejected: 'var(--state-critical)',
+  undo: 'var(--engine-execute)',
 }
 
 const DECISION_BADGE_CLS: Record<string, string> = {
   approved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
   deferred: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
   rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
+  undo: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
 }
 
 /* ═══════════════════════════════════════════
@@ -131,7 +135,7 @@ export default function ExecuteHistoryPage() {
                   <span className="text-xs font-semibold uppercase tracking-widest text-white/40">{kpi.label}</span>
                   <span
                     className="text-2xl md:text-3xl font-mono tabular-nums font-medium"
-                    style={{ color: kpi.color, textShadow: `0 0 10px ${kpi.color}40` }}
+                    style={{ color: kpi.color }}
                   >
                     {kpi.value}
                   </span>

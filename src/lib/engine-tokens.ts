@@ -90,3 +90,17 @@ export function getEngineToken(engine: EngineName): EngineToken {
 }
 
 export const ENGINE_NAMES = Object.keys(engineTokens) as EngineName[]
+
+/* ── Engine-name casing bridge ── */
+
+import type { EngineName as DomainEngineName } from '@/domain/poseidon-universe/types'
+
+/** Convert domain uppercase engine label to lowercase token key */
+export function fromDomainEngine(label: DomainEngineName): Exclude<EngineName, 'dashboard'> {
+  return label.toLowerCase() as Exclude<EngineName, 'dashboard'>
+}
+
+/** Convert lowercase token key to domain uppercase engine label */
+export function toDomainEngine(engine: Exclude<EngineName, 'dashboard'>): DomainEngineName {
+  return (engine.charAt(0).toUpperCase() + engine.slice(1)) as DomainEngineName
+}

@@ -170,6 +170,106 @@ export function selectArchitecturalTrust() {
   return getCanonicalUniverse().metrics.architecturalTrust
 }
 
+/* ── Financial Health Score ── */
+
+import type { EngineName as TokenEngineName } from '@/lib/engine-tokens'
+
+export interface FinancialHealthBreakdown {
+  engine: TokenEngineName
+  weight: number
+  value: number
+}
+
+export function computeFinancialHealthScore(overrides: {
+  activeThreats: number
+  totalThreats: number
+  pendingActions: number
+  totalActions: number
+}): { score: number; breakdown: FinancialHealthBreakdown[] } {
+  const universe = getCanonicalUniverse()
+
+  const protectScore = overrides.totalThreats === 0
+    ? 100
+    : (1 - overrides.activeThreats / overrides.totalThreats) * 100
+
+  const potentialUsd = universe.metrics.monthlySavingsPotentialUsd
+  const currentUsd = universe.metrics.monthlySavingsCurrentUsd
+  const growScore = potentialUsd === 0
+    ? 100
+    : (currentUsd / potentialUsd) * 100
+
+  const executeScore = overrides.totalActions === 0
+    ? 100
+    : ((overrides.totalActions - overrides.pendingActions) / overrides.totalActions) * 100
+
+  const governScore = universe.metrics.complianceScore
+
+  const breakdown: FinancialHealthBreakdown[] = [
+    { engine: 'protect' as TokenEngineName, weight: 0.3, value: protectScore },
+    { engine: 'grow' as TokenEngineName, weight: 0.3, value: growScore },
+    { engine: 'execute' as TokenEngineName, weight: 0.2, value: executeScore },
+    { engine: 'govern' as TokenEngineName, weight: 0.2, value: governScore },
+  ]
+
+  const score = breakdown.reduce((sum, b) => sum + b.weight * b.value, 0)
+
+  return { score: Math.round(score * 10) / 10, breakdown }
+}
+
+/* ── Cross-Engine Chain Selector ── */
+
+export type CrossEngineChain =
+  | {
+      origin: 'alert'
+      alertId: string
+      actionId: string
+      decisionId: string | null
+    }
+  | {
+      origin: 'recommendation'
+      recommendationId: string
+      actionId: string
+      decisionId: string | null
+    }
+
+/**
+ * Returns all cross-engine chains from the canonical universe.
+ * Covers both alertToAction and recommendationToAction relations.
+ * decisionId is null if the action has no resolved decision yet.
+ */
+export function selectCrossEngineChains(): CrossEngineChain[] {
+  const universe = getCanonicalUniverse()
+  const { alertToAction, recommendationToAction, actionToDecision } = universe.relations
+
+  const chains: CrossEngineChain[] = []
+
+  for (const [alertId, actionIds] of Object.entries(alertToAction)) {
+    for (const actionId of actionIds) {
+      const decisionIds = actionToDecision[actionId]
+      chains.push({
+        origin: 'alert',
+        alertId,
+        actionId,
+        decisionId: decisionIds?.[0] ?? null,
+      })
+    }
+  }
+
+  for (const [recommendationId, actionIds] of Object.entries(recommendationToAction)) {
+    for (const actionId of actionIds) {
+      const decisionIds = actionToDecision[actionId]
+      chains.push({
+        origin: 'recommendation',
+        recommendationId,
+        actionId,
+        decisionId: decisionIds?.[0] ?? null,
+      })
+    }
+  }
+
+  return chains
+}
+
 export function formatUsd(value: number): string {
   return `$${value.toLocaleString()}`
 }

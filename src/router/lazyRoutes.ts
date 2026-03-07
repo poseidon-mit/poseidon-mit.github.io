@@ -121,10 +121,14 @@ export const routeLoaders = {
   // ─── Activation ─────────────────────────────────────────────────────────────
   '/signup': () => import('../pages/Signup'),
   '/login': () => import('../pages/Login'),
-  '/onboarding': () => import('../pages/Onboarding'),
-  '/onboarding/priorities': () => import('../pages/OnboardingPriorities'),
-  '/onboarding/consent': () => import('../pages/OnboardingConsent'),
-  '/onboarding/activate': () => import('../pages/OnboardingActivate'),
+  '/onboarding': () => import('../pages/OnboardingRedirect'),
+  '/onboarding/priorities': () => import('../pages/OnboardingRedirect'),
+  '/onboarding/consent': () => import('../pages/OnboardingRedirect'),
+  '/onboarding/activate': () => import('../pages/OnboardingRedirect'),
+  '/onboarding/connect': () => import('../pages/OnboardingRedirect'),
+  '/onboarding/goals': () => import('../pages/OnboardingRedirect'),
+  '/onboarding/complete': () => import('../pages/OnboardingRedirect'),
+  '/onboarding-v2': () => import('../pages/OnboardingRedirect'),
 
   // ─── Core ───────────────────────────────────────────────────────────────────
   '/dashboard': () => import('../pages/Dashboard'),
@@ -133,6 +137,7 @@ export const routeLoaders = {
   // ─── Protect ────────────────────────────────────────────────────────────────
   '/protect': () => import('../pages/protect/Protect'),
   '/protect/alert-detail': () => import('../pages/protect/ProtectAlertDetail'),
+  '/protect/threats': () => import('../pages/protect/ProtectThreats'),
 
   // ─── Grow ───────────────────────────────────────────────────────────────────
   '/grow': () => import('../pages/Grow'),
@@ -145,6 +150,7 @@ export const routeLoaders = {
   '/execute': () => import('../pages/Execute'),
   '/execute/approval': () => import('../pages/ExecuteApproval'),
   '/execute/history': () => import('../pages/ExecuteHistory'),
+  '/execute/queue': () => import('../pages/ExecuteQueue'),
 
   // ─── Govern ─────────────────────────────────────────────────────────────────
   '/govern': () => import('../pages/Govern'),
@@ -153,9 +159,15 @@ export const routeLoaders = {
 
   // ─── Settings ───────────────────────────────────────────────────────────────
   '/settings': () => import('../pages/Settings'),
+  '/settings/ai': () => import('../pages/SettingsAI'),
+  '/settings/integrations': () => import('../pages/SettingsIntegrations'),
+  '/settings/rights': () => import('../pages/SettingsRights'),
 
   // ─── System ─────────────────────────────────────────────────────────────────
   '/404': () => import('../pages/NotFound'),
+
+  // ─── Orchestrator ─────────────────────────────────────────────────────────
+  '/orchestrator': () => import('../pages/orchestrator'),
 
   // --- Test / Showcase ---
   '/test/spectacular': () => import('../pages/TestSpectacular'),
@@ -190,7 +202,6 @@ export interface ResolvedRouteUXMeta extends Omit<RouteUXMeta, 'demoPriority' | 
 function resolveRouteMetaPath(path: string): string {
   const normalized = path.split('?')[0];
   if (ROUTE_META_CONTRACT[normalized]) return normalized;
-  if (normalized.startsWith('/onboarding/')) return '/onboarding';
   if (normalized.startsWith('/dashboard/')) return '/dashboard';
   if (normalized.startsWith('/protect/')) return '/protect';
   if (normalized.startsWith('/grow/')) return '/grow';
@@ -236,7 +247,13 @@ const comingSoonLoader = () => import('../pages/ComingSoon');
 const notFoundLoader = () => import('../pages/NotFound');
 const IS_PRODUCTION = import.meta.env.PROD;
 
+const REDIRECT_PATHS = new Set([
+  '/onboarding', '/onboarding/priorities', '/onboarding/consent', '/onboarding/activate',
+  '/onboarding/connect', '/onboarding/goals', '/onboarding/complete', '/onboarding-v2',
+]);
+
 function resolveRouteLoader(path: string, loader: RouteLoader): RouteLoader {
+  if (REDIRECT_PATHS.has(path)) return loader;
   const meta = getRouteMetaContract(path);
   const allowPublicDesignSystem = path.startsWith('/design-system');
   const forceHiddenTestRoute = path === '/test/spectacular';

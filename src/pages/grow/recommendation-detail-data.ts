@@ -172,7 +172,7 @@ export const recommendationDetails: RecommendationDetail[] = [
     steps: [
       { step: 1, title: 'Downgrade Netflix tier', description: 'Go to Netflix account settings and switch from Premium to Standard. Change takes effect next billing cycle.', type: 'manual', estimatedTime: '3 minutes' },
       { step: 2, title: 'Switch Spotify to Individual', description: 'Go to Spotify account settings and change from Family to Individual plan.', type: 'manual', estimatedTime: '3 minutes' },
-      { step: 3, title: 'Cancel YouTube Premium', description: 'Poseidon will submit the cancellation. You can still use YouTube with ads at no cost.', type: 'auto', estimatedTime: 'Immediate' },
+      { step: 3, title: 'Cancel YouTube Premium', description: 'Cancel YouTube Premium through your account settings. Poseidon provides the direct link and tracks confirmation. You can still use YouTube with ads at no cost.', type: 'manual', estimatedTime: '2 minutes' },
       { step: 4, title: 'Downgrade iCloud+ storage', description: 'Go to Settings → Apple ID → iCloud → Change Storage Plan on your device.', type: 'manual', estimatedTime: '2 minutes' },
     ],
     executionType: 'semi-auto',
@@ -328,10 +328,10 @@ export const recommendationDetails: RecommendationDetail[] = [
     dataSources: ['Connected account balances (Plaid)', 'Monthly cash flow analysis (6 months)', 'HYSA rate comparison (15 providers)'],
   },
 
-  // #6 — Bundle Insurance at Renewal ($78/mo)
+  // #6 — Shop Insurance at Renewal ($78/mo)
   {
     id: 6,
-    title: 'Bundle Insurance at Renewal',
+    title: 'Shop Insurance at Renewal',
     category: 'Savings',
     monthlySavings: 78,
     annualSavings: 936,
@@ -360,7 +360,7 @@ export const recommendationDetails: RecommendationDetail[] = [
     ratesAsOf: 'Feb 22, 2026',
     steps: [
       { step: 1, title: 'Request bundle quotes', description: 'Poseidon will submit quote requests to the top 3 carriers using your detected premium amounts as a baseline.', type: 'semi-auto', estimatedTime: '5 minutes' },
-      { step: 2, title: 'Compare quotes', description: 'Review the bundled quotes against your current separate policies. Pay attention to coverage equivalence.', type: 'manual', estimatedTime: '15 minutes' },
+      { step: 2, title: 'Compare quotes', description: 'Review the bundled quotes against your current separate policies. Coverage comparison requires your input — Poseidon can detect premiums but not policy details.', type: 'manual', estimatedTime: '15 minutes' },
       { step: 3, title: 'Bind new policy at renewal', description: 'Accept the best quote and set the effective date to align with your April renewal to avoid cancellation fees.', type: 'manual', estimatedTime: '10 minutes' },
       { step: 4, title: 'Confirm old policies cancelled', description: 'After the new bundled policy is active, verify that both GEICO and Lemonade are cancelled.', type: 'manual', estimatedTime: '10 minutes' },
     ],
@@ -481,6 +481,7 @@ export const RECOMMENDATIONS_SUMMARY = recommendationDetails.map(r => ({
 
 /** Enriched summary for GrowRecommendations list page. */
 export type RecommendationListItem = {
+  id: number
   rank: number
   title: string
   description: string
@@ -508,6 +509,7 @@ export const RECOMMENDATIONS_FOR_LIST: RecommendationListItem[] = recommendation
   const baseWeight = Math.round((1 / totalFactors) * 100) / 100
 
   return {
+    id: r.id,
     rank: i + 1,
     title: r.title,
     description: r.dataBasis,

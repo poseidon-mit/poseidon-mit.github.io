@@ -47,6 +47,11 @@ export { SubPageNav, type SubPageNavProps } from './sub-page-nav'
 /* ── Cohort Fraud Trend ── */
 export { CohortFraudTrend, type CohortFraudTrendProps } from './cohort-fraud-trend'
 
+/* ── Hero Bento Layout ── */
+export { HeroBento, type HeroBentoProps } from './hero-bento'
+export { ListPortalBar, type ListPortalBarProps, type PortalDestination } from './list-portal-bar'
+export { CostOfInaction, type CostOfInactionProps } from './cost-of-inaction'
+
 /* ── Protect Hero ── */
 export { ProtectAnomalyRadar, type ProtectAnomalyRadarProps, ProtectThreatPosture, type ProtectThreatPostureProps } from './protect-hero'
 
@@ -61,3 +66,6 @@ export { ExecuteApprovalCommandDeck, type ExecuteApprovalCommandDeckProps } from
 
 /* ── Govern Hero ── */
 export { GovernImmutableLedger, type GovernImmutableLedgerProps } from './govern-hero'
+
+/* ── Cross-Engine Traceability ── */
+export { CrossEngineTrail, type CrossEngineTrailProps } from './cross-engine-trail'

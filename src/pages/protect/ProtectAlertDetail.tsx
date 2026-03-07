@@ -233,7 +233,7 @@ export default function ProtectAlertDetailPage() {
               <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>{`Signal #${alert.id}`}</h1>
               <span className="text-sm tracking-wide text-white/40 font-mono mt-1">{`Detected: ${detectedAt} • Updated: ${updatedAt}`}</span>
             </div>
-            <span className="inline-flex items-center gap-1.5 md:gap-2 rounded-full px-3 py-1.5 text-xs md:px-4 md:py-2 md:text-sm font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(0,0,0,0.2)]" style={{ background: severityTheme.bg, border: `1px solid ${severityTheme.border}`, color: severityTheme.color }} aria-label={`Alert status: ${alert.severity}`}><AlertTriangle size={16} />{alert.severity}</span>
+            <span className="inline-flex items-center gap-1.5 md:gap-2 rounded-full px-3 py-1.5 text-xs md:px-4 md:py-2 md:text-sm font-bold uppercase tracking-widest" style={{ background: severityTheme.bg, border: `1px solid ${severityTheme.border}`, color: severityTheme.color }} aria-label={`Alert status: ${alert.severity}`}><AlertTriangle size={16} />{alert.severity}</span>
           </motion.div>
         </motion.section>
 
@@ -244,10 +244,10 @@ export default function ProtectAlertDetailPage() {
 
             <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 lg:gap-8 relative z-10">
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Merchant</span><span className="text-base md:text-lg font-medium text-white/90">{alert.merchant}</span></div>
-              <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Amount</span><span className="text-lg md:text-2xl font-light font-mono" style={{ color: severityTheme.color, textShadow: `0 0 8px ${severityTheme.shadow}` }}>{alert.amount}</span></div>
+              <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Amount</span><span className="text-lg md:text-2xl font-light font-mono" style={{ color: severityTheme.color }}>{alert.amount}</span></div>
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Confidence</span><ConfidenceIndicator value={alert.confidence} colorOverride={severityTheme.color} size="lg" glow /></div>
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Alert type</span><span className="text-sm md:text-base text-white/70 tracking-wide break-words">{alert.description}</span></div>
-              <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Account</span><div className="flex items-center gap-2"><CreditCard size={16} className="text-white/30" /><span className="text-base font-mono font-medium drop-shadow-[0_0_5px_rgba(255,255,255,0.2)] text-white/80">{`Checking ****4821`}</span></div></div>
+              <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Account</span><div className="flex items-center gap-2"><CreditCard size={16} className="text-white/30" /><span className="text-base font-mono font-medium text-white/80">{`Checking ****4821`}</span></div></div>
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Location</span><div className="flex items-center gap-2"><MapPin size={16} className="text-white/30" /><span className="text-base text-white/80 tracking-wide">{"Online"}</span></div><span className="text-xs font-semibold tracking-wide" style={{ color: severityTheme.color }}>Flagged IP: 203.0.113.42</span></div>
             </div>
           </div>
@@ -262,13 +262,13 @@ export default function ProtectAlertDetailPage() {
                 <div key={step.label} className="flex flex-col items-center gap-3 flex-1" role="listitem">
                   <div className="w-full flex items-center justify-center mb-2">
                     <div className={`h-0.5 flex-1 -mr-8 ${i > 0 ? 'bg-white/[0.05]' : 'bg-transparent'}`} />
-                    <div className={`flex items-center justify-center rounded-full border z-10 ${step.status === "active" ? "animate-pulse" : ""} shadow-[0_0_15px_currentColor]`} style={{ width: 32, height: 32, background: step.status === "complete" ? "rgba(16,185,129,0.15)" : "rgba(245,158,11,0.15)", borderColor: step.status === "complete" ? "rgba(16,185,129,0.3)" : "rgba(245,158,11,0.3)", color: step.status === "complete" ? "var(--state-healthy)" : "var(--state-warning)" }}>
-                      {step.status === "complete" ? <CheckCircle2 size={16} className="text-emerald-400 drop-shadow-[0_0_8px_currentColor]" /> : <CircleDot size={16} className="text-amber-400 drop-shadow-[0_0_8px_currentColor]" />}
+                    <div className={`flex items-center justify-center rounded-full border z-10 ${step.status === "active" ? "animate-pulse" : ""}`} style={{ width: 32, height: 32, background: step.status === "complete" ? "rgba(16,185,129,0.15)" : "rgba(245,158,11,0.15)", borderColor: step.status === "complete" ? "rgba(16,185,129,0.3)" : "rgba(245,158,11,0.3)", color: step.status === "complete" ? "var(--state-healthy)" : "var(--state-warning)" }}>
+                      {step.status === "complete" ? <CheckCircle2 size={16} className="text-emerald-400" /> : <CircleDot size={16} className="text-amber-400" />}
                     </div>
                     <div className={`h-0.5 flex-1 -ml-8 ${i < timelineSteps.length - 1 ? 'bg-white/[0.05]' : 'bg-transparent'}`} />
                   </div>
                   <span className="text-xs font-semibold text-center text-white/70 tracking-widest uppercase">{step.label}</span>
-                  <span className="text-xs font-mono font-bold drop-shadow-[0_0_5px_rgba(255,255,255,0.2)] text-white/40">{step.time}</span>
+                  <span className="text-xs font-mono font-bold text-white/40">{step.time}</span>
                 </div>
               ))}
             </div>
@@ -325,7 +325,7 @@ export default function ProtectAlertDetailPage() {
                     <div key={item.id} className="rounded-2xl border border-white/[0.04] bg-white/[0.02] transition-all hover:bg-white/[0.04] cursor-pointer" onClick={() => setExpandedId(expanded ? null : item.id)}>
                       <div className="flex items-center justify-between px-5 py-4" aria-expanded={expanded} aria-label={`${item.title}: ${displayValue}`}>
                         <div className="flex items-center gap-4">
-                          <span className="inline-flex items-center justify-center rounded-xl text-sm font-bold font-mono tabular-nums shadow-[0_0_15px_currentColor] border border-[currentColor]/30 bg-[currentColor]/10" style={{ color: getScoreColor(item.value), width: 56, height: 36 }}>{displayValue}</span>
+                          <span className="inline-flex items-center justify-center rounded-xl text-sm font-bold font-mono tabular-nums border border-[currentColor]/30 bg-[currentColor]/10" style={{ color: getScoreColor(item.value), width: 56, height: 36 }}>{displayValue}</span>
                           <span className="text-sm font-medium text-white/90 tracking-wide">{item.title}</span>
                         </div>
                         <div className="w-7 h-7 rounded-full flex items-center justify-center border border-white/[0.05] bg-white/[0.02]">
@@ -425,11 +425,11 @@ export default function ProtectAlertDetailPage() {
           )}
 
           {disputeState === 'submitted' && (
-            <div className="glass-card rounded-[32px] p-6 lg:p-8 !border-emerald-500/30 !bg-emerald-500/10 shadow-[0_0_30px_rgba(16,185,129,0.15)] flex flex-col sm:flex-row sm:items-center gap-6 text-center sm:text-left">
+            <div className="glass-card rounded-[32px] p-6 lg:p-8 !border-emerald-500/30 !bg-emerald-500/10 flex flex-col sm:flex-row sm:items-center gap-6 text-center sm:text-left">
               <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none" />
               <div className="relative z-10 flex items-center gap-4 shrink-0">
-                <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-                  <CheckCircle2 className="h-7 w-7 text-emerald-400 drop-shadow-[0_0_10px_currentColor]" />
+                <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+                  <CheckCircle2 className="h-7 w-7 text-emerald-400" />
                 </div>
                 <div>
                   <h3 className="text-lg font-light tracking-wide text-white" style={{ fontFamily: "var(--font-display)" }}>Dispute Filed</h3>
@@ -438,7 +438,7 @@ export default function ProtectAlertDetailPage() {
               </div>
               <div className="relative z-10 bg-black/40 border border-white/10 rounded-xl p-3 flex-1 text-left">
                 <p className="text-xs text-white/50 uppercase tracking-widest font-semibold mb-1">Next Step</p>
-                <p className="text-sm font-medium text-emerald-400 drop-shadow-[0_0_5px_currentColor]">Your bank will review within 10 business days (Reg E). Provisional credit may apply within 48h.</p>
+                <p className="text-sm font-medium text-emerald-400">Your bank will review within 10 business days (Reg E). Provisional credit may apply within 48h.</p>
               </div>
             </div>
           )}

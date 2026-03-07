@@ -116,10 +116,6 @@ export default function GrowScenariosPage() {
             <motion.div
               key={s.id}
               variants={fadeUpVariant}
-              animate={prefersReducedMotion ? undefined : { scale: selected === s.id ? 1.015 : 1, y: 0 }}
-              whileHover={prefersReducedMotion ? undefined : { scale: selected === s.id ? 1.02 : 1.01 }}
-              whileTap={prefersReducedMotion ? undefined : { scale: selected === s.id ? 1.005 : 0.995 }}
-              transition={prefersReducedMotion ? undefined : cardSelect}
               onClick={() => setSelected(s.id)}
               onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
                 if (event.key === 'Enter' || event.key === ' ') {
@@ -127,7 +123,7 @@ export default function GrowScenariosPage() {
                   setSelected(s.id);
                 }
               }}
-              className={`glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-4 text-left transition-all will-change-transform cursor-pointer ${selected === s.id ? 'shadow-[0_0_30px_rgba(139,92,246,0.2)] !border-2 !border-[var(--engine-grow)]/40' : 'hover:border-white/[0.15]'}`}
+              className={`glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-4 text-left transition-all will-change-transform cursor-pointer ${selected === s.id ? '!border-2 !border-[var(--engine-grow)]/40' : 'hover:border-white/[0.15]'}`}
               role="button"
               tabIndex={0}
               aria-pressed={selected === s.id}>
@@ -135,7 +131,7 @@ export default function GrowScenariosPage() {
 
               {selected === s.id &&
                 <div
-                  className="absolute top-6 right-6 w-6 h-6 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.5)] z-10"
+                  className="absolute top-6 right-6 w-6 h-6 rounded-full flex items-center justify-center z-10"
                   style={{ background: "var(--engine-grow)" }}>
                   <Check size={14} style={{ color: 'var(--bg-oled)' }} />
                 </div>
@@ -146,7 +142,7 @@ export default function GrowScenariosPage() {
                 <div className="flex flex-col gap-4 border-t border-white/[0.06] pt-5 mt-auto">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-white/40 tracking-widest uppercase text-xs font-semibold">Monthly</span>
-                    <span className="font-mono font-bold text-white/90 drop-shadow-[0_0_5px_rgba(255,255,255,0.3)] text-lg">${s.monthlySave}</span>
+                    <span className="font-mono font-bold text-white/90 text-lg">${s.monthlySave}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-white/40 tracking-widest uppercase text-xs font-semibold">Time to goal</span>
@@ -154,7 +150,7 @@ export default function GrowScenariosPage() {
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-white/40 tracking-widest uppercase text-xs font-semibold">Confidence</span>
-                    <span className="font-mono font-bold" style={{ color: s.confidence >= 0.9 ? "var(--state-healthy)" : s.confidence >= 0.85 ? "var(--state-warning)" : "#F1F5F9", textShadow: s.confidence >= 0.9 ? "0 0 10px rgba(34,197,94,0.4)" : "none" }}>
+                    <span className="font-mono font-bold" style={{ color: s.confidence >= 0.9 ? "var(--state-healthy)" : s.confidence >= 0.85 ? "var(--state-warning)" : "#F1F5F9", }}>
                       {(s.confidence * 100).toFixed(0)}%
                     </span>
                   </div>
@@ -172,12 +168,12 @@ export default function GrowScenariosPage() {
               <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">
                 {activeScenario.name} forecast
               </h3>
-              <span className="text-xs font-mono font-medium text-[var(--engine-grow)] drop-shadow-[0_0_10px_rgba(139,92,246,0.3)] mt-2 md:mt-0 bg-[var(--engine-grow)]/10 px-3 py-1.5 rounded-full border border-[var(--engine-grow)]/20">
+              <span className="text-xs font-mono font-medium text-[var(--engine-grow)] mt-2 md:mt-0 bg-[var(--engine-grow)]/10 px-3 py-1.5 rounded-full border border-[var(--engine-grow)]/20">
                 Confidence: {(activeScenario.confidence * 100).toFixed(0)}%
               </span>
             </div>
             <div className="relative z-10 flex-1 flex flex-col justify-center gap-4">
-              <ForecastBand data={activeScenario.data} width={800} height={180} engine="grow" className="w-full drop-shadow-[0_0_15px_rgba(139,92,246,0.3)]" />
+              <ForecastBand data={activeScenario.data} width={800} height={180} engine="grow" className="w-full" />
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/[0.04]">
                 <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest px-2">Now ($7,300)</span>
                 <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest px-2">
@@ -195,7 +191,7 @@ export default function GrowScenariosPage() {
             <div className="absolute left-0 top-0 bottom-0 w-1.5 opacity-70 transition-opacity group-hover:opacity-100" style={{ background: "var(--engine-grow)" }} />
             <div className="relative z-10 max-w-2xl pl-2">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-[var(--engine-grow)]/20 border border-[var(--engine-grow)]/30 flex items-center justify-center text-[var(--engine-grow)] shadow-[0_0_20px_rgba(139,92,246,0.2)]">
+                <div className="w-10 h-10 rounded-xl bg-[var(--engine-grow)]/20 border border-[var(--engine-grow)]/30 flex items-center justify-center text-[var(--engine-grow)] ">
                   <Zap size={20} />
                 </div>
                 <p className="text-2xl md:text-3xl font-light text-white leading-tight tracking-wide">
@@ -203,7 +199,7 @@ export default function GrowScenariosPage() {
                 </p>
               </div>
               <p className="text-base text-white/50 leading-relaxed tracking-wide mt-2">
-                This will queue a monthly transfer of <span className="font-mono text-[var(--engine-grow)] font-bold drop-shadow-[0_0_10px_rgba(139,92,246,0.5)] text-lg px-2 bg-white/[0.05] rounded-md border border-[var(--engine-grow)]/20">${activeScenario.monthlySave}</span> for approval in the Execute engine.
+                This will queue a monthly transfer of <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-white/[0.05] rounded-md border border-[var(--engine-grow)]/20">${activeScenario.monthlySave}</span> for approval in the Execute engine.
               </p>
             </div>
             <div className="relative z-10 flex flex-wrap items-center gap-4 md:ml-auto">
@@ -233,7 +229,7 @@ export default function GrowScenariosPage() {
               </p>
               <p className="text-sm leading-relaxed text-white/40 tracking-wide font-light max-w-4xl">
                 Forecasts incorporate market volatility, expense variation, and income stability. Confidence bands widen at longer horizons.
-                All projections are re-evaluated weekly. Historical accuracy of this model: <strong className="font-medium text-white/70 tracking-wide drop-shadow-[0_0_5px_rgba(255,255,255,0.2)]">89%</strong> within 5% margin.
+                All projections are re-evaluated weekly. Historical accuracy of this model: <strong className="font-medium text-white/70 tracking-wide ">89%</strong> within 5% margin.
               </p>
             </div>
           </motion.div>

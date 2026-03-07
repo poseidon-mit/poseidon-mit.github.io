@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Poseidon.AI — Orchestrator Workbench (Sample)</title>
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-deep: #0a0e1a;
+    --bg-surface: #111827;
+    --bg-card: rgba(17, 24, 39, 0.7);
+    --bg-hover: rgba(30, 41, 59, 0.6);
+    --border: rgba(148, 163, 184, 0.12);
+    --border-active: rgba(148, 163, 184, 0.25);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --engine-dashboard: #00F0FF;
+    --engine-protect: #22C55E;
+    --engine-grow: #8B5CF6;
+    --engine-execute: #EAB308;
+    --engine-govern: #3B82F6;
+    --glass-bg: rgba(15, 23, 42, 0.6);
+    --glass-border: rgba(148, 163, 184, 0.1);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow-glow-cyan: 0 0 20px rgba(0, 240, 255, 0.15);
+    --shadow-glow-violet: 0 0 20px rgba(139, 92, 246, 0.15);
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow: hidden;
+  }
+  /* ── 3-Column Layout ── */
+  .app-shell {
+    display: grid;
+    grid-template-columns: 220px 1fr 320px;
+    grid-template-rows: 56px 1fr;
+    height: 100vh;
+  }
+  /* ── Top Bar ── */
+  .top-bar {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    z-index: 10;
+  }
+  .top-bar-left { display: flex; align-items: center; gap: 16px; }
+  .logo {
+    font-size: 16px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--engine-dashboard), var(--engine-grow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+  }
+  .pipeline-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(139, 92, 246, 0.15);
+    color: var(--engine-grow);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    font-weight: 600;
+  }
+  .enforcement-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .enforcement-toggle .pill {
+    display: flex;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .enforcement-toggle .pill button {
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    padding: 4px 12px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .enforcement-toggle .pill button.active {
+    background: rgba(234, 179, 8, 0.2);
+    color: var(--engine-execute);
+    font-weight: 600;
+  }
+  .top-bar-right { display: flex; align-items: center; gap: 12px; }
+  .scale-select {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  .btn-sm {
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-sm:hover { border-color: var(--border-active); color: var(--text-primary); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--engine-grow), #6d28d9);
+    color: white;
+    border: none;
+    font-weight: 600;
+  }
+  .btn-primary:hover { opacity: 0.9; }
+
+  /* ── Phase Rail (Left) ── */
+  .phase-rail {
+    background: var(--bg-surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 12px 0;
+  }
+  .phase-rail::-webkit-scrollbar { width: 4px; }
+  .phase-rail::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .rail-section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-muted);
+    padding: 12px 16px 6px;
+    font-weight: 600;
+  }
+  .phase-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .phase-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .phase-item.active {
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--text-primary);
+  }
+  .phase-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 4px; bottom: 4px;
+    width: 3px;
+    background: var(--engine-grow);
+    border-radius: 0 3px 3px 0;
+  }
+  .phase-num {
+    width: 24px; height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .phase-num.done { background: rgba(34, 197, 94, 0.15); color: var(--engine-protect); }
+  .phase-num.current { background: rgba(139, 92, 246, 0.2); color: var(--engine-grow); border: 1px solid rgba(139, 92, 246, 0.4); }
+  .phase-num.pending { background: rgba(100, 116, 139, 0.15); color: var(--text-muted); }
+  .phase-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .phase-status {
+    margin-left: auto;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+  .status-check { color: var(--engine-protect); }
+  .status-running { color: var(--engine-grow); }
+  .gate-divider {
+    margin: 6px 16px;
+    padding: 6px 10px;
+    background: rgba(234, 179, 8, 0.08);
+    border: 1px solid rgba(234, 179, 8, 0.15);
+    border-radius: 6px;
+    font-size: 10px;
+    color: var(--engine-execute);
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Main Work Area (Center) ── */
+  .main-area {
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .main-area::-webkit-scrollbar { width: 6px; }
+  .main-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* Section header */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title .icon { font-size: 20px; }
+
+  /* Glass Card */
+  .glass-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(16px);
+    padding: 20px;
+  }
+  .glass-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .glass-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  /* ── Prompt Editor ── */
+  .prompt-editor {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .prompt-editor-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: rgba(30, 41, 59, 0.5);
+    border-bottom: 1px solid var(--border);
+  }
+  .prompt-editor-toolbar-left { display: flex; align-items: center; gap: 8px; }
+  .template-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(139, 92, 246, 0.15);
+    color: var(--engine-grow);
+    font-weight: 600;
+  }
+  .prompt-body {
+    padding: 16px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    min-height: 180px;
+    max-height: 240px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+  .prompt-body::-webkit-scrollbar { width: 4px; }
+  .prompt-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .prompt-var {
+    background: rgba(139, 92, 246, 0.15);
+    color: var(--engine-grow);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .prompt-heading { color: var(--text-primary); font-weight: 700; }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    gap: 0;
+  }
+  .tab {
+    padding: 10px 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+  .tab:hover { color: var(--text-secondary); }
+  .tab.active {
+    color: var(--engine-grow);
+    border-bottom-color: var(--engine-grow);
+    font-weight: 600;
+  }
+
+  /* ── Quick Adopt Cards ── */
+  .adopt-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    padding: 16px 0;
+  }
+  .adopt-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .adopt-card:hover {
+    border-color: var(--border-active);
+    transform: translateY(-2px);
+  }
+  .adopt-card.recommended {
+    border-color: rgba(139, 92, 246, 0.4);
+    box-shadow: var(--shadow-glow-violet);
+  }
+  .adopt-card-header {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .adopt-card-model {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .model-a { background: rgba(0, 240, 255, 0.12); color: var(--engine-dashboard); }
+  .model-b { background: rgba(139, 92, 246, 0.12); color: var(--engine-grow); }
+  .model-c { background: rgba(234, 179, 8, 0.12); color: var(--engine-execute); }
+  .adopt-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .adopt-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .adopt-card-meta span { display: flex; align-items: center; gap: 4px; }
+  .feasibility-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .feasibility-high { background: rgba(34, 197, 94, 0.15); color: var(--engine-protect); }
+  .feasibility-mid { background: rgba(234, 179, 8, 0.15); color: var(--engine-execute); }
+  .adopt-btn {
+    width: 100%;
+    padding: 8px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+  }
+  .adopt-btn:hover { border-color: var(--engine-grow); color: var(--engine-grow); }
+  .adopt-btn.primary {
+    background: linear-gradient(135deg, var(--engine-grow), #6d28d9);
+    color: white;
+    border: none;
+  }
+  .recommend-badge {
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--engine-grow);
+    color: white;
+    font-weight: 700;
+  }
+
+  /* ── Gate Checker ── */
+  .gate-panel {
+    background: rgba(234, 179, 8, 0.04);
+    border: 1px solid rgba(234, 179, 8, 0.15);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .gate-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .gate-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--engine-execute);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .gate-items { display: flex; flex-direction: column; gap: 8px; }
+  .gate-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .gate-icon {
+    width: 20px; height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .gate-pass { background: rgba(34, 197, 94, 0.15); color: var(--engine-protect); }
+  .gate-warn { background: rgba(234, 179, 8, 0.15); color: var(--engine-execute); }
+  .gate-fail { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+  .gate-optional {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-left: auto;
+    padding: 1px 6px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  /* ── Context Panel (Right) ── */
+  .context-panel {
+    background: var(--bg-surface);
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .context-panel::-webkit-scrollbar { width: 4px; }
+  .context-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .panel-section {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-section-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Decision Log */
+  .decision-entry {
+    padding: 10px;
+    background: var(--bg-card);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .decision-entry:hover { border-color: var(--border-active); }
+  .decision-entry.draft { opacity: 0.6; border-style: dashed; }
+  .decision-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .decision-phase {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(139, 92, 246, 0.12);
+    color: var(--engine-grow);
+    font-weight: 600;
+  }
+  .decision-trigger {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+  .decision-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .decision-time {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  /* Artifact List */
+  .artifact-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 4px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .artifact-item:hover { background: var(--bg-hover); }
+  .artifact-icon {
+    width: 28px; height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .artifact-name { font-weight: 500; }
+  .artifact-phase { font-size: 10px; color: var(--text-muted); }
+
+  /* Progress ring */
+  .progress-ring {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: var(--bg-card);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+  .ring-visual {
+    width: 48px; height: 48px;
+    position: relative;
+  }
+  .ring-visual svg { transform: rotate(-90deg); }
+  .ring-visual .ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--engine-grow);
+  }
+  .ring-info { display: flex; flex-direction: column; gap: 2px; }
+  .ring-label { font-size: 12px; color: var(--text-secondary); }
+  .ring-detail { font-size: 10px; color: var(--text-muted); }
+
+  /* Toast */
+  .toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 340px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .toast {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    animation: slideUp 0.3s ease-out;
+    min-width: 280px;
+  }
+  .toast-icon {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--engine-protect);
+  }
+  .toast .undo-btn {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--engine-grow);
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* ── Model Running Indicator ── */
+  .model-running {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(139, 92, 246, 0.06);
+    border: 1px solid rgba(139, 92, 246, 0.15);
+    border-radius: var(--radius-sm);
+  }
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(139, 92, 246, 0.2);
+    border-top-color: var(--engine-grow);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .model-running-text { font-size: 12px; color: var(--text-secondary); }
+  .model-running-text strong { color: var(--engine-grow); }
+
+  /* ── Responsive collapse (simplified) ── */
+  @media (max-width: 1100px) {
+    .app-shell { grid-template-columns: 56px 1fr 280px; }
+    .phase-name, .phase-status, .rail-section-label { display: none; }
+    .phase-item { justify-content: center; padding: 10px 0; }
+    .gate-divider { font-size: 8px; margin: 6px 4px; padding: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <!-- ═══ Top Bar ═══ -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <span class="logo">⬡ Poseidon Orchestrator</span>
+      <span class="pipeline-badge">Pipeline: Web再構築アーキテクチャ</span>
+      <div class="enforcement-toggle">
+        <span>Reviewer:</span>
+        <div class="pill">
+          <button>Strict</button>
+          <button class="active">Warn</button>
+        </div>
+      </div>
+    </div>
+    <div class="top-bar-right">
+      <select class="scale-select">
+        <option>Standard (11 phases)</option>
+        <option>Full (11 phases + all gates)</option>
+        <option>Light (5 phases)</option>
+        <option selected>Quick (3 phases)</option>
+      </select>
+      <button class="btn-sm">履歴</button>
+      <button class="btn-sm btn-primary">▶ 次のフェーズへ</button>
+    </div>
+  </header>
+
+  <!-- ═══ Phase Rail (Left Column) ═══ -->
+  <nav class="phase-rail">
+    <div class="rail-section-label">定義フェーズ</div>
+    <div class="phase-item" onclick="setPhase(this)">
+      <span class="phase-num done">1</span>
+      <span class="phase-name">環境認識</span>
+      <span class="phase-status status-check">✓</span>
+    </div>
+    <div class="phase-item" onclick="setPhase(this)">
+      <span class="phase-num done">2</span>
+      <span class="phase-name">価値定義</span>
+      <span class="phase-status status-check">✓</span>
+    </div>
+    <div class="gate-divider">▸ Gate A: 問題定義</div>
+
+    <div class="rail-section-label">探索フェーズ</div>
+    <div class="phase-item active" onclick="setPhase(this)">
+      <span class="phase-num current">3</span>
+      <span class="phase-name">独立アイデア創出</span>
+      <span class="phase-status status-running">●</span>
+    </div>
+    <div class="phase-item" onclick="setPhase(this)">
+      <span class="phase-num pending">4</span>
+      <span class="phase-name">独立批評</span>
+      <span class="phase-status"></span>
+    </div>
+    <div class="gate-divider">▸ Gate B: 探索品質</div>
+
+    <div class="rail-section-label">統合フェーズ</div>
+    <div class="phase-item" onclick="setPhase(this)">
+      <span class="phase-num pending">5</span>
+      <span class="phase-name">交差検証マトリクス</span>
+      <span class="phase-status"></span>
+    </div>
+    <div class="phase-item" onclick="setPhase(this)">
+      <span class="phase-num pending">6</span>
+      <span class="phase-name">統合シンセシス</span>
+      <span class="phase-status"></span>
+    </div>
+    <div class="phase-item" onclick="setPhase(this)">
+      <span class="phase-num pending">7</span>
+      <span class="phase-name">弱点補強</span>
+      <span class="phase-status"></span>
+    </div>
+    <div class="gate-divider">▸ Gate C: 統合品質</div>
+
+    <div class="rail-section-label">確定フェーズ</div>
+    <div class="phase-item" onclick="setPhase(this)">
+      <span class="phase-num pending">8</span>
+      <span class="phase-name">最終レビュー</span>
+      <span class="phase-status"></span>
+    </div>
+    <div class="phase-item" onclick="setPhase(this)">
+      <span class="phase-num pending">9</span>
+      <span class="phase-name">メタ振り返り</span>
+      <span class="phase-status"></span>
+    </div>
+    <div class="phase-item" onclick="setPhase(this)">
+      <span class="phase-num pending">10</span>
+      <span class="phase-name">実行計画</span>
+      <span class="phase-status"></span>
+    </div>
+    <div class="phase-item" onclick="setPhase(this)">
+      <span class="phase-num pending">11</span>
+      <span class="phase-name">メタ認知ログ</span>
+      <span class="phase-status"></span>
+    </div>
+  </nav>
+
+  <!-- ═══ Main Work Area (Center) ═══ -->
+  <main class="main-area">
+
+    <!-- Phase Title -->
+    <div class="section-header">
+      <div class="section-title">
+        <span class="icon">💡</span>
+        Phase 3 — 独立アイデア創出
+      </div>
+      <span style="font-size: 12px; color: var(--text-muted);">3モデル並列実行中</span>
+    </div>
+
+    <!-- Prompt Editor (4キャラ批判的思考会議) -->
+    <div class="glass-card">
+      <div class="glass-card-header">
+        <span class="glass-card-title">プロンプトエディタ</span>
+        <span class="template-badge">📝 4キャラ批判的思考会議</span>
+      </div>
+      <div class="prompt-editor">
+        <div class="prompt-editor-toolbar">
+          <div class="prompt-editor-toolbar-left">
+            <span style="font-size: 12px; color: var(--text-secondary);">Template: phase3-ideation-meeting</span>
+          </div>
+          <button class="btn-sm" style="font-size: 11px;">テンプレート変更</button>
+        </div>
+        <div class="prompt-body"><span class="prompt-heading">## タスク</span>
+テーマについて関連する天才・初心者・ポジティブ・心配性なキャラ4人を作成し、
+批判的思考で非常に価値が高い架空の会議を進めてください（最低10000字以上）。
+
+<span class="prompt-heading">## 会議ルール</span>
+* 登場人物のキャラ設定を詳細に記述してください
+* 議論は深掘りするか横展開するかのみです
+* 批判的思考で本質をついたアイデア出しや反論を活発に行ってください
+* 否定する場合は必ず代替案を出してください
+
+<span class="prompt-heading">## テーマ</span>
+### 価値定義  <span class="prompt-var">{{value-definition}}</span>
+### 環境認識  <span class="prompt-var">{{research-synthesis}}</span>
+### 検討課題  <span class="prompt-var">{{ideation-focus}}</span></div>
+      </div>
+    </div>
+
+    <!-- Model Execution Status -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+      <div class="model-running">
+        <div class="spinner" style="border-top-color: var(--engine-dashboard);"></div>
+        <div class="model-running-text"><strong>Claude</strong> — 生成中 42%</div>
+      </div>
+      <div class="model-running">
+        <div class="spinner" style="border-top-color: var(--engine-grow);"></div>
+        <div class="model-running-text"><strong>GPT-4</strong> — 生成中 38%</div>
+      </div>
+      <div class="model-running">
+        <div class="spinner" style="border-top-color: var(--engine-execute);"></div>
+        <div class="model-running-text"><strong>Gemini</strong> — 生成中 55%</div>
+      </div>
+    </div>
+
+    <!-- Quick Adopt Comparison -->
+    <div class="glass-card" style="padding: 0;">
+      <div class="tabs">
+        <button class="tab active">⚡ Quick Adopt</button>
+        <button class="tab">📊 詳細スコア</button>
+        <button class="tab">📄 全文</button>
+      </div>
+      <div style="padding: 16px;">
+        <div class="adopt-grid">
+          <!-- Card A: Claude -->
+          <div class="adopt-card">
+            <div class="adopt-card-header">
+              <span class="adopt-card-model model-a">Claude</span>
+              <span class="feasibility-badge feasibility-high">高</span>
+            </div>
+            <div class="adopt-card-title">Islands Architecture + Astro</div>
+            <div class="adopt-card-meta">
+              <span>🎯 島型コンポーネントで段階的ハイドレーション</span>
+              <span>📐 Astro + React Islands + Tailwind 4</span>
+              <span>💡 既存コンテンツの移行コスト最小化</span>
+            </div>
+            <button class="adopt-btn" onclick="showToast('Claude案をAdopt — Decision Log記録済み')">Adopt →</button>
+          </div>
+          <!-- Card B: GPT-4 (Recommended) -->
+          <div class="adopt-card recommended">
+            <span class="recommend-badge">★ 推薦</span>
+            <div class="adopt-card-header">
+              <span class="adopt-card-model model-b">GPT-4</span>
+              <span class="feasibility-badge feasibility-high">高</span>
+            </div>
+            <div class="adopt-card-title">RSC-First SPA + Edge SSR</div>
+            <div class="adopt-card-meta">
+              <span>🎯 React Server Components中心の設計</span>
+              <span>📐 Next.js 15 + RSC + Vercel Edge</span>
+              <span>💡 リアルタイムダッシュボードとの統合性</span>
+            </div>
+            <button class="adopt-btn primary" onclick="showToast('GPT-4案をAdopt — Decision Log記録済み')">⚡ Adopt →</button>
+          </div>
+          <!-- Card C: Gemini -->
+          <div class="adopt-card">
+            <div class="adopt-card-header">
+              <span class="adopt-card-model model-c">Gemini</span>
+              <span class="feasibility-badge feasibility-mid">中</span>
+            </div>
+            <div class="adopt-card-title">Micro-Frontend Federation</div>
+            <div class="adopt-card-meta">
+              <span>🎯 Module Federationによる独立デプロイ</span>
+              <span>📐 Vite + Module Federation + Qwik</span>
+              <span>💡 チーム独立性とスケーラビリティ</span>
+            </div>
+            <button class="adopt-btn" onclick="showToast('Gemini案をAdopt — Decision Log記録済み')">Adopt →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gate B Checker -->
+    <div class="gate-panel">
+      <div class="gate-header">
+        <span class="gate-title">🔒 Gate B — 探索品質チェック</span>
+        <span style="font-size: 11px; color: var(--text-muted);">preset: quick</span>
+      </div>
+      <div class="gate-items">
+        <div class="gate-item">
+          <span class="gate-icon gate-pass">✓</span>
+          <span>3モデル以上の独立出力が存在する</span>
+        </div>
+        <div class="gate-item">
+          <span class="gate-icon gate-pass">✓</span>
+          <span>各出力が構造化サマリーを含む</span>
+        </div>
+        <div class="gate-item">
+          <span class="gate-icon gate-warn">!</span>
+          <span>批評（Phase 4）が未完了</span>
+          <span class="gate-optional">optional (quick)</span>
+        </div>
+        <div class="gate-item">
+          <span class="gate-icon gate-pass">✓</span>
+          <span>Generator ≠ Reviewer 分離が維持されている</span>
+        </div>
+      </div>
+      <div style="margin-top: 12px; display: flex; gap: 8px;">
+        <button class="btn-sm btn-primary" style="flex: 1;" onclick="showToast('Gate B 通過 — Decision Log記録済み')">Gate Pass（warn付きで通過）</button>
+        <button class="btn-sm" style="flex: 0;">Phase 4 を実行</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══ Context Panel (Right Column) ═══ -->
+  <aside class="context-panel">
+
+    <!-- Pipeline Progress -->
+    <div class="panel-section">
+      <div class="panel-section-title">パイプライン進捗</div>
+      <div class="progress-ring">
+        <div class="ring-visual">
+          <svg width="48" height="48" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(139,92,246,0.15)" stroke-width="4" />
+            <circle cx="24" cy="24" r="20" fill="none" stroke="var(--engine-grow)" stroke-width="4"
+              stroke-dasharray="125.66" stroke-dashoffset="90" stroke-linecap="round" />
+          </svg>
+          <div class="ring-text">27%</div>
+        </div>
+        <div class="ring-info">
+          <span class="ring-label">Phase 3 / 11</span>
+          <span class="ring-detail">Gate A 通過済み · Gate B 判定中</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Artifacts -->
+    <div class="panel-section">
+      <div class="panel-section-title">
+        アーティファクト
+        <span style="font-size: 10px; color: var(--text-muted);">4 files</span>
+      </div>
+      <div class="artifact-item">
+        <div class="artifact-icon" style="background: rgba(0, 240, 255, 0.1); color: var(--engine-dashboard);">📄</div>
+        <div>
+          <div class="artifact-name">research-synthesis.md</div>
+          <div class="artifact-phase">Phase 1 · 環境認識</div>
+        </div>
+      </div>
+      <div class="artifact-item">
+        <div class="artifact-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--engine-grow);">📄</div>
+        <div>
+          <div class="artifact-name">value-definition.md</div>
+          <div class="artifact-phase">Phase 2 · 価値定義</div>
+        </div>
+      </div>
+      <div class="artifact-item">
+        <div class="artifact-icon" style="background: rgba(0, 240, 255, 0.1); color: var(--engine-dashboard);">💡</div>
+        <div>
+          <div class="artifact-name">ideation-claude.md</div>
+          <div class="artifact-phase">Phase 3 · 生成中…</div>
+        </div>
+      </div>
+      <div class="artifact-item">
+        <div class="artifact-icon" style="background: rgba(234, 179, 8, 0.1); color: var(--engine-execute);">💡</div>
+        <div>
+          <div class="artifact-name">ideation-gemini.md</div>
+          <div class="artifact-phase">Phase 3 · 生成中…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Decision Log -->
+    <div class="panel-section" style="border-bottom: none; flex: 1;">
+      <div class="panel-section-title">
+        Decision Log
+        <span style="font-size: 10px; color: var(--text-muted);">3 entries</span>
+      </div>
+
+      <div class="decision-entry">
+        <div class="decision-header">
+          <span class="decision-phase">Phase 2</span>
+          <span class="decision-trigger">gate-pass</span>
+        </div>
+        <div class="decision-text">Gate A 通過: 問題定義の質が基準を満たしている</div>
+        <div class="decision-time">14:32 · 自動記録</div>
+      </div>
+
+      <div class="decision-entry">
+        <div class="decision-header">
+          <span class="decision-phase">Phase 1</span>
+          <span class="decision-trigger">manual</span>
+        </div>
+        <div class="decision-text">競合分析データソースを追加: Gartner 2025 Q4レポートを参照に含める</div>
+        <div class="decision-time">14:15 · 手動記録</div>
+      </div>
+
+      <div class="decision-entry draft">
+        <div class="decision-header">
+          <span class="decision-phase">Phase 3</span>
+          <span class="decision-trigger">auto-skeleton</span>
+        </div>
+        <div class="decision-text" style="color: var(--text-muted); font-style: italic;">Phase 3 開始 — 3モデル並列実行を選択</div>
+        <div class="decision-time">14:35 · ドラフト</div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+function setPhase(el) {
+  document.querySelectorAll('.phase-item').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function showToast(msg) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `
+    <span class="toast-icon">✓</span>
+    <span>${msg}</span>
+    <button class="undo-btn">取消</button>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(10px)';
+    toast.style.transition = 'all 0.3s';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+</script>
+
+</body>
+</html>
