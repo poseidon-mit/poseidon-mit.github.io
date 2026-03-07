@@ -6,12 +6,13 @@ import {
   AlertTriangle,
   ArrowUpRight,
   ArrowUpDown,
+  Scale,
   Search,
   CircleDot,
   ChevronDown,
   type LucideIcon,
 } from "lucide-react"
-import { GovernImmutableLedger } from '@/components/poseidon'
+import { GovernImmutableLedger, EngineBadge } from '@/components/poseidon'
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { getMotionPreset, accordionVariants, accordionTransition } from '@/lib/motion-presets'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
@@ -41,7 +42,7 @@ export default function GovernPage() {
   const auditSummary = selectGovernAuditSummaryView()
   const engineBreakdown = selectGovernEngineBreakdown()
   const auditEntries = selectGovernAuditEntries()
-  const flightRecorderEntries = auditEntries.slice(0, 3).map((entry) => {
+  const heroAuditEntries = auditEntries.slice(0, 3).map((entry) => {
     const detail = AUDIT_DECISIONS[entry.id as keyof typeof AUDIT_DECISIONS]
     return {
       id: entry.id,
@@ -69,18 +70,22 @@ export default function GovernPage() {
 
       <motion.div id="main-content" className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12`} style={PAGE_CONTENT_STYLE} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main">
 
-        {/* ── Hero: Immutable Audit Ledger ── */}
-        <motion.div variants={fadeUpVariant}>
+        {/* ── Prelude ── */}
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
+          <motion.div variants={fadeUpVariant} className="flex items-center gap-2">
+            <EngineBadge engine="govern" icon={Scale} label="Engine status: Good" />
+          </motion.div>
+          <h1 className="sr-only">Govern Engine</h1>
+          <motion.div variants={fadeUpVariant}>
           <GovernImmutableLedger
             decisionsAudited={auditSummary.total}
             engineBreakdown={engineBreakdown}
-            flightRecorderEntries={flightRecorderEntries}
-            onOpenLedger={() => navigate('/govern/audit')}
+            auditEntries={heroAuditEntries}
           />
         </motion.div>
+        </motion.section>
 
-        {/* ── Decision Ledger ── */}
-        <div>
+        {false && (<div className="below-hero-govern">
           <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
             <div className="flex items-center justify-between border-b border-white/[0.06] pb-4 px-2">
               <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">Decision Ledger</h2>
@@ -107,7 +112,7 @@ export default function GovernPage() {
                       </div>
                       <div className="hidden sm:flex items-center justify-end gap-3 md:gap-6 shrink-0">
                         <div className="flex-col items-end gap-1.5 hidden md:flex">
-                          <span className="text-sm font-mono tracking-widest" style={{ color: entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)", textShadow: `0 0 10px ${entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)"}60` }}>Confidence {formatConfidence(entry.confidence)}</span>
+                          <span className="text-sm font-mono tracking-widest" style={{ color: entry.confidence >= 0.9 ? "var(--state-healthy)" : entry.confidence >= 0.8 ? "var(--engine-govern)" : "var(--state-warning)" }}>Confidence {formatConfidence(entry.confidence)}</span>
                           <span className="text-[10px] uppercase tracking-widest text-white/30">{entry.time}</span>
                         </div>
                         <div className="w-8 h-8 rounded-full hidden sm:flex items-center justify-center border border-white/[0.05] bg-white/[0.02] group-hover:bg-white/[0.1] group-hover:border-[var(--engine-govern)]/30 transition-all shadow-inner">
@@ -170,7 +175,7 @@ export default function GovernPage() {
               )}
             </AnimatePresence>
           </motion.section>
-        </div>
+        </div>)}
 
       </motion.div>
     </>

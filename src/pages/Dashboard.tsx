@@ -9,6 +9,7 @@ import {
   AlertTriangle,
   ChevronRight,
   CheckCircle,
+  LayoutDashboard,
   type LucideIcon,
 } from 'lucide-react'
 import { getMotionPreset, hoverLift } from '@/lib/motion-presets'
@@ -36,6 +37,9 @@ import { useDismissedAlerts } from '@/pages/protect/useDismissedAlerts'
 import { RECOMMENDATIONS_SUMMARY } from '@/pages/grow/recommendation-detail-data'
 import { ENGINE_COLOR_MAP, type EngineLabel } from '@/lib/engine-color-map'
 import { EngineBadge, SeverityBadge, EmptyState, DashboardCoordinationProof } from '@/components/poseidon'
+import type { EngineName } from '@/lib/engine-tokens'
+import { GuidedSetupDrawer } from '@/components/dashboard/GuidedSetupDrawer'
+import { OnboardingArrivalSheet } from '@/components/dashboard/OnboardingArrivalSheet'
 
 /* ── Urgency sort helpers ── */
 
@@ -96,8 +100,6 @@ function ProtectPanel({
             className="group"
           >
             <motion.div
-              whileHover={{ x: 4 }}
-              transition={hoverLift}
               className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-colors cursor-pointer"
             >
               <SeverityBadge severity={toDisplaySeverity(threat.severity)} />
@@ -172,8 +174,6 @@ function GrowPanel({
             className="group"
           >
             <motion.div
-              whileHover={{ x: 4 }}
-              transition={hoverLift}
               className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-colors cursor-pointer"
             >
               <div
@@ -261,9 +261,7 @@ function ExecutePanel({
               to={`/execute/approval?actionId=${action.id}`}
             >
               <motion.div
-                whileHover={{ y: -4, scale: 1.02 }}
-                transition={hoverLift}
-                className="glass-card rounded-2xl p-5 cursor-pointer group h-full flex flex-col gap-3 border-l-2 transition-colors"
+                className="glass-card rounded-2xl p-5 cursor-pointer group h-full flex flex-col gap-3 border-l-2 transition-colors hover:bg-white/[0.03]"
                 style={{
                   borderLeftColor:
                     ENGINE_COLOR_MAP[action.engine as EngineLabel] ??
@@ -386,6 +384,11 @@ export default function DashboardPage() {
   )
   const topThreat = topThreats[0] ?? null
 
+  const dominantEngine: EngineName =
+    (topThreats.length > 0 && topThreats[0]?.severity === 'Critical') ? 'protect'
+    : pendingCount > 3 ? 'execute'
+    : 'grow'
+
   return (
     <div className="selection:bg-cyan-500/30">
       <motion.main
@@ -397,8 +400,10 @@ export default function DashboardPage() {
         animate="visible"
       >
         {/* ── Coordination Proof Hero ── */}
-        <motion.section variants={itemVariants} className="mb-10">
+        <motion.section variants={itemVariants} className="flex flex-col gap-6 mb-10">
+          <EngineBadge engine="dashboard" icon={LayoutDashboard} label="Command Center" />
           <DashboardCoordinationProof
+            dominantEngine={dominantEngine}
             activeThreats={activeThreats.length}
             monthlySavings={dashboardView.monthlySavingsPotentialUsd}
             pendingActions={pendingCount}
@@ -431,60 +436,72 @@ export default function DashboardPage() {
           />
         </motion.section>
 
-        {/* ── Protect + Grow (side-by-side on desktop) ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-          <ProtectPanel
-            threats={topThreats}
-            totalActive={activeThreats.length}
+      </motion.main>
+
+      {false && (
+        <>
+          {/* ── Protect + Grow (side-by-side on desktop) ── */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+            <ProtectPanel
+              threats={topThreats}
+              totalActive={activeThreats.length}
+              itemVariants={itemVariants}
+            />
+            <GrowPanel
+              recommendations={topRecs}
+              totalSavings={totalMonthlySavings}
+              itemVariants={itemVariants}
+            />
+          </div>
+
+          {/* ── Execute ── */}
+          <ExecutePanel
+            actions={sortedPendingActions.slice(0, 3)}
+            pendingCount={pendingCount}
             itemVariants={itemVariants}
           />
-          <GrowPanel
-            recommendations={topRecs}
-            totalSavings={totalMonthlySavings}
-            itemVariants={itemVariants}
-          />
-        </div>
 
-        {/* ── Execute ── */}
-        <ExecutePanel
-          actions={sortedPendingActions.slice(0, 3)}
-          pendingCount={pendingCount}
-          itemVariants={itemVariants}
-        />
-
-        {/* ── Activity Feed ── */}
-        <motion.div variants={itemVariants} className="mb-16">
-          <div className="glass-card rounded-[24px] p-5 md:p-8 flex flex-col gap-6">
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-white/40">
-              Recent Activity
-            </h2>
-            <div className="flex flex-col gap-2">
-              {dashboardView.activities.map((item) => {
-                const tone = activityToneMap[item.kind]
-                const Icon = tone.icon
-                return (
-                  <div key={item.id} className="flex items-center gap-4 py-3">
-                    <div
-                      className="flex items-center justify-center rounded-xl w-10 h-10 shrink-0"
-                      style={{ background: `${tone.color}10` }}
-                    >
-                      <Icon size={16} style={{ color: tone.color }} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <span className="text-sm text-white/70">
-                        {item.label}
+          {/* ── Activity Feed ── */}
+          <motion.div variants={itemVariants} className="mb-16">
+            <div className="glass-card rounded-[24px] p-5 md:p-8 flex flex-col gap-6">
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-white/40">
+                Recent Activity
+              </h2>
+              <div className="flex flex-col gap-2">
+                {dashboardView.activities.map((item) => {
+                  const tone = activityToneMap[item.kind]
+                  const Icon = tone.icon
+                  return (
+                    <div key={item.id} className="flex items-center gap-4 py-3">
+                      <div
+                        className="flex items-center justify-center rounded-xl w-10 h-10 shrink-0"
+                        style={{ background: `${tone.color}10` }}
+                      >
+                        <Icon size={16} style={{ color: tone.color }} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm text-white/70">
+                          {item.label}
+                        </span>
+                      </div>
+                      <span className="text-xs font-mono text-white/30 shrink-0">
+                        {item.relativeTime}
                       </span>
                     </div>
-                    <span className="text-xs font-mono text-white/30 shrink-0">
-                      {item.relativeTime}
-                    </span>
-                  </div>
-                )
-              })}
+                  )
+                })}
+              </div>
             </div>
-          </div>
-        </motion.div>
-      </motion.main>
+          </motion.div>
+        </>
+      )}
+
+      {/* ── Drawers (restored outside dead block) ── */}
+      {state.auth.entryIntent === 'agentic' && !state.onboarding.completed && (
+        <GuidedSetupDrawer />
+      )}
+      {/* ArrivalSheet: entryIntent 不問。sessionStorage key のみで一度きり制御 */}
+      <OnboardingArrivalSheet />
     </div>
   )
 }

@@ -23,6 +23,7 @@ export default function OnboardingActivatePage() {
       setActivateState('done');
       markOnboardingCompleted();
       setTimeout(() => {
+        try { sessionStorage.setItem('poseidon-onboarding-arrival', 'pending') } catch { /* noop */ }
         navigate('/dashboard');
       }, 800);
     }, 2000);

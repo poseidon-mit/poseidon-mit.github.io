@@ -9,11 +9,17 @@
  * CountUp handles its own viewport-triggered animation.
  */
 import { ArrowRight, Shield, TrendingUp, Zap, ShieldCheck, CheckCircle, Scale } from 'lucide-react'
-import { AuroraPulse, CountUp, SeverityBadge } from '@/components/poseidon'
+import { AuroraPulse } from './aurora-pulse'
+import { CountUp } from './count-up'
+import { HeroBento } from './hero-bento'
+import { ListPortalBar } from './list-portal-bar'
+import { CostOfInaction } from './cost-of-inaction'
+import { SeverityBadge } from './severity-badge'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 import { formatUsd } from '@/domain/poseidon-universe'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+import type { EngineName } from '@/lib/engine-tokens'
 
 /* ── Types ── */
 
@@ -63,6 +69,7 @@ export interface DashboardCoordinationProofProps {
   onReviewApproval: (() => void) | null
   onViewRecommendations: () => void
   cohortAvgSavingsUsd?: number
+  dominantEngine?: EngineName
 }
 
 /* ── Live Audit Stream (background) ── */
@@ -223,6 +230,7 @@ export function DashboardCoordinationProof({
   onReviewApproval,
   onViewRecommendations,
   cohortAvgSavingsUsd,
+  dominantEngine,
 }: DashboardCoordinationProofProps) {
   const narrative = buildNarrative({
     criticalSignal,
@@ -233,75 +241,104 @@ export function DashboardCoordinationProof({
   })
 
   return (
-    <div className="relative glass-card rounded-[32px] border border-[var(--engine-dashboard)]/20 overflow-hidden">
-      <AuroraPulse color="var(--engine-dashboard)" intensity="subtle" className="absolute inset-0 pointer-events-none" />
+    <HeroBento engine={dominantEngine ?? 'dashboard'} className="xl:grid-cols-[1fr_1fr]">
       <LiveAuditStream entries={auditStreamEntries} />
 
-      <div className="relative z-10">
-        {/* ── Headline + Narrative ── */}
-        <div className="p-6 md:p-8 lg:p-10 pb-0 md:pb-0 lg:pb-0">
-          <h1
-            className="text-2xl md:text-3xl lg:text-4xl font-light tracking-tight text-white mb-3"
-            style={{ fontFamily: 'var(--font-display)' }}
+      {/* ── Zone A: Action ── */}
+      <HeroBento.Action>
+        <h1
+          className="text-2xl md:text-3xl lg:text-4xl font-light tracking-tight text-white mb-3"
+          style={{ fontFamily: 'var(--font-display)' }}
+        >
+          Your money, finally coordinated.
+        </h1>
+        <p className="text-sm md:text-base text-white/50 leading-relaxed max-w-3xl">
+          {narrative}
+        </p>
+
+        {onReviewSignal && criticalSignal && (
+          <button
+            onClick={onReviewSignal}
+            className={cn(
+              buttonVariants({ variant: 'default', size: 'sm' }),
+              'h-auto w-fit rounded-xl px-5 py-2.5 min-h-[44px] mt-2',
+              'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950',
+              'font-semibold tracking-wide text-xs',
+              'hover:from-emerald-400 hover:to-cyan-400 transition-all',
+              'flex items-center gap-2',
+            )}
           >
-            Your money, finally coordinated.
-          </h1>
-          <p className="text-sm md:text-base text-white/50 leading-relaxed max-w-3xl">
-            {narrative}
-          </p>
-        </div>
+            Review critical signal <ArrowRight size={12} />
+          </button>
+        )}
 
-        {/* ── Engine Card Strip ── */}
-        <div className="p-6 md:p-8 lg:p-10">
-          {/* Desktop: 3 cards + 2 rails */}
-          <div className="hidden md:grid grid-cols-[1fr_2px_1fr_2px_1fr] gap-4">
-            <ProtectCard
-              criticalSignal={criticalSignal}
-              activeThreats={activeThreats}
-              onReviewSignal={onReviewSignal}
-            />
-            <CoordinationRail fromColor="var(--engine-protect)" toColor="var(--engine-grow)" />
-            <GrowCard
-              monthlySavings={monthlySavings}
-              recommendationCount={recommendationCount}
-              onViewRecommendations={onViewRecommendations}
-              cohortAvgSavingsUsd={cohortAvgSavingsUsd}
-            />
-            <CoordinationRail fromColor="var(--engine-grow)" toColor="var(--engine-execute)" />
-            <ExecuteCard
-              nextApproval={nextApproval}
-              pendingActions={pendingActions}
-              onReviewApproval={onReviewApproval}
-            />
-          </div>
-
-          {/* Mobile: stacked cards with horizontal rails */}
-          <div className="flex flex-col gap-3 md:hidden">
-            <ProtectCard
-              criticalSignal={criticalSignal}
-              activeThreats={activeThreats}
-              onReviewSignal={onReviewSignal}
-            />
-            <CoordinationRail fromColor="var(--engine-protect)" toColor="var(--engine-grow)" />
-            <GrowCard
-              monthlySavings={monthlySavings}
-              recommendationCount={recommendationCount}
-              onViewRecommendations={onViewRecommendations}
-              cohortAvgSavingsUsd={cohortAvgSavingsUsd}
-            />
-            <CoordinationRail fromColor="var(--engine-grow)" toColor="var(--engine-execute)" />
-            <ExecuteCard
-              nextApproval={nextApproval}
-              pendingActions={pendingActions}
-              onReviewApproval={onReviewApproval}
-            />
-          </div>
-        </div>
-
-        {/* ── Govern Foundation Rail ── */}
         <GovernFoundationRail decisionsAudited={decisionsAudited} />
-      </div>
-    </div>
+      </HeroBento.Action>
+
+      {/* ── Zone B: Proof ── */}
+      <HeroBento.Proof>
+        {/* Desktop: 3 cards + 2 rails */}
+        <div className="hidden md:grid grid-cols-[1fr_2px_1fr_2px_1fr] gap-4">
+          <ProtectCard
+            criticalSignal={criticalSignal}
+            activeThreats={activeThreats}
+            onReviewSignal={onReviewSignal}
+          />
+          <CoordinationRail fromColor="var(--engine-protect)" toColor="var(--engine-grow)" />
+          <GrowCard
+            monthlySavings={monthlySavings}
+            recommendationCount={recommendationCount}
+            onViewRecommendations={onViewRecommendations}
+            cohortAvgSavingsUsd={cohortAvgSavingsUsd}
+          />
+          <CoordinationRail fromColor="var(--engine-grow)" toColor="var(--engine-execute)" />
+          <ExecuteCard
+            nextApproval={nextApproval}
+            pendingActions={pendingActions}
+            onReviewApproval={onReviewApproval}
+          />
+        </div>
+
+        {/* Mobile: stacked cards with horizontal rails */}
+        <div className="flex flex-col gap-3 md:hidden">
+          <ProtectCard
+            criticalSignal={criticalSignal}
+            activeThreats={activeThreats}
+            onReviewSignal={onReviewSignal}
+          />
+          <CoordinationRail fromColor="var(--engine-protect)" toColor="var(--engine-grow)" />
+          <GrowCard
+            monthlySavings={monthlySavings}
+            recommendationCount={recommendationCount}
+            onViewRecommendations={onViewRecommendations}
+            cohortAvgSavingsUsd={cohortAvgSavingsUsd}
+          />
+          <CoordinationRail fromColor="var(--engine-grow)" toColor="var(--engine-execute)" />
+          <ExecuteCard
+            nextApproval={nextApproval}
+            pendingActions={pendingActions}
+            onReviewApproval={onReviewApproval}
+          />
+        </div>
+
+        <CostOfInaction
+          label={criticalSignal
+            ? `${criticalSignal.amount} at risk if unreviewed`
+            : `${formatUsd(monthlySavings)}/mo unrealized without action`}
+          severity={criticalSignal ? 'high' : 'medium'}
+        />
+      </HeroBento.Proof>
+
+      {/* ── Zone C: Portal ── */}
+      <HeroBento.Portal>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+          <ListPortalBar engine="protect" label="View all threats" count={activeThreats} destination={{ type: 'route', to: '/protect/threats' }} />
+          <ListPortalBar engine="grow" label="View recommendations" count={recommendationCount} destination={{ type: 'route', to: '/grow/recommendations' }} />
+          <ListPortalBar engine="execute" label="Pending actions" count={pendingActions} destination={{ type: 'route', to: '/execute/queue' }} />
+          <ListPortalBar engine="govern" label="Audit ledger" count={decisionsAudited} destination={{ type: 'route', to: '/govern/audit' }} />
+        </div>
+      </HeroBento.Portal>
+    </HeroBento>
   )
 }
 
@@ -355,7 +392,13 @@ function ProtectCard({
           {onReviewSignal && (
             <button
               onClick={onReviewSignal}
-              className="flex items-center gap-1.5 text-xs font-medium text-[var(--engine-protect)] hover:text-[var(--engine-protect)]/80 transition-colors mt-1 self-start min-h-[44px]"
+              className={cn(
+                buttonVariants({ variant: 'default', size: 'sm' }),
+                'h-auto w-full rounded-xl px-5 py-2.5 min-h-[44px] mt-auto',
+                'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950',
+                'font-semibold tracking-wide text-xs',
+                'hover:from-emerald-400 hover:to-cyan-400 transition-all',
+              )}
             >
               Review signal <ArrowRight size={12} />
             </button>
@@ -417,7 +460,13 @@ function GrowCard({
 
       <button
         onClick={onViewRecommendations}
-        className="flex items-center gap-1.5 text-xs font-medium text-[var(--engine-grow)] hover:text-[var(--engine-grow)]/80 transition-colors mt-auto self-start min-h-[44px]"
+        className={cn(
+          buttonVariants({ variant: 'default', size: 'sm' }),
+          'h-auto w-full rounded-xl px-5 py-2.5 min-h-[44px] mt-auto',
+          'bg-gradient-to-r from-violet-500 to-purple-500 text-white',
+          'font-semibold tracking-wide text-xs',
+          'hover:from-violet-400 hover:to-purple-400 transition-all',
+        )}
       >
         See all <ArrowRight size={12} />
       </button>
@@ -480,7 +529,7 @@ function ExecuteCard({
               onClick={onReviewApproval}
               className={cn(
                 buttonVariants({ variant: 'default', size: 'sm' }),
-                'w-full rounded-xl px-5 py-2.5 min-h-[44px] mt-auto',
+                'h-auto w-full rounded-xl px-5 py-2.5 min-h-[44px] mt-auto',
                 'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950',
                 'font-semibold tracking-wide text-xs',
                 'hover:from-amber-400 hover:to-yellow-400 transition-all',

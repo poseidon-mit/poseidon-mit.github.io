@@ -13,6 +13,8 @@ import { type EngineName } from '@/lib/engine-tokens';
 import { useDemoState } from '@/lib/demo-state/provider';
 import { getPendingExecuteCount } from '@/lib/demo-state/selectors';
 import { cn } from '@/lib/utils';
+import { useDismissedAlerts } from '@/pages/protect/useDismissedAlerts';
+import { CANONICAL_UNIVERSE } from '@/domain/poseidon-universe/canonical';
 
 export type AccentTone = EngineName | 'system';
 
@@ -83,17 +85,24 @@ export const NAV_ITEMS: NavItem[] = [
 export const ENGINE_ITEMS = NAV_ITEMS.filter((i) => i.group === 'engine');
 export const SYSTEM_ITEMS = NAV_ITEMS.filter((i) => i.group === 'system');
 
-function buildNavBadges(pendingExecuteCount: number): Record<string, { type: 'pulse' | 'count'; value?: number; tone: AccentTone }> {
+function buildNavBadges(pendingExecuteCount: number, activeProtectCount: number): Record<string, { type: 'count'; value: number; tone: AccentTone }> {
     return {
-        '/protect': { type: 'pulse', tone: 'protect' },
+        '/protect': { type: 'count', value: activeProtectCount, tone: 'protect' },
         '/execute': { type: 'count', value: pendingExecuteCount, tone: 'execute' },
     };
 }
 
 export function Sidebar({ path }: { path: string }) {
     const { state } = useDemoState();
+    const { dismissed } = useDismissedAlerts();
     const pendingExecuteCount = useMemo(() => getPendingExecuteCount(state), [state]);
-    const navBadges = useMemo(() => buildNavBadges(pendingExecuteCount), [pendingExecuteCount]);
+    const activeProtectCount = useMemo(
+        () => CANONICAL_UNIVERSE.entities.protectThreats.filter(
+            t => (t.severity === 'Critical' || t.severity === 'High') && !dismissed.has(t.id)
+        ).length,
+        [dismissed]
+    );
+    const navBadges = useMemo(() => buildNavBadges(pendingExecuteCount, activeProtectCount), [pendingExecuteCount, activeProtectCount]);
 
     return (
         <aside className="fixed top-0 left-0 z-40 hidden h-screen w-[280px] flex-col bg-black/40 backdrop-blur-3xl border-r border-white/[0.04] lg:flex">
@@ -119,24 +128,35 @@ export function Sidebar({ path }: { path: string }) {
                     const isActive = path === item.path || path.startsWith(item.path + '/');
                     const Icon = item.icon;
                     const tone = TONE_CLASSES[item.tone];
+                    const badge = navBadges[item.path];
+                    const isProtectAlert = !isActive && item.path === '/protect' && activeProtectCount > 0;
                     return (
                         <Link
                             key={item.path}
                             to={item.path}
                             className={cn(
                                 'group relative flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-300',
-                                isActive ? tone.activeLink : 'text-slate-400 hover:bg-white/[0.06] hover:text-white border border-transparent hover:border-white/5'
+                                isActive
+                                    ? tone.activeLink
+                                    : cn(
+                                        'text-slate-400 hover:bg-white/[0.06] hover:text-white border border-transparent hover:border-white/5',
+                                        isProtectAlert && 'bg-emerald-500/[0.04] border-emerald-500/10'
+                                    )
                             )}
                             aria-current={isActive ? 'page' : undefined}
                         >
                             <Icon className={cn('h-[18px] w-[18px] transition-transform duration-300 group-hover:scale-110', isActive && tone.activeIcon)} aria-hidden="true" />
-                            <span className="flex-1 text-sm font-medium tracking-wide">{item.label}</span>
-                            {navBadges[item.path]?.type === 'pulse' && (
-                                <span className={cn('nav-badge-pulse h-2 w-2 flex-shrink-0 rounded-full', TONE_CLASSES[navBadges[item.path]!.tone].indicator)} aria-hidden="true" />
-                            )}
-                            {navBadges[item.path]?.type === 'count' && (
-                                <span className={cn('flex h-[18px] min-w-[18px] flex-shrink-0 items-center justify-center rounded-full px-1 text-[10px] font-bold text-slate-950', TONE_CLASSES[navBadges[item.path]!.tone].indicator)} aria-hidden="true">
-                                    {navBadges[item.path]!.value}
+                            <span className="flex-1 text-sm font-medium tracking-wide">
+                                {item.label}
+                                {isProtectAlert && (
+                                    <span className="block text-[9px] font-semibold text-emerald-400/60 tracking-widest uppercase leading-none mt-0.5">
+                                        Action Required
+                                    </span>
+                                )}
+                            </span>
+                            {badge && badge.value > 0 && (
+                                <span className={cn('flex h-[18px] min-w-[18px] flex-shrink-0 items-center justify-center rounded-full px-1 text-[10px] font-bold text-slate-950', TONE_CLASSES[badge.tone].indicator)} aria-hidden="true">
+                                    {badge.value}
                                 </span>
                             )}
                         </Link>

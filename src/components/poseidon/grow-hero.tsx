@@ -10,16 +10,17 @@
  * - HeroKpiStrip: 3 KPI cards (savings, cohort, top action)
  */
 import { useState, useMemo, useCallback } from 'react'
-import { motion } from 'framer-motion'
 import { ArrowRight, Zap, RotateCcw } from 'lucide-react'
 import {
   AreaChart, Area, Line, XAxis, YAxis,
-  ReferenceDot, Label, ResponsiveContainer,
+  ReferenceDot, ReferenceLine, Label, ResponsiveContainer,
 } from 'recharts'
-import { AuroraPulse, ConfidenceIndicator } from '@/components/poseidon'
+import { HeroBento } from './hero-bento'
+import { ListPortalBar } from './list-portal-bar'
+import { CostOfInaction } from './cost-of-inaction'
+import { ConfidenceIndicator } from './confidence-indicator'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
-import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 /* ── Types ── */
@@ -89,34 +90,52 @@ function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: 
 
 function HeroHeadline({
   projectedGain,
+  isOptimized,
+  onOptimize,
   onReplay,
-  showReplay,
+  showControls,
 }: {
   projectedGain: number
+  isOptimized: boolean
+  onOptimize: () => void
   onReplay: () => void
-  showReplay: boolean
+  showControls: boolean
 }) {
   return (
     <div className="flex items-start justify-between gap-4">
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-2">
         <span
-          className="text-4xl md:text-5xl font-mono font-bold tabular-nums drop-shadow-[0_0_15px_var(--engine-grow)]"
+          className="text-4xl md:text-5xl font-mono font-bold tabular-nums"
           style={{ color: 'var(--engine-grow)' }}
         >
           +${projectedGain.toLocaleString()}
         </span>
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-light tracking-tight text-white"
+            style={{ fontFamily: 'var(--font-display)' }}>
+          Your growth potential, quantified.
+        </h2>
         <span className="text-xs font-medium uppercase tracking-widest text-white/40">
           Projected 3-year advantage
         </span>
       </div>
-      {showReplay && (
-        <button
-          onClick={onReplay}
-          aria-label="Replay growth animation"
-          className="flex-shrink-0 flex items-center justify-center w-10 h-10 min-h-[44px] min-w-[44px] rounded-full bg-white/[0.04] border border-white/[0.08] text-white/40 hover:text-[var(--engine-grow)] hover:border-[var(--engine-grow)]/30 transition-colors"
-        >
-          <RotateCcw size={14} />
-        </button>
+      {showControls && (
+        !isOptimized ? (
+          <button
+            onClick={onOptimize}
+            aria-label="See Poseidon Delta"
+            className="flex-shrink-0 flex items-center gap-1.5 rounded-xl bg-violet-500/10 border border-violet-500/20 px-3 py-2 min-h-[44px] text-xs font-semibold text-violet-400 hover:bg-violet-500/20 transition-colors"
+          >
+            See Poseidon Delta
+          </button>
+        ) : (
+          <button
+            onClick={onReplay}
+            aria-label="Replay growth animation"
+            className="flex-shrink-0 flex items-center justify-center w-10 h-10 min-h-[44px] min-w-[44px] rounded-full bg-white/[0.04] border border-white/[0.08] text-white/40 hover:text-[var(--engine-grow)] hover:border-[var(--engine-grow)]/30 transition-colors"
+          >
+            <RotateCcw size={14} />
+          </button>
+        )
       )}
     </div>
   )
@@ -130,13 +149,18 @@ function HeroChart({
   finalAiOptimized,
   isReplaying,
   replayKey,
+  isOptimized,
+  totalMonthlySavings,
 }: {
   chartData: { year: string; baseline: number; band: number }[]
   finalBaseline: number
   finalAiOptimized: number
   isReplaying: boolean
   replayKey: number
+  isOptimized: boolean
+  totalMonthlySavings: number
 }) {
+  const midBandY = finalBaseline + (finalAiOptimized - finalBaseline) / 2
   return (
     <div
       className="h-[200px] md:h-[260px]"
@@ -208,6 +232,19 @@ function HeroChart({
           <ReferenceDot x={chartData[chartData.length - 1]?.year} y={finalBaseline} r={0} ifOverflow="extendDomain">
             <Label value={formatDollarK(finalBaseline)} position="right" offset={8} fill="#64748B" fontSize={11} fontFamily="var(--font-mono, ui-monospace, monospace)" />
           </ReferenceDot>
+
+          {/* Poseidon Delta annotation — visible after optimize */}
+          {isOptimized && (
+            <ReferenceLine y={midBandY} stroke="transparent" ifOverflow="extendDomain">
+              <Label
+                value={`+$${totalMonthlySavings.toLocaleString()}/mo  Poseidon Delta`}
+                fill="rgba(139,92,246,0.75)"
+                fontSize={9}
+                fontFamily="var(--font-mono, ui-monospace, monospace)"
+                position="insideRight"
+              />
+            </ReferenceLine>
+          )}
         </AreaChart>
       </ResponsiveContainer>
     </div>
@@ -226,6 +263,7 @@ function HeroKpiStrip({
   onQueueTopAction,
   cohortAcceptanceRate,
   platformProfileCount,
+  isOptimized,
 }: {
   totalMonthlySavings: number
   recommendationCount: number
@@ -236,9 +274,10 @@ function HeroKpiStrip({
   onQueueTopAction: (() => void) | null
   cohortAcceptanceRate?: number
   platformProfileCount?: number
+  isOptimized: boolean
 }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+    <div className="flex flex-col gap-3">
       {/* Card 1: Savings */}
       <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-2">
         <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
@@ -271,7 +310,6 @@ function HeroKpiStrip({
             style={{
               left: `${projectedPercentile}%`,
               background: 'var(--engine-grow)',
-              boxShadow: '0 0 8px var(--engine-grow)',
             }}
           />
           <div
@@ -283,16 +321,21 @@ function HeroKpiStrip({
             }}
           />
         </div>
-        {cohortAcceptanceRate != null && (
-          <p className="text-xs text-white/40 mt-1">
-            {Math.round(cohortAcceptanceRate * 100)}% cohort acceptance rate
-          </p>
-        )}
-        {platformProfileCount != null && (
-          <p className="text-[10px] text-white/25 font-mono mt-2">
-            Across {platformProfileCount.toLocaleString()} active profiles
-          </p>
-        )}
+        <div className={cn(
+          'transition-all duration-700 delay-300',
+          isOptimized ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'
+        )}>
+          {cohortAcceptanceRate != null && (
+            <p className="text-xs text-white/40 mt-1">
+              {Math.round(cohortAcceptanceRate * 100)}% cohort acceptance rate
+            </p>
+          )}
+          {platformProfileCount != null && (
+            <p className="text-[10px] text-white/25 font-mono mt-2">
+              Across {platformProfileCount.toLocaleString()} active profiles
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Card 3: Top Action */}
@@ -357,11 +400,20 @@ export function GrowGrowthAdvantage({
   platformProfileCount,
 }: GrowGrowthAdvantageProps) {
   const prefersReducedMotion = useReducedMotionSafe()
-  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
+  const [isOptimized, setIsOptimized] = useState(false)
+  const [chartKey, setChartKey] = useState(0)
+  const isReplaying = chartKey > 0
 
-  const [replayKey, setReplayKey] = useState(0)
-  const isReplaying = replayKey > 0
-  const handleReplay = useCallback(() => setReplayKey(k => k + 1), [])
+  const handleOptimize = useCallback(() => {
+    setChartKey(k => k + 1)
+    setIsOptimized(true)
+  }, [])
+
+  const handleReplay = useCallback(() => {
+    setIsOptimized(false)
+    setChartKey(k => k + 1)
+    setTimeout(() => setIsOptimized(true), 1200)
+  }, [])
 
   const finalData = simulationData[simulationData.length - 1]
 
@@ -375,69 +427,80 @@ export function GrowGrowthAdvantage({
   )
 
   return (
-    <div className="relative glass-card rounded-[32px] border border-[var(--engine-grow)]/20 overflow-hidden">
-      <AuroraPulse color="var(--engine-grow)" intensity="normal" className="absolute inset-0 pointer-events-none" />
-
-      <motion.div
-        className="relative z-10 p-6 md:p-8 lg:p-10 flex flex-col gap-5"
-        initial="hidden"
-        animate="visible"
-        variants={staggerContainerVariant}
-      >
-        {/* Headline */}
-        <motion.div variants={fadeUpVariant}>
-          <HeroHeadline
-            projectedGain={projectedGain}
-            onReplay={handleReplay}
-            showReplay={!prefersReducedMotion}
-          />
-        </motion.div>
-
-        {/* Chart */}
-        <motion.div variants={fadeUpVariant}>
-          <HeroChart
-            chartData={chartData}
-            finalBaseline={finalData?.baseline ?? 0}
-            finalAiOptimized={finalData?.aiOptimized ?? 0}
-            isReplaying={isReplaying && !prefersReducedMotion}
-            replayKey={replayKey}
-          />
-        </motion.div>
+    <HeroBento engine="grow">
+      {/* Zone A: Action */}
+      <HeroBento.Action>
+        <HeroHeadline
+          projectedGain={projectedGain}
+          isOptimized={isOptimized}
+          onOptimize={handleOptimize}
+          onReplay={handleReplay}
+          showControls={!prefersReducedMotion}
+        />
 
         {/* Summary stats */}
-        <motion.div variants={fadeUpVariant} className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/40 font-mono">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/40 font-mono">
           <span><span style={{ color: 'var(--engine-grow)' }}>${totalMonthlySavings.toLocaleString()}/mo</span> savings</span>
           <span className="text-white/20">&middot;</span>
           <span>{recommendationCount} recommendations</span>
           <span className="text-white/20">&middot;</span>
           <span>{Math.round(avgConfidence * 100)}% avg confidence</span>
-        </motion.div>
+        </div>
 
-        {/* KPI Strip */}
-        <motion.div variants={fadeUpVariant}>
-          <HeroKpiStrip
-            totalMonthlySavings={totalMonthlySavings}
-            recommendationCount={recommendationCount}
-            currentPercentile={currentPercentile}
-            projectedPercentile={projectedPercentile}
-            cohortBracket={cohortBracket}
-            topRecommendation={topRecommendation}
-            onQueueTopAction={onQueueTopAction}
-            cohortAcceptanceRate={cohortAcceptanceRate}
-            platformProfileCount={platformProfileCount}
-          />
-        </motion.div>
-
-        {/* Single CTA */}
-        <motion.div variants={fadeUpVariant} className="flex justify-center pt-2">
+        {/* Primary CTA */}
+        <div className="pt-2">
           <button
             onClick={onViewRecommendations}
-            className="flex items-center gap-1.5 text-sm font-medium text-[var(--engine-grow)] hover:text-[var(--engine-grow)]/80 transition-colors min-h-[44px]"
+            className={cn(
+              buttonVariants({ variant: 'default', size: 'lg' }),
+              'h-auto w-full md:w-auto self-start rounded-2xl px-8 py-4 min-h-[44px]',
+              'bg-gradient-to-r from-violet-500 to-purple-500 text-white',
+              'font-semibold tracking-wide text-sm',
+              'hover:from-violet-400 hover:to-purple-400 transition-all',
+            )}
           >
-            View all {recommendationCount} recommendations <ArrowRight size={14} />
+            View all {recommendationCount} recommendations <ArrowRight size={16} />
           </button>
-        </motion.div>
-      </motion.div>
-    </div>
+        </div>
+      </HeroBento.Action>
+
+      {/* Zone B: Proof */}
+      <HeroBento.Proof>
+        <HeroChart
+          chartData={chartData}
+          finalBaseline={finalData?.baseline ?? 0}
+          finalAiOptimized={finalData?.aiOptimized ?? 0}
+          isReplaying={isReplaying && !prefersReducedMotion}
+          replayKey={chartKey}
+          isOptimized={isOptimized}
+          totalMonthlySavings={totalMonthlySavings}
+        />
+
+        <HeroKpiStrip
+          totalMonthlySavings={totalMonthlySavings}
+          recommendationCount={recommendationCount}
+          currentPercentile={currentPercentile}
+          projectedPercentile={projectedPercentile}
+          cohortBracket={cohortBracket}
+          topRecommendation={topRecommendation}
+          onQueueTopAction={onQueueTopAction}
+          cohortAcceptanceRate={cohortAcceptanceRate}
+          platformProfileCount={platformProfileCount}
+          isOptimized={isOptimized}
+        />
+
+        <CostOfInaction label={`Missing $${projectedGain.toLocaleString()} over 3 years`} severity="high" />
+      </HeroBento.Proof>
+
+      {/* Zone C: Portal */}
+      <HeroBento.Portal>
+        <ListPortalBar
+          engine="grow"
+          label={`${recommendationCount} AI recommendations`}
+          count={recommendationCount}
+          destination={{ type: 'route', to: '/grow/recommendations' }}
+        />
+      </HeroBento.Portal>
+    </HeroBento>
   )
 }

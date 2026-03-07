@@ -1,9 +1,8 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { GovernImmutableLedger } from '../components/poseidon/govern-hero'
 import { RouterProvider } from '../router'
 import GovernPage from '../pages/Govern'
-import { PRIVACY_MANDATES } from '../content/trust-policies'
 
 /* ── Test data ── */
 
@@ -15,7 +14,7 @@ const DEFAULT_PROPS = {
     { engine: 'Execute', count: 1850, percent: 18, color: 'var(--engine-execute)' },
     { engine: 'Govern', count: 1010, percent: 10, color: 'var(--engine-govern)' },
   ],
-  flightRecorderEntries: [
+  auditEntries: [
     {
       id: 'GV-2026-0319-847',
       engine: 'Execute',
@@ -50,7 +49,6 @@ const DEFAULT_PROPS = {
       topFactor: 'Billing category overlap',
     },
   ],
-  onOpenLedger: vi.fn(),
 }
 
 function renderHero(overrides: Partial<typeof DEFAULT_PROPS> = {}) {
@@ -81,23 +79,11 @@ describe('GovernImmutableLedger', () => {
     expect(screen.getByText(/Govern 10%/)).toBeInTheDocument()
   })
 
-  it('renders flight recorder entries', () => {
+  it('renders audit entries', () => {
     renderHero()
     expect(screen.getByText('Portfolio rebalance')).toBeInTheDocument()
     expect(screen.getByText('Flag suspicious wire transfer ($2,847)')).toBeInTheDocument()
     expect(screen.getByText('Subscription consolidation')).toBeInTheDocument()
-  })
-
-  it('fires onOpenLedger callback on CTA click', () => {
-    const { props } = renderHero()
-    const btn = screen.getByRole('button', { name: /open audit ledger/i })
-    fireEvent.click(btn)
-    expect(props.onOpenLedger).toHaveBeenCalledOnce()
-  })
-
-  it('hides CTA when onOpenLedger is null', () => {
-    renderHero({ onOpenLedger: null })
-    expect(screen.queryByRole('button', { name: /open audit ledger/i })).not.toBeInTheDocument()
   })
 })
 
@@ -120,26 +106,29 @@ describe('GovernPage integration', () => {
     expect(screen.getByText('Decisions Audited & Secured')).toBeInTheDocument()
   })
 
-  it('CTA navigates to /govern/audit', () => {
+  it('portal bar navigates to /govern/audit on click', () => {
     renderGovern()
-    const btn = screen.getByRole('button', { name: /open audit ledger/i })
-    fireEvent.click(btn)
+    const link = screen.getByRole('link', { name: /view full audit ledger/i })
+    fireEvent.click(link)
     expect(window.location.pathname).toBe('/govern/audit')
   })
 
-  it('renders Privacy & Model Ethics section with governed values', () => {
+  it('renders Engine status badge above hero', () => {
     renderGovern()
-    expect(screen.getByText('Privacy & Model Ethics')).toBeInTheDocument()
-    expect(screen.getByText('100%')).toBeInTheDocument()
-    expect(screen.getByText('0 Days')).toBeInTheDocument()
-    expect(screen.getByText('Never')).toBeInTheDocument()
-    expect(screen.getByText('Data & Privacy Mandates')).toBeInTheDocument()
+    expect(screen.getByText('Engine status: Good')).toBeInTheDocument()
   })
 
-  it('renders all privacy mandate items from shared source', () => {
+  it('renders prelude in correct order: badge → h1 → hero card', () => {
     renderGovern()
-    for (const mandate of PRIVACY_MANDATES) {
-      expect(screen.getByText(mandate)).toBeInTheDocument()
-    }
+    const badge = screen.getByText('Engine status: Good')
+    const h1 = screen.getByRole('heading', { level: 1 })
+    const heroCard = screen.getByText('Decisions Audited & Secured').closest('[class*="glass-card"]')!
+
+    expect(badge).toBeInTheDocument()
+    expect(h1).toHaveClass('sr-only')
+
+    // DOM order
+    expect(badge.compareDocumentPosition(h1) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(h1.compareDocumentPosition(heroCard) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 })

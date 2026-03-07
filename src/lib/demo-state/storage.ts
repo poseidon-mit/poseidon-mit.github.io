@@ -107,4 +107,7 @@ export function resetDemoStateStorage(): void {
   } catch {
     // noop
   }
+  // Clear drawer suppression keys so drawers reappear after Reset Demo
+  try { window.sessionStorage.removeItem('poseidon-drawer-seen') } catch { /* noop */ }
+  try { window.sessionStorage.removeItem('poseidon-setup-deferred') } catch { /* noop */ }
 }

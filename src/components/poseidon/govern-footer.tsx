@@ -10,19 +10,41 @@ export interface GovernFooterProps {
   auditId: string
   pageContext?: string
   className?: string
+  activeTopThreat?: { id: string; merchant: string; confidence: number } | null
 }
 
 export function GovernFooter({
   auditId,
   pageContext,
   className = '',
+  activeTopThreat,
 }: GovernFooterProps) {
+  const streamText = activeTopThreat
+    ? [
+        `[PROTECT MODEL v2.4]`,
+        `[Target: ${activeTopThreat.id} (${activeTopThreat.merchant})]`,
+        `[Confidence: ${Math.round(activeTopThreat.confidence * 100)}%]`,
+        `[Human Approval Required]`,
+        `[Govern Ledger: Recording]`,
+      ].join('   ·   ')
+    : `[POSEIDON AI ORCHESTRATOR]   ·   [All Engines Monitoring]   ·   [Govern Ledger: Active]`
+
   return (
     <footer
-      className={`mt-8 flex flex-col gap-3 md:flex-row md:items-center md:justify-between rounded-2xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 md:px-6 md:py-4 ${className}`}
+      className={`mt-8 rounded-2xl border border-white/[0.06] bg-white/[0.03] overflow-hidden ${className}`}
       role="contentinfo"
       aria-label="Governance verification footer"
     >
+      {/* Immutable Event Stream */}
+      <div className="overflow-hidden border-b border-white/[0.04] py-1.5 px-4 md:px-6">
+        <div
+          className="whitespace-nowrap text-[10px] font-mono text-white/20 animate-[scroll-left_20s_linear_infinite]"
+          aria-hidden="true"
+        >
+          {streamText}{'      '}{streamText}
+        </div>
+      </div>
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between px-4 py-3 md:px-6 md:py-4">
       <div className="flex items-center gap-2">
         <div className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-500/10">
           <ShieldCheck size={14} className="text-blue-500" />
@@ -46,6 +68,7 @@ export function GovernFooter({
         <User size={14} />
         Request human review
       </button>
+      </div>
     </footer>
   )
 }

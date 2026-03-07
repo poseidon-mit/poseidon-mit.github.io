@@ -9,6 +9,9 @@
 
 @layer base {
   :root {
+    /* ── Glassmorphism 2.0 ── */
+    --glass-border: rgba(255, 255, 255, 0.08);
+
     /* ── Extended Glass Depth (not part of system tokens SSoT) ── */
     --glass-depth-surface: rgba(8, 12, 24, 0.62);
     --glass-depth-elevated: rgba(12, 20, 38, 0.7);

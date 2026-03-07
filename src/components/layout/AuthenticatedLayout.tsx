@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { AppNavShell } from './AppNavShell';
 import { AuroraPulse, GovernFooter } from '@/components/poseidon';
 import { getGovernanceMeta } from '@/lib/governance-meta';
+import { useDismissedAlerts } from '@/pages/protect/useDismissedAlerts';
+import { CANONICAL_UNIVERSE } from '@/domain/poseidon-universe/canonical';
 
 interface AuthenticatedLayoutProps {
     children: React.ReactNode;
@@ -19,6 +21,14 @@ interface AuthenticatedLayoutProps {
  */
 export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps) {
     const meta = getGovernanceMeta(path);
+    const { dismissed } = useDismissedAlerts();
+
+    const activeTopThreat = useMemo(
+        () => CANONICAL_UNIVERSE.entities.protectThreats
+            .filter(t => !dismissed.has(t.id) && (t.severity === 'Critical' || t.severity === 'High'))
+            .sort((a, b) => b.sortOrder - a.sortOrder)[0] ?? null,
+        [dismissed]
+    );
 
     return (
         <AppNavShell path={path}>
@@ -45,10 +55,14 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
 
                     {/* Layer 2: Final Verification (GovernFooter) */}
                     {meta?.showFooter && (
-                        <div className="mt-auto pt-12">
+                        <div className="mt-4 pt-3 lg:sticky lg:bottom-0 lg:z-10 lg:backdrop-blur-sm lg:bg-black/10">
                             <GovernFooter
                                 auditId={meta.auditId}
                                 pageContext={meta.pageContext}
+                                activeTopThreat={activeTopThreat
+                                    ? { id: activeTopThreat.id, merchant: activeTopThreat.merchant, confidence: activeTopThreat.confidence }
+                                    : null
+                                }
                                 className="opacity-70 hover:opacity-100 transition-opacity duration-500"
                             />
                         </div>

@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { GrowGrowthAdvantage } from '../components/poseidon/grow-hero'
 import { RECOMMENDATIONS_SUMMARY } from '../pages/grow/recommendation-detail-data'
 import { RouterProvider } from '../router'
@@ -101,43 +101,56 @@ describe('GrowGrowthAdvantage', () => {
     expect(screen.queryByRole('button', { name: /queue for execution/i })).not.toBeInTheDocument()
   })
 
-  /* ── New tests ── */
-
-  it('renders replay button', () => {
-    renderHero()
-    expect(screen.getByRole('button', { name: /replay/i })).toBeInTheDocument()
-  })
-
-  it('renders cohort acceptance rate when provided', () => {
-    renderHero({ cohortAcceptanceRate: 0.89 })
-    expect(screen.getByText(/89% cohort acceptance rate/)).toBeInTheDocument()
-  })
-
   it('omits cohort acceptance rate when not provided', () => {
     renderHero()
     expect(screen.queryByText(/cohort acceptance rate/)).not.toBeInTheDocument()
   })
 
-  it('renders platform profile count in cohort card', () => {
-    renderHero({ platformProfileCount: 184290 })
-    expect(screen.getByText(/184,290/)).toBeInTheDocument()
-    expect(screen.getByText(/active profiles/)).toBeInTheDocument()
-  })
-
-  it('hides replay button when reduced motion is preferred', () => {
+  it('hides replay and delta buttons when reduced motion is preferred', () => {
     vi.mocked(useReducedMotionSafe).mockReturnValue(true)
     renderHero()
     expect(screen.queryByRole('button', { name: /replay/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /see poseidon delta/i })).not.toBeInTheDocument()
     vi.mocked(useReducedMotionSafe).mockReturnValue(false)
   })
 
-  it('replay click does not regress visible content', () => {
-    renderHero()
-    expect(screen.getByText(/\+\$24,437/)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /view all/i })).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: /replay/i }))
-    expect(screen.getByText(/\+\$24,437/)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /view all/i })).toBeInTheDocument()
+  /* ── Optimize + Replay flow ── */
+
+  describe('replay flow', () => {
+    beforeEach(() => vi.useFakeTimers())
+    afterEach(() => vi.useRealTimers())
+
+    it('shows See Poseidon Delta initially, Replay after optimize', () => {
+      renderHero()
+      expect(screen.getByRole('button', { name: /see poseidon delta/i })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /replay/i })).not.toBeInTheDocument()
+      fireEvent.click(screen.getByRole('button', { name: /see poseidon delta/i }))
+      expect(screen.getByRole('button', { name: /replay/i })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /see poseidon delta/i })).not.toBeInTheDocument()
+    })
+
+    it('renders cohort acceptance rate after optimize', () => {
+      renderHero({ cohortAcceptanceRate: 0.89 })
+      fireEvent.click(screen.getByRole('button', { name: /see poseidon delta/i }))
+      expect(screen.getByText(/89% cohort acceptance rate/)).toBeInTheDocument()
+    })
+
+    it('renders platform profile count after optimize', () => {
+      renderHero({ platformProfileCount: 184290 })
+      fireEvent.click(screen.getByRole('button', { name: /see poseidon delta/i }))
+      expect(screen.getByText(/184,290/)).toBeInTheDocument()
+      expect(screen.getByText(/active profiles/)).toBeInTheDocument()
+    })
+
+    it('replay click does not regress visible content', () => {
+      renderHero({ cohortAcceptanceRate: 0.89 })
+      fireEvent.click(screen.getByRole('button', { name: /see poseidon delta/i }))
+      fireEvent.click(screen.getByRole('button', { name: /replay/i }))
+      act(() => vi.advanceTimersByTime(1200))
+      expect(screen.getByText(/\+\$24,437/)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /view all/i })).toBeInTheDocument()
+      expect(screen.getByText(/89% cohort acceptance rate/)).toBeInTheDocument()
+    })
   })
 })
 

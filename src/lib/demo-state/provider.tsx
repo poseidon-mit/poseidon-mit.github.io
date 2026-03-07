@@ -15,6 +15,7 @@ import {
   type DemoSettingsState,
   type DemoState,
   type DemoSupportTicket,
+  type EntryIntent,
 } from './types'
 import { loadDemoState, resetDemoStateStorage, saveDemoState } from './storage'
 
@@ -28,6 +29,7 @@ interface CreateSupportTicketInput {
 interface BeginDemoSessionInput {
   method: DemoAuthMethod
   email?: string
+  entryIntent?: EntryIntent
 }
 
 interface DemoStateContextValue {
@@ -41,6 +43,7 @@ interface DemoStateContextValue {
     actionTitle: string
     decision: Exclude<DemoExecuteDecision, 'pending'>
   }) => void
+  resetExecuteDecision: (actionId: string, actionTitle: string) => void
   updateSettings: (patch: Partial<DemoSettingsState>) => void
   updateGovernTrust: (
     engine: DemoGovernEngine,
@@ -59,6 +62,7 @@ const DemoStateContext = createContext<DemoStateContextValue>({
   updateOnboarding: () => {},
   markOnboardingCompleted: () => {},
   setExecuteDecision: () => {},
+  resetExecuteDecision: () => {},
   updateSettings: () => {},
   updateGovernTrust: () => {},
   createSupportTicket: (input) => ({
@@ -99,6 +103,7 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
         method: input.method,
         email: input.email?.trim() || prev.auth.email,
         lastSignInAt: new Date().toISOString(),
+        entryIntent: input.entryIntent ?? 'express',
       },
     }))
   }, [])
@@ -110,6 +115,7 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
         ...prev.auth,
         sessionStarted: false,
         method: null,
+        entryIntent: null,
       },
     }))
   }, [])
@@ -167,6 +173,28 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
+  const resetExecuteDecision = useCallback((actionId: string, actionTitle: string) => {
+    setState((prev) => {
+      const nextStates = { ...prev.execute.actionStates }
+      delete nextStates[actionId]
+      const undoEvent = {
+        id: timestampId('GV-EXEC'),
+        actionId,
+        actionTitle,
+        decision: 'undo' as const,
+        createdAt: new Date().toISOString(),
+      }
+      return {
+        ...prev,
+        execute: {
+          ...prev.execute,
+          actionStates: nextStates,
+          events: [undoEvent, ...prev.execute.events].slice(0, 25),
+        },
+      }
+    })
+  }, [])
+
   const updateSettings = useCallback((patch: Partial<DemoSettingsState>) => {
     setState((prev) => ({
       ...prev,
@@ -219,6 +247,8 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
 
   const resetAllDemoState = useCallback(() => {
     resetDemoStateStorage()
+    // Notify all useDismissedAlerts instances to reload from (now-cleared) storage
+    window.dispatchEvent(new CustomEvent('poseidon:alert-dismissed'))
     setState(createDefaultDemoState())
   }, [])
 
@@ -230,6 +260,7 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
       updateOnboarding,
       markOnboardingCompleted,
       setExecuteDecision,
+      resetExecuteDecision,
       updateSettings,
       updateGovernTrust,
       createSupportTicket,
@@ -242,6 +273,7 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
       updateOnboarding,
       markOnboardingCompleted,
       setExecuteDecision,
+      resetExecuteDecision,
       updateSettings,
       updateGovernTrust,
       createSupportTicket,

@@ -11,10 +11,10 @@
   :root {
     /* ── Color Slots ── */
     --background: 220 42% 6%;
-    --foreground: 210 40% 98%;
+    --foreground: 220 15% 88%;
 
     --card: 220 32% 11%;
-    --card-foreground: 210 40% 98%;
+    --card-foreground: 220 15% 88%;
 
     --popover: 220 35% 13%;
     --popover-foreground: 210 40% 98%;

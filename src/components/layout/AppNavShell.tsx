@@ -9,6 +9,7 @@ import { usePresentationMode } from '@/hooks/usePresentationMode';
 import { usePWA } from '@/hooks/usePWA';
 import { CommandPalette } from './CommandPalette';
 import { Button } from '@/components/ui/button';
+import { TalkToMoneyFab } from '@/components/ui/TalkToMoneyFab';
 import { type EngineName } from '@/lib/engine-tokens';
 import { cn } from '@/lib/utils';
 import { Sidebar, NAV_ITEMS, ENGINE_ITEMS, TONE_CLASSES } from '../navigation/Sidebar';
@@ -31,10 +32,15 @@ const BREADCRUMB_MAP: Record<string, string[]> = {
   '/execute': ['Execute Engine'],
   '/execute/approval': ['Execute Engine', 'Approval Queue'],
   '/execute/history': ['Execute Engine', 'History'],
+  '/execute/queue': ['Execute Engine', 'Action Queue'],
   '/govern': ['Govern Engine'],
   '/govern/audit': ['Govern Engine', 'Audit Ledger'],
   '/govern/audit-detail': ['Govern Engine', 'Audit Detail'],
   '/settings': ['Settings'],
+  '/settings/ai': ['Settings', 'AI Preferences'],
+  '/settings/integrations': ['Settings', 'Integrations'],
+  '/settings/rights': ['Settings', 'Rights & Privacy'],
+  '/orchestrator': ['Orchestrator Workbench'],
 };
 
 /* ─── Helpers ────────────────────────────────────────────── */
@@ -130,6 +136,9 @@ export function AppNavShell({
 
         <div className="h-16 lg:hidden" aria-hidden="true" />
       </div>
+
+      {/* ── Talk to Money FAB (all routes) ── */}
+      <TalkToMoneyFab />
 
       {/* ── Mobile bottom navigation ── */}
       <nav
