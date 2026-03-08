@@ -9,8 +9,8 @@ export const ENGINE_COLOR_MAP: Record<EngineLabel, string> = {
 }
 
 export const ENGINE_BADGE_CLASS: Record<Exclude<EngineLabel, 'Dashboard'>, string> = {
-  Protect: 'bg-emerald-500/20 text-emerald-400',
-  Grow: 'bg-violet-500/20 text-violet-400',
-  Execute: 'bg-amber-500/20 text-amber-400',
-  Govern: 'bg-blue-500/20 text-blue-400',
+  Protect: 'bg-emerald-500/20 text-emerald-400 engine-bg-protect engine-text-protect',
+  Grow: 'bg-violet-500/20 text-violet-400 engine-bg-grow engine-text-grow',
+  Execute: 'bg-amber-500/20 text-amber-400 engine-bg-execute engine-text-execute',
+  Govern: 'bg-blue-500/20 text-blue-400 engine-bg-govern engine-text-govern',
 }

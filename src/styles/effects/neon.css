@@ -41,3 +41,26 @@
 .neon-text-violet { text-shadow: 0 0 8px rgba(139,92,246,0.6), 0 0 20px rgba(139,92,246,0.3); }
 .neon-text-amber  { text-shadow: 0 0 8px rgba(245,158,11,0.6), 0 0 20px rgba(245,158,11,0.3); }
 .neon-text-blue   { text-shadow: 0 0 8px rgba(59,130,246,0.6), 0 0 20px rgba(59,130,246,0.3); }
+
+/* ── Precision Mode — Neon Suppression ── */
+.theme-precision .neon-glow-cyan,
+.theme-precision .neon-glow-teal,
+.theme-precision .neon-glow-violet,
+.theme-precision .neon-glow-amber,
+.theme-precision .neon-glow-blue,
+.theme-precision .neon-glow-red,
+.theme-precision .neon-glow-dashboard,
+.theme-precision .neon-glow-protect,
+.theme-precision .neon-glow-grow,
+.theme-precision .neon-glow-execute,
+.theme-precision .neon-glow-govern {
+  box-shadow: none;
+}
+
+.theme-precision .neon-text-cyan,
+.theme-precision .neon-text-teal,
+.theme-precision .neon-text-violet,
+.theme-precision .neon-text-amber,
+.theme-precision .neon-text-blue {
+  text-shadow: none;
+}

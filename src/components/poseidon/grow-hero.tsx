@@ -69,7 +69,7 @@ function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: 
   if (!data) return null
   const aiOptimized = data.baseline + data.band
   return (
-    <div className="rounded-xl border border-white/10 bg-[#0F1D32]/95 backdrop-blur-md px-4 py-3 shadow-xl text-xs">
+    <div className="rounded-xl border border-white/10 bg-[#0F1D32]/95 backdrop-blur-md px-4 py-3 shadow-md text-xs">
       <p className="font-semibold text-white/90 mb-2">{label}</p>
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center gap-2">
@@ -124,7 +124,7 @@ function HeroHeadline({
           <button
             onClick={onOptimize}
             aria-label="See Poseidon Delta"
-            className="flex-shrink-0 flex items-center gap-1.5 rounded-xl bg-violet-500/10 border border-violet-500/20 px-3 py-2 min-h-[44px] text-xs font-semibold text-violet-400 hover:bg-violet-500/20 transition-colors"
+            className="flex-shrink-0 flex items-center gap-1.5 rounded-xl bg-violet-500/10 border border-violet-500/20 px-3 py-2 min-h-[44px] text-xs font-semibold text-violet-400 hover:bg-violet-500/20 transition-colors engine-bg-grow engine-border-grow engine-text-grow"
           >
             See Poseidon Delta
           </button>

@@ -813,3 +813,13 @@
     text-align: center;
   }
 }
+
+/* ── Precision Mode — Dashboard Command Overrides ── */
+.theme-precision .command-center { background-image: none; }
+
+.theme-precision .hero-headline__accent { text-shadow: none; }
+.theme-precision .hero-insight__cta:hover { box-shadow: none; }
+
+.theme-precision .net-worth__glow { display: none; }
+
+.theme-precision .alerts-hub__btn--primary:hover { box-shadow: none; }

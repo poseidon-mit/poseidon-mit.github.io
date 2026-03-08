@@ -73,7 +73,6 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
                 {meta && (
                     <AuroraPulse
                         color={meta.auroraColor}
-                        className="opacity-40"
                     />
                 )}
 
@@ -83,7 +82,7 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
 
                     {/* Layer 2: Final Verification (GovernFooter) */}
                     {meta?.showFooter && (
-                        <div className="mt-4 pt-3 lg:sticky lg:bottom-0 lg:z-10 lg:backdrop-blur-sm lg:bg-black/10">
+                        <div className="mt-4 pt-3 lg:sticky lg:bottom-0 lg:z-10">
                             <GovernFooter
                                 auditId={meta.auditId}
                                 pageContext={meta.pageContext}

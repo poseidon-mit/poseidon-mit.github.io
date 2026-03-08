@@ -43,7 +43,8 @@ export function GovernFooter({
       <div className="overflow-hidden border-b border-white/[0.04] py-1.5 px-4 md:px-6">
         <div
           key={streamText}
-          className={`whitespace-nowrap text-[10px] font-mono animate-[scroll-left_20s_linear_infinite] ${latestExecuteEvent ? 'text-amber-400/30' : 'text-white/20'}`}
+          className={`whitespace-nowrap text-[10px] font-mono animate-[scroll-left_20s_linear_infinite] ${latestExecuteEvent ? 'text-amber-400/30 engine-text-execute' : 'text-white/20'}`}
+          style={latestExecuteEvent ? { opacity: 0.3 } : undefined}
           aria-hidden="true"
         >
           {streamText}{'      '}{streamText}
@@ -51,10 +52,10 @@ export function GovernFooter({
       </div>
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between px-4 py-3 md:px-6 md:py-4">
       <div className="flex items-center gap-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-500/10">
-          <ShieldCheck size={14} className="text-blue-500" />
+        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-500/10 engine-bg-govern">
+          <ShieldCheck size={14} className="text-blue-500 engine-text-govern" />
         </div>
-        <span className="mission-govern-badge inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-500">
+        <span className="mission-govern-badge inline-flex items-center gap-1 rounded-full bg-emerald-500/10 engine-bg-protect px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-500 engine-text-protect">
           <Shield size={10} />
           Auditable
         </span>

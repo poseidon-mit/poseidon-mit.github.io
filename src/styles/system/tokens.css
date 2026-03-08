@@ -379,3 +379,152 @@ textarea:focus-visible,
 @container (min-width: 1024px) {
   .cq\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
+
+/* ── Precision Mode — Token Overrides ──
+ * Scoped to product shell via .theme-precision on AppNavShell root.
+ * Suppresses heavy glass, neon, icon glow, badge glow, and text-shadow effects.
+ */
+.theme-precision {
+  /* Glass tokens — lighten */
+  --glass-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  --glass-shadow-apple-base: 0 2px 8px rgba(0,0,0,0.12);
+  --glass-shadow-apple-elevated: 0 4px 16px rgba(0,0,0,0.15);
+  --glass-inner-highlight: none;
+  --glass-inset: none;
+  --glass-edge: inset 0 0 0 1px rgba(255,255,255,0.06);
+  --glass-backdrop: none;
+  --glass-backdrop-mobile: none;
+
+  /* Neon — all none */
+  --neon-cyan: none; --neon-teal: none; --neon-violet: none;
+  --neon-amber: none; --neon-blue: none; --neon-red: none;
+  --neon-cyan-mobile: none; --neon-teal-mobile: none; --neon-violet-mobile: none;
+  --neon-amber-mobile: none; --neon-blue-mobile: none; --neon-red-mobile: none;
+  --neon-cyan-deep: none; --neon-teal-deep: none; --neon-violet-deep: none;
+  --neon-amber-deep: none; --neon-blue-deep: none; --neon-red-deep: none;
+  --neon-cyan-sharper: none; --neon-teal-sharper: none; --neon-violet-sharper: none;
+  --neon-amber-sharper: none; --neon-blue-sharper: none; --neon-red-sharper: none;
+
+  /* Icon glow — none */
+  --icon-glow-default: none; --icon-glow-teal: none;
+  --icon-glow-amber: none; --icon-glow-violet: none;
+  --icon-glow-blue: none; --icon-glow-red: none;
+
+  /* Badge & warning glow — none */
+  --badge-shadow: none; --badge-box: none;
+  --warning-shadow: none; --warning-box: none;
+
+  /* Text shadow — none */
+  --text-shadow-neon: none;
+
+  /* ── State color families — precision-calibrated ── */
+  --state-active: #00B8C4;
+  --state-active-rgb: 0, 184, 196;
+  --state-critical: #D93025;
+  --state-critical-rgb: 217, 48, 37;
+  --state-warning: #D98C00;
+  --state-warning-rgb: 217, 140, 0;
+  --state-primary: #2563EB;
+  --state-primary-rgb: 37, 99, 235;
+  --state-healthy: #0F9D8A;
+  --state-healthy-rgb: 15, 157, 138;
+
+  /* ── Accent family — precision ── */
+  --accent-cyan: #00B8C4;
+  --accent-teal: #0F9D8A;
+  --accent-red: #D93025;
+  --accent-amber: #D98C00;
+  --accent-blue: #2563EB;
+  --accent-violet: #7C3AED;
+
+  /* ── Badge family — desaturated ── */
+  --badge-bg: rgba(0, 184, 196, 0.10);
+  --badge-border: 1px solid rgba(0, 184, 196, 0.35);
+  --badge-text: #d0f4f7;
+
+  /* ── Warning family — desaturated ── */
+  --warning-bg: rgba(217, 48, 37, 0.12);
+  --warning-border: 1px solid rgba(217, 48, 37, 0.30);
+  --warning-text: #e87c73;
+
+  /* ── Interactive states — desaturated ── */
+  --state-focus-ring: 0 0 0 2px rgba(0, 184, 196, 0.40);
+  --state-error-border: rgba(217, 48, 37, 0.45);
+  --state-success-border: rgba(15, 157, 138, 0.45);
+
+  /* ── Background — precision (darker base, #050505 floor) ── */
+  --bg: #080C14;
+  --bg-deep: #030508;
+  --bg-oled: #0A0E16;
+  --bg-vantablack: #050505;
+  --bg-surface: #151D2C;
+
+  /* ── Text gradients — precision (muted endpoints) ── */
+  --text-gradient-cyan: linear-gradient(90deg, #b0eef2 0%, #00B8C4 100%);
+  --text-gradient-teal: linear-gradient(90deg, #4dd8be 0%, #0F9D8A 100%);
+}
+
+/* ── Precision engine utilities ──
+ * Scoped overrides for hardcoded Tailwind color classes.
+ * Under .theme-precision, these win by specificity.
+ * Outside (Landing, etc.), the original Tailwind class applies.
+ */
+.theme-precision .engine-text-dashboard { color: var(--engine-dashboard); }
+.theme-precision .engine-text-protect   { color: var(--engine-protect); }
+.theme-precision .engine-text-grow      { color: var(--engine-grow); }
+.theme-precision .engine-text-execute   { color: var(--engine-execute); }
+.theme-precision .engine-text-govern    { color: var(--engine-govern); }
+
+.theme-precision .engine-bg-dashboard { background-color: color-mix(in srgb, var(--engine-dashboard) 10%, transparent); }
+.theme-precision .engine-bg-protect   { background-color: color-mix(in srgb, var(--engine-protect) 10%, transparent); }
+.theme-precision .engine-bg-grow      { background-color: color-mix(in srgb, var(--engine-grow) 10%, transparent); }
+.theme-precision .engine-bg-execute   { background-color: color-mix(in srgb, var(--engine-execute) 10%, transparent); }
+.theme-precision .engine-bg-govern    { background-color: color-mix(in srgb, var(--engine-govern) 10%, transparent); }
+
+.theme-precision .engine-border-dashboard { border-color: color-mix(in srgb, var(--engine-dashboard) 20%, transparent); }
+.theme-precision .engine-border-protect   { border-color: color-mix(in srgb, var(--engine-protect) 20%, transparent); }
+.theme-precision .engine-border-grow      { border-color: color-mix(in srgb, var(--engine-grow) 20%, transparent); }
+.theme-precision .engine-border-execute   { border-color: color-mix(in srgb, var(--engine-execute) 20%, transparent); }
+.theme-precision .engine-border-govern    { border-color: color-mix(in srgb, var(--engine-govern) 20%, transparent); }
+
+/* ── Semantic state/severity utilities ── */
+.theme-precision .state-text-healthy  { color: var(--state-healthy); }
+.theme-precision .state-text-active   { color: var(--state-active); }
+.theme-precision .state-text-warning  { color: var(--state-warning); }
+.theme-precision .state-text-critical { color: var(--state-critical); }
+.theme-precision .state-text-primary  { color: var(--state-primary); }
+
+.theme-precision .state-bg-healthy  { background-color: color-mix(in srgb, var(--state-healthy) 12%, transparent); }
+.theme-precision .state-bg-warning  { background-color: color-mix(in srgb, var(--state-warning) 12%, transparent); }
+.theme-precision .state-bg-critical { background-color: color-mix(in srgb, var(--state-critical) 12%, transparent); }
+.theme-precision .state-bg-primary  { background-color: color-mix(in srgb, var(--state-primary) 12%, transparent); }
+
+.theme-precision .state-border-healthy  { border-color: color-mix(in srgb, var(--state-healthy) 20%, transparent); }
+.theme-precision .state-border-warning  { border-color: color-mix(in srgb, var(--state-warning) 20%, transparent); }
+.theme-precision .state-border-critical { border-color: color-mix(in srgb, var(--state-critical) 20%, transparent); }
+.theme-precision .state-border-primary  { border-color: color-mix(in srgb, var(--state-primary) 20%, transparent); }
+
+/* ── Engine ring utilities (Sidebar active ring) ── */
+.theme-precision .engine-ring-dashboard { --tw-ring-color: color-mix(in srgb, var(--engine-dashboard) 30%, transparent); }
+.theme-precision .engine-ring-protect   { --tw-ring-color: color-mix(in srgb, var(--engine-protect) 30%, transparent); }
+.theme-precision .engine-ring-grow      { --tw-ring-color: color-mix(in srgb, var(--engine-grow) 30%, transparent); }
+.theme-precision .engine-ring-execute   { --tw-ring-color: color-mix(in srgb, var(--engine-execute) 30%, transparent); }
+.theme-precision .engine-ring-govern    { --tw-ring-color: color-mix(in srgb, var(--engine-govern) 30%, transparent); }
+
+/* ── Engine indicator utilities (100% solid — dots, pips) ── */
+.theme-precision .engine-indicator-dashboard { background-color: var(--engine-dashboard); box-shadow: none; }
+.theme-precision .engine-indicator-protect   { background-color: var(--engine-protect); box-shadow: none; }
+.theme-precision .engine-indicator-grow      { background-color: var(--engine-grow); box-shadow: none; }
+.theme-precision .engine-indicator-execute   { background-color: var(--engine-execute); box-shadow: none; }
+.theme-precision .engine-indicator-govern    { background-color: var(--engine-govern); box-shadow: none; }
+
+/* ── Engine solid utilities (~80% opaque — CTA buttons) ── */
+.theme-precision .engine-solid-execute { background-color: color-mix(in srgb, var(--engine-execute) 80%, transparent); }
+
+/* ── State indicator utilities (100% solid — dots, pips) ── */
+.theme-precision .state-indicator-critical { background-color: var(--state-critical); box-shadow: none; }
+.theme-precision .state-indicator-warning  { background-color: var(--state-warning); box-shadow: none; }
+
+/* ── State border/bg active (missing from Wave 3A) ── */
+.theme-precision .state-border-active { border-color: color-mix(in srgb, var(--state-active) 20%, transparent); }
+.theme-precision .state-bg-active     { background-color: color-mix(in srgb, var(--state-active) 10%, transparent); }

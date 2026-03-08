@@ -45,7 +45,7 @@ export function GovernAuditDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Left: Base Reality */}
           <motion.div variants={fadeUpVariant}>
-            <div className="glass-card glass-card-overlay rounded-[24px] p-6 lg:p-8 flex flex-col gap-6 h-full">
+            <div className="glass-card glass-card-overlay rounded-xl p-6 lg:p-8 flex flex-col gap-6 h-full">
               <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4">
                 Base Reality
               </h2>
@@ -92,7 +92,7 @@ export function GovernAuditDetail() {
 
           {/* Right: Decision Reconstruction — SHAP bars */}
           <motion.div variants={fadeUpVariant}>
-            <div className="glass-card glass-card-overlay rounded-[24px] p-6 lg:p-8 flex flex-col gap-6 h-full" style={{ borderTopWidth: 4, borderTopColor: 'var(--engine-govern)' }}>
+            <div className="glass-card glass-card-overlay rounded-xl p-6 lg:p-8 flex flex-col gap-6 h-full" style={{ borderTopWidth: 4, borderTopColor: 'var(--engine-govern)' }}>
               <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4">
                 Decision Reconstruction
               </h2>
@@ -120,7 +120,7 @@ export function GovernAuditDetail() {
 
         {/* Bottom: Compliance & Record */}
         <motion.div variants={fadeUpVariant}>
-          <div className="glass-card glass-card-overlay rounded-[24px] p-6 lg:p-8 flex flex-col gap-6">
+          <div className="glass-card glass-card-overlay rounded-xl p-6 lg:p-8 flex flex-col gap-6">
             <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4">
               Compliance &amp; Record
             </h2>

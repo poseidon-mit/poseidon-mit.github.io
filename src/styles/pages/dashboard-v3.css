@@ -737,3 +737,21 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Precision Mode — Dashboard v3 Overrides ── */
+.theme-precision .dashboard-insights-metric,
+.theme-precision .dashboard-insights-proof {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.theme-precision .engine-health-cell,
+.theme-precision .alerts-hub,
+.theme-precision .dashboard-pulse {
+  background-image: none;
+}
+
+.theme-precision .engine-health-cell.is-selected,
+.theme-precision .activity-rail-node {
+  box-shadow: none;
+}

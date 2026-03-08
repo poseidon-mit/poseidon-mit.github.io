@@ -69,13 +69,13 @@ export function TopBar({
             {/* Utilities */}
             <div className="flex items-center gap-3">
                 {isOffline && (
-                    <span className="flex items-center gap-1.5 rounded-full border border-red-400/40 bg-red-500/20 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-red-300" aria-label="Offline">
+                    <span className="flex items-center gap-1.5 rounded-full border border-red-400/40 bg-red-500/20 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-red-300 state-border-critical state-bg-critical state-text-critical" aria-label="Offline">
                         <WifiOff className="h-3 w-3" aria-hidden="true" />
                         Offline
                     </span>
                 )}
                 {isPresentation && (
-                    <span className="flex items-center gap-1.5 rounded-full border border-cyan-400/30 bg-cyan-500/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-200" aria-label="Presentation mode active">
+                    <span className="flex items-center gap-1.5 rounded-full border border-cyan-400/30 bg-cyan-500/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-200 state-border-active state-bg-active state-text-active" aria-label="Presentation mode active">
                         <Radio className="h-3 w-3" aria-hidden="true" />
                         Presenting
                     </span>
@@ -86,7 +86,7 @@ export function TopBar({
                     aria-label="Notifications (new)"
                 >
                     <Bell className="h-4.5 w-4.5" aria-hidden="true" />
-                    <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-red-400 ring-2 ring-black" aria-hidden="true" />
+                    <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-red-400 engine-indicator-dashboard ring-2 ring-black" aria-hidden="true" />
                 </button>
 
                 <button

@@ -62,7 +62,7 @@ export function AppNavShell({
   );
 
   return (
-    <div className="app-bg-oled flex min-h-screen selection:bg-cyan-500/30">
+    <div className="app-bg-oled flex min-h-screen selection:bg-cyan-500/30 theme-precision">
       <CommandPalette isOpen={isPaletteOpen} onClose={closePalette} />
 
       {/* ── Desktop Sidebar ── */}
@@ -80,14 +80,14 @@ export function AppNavShell({
         />
 
         {/* ── Mobile top header ── */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between px-5 bg-black/40 backdrop-blur-2xl border-b border-white/[0.04] lg:hidden">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between px-5 bg-[rgba(8,12,20,0.95)] border-b border-white/[0.04] lg:hidden">
           <Link to="/" className="flex items-center gap-1.5" aria-label="Poseidon home">
             <img
               src="/logo.png"
               alt=""
               width="40"
               height="40"
-              className="h-10 w-10 object-contain drop-shadow-[0_0_3px_rgba(0,240,255,0.3)]"
+              className="h-10 w-10 object-contain"
               aria-hidden="true"
             />
             <span className="text-sm font-light tracking-widest text-slate-50">Poseidon</span>
@@ -117,7 +117,7 @@ export function AppNavShell({
 
       {/* ── Mobile bottom navigation ── */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex h-16 items-center justify-around border-t border-white/[0.04] bg-black/60 backdrop-blur-2xl pb-[env(safe-area-inset-bottom,0px)] lg:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 flex h-16 items-center justify-around border-t border-white/[0.04] bg-[rgba(8,12,20,0.95)] pb-[env(safe-area-inset-bottom,0px)] lg:hidden"
         aria-label="Mobile navigation"
       >
         {ENGINE_ITEMS.map((item) => {

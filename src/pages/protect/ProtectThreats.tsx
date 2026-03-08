@@ -99,7 +99,7 @@ export default function ProtectThreatsPage() {
       {/* Threat list */}
       {sorted.length === 0 ? (
         <motion.div variants={fadeUp}>
-          <div className="glass-card glass-card-overlay rounded-[24px] p-12 flex items-center justify-center">
+          <div className="glass-card glass-card-overlay rounded-xl p-12 flex items-center justify-center">
             <EmptyState
               icon={Shield}
               title="No active threats"

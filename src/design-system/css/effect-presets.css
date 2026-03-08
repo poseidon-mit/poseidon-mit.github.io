@@ -104,3 +104,36 @@
 .ds-glow-execute { box-shadow: 0 0 var(--ds-glow-spread) oklch(0.80 0.16 95 / var(--ds-glow-opacity)); }
 .ds-glow-govern  { box-shadow: 0 0 var(--ds-glow-spread) oklch(0.62 0.18 250 / var(--ds-glow-opacity)); }
 .ds-glow-cyan    { box-shadow: 0 0 var(--ds-glow-spread) oklch(0.85 0.18 195 / var(--ds-glow-opacity)); }
+
+/* ── Semantic distinction ──
+ * `minimal` = stripped utility — zero decoration, Bloomberg-terminal-adjacent.
+ * `precision` = restrained premium — ultra-subtle atmosphere, Apple-like. 16px radii, micro-shadows.
+ */
+
+/* ── precision — Apple-like restraint (scoped to product shell via .theme-precision on AppNavShell) ── */
+.theme-precision {
+  --ds-surface-bg: oklch(0.14 0.015 250);
+  --ds-surface-border: oklch(1 0 0 / 0.08);
+  --ds-surface-blur: 0px;
+  --ds-glow-opacity: 0;
+  --ds-glow-spread: 0px;
+  --ds-animation-entry: fade;
+  --ds-glass-inset: none;
+  --ds-backdrop-filter: none;
+  --ds-border-radius-surface: 16px;
+  --ds-surface-shadow: 0 1px 3px oklch(0 0 0 / 0.12);
+}
+
+/* Also register as data-attribute for runtime toggle */
+[data-effect-preset="precision"] {
+  --ds-surface-bg: oklch(0.14 0.015 250);
+  --ds-surface-border: oklch(1 0 0 / 0.08);
+  --ds-surface-blur: 0px;
+  --ds-glow-opacity: 0;
+  --ds-glow-spread: 0px;
+  --ds-animation-entry: fade;
+  --ds-glass-inset: none;
+  --ds-backdrop-filter: none;
+  --ds-border-radius-surface: 16px;
+  --ds-surface-shadow: 0 1px 3px oklch(0 0 0 / 0.12);
+}

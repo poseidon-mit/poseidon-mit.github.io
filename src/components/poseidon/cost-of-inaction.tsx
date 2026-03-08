@@ -6,9 +6,9 @@
 import { cn } from '@/lib/utils'
 
 const severityStyles = {
-  low: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  medium: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-  high: 'bg-red-500/10 text-red-400 border-red-500/20',
+  low: 'bg-blue-500/10 text-blue-400 border-blue-500/20 state-bg-primary state-text-primary state-border-primary',
+  medium: 'bg-amber-500/10 text-amber-400 border-amber-500/20 state-bg-warning state-text-warning state-border-warning',
+  high: 'bg-red-500/10 text-red-400 border-red-500/20 state-bg-critical state-text-critical state-border-critical',
 } as const
 
 export interface CostOfInactionProps {

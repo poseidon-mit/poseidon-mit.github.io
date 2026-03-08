@@ -123,7 +123,7 @@ export default function GrowScenariosPage() {
                   setSelected(s.id);
                 }
               }}
-              className={`glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-4 text-left transition-all will-change-transform cursor-pointer ${selected === s.id ? '!border-2 !border-[var(--engine-grow)]/40' : 'hover:border-white/[0.15]'}`}
+              className={`glass-card glass-card-overlay rounded-2xl p-6 lg:p-8 flex flex-col gap-4 text-left transition-all will-change-transform cursor-pointer ${selected === s.id ? '!border-2 !border-[var(--engine-grow)]/40' : 'hover:border-white/[0.15]'}`}
               role="button"
               tabIndex={0}
               aria-pressed={selected === s.id}>
@@ -162,7 +162,7 @@ export default function GrowScenariosPage() {
 
         {/* ── P2: Comparative Forecast with ForecastBand ── */}
         <motion.section variants={fadeUpVariant} className="mb-8">
-          <motion.div className="glass-card rounded-[32px] p-6 lg:p-10 flex flex-col transition-colors">
+          <motion.div className="glass-card rounded-2xl p-6 lg:p-10 flex flex-col transition-colors">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-grow)]/5 to-transparent pointer-events-none" />
             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between border-b border-white/[0.06] pb-6 mb-8">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">
@@ -186,7 +186,7 @@ export default function GrowScenariosPage() {
 
         {/* ── P3: Impact Summary + Send to Execute ── */}
         <motion.section variants={fadeUpVariant} className="mb-8">
-          <motion.div className="glass-card rounded-[32px] p-8 lg:p-10 flex flex-col md:flex-row items-center justify-between gap-8 group transition-colors">
+          <motion.div className="glass-card rounded-2xl p-8 lg:p-10 flex flex-col md:flex-row items-center justify-between gap-8 group transition-colors">
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--engine-grow)]/10 to-transparent pointer-events-none opacity-50 transition-opacity group-hover:opacity-100" />
             <div className="absolute left-0 top-0 bottom-0 w-1.5 opacity-70 transition-opacity group-hover:opacity-100" style={{ background: "var(--engine-grow)" }} />
             <div className="relative z-10 max-w-2xl pl-2">
@@ -220,7 +220,7 @@ export default function GrowScenariosPage() {
 
         {/* ── P4: Sensitivity notes (Tier B: 4 block cap) ── */}
         <motion.section variants={fadeUpVariant} className="mb-12">
-          <motion.div className="glass-card glass-card-overlay rounded-[24px] p-8">
+          <motion.div className="glass-card glass-card-overlay rounded-xl p-8">
             <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.02] mix-blend-overlay pointer-events-none" />
             <div className="relative z-10">
               <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-3 flex items-center gap-2">

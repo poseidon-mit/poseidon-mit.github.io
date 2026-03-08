@@ -26,11 +26,11 @@ export function HeroBento({ engine, accentColor, className, children, ...rest }:
   return (
     <div
       className={cn(
-        'glass-card relative overflow-hidden rounded-[32px]',
+        'glass-card relative overflow-hidden rounded-2xl',
         'grid grid-cols-1 md:grid-cols-[1fr_380px]',
         className,
       )}
-      style={{ borderColor: `color-mix(in srgb, ${borderColor} 20%, transparent)`, borderWidth: 1 }}
+      style={{ borderColor: `color-mix(in srgb, ${borderColor} 12%, transparent)`, borderWidth: 1 }}
       {...rest}
     >
       {accentColor

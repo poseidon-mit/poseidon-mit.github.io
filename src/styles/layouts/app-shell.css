@@ -33,3 +33,7 @@
   pointer-events: none;
   z-index: -1;
 }
+
+/* ── Precision Mode — App Shell Overrides ── */
+.theme-precision.app-shell--v3 { background-image: none; }
+.theme-precision .app-shell::before { display: none; }

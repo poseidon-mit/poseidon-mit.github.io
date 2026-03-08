@@ -205,7 +205,7 @@ export default function ProtectPage() {
 
               <div className="flex flex-col gap-3" aria-label="Live Threat Feed">
                 {feedThreats.length === 0 && !criticalAlert && (
-                  <div className="glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-3 transition-opacity">
+                  <div className="glass-card glass-card-overlay rounded-2xl p-6 lg:p-8 flex flex-col gap-3 transition-opacity">
                     <EmptyState
                       icon={Shield}
                       title="No active threats"
@@ -215,7 +215,7 @@ export default function ProtectPage() {
                   </div>
                 )}
                 {feedThreats.length === 0 && criticalAlert && (
-                  <div className="glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8 flex flex-col gap-3 transition-opacity">
+                  <div className="glass-card glass-card-overlay rounded-2xl p-6 lg:p-8 flex flex-col gap-3 transition-opacity">
                     <EmptyState
                       icon={Shield}
                       title="No additional threats"
@@ -229,13 +229,13 @@ export default function ProtectPage() {
                     const theme = severityConfig[t.severity]
                     const ThreatWrapper = isMobile ? 'button' as const : Link
                     const wrapperProps = isMobile
-                      ? { onClick: () => setSheetThreat(t), className: 'group block w-full text-left focus:outline-none focus:ring-2 focus:ring-[var(--engine-protect)] rounded-[24px] cursor-pointer' }
-                      : { to: `/protect/alert-detail?alertId=${t.id}`, className: 'group block focus:outline-none focus:ring-2 focus:ring-[var(--engine-protect)] rounded-[24px]' }
+                      ? { onClick: () => setSheetThreat(t), className: 'group block w-full text-left focus:outline-none focus:ring-2 focus:ring-[var(--engine-protect)] rounded-xl cursor-pointer' }
+                      : { to: `/protect/alert-detail?alertId=${t.id}`, className: 'group block focus:outline-none focus:ring-2 focus:ring-[var(--engine-protect)] rounded-xl' }
                     return (
                       <motion.div key={t.id} variants={fadeUpVariant} exit={{ opacity: 0, height: 0 }}>
                         {/* @ts-expect-error — conditional element type */}
                         <ThreatWrapper {...wrapperProps}>
-                          <div className="glass-card rounded-[24px] p-5 md:p-6 lg:p-8 transition-all hover:bg-white/[0.04]">
+                          <div className="glass-card rounded-xl p-5 md:p-6 lg:p-8 transition-all hover:bg-white/[0.04]">
                             {/* Mobile layout */}
                             <div className="flex flex-col gap-4 md:hidden relative z-10">
                               <div className="flex items-center justify-between">
@@ -288,7 +288,7 @@ export default function ProtectPage() {
           <aside className="w-full lg:w-[320px] xl:w-[380px] shrink-0" aria-label="Security summary sidebar">
             <div className="sticky top-6 flex flex-col gap-6">
               {/* Threat summary */}
-              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-[32px] p-5 md:p-6 lg:p-8 flex flex-col gap-6 transition-colors">
+              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-5 md:p-6 lg:p-8 flex flex-col gap-6 transition-colors">
 
                 <div className="relative z-10 flex items-center justify-between">
                   <h3 className="text-xs xl:text-sm font-semibold uppercase tracking-widest text-white/50">Threat Summary</h3>
@@ -306,7 +306,7 @@ export default function ProtectPage() {
               </motion.div>
 
               {/* Risk breakdown */}
-              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-[32px] p-5 md:p-6 lg:p-8 flex flex-col gap-6 transition-colors">
+              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-5 md:p-6 lg:p-8 flex flex-col gap-6 transition-colors">
 
                 <div className="relative z-10 flex items-center justify-between">
                   <h3 className="text-xs xl:text-sm font-semibold uppercase tracking-widest text-white/50">Risk Breakdown</h3>
@@ -328,7 +328,7 @@ export default function ProtectPage() {
               </motion.div>
 
               {/* Platform Fraud Trends */}
-              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-[32px] p-5 md:p-6 lg:p-8 transition-colors">
+              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-5 md:p-6 lg:p-8 transition-colors">
                 <CohortFraudTrend
                   label={cohort.fraudTrend.label}
                   changePercent={cohort.fraudTrend.changePercent}
@@ -338,7 +338,7 @@ export default function ProtectPage() {
               </motion.div>
 
               {/* AI Defense Posture */}
-              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-[32px] p-5 md:p-6 lg:p-8 flex flex-col gap-6 transition-colors">
+              <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-5 md:p-6 lg:p-8 flex flex-col gap-6 transition-colors">
                 <h3 className="text-xs xl:text-sm font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4 relative z-10">AI Defense Posture</h3>
                 <div className="flex flex-col gap-4 relative z-10">
                   <div className="flex items-center justify-between"><span className="text-xs md:text-sm xl:text-base text-white/60 tracking-wide">Risk incidents flagged (30d)</span><span className="text-base xl:text-lg font-mono font-medium text-white/90">{perf.riskIncidentsFlagged}</span></div>

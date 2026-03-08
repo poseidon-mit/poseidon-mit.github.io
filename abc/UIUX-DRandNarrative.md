@@ -18,11 +18,15 @@
 
 !!以下全てがテーマ（長文）
 
-XZXXXXXXXXXXXXXXXXXXXXXXX
+現在のdashboard, protect, grow, execute, govern,に関しては、視覚ビジュアルの効果が強すぎて見ていて疲れる。私はLandingページぐらいの軽い視覚ビジュアルに変えたい。大きな方向転換だが、Appleのように細くて硬いが、Precisionで安全性を示すスタイル。
 
-XXXXXXXXXXXXXXXXXXXXX
+最適な再デザインを全画面に適用する進め方を３つの異なる観点から提案してください。
 
-XXXXXXXXXXXXXXXXXXXXXXXX
+
+
+
+
+
 
 ====== 
 

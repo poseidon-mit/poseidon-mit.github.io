@@ -94,7 +94,7 @@ export default function GovernPage() {
                 <button type="button" disabled className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/30 text-[10px] uppercase tracking-widest cursor-not-allowed"><ArrowUpDown size={12} />Sort</button>
               </div>
             </div>
-            <div className="glass-card glass-card-overlay rounded-[32px] p-0">
+            <div className="glass-card glass-card-overlay rounded-2xl p-0">
               <div className="flex flex-col divide-y divide-white/[0.04] relative z-10">
                 {ledgerEntries.map(entry => {
                   const sCfg = entry.status ? statusConfig[entry.status] : null;
@@ -132,18 +132,18 @@ export default function GovernPage() {
               Privacy & Model Ethics
             </h2>
             {/* Zone A — governed metrics */}
-            <div className="glass-card glass-card-overlay rounded-[32px] p-6 md:p-8 relative z-10">
+            <div className="glass-card glass-card-overlay rounded-2xl p-6 md:p-8 relative z-10">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-2xl font-mono font-semibold text-blue-400">{trust.auditCoveragePercent}%</span>
+                  <span className="text-2xl font-mono font-semibold text-blue-400 engine-text-govern">{trust.auditCoveragePercent}%</span>
                   <span className="text-xs text-white/40">AI decisions audited & logged</span>
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-2xl font-mono font-semibold text-blue-400">{trust.llmRetentionDays} Days</span>
+                  <span className="text-2xl font-mono font-semibold text-blue-400 engine-text-govern">{trust.llmRetentionDays} Days</span>
                   <span className="text-xs text-white/40">LLM inference data retained</span>
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-2xl font-mono font-semibold text-blue-400">{trust.llmTrainingOptOut ? 'Never' : 'Permitted'}</span>
+                  <span className="text-2xl font-mono font-semibold text-blue-400 engine-text-govern">{trust.llmTrainingOptOut ? 'Never' : 'Permitted'}</span>
                   <span className="text-xs text-white/40">User data used for model training</span>
                 </div>
               </div>
@@ -166,7 +166,7 @@ export default function GovernPage() {
             <AnimatePresence initial={false}>
               {historyOpen && (
                 <motion.div variants={accordionVariants} initial="hidden" animate="visible" exit="exit" transition={accordionTransition} className="overflow-hidden">
-                  <div className="glass-card glass-card-overlay rounded-[32px] p-0">
+                  <div className="glass-card glass-card-overlay rounded-2xl p-0">
                     <div className="relative z-10 p-8 md:p-12 flex items-center justify-center min-h-[120px]">
                       <span className="text-xs uppercase tracking-widest text-white/20">No history entries yet</span>
                     </div>

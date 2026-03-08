@@ -48,8 +48,8 @@ export function ShapWaterfall({
                 className={cn(
                   'absolute top-0 h-full rounded transition-all duration-500',
                   isPositive
-                    ? 'bg-green-500/60 left-1/2'
-                    : 'bg-red-500/60 right-1/2',
+                    ? 'bg-green-500/60 left-1/2 state-bg-healthy'
+                    : 'bg-red-500/60 right-1/2 state-bg-critical',
                 )}
                 style={{ width: `${width / 2}%` }}
               />

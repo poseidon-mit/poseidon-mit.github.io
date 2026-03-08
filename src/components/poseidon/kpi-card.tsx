@@ -15,8 +15,8 @@ export interface KpiCardProps {
 
 const CONTAINER: Record<string, string> = {
   sm: 'glass-card rounded-2xl p-4',
-  md: 'glass-card glass-card-overlay rounded-[24px] p-6',
-  lg: 'glass-card rounded-[24px] p-8 lg:p-12',
+  md: 'glass-card glass-card-overlay rounded-xl p-6',
+  lg: 'glass-card rounded-xl p-8 lg:p-12',
 }
 
 const LABEL: Record<string, string> = {
@@ -58,7 +58,7 @@ export function KpiCard({
       className={cn(
         CONTAINER[size],
         // When a custom gradient is provided, skip glass-card-overlay (its ::before would conflict).
-        hasGradient && size === 'md' && 'glass-card rounded-[24px] p-6',
+        hasGradient && size === 'md' && 'glass-card rounded-xl p-6',
         className,
       )}
     >

@@ -73,13 +73,13 @@ function RouteLoadingFallback() {
 
   return (
     <div
-      className="fixed inset-0 z-[100] grid place-items-center bg-transparent backdrop-blur-2xl"
+      className="fixed inset-0 z-[100] grid place-items-center bg-transparent backdrop-blur-md"
       role="status"
       aria-live="polite"
       aria-label="Loading page"
     >
       <div className="absolute inset-0 bg-black/60 pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px] pointer-events-none opacity-50 animate-pulse" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/10 rounded-full pointer-events-none opacity-50" />
 
       <div className="relative z-10 flex flex-col items-center gap-6">
         {/* Animated Rings */}
@@ -87,12 +87,12 @@ function RouteLoadingFallback() {
           <div className="absolute inset-0 rounded-full border border-white/10" />
           <div className="absolute inset-0 rounded-full border border-cyan-400/30 border-t-transparent animate-spin" style={{ animationDuration: '2s' }} />
           <div className="absolute inset-2 rounded-full border border-emerald-400/20 border-b-transparent animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }} />
-          <div className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.8)] animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
         </div>
 
         {/* Typography */}
         <div className="flex flex-col items-center gap-2">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-cyan-400/80 drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-cyan-400/80">
             Loading Interface
           </span>
           <span className="text-sm font-medium tracking-wide text-white/50">

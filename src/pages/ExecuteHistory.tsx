@@ -215,7 +215,7 @@ export default function ExecuteHistoryPage() {
         {/* History List */}
         {filteredEvents.length === 0 ? (
           <motion.div variants={fadeUp}>
-            <div className="glass-card glass-card-overlay rounded-[24px] p-12 flex items-center justify-center">
+            <div className="glass-card glass-card-overlay rounded-xl p-12 flex items-center justify-center">
               <EmptyState
                 icon={History}
                 title={totalDecisions === 0 ? 'No decisions yet' : 'No matching decisions'}

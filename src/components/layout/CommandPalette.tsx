@@ -51,12 +51,12 @@ function resolveViewModePath(currentPath: string, viewMode: string): string {
 type CommandTone = 'dashboard' | 'protect' | 'grow' | 'execute' | 'govern' | 'view';
 
 const TONE_CLASSES: Record<CommandTone, { chip: string; icon: string }> = {
-  dashboard: { chip: 'bg-cyan-500/15', icon: 'text-cyan-300' },
-  protect: { chip: 'bg-green-500/15', icon: 'text-green-300' },
-  grow: { chip: 'bg-violet-500/15', icon: 'text-violet-300' },
-  execute: { chip: 'bg-amber-500/15', icon: 'text-amber-300' },
-  govern: { chip: 'bg-blue-500/15', icon: 'text-blue-300' },
-  view: { chip: 'bg-teal-500/15', icon: 'text-teal-300' },
+  dashboard: { chip: 'bg-cyan-500/15 engine-bg-dashboard', icon: 'text-cyan-300 engine-text-dashboard' },
+  protect: { chip: 'bg-green-500/15 engine-bg-protect', icon: 'text-green-300 engine-text-protect' },
+  grow: { chip: 'bg-violet-500/15 engine-bg-grow', icon: 'text-violet-300 engine-text-grow' },
+  execute: { chip: 'bg-amber-500/15 engine-bg-execute', icon: 'text-amber-300 engine-text-execute' },
+  govern: { chip: 'bg-blue-500/15 engine-bg-govern', icon: 'text-blue-300 engine-text-govern' },
+  view: { chip: 'bg-teal-500/15 state-bg-healthy', icon: 'text-teal-300 state-text-healthy' },
 };
 
 /* ── Command definitions ─────────────────────────────────── */
@@ -261,7 +261,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
             className={cn(
               'mr-3 !h-8 !min-h-8 !w-8 !rounded-lg !px-0',
               isListening
-                ? 'border border-red-400/40 bg-red-500/20 text-red-300'
+                ? 'border border-red-400/40 bg-red-500/20 text-red-300 state-border-critical state-bg-critical state-text-critical'
                 : 'bg-white/5 text-slate-500 hover:bg-white/10 hover:text-slate-300',
             )}
             aria-label={isListening ? 'Stop voice input' : 'Start voice input'}

@@ -15,7 +15,7 @@ export const easings = {
 }
 
 /* ── Spring config (Apple creator-studio baseline) ── */
-const spring = { type: 'spring' as const, stiffness: 100, damping: 20 }
+const spring = { type: 'spring' as const, stiffness: 220, damping: 30 }
 export const creatorStudioSpringPress = {
   type: 'spring' as const,
   stiffness: 400,
@@ -31,9 +31,9 @@ export const cardSelect = { type: 'spring' as const, stiffness: 280, damping: 24
 
 /* ── Page Transition ── */
 export const pageTransition: Variants = {
-  initial: { opacity: 0, y: 16 },
+  initial: { opacity: 0, y: 6 },
   animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
+  exit: { opacity: 0, y: -3 },
 }
 
 export const pageTransitionConfig = {
@@ -44,16 +44,16 @@ export const pageTransitionConfig = {
 /* ── Card / Element Entry ── */
 export const fadeIn: Variants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.4 } },
+  visible: { opacity: 1, transition: { duration: 0.2 } },
 }
 
 export const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  hidden: { opacity: 0, y: 8, scale: 0.995 },
   visible: { opacity: 1, y: 0, scale: 1, transition: spring },
 }
 
 export const creatorStudioFadeUp: Variants = {
-  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  hidden: { opacity: 0, y: 8, scale: 0.995 },
   visible: {
     opacity: 1,
     y: 0,
@@ -68,7 +68,7 @@ export const fadeScale: Variants = {
 }
 
 export const slideRight: Variants = {
-  hidden: { opacity: 0, x: -20 },
+  hidden: { opacity: 0, x: -8 },
   visible: { opacity: 1, x: 0, transition: spring },
 }
 
@@ -77,8 +77,8 @@ export const staggerContainer: Variants = {
   hidden: {},
   visible: {
     transition: {
-      delayChildren: 0.05,
-      staggerChildren: 0.05,
+      delayChildren: 0.02,
+      staggerChildren: 0.025,
     },
   },
 }
@@ -87,8 +87,8 @@ export const creatorStudioStaggerContainer: Variants = {
   hidden: {},
   visible: {
     transition: {
-      delayChildren: 0.05,
-      staggerChildren: 0.05,
+      delayChildren: 0.02,
+      staggerChildren: 0.025,
     },
   },
 }
@@ -105,12 +105,12 @@ export const staggerContainerDelayed: Variants = {
 }
 
 export const staggerItem: Variants = {
-  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  hidden: { opacity: 0, y: 8, scale: 0.995 },
   visible: { opacity: 1, y: 0, scale: 1, transition: spring },
 }
 
 export const creatorStudioStaggerItem: Variants = {
-  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  hidden: { opacity: 0, y: 8, scale: 0.995 },
   visible: {
     opacity: 1,
     y: 0,
@@ -127,7 +127,7 @@ export const creatorStudioRouteSyncContainer: Variants = {
 
 /** Route-level card/item contract: spring movement without opacity fade (anti-flicker). */
 export const creatorStudioRouteSyncItem: Variants = {
-  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  hidden: { opacity: 0, y: 8, scale: 0.995 },
   visible: { opacity: 1, y: 0, scale: 1, transition: spring },
 }
 

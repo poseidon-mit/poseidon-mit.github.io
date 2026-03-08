@@ -10,15 +10,6 @@ export interface EngineBadgeProps {
   className?: string
 }
 
-/** Shadow glow per engine — matches existing inline `shadow-[0_0_15px_rgba(...)]` values. */
-const ENGINE_GLOW: Record<EngineName, string> = {
-  dashboard: '0 0 15px rgba(0,240,255,0.2)',
-  protect: '0 0 15px rgba(34,197,94,0.2)',
-  grow: '0 0 15px rgba(139,92,246,0.2)',
-  execute: '0 0 15px rgba(251,191,36,0.2)',
-  govern: '0 0 15px rgba(59,130,246,0.2)',
-}
-
 export function EngineBadge({ engine, icon: Icon, label, className }: EngineBadgeProps) {
   const token = engineTokens[engine]
 
@@ -32,7 +23,6 @@ export function EngineBadge({ engine, icon: Icon, label, className }: EngineBadg
       )}
       style={{
         color: `var(${token.cssVar})`,
-        boxShadow: ENGINE_GLOW[engine],
       }}
     >
       <Icon size={12} />

@@ -37,7 +37,7 @@ export function ProofLine({
       <span className="inline-block w-1.5 h-1.5 rounded-full bg-white/20 shrink-0" />
       <span className="truncate">{source}</span>
       {confidence != null && (
-        <span className={cn('tabular-nums font-medium', token?.textClass ?? 'text-cyan-400')}>
+        <span className={cn('tabular-nums font-medium', token?.textClass ?? 'text-cyan-400 state-text-active')}>
           {formatConfidence(confidence, { mode: confidenceMode })}
         </span>
       )}

@@ -78,7 +78,7 @@ export function SlideToApprove({
     >
       {/* Progress fill */}
       <motion.div
-        className="absolute inset-0 rounded-full bg-emerald-500/20"
+        className="absolute inset-0 rounded-full bg-emerald-500/20 state-bg-healthy"
         style={{ opacity: backgroundOpacity }}
       />
 
@@ -95,7 +95,7 @@ export function SlideToApprove({
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="absolute inset-0 flex items-center justify-center text-sm font-medium text-emerald-400"
+          className="absolute inset-0 flex items-center justify-center text-sm font-medium text-emerald-400 state-text-healthy"
         >
           {completedLabel}
         </motion.span>
@@ -119,7 +119,7 @@ export function SlideToApprove({
         transition={{ type: 'spring', stiffness: 400, damping: 25 }}
       >
         {completed ? (
-          <Check className="h-5 w-5 text-emerald-400" />
+          <Check className="h-5 w-5 text-emerald-400 state-text-healthy" />
         ) : (
           <ArrowRight className="h-5 w-5 text-white/70" />
         )}

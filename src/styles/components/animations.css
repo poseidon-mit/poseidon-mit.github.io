@@ -93,3 +93,11 @@
     opacity: 1 !important;
   }
 }
+
+/* ── Precision Mode — Animation Overrides ──
+ * Remove blur from entrance animations and kill glow reveal.
+ */
+.theme-precision .reveal-up { filter: none; }
+.theme-precision .anim-text-fade-up { filter: none; }
+.theme-precision .anim-text-snap { filter: none; }
+.theme-precision .anim-text-glow-reveal { animation: none; text-shadow: none; filter: none; opacity: 1; }

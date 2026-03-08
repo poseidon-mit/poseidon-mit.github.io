@@ -44,7 +44,6 @@ export function NeonText({
         className={cn(
           'bg-clip-text text-transparent',
           gradientMap[engine],
-          neonTextMap[engine],
           className,
         )}
       >
@@ -54,7 +53,7 @@ export function NeonText({
   }
 
   return (
-    <Tag className={cn(neonTextMap[engine], className)}>
+    <Tag className={cn(className)}>
       {children}
     </Tag>
   )

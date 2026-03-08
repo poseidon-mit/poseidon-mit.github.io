@@ -242,8 +242,8 @@ export default function ExecutePage() {
           <motion.div variants={fadeUpVariant}><EngineBadge engine="execute" icon={Zap} label="Engine status: Good" className="self-start" /></motion.div>
           <h1 className="sr-only">Execute Engine</h1>
           <motion.div variants={fadeUpVariant} data-testid="system-status-row" className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-white/30">
-            <Lock size={10} className="text-amber-400/50" />
-            <span>System Status: <span className="text-amber-400/70">{trust.autoExecutionsWithoutConsent}</span> auto-executions · Your final approval is always required</span>
+            <Lock size={10} className="text-amber-400/50 engine-text-execute" />
+            <span>System Status: <span className="text-amber-400/70 engine-text-execute">{trust.autoExecutionsWithoutConsent}</span> auto-executions · Your final approval is always required</span>
           </motion.div>
           <motion.div variants={fadeUpVariant}>
             <ExecuteApprovalCommandDeck
@@ -295,7 +295,7 @@ export default function ExecutePage() {
                   {batchSelected.size > 0 && (
                     <button
                       onClick={handleBatchApprove}
-                      className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-amber-600/80 text-white hover:bg-amber-600/90 transition-colors cursor-pointer"
+                      className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-amber-600/80 engine-solid-execute text-white hover:bg-amber-600/90 transition-colors cursor-pointer"
                     >
                       Approve Selected ({batchSelected.size})
                     </button>
@@ -336,7 +336,7 @@ export default function ExecutePage() {
                   {RISK_TIER_CONFIG[2].label}
                 </h2>
                 <span className="text-[10px] font-mono text-white/30">{tier2Actions.length} items</span>
-                <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-widest text-amber-400/60 border border-amber-400/20 px-2 py-0.5 rounded-md bg-amber-400/5">
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-widest text-amber-400/60 engine-text-execute border border-amber-400/20 px-2 py-0.5 rounded-md bg-amber-400/5 engine-bg-execute">
                   <Lock size={9} />
                   Requires individual review
                 </span>
@@ -378,7 +378,7 @@ export default function ExecutePage() {
           )}
 
           {pendingActions.length === 0 && (
-            <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-[32px] p-8 flex items-center justify-center">
+            <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-8 flex items-center justify-center">
               <EmptyState
                 icon={CheckCircle2}
                 title="All pending actions are cleared"
@@ -547,7 +547,7 @@ function ActionCard({
   return (
     <motion.div variants={fadeUpVariant}>
       <motion.div
-        className="glass-card glass-card-overlay rounded-[24px] p-4 md:p-6 lg:p-8 hover:border-white/[0.15] flex flex-col gap-5 transition-colors"
+        className="glass-card glass-card-overlay rounded-xl p-4 md:p-6 lg:p-8 hover:border-white/[0.15] flex flex-col gap-5 transition-colors"
         style={{ borderLeftWidth: 4, borderLeftColor: ENGINE_COLOR_MAP[action.engine] }}
       >
 
@@ -574,7 +574,7 @@ function ActionCard({
           {action.expiresIn && (
             <span className={cn(
               'inline-flex items-center gap-1 text-[10px] font-semibold tracking-widest uppercase ml-1',
-              isExpiringSoon ? 'text-red-400' : 'text-white/40',
+              isExpiringSoon ? 'text-red-400 state-text-critical' : 'text-white/40',
             )}>
               <Timer size={10} className={isExpiringSoon ? 'animate-pulse' : ''} />
               {action.expiresIn}

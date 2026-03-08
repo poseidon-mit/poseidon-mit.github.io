@@ -16,9 +16,9 @@ export interface AuroraPulseProps {
 }
 
 const opacityMap = {
-  subtle: { primary: 0.018, secondary: 0.009 },
-  normal: { primary: 0.026, secondary: 0.013 },
-  vivid: { primary: 0.04, secondary: 0.02 },
+  subtle: { primary: 0.008, secondary: 0.004 },
+  normal: { primary: 0.012, secondary: 0.006 },
+  vivid: { primary: 0.018, secondary: 0.010 },
 }
 
 const variableColorMap: Record<string, string> = {
@@ -44,7 +44,7 @@ export function AuroraPulse({ color, engine, intensity = 'normal', className = '
       aria-hidden="true"
       style={{
         background: `radial-gradient(70% 50% at 50% 0%, ${primaryMix}, transparent), radial-gradient(40% 40% at 80% 20%, ${secondaryMix}, transparent)`,
-        animation: reducedMotion ? 'none' : 'aurora-drift 8s ease-in-out infinite alternate',
+        animation: 'none',
       }}
     />
   )

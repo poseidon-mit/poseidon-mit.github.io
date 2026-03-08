@@ -2,13 +2,6 @@ import { createElement, forwardRef, type CSSProperties, type ElementType } from 
 import { cn } from '../../../../lib/utils'
 import type { SurfaceProps } from './Surface.schema'
 
-const ENGINE_GLOW_COLORS = {
-  protect: 'oklch(0.70 0.18 155)',
-  grow: 'oklch(0.58 0.22 285)',
-  execute: 'oklch(0.80 0.16 95)',
-  govern: 'oklch(0.62 0.18 250)',
-} as const
-
 const PADDING_MAP = {
   none: '',
   sm: 'p-4',
@@ -34,14 +27,8 @@ export const Surface = forwardRef<HTMLElement, SurfaceProps>(
     },
     ref,
   ) => {
-    const typedEngine = engine as keyof typeof ENGINE_GLOW_COLORS | undefined
     const typedPadding = padding as keyof typeof PADDING_MAP
-    const glowColor = glow && typedEngine ? ENGINE_GLOW_COLORS[typedEngine] : null
     const isMotionTag = typeof Tag !== 'string'
-
-    const glowShadow = glowColor
-      ? `0 0 var(--ds-glow-spread) ${glowColor}`
-      : undefined
 
     const variantClasses = cn(
       // Base shared styles
@@ -89,7 +76,7 @@ export const Surface = forwardRef<HTMLElement, SurfaceProps>(
       // Interactive states
       interactive && [
         'cursor-pointer',
-        'hover:brightness-110 hover:border-[oklch(1_0_0_/_0.14)] hover:scale-[1.01] hover:-translate-y-[2px]',
+        'hover:brightness-105 hover:border-[oklch(1_0_0_/_0.10)] hover:scale-[1.005]',
         'active:scale-[0.985] active:brightness-95',
       ],
     )
@@ -99,9 +86,6 @@ export const Surface = forwardRef<HTMLElement, SurfaceProps>(
 
     const mergedStyle: CSSProperties | undefined = (() => {
       const style: CSSProperties = { ...(inlineStyle ?? {}) }
-      if (glowShadow) {
-        style.boxShadow = glowShadow
-      }
       if (borderColor) {
         style.borderLeftColor = borderColor
         style.borderLeftWidth = `${borderWidth}px`

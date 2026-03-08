@@ -239,7 +239,7 @@ export default function ProtectAlertDetailPage() {
 
         {/* ── Alert Summary ── */}
         <motion.div variants={fadeUpVariant} className="mb-6">
-          <div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col gap-4 transition-all" style={{ border: `1px solid ${severityTheme.border}` }}>
+          <div className="glass-card rounded-2xl p-6 lg:p-8 flex flex-col gap-4 transition-all" style={{ border: `1px solid ${severityTheme.border}` }}>
             <div className="absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none" style={{ backgroundImage: `linear-gradient(to bottom right, ${severityTheme.bg}, transparent)` }} />
 
             <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 lg:gap-8 relative z-10">
@@ -255,7 +255,7 @@ export default function ProtectAlertDetailPage() {
 
         {/* ── Timeline ── */}
         <motion.div variants={fadeUpVariant} className="mb-8">
-          <div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col gap-4 transition-all">
+          <div className="glass-card rounded-2xl p-6 lg:p-8 flex flex-col gap-4 transition-all">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
             <div className="relative z-10 hidden md:flex items-center justify-between" role="list" aria-label="Alert timeline">
               {timelineSteps.map((step, i) => (
@@ -293,7 +293,7 @@ export default function ProtectAlertDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           {/* SHAP attribution waterfall */}
           <motion.div variants={fadeUpVariant}>
-            <div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col gap-6 transition-all h-full">
+            <div className="glass-card rounded-2xl p-6 lg:p-8 flex flex-col gap-6 transition-all h-full">
               <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
               <div className="relative z-10 flex items-center justify-between border-b border-white/[0.06] pb-4">
                 <div>
@@ -309,7 +309,7 @@ export default function ProtectAlertDetailPage() {
 
           {/* Evidence Analysis */}
           <motion.div variants={fadeUpVariant}>
-            <div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col gap-6 transition-all h-full">
+            <div className="glass-card rounded-2xl p-6 lg:p-8 flex flex-col gap-6 transition-all h-full">
               <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
               <div className="relative z-10 flex items-center justify-between border-b border-white/[0.06] pb-4">
                 <div>
@@ -353,7 +353,7 @@ export default function ProtectAlertDetailPage() {
         {/* ── Actions ── */}
         <motion.div variants={fadeUpVariant}>
           {disputeState === 'idle' && (
-            <div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 transition-all" style={{ borderColor: 'var(--state-critical)' }}>
+            <div className="glass-card rounded-2xl p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 transition-all" style={{ borderColor: 'var(--state-critical)' }}>
               <div className="absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none" style={{ backgroundImage: `linear-gradient(to bottom right, ${severityTheme.bg}, transparent)` }} />
               <div className="relative z-10 flex flex-col gap-1">
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Recommended Action</h3>
@@ -371,7 +371,7 @@ export default function ProtectAlertDetailPage() {
           )}
 
           {disputeState === 'drafting' && (
-            <div className="glass-card rounded-[32px] p-6 lg:p-8 flex flex-col gap-6" style={{ borderColor: 'var(--engine-execute)', background: 'rgba(234, 179, 8, 0.05)' }}>
+            <div className="glass-card rounded-2xl p-6 lg:p-8 flex flex-col gap-6" style={{ borderColor: 'var(--engine-execute)', background: 'rgba(234, 179, 8, 0.05)' }}>
               <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-execute)]/20 to-transparent pointer-events-none" />
               <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Case Brief</h3>
               <div className="flex flex-col lg:flex-row gap-6 relative z-10">
@@ -425,7 +425,7 @@ export default function ProtectAlertDetailPage() {
           )}
 
           {disputeState === 'submitted' && (
-            <div className="glass-card rounded-[32px] p-6 lg:p-8 !border-emerald-500/30 !bg-emerald-500/10 flex flex-col sm:flex-row sm:items-center gap-6 text-center sm:text-left">
+            <div className="glass-card rounded-2xl p-6 lg:p-8 !border-emerald-500/30 !bg-emerald-500/10 flex flex-col sm:flex-row sm:items-center gap-6 text-center sm:text-left">
               <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none" />
               <div className="relative z-10 flex items-center gap-4 shrink-0">
                 <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">

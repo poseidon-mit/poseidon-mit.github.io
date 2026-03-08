@@ -93,7 +93,7 @@ function ProtectPanel({
         </Link>
       </div>
 
-      <div className="glass-card rounded-[24px] p-5 md:p-8 flex flex-col gap-2">
+      <div className="glass-card rounded-xl p-5 md:p-8 flex flex-col gap-2">
         {threats.map((threat) => (
           <Link
             key={threat.id}
@@ -167,7 +167,7 @@ function GrowPanel({
         </Link>
       </div>
 
-      <div className="glass-card rounded-[24px] p-5 md:p-8 flex flex-col gap-2">
+      <div className="glass-card rounded-xl p-5 md:p-8 flex flex-col gap-2">
         {recommendations.map((rec) => (
           <Link
             key={rec.rank}
@@ -246,7 +246,7 @@ function ExecutePanel({
       </div>
 
       {actions.length === 0 ? (
-        <div className="glass-card rounded-[24px] p-8">
+        <div className="glass-card rounded-xl p-8">
           <EmptyState
             icon={CheckCircle}
             title="All clear"
@@ -281,7 +281,7 @@ function ExecutePanel({
                     {action.engine}
                   </span>
                   {action.urgency === 'high' && (
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 state-bg-warning state-text-warning">
                       Urgent
                     </span>
                   )}
@@ -482,7 +482,7 @@ export default function DashboardPage() {
 
           {/* ── Activity Feed ── */}
           <motion.div variants={itemVariants} className="mb-16">
-            <div className="glass-card rounded-[24px] p-5 md:p-8 flex flex-col gap-6">
+            <div className="glass-card rounded-xl p-5 md:p-8 flex flex-col gap-6">
               <h2 className="text-sm font-semibold uppercase tracking-widest text-white/40">
                 Recent Activity
               </h2>

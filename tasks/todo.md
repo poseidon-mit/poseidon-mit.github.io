@@ -40,6 +40,26 @@
 
 ---
 
+# Claude Neon -> Precision Plan Review
+
+## Plan
+
+- [x] Inspect the proposed Claude implementation plan against current shared layout, CSS, and facade architecture
+- [x] Inspect the updated `Comprehensive_UIUX_Redesign_Plan.md` for improvements and remaining gaps
+- [x] Identify blocker-level assumptions, especially around `AuroraPulse`, `glass-card`, `Surface`, motion presets, and verification scope
+- [x] Save a long-form review document in `docs/reviews/`
+
+## Review
+
+- The proposed Claude plan is useful as a shared visual weight-reduction pass, but not sufficient as a full redesign plan.
+- The largest incorrect assumption is `zero page files touched`; several engine heroes and trust surfaces are controlled by route-specific facades and hero primitives, not just `glass-card`.
+- `AuroraPulse` should not be nulled globally; it needs a route-aware precision mode because it is used by layout, hero primitives, and orchestrator surfaces.
+- `Surface` cannot be ignored in the migration. Leaving it unchanged while rewriting `glass-card` will create a split visual system.
+- The updated comprehensive redesign document is safer than the original plan, but still needs a more explicit component ownership map and risk-tiered Execute friction rules.
+- Saved full review: `docs/reviews/claude-neon-precision-plan-review-2026-03-08.md`
+
+---
+
 ## Landing Safari Performance
 
 ### Plan

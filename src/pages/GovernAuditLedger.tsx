@@ -169,7 +169,7 @@ export default function GovernAuditPage() {
       {/* Entry list */}
       {filtered.length === 0 ? (
         <motion.div variants={fadeUp}>
-          <div className="glass-card glass-card-overlay rounded-[24px] p-12 flex items-center justify-center">
+          <div className="glass-card glass-card-overlay rounded-xl p-12 flex items-center justify-center">
             <EmptyState
               icon={Search}
               title="No matching decisions"

@@ -136,7 +136,6 @@ function CoordinationRail({
           className="w-[2px] h-[60%] rounded-full"
           style={{
             background: `linear-gradient(to bottom, ${fromColor}, ${toColor})`,
-            boxShadow: `0 0 8px color-mix(in srgb, ${fromColor} 50%, ${toColor})`,
           }}
         />
       </div>
@@ -515,7 +514,7 @@ function ExecuteCard({
                 {nextApproval.urgency === 'high' && (
                   <>
                     <span className="text-white/20">&middot;</span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 state-bg-warning state-text-warning">
                       Urgent
                     </span>
                   </>

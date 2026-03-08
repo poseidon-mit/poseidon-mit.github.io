@@ -100,3 +100,19 @@
 .neon-text-agent-sonnet { color: #6366F1; text-shadow: 0 0 6px rgba(99, 102, 241, 0.5); }
 .neon-text-agent-opus { color: #EC4899; text-shadow: 0 0 6px rgba(236, 72, 153, 0.5); }
 .neon-text-agent-gpt4o-mini { color: #14B8A6; text-shadow: 0 0 6px rgba(20, 184, 166, 0.5); }
+
+/* ── Precision Mode — Agent Glow Suppression ── */
+.theme-precision .neon-glow-agent-gpt4o,
+.theme-precision .neon-glow-agent-gpt4o-mini,
+.theme-precision .neon-glow-agent-sonnet,
+.theme-precision .neon-glow-agent-opus,
+.theme-precision .neon-glow-agent-unknown {
+  box-shadow: none;
+}
+
+.theme-precision .neon-text-agent-gpt4o,
+.theme-precision .neon-text-agent-sonnet,
+.theme-precision .neon-text-agent-opus,
+.theme-precision .neon-text-agent-gpt4o-mini {
+  text-shadow: none;
+}

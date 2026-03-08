@@ -10,6 +10,7 @@ import { DEMO_THREAD } from '@/lib/demo-thread';
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout';
+import { ENGINE_BADGE_CLASS } from '@/lib/engine-color-map';
 
 /* ═══════════════════════════════════════════
    DATA
@@ -37,7 +38,7 @@ const notifications: Notification[] = [
   { id: 'N-008', engine: 'Govern', category: 'system', title: 'Decision Council threshold update', body: 'Policy engine recalibrated: council invocation threshold adjusted to $500K.', time: '8h ago', read: true }];
 
 
-const engineBadgeCls: Record<string, string> = { Protect: 'bg-emerald-500/20 text-emerald-400', Grow: 'bg-violet-500/20 text-violet-400', Execute: 'bg-amber-500/20 text-amber-400', Govern: 'bg-blue-500/20 text-blue-400' };
+const engineBadgeCls = ENGINE_BADGE_CLASS;
 const engineInitial: Record<string, string> = { Protect: 'P', Grow: 'G', Execute: 'E', Govern: 'G' };
 
 type CategoryFilter = 'all' | 'security' | 'growth' | 'actions' | 'system';
@@ -142,7 +143,7 @@ export function Notifications() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-xs text-white/50">{unreadCount} unread</span>
-                {unreadCount > 0 && <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />}
+                {unreadCount > 0 && <div className="w-2 h-2 rounded-full bg-cyan-400 engine-indicator-dashboard animate-pulse" />}
               </div>
               <button onClick={markAllRead} className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "!min-h-7 !px-2 text-xs text-white/40 hover:text-white/60 transition-colors")}>Mark all read</button>
             </div>
@@ -181,7 +182,7 @@ export function Notifications() {
 
                   {/* Unread dot */}
                   <div className="pt-1.5 w-2 shrink-0">
-                    {!readState[notif.id] && <div className="w-2 h-2 rounded-full bg-cyan-400" />}
+                    {!readState[notif.id] && <div className="w-2 h-2 rounded-full bg-cyan-400 engine-indicator-dashboard" />}
                   </div>
 
                   {/* Engine icon */}
@@ -196,7 +197,7 @@ export function Notifications() {
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-[10px] text-white/30">{notif.time}</span>
                       {notif.actionLink &&
-                        <Link to={notif.actionLink} className="text-[10px] text-cyan-400 hover:underline" onClick={(e) => e.stopPropagation()}>View</Link>
+                        <Link to={notif.actionLink} className="text-[10px] text-cyan-400 state-text-active hover:underline" onClick={(e) => e.stopPropagation()}>View</Link>
                       }
                     </div>
                   </div>
@@ -212,7 +213,7 @@ export function Notifications() {
           <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Notification preferences">
             {/* Preferences */}
             <motion.div variants={fadeUpVariant}>
-              <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-4">
+              <div className="glass-card glass-card-overlay rounded-xl p-6 flex flex-col gap-4">
                 <div className="relative z-10 flex items-center gap-2 mb-2">
                   <Settings2 className="h-4 w-4" style={{ color: 'var(--engine-dashboard)' }} />
                   <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest">Alert Preferences</h3>
@@ -229,7 +230,7 @@ export function Notifications() {
                         <span className="text-sm font-medium text-white tracking-wide">{pref.label}</span>
                         <span className="text-[10px] text-white/40 block uppercase tracking-widest font-semibold mt-0.5">{pref.type}</span>
                       </div>
-                      <div className={`w-9 h-5 rounded-full relative ${pref.enabled ? 'bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.3)]' : 'bg-white/10'}`}>
+                      <div className={`w-9 h-5 rounded-full relative ${pref.enabled ? 'bg-cyan-500 engine-indicator-dashboard' : 'bg-white/10'}`}>
                         <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${pref.enabled ? 'left-4' : 'left-0.5'}`} />
                       </div>
                     </div>
@@ -249,14 +250,14 @@ export function Notifications() {
 
             {/* Stats */}
             <motion.div variants={fadeUpVariant}>
-              <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-4">
+              <div className="glass-card glass-card-overlay rounded-xl p-6 flex flex-col gap-4">
                 <h3 className="relative z-10 text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Notification Stats</h3>
                 <div className="relative z-10 space-y-3">
                   {[
                     { label: 'Total today', value: String(notifications.length), color: 'text-white' },
-                    { label: 'Unread', value: String(unreadCount), color: 'text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]' },
-                    { label: 'Security', value: String(categoryCounts.security), color: 'text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]' },
-                    { label: 'Actioned (7d)', value: '87%', color: 'text-cyan-400 drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]' }
+                    { label: 'Unread', value: String(unreadCount), color: 'text-amber-400 engine-text-execute' },
+                    { label: 'Security', value: String(categoryCounts.security), color: 'text-emerald-400 engine-text-protect' },
+                    { label: 'Actioned (7d)', value: '87%', color: 'text-cyan-400 engine-text-dashboard' }
                   ].map((row) => (
                     <div key={row.label} className="flex justify-between items-center py-1 border-b border-white/[0.04] last:border-0">
                       <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">{row.label}</span>

@@ -27,40 +27,40 @@ interface ToneClasses {
 
 export const TONE_CLASSES: Record<AccentTone, ToneClasses> = {
     dashboard: {
-        activeLink: 'text-cyan-50 bg-cyan-500/10 ring-1 ring-cyan-500/30 shadow-[inset_0_0_12px_rgba(6,182,212,0.15)]',
-        activeIcon: 'text-cyan-400 drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]',
-        indicator: 'bg-cyan-400 shadow-[0_0_5px_rgba(6,182,212,0.5)]',
-        activeSubNav: 'text-cyan-100 bg-cyan-500/20 border-cyan-400/30 glow',
+        activeLink: 'text-cyan-50 bg-cyan-500/10 ring-1 ring-cyan-500/30 engine-text-dashboard engine-bg-dashboard engine-ring-dashboard',
+        activeIcon: 'text-cyan-400 engine-text-dashboard',
+        indicator: 'bg-cyan-400 engine-indicator-dashboard',
+        activeSubNav: 'text-cyan-100 bg-cyan-500/20 border-cyan-400/30 engine-text-dashboard engine-bg-dashboard engine-border-dashboard',
     },
     protect: {
-        activeLink: 'text-emerald-50 bg-emerald-500/10 ring-1 ring-emerald-500/30 shadow-[inset_0_0_12px_rgba(16,185,129,0.15)]',
-        activeIcon: 'text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]',
-        indicator: 'bg-emerald-400 shadow-[0_0_5px_rgba(16,185,129,0.5)]',
-        activeSubNav: 'text-emerald-100 bg-emerald-500/20 border-emerald-400/30 glow',
+        activeLink: 'text-emerald-50 bg-emerald-500/10 ring-1 ring-emerald-500/30 engine-text-protect engine-bg-protect engine-ring-protect',
+        activeIcon: 'text-emerald-400 engine-text-protect',
+        indicator: 'bg-emerald-400 engine-indicator-protect',
+        activeSubNav: 'text-emerald-100 bg-emerald-500/20 border-emerald-400/30 engine-text-protect engine-bg-protect engine-border-protect',
     },
     grow: {
-        activeLink: 'text-violet-50 bg-violet-500/10 ring-1 ring-violet-500/30 shadow-[inset_0_0_12px_rgba(139,92,246,0.15)]',
-        activeIcon: 'text-violet-400 drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]',
-        indicator: 'bg-violet-400 shadow-[0_0_5px_rgba(139,92,246,0.5)]',
-        activeSubNav: 'text-violet-100 bg-violet-500/20 border-violet-400/30 glow',
+        activeLink: 'text-violet-50 bg-violet-500/10 ring-1 ring-violet-500/30 engine-text-grow engine-bg-grow engine-ring-grow',
+        activeIcon: 'text-violet-400 engine-text-grow',
+        indicator: 'bg-violet-400 engine-indicator-grow',
+        activeSubNav: 'text-violet-100 bg-violet-500/20 border-violet-400/30 engine-text-grow engine-bg-grow engine-border-grow',
     },
     execute: {
-        activeLink: 'text-amber-50 bg-amber-500/10 ring-1 ring-amber-500/30 shadow-[inset_0_0_12px_rgba(245,158,11,0.15)]',
-        activeIcon: 'text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]',
-        indicator: 'bg-amber-400 shadow-[0_0_5px_rgba(245,158,11,0.5)]',
-        activeSubNav: 'text-amber-100 bg-amber-500/20 border-amber-400/30 glow',
+        activeLink: 'text-amber-50 bg-amber-500/10 ring-1 ring-amber-500/30 engine-text-execute engine-bg-execute engine-ring-execute',
+        activeIcon: 'text-amber-400 engine-text-execute',
+        indicator: 'bg-amber-400 engine-indicator-execute',
+        activeSubNav: 'text-amber-100 bg-amber-500/20 border-amber-400/30 engine-text-execute engine-bg-execute engine-border-execute',
     },
     govern: {
-        activeLink: 'text-blue-50 bg-blue-500/10 ring-1 ring-blue-500/30 shadow-[inset_0_0_12px_rgba(59,130,246,0.15)]',
-        activeIcon: 'text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]',
-        indicator: 'bg-blue-400 shadow-[0_0_5px_rgba(59,130,246,0.5)]',
-        activeSubNav: 'text-blue-100 bg-blue-500/20 border-blue-400/30 glow',
+        activeLink: 'text-blue-50 bg-blue-500/10 ring-1 ring-blue-500/30 engine-text-govern engine-bg-govern engine-ring-govern',
+        activeIcon: 'text-blue-400 engine-text-govern',
+        indicator: 'bg-blue-400 engine-indicator-govern',
+        activeSubNav: 'text-blue-100 bg-blue-500/20 border-blue-400/30 engine-text-govern engine-bg-govern engine-border-govern',
     },
     system: {
-        activeLink: 'text-slate-50 bg-white/10 ring-1 ring-white/10 shadow-[inset_0_0_12px_rgba(255,255,255,0.05)]',
+        activeLink: 'text-slate-50 bg-white/10 ring-1 ring-white/10',
         activeIcon: 'text-slate-200',
-        indicator: 'bg-slate-300 shadow-[0_0_5px_rgba(255,255,255,0.5)]',
-        activeSubNav: 'text-slate-200 bg-white/10 border-white/20 glow',
+        indicator: 'bg-slate-300',
+        activeSubNav: 'text-slate-200 bg-white/10 border-white/20',
     },
 };
 
@@ -140,7 +140,7 @@ export function Sidebar({ path }: { path: string }) {
                                     ? tone.activeLink
                                     : cn(
                                         'text-slate-400 hover:bg-white/[0.06] hover:text-white border border-transparent hover:border-white/5',
-                                        isProtectAlert && 'bg-emerald-500/[0.04] border-emerald-500/10'
+                                        isProtectAlert && 'bg-emerald-500/[0.04] border-emerald-500/10 engine-bg-protect engine-border-protect'
                                     )
                             )}
                             aria-current={isActive ? 'page' : undefined}
@@ -149,7 +149,7 @@ export function Sidebar({ path }: { path: string }) {
                             <span className="flex-1 text-sm font-medium tracking-wide">
                                 {item.label}
                                 {isProtectAlert && (
-                                    <span className="block text-[9px] font-semibold text-emerald-400/60 tracking-widest uppercase leading-none mt-0.5">
+                                    <span className="block text-[9px] font-semibold text-emerald-400/60 engine-text-protect tracking-widest uppercase leading-none mt-0.5">
                                         Action Required
                                     </span>
                                 )}

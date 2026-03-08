@@ -126,7 +126,7 @@ export function GrowRecommendations() {
       {/* Recommendation list */}
       {filtered.length === 0 ? (
         <motion.div variants={fadeUp}>
-          <div className="glass-card glass-card-overlay rounded-[24px] p-12 flex items-center justify-center">
+          <div className="glass-card glass-card-overlay rounded-xl p-12 flex items-center justify-center">
             <EmptyState
               icon={Lightbulb}
               title="No recommendations"
