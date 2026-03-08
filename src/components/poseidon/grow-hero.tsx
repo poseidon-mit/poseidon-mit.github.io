@@ -49,12 +49,6 @@ export interface GrowGrowthAdvantageProps {
 
 /* ── Helpers ── */
 
-function ordinal(n: number): string {
-  const s = ['th', 'st', 'nd', 'rd']
-  const v = n % 100
-  return n + (s[(v - 20) % 10] || s[v] || s[0])
-}
-
 const formatDollarK = (v: number) => `$${Math.round(v / 1000)}k`
 
 /* ── Chart tooltip ── */
@@ -113,7 +107,7 @@ function HeroHeadline({
         </span>
         <h2 className="text-xl md:text-2xl lg:text-3xl font-light tracking-tight text-white"
             style={{ fontFamily: 'var(--font-display)' }}>
-          Your growth potential, quantified.
+          Your 3-year advantage, quantified.
         </h2>
         <span className="text-xs font-medium uppercase tracking-widest text-white/40">
           Projected 3-year advantage
@@ -164,7 +158,7 @@ function HeroChart({
   const midBandY = finalBaseline + (finalAiOptimized - finalBaseline) / 2
   return (
     <div
-      className="h-[280px] md:h-[360px]"
+      className="h-[320px] md:h-[400px]"
       role="img"
       aria-label={`3-year growth: baseline $${finalBaseline.toLocaleString()}, AI optimized $${finalAiOptimized.toLocaleString()}, advantage +$${(finalAiOptimized - finalBaseline).toLocaleString()}`}
     >
@@ -294,48 +288,43 @@ function HeroKpiStrip({
         </span>
       </div>
 
-      {/* Card 2: Cohort */}
+      {/* Card 2: Adoption Impact */}
       <div className="bg-white/[0.02] rounded-2xl p-5 md:p-6 flex flex-col gap-3">
         <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
-          Tier Benchmarking
+          Strategy Impact
         </span>
-        <p className="text-sm text-white/70">
-          {ordinal(currentPercentile)} &rarr; {ordinal(projectedPercentile)} percentile in {cohortBracket}
+        <p className="text-sm text-white/70 leading-relaxed">
+          Organizations who adopted these strategies gained{' '}
+          <span className="font-mono font-semibold" style={{ color: 'var(--engine-grow)' }}>
+            +${totalMonthlySavings > 0 ? (totalMonthlySavings * 12).toLocaleString() : '—'}/yr
+          </span>{' '}
+          on average
         </p>
-        {/* Percentile bar */}
-        <div className="relative h-1.5 rounded-full bg-white/[0.04]">
-          <div
-            className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white/30 border border-white/10"
-            style={{ left: `${currentPercentile}%` }}
-          />
-          <div
-            className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full border border-[var(--engine-grow)]/40"
-            style={{
-              left: `${projectedPercentile}%`,
-              background: 'var(--engine-grow)',
-            }}
-          />
-          <div
-            className="absolute top-1/2 -translate-y-1/2 h-0.5 rounded-full"
-            style={{
-              left: `${currentPercentile}%`,
-              width: `${projectedPercentile - currentPercentile}%`,
-              background: 'linear-gradient(to right, rgba(255,255,255,0.1), var(--engine-grow))',
-            }}
-          />
+        {/* Potential bar */}
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center justify-between text-[10px]">
+            <span className="text-white/30">Current position</span>
+            <span className="font-mono font-semibold" style={{ color: 'var(--engine-grow)' }}>
+              +${totalMonthlySavings > 0 ? (totalMonthlySavings * 12).toLocaleString() : '—'}/yr potential
+            </span>
+          </div>
+          <div className="relative h-1.5 rounded-full bg-white/[0.04]">
+            <div
+              className="absolute inset-y-0 left-0 rounded-full"
+              style={{
+                width: `${Math.min(Math.round((totalMonthlySavings * 12 / (totalMonthlySavings * 12 + 5000)) * 100), 90)}%`,
+                background: 'linear-gradient(to right, color-mix(in srgb, var(--engine-grow) 40%, transparent), var(--engine-grow))',
+              }}
+            />
+          </div>
         </div>
         <div className={cn(
           'transition-all duration-700 delay-300',
           isOptimized ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'
         )}>
-          {cohortAcceptanceRate != null && (
-            <p className="text-xs text-white/40 mt-1">
-              {Math.round(cohortAcceptanceRate * 100)}% tier adoption rate
-            </p>
-          )}
           {platformProfileCount != null && (
-            <p className="text-[10px] text-white/25 font-mono mt-2">
-              Across {platformProfileCount.toLocaleString()} active portfolios
+            <p className="text-[10px] text-white/25 font-mono mt-1">
+              Based on {platformProfileCount.toLocaleString()} active portfolios
             </p>
           )}
         </div>
@@ -439,7 +428,7 @@ export function GrowGrowthAdvantage({
   )
 
   return (
-    <HeroBento engine="grow">
+    <HeroBento engine="grow" className="xl:grid-cols-[2fr_3fr]">
       {/* Zone A: Action */}
       <HeroBento.Action>
         <HeroHeadline

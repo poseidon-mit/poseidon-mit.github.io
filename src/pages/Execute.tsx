@@ -2,33 +2,23 @@ import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Zap,
-  Clock,
   CheckCircle2,
-  RotateCcw,
   ArrowUpRight,
-  Filter,
   Bot,
   User,
   Timer,
-  XCircle,
   Lock,
-  ShieldCheck,
   ChevronDown,
 } from 'lucide-react'
 import { useRouter, Link } from '@/router'
 import { UndoBanner } from '@/components/execute/UndoBanner'
 import { ExecuteApprovalCommandDeck } from '@/components/poseidon/execute-hero'
-import { EmptyState, EngineBadge, ConfidenceIndicator, StatRow } from '@/components/poseidon'
+import { EmptyState, EngineBadge, ConfidenceIndicator } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { ENGINE_BADGE_CLASS, ENGINE_COLOR_MAP } from '@/lib/engine-color-map'
 import { EXECUTION_TYPE_BADGE } from '@/lib/execution-type-config'
 import { useDemoState } from '@/lib/demo-state/provider'
 import type { DemoExecuteDecision } from '@/lib/demo-state/types'
-import {
-  getCompletedExecuteCount,
-  getDeferredExecuteCount,
-  getPendingExecuteCount,
-} from '@/lib/demo-state/selectors'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 import { useToast } from '@/hooks/useToast'
@@ -41,9 +31,6 @@ import {
 } from '@/domain/poseidon-universe'
 import type { ExecuteActionEntity, ExecuteEngineName, ExecutionType, UrgencyLevel } from '@/domain/poseidon-universe'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
-import { useIsMobileSheet } from '@/hooks/use-mobile-action-sheet'
-import { ActionSheet, ActionSheetContent, ActionSheetHeader, ActionSheetBody, ActionSheetFooter } from '@/components/ui/action-sheet'
-import { useExecuteApprovalFlow } from './useExecuteApprovalFlow'
 import { getRiskTier, RISK_TIER_CONFIG } from '@/lib/execute-risk-tier'
 import { dispatchApprovalBridge } from '@/lib/execute-approval-bridge'
 
@@ -55,15 +42,7 @@ type ActionStatus = 'pending' | 'approved' | 'rejected' | 'deferred'
 
 // Execution type badge config — shared from lib/execution-type-config.ts
 
-const URGENCY_OPTIONS: UrgencyLevel[] = ['high', 'medium', 'low']
-const EXEC_TYPE_OPTIONS: ExecutionType[] = ['auto', 'semi-auto', 'manual', 'hybrid']
-
 type SortKey = 'urgency' | 'confidence' | 'default'
-const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: 'default', label: 'Default' },
-  { key: 'urgency', label: 'Urgency' },
-  { key: 'confidence', label: 'Confidence' },
-]
 const URGENCY_ORDER: Record<UrgencyLevel, number> = { high: 0, medium: 1, low: 2 }
 
 /* ═══════════════════════════════════════════
@@ -96,21 +75,10 @@ export default function ExecutePage() {
   const { showToast } = useToast()
   const trust = selectArchitecturalTrust()
 
-  // Mobile sheet state
-  const isMobile = useIsMobileSheet()
-  const [sheetAction, setSheetAction] = useState<ExecuteActionEntity | null>(null)
-  const sheetFlow = useExecuteApprovalFlow(sheetAction ?? undefined, () => { setSheetAction(null) })
-
   // Filter/sort state
   const [urgencyFilter, setUrgencyFilter] = useState<UrgencyLevel | 'all'>('all')
   const [typeFilter, setTypeFilter] = useState<ExecutionType | 'all'>('all')
   const [sortBy, setSortBy] = useState<SortKey>('default')
-  const [showFilters, setShowFilters] = useState(false)
-
-  const pendingCount = getPendingExecuteCount(state)
-  const completedCount = getCompletedExecuteCount(state)
-  const deferredCount = getDeferredExecuteCount(state)
-
   const allActions = useMemo(() => selectExecuteActionsView(), [])
 
   const queue = useMemo(
@@ -172,10 +140,6 @@ export default function ExecutePage() {
     if (sortBy === 'confidence') items = [...items].sort((a, b) => b.confidence - a.confidence)
     return items
   }, [queue, urgencyFilter, typeFilter, sortBy])
-
-  const deferredActions = queue.filter((item) => item.status === 'deferred')
-  const rejectedActions = queue.filter((item) => item.status === 'rejected')
-  const completedActions = queue.filter((item) => item.status === 'approved')
 
   // Risk-tiered split
   const tier1Actions = useMemo(() => pendingActions.filter(a => getRiskTier(a) === 1), [pendingActions])
@@ -307,12 +271,6 @@ export default function ExecutePage() {
                   key={action.id}
                   action={action}
                   fadeUpVariant={fadeUpVariant}
-                  isMobile={isMobile}
-                  onSheetOpen={() => {
-                    sheetFlow.setConsentReviewed(false)
-                    sheetFlow.setConfirmAction(null)
-                    setSheetAction(action)
-                  }}
                   onDefer={() => {
                     setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'deferred' })
                     showToast({ message: 'Action dismissed', variant: 'info' })
@@ -359,12 +317,6 @@ export default function ExecutePage() {
                         key={action.id}
                         action={action}
                         fadeUpVariant={fadeUpVariant}
-                        isMobile={isMobile}
-                        onSheetOpen={() => {
-                          sheetFlow.setConsentReviewed(false)
-                          sheetFlow.setConfirmAction(null)
-                          setSheetAction(action)
-                        }}
                         onDefer={() => {
                           setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'deferred' })
                           showToast({ message: 'Action dismissed', variant: 'info' })
@@ -400,120 +352,6 @@ export default function ExecutePage() {
 
       </motion.div>
 
-      {false && (<ActionSheet open={!!sheetAction} onOpenChange={(open) => { if (!open) setSheetAction(null) }}>
-        <ActionSheetContent>
-          {sheetAction && (
-            <>
-              <ActionSheetHeader>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-sm font-mono font-bold" style={{ color: 'var(--engine-execute)' }}>{sheetAction.id}</span>
-                  <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest border border-white/[0.05] ${ENGINE_BADGE_CLASS[sheetAction.engine]}`}>{sheetAction.engine}</span>
-                </div>
-                <h2 className="text-lg font-light text-white">{sheetAction.title}</h2>
-                <p className="text-sm text-white/50 mt-1">{sheetAction.description}</p>
-              </ActionSheetHeader>
-              <ActionSheetBody>
-                <div className="flex items-center gap-4 mb-4 py-3 border-b border-white/[0.06]">
-                  <span className="text-xl font-mono font-light tabular-nums text-[var(--engine-execute)]">{sheetAction.amountLabel}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs uppercase tracking-widest text-white/40">Confidence</span>
-                    <ConfidenceIndicator value={sheetAction.confidence} format="percent" glow />
-                  </div>
-                </div>
-                {/* Top factors */}
-                <div className="flex flex-col gap-2 mb-4">
-                  <span className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">Key Factors</span>
-                  {sheetAction.factors.slice(0, 3).map((f, i) => (
-                    <div key={i} className="flex items-center justify-between py-2 border-b border-white/[0.04]">
-                      <span className="text-sm text-white/70">{f.label}</span>
-                      <span className="text-sm font-mono text-white/90">{f.value}</span>
-                    </div>
-                  ))}
-                </div>
-                {/* Consent gate */}
-                <label className="flex items-start gap-3 cursor-pointer py-3 px-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                  <input
-                    type="checkbox"
-                    checked={sheetFlow.consentReviewed}
-                    onChange={(e) => sheetFlow.setConsentReviewed(e.target.checked)}
-                    className="mt-0.5 accent-[var(--engine-execute)]"
-                  />
-                  <span className="text-xs text-white/60 leading-relaxed">
-                    I have reviewed the AI analysis and approve this action under my authority. This decision will be logged to the governance audit trail.
-                  </span>
-                </label>
-              </ActionSheetBody>
-              <ActionSheetFooter>
-                <button
-                  disabled={!sheetFlow.consentReviewed}
-                  onClick={() => sheetFlow.setConfirmAction({ type: 'approve' })}
-                  className={cn(
-                    'w-full py-3.5 rounded-2xl text-sm font-semibold transition-all',
-                    sheetFlow.consentReviewed
-                      ? 'bg-[var(--engine-execute)] text-black hover:opacity-90 cursor-pointer'
-                      : 'bg-white/10 text-white/30 cursor-not-allowed',
-                  )}
-                >
-                  <CheckCircle2 size={16} className="inline mr-2" />
-                  Approve & Log
-                </button>
-                <button
-                  onClick={() => sheetFlow.setConfirmAction({ type: 'defer' })}
-                  className="w-full py-3 rounded-2xl text-sm font-medium border border-white/10 text-white/50 hover:text-white hover:bg-white/[0.05] transition-colors cursor-pointer"
-                >
-                  Defer for Review
-                </button>
-              </ActionSheetFooter>
-            </>
-          )}
-        </ActionSheetContent>
-      </ActionSheet>)}
-
-      {false && sheetFlow.confirmAction && sheetAction && (
-        <ActionSheet open onOpenChange={() => sheetFlow.setConfirmAction(null)}>
-          <ActionSheetContent>
-            <ActionSheetBody>
-              <div className="flex flex-col items-center gap-4 py-4">
-                <div className={cn(
-                  'w-12 h-12 rounded-full flex items-center justify-center',
-                  sheetFlow.confirmAction.type === 'approve' ? 'bg-[var(--state-healthy)]/10' : 'bg-[var(--state-warning)]/10',
-                )}>
-                  {sheetFlow.confirmAction.type === 'approve'
-                    ? <ShieldCheck size={24} className="text-[var(--state-healthy)]" />
-                    : <Clock size={24} className="text-[var(--state-warning)]" />}
-                </div>
-                <h3 className="text-lg font-light text-white text-center">
-                  {sheetFlow.confirmAction.type === 'approve' ? 'Confirm approval?' : 'Defer this action?'}
-                </h3>
-                <p className="text-sm text-white/50 text-center">
-                  {sheetFlow.confirmAction.type === 'approve'
-                    ? `${sheetAction.id} will be approved and logged to governance.`
-                    : `${sheetAction.id} will be queued for later review.`}
-                </p>
-              </div>
-            </ActionSheetBody>
-            <ActionSheetFooter>
-              <button
-                onClick={sheetFlow.handleConfirm}
-                className={cn(
-                  'w-full py-3.5 rounded-2xl text-sm font-semibold cursor-pointer transition-all',
-                  sheetFlow.confirmAction.type === 'approve'
-                    ? 'bg-[var(--engine-execute)] text-black hover:opacity-90'
-                    : 'bg-white/10 text-white hover:bg-white/15',
-                )}
-              >
-                {sheetFlow.confirmAction.type === 'approve' ? 'Yes, Approve' : 'Yes, Defer'}
-              </button>
-              <button
-                onClick={() => sheetFlow.setConfirmAction(null)}
-                className="w-full py-3 rounded-2xl text-sm font-medium text-white/50 hover:text-white transition-colors cursor-pointer"
-              >
-                Cancel
-              </button>
-            </ActionSheetFooter>
-          </ActionSheetContent>
-        </ActionSheet>
-      )}
     </>
   )
 }
@@ -525,8 +363,6 @@ export default function ExecutePage() {
 function ActionCard({
   action,
   fadeUpVariant,
-  isMobile,
-  onSheetOpen,
   onDefer,
   batchMode,
   batchChecked,
@@ -534,8 +370,6 @@ function ActionCard({
 }: {
   action: ExecuteActionEntity & { status: ActionStatus }
   fadeUpVariant: import('framer-motion').Variants
-  isMobile: boolean
-  onSheetOpen: () => void
   onDefer: () => void
   batchMode?: boolean
   batchChecked?: boolean
@@ -614,23 +448,13 @@ function ActionCard({
         </div>
 
         <div className="relative z-10 flex flex-wrap gap-4 mt-1">
-          {isMobile ? (
-            <button
-              onClick={onSheetOpen}
-              className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'rounded-2xl text-sm px-6 py-3 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.5)] transition-all bg-[var(--engine-execute)] hover:opacity-90 text-black border-none font-semibold flex items-center cursor-pointer')}
-            >
-              Review & Approve
-              <ArrowUpRight size={16} className="ml-2" />
-            </button>
-          ) : (
-            <Link
-              to={`/execute/approval?actionId=${action.id}`}
-              className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'rounded-2xl text-sm px-6 py-3 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.5)] transition-all bg-[var(--engine-execute)] hover:opacity-90 text-black border-none font-semibold flex items-center')}
-            >
-              Review & Approve
-              <ArrowUpRight size={16} className="ml-2" />
-            </Link>
-          )}
+          <Link
+            to={`/execute/approval?actionId=${action.id}`}
+            className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'rounded-2xl text-sm px-6 py-3 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.5)] transition-all bg-[var(--engine-execute)] hover:opacity-90 text-black border-none font-semibold flex items-center')}
+          >
+            Review & Approve
+            <ArrowUpRight size={16} className="ml-2" />
+          </Link>
           <button
             className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'rounded-2xl text-sm px-6 py-3 border border-white/10 hover:bg-white/10 transition-all font-semibold text-white/50 hover:text-white cursor-pointer')}
             onClick={onDefer}

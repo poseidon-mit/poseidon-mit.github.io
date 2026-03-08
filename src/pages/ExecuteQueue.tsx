@@ -2,12 +2,12 @@ import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Zap, CheckCircle2, Timer } from 'lucide-react'
 import { Link, useRouter } from '@/router'
-import { EmptyState, EngineBadge } from '@/components/poseidon'
+import { EmptyState, EngineBadge, PrioritySpotlight } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useDemoState } from '@/lib/demo-state/provider'
-import { selectExecuteActionsView } from '@/domain/poseidon-universe'
+import { selectExecuteActionsView, selectSpotlightAction } from '@/domain/poseidon-universe'
 import type { ExecuteActionEntity, UrgencyLevel } from '@/domain/poseidon-universe'
 import { getEngineToken, fromDomainEngine } from '@/lib/engine-tokens'
 import { cn } from '@/lib/utils'
@@ -29,6 +29,7 @@ export default function ExecuteQueuePage() {
   const { navigate } = useRouter()
 
   const allActions = useMemo(() => selectExecuteActionsView(), [])
+  const spotlightAction = useMemo(() => selectSpotlightAction(), [])
 
   const pendingActions = useMemo(
     () =>
@@ -39,6 +40,14 @@ export default function ExecuteQueuePage() {
         .sort((a, b) => URGENCY_ORDER[a.urgency] - URGENCY_ORDER[b.urgency]),
     [allActions, state.execute.actionStates],
   )
+
+  // Separate spotlight from remaining queue items
+  const spotlightPending = spotlightAction
+    ? pendingActions.find((a) => a.id === spotlightAction.id) ?? null
+    : null
+  const remainingActions = spotlightPending
+    ? pendingActions.filter((a) => a.id !== spotlightPending.id)
+    : pendingActions
 
   return (
     <motion.main
@@ -90,7 +99,15 @@ export default function ExecuteQueuePage() {
         </motion.div>
       ) : (
         <motion.div variants={fadeUp} className="flex flex-col gap-3">
-          {pendingActions.map((action) => (
+          {/* Priority Spotlight — highest compositePriority action */}
+          {spotlightPending && (
+            <PrioritySpotlight engine="execute">
+              <SpotlightCard action={spotlightPending} />
+            </PrioritySpotlight>
+          )}
+
+          {/* Remaining queue items */}
+          {remainingActions.map((action) => (
             <QueueCard key={action.id} action={action} />
           ))}
         </motion.div>
@@ -98,6 +115,59 @@ export default function ExecuteQueuePage() {
     </motion.main>
   )
 }
+
+/* ── Spotlight Card (expanded detail for top-priority action) ── */
+
+function SpotlightCard({ action }: { action: ExecuteActionEntity }) {
+  const token = getEngineToken(fromDomainEngine(action.engine))
+  const isExpiringSoon = action.expiresIn && action.expiresIn.includes('h') && parseInt(action.expiresIn) <= 4
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-amber-400/70">
+          Highest Priority
+        </span>
+        <span className={cn('inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest', URGENCY_BADGE[action.urgency])}>
+          {action.urgency}
+        </span>
+        {action.expiresIn && (
+          <span className={cn('inline-flex items-center gap-1 text-[10px] font-semibold tracking-widest uppercase', isExpiringSoon ? 'text-red-400' : 'text-white/40')}>
+            <Timer size={10} className={isExpiringSoon ? 'animate-pulse' : ''} />
+            {action.expiresIn}
+          </span>
+        )}
+      </div>
+
+      <h3 className="text-lg md:text-xl font-medium text-white/90">{action.title}</h3>
+
+      <div className="flex items-center gap-4 flex-wrap text-sm text-white/50">
+        <span className="font-mono text-xs">{action.id}</span>
+        <span>·</span>
+        <span style={{ color: `var(${token.cssVar})` }}>{action.engine}</span>
+        <span>·</span>
+        <span className="font-mono" style={{ color: `var(${token.cssVar})` }}>{action.amountLabel}</span>
+        <span>·</span>
+        <span>{Math.round(action.confidence * 100)}% confidence</span>
+      </div>
+
+      <Link
+        to={`/execute/approval?actionId=${action.id}`}
+        className="self-start inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors"
+        style={{
+          borderWidth: 1,
+          borderColor: `color-mix(in srgb, var(${token.cssVar}) 30%, transparent)`,
+          color: `var(${token.cssVar})`,
+          background: `color-mix(in srgb, var(${token.cssVar}) 10%, transparent)`,
+        }}
+      >
+        Review &amp; Approve
+      </Link>
+    </div>
+  )
+}
+
+/* ── Compact Queue Card ── */
 
 function QueueCard({ action }: { action: ExecuteActionEntity }) {
   const token = getEngineToken(fromDomainEngine(action.engine))

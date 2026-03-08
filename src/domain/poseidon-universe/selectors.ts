@@ -1,4 +1,11 @@
-import { CANONICAL_UNIVERSE } from './canonical'
+import {
+  CANONICAL_UNIVERSE,
+  CANONICAL_GROWTH_SIMULATION_DATA,
+  CANONICAL_PROJECTED_3Y_ADVANTAGE,
+  CANONICAL_RECOMMENDATION_DETAILS,
+  CANONICAL_RECOMMENDATIONS_SUMMARY,
+  CANONICAL_RECOMMENDATIONS_FOR_LIST,
+} from './canonical'
 import { ENGINE_COLOR_MAP, type EngineLabel } from '@/lib/engine-color-map'
 import type {
   CanonicalUniverseV1,
@@ -9,8 +16,13 @@ import type {
   ExecutionType,
   GovernAuditEntryEntity,
   GovernLedgerEntryEntity,
+  GrowthSimulationPoint,
   PriorityItem,
   ProtectThreatEntity,
+  RecommendationDetail,
+  RecommendationListItem,
+  ThreatFactor,
+  ThreatTiming,
   UrgencyLevel,
 } from './types'
 
@@ -330,7 +342,7 @@ export function selectPriorityQueue(): PriorityItem[] {
     items.push({
       kind: 'audit',
       engine: 'Govern',
-      compositePriority: audit.confidence * 100,
+      compositePriority: audit.compositePriority,
       item: audit,
     })
   }
@@ -363,6 +375,73 @@ export function selectEventAuditChain(eventId: string) {
 
 export function selectCouncilMetrics() {
   return getCanonicalUniverse().metrics.councilMetrics
+}
+
+/* ── Spotlight Selectors ── */
+
+export function selectSpotlightThreat(): ProtectThreatEntity | null {
+  const threats = selectProtectThreats()
+  if (threats.length === 0) return null
+  return threats.reduce((best, t) => (t.compositePriority > best.compositePriority ? t : best))
+}
+
+export function selectGrowRecommendations(): RecommendationListItem[] {
+  return [...CANONICAL_RECOMMENDATIONS_FOR_LIST].sort((a, b) => {
+    const aPri = getCanonicalUniverse().entities.recommendations.find(r => r.id === String(a.id))?.compositePriority ?? 0
+    const bPri = getCanonicalUniverse().entities.recommendations.find(r => r.id === String(b.id))?.compositePriority ?? 0
+    return bPri - aPri
+  })
+}
+
+export function selectSpotlightRecommendation(): RecommendationListItem | null {
+  const items = selectGrowRecommendations()
+  return items[0] ?? null
+}
+
+export function selectSpotlightAction(): ExecuteActionEntity | null {
+  const actions = selectExecuteActionsView()
+  if (actions.length === 0) return null
+  return actions.reduce((best, a) => (a.compositePriority > best.compositePriority ? a : best))
+}
+
+export function selectSpotlightAuditEntry(): GovernAuditEntryEntity | null {
+  const entries = selectGovernAuditEntries().filter(e => e.status !== 'Verified')
+  if (entries.length === 0) return null
+  return entries.reduce((best, e) => (e.compositePriority > best.compositePriority ? e : best))
+}
+
+/* ── Evidence Selectors ── */
+
+export function selectThreatFactors(threatId: string): ThreatFactor[] {
+  const threat = selectProtectThreats().find(t => t.id === threatId)
+  return threat?.factors ?? []
+}
+
+export function selectThreatTiming(threatId: string): ThreatTiming | null {
+  const threat = selectProtectThreats().find(t => t.id === threatId)
+  return threat?.timing ?? null
+}
+
+/* ── Grow Data Selectors ── */
+
+export function selectGrowSimulationData(): GrowthSimulationPoint[] {
+  return CANONICAL_GROWTH_SIMULATION_DATA
+}
+
+export function selectProjected3yAdvantage(): number {
+  return CANONICAL_PROJECTED_3Y_ADVANTAGE
+}
+
+export function selectRecommendationDetails(): RecommendationDetail[] {
+  return CANONICAL_RECOMMENDATION_DETAILS
+}
+
+export function selectRecommendationsSummary() {
+  return CANONICAL_RECOMMENDATIONS_SUMMARY
+}
+
+export function selectRecommendationListItems(): RecommendationListItem[] {
+  return CANONICAL_RECOMMENDATIONS_FOR_LIST
 }
 
 /* ── Formatting Utilities ── */

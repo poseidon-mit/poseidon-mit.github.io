@@ -13,13 +13,13 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { formatDemoTimestamp } from '@/lib/demo-date'
-import { EmptyState, EngineBadge } from '@/components/poseidon'
+import { EmptyState, EngineBadge, PrioritySpotlight } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
-import { selectGovernAuditEntries } from '@/domain/poseidon-universe'
+import { selectGovernAuditEntries, selectSpotlightAuditEntry } from '@/domain/poseidon-universe'
 
 /* ── Types ── */
 type DecisionType = 'Protect' | 'Grow' | 'Execute' | 'Govern'
@@ -58,6 +58,7 @@ export default function GovernAuditPage() {
   usePageTitle('Audit Ledger')
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp, staggerContainer } = getMotionPreset(prefersReducedMotion)
+  const spotlightEntry = selectSpotlightAuditEntry()
   const [search, setSearch] = useState('')
   const [activeFilter, setActiveFilter] = useState<FilterTab>('All')
 
@@ -165,6 +166,53 @@ export default function GovernAuditPage() {
           )}
         </motion.div>
       </motion.section>
+
+      {/* Priority Spotlight */}
+      {spotlightEntry && (
+        <motion.div variants={fadeUp}>
+          <PrioritySpotlight engine="govern">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full" style={{ background: 'rgba(59,130,246,0.15)', color: 'var(--engine-govern)' }}>
+                Priority spotlight
+              </span>
+              <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full" style={{ background: statusCfg[spotlightEntry.status as DecisionStatus]?.bg, color: statusCfg[spotlightEntry.status as DecisionStatus]?.color }}>
+                {spotlightEntry.status}
+              </span>
+            </div>
+            <div className="flex items-center gap-3 mb-2">
+              <span
+                className="inline-flex items-center justify-center w-10 h-10 rounded-xl border shrink-0"
+                style={{
+                  borderColor: `color-mix(in srgb, ${typeColor[spotlightEntry.type as DecisionType]} 30%, transparent)`,
+                  background: typeBg[spotlightEntry.type as DecisionType],
+                }}
+              >
+                <CircleDot size={16} style={{ color: typeColor[spotlightEntry.type as DecisionType] }} />
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-white/80 font-medium">{spotlightEntry.action}</p>
+                <div className="flex items-center gap-3 mt-1 text-xs text-white/40">
+                  <span className="font-mono">{spotlightEntry.id}</span>
+                  <span>{Math.round(spotlightEntry.confidence * 100)}% confidence</span>
+                  <span>{spotlightEntry.evidence} evidence</span>
+                </div>
+              </div>
+              <Link
+                to={`/govern/audit-detail?decision=${encodeURIComponent(spotlightEntry.id)}`}
+                className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
+                style={{
+                  borderColor: 'color-mix(in srgb, var(--engine-govern) 30%, transparent)',
+                  color: 'var(--engine-govern)',
+                  background: 'color-mix(in srgb, var(--engine-govern) 10%, transparent)',
+                }}
+              >
+                Trace decision
+                <ArrowRight size={12} />
+              </Link>
+            </div>
+          </PrioritySpotlight>
+        </motion.div>
+      )}
 
       {/* Entry list */}
       {filtered.length === 0 ? (

@@ -3,11 +3,12 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight, Lightbulb } from 'lucide-react'
 import { Link } from '@/router'
 import { usePageTitle } from '@/hooks/use-page-title'
-import { EngineBadge, EmptyState } from '@/components/poseidon'
+import { EngineBadge, EmptyState, PrioritySpotlight } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { cn } from '@/lib/utils'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
+import { selectSpotlightRecommendation } from '@/domain/poseidon-universe'
 import { RECOMMENDATIONS_FOR_LIST } from './grow/recommendation-detail-data'
 import type { RecommendationListItem } from './grow/recommendation-detail-data'
 
@@ -46,6 +47,8 @@ export function GrowRecommendations() {
       return DIFFICULTY_ORDER[a.difficulty] - DIFFICULTY_ORDER[b.difficulty]
     })
   }, [sort, category])
+
+  const spotlightRec = useMemo(() => selectSpotlightRecommendation(), [])
 
   const totalAnnual = RECOMMENDATIONS_FOR_LIST.reduce((s, r) => s + r.annualSavings, 0)
 
@@ -123,6 +126,49 @@ export function GrowRecommendations() {
         )}
       </motion.section>
 
+      {/* Spotlight recommendation */}
+      {spotlightRec && (
+        <motion.div variants={fadeUp}>
+          <PrioritySpotlight engine="grow">
+            <div className="flex items-center gap-4">
+              <div className="flex-1 min-w-0">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-2 block">
+                  Top Priority
+                </span>
+                <p className="text-sm font-semibold text-white/90 leading-snug mb-1">{spotlightRec.title}</p>
+                <p className="text-xs text-white/40 mb-1">{spotlightRec.description}</p>
+                <div className="flex items-center gap-3 mt-2">
+                  <span className="text-base font-mono font-bold" style={{ color: 'var(--engine-grow)' }}>
+                    ${spotlightRec.annualSavings.toLocaleString()}/yr
+                  </span>
+                  <span
+                    className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border border-transparent"
+                    style={{
+                      background: DIFFICULTY_STYLE[spotlightRec.difficulty]?.bg,
+                      color: DIFFICULTY_STYLE[spotlightRec.difficulty]?.color,
+                    }}
+                  >
+                    {spotlightRec.difficulty}
+                  </span>
+                </div>
+              </div>
+              <Link
+                to={`/grow/recommendation?id=${spotlightRec.id}`}
+                className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
+                style={{
+                  borderColor: 'color-mix(in srgb, var(--engine-grow) 30%, transparent)',
+                  color: 'var(--engine-grow)',
+                  background: 'color-mix(in srgb, var(--engine-grow) 10%, transparent)',
+                }}
+              >
+                See opportunity
+                <ArrowRight size={12} />
+              </Link>
+            </div>
+          </PrioritySpotlight>
+        </motion.div>
+      )}
+
       {/* Recommendation list */}
       {filtered.length === 0 ? (
         <motion.div variants={fadeUp}>
@@ -137,9 +183,11 @@ export function GrowRecommendations() {
         </motion.div>
       ) : (
         <motion.div variants={fadeUp} className="flex flex-col gap-3">
-          {filtered.map(rec => (
-            <RecommendationCard key={rec.id} rec={rec} />
-          ))}
+          {filtered
+            .filter(rec => !spotlightRec || rec.id !== spotlightRec.id)
+            .map(rec => (
+              <RecommendationCard key={rec.id} rec={rec} />
+            ))}
         </motion.div>
       )}
     </motion.main>

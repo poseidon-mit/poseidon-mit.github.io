@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Shield, AlertTriangle, ArrowRight, ArrowLeft } from 'lucide-react'
 import { Link } from '@/router'
-import { EmptyState, EngineBadge } from '@/components/poseidon'
+import { EmptyState, EngineBadge, PrioritySpotlight } from '@/components/poseidon'
+import { selectSpotlightThreat } from '@/domain/poseidon-universe'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -29,8 +30,20 @@ export default function ProtectThreatsPage() {
 
   const activeThreats = useMemo(() => THREATS.filter(t => !dismissed.has(t.id)), [dismissed])
 
+  // Spotlight: highest compositePriority threat always at top
+  const spotlightEntity = selectSpotlightThreat()
+  const spotlightId = spotlightEntity?.id ?? null
+
+  const spotlightThreat = useMemo(
+    () => (spotlightId ? activeThreats.find(t => t.id === spotlightId) ?? null : null),
+    [activeThreats, spotlightId],
+  )
+
   const sorted = useMemo(() => {
-    return [...activeThreats].sort((a, b) => {
+    const remaining = spotlightId
+      ? activeThreats.filter(t => t.id !== spotlightId)
+      : activeThreats
+    return [...remaining].sort((a, b) => {
       if (sort === 'critical') {
         const scoreA = severityConfig[a.severity].order * 100 + a.confidence * 100
         const scoreB = severityConfig[b.severity].order * 100 + b.confidence * 100
@@ -39,7 +52,7 @@ export default function ProtectThreatsPage() {
       if (sort === 'confidence') return b.confidence - a.confidence
       return b.sortTime - a.sortTime
     })
-  }, [activeThreats, sort])
+  }, [activeThreats, sort, spotlightId])
 
   const criticalCount = activeThreats.filter(t => t.severity === 'Critical').length
 
@@ -73,7 +86,7 @@ export default function ProtectThreatsPage() {
           <p className="text-white/50 text-base">
             {activeThreats.length === 0
               ? 'No active threats.'
-              : `${activeThreats.length} signal${activeThreats.length !== 1 ? 's' : ''}${criticalCount > 0 ? ` · ${criticalCount} critical` : ''}`}
+              : `${activeThreats.length} threat${activeThreats.length !== 1 ? 's' : ''}${criticalCount > 0 ? ` · ${criticalCount} critical` : ''}`}
           </p>
         </motion.div>
 
@@ -96,8 +109,28 @@ export default function ProtectThreatsPage() {
         </motion.div>
       </motion.section>
 
+      {/* Spotlight threat */}
+      {spotlightThreat && (
+        <motion.div variants={fadeUp}>
+          <PrioritySpotlight engine="protect">
+            <SpotlightCard threat={spotlightThreat} />
+          </PrioritySpotlight>
+        </motion.div>
+      )}
+
+      {/* More threats separator */}
+      {spotlightThreat && sorted.length > 0 && (
+        <motion.div variants={fadeUp} className="flex items-center gap-3">
+          <div className="flex-1 h-px bg-white/[0.08]" />
+          <span className="text-xs font-mono text-white/30 uppercase tracking-widest shrink-0">
+            {sorted.length} more threat{sorted.length !== 1 ? 's' : ''}
+          </span>
+          <div className="flex-1 h-px bg-white/[0.08]" />
+        </motion.div>
+      )}
+
       {/* Threat list */}
-      {sorted.length === 0 ? (
+      {activeThreats.length === 0 ? (
         <motion.div variants={fadeUp}>
           <div className="glass-card glass-card-overlay rounded-xl p-12 flex items-center justify-center">
             <EmptyState
@@ -108,14 +141,71 @@ export default function ProtectThreatsPage() {
             />
           </div>
         </motion.div>
-      ) : (
+      ) : sorted.length > 0 ? (
         <motion.div variants={fadeUp} className="flex flex-col gap-3">
           {sorted.map(threat => (
             <ThreatCard key={threat.id} threat={threat} />
           ))}
         </motion.div>
-      )}
+      ) : null}
     </motion.main>
+  )
+}
+
+function SpotlightCard({ threat }: { threat: ThreatRow }) {
+  const config = severityConfig[threat.severity]
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Header row */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <div
+          className="w-10 h-10 rounded-xl flex items-center justify-center border shrink-0"
+          style={{
+            borderColor: `color-mix(in srgb, ${config.color} 30%, transparent)`,
+            background: `color-mix(in srgb, ${config.color} 10%, transparent)`,
+          }}
+        >
+          <AlertTriangle size={16} style={{ color: config.color }} />
+        </div>
+        <span className="text-base md:text-lg font-medium text-white/90">{threat.counterparty}</span>
+        <span
+          className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border"
+          style={{
+            background: config.bg,
+            color: config.color,
+            borderColor: `color-mix(in srgb, ${config.color} 30%, transparent)`,
+          }}
+        >
+          {threat.severity}
+        </span>
+      </div>
+
+      {/* Full description */}
+      <p className="text-sm text-white/60 leading-relaxed">{threat.description}</p>
+
+      {/* Meta row */}
+      <div className="flex items-center gap-3 text-sm text-white/40 flex-wrap">
+        <span className="font-mono font-bold text-white/70">{threat.amount}</span>
+        <span>·</span>
+        <span>{threat.time}</span>
+        <span>·</span>
+        <span style={{ color: config.color }}>{Math.round(threat.confidence * 100)}% confidence</span>
+      </div>
+
+      {/* Full-width CTA */}
+      <Link
+        to={`/protect/alert-detail?alertId=${threat.id}`}
+        className={cn(
+          'w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-colors',
+          'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950',
+          'hover:from-emerald-400 hover:to-cyan-400',
+        )}
+      >
+        Investigate
+        <ArrowRight size={14} />
+      </Link>
+    </div>
   )
 }
 

@@ -24,12 +24,9 @@ import { buttonVariants } from '@/components/ui/button'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+import { selectThreatFactors, selectThreatTiming } from '@/domain/poseidon-universe'
 import {
   THREATS,
-  ALERT_FACTOR_ITEMS,
-  ALERT_TIMING,
-  DEFAULT_FACTOR_ITEMS,
-  DEFAULT_TIMING,
   MITIGATING_TOTAL,
   deriveFactors,
   severityConfig,
@@ -155,7 +152,7 @@ export default function ProtectAlertDetailPage() {
   const severityTheme = severityConfig[alert.severity]
 
   const factors = useMemo(() => {
-    const items = ALERT_FACTOR_ITEMS[alert.id] || DEFAULT_FACTOR_ITEMS
+    const items = selectThreatFactors(alert.id)
     return deriveFactors(items, alert.confidence)
   }, [alert.id, alert.confidence])
 
@@ -174,7 +171,7 @@ export default function ProtectAlertDetailPage() {
       const first = f.details.split('. ')[0]
       return first.endsWith('.') ? first : `${first}.`
     })
-    const t = ALERT_TIMING[alert.id] || { detected: '' }
+    const t = selectThreatTiming(alert.id) || { detected: '' }
     const dateStr = t.detected ? new Date(t.detected).toISOString().replace('T', ' ').slice(0, 16) + ' UTC' : 'N/A'
     const caseId = `POS-DIS-${alert.id.replace('THR-', '')}`
     const text = [
@@ -200,11 +197,12 @@ export default function ProtectAlertDetailPage() {
     })
   }
 
-  const timing = ALERT_TIMING[alert.id] || DEFAULT_TIMING
+  const DEFAULT_TIMING = { detected: '2026-03-19T14:28:00-04:00', updated: '2026-03-19T14:30:00-04:00', times: ['14:28', '14:29', '14:30', '14:31'] }
+  const timing = selectThreatTiming(alert.id) || DEFAULT_TIMING
   const detectedAt = formatDemoTimestamp(timing.detected)
   const updatedAt = formatDemoTimestamp(timing.updated)
   const timelineSteps: TimelineStep[] = [
-    { label: "Signal detected", time: timing.times[0], status: "complete" },
+    { label: "Threat detected", time: timing.times[0], status: "complete" },
     { label: "Analysis complete", time: timing.times[1], status: "complete" },
     { label: "Alert raised", time: timing.times[2], status: "complete" },
     { label: "User notified", time: timing.times[3], status: "complete" },
@@ -214,7 +212,7 @@ export default function ProtectAlertDetailPage() {
   return (
     <>
 
-      <SubPageNav engine="protect" parentPath="/protect" parentLabel="Protect" currentLabel={`Signal #${alert.id}`} />
+      <SubPageNav engine="protect" parentPath="/protect" parentLabel="Protect" currentLabel={`Alert #${alert.id}`} />
 
       <motion.div
         id="main-content"
@@ -230,7 +228,7 @@ export default function ProtectAlertDetailPage() {
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 mb-8 mt-4">
           <motion.div variants={fadeUpVariant} className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="flex flex-col gap-2">
-              <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>{`Signal #${alert.id}`}</h1>
+              <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>{`Alert #${alert.id}`}</h1>
               <span className="text-sm tracking-wide text-white/40 font-mono mt-1">{`Detected: ${detectedAt} • Updated: ${updatedAt}`}</span>
             </div>
             <span className="inline-flex items-center gap-1.5 md:gap-2 rounded-full px-3 py-1.5 text-xs md:px-4 md:py-2 md:text-sm font-bold uppercase tracking-widest" style={{ background: severityTheme.bg, border: `1px solid ${severityTheme.border}`, color: severityTheme.color }} aria-label={`Alert status: ${alert.severity}`}><AlertTriangle size={16} />{alert.severity}</span>

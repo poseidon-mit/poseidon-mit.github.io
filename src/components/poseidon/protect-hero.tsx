@@ -64,7 +64,7 @@ export interface ProtectAnomalyRadarProps {
   remainingCount: number
   totalExposure: number
   fpRate: string
-  onReviewSignal: () => void
+  onReviewThreat: () => void
 }
 
 export function ProtectAnomalyRadar({
@@ -75,7 +75,7 @@ export function ProtectAnomalyRadar({
   remainingCount,
   totalExposure,
   fpRate,
-  onReviewSignal,
+  onReviewThreat,
 }: ProtectAnomalyRadarProps) {
   const [showAiLogic, setShowAiLogic] = useState(false)
   return (
@@ -111,21 +111,10 @@ export function ProtectAnomalyRadar({
             </span>
           </div>
 
-          {/* Audit chain */}
-          {auditChain && (
-            <div className="flex items-center gap-1.5 text-[10px] font-mono text-white/30 tracking-wide">
-              <span>{auditChain.alertId}</span>
-              <ArrowRight size={10} className="text-white/20" />
-              <span>{auditChain.actionId}</span>
-              <ArrowRight size={10} className="text-white/20" />
-              <span>{auditChain.decisionId}</span>
-            </div>
-          )}
-
           {/* CTAs */}
           <div className="flex flex-col md:flex-row gap-3">
             <button
-              onClick={onReviewSignal}
+              onClick={onReviewThreat}
               className={cn(
                 buttonVariants({ variant: 'default', size: 'lg' }),
                 'h-auto w-full md:w-auto rounded-2xl px-8 py-4 min-h-[44px]',
@@ -135,21 +124,21 @@ export function ProtectAnomalyRadar({
                 'flex items-center justify-center gap-2',
               )}
             >
-              Review signal <ArrowRight size={16} />
+              Review threat <ArrowRight size={16} />
             </button>
-            {auditChain && (
-              <Link
-                to={`/govern/audit-detail?decision=${auditChain.decisionId}`}
-                className={cn(
-                  buttonVariants({ variant: 'glass', size: 'lg' }),
-                  'w-full md:w-auto rounded-2xl px-8 py-4 min-h-[44px]',
-                  'font-medium tracking-wide text-sm',
-                  'flex items-center justify-center gap-2',
-                )}
-              >
-                View audit trail <ArrowRight size={14} />
-              </Link>
-            )}
+            <Link
+              to={auditChain ? `/govern/audit-detail?decision=${auditChain.decisionId}` : '/govern/audit'}
+              className={cn(
+                buttonVariants({ variant: 'default', size: 'lg' }),
+                'h-auto w-full md:w-auto rounded-2xl px-8 py-4 min-h-[44px]',
+                'bg-gradient-to-r from-blue-500 to-cyan-500 text-slate-950',
+                'font-semibold tracking-wide text-sm',
+                'hover:from-blue-400 hover:to-cyan-400 transition-all',
+                'flex items-center justify-center gap-2',
+              )}
+            >
+              View audit trail <ArrowRight size={14} />
+            </Link>
           </div>
 
           {/* ✨ AI Logic toggle + inline accordion */}

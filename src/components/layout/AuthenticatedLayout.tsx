@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import { AppNavShell } from './AppNavShell';
 import { AuroraPulse, GovernFooter } from '@/components/poseidon';
+import { PageSkeleton } from '@/components/poseidon/page-skeleton';
 import { getGovernanceMeta } from '@/lib/governance-meta';
 import { useDismissedAlerts } from '@/pages/protect/useDismissedAlerts';
 import { selectPriorityQueue } from '@/domain/poseidon-universe/selectors';
@@ -78,7 +79,9 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
 
                 {/* Layer 1: Page Content */}
                 <div className="relative z-10 flex-1 flex flex-col pt-10 px-6 lg:px-10 max-w-[1920px] mx-auto w-full pb-20">
+                    <Suspense fallback={<PageSkeleton />}>
                     {children}
+                    </Suspense>
 
                     {/* Layer 2: Final Verification (GovernFooter) */}
                     {meta?.showFooter && (

@@ -52,6 +52,9 @@ export { HeroBento, type HeroBentoProps } from './hero-bento'
 export { ListPortalBar, type ListPortalBarProps, type PortalDestination } from './list-portal-bar'
 export { CostOfInaction, type CostOfInactionProps } from './cost-of-inaction'
 
+/* ── Priority Spotlight ── */
+export { PrioritySpotlight, type PrioritySpotlightProps } from './priority-spotlight'
+
 /* ── Protect Hero ── */
 export { ProtectAnomalyRadar, type ProtectAnomalyRadarProps, ProtectThreatPosture, type ProtectThreatPostureProps } from './protect-hero'
 

@@ -2,11 +2,8 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Shield, Download } from 'lucide-react'
 import { getMotionPreset } from '@/lib/motion-presets'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
-import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { useToast } from '@/hooks/useToast'
-import { SettingsLayout } from '@/components/settings/SettingsLayout'
 
 const CONSENT_SCOPES = [
   { id: 'read', label: 'Read', desc: 'Access your financial account data' },
@@ -15,10 +12,9 @@ const CONSENT_SCOPES = [
   { id: 'execute-draft', label: 'Execute (draft)', desc: 'Prepare actions for your approval' },
 ] as const
 
-export default function SettingsRights() {
-  usePageTitle('Rights & Privacy')
+export function SettingsRightsContent() {
   const prefersReducedMotion = useReducedMotionSafe()
-  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
+  const { fadeUp: fadeUpVariant } = getMotionPreset(prefersReducedMotion)
   const { showToast } = useToast()
 
   const [deleteInput, setDeleteInput] = useState('')
@@ -34,16 +30,7 @@ export default function SettingsRights() {
   }
 
   return (
-    <SettingsLayout currentPath="/settings/rights">
-      <motion.main
-        id="main-content"
-        role="main"
-        className={`${PAGE_CONTENT_CLASS} command-center__main`}
-        style={PAGE_CONTENT_STYLE}
-        initial="hidden"
-        animate="visible"
-        variants={staggerContainerVariant}
-      >
+    <>
         {/* ── Consent scopes ── */}
         <motion.section variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-6 flex flex-col gap-4">
           <div className="flex items-center gap-2">
@@ -119,7 +106,10 @@ export default function SettingsRights() {
             <p className="text-[10px] text-white/30 font-mono">Audit ID: GV-2026-0216-SETT-RTS · Rights & Privacy · Poseidon Govern Engine</p>
           </div>
         </motion.div>
-      </motion.main>
-    </SettingsLayout>
+    </>
   )
 }
+
+/** Thin route wrapper — preserves infra-integrity test compatibility */
+import SettingsPage from './Settings'
+export default function SettingsRights() { return <SettingsPage /> }

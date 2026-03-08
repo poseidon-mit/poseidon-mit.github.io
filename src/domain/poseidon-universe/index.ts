@@ -31,6 +31,18 @@ export {
   selectVisualTier,
   selectDeliberationTrace,
   selectEventAuditChain,
+  selectGrowRecommendations,
+  selectGrowSimulationData,
+  selectProjected3yAdvantage,
+  selectRecommendationDetails,
+  selectRecommendationListItems,
+  selectRecommendationsSummary,
+  selectSpotlightAction,
+  selectSpotlightAuditEntry,
+  selectSpotlightRecommendation,
+  selectSpotlightThreat,
+  selectThreatFactors,
+  selectThreatTiming,
 } from './selectors'
 export type { AlertAuditChain, CrossEngineChain } from './selectors'
 export type {
@@ -67,4 +79,17 @@ export type {
   ProtectThreatEntity,
   RecommendationEntity,
   UrgencyLevel,
+  // Grow domain types
+  ActionStep,
+  Category,
+  ChangeAction,
+  CurrentItem,
+  GrowthSimulationPoint,
+  MarketAlternative,
+  RecommendationDetail,
+  RecommendationListItem,
+  RecommendedChange,
+  ThreatFactor,
+  ThreatTiming,
+  UsageLevel,
 } from './types'

@@ -36,6 +36,24 @@ export interface CriticalAlertEntity {
   signalId: string
 }
 
+// ─── Protect Evidence Types ──────────────────────────────────────────────────
+
+export interface ThreatTiming {
+  detected: string
+  updated: string
+  times: string[]
+}
+
+export interface ThreatFactor {
+  id: string
+  title: string
+  weight: number
+  details: string
+  model: string
+  mitigating?: boolean
+  heroCue?: string
+}
+
 export interface ProtectThreatEntity {
   id: string
   counterparty: string
@@ -48,6 +66,8 @@ export interface ProtectThreatEntity {
   compositePriority: number
   clientName?: string
   regulatoryFlag?: string
+  timing?: ThreatTiming
+  factors?: ThreatFactor[]
 }
 
 export interface RecommendationEntity {
@@ -57,6 +77,7 @@ export interface RecommendationEntity {
   annualBenefitUsd: number
   confidence: number
   alternativeType: AlternativeType
+  compositePriority: number
 }
 
 export interface ExecuteActionFactor {
@@ -107,6 +128,7 @@ export interface GovernAuditEntryEntity {
   confidence: number
   evidence: number
   status: DecisionStatus
+  compositePriority: number
 }
 
 export interface DashboardActivityEntity {
@@ -255,4 +277,94 @@ export interface CanonicalUniverseV1 {
     actionToDecision: Record<string, string[]>
     eventToChildren: Record<string, EventChildren>
   }
+}
+
+// ─── Grow Domain Types (migrated from recommendation-detail-data.ts) ────────
+
+export type UsageLevel = 'high' | 'medium' | 'low' | 'none'
+export type ChangeAction = 'keep' | 'cancel' | 'switch' | 'downgrade' | 'increase' | 'open' | 'reduce' | 'eliminate'
+export type Category = 'Efficiency' | 'Risk Mitigation' | 'Revenue Growth'
+
+export interface CurrentItem {
+  name: string
+  cost: number
+  usage: UsageLevel
+  note?: string
+}
+
+export interface RecommendedChange {
+  action: ChangeAction
+  item: string
+  from?: string | number
+  to?: string | number
+  savings: number
+}
+
+export interface MarketAlternative {
+  name: string
+  detail: string
+  note: string
+  recommended: boolean
+}
+
+export interface ActionStep {
+  step: number
+  title: string
+  description: string
+  type: ExecutionType
+  estimatedTime?: string
+}
+
+export interface RecommendationDetail {
+  id: number
+  title: string
+  category: string
+  monthlySavings: number
+  annualSavings: number
+  confidence: number
+  dataBasis: string
+
+  situationLabel: string
+  currentItems: CurrentItem[]
+  currentTotal: number
+  insights: string[]
+
+  changes: RecommendedChange[]
+  newTotal: number
+  alternatives: MarketAlternative[]
+  ratesAsOf: string
+
+  steps: ActionStep[]
+  executionType: ExecutionType
+
+  factors: string[]
+  cohortProof: string
+  modelInfo: { name: string; version: string; accuracy: number; auditId: string }
+  dataSources: string[]
+}
+
+export type RecommendationListItem = {
+  id: number
+  rank: number
+  title: string
+  description: string
+  category: Category
+  difficulty: 'Easy' | 'Medium' | 'Hard'
+  monthlySavings: number
+  annualSavings: number
+  confidence: number
+  shapFactors: { name: string; weight: number }[]
+  evidence: string
+  modelVersion: string
+  auditId: string
+}
+
+// ─── Grow Simulation Types ──────────────────────────────────────────────────
+
+export interface GrowthSimulationPoint {
+  year: string
+  baseline: number
+  aiOptimized: number
+  low: number
+  high: number
 }

@@ -64,17 +64,17 @@ describe('ProtectAnomalyRadar', () => {
       remainingCount: 4,
       totalExposure: 13247,
       fpRate: '0.01%',
-      onReviewSignal: vi.fn(),
+      onReviewThreat: vi.fn(),
       ...overrides,
     }
     return { ...render(<ProtectAnomalyRadar {...props} />), props }
   }
 
-  it('fires onReviewSignal callback when Review Signal CTA is clicked', () => {
+  it('fires onReviewThreat callback when Review Threat CTA is clicked', () => {
     const { props } = renderRadar()
-    const btn = screen.getByRole('button', { name: /review signal/i })
+    const btn = screen.getByRole('button', { name: /review threat/i })
     fireEvent.click(btn)
-    expect(props.onReviewSignal).toHaveBeenCalledOnce()
+    expect(props.onReviewThreat).toHaveBeenCalledOnce()
   })
 
   it('renders headline with critical threat text', () => {

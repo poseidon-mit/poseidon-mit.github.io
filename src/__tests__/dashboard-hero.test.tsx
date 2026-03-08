@@ -34,7 +34,7 @@ const DEFAULT_PROPS = {
     urgency: 'high' as const,
   },
   auditStreamEntries: AUDIT_ENTRIES,
-  onReviewSignal: vi.fn(),
+  onReviewThreat: vi.fn(),
   onReviewApproval: vi.fn(),
   onViewRecommendations: vi.fn(),
 }
@@ -51,7 +51,7 @@ function renderHero(overrides: Partial<typeof DEFAULT_PROPS> = {}) {
 describe('DashboardCoordinationProof', () => {
   it('renders the headline', () => {
     renderHero()
-    expect(screen.getByRole('heading', { level: 1, name: /finally coordinated/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: /fully coordinated/i })).toBeInTheDocument()
   })
 
   it('renders narrative with threat amount and savings', () => {
@@ -80,7 +80,7 @@ describe('DashboardCoordinationProof', () => {
   })
 
   it('renders "All clear" when critical signal is null', () => {
-    renderHero({ criticalSignal: null, onReviewSignal: null })
+    renderHero({ criticalSignal: null, onReviewThreat: null })
     expect(screen.getAllByText('All clear').length).toBeGreaterThanOrEqual(1)
     expect(screen.queryByText('TechElectro Store')).not.toBeInTheDocument()
   })
@@ -126,11 +126,11 @@ describe('DashboardCoordinationProof', () => {
     expect(stream.children.length).toBeGreaterThan(0)
   })
 
-  it('fires onReviewSignal callback on click', () => {
+  it('fires onReviewThreat callback on click', () => {
     const { props } = renderHero()
-    const btns = screen.getAllByRole('button', { name: /review signal/i })
+    const btns = screen.getAllByRole('button', { name: /review threat/i })
     fireEvent.click(btns[0])
-    expect(props.onReviewSignal).toHaveBeenCalledOnce()
+    expect(props.onReviewThreat).toHaveBeenCalledOnce()
   })
 
   it('fires onReviewApproval callback on click', () => {
@@ -180,9 +180,9 @@ describe('DashboardPage integration', () => {
     expect(countUp?.getAttribute('aria-label')).toContain('10,250')
   })
 
-  it('navigates to protect alert detail when Review Signal is clicked', () => {
+  it('navigates to protect alert detail when Review Threat is clicked', () => {
     renderDashboard()
-    const btns = screen.getAllByRole('button', { name: /review signal/i })
+    const btns = screen.getAllByRole('button', { name: /review threat/i })
     fireEvent.click(btns[0])
     expect(window.location.pathname).toBe('/protect/alert-detail')
   })

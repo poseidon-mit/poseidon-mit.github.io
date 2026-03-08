@@ -2,12 +2,9 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Bot, ShieldAlert, TrendingUp } from 'lucide-react'
 import { getMotionPreset } from '@/lib/motion-presets'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
-import { usePageTitle } from '@/hooks/use-page-title'
-import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { useToast } from '@/hooks/useToast'
 import { cn } from '@/lib/utils'
-import { SettingsLayout } from '@/components/settings/SettingsLayout'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 type ProtectSensitivity = 'calm' | 'standard' | 'vigilant'
 type GrowSensitivity = 'conservative' | 'balanced' | 'aggressive'
@@ -24,10 +21,9 @@ const GROW_OPTIONS: { value: GrowSensitivity; label: string; desc: string }[] = 
   { value: 'aggressive', label: 'Aggressive', desc: 'Maximize long-term return' },
 ]
 
-export default function SettingsAI() {
-  usePageTitle('AI Preferences')
+export function SettingsAIContent() {
   const prefersReducedMotion = useReducedMotionSafe()
-  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
+  const { fadeUp: fadeUpVariant } = getMotionPreset(prefersReducedMotion)
   const { showToast } = useToast()
 
   const [protectSensitivity, setProtectSensitivity] = useState<ProtectSensitivity>('standard')
@@ -38,16 +34,7 @@ export default function SettingsAI() {
   }
 
   return (
-    <SettingsLayout currentPath="/settings/ai">
-      <motion.main
-        id="main-content"
-        role="main"
-        className={`${PAGE_CONTENT_CLASS} command-center__main`}
-        style={PAGE_CONTENT_STYLE}
-        initial="hidden"
-        animate="visible"
-        variants={staggerContainerVariant}
-      >
+    <>
         {/* ── Protect Engine ── */}
         <motion.section variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-6 flex flex-col gap-4">
           <div className="flex items-center gap-2">
@@ -138,7 +125,10 @@ export default function SettingsAI() {
             Save preferences
           </button>
         </motion.div>
-      </motion.main>
-    </SettingsLayout>
+    </>
   )
 }
+
+/** Thin route wrapper — preserves infra-integrity test compatibility */
+import SettingsPage from './Settings'
+export default function SettingsAI() { return <SettingsPage /> }

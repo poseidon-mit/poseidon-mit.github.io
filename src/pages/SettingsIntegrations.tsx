@@ -1,11 +1,8 @@
 import { motion } from 'framer-motion'
 import { Building2, CreditCard, TrendingUp, Plus } from 'lucide-react'
 import { getMotionPreset } from '@/lib/motion-presets'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
-import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { useToast } from '@/hooks/useToast'
-import { SettingsLayout } from '@/components/settings/SettingsLayout'
 
 const CONNECTORS = [
   { id: 'bank', icon: Building2, label: 'Bank Accounts', desc: 'Chase, Wells Fargo, Bank of America' },
@@ -13,23 +10,13 @@ const CONNECTORS = [
   { id: 'investment', icon: TrendingUp, label: 'Investments', desc: 'Fidelity, Vanguard, Schwab' },
 ] as const
 
-export default function SettingsIntegrations() {
-  usePageTitle('Integrations')
+export function SettingsIntegrationsContent() {
   const prefersReducedMotion = useReducedMotionSafe()
-  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
+  const { fadeUp: fadeUpVariant } = getMotionPreset(prefersReducedMotion)
   const { showToast } = useToast()
 
   return (
-    <SettingsLayout currentPath="/settings/integrations">
-      <motion.main
-        id="main-content"
-        role="main"
-        className={`${PAGE_CONTENT_CLASS} command-center__main`}
-        style={PAGE_CONTENT_STYLE}
-        initial="hidden"
-        animate="visible"
-        variants={staggerContainerVariant}
-      >
+    <>
         {/* ── Connected Accounts ── */}
         <motion.section variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-6 flex flex-col gap-4">
           <h2 className="text-base font-semibold text-white">Connected accounts</h2>
@@ -64,7 +51,10 @@ export default function SettingsIntegrations() {
           <h2 className="text-base font-semibold text-white">More integrations</h2>
           <p className="text-sm text-white/40">Crypto wallets, payroll, and tax platforms coming in a future release.</p>
         </motion.section>
-      </motion.main>
-    </SettingsLayout>
+    </>
   )
 }
+
+/** Thin route wrapper — preserves infra-integrity test compatibility */
+import SettingsPage from './Settings'
+export default function SettingsIntegrations() { return <SettingsPage /> }

@@ -7,6 +7,6 @@ export function getRiskTier(action: ExecuteActionEntity): RiskTier {
 }
 
 export const RISK_TIER_CONFIG = {
-  1: { label: 'Standard Operations', description: 'Lower-risk batch operations', batchable: true },
-  2: { label: 'Capital Movement — Requires Authorization', description: 'Requires individual review', batchable: false },
+  1: { label: 'Immediate Attention', description: 'Lower-risk batch operations', batchable: true },
+  2: { label: 'Background Optimizations', description: 'Requires individual review', batchable: false },
 } as const
