@@ -18,11 +18,15 @@
 
 !!以下全てがテーマ（長文）
 
-現在のdashboard, protect, grow, execute, govern,に関しては、視覚ビジュアルの効果が強すぎて見ていて疲れる。私はLandingページぐらいの軽い視覚ビジュアルに変えたい。大きな方向転換だが、Appleのように細くて硬いが、Precisionで安全性を示すスタイル。
-
-最適な再デザインを全画面に適用する進め方を３つの異なる観点から提案してください。
 
 
+protect/threatsに新たに作ったHERO（高い優先度のものを目立たせる）が素晴らしい。このアイディアを、以下にも適用したい。
+
+・grow/recommendations
+
+・execute/queueもProtect/Threatsのやつに変更
+
+・/govern/audit
 
 
 

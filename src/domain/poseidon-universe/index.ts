@@ -41,10 +41,12 @@ export {
   selectSpotlightAuditEntry,
   selectSpotlightRecommendation,
   selectSpotlightThreat,
+  selectEngineSpotlight,
+  selectAllEngineSpotlights,
   selectThreatFactors,
   selectThreatTiming,
 } from './selectors'
-export type { AlertAuditChain, CrossEngineChain } from './selectors'
+export type { AlertAuditChain, CrossEngineChain, SpotlightKind, SpotlightContext, SpotlightItem } from './selectors'
 export type {
   AlternativeType,
   ArchitecturalTrust,

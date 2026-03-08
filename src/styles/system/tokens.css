@@ -5,22 +5,22 @@
   --font-body: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Noto Sans JP', ui-monospace, monospace;
 
-  /* ── Colors — Background ── */
-  --bg: #0B1221;
-  --bg-deep: #020410;
-  --bg-oled: #0F1420;
-  --bg-vantablack: #020202;
-  --bg-surface: #1E293B;
+  /* ── Colors — Background (Precision: darker base, #050505 floor) ── */
+  --bg: #080C14;
+  --bg-deep: #030508;
+  --bg-oled: hsl(0 0% 7%);
+  --bg-vantablack: #050505;
+  --bg-surface: #151D2C;
 
   /* ── Colors — Glass ── */
-  --glass-bg: rgba(8,12,24,0.62);
+  --glass-bg: rgba(8, 12, 24, 0.62);
   --glass-bg-apple: rgba(255, 255, 255, 0.03);
-  --glass-bg-strong: rgba(8,12,24,0.72);
-  --glass-bg-soft: rgba(10,16,28,0.6);
+  --glass-bg-strong: rgba(8, 12, 24, 0.72);
+  --glass-bg-soft: rgba(10, 16, 28, 0.6);
   --glass-bg-subtle: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255,255,255,0.08);
+  --glass-border: rgba(255, 255, 255, 0.08);
   --glass-border-apple: rgba(255, 255, 255, 0.1);
-  --glass-border-strong: rgba(255,255,255,0.16);
+  --glass-border-strong: rgba(255, 255, 255, 0.16);
 
   /* ── Glass — Page-level blue-tinted (engine/mission cards) ── */
   --glass-border-page: rgba(155, 195, 238, 0.24);
@@ -28,43 +28,43 @@
   --glass-bg-card-inner: rgba(12, 27, 52, 0.72);
   --glass-bg-card-section: rgba(11, 24, 45, 0.68);
 
-  --glass-shadow: 0 24px 70px rgba(0,0,0,0.62), 0 0 28px rgba(0,240,255,0.12);
-  --glass-shadow-apple-base: 0 4px 24px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.2);
-  --glass-shadow-apple-elevated: 0 12px 48px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.3);
-  --glass-inner-highlight: inset 0 1px 0 0 rgba(255,255,255,0.1);
-  --glass-inset: inset 0 1px 0 0 rgba(255,255,255,0.26), inset 0 -1px 0 0 rgba(255,255,255,0.1), inset 0 0 20px rgba(255,255,255,0.06);
-  --glass-edge: inset 0 0 0 1px rgba(255,255,255,0.18), inset 0 -16px 30px rgba(0,0,0,0.35);
-  --glass-backdrop: blur(44px) saturate(1.55) brightness(1.08);
-  --glass-backdrop-mobile: blur(20px) saturate(1.3) brightness(1.05);
+  --glass-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --glass-shadow-apple-base: 0 2px 8px rgba(0, 0, 0, 0.12);
+  --glass-shadow-apple-elevated: 0 4px 16px rgba(0, 0, 0, 0.15);
+  --glass-inner-highlight: none;
+  --glass-inset: none;
+  --glass-edge: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --glass-backdrop: none;
+  --glass-backdrop-mobile: none;
 
   /* ── Colors — Text ── */
   --text: #f8fafc;
-  --muted: rgba(255,255,255,0.72);
-  --muted-2: rgba(255,255,255,0.62);
+  --muted: rgba(255, 255, 255, 0.72);
+  --muted-2: rgba(255, 255, 255, 0.62);
   --text-on-accent: #04141a;
 
-  /* ── Colors — Accents ── */
-  --accent-cyan: #00F0FF;
-  --accent-teal: #14B8A6;
-  --accent-violet: #8B5CF6;
-  --accent-amber: #F59E0B;
-  --accent-blue: #3B82F6;
-  --accent-red: #EF4444;
+  /* ── Colors — Accents (Precision-calibrated) ── */
+  --accent-cyan: #00B8C4;
+  --accent-teal: #0F9D8A;
+  --accent-violet: #7C3AED;
+  --accent-amber: #D98C00;
+  --accent-blue: #2563EB;
+  --accent-red: #D93025;
   --accent-gold: #EAB308;
   --accent-teal-bg: rgba(21, 225, 194, 0.12);
   --accent-teal-border: rgba(21, 225, 194, 0.25);
 
-  /* ── State-First Semantics (mission-control baseline) ── */
-  --state-healthy: #14B8A6;
-  --state-active: #00F0FF;
-  --state-primary: #3B82F6;
-  --state-warning: #F59E0B;
-  --state-critical: #EF4444;
-  --state-healthy-rgb: 20, 184, 166;
-  --state-active-rgb: 0, 240, 255;
-  --state-primary-rgb: 59, 130, 246;
-  --state-warning-rgb: 245, 158, 11;
-  --state-critical-rgb: 239, 68, 68;
+  /* ── State-First Semantics (Precision-calibrated) ── */
+  --state-healthy: #0F9D8A;
+  --state-active: #00B8C4;
+  --state-primary: #2563EB;
+  --state-warning: #D98C00;
+  --state-critical: #D93025;
+  --state-healthy-rgb: 15, 157, 138;
+  --state-active-rgb: 0, 184, 196;
+  --state-primary-rgb: 37, 99, 235;
+  --state-warning-rgb: 217, 140, 0;
+  --state-critical-rgb: 217, 48, 37;
 
   /* ── Colors — Engine Themes ── */
   --engine-dashboard: #00F0FF;
@@ -73,61 +73,59 @@
   --engine-execute: #EAB308;
   --engine-govern: #3B82F6;
 
-  /* ── Neon — Mobile (3 layers, lighter GPU load) ── */
-  --neon-cyan-mobile: 0 0 4px rgba(0,240,255,0.8), 0 0 12px rgba(0,240,255,0.5), 0 0 24px rgba(0,240,255,0.2);
-  --neon-teal-mobile: 0 0 4px rgba(20,184,166,0.8), 0 0 12px rgba(20,184,166,0.5), 0 0 24px rgba(20,184,166,0.2);
-  --neon-violet-mobile: 0 0 4px rgba(139,92,246,0.8), 0 0 12px rgba(139,92,246,0.5), 0 0 24px rgba(139,92,246,0.2);
-  --neon-amber-mobile: 0 0 4px rgba(245,158,11,0.8), 0 0 12px rgba(245,158,11,0.5), 0 0 24px rgba(245,158,11,0.2);
-  --neon-blue-mobile: 0 0 4px rgba(59,130,246,0.8), 0 0 12px rgba(59,130,246,0.5), 0 0 24px rgba(59,130,246,0.2);
-  --neon-red-mobile: 0 0 4px rgba(239,68,68,0.8), 0 0 12px rgba(239,68,68,0.5), 0 0 24px rgba(239,68,68,0.2);
+  /* ── Neon — All disabled (Precision default) ── */
+  --neon-cyan-mobile: none;
+  --neon-teal-mobile: none;
+  --neon-violet-mobile: none;
+  --neon-amber-mobile: none;
+  --neon-blue-mobile: none;
+  --neon-red-mobile: none;
+  --neon-cyan: none;
+  --neon-teal: none;
+  --neon-violet: none;
+  --neon-amber: none;
+  --neon-blue: none;
+  --neon-red: none;
+  --neon-cyan-deep: none;
+  --neon-teal-deep: none;
+  --neon-violet-deep: none;
+  --neon-amber-deep: none;
+  --neon-blue-deep: none;
+  --neon-red-deep: none;
+  --neon-cyan-sharper: none;
+  --neon-teal-sharper: none;
+  --neon-violet-sharper: none;
+  --neon-amber-sharper: none;
+  --neon-blue-sharper: none;
+  --neon-red-sharper: none;
 
-  /* ── Neon — Desktop (6 layers, full effect) ── */
-  --neon-cyan: 0 0 2px rgba(0,240,255,1), 0 0 6px rgba(0,240,255,1), 0 0 15px rgba(0,240,255,0.8), 0 0 30px rgba(0,240,255,0.6), 0 0 50px rgba(0,240,255,0.4), 0 0 80px rgba(0,240,255,0.2);
-  --neon-teal: 0 0 2px rgba(20,184,166,1), 0 0 6px rgba(20,184,166,1), 0 0 15px rgba(20,184,166,0.8), 0 0 30px rgba(20,184,166,0.6), 0 0 50px rgba(20,184,166,0.4), 0 0 80px rgba(20,184,166,0.2);
-  --neon-violet: 0 0 2px rgba(139,92,246,1), 0 0 6px rgba(139,92,246,1), 0 0 15px rgba(139,92,246,0.8), 0 0 30px rgba(139,92,246,0.6), 0 0 50px rgba(139,92,246,0.4), 0 0 80px rgba(139,92,246,0.2);
-  --neon-amber: 0 0 2px rgba(245,158,11,1), 0 0 6px rgba(245,158,11,1), 0 0 15px rgba(245,158,11,0.8), 0 0 30px rgba(245,158,11,0.6), 0 0 50px rgba(245,158,11,0.4), 0 0 80px rgba(245,158,11,0.2);
-  --neon-blue: 0 0 2px rgba(59,130,246,1), 0 0 6px rgba(59,130,246,1), 0 0 15px rgba(59,130,246,0.8), 0 0 30px rgba(59,130,246,0.6), 0 0 50px rgba(59,130,246,0.4), 0 0 80px rgba(59,130,246,0.2);
-  --neon-red: 0 0 2px rgba(239,68,68,1), 0 0 6px rgba(239,68,68,1), 0 0 15px rgba(239,68,68,0.8), 0 0 30px rgba(239,68,68,0.6), 0 0 50px rgba(239,68,68,0.4), 0 0 80px rgba(239,68,68,0.2);
-  --neon-cyan-deep: 0 0 2px rgba(0,240,255,1), 0 0 6px rgba(0,240,255,1), 0 0 15px rgba(0,240,255,0.95), 0 0 30px rgba(0,240,255,0.8), 0 0 50px rgba(0,240,255,0.6), 0 0 80px rgba(0,240,255,0.4), 0 0 120px rgba(0,240,255,0.2);
-  --neon-teal-deep: 0 0 2px rgba(20,184,166,1), 0 0 6px rgba(20,184,166,1), 0 0 15px rgba(20,184,166,0.95), 0 0 30px rgba(20,184,166,0.8), 0 0 50px rgba(20,184,166,0.6), 0 0 80px rgba(20,184,166,0.4), 0 0 120px rgba(20,184,166,0.2);
-  --neon-violet-deep: 0 0 2px rgba(139,92,246,1), 0 0 6px rgba(139,92,246,1), 0 0 15px rgba(139,92,246,0.95), 0 0 30px rgba(139,92,246,0.8), 0 0 50px rgba(139,92,246,0.6), 0 0 80px rgba(139,92,246,0.4), 0 0 120px rgba(139,92,246,0.2);
-  --neon-amber-deep: 0 0 2px rgba(245,158,11,1), 0 0 6px rgba(245,158,11,1), 0 0 15px rgba(245,158,11,0.95), 0 0 30px rgba(245,158,11,0.8), 0 0 50px rgba(245,158,11,0.6), 0 0 80px rgba(245,158,11,0.4), 0 0 120px rgba(245,158,11,0.2);
-  --neon-blue-deep: 0 0 2px rgba(59,130,246,1), 0 0 6px rgba(59,130,246,1), 0 0 15px rgba(59,130,246,0.95), 0 0 30px rgba(59,130,246,0.8), 0 0 50px rgba(59,130,246,0.6), 0 0 80px rgba(59,130,246,0.4), 0 0 120px rgba(59,130,246,0.2);
-  --neon-red-deep: 0 0 2px rgba(239,68,68,1), 0 0 6px rgba(239,68,68,1), 0 0 15px rgba(239,68,68,0.95), 0 0 30px rgba(239,68,68,0.8), 0 0 50px rgba(239,68,68,0.6), 0 0 80px rgba(239,68,68,0.4), 0 0 120px rgba(239,68,68,0.2);
-  --neon-cyan-sharper: 0 0 1px rgba(0,240,255,1), 0 0 3px rgba(0,240,255,1), 0 0 8px rgba(0,240,255,0.9), 0 0 16px rgba(0,240,255,0.5), 0 0 28px rgba(0,240,255,0.2);
-  --neon-teal-sharper: 0 0 1px rgba(20,184,166,1), 0 0 3px rgba(20,184,166,1), 0 0 8px rgba(20,184,166,0.9), 0 0 16px rgba(20,184,166,0.5), 0 0 28px rgba(20,184,166,0.2);
-  --neon-violet-sharper: 0 0 1px rgba(139,92,246,1), 0 0 3px rgba(139,92,246,1), 0 0 8px rgba(139,92,246,0.9), 0 0 16px rgba(139,92,246,0.5), 0 0 28px rgba(139,92,246,0.2);
-  --neon-amber-sharper: 0 0 1px rgba(245,158,11,1), 0 0 3px rgba(245,158,11,1), 0 0 8px rgba(245,158,11,0.9), 0 0 16px rgba(245,158,11,0.5), 0 0 28px rgba(245,158,11,0.2);
-  --neon-blue-sharper: 0 0 1px rgba(59,130,246,1), 0 0 3px rgba(59,130,246,1), 0 0 8px rgba(59,130,246,0.9), 0 0 16px rgba(59,130,246,0.5), 0 0 28px rgba(59,130,246,0.2);
-  --neon-red-sharper: 0 0 1px rgba(239,68,68,1), 0 0 3px rgba(239,68,68,1), 0 0 8px rgba(239,68,68,0.9), 0 0 16px rgba(239,68,68,0.5), 0 0 28px rgba(239,68,68,0.2);
+  /* ── Icon Glow — disabled (Precision default) ── */
+  --icon-glow-default: none;
+  --icon-glow-teal: none;
+  --icon-glow-amber: none;
+  --icon-glow-violet: none;
+  --icon-glow-blue: none;
+  --icon-glow-red: none;
 
-  /* ── Icon Glow ── */
-  --icon-glow-default: drop-shadow(0 0 6px rgba(255,255,255,0.35)) drop-shadow(0 0 14px rgba(0,240,255,0.45)) drop-shadow(0 0 28px rgba(0,240,255,0.35));
-  --icon-glow-teal: drop-shadow(0 0 6px rgba(255,255,255,0.35)) drop-shadow(0 0 14px rgba(20,184,166,0.55)) drop-shadow(0 0 28px rgba(20,184,166,0.4));
-  --icon-glow-amber: drop-shadow(0 0 6px rgba(255,255,255,0.35)) drop-shadow(0 0 14px rgba(245,158,11,0.55)) drop-shadow(0 0 28px rgba(245,158,11,0.4));
-  --icon-glow-violet: drop-shadow(0 0 6px rgba(255,255,255,0.35)) drop-shadow(0 0 14px rgba(139,92,246,0.55)) drop-shadow(0 0 28px rgba(139,92,246,0.4));
-  --icon-glow-blue: drop-shadow(0 0 6px rgba(255,255,255,0.35)) drop-shadow(0 0 14px rgba(59,130,246,0.55)) drop-shadow(0 0 28px rgba(59,130,246,0.4));
-  --icon-glow-red: drop-shadow(0 0 6px rgba(255,255,255,0.35)) drop-shadow(0 0 14px rgba(239,68,68,0.55)) drop-shadow(0 0 28px rgba(239,68,68,0.4));
-
-  /* ── Text Gradients ── */
-  --text-gradient-cyan: linear-gradient(90deg, #bffcff 0%, #00f0ff 100%);
-  --text-gradient-teal: linear-gradient(90deg, #5eead4 0%, #15e1c2 100%);
+  /* ── Text Gradients (Precision: muted endpoints) ── */
+  --text-gradient-cyan: linear-gradient(90deg, #b0eef2 0%, #00B8C4 100%);
+  --text-gradient-teal: linear-gradient(90deg, #4dd8be 0%, #0F9D8A 100%);
   --text-gradient-violet: linear-gradient(90deg, #d7b7ff 0%, #8b5cf6 100%);
   --text-gradient-amber: linear-gradient(90deg, #ffe0a1 0%, #f59e0b 100%);
   --text-gradient-blue: linear-gradient(90deg, #b8d6ff 0%, #58a6ff 100%);
-  --text-shadow-neon: 0 0 12px rgba(255,255,255,0.4);
+  --text-shadow-neon: none;
 
-  /* ── Badge & Warning ── */
-  --badge-bg: rgba(0,240,255,0.12);
-  --badge-border: 1px solid rgba(0,240,255,0.6);
-  --badge-text: #e6fbff;
-  --badge-shadow: 0 0 8px rgba(0,240,255,0.4);
-  --badge-box: 0 0 12px rgba(0,240,255,0.55), 0 0 28px rgba(0,240,255,0.45), 0 0 52px rgba(0,240,255,0.3), inset 0 0 14px rgba(0,240,255,0.22);
-  --warning-bg: rgba(239,68,68,0.15);
-  --warning-border: 1px solid rgba(239,68,68,0.4);
-  --warning-text: #ff6b6b;
-  --warning-shadow: 0 0 10px rgba(239,68,68,0.6);
-  --warning-box: 0 0 12px rgba(239,68,68,0.5), 0 0 24px rgba(239,68,68,0.35), inset 0 0 10px rgba(239,68,68,0.2);
+  /* ── Badge & Warning (Precision: desaturated, no glow) ── */
+  --badge-bg: rgba(0, 184, 196, 0.10);
+  --badge-border: 1px solid rgba(0, 184, 196, 0.35);
+  --badge-text: #d0f4f7;
+  --badge-shadow: none;
+  --badge-box: none;
+  --warning-bg: rgba(217, 48, 37, 0.12);
+  --warning-border: 1px solid rgba(217, 48, 37, 0.30);
+  --warning-text: #e87c73;
+  --warning-shadow: none;
+  --warning-box: none;
 
   /* ── Border Radius ── */
   --radius-lg: 24px;
@@ -137,13 +135,13 @@
   --radius-inner: 10px;
 
   /* ── Interactive States ── */
-  --state-hover-bg: rgba(255,255,255,0.06);
-  --state-active-bg: rgba(255,255,255,0.12);
-  --state-focus-ring: 0 0 0 2px rgba(0,240,255,0.6);
-  --state-disabled-text: rgba(255,255,255,0.4);
-  --state-error-border: rgba(239,68,68,0.6);
-  --state-success-border: rgba(21,225,194,0.6);
-  --state-loading-bg: rgba(255,255,255,0.04);
+  --state-hover-bg: rgba(255, 255, 255, 0.06);
+  --state-active-bg: rgba(255, 255, 255, 0.12);
+  --state-focus-ring: 0 0 0 2px rgba(0, 184, 196, 0.40);
+  --state-disabled-text: rgba(255, 255, 255, 0.4);
+  --state-error-border: rgba(217, 48, 37, 0.45);
+  --state-success-border: rgba(15, 157, 138, 0.45);
+  --state-loading-bg: rgba(255, 255, 255, 0.04);
 
   /* ── Motion ── */
   --motion-duration-fast: 120ms;
@@ -302,6 +300,7 @@ textarea:focus-visible,
 
 /* ── Reduced Motion ── */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -357,6 +356,7 @@ textarea:focus-visible,
 
 /* ── Container Query Setup ── */
 @supports (container-type: inline-size) {
+
   .engine-card,
   .poseidon-grid,
   [data-slot="primary_feed"],
@@ -368,163 +368,213 @@ textarea:focus-visible,
 
 /* Container breakpoint utilities */
 @container (min-width: 320px) {
-  .cq\:visible-xs { display: block; }
+  .cq\:visible-xs {
+    display: block;
+  }
 }
+
 @container (min-width: 640px) {
-  .cq\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cq\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
+
 @container (min-width: 800px) {
-  .cq\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cq\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
+
 @container (min-width: 1024px) {
-  .cq\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
-
-/* ── Precision Mode — Token Overrides ──
- * Scoped to product shell via .theme-precision on AppNavShell root.
- * Suppresses heavy glass, neon, icon glow, badge glow, and text-shadow effects.
- */
-.theme-precision {
-  /* Glass tokens — lighten */
-  --glass-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  --glass-shadow-apple-base: 0 2px 8px rgba(0,0,0,0.12);
-  --glass-shadow-apple-elevated: 0 4px 16px rgba(0,0,0,0.15);
-  --glass-inner-highlight: none;
-  --glass-inset: none;
-  --glass-edge: inset 0 0 0 1px rgba(255,255,255,0.06);
-  --glass-backdrop: none;
-  --glass-backdrop-mobile: none;
-
-  /* Neon — all none */
-  --neon-cyan: none; --neon-teal: none; --neon-violet: none;
-  --neon-amber: none; --neon-blue: none; --neon-red: none;
-  --neon-cyan-mobile: none; --neon-teal-mobile: none; --neon-violet-mobile: none;
-  --neon-amber-mobile: none; --neon-blue-mobile: none; --neon-red-mobile: none;
-  --neon-cyan-deep: none; --neon-teal-deep: none; --neon-violet-deep: none;
-  --neon-amber-deep: none; --neon-blue-deep: none; --neon-red-deep: none;
-  --neon-cyan-sharper: none; --neon-teal-sharper: none; --neon-violet-sharper: none;
-  --neon-amber-sharper: none; --neon-blue-sharper: none; --neon-red-sharper: none;
-
-  /* Icon glow — none */
-  --icon-glow-default: none; --icon-glow-teal: none;
-  --icon-glow-amber: none; --icon-glow-violet: none;
-  --icon-glow-blue: none; --icon-glow-red: none;
-
-  /* Badge & warning glow — none */
-  --badge-shadow: none; --badge-box: none;
-  --warning-shadow: none; --warning-box: none;
-
-  /* Text shadow — none */
-  --text-shadow-neon: none;
-
-  /* ── State color families — precision-calibrated ── */
-  --state-active: #00B8C4;
-  --state-active-rgb: 0, 184, 196;
-  --state-critical: #D93025;
-  --state-critical-rgb: 217, 48, 37;
-  --state-warning: #D98C00;
-  --state-warning-rgb: 217, 140, 0;
-  --state-primary: #2563EB;
-  --state-primary-rgb: 37, 99, 235;
-  --state-healthy: #0F9D8A;
-  --state-healthy-rgb: 15, 157, 138;
-
-  /* ── Accent family — precision ── */
-  --accent-cyan: #00B8C4;
-  --accent-teal: #0F9D8A;
-  --accent-red: #D93025;
-  --accent-amber: #D98C00;
-  --accent-blue: #2563EB;
-  --accent-violet: #7C3AED;
-
-  /* ── Badge family — desaturated ── */
-  --badge-bg: rgba(0, 184, 196, 0.10);
-  --badge-border: 1px solid rgba(0, 184, 196, 0.35);
-  --badge-text: #d0f4f7;
-
-  /* ── Warning family — desaturated ── */
-  --warning-bg: rgba(217, 48, 37, 0.12);
-  --warning-border: 1px solid rgba(217, 48, 37, 0.30);
-  --warning-text: #e87c73;
-
-  /* ── Interactive states — desaturated ── */
-  --state-focus-ring: 0 0 0 2px rgba(0, 184, 196, 0.40);
-  --state-error-border: rgba(217, 48, 37, 0.45);
-  --state-success-border: rgba(15, 157, 138, 0.45);
-
-  /* ── Background — precision (darker base, #050505 floor) ── */
-  --bg: #080C14;
-  --bg-deep: #030508;
-  --bg-oled: #0A0E16;
-  --bg-vantablack: #050505;
-  --bg-surface: #151D2C;
-
-  /* ── Text gradients — precision (muted endpoints) ── */
-  --text-gradient-cyan: linear-gradient(90deg, #b0eef2 0%, #00B8C4 100%);
-  --text-gradient-teal: linear-gradient(90deg, #4dd8be 0%, #0F9D8A 100%);
+  .cq\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 /* ── Precision engine utilities ──
- * Scoped overrides for hardcoded Tailwind color classes.
- * Under .theme-precision, these win by specificity.
- * Outside (Landing, etc.), the original Tailwind class applies.
+ * Globally applies precision calibration overrides.
  */
-.theme-precision .engine-text-dashboard { color: var(--engine-dashboard); }
-.theme-precision .engine-text-protect   { color: var(--engine-protect); }
-.theme-precision .engine-text-grow      { color: var(--engine-grow); }
-.theme-precision .engine-text-execute   { color: var(--engine-execute); }
-.theme-precision .engine-text-govern    { color: var(--engine-govern); }
+.engine-text-dashboard {
+  color: var(--engine-dashboard);
+}
 
-.theme-precision .engine-bg-dashboard { background-color: color-mix(in srgb, var(--engine-dashboard) 10%, transparent); }
-.theme-precision .engine-bg-protect   { background-color: color-mix(in srgb, var(--engine-protect) 10%, transparent); }
-.theme-precision .engine-bg-grow      { background-color: color-mix(in srgb, var(--engine-grow) 10%, transparent); }
-.theme-precision .engine-bg-execute   { background-color: color-mix(in srgb, var(--engine-execute) 10%, transparent); }
-.theme-precision .engine-bg-govern    { background-color: color-mix(in srgb, var(--engine-govern) 10%, transparent); }
+.engine-text-protect {
+  color: var(--engine-protect);
+}
 
-.theme-precision .engine-border-dashboard { border-color: color-mix(in srgb, var(--engine-dashboard) 20%, transparent); }
-.theme-precision .engine-border-protect   { border-color: color-mix(in srgb, var(--engine-protect) 20%, transparent); }
-.theme-precision .engine-border-grow      { border-color: color-mix(in srgb, var(--engine-grow) 20%, transparent); }
-.theme-precision .engine-border-execute   { border-color: color-mix(in srgb, var(--engine-execute) 20%, transparent); }
-.theme-precision .engine-border-govern    { border-color: color-mix(in srgb, var(--engine-govern) 20%, transparent); }
+.engine-text-grow {
+  color: var(--engine-grow);
+}
+
+.engine-text-execute {
+  color: var(--engine-execute);
+}
+
+.engine-text-govern {
+  color: var(--engine-govern);
+}
+
+.engine-bg-dashboard {
+  background-color: color-mix(in srgb, var(--engine-dashboard) 10%, transparent);
+}
+
+.engine-bg-protect {
+  background-color: color-mix(in srgb, var(--engine-protect) 10%, transparent);
+}
+
+.engine-bg-grow {
+  background-color: color-mix(in srgb, var(--engine-grow) 10%, transparent);
+}
+
+.engine-bg-execute {
+  background-color: color-mix(in srgb, var(--engine-execute) 10%, transparent);
+}
+
+.engine-bg-govern {
+  background-color: color-mix(in srgb, var(--engine-govern) 10%, transparent);
+}
+
+.engine-border-dashboard {
+  border-color: color-mix(in srgb, var(--engine-dashboard) 20%, transparent);
+}
+
+.engine-border-protect {
+  border-color: color-mix(in srgb, var(--engine-protect) 20%, transparent);
+}
+
+.engine-border-grow {
+  border-color: color-mix(in srgb, var(--engine-grow) 20%, transparent);
+}
+
+.engine-border-execute {
+  border-color: color-mix(in srgb, var(--engine-execute) 20%, transparent);
+}
+
+.engine-border-govern {
+  border-color: color-mix(in srgb, var(--engine-govern) 20%, transparent);
+}
 
 /* ── Semantic state/severity utilities ── */
-.theme-precision .state-text-healthy  { color: var(--state-healthy); }
-.theme-precision .state-text-active   { color: var(--state-active); }
-.theme-precision .state-text-warning  { color: var(--state-warning); }
-.theme-precision .state-text-critical { color: var(--state-critical); }
-.theme-precision .state-text-primary  { color: var(--state-primary); }
+.state-text-healthy {
+  color: var(--state-healthy);
+}
 
-.theme-precision .state-bg-healthy  { background-color: color-mix(in srgb, var(--state-healthy) 12%, transparent); }
-.theme-precision .state-bg-warning  { background-color: color-mix(in srgb, var(--state-warning) 12%, transparent); }
-.theme-precision .state-bg-critical { background-color: color-mix(in srgb, var(--state-critical) 12%, transparent); }
-.theme-precision .state-bg-primary  { background-color: color-mix(in srgb, var(--state-primary) 12%, transparent); }
+.state-text-active {
+  color: var(--state-active);
+}
 
-.theme-precision .state-border-healthy  { border-color: color-mix(in srgb, var(--state-healthy) 20%, transparent); }
-.theme-precision .state-border-warning  { border-color: color-mix(in srgb, var(--state-warning) 20%, transparent); }
-.theme-precision .state-border-critical { border-color: color-mix(in srgb, var(--state-critical) 20%, transparent); }
-.theme-precision .state-border-primary  { border-color: color-mix(in srgb, var(--state-primary) 20%, transparent); }
+.state-text-warning {
+  color: var(--state-warning);
+}
+
+.state-text-critical {
+  color: var(--state-critical);
+}
+
+.state-text-primary {
+  color: var(--state-primary);
+}
+
+.state-bg-healthy {
+  background-color: color-mix(in srgb, var(--state-healthy) 12%, transparent);
+}
+
+.state-bg-warning {
+  background-color: color-mix(in srgb, var(--state-warning) 12%, transparent);
+}
+
+.state-bg-critical {
+  background-color: color-mix(in srgb, var(--state-critical) 12%, transparent);
+}
+
+.state-bg-primary {
+  background-color: color-mix(in srgb, var(--state-primary) 12%, transparent);
+}
+
+.state-border-healthy {
+  border-color: color-mix(in srgb, var(--state-healthy) 20%, transparent);
+}
+
+.state-border-warning {
+  border-color: color-mix(in srgb, var(--state-warning) 20%, transparent);
+}
+
+.state-border-critical {
+  border-color: color-mix(in srgb, var(--state-critical) 20%, transparent);
+}
+
+.state-border-primary {
+  border-color: color-mix(in srgb, var(--state-primary) 20%, transparent);
+}
 
 /* ── Engine ring utilities (Sidebar active ring) ── */
-.theme-precision .engine-ring-dashboard { --tw-ring-color: color-mix(in srgb, var(--engine-dashboard) 30%, transparent); }
-.theme-precision .engine-ring-protect   { --tw-ring-color: color-mix(in srgb, var(--engine-protect) 30%, transparent); }
-.theme-precision .engine-ring-grow      { --tw-ring-color: color-mix(in srgb, var(--engine-grow) 30%, transparent); }
-.theme-precision .engine-ring-execute   { --tw-ring-color: color-mix(in srgb, var(--engine-execute) 30%, transparent); }
-.theme-precision .engine-ring-govern    { --tw-ring-color: color-mix(in srgb, var(--engine-govern) 30%, transparent); }
+.engine-ring-dashboard {
+  --tw-ring-color: color-mix(in srgb, var(--engine-dashboard) 30%, transparent);
+}
+
+.engine-ring-protect {
+  --tw-ring-color: color-mix(in srgb, var(--engine-protect) 30%, transparent);
+}
+
+.engine-ring-grow {
+  --tw-ring-color: color-mix(in srgb, var(--engine-grow) 30%, transparent);
+}
+
+.engine-ring-execute {
+  --tw-ring-color: color-mix(in srgb, var(--engine-execute) 30%, transparent);
+}
+
+.engine-ring-govern {
+  --tw-ring-color: color-mix(in srgb, var(--engine-govern) 30%, transparent);
+}
 
 /* ── Engine indicator utilities (100% solid — dots, pips) ── */
-.theme-precision .engine-indicator-dashboard { background-color: var(--engine-dashboard); box-shadow: none; }
-.theme-precision .engine-indicator-protect   { background-color: var(--engine-protect); box-shadow: none; }
-.theme-precision .engine-indicator-grow      { background-color: var(--engine-grow); box-shadow: none; }
-.theme-precision .engine-indicator-execute   { background-color: var(--engine-execute); box-shadow: none; }
-.theme-precision .engine-indicator-govern    { background-color: var(--engine-govern); box-shadow: none; }
+.engine-indicator-dashboard {
+  background-color: var(--engine-dashboard);
+  box-shadow: none;
+}
+
+.engine-indicator-protect {
+  background-color: var(--engine-protect);
+  box-shadow: none;
+}
+
+.engine-indicator-grow {
+  background-color: var(--engine-grow);
+  box-shadow: none;
+}
+
+.engine-indicator-execute {
+  background-color: var(--engine-execute);
+  box-shadow: none;
+}
+
+.engine-indicator-govern {
+  background-color: var(--engine-govern);
+  box-shadow: none;
+}
 
 /* ── Engine solid utilities (~80% opaque — CTA buttons) ── */
-.theme-precision .engine-solid-execute { background-color: color-mix(in srgb, var(--engine-execute) 80%, transparent); }
+.engine-solid-execute {
+  background-color: color-mix(in srgb, var(--engine-execute) 80%, transparent);
+}
 
 /* ── State indicator utilities (100% solid — dots, pips) ── */
-.theme-precision .state-indicator-critical { background-color: var(--state-critical); box-shadow: none; }
-.theme-precision .state-indicator-warning  { background-color: var(--state-warning); box-shadow: none; }
+.state-indicator-critical {
+  background-color: var(--state-critical);
+  box-shadow: none;
+}
+
+.state-indicator-warning {
+  background-color: var(--state-warning);
+  box-shadow: none;
+}
 
 /* ── State border/bg active (missing from Wave 3A) ── */
-.theme-precision .state-border-active { border-color: color-mix(in srgb, var(--state-active) 20%, transparent); }
-.theme-precision .state-bg-active     { background-color: color-mix(in srgb, var(--state-active) 10%, transparent); }
+.state-border-active {
+  border-color: color-mix(in srgb, var(--state-active) 20%, transparent);
+}
+
+.state-bg-active {
+  background-color: color-mix(in srgb, var(--state-active) 10%, transparent);
+}

@@ -11,6 +11,7 @@ import type {
   CanonicalUniverseV1,
   CanonicalEvent,
   DeliberationTrace,
+  EngineName,
   EventChildren,
   ExecuteActionEntity,
   ExecutionType,
@@ -408,6 +409,110 @@ export function selectSpotlightAuditEntry(): GovernAuditEntryEntity | null {
   const entries = selectGovernAuditEntries().filter(e => e.status !== 'Verified')
   if (entries.length === 0) return null
   return entries.reduce((best, e) => (e.compositePriority > best.compositePriority ? e : best))
+}
+
+/* ── Spotlight Context — Unified Output Shape (Phase 0 Precision) ── */
+
+export type SpotlightKind = 'threat' | 'recommendation' | 'action' | 'audit'
+
+export interface SpotlightContext {
+  hook: string
+  engine: EngineName
+  urgency: 'critical' | 'high' | 'medium' | 'low'
+  evidence: string[]
+}
+
+export interface SpotlightItem {
+  kind: SpotlightKind
+  context: SpotlightContext
+  compositePriority: number
+  entityId: string
+}
+
+export function selectEngineSpotlight(engine: EngineName): SpotlightItem | null {
+  switch (engine) {
+    case 'Protect': {
+      const t = selectSpotlightThreat()
+      if (!t) return null
+      return {
+        kind: 'threat',
+        context: {
+          hook: `${t.severity} threat: ${t.counterparty}`,
+          engine: 'Protect',
+          urgency: mapSeverityToUrgency(t.severity),
+          evidence: (t.factors ?? []).slice(0, 3).map(f => f.title),
+        },
+        compositePriority: t.compositePriority,
+        entityId: t.id,
+      }
+    }
+    case 'Grow': {
+      const r = selectSpotlightRecommendation()
+      if (!r) return null
+      const entity = getCanonicalUniverse().entities.recommendations
+        .find(e => e.id === String(r.id))
+      return {
+        kind: 'recommendation',
+        context: {
+          hook: r.title,
+          engine: 'Grow',
+          urgency: (entity?.compositePriority ?? 0) >= 60 ? 'high' : 'medium',
+          evidence: r.evidence ? [r.evidence] : [],
+        },
+        compositePriority: entity?.compositePriority ?? 0,
+        entityId: String(r.id),
+      }
+    }
+    case 'Execute': {
+      const a = selectSpotlightAction()
+      if (!a) return null
+      return {
+        kind: 'action',
+        context: {
+          hook: a.title,
+          engine: 'Execute',
+          urgency: a.urgency,
+          evidence: a.factors.slice(0, 3).map(f => f.label),
+        },
+        compositePriority: a.compositePriority,
+        entityId: a.id,
+      }
+    }
+    case 'Govern': {
+      const e = selectSpotlightAuditEntry()
+      if (!e) return null
+      return {
+        kind: 'audit',
+        context: {
+          hook: `${e.status}: ${e.action}`,
+          engine: 'Govern',
+          urgency: e.compositePriority >= 60 ? 'high' : 'medium',
+          evidence: [`Confidence: ${e.confidence}%`],
+        },
+        compositePriority: e.compositePriority,
+        entityId: e.id,
+      }
+    }
+    default:
+      return null
+  }
+}
+
+export function selectAllEngineSpotlights(): SpotlightItem[] {
+  const engines: EngineName[] = ['Protect', 'Grow', 'Execute', 'Govern']
+  return engines
+    .map(e => selectEngineSpotlight(e))
+    .filter((s): s is SpotlightItem => s !== null)
+    .sort((a, b) => b.compositePriority - a.compositePriority)
+}
+
+function mapSeverityToUrgency(severity: string): SpotlightContext['urgency'] {
+  switch (severity) {
+    case 'Critical': return 'critical'
+    case 'High': return 'high'
+    case 'Medium': return 'medium'
+    default: return 'low'
+  }
 }
 
 /* ── Evidence Selectors ── */

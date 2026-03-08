@@ -57,7 +57,22 @@
 
 ---
 
-## 4. ルーティング別の視覚的ポリシー（Route-Specific Visual Policies）
+## 4. Priority Spotlightアーキテクチャ（The Priority Spotlight Paradigm）
+
+Protectエンジンで成功した「最も重要な単一のアイテムを画面上部に隔離し、完全な文脈とアクションを提供する」というPriority Spotlight（Hero）UIパターンを、全エンジンへ拡張設計する。ただし、視覚的なテンプレートの単純なクローンを禁じ、各エンジンの意味論的目的に合わせた「文脈的適応（Semantic Adaptation）」を実装の必須要件とする。すべてのSpotlightはHook（感情をフックする数値）、Context（対象）、Evidence（証拠）の3要素スロットを持つ。
+
+*   **Protect (The Threat Triage):** リスクと脅威の隔離。Hook（金額・深刻度）、Context（相手先）、Evidence（確信度・SHAP要因）を示し、「調査・対処」を促す。恐怖（Fear）ではなくコントロールを提供する。
+*   **Grow (The Trajectory Canvas):** ただの高利益オファーではなく、Rechartsを用いた「インタラクティブな未来予測（Trajectory）チャート」を主役とし、その推奨アクションが現状の曲線をどう改善するか（Delta）を数学的証拠として提示する。憧れ（Aspiration）を喚起する。
+*   **Execute (The Triage Isolation Chamber):** 高摩擦な意思決定空間。「承認」しやすくするのではなく、カウントダウンバッジ（期限）や法医学的メタデータ（確信度、変更の不可逆性）を全面展開する。スライド・トゥ・コンファーム（Slide-to-Confirm）などの**非対称な摩擦（Asymmetrical Friction）**を実装し、意図的で責任のあるHuman-in-the-Loopを強制する。緊急性（Urgency）を伴う。
+*   **Govern (The Systemic Health Monitor & Trace):** 過去の履歴の単なるハイライトではなく、API接続状態、データ鮮度を示す「システム健全性モニター」、または完全に事象が追跡可能な「クロスエンジントレース（Protect→Grow→Execute→Govern）」を主役とする。究極の透明性（Glass-Box）と権威（Authority）を証明するデモ最大のWOWファクターとする。
+
+**アーキテクチャの制約:**
+1.  **単一のセレクター層:** 各ページのローカルロジックではなく、共有されたセレクター（`selectSpotlightThreat()`等）を用い、全エンティティ共通の`compositePriority`（重要度、確信度、期限等の複合スコア）フィールドによってアイテムを抽出する。これによりクロス画面のデータ一貫性（Golden Path）を維持する。
+2.  **モバイルの厳密な制約:** 375pxビューポートにおいて、Spotlightカードの高さは3行（最大140px程度）に圧縮・制限する。カードが画面全体を占有することを防ぎ、折り返し（Fold）より上部に、常に2〜3個のコンパクトなリスト要素が見える状態を維持する。
+
+---
+
+## 5. ルーティング別の視覚的ポリシー（Route-Specific Visual Policies）
 
 全画面を均一なPrecision（精密）レベルにするのではなく、役割に応じてポリシーを初期段階で明示的に分割する。
 
@@ -66,25 +81,18 @@
 *   **Application / Operational Routes (Level 1 & 2 Density):**
     Poseidon.AIのプロダクトシェル内（Dashboard, Execute, Protect, Govern）。これらのルートは完全にPrecision Systemのもとにロックダウンし、アンビエントなBlurのデフォルト排除、瞬時なインタラクション、装飾パルスの無効化などを**強制する**。
 
-## 5. 全画面実行シーケンス（Risk-Controlled Rollout Plan）
+## 6. インプレース・アーキテクチャ進化シーケンス（In-Place Evolution Rollout Plan）
 
-アーキテクチャの大幅な変更を、データ一貫性を損なわずに実施するためのフェーズ分けである。実装前の検証パッケージ（Verification Pack）として `package.json` に定義されたスクリプト群（`typecheck`, `test:run`, `test:lighthouse`, `check:motion-policy`, `check:contrast-budget`, `ux:verify`）を厳格な品質ゲートとして事前に定義・適用する。
+本計画は、既存の設計負債（ネオングロー、過剰なBlurレイヤーへの依存）を断ち切り、極限の「Precision（精密さ）」に最適化されたアーキテクチャを実現するため、**「既存のv0基盤とルーター、2層CSSアーキテクチャを維持しながらのインプレース進化（In-Place Evolution）」**を採用する。既存のインフラストラクチャー完全性テスト（`infra-integrity.test.ts`）を通過することを絶対条件とする。
 
-本計画は、一度に全画面のアーキテクチャとレイアウトを根本から書き換えるフルリプレイスメント（Full Redesign Rollout）ではなく、**「第一波：共有コンポーネントにおける視覚的鎮静化（Shared De-escalation）」**と**「第二波：ヒーロー領域とコアUXの再構築（Hero Rewrites）」**という段階的な移行戦略を採用する。
+**Phase 0: 既存環境の精製（Foundation Refinement）**
+*   **稼働中CSSレイヤーの直接進化**: 実際のランタイムで読み込まれるメインエントリーポイントである `src/styles/app.css` および `src/styles/tailwind.css` を直接修正し、そこに紐づくレイヤーファイル群（`src/styles/layers/poseidon.css`等）を通じてPrecision Tokens（純粋なダークネイビー背景、制限されたBlurポリシー、等幅数字）を既存システムに統合する。新たなCSSエントリーを作成してはならない。
+*   **B2Bナラティブの完全固定**: ピッチストーリー、ランディングページ、ダッシュボードの全てにおいて「B2B金融機関・ファンド・CFO向け」の厳格なトーンとメッセージングを適用する。
+*   **稼働中Canonical Selectorsの活用・拡張**: Canonical Dataの単一ソースとして、既に機能しているドメイン層である `src/domain/poseidon-universe/selectors.ts` を直接活用する。既に存在するカノニカルセレクター（推奨、シミュレーション、Spotlightアイテム・脅威エビデンス等）の出力構造を精査・拡張し、安易に新規実装や重複する構造を作ることを避ける。
 
-**Phase 0: レイアウト移行の事前定義と影響スコープの隔離（Architecture & Isolation）**
-*   **ルート単位のフォールバック・設定管理**:  Phase 1に入る前に、現在の主たるエフェクトであるAuroraPulseをアドホックに削除するのではなく、「ガバナンスメタデータを通じてルート単位で設定可能にする（Route-configurable）」システムを構築する。
-*   **Precisionの適用範囲の限定**: 精密システム（Precision）への移行は、プロダクトシェルの内部（Poseidon.AIの実務画面）のみをターゲットとする。リポジトリ全体に影響を及ぼすような`:root`（例：`effect-presets.css`への直接的・破壊的変更）を通じた横断的なデフォルト化は避ける。Storybookや内部の開発向けルート等に悪影響を与えないよう、`.theme-precision`のようなスコープされたクラストークンを通じて適用する。
-
-**Phase 1A: 視覚基盤と色彩の鎮静化（Precision Surface System & Color Calibration）**
-*   **デフォルトBlurの排除**: デザインシステムにおけるGlowエフェクトの排除および、Blurポリシー（例外を伴うデフォルト排除）の適用を実施。
-*   **色彩系統の再設計（Color Family Calibration）**: ユーザーから「全体的に色が明るすぎる」と指摘された根本原因を解消するため、ベースのカラーパレットを単一のHex値の上書きではなく、「色彩系統の束（Token Family）」として再設計する。
-    *   **背景体系**: `--bg-oled`等を暗化するが、純黒（`#000000`）への直行は低アルファ面（カード背景やボーダー不透明度）をクリップダウン（消失）させる危険があるため、まずは`#050505`や`#020202`を起点としスクリーンショット比較によりコントラストを調整する。
-    *   **意味的カラー体系（Semantic tokens）**: `$state-critical`等のHex値だけでなく、依存する`--state-*-rgb`や、関連するヘルパートークン（`--badge-*`, `--warning-*`, `--state-focus-ring`等）もセットで「明度・彩度を一段階落としたApple-Pro的色温度」へ校正する。
-    *   **固定Tailwindクラスの監査**: `engineTokens`や`ENGINE_BADGE_CLASS`などにハードコードされている固定のTailwind色クラス（例：`text-cyan-400`）は、CSS変数の上書きでは追従しない。これらはPhase 1Aのスコープ内で「残存するネオンの香り」として監査対象（監査リストアップ）に入れ、必要に応じて後続フェーズでコードベースレベルでの是正を行う。
-
-**Phase 1B: データと状態の凍結（Canonical Data / Thread Freeze）**
-*   表示されているモックデータの完全なる監査を実施。誇張された非現実的な数字は隠せなくなるため、「現実的かつ説明可能（Non-hallucinated）」な証拠データのみを使用し、データソースの正当性を固定する。
+**Phase 1: 共有プレシジョン・UIの構築（Shared Precision Assembly）**
+*   既存の`src/components/layout/AuthenticatedLayout.tsx`や`src/main.tsx`を活用しながら、プロダクト全体の骨組みとなる構造を実装する（新規のShell.tsxなどをフォーク作成しない）。
+*   既存のコンポーネント（`src/components/ui/badge.tsx`や`src/components/poseidon/priority-spotlight.tsx`等）を**意図的に拡張または置換**し、Level 1/2 用の静かで正確なPrecision Systemを確立する。同名ファイルの新規作成による衝突（Footgun）を厳格に回避する。
 
 **Phase 2: 中央管制塔の構築（Dashboard First）**
 *   最も最初に見られ、ユーザーの信頼基準となるダッシュボードの中心領域（Hero等）の再記述（Rewrite）に着手する。
@@ -101,7 +109,7 @@
 
 ---
 
-## 6. 絶対的禁止事項（Red Lines）
+## 7. 絶対的禁止事項（Red Lines）
 
 本計画の効果を完全に保証し、MIT教員や投資家といった高度な専門知識を持つオーディエンスの審判に耐えうるため、以下の行為を固く禁ずる。
 
