@@ -17,7 +17,7 @@ describe('Landing trust bar SSOT', () => {
   it('renders all trust bar items from shared source', () => {
     renderLanding()
     for (const item of TRUST_BAR_ITEMS) {
-      expect(screen.getByText(item)).toBeInTheDocument()
+      expect(screen.getAllByText(item).length).toBeGreaterThanOrEqual(1)
     }
   })
 })

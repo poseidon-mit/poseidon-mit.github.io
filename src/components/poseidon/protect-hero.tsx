@@ -48,7 +48,7 @@ function PostureStat({ label, value }: { label: string; value: string }) {
 export interface ProtectAnomalyRadarProps {
   alert: {
     id: string
-    merchant: string
+    counterparty: string
     amount: string
     confidence: number
     severity: HeroSeverity
@@ -80,7 +80,7 @@ export function ProtectAnomalyRadar({
   const [showAiLogic, setShowAiLogic] = useState(false)
   return (
     <div className="flex flex-col gap-3">
-      <HeroBento engine="protect" accentColor="var(--state-critical)">
+      <HeroBento engine="protect" accentColor="var(--state-critical)" className="xl:grid-cols-[2fr_1fr]">
         {/* ── Zone A: Action ── */}
         <HeroBento.Action className="gap-5">
           {/* Hero Number */}
@@ -104,7 +104,7 @@ export function ProtectAnomalyRadar({
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-2">
             <SeverityBadge severity={toDisplaySeverity(alert.severity)} />
             <span className="text-xs font-mono text-white/40 uppercase tracking-widest">{alert.id}</span>
-            <span className="text-sm font-medium text-white/90">{alert.merchant}</span>
+            <span className="text-sm font-medium text-white/90">{alert.counterparty}</span>
             <span className="text-sm font-mono tabular-nums text-white/70">{alert.amount}</span>
             <span className="text-xs font-mono text-white/40">
               <CountUp value={alert.confidence} decimals={2} /> confidence
@@ -152,15 +152,30 @@ export function ProtectAnomalyRadar({
             )}
           </div>
 
-          {/* ✨ AI Logic toggle */}
+          {/* ✨ AI Logic toggle + inline accordion */}
           {evidenceCues.length > 0 && (
-            <button
-              onClick={() => setShowAiLogic(v => !v)}
-              className="flex items-center gap-1.5 text-[11px] text-white/40 hover:text-white/70 transition-colors self-start"
-            >
-              <span>✨</span>
-              <span>{showAiLogic ? 'Hide AI Logic' : 'Read AI Logic'}</span>
-            </button>
+            <>
+              <button
+                onClick={() => setShowAiLogic(v => !v)}
+                className="flex items-center gap-1.5 text-[11px] text-white/40 hover:text-white/70 transition-colors self-start"
+              >
+                <span>✨</span>
+                <span>{showAiLogic ? 'Hide AI Logic' : 'Read AI Logic'}</span>
+              </button>
+              <div className={cn(
+                'overflow-hidden transition-all duration-300 w-full',
+                showAiLogic ? 'max-h-[500px] opacity-100 mt-2' : 'max-h-0 opacity-0'
+              )}>
+                <div className="flex flex-col gap-1.5">
+                  {evidenceCues.map((cue, i) => (
+                    <p key={i} className="text-xs font-mono text-white/40 flex items-start gap-2">
+                      <span className="text-white/20 mt-0.5 shrink-0">·</span>
+                      <span>{cue}</span>
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </>
           )}
         </HeroBento.Action>
 
@@ -186,22 +201,6 @@ export function ProtectAnomalyRadar({
             </div>
           )}
 
-          {/* Evidence cues — collapsible AI Logic accordion */}
-          {evidenceCues.length > 0 && (
-            <div className={cn(
-              'overflow-hidden transition-all duration-300 self-start md:self-center w-full',
-              showAiLogic ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
-            )}>
-              <div className="flex flex-col gap-1.5">
-                {evidenceCues.map((cue, i) => (
-                  <p key={i} className="text-xs font-mono text-white/40 flex items-start gap-2">
-                    <span className="text-white/20 mt-0.5 shrink-0">·</span>
-                    <span>{cue}</span>
-                  </p>
-                ))}
-              </div>
-            </div>
-          )}
         </HeroBento.Proof>
 
         {/* ── Zone C: Portal ── */}
@@ -237,7 +236,7 @@ export interface ProtectThreatPostureProps {
   resolvedCount: number
   fpRate: string
   modelUpdate: string
-  topAlert: { id: string; merchant: string; severity: HeroSeverity } | null
+  topAlert: { id: string; counterparty: string; severity: HeroSeverity } | null
   onOpenTopAlert: (() => void) | null
 }
 

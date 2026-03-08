@@ -37,8 +37,8 @@ describe('GrowRecommendations page contract', () => {
     const allLinks = screen.getAllByRole('link', { name: /see opportunity/i })
     const totalCount = allLinks.length
 
-    // Click 'Savings' category chip
-    fireEvent.click(screen.getByRole('button', { name: 'Savings' }))
+    // Click 'Efficiency' category chip
+    fireEvent.click(screen.getByRole('button', { name: 'Efficiency' }))
     const savingsLinks = screen.getAllByRole('link', { name: /see opportunity/i })
     expect(savingsLinks.length).toBeGreaterThan(0)
     expect(savingsLinks.length).toBeLessThanOrEqual(totalCount)

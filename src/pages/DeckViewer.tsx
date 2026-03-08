@@ -341,6 +341,7 @@ const DeckViewer: React.FC = () => {
 
   return (
     <main
+      id="main-content"
       style={{
         minHeight: '100dvh',
         width: '100%',

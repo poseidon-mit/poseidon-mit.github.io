@@ -180,7 +180,7 @@ export default function ProtectAlertDetailPage() {
     const text = [
       `CASE BRIEF — ${alert.id}`,
       '',
-      `Transaction    ${alert.amount} · ${alert.merchant}`,
+      `Transaction    ${alert.amount} · ${alert.counterparty}`,
       `Date           ${dateStr}`,
       `Account        Checking ****4821`,
       `AI Confidence  ${formatConfidence(alert.confidence)} (${alert.severity})`,
@@ -243,7 +243,7 @@ export default function ProtectAlertDetailPage() {
             <div className="absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none" style={{ backgroundImage: `linear-gradient(to bottom right, ${severityTheme.bg}, transparent)` }} />
 
             <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 lg:gap-8 relative z-10">
-              <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Merchant</span><span className="text-base md:text-lg font-medium text-white/90">{alert.merchant}</span></div>
+              <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Counterparty</span><span className="text-base md:text-lg font-medium text-white/90">{alert.counterparty}</span></div>
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Amount</span><span className="text-lg md:text-2xl font-light font-mono" style={{ color: severityTheme.color }}>{alert.amount}</span></div>
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Confidence</span><ConfidenceIndicator value={alert.confidence} colorOverride={severityTheme.color} size="lg" glow /></div>
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Alert type</span><span className="text-sm md:text-base text-white/70 tracking-wide break-words">{alert.description}</span></div>
@@ -380,7 +380,7 @@ export default function ProtectAlertDetailPage() {
                   <div className="rounded-[20px] bg-black/40 border border-white/[0.06] p-5 font-mono text-xs leading-relaxed shadow-inner">
                     <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-white/60">
                       <span className="text-white/40">Transaction</span>
-                      <span><span className="text-red-400 font-bold">{alert.amount}</span>{' · '}<span className="text-white/90 font-bold">{alert.merchant}</span></span>
+                      <span><span className="text-red-400 font-bold">{alert.amount}</span>{' · '}<span className="text-white/90 font-bold">{alert.counterparty}</span></span>
                       <span className="text-white/40">Date</span>
                       <span className="text-white/70">{caseBrief.dateStr}</span>
                       <span className="text-white/40">Account</span>

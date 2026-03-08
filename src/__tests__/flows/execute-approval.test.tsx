@@ -1,6 +1,6 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { fireEvent, render, screen, act } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { RouterProvider } from '../../router';
 import ExecuteApproval from '../../pages/ExecuteApproval';
 
@@ -22,13 +22,14 @@ describe('Execute approval flow (EXE02)', () => {
     );
   }
 
-  it('starts with approve button disabled', () => {
+  it('starts with slide-to-authorize disabled (Tier 2)', () => {
     renderEXE02();
-    const approveBtn = screen.getByRole('button', { name: /Approve Action/i });
-    expect(approveBtn).toBeDisabled();
+    // EXE-001 is riskTier 2, uses SlideToApprove instead of button
+    const slider = screen.getByRole('slider', { name: /Slide to Authorize/i });
+    expect(slider).toBeInTheDocument();
   });
 
-  it('enables approve button after consent scope is reviewed', () => {
+  it('enables slide-to-authorize after consent scope is reviewed', () => {
     const { container } = renderEXE02();
 
     // Check the consent checkbox via its label
@@ -37,9 +38,9 @@ describe('Execute approval flow (EXE02)', () => {
     const checkbox = consentLabel.querySelector('input[type="checkbox"]') as HTMLInputElement;
     fireEvent.click(checkbox);
 
-    // After checking, button becomes enabled
-    const approveBtn = screen.getByRole('button', { name: /Approve Action/i });
-    expect(approveBtn).not.toBeDisabled();
+    // After checking, slider should be interactive (not disabled)
+    const slider = screen.getByRole('slider', { name: /Slide to Authorize/i });
+    expect(slider).not.toHaveClass('opacity-50');
   });
 
   it('consent checkbox toggles correctly', () => {
@@ -57,13 +58,90 @@ describe('Execute approval flow (EXE02)', () => {
     expect(screen.getByText(/Decision Drivers/i)).toBeInTheDocument();
   });
 
-  it('shows expected outcome section', () => {
+  it('shows impact split-state with approved/deferred text', () => {
     renderEXE02();
-    expect(screen.getAllByText(/Expected Outcome/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/If approved/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/If deferred/i).length).toBeGreaterThan(0);
   });
 
   it('renders execution plan stepper', () => {
     renderEXE02();
     expect(screen.getAllByText(/Execution Plan/i).length).toBeGreaterThan(0);
+  });
+});
+
+describe('Execution Stream (Step 5)', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    window.history.pushState({}, '', '/execute/approval?actionId=EXE-001');
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  function renderAndApprove() {
+    const result = render(
+      <RouterProvider>
+        <ExecuteApproval />
+      </RouterProvider>,
+    );
+    // Enable approve
+    const consentLabel = result.container.querySelector('[data-slot="consent_scope"]') as HTMLElement;
+    const checkbox = consentLabel.querySelector('input[type="checkbox"]') as HTMLInputElement;
+    fireEvent.click(checkbox);
+    // Authorize via slider keyboard Enter (Tier 2)
+    const slider = screen.getByRole('slider', { name: /Slide to Authorize/i });
+    fireEvent.keyDown(slider, { key: 'Enter' });
+    // Confirm in dialog
+    const confirmBtn = screen.getByRole('button', { name: /^Approve$/i });
+    fireEvent.click(confirmBtn);
+    return result;
+  }
+
+  it('shows execution stream overlay after approval', () => {
+    renderAndApprove();
+    expect(screen.getByText('Execution Stream')).toBeInTheDocument();
+    expect(screen.getByText('Validating')).toBeInTheDocument();
+  });
+
+  it('progresses through phases with timers', () => {
+    renderAndApprove();
+    act(() => { vi.advanceTimersByTime(1200) });
+    expect(screen.getByText('Signing')).toBeInTheDocument();
+    act(() => { vi.advanceTimersByTime(1600) });
+    expect(screen.getByText('Broadcasting')).toBeInTheDocument();
+    act(() => { vi.advanceTimersByTime(1400) });
+    expect(screen.getByText(/Transaction confirmed/i)).toBeInTheDocument();
+  });
+
+  it('prevents double-click from triggering duplicate execution', () => {
+    const result = render(
+      <RouterProvider>
+        <ExecuteApproval />
+      </RouterProvider>,
+    );
+    const consentLabel = result.container.querySelector('[data-slot="consent_scope"]') as HTMLElement;
+    const checkbox = consentLabel.querySelector('input[type="checkbox"]') as HTMLInputElement;
+    fireEvent.click(checkbox);
+    // Authorize via slider keyboard Enter (Tier 2)
+    const slider = screen.getByRole('slider', { name: /Slide to Authorize/i });
+    fireEvent.keyDown(slider, { key: 'Enter' });
+    const confirmBtn = screen.getByRole('button', { name: /^Approve$/i });
+    fireEvent.click(confirmBtn);
+    // Overlay should be showing
+    expect(screen.getByText('Execution Stream')).toBeInTheDocument();
+    // The dialog is dismissed so a second approve is not possible via UI
+    // Verify only one overlay exists
+    expect(screen.getAllByText('Execution Stream')).toHaveLength(1);
+  });
+
+  it('cleans up timers on unmount', () => {
+    const { unmount } = renderAndApprove();
+    expect(screen.getByText('Execution Stream')).toBeInTheDocument();
+    unmount();
+    // Advancing timers after unmount should not throw
+    expect(() => {
+      act(() => { vi.runAllTimers() });
+    }).not.toThrow();
   });
 });

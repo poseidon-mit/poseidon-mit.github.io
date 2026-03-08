@@ -79,11 +79,11 @@ describe('demo coherence invariants', () => {
     expect(validateCanonicalUniverse(CANONICAL_UNIVERSE)).toEqual([])
   })
 
-  it('keeps Dashboard hero savings tied to canonical potential savings', () => {
+  it('keeps Dashboard hero optimization tied to canonical potential optimization', () => {
     const dashboard = selectDashboardView()
     const universe = getCanonicalUniverse()
-    expect(dashboard.monthlySavingsPotentialUsd).toBe(
-      universe.metrics.monthlySavingsPotentialUsd,
+    expect(dashboard.monthlyOptimizationPotentialUsd).toBe(
+      universe.metrics.monthlyOptimizationPotentialUsd,
     )
     expect(dashboard.recommendationCount).toBe(
       universe.entities.recommendations.length,
@@ -222,10 +222,10 @@ describe('demo coherence invariants', () => {
     }
   })
 
-  it('THR-005 does not frame crypto as inherently suspicious', () => {
+  it('THR-005 does not frame commodity exposure as inherently suspicious', () => {
     const thr005 = CANONICAL_UNIVERSE.entities.protectThreats.find(t => t.id === 'THR-005')!
     expect(thr005.description).not.toMatch(/high-risk category/i)
-    expect(thr005.description).toMatch(/first-time|novel|new/i)
+    expect(thr005.description).toMatch(/market risk|concentration|commodity/i)
     const factors = ALERT_FACTOR_ITEMS['THR-005']
     const allText = factors.map(f => `${(f as any).heroCue ?? ''} ${f.details}`).join(' ')
     expect(allText).not.toMatch(/inherently suspicious/i)
@@ -240,11 +240,11 @@ describe('demo coherence invariants', () => {
     expect(allStepText).not.toMatch(/88%.*overlap|content overlap/i)
   })
 
-  it('REC-002 does not claim write access for cancellation', () => {
+  it('REC-002 vendor negotiation steps are not auto', () => {
     const rec002 = recommendationDetails.find(r => r.id === 2)!
     const allStepText = rec002.steps.map(s => `${s.description} ${s.type}`).join(' ')
     expect(allStepText).not.toMatch(/Poseidon will submit/i)
-    const ytStep = rec002.steps.find(s => /YouTube/i.test(s.title))!
-    expect(ytStep.type).not.toBe('auto')
+    const negotiateStep = rec002.steps.find(s => /negotiate/i.test(s.title))!
+    expect(negotiateStep.type).not.toBe('auto')
   })
 })

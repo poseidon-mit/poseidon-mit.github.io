@@ -34,7 +34,7 @@ const metricsData = [
   },
   {
     label: 'Decisions Audited',
-    value: '10,249',
+    value: '10,250',
     color: 'var(--engine-govern)',
     spark: [2, 4, 5, 7, 8, 9, 10, 11, 12, 12.5],
   },
@@ -93,7 +93,7 @@ const governancePillars = [
   {
     icon: ScrollText,
     title: 'Auditable',
-    desc: '10,249 decisions with full audit trails.',
+    desc: '10,250 decisions with full audit trails.',
     color: 'var(--engine-govern)',
   },
   {
@@ -193,7 +193,7 @@ export default function LandingV3() {
             className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight text-balance"
             style={{ letterSpacing: 'var(--tracking-h1)' }}
           >
-            Safer satisfying money decisions in one place.
+            Higher-assurance decisions, in one place.
           </motion.h1>
 
           <motion.p

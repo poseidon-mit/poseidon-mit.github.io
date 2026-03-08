@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Zap,
   Clock,
@@ -13,6 +13,7 @@ import {
   XCircle,
   Lock,
   ShieldCheck,
+  ChevronDown,
 } from 'lucide-react'
 import { useRouter, Link } from '@/router'
 import { UndoBanner } from '@/components/execute/UndoBanner'
@@ -43,6 +44,8 @@ import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 import { useIsMobileSheet } from '@/hooks/use-mobile-action-sheet'
 import { ActionSheet, ActionSheetContent, ActionSheetHeader, ActionSheetBody, ActionSheetFooter } from '@/components/ui/action-sheet'
 import { useExecuteApprovalFlow } from './useExecuteApprovalFlow'
+import { getRiskTier, RISK_TIER_CONFIG } from '@/lib/execute-risk-tier'
+import { dispatchApprovalBridge } from '@/lib/execute-approval-bridge'
 
 /* ═══════════════════════════════════════════
    CONSTANTS
@@ -174,6 +177,34 @@ export default function ExecutePage() {
   const rejectedActions = queue.filter((item) => item.status === 'rejected')
   const completedActions = queue.filter((item) => item.status === 'approved')
 
+  // Risk-tiered split
+  const tier1Actions = useMemo(() => pendingActions.filter(a => getRiskTier(a) === 1), [pendingActions])
+  const tier2Actions = useMemo(() => pendingActions.filter(a => getRiskTier(a) === 2), [pendingActions])
+
+  // Tier 2 collapse state
+  const [tier2Expanded, setTier2Expanded] = useState(false)
+
+  // Batch selection state for Tier 1
+  const [batchSelected, setBatchSelected] = useState<Set<string>>(new Set())
+  const toggleBatchItem = (id: string) => setBatchSelected(prev => {
+    const next = new Set(prev)
+    if (next.has(id)) next.delete(id); else next.add(id)
+    return next
+  })
+  const toggleBatchAll = () => {
+    if (batchSelected.size === tier1Actions.length) setBatchSelected(new Set())
+    else setBatchSelected(new Set(tier1Actions.map(a => a.id)))
+  }
+  const handleBatchApprove = () => {
+    for (const id of batchSelected) {
+      const a = tier1Actions.find(x => x.id === id)
+      if (!a) continue
+      setExecuteDecision({ actionId: a.id, actionTitle: a.title, decision: 'approved' })
+      dispatchApprovalBridge(a, navigate, showToast)
+    }
+    setBatchSelected(new Set())
+  }
+
   const undoActionId = useMemo(() => new URLSearchParams(search).get('undo'), [search])
   const undoAction = useMemo(
     () => (undoActionId ? selectExecuteActionById(undoActionId) : null),
@@ -238,70 +269,40 @@ export default function ExecutePage() {
           </motion.div>
         </motion.section>
 
-        {false && (<div className="flex flex-col lg:flex-row gap-6 lg:gap-5">
-          <div className="flex-1 min-w-0 lg:w-2/3">
-            <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
-              {/* Filter Bar */}
-              <motion.div variants={fadeUpVariant} className="flex items-center gap-3 flex-wrap">
-                <h2 className="section-label">Pending approval ({pendingActions.length})</h2>
-                <button
-                  onClick={() => setShowFilters(!showFilters)}
-                  className={cn(
-                    'ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors cursor-pointer',
-                    showFilters ? 'border-[var(--engine-execute)]/30 bg-[var(--engine-execute)]/10 text-[var(--engine-execute)]' : 'border-white/10 bg-white/5 text-white/50 hover:text-white/70',
+        {/* Risk-Tiered Queue */}
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-8">
+
+          {/* Tier 1: Low-Friction Operations */}
+          {tier1Actions.length > 0 && (
+            <motion.div variants={fadeUpVariant} className="flex flex-col gap-4">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">
+                    {RISK_TIER_CONFIG[1].label}
+                  </h2>
+                  <span className="text-[10px] font-mono text-white/30">{tier1Actions.length} items</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs text-white/50 hover:text-white/70 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={batchSelected.size === tier1Actions.length && tier1Actions.length > 0}
+                      onChange={toggleBatchAll}
+                      className="accent-amber-500 cursor-pointer"
+                    />
+                    Select all
+                  </label>
+                  {batchSelected.size > 0 && (
+                    <button
+                      onClick={handleBatchApprove}
+                      className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-amber-600/80 text-white hover:bg-amber-600/90 transition-colors cursor-pointer"
+                    >
+                      Approve Selected ({batchSelected.size})
+                    </button>
                   )}
-                >
-                  <Filter size={12} />
-                  Filters
-                </button>
-              </motion.div>
-
-              {showFilters && (
-                <motion.div variants={fadeUpVariant} className="flex flex-wrap items-center gap-3 p-4 rounded-[16px] border border-white/[0.06] bg-black/30 backdrop-blur-xl">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">Urgency</span>
-                    <div className="flex gap-1">
-                      <button onClick={() => setUrgencyFilter('all')} className={cn('px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border cursor-pointer transition-colors', urgencyFilter === 'all' ? 'border-white/20 bg-white/10 text-white' : 'border-white/5 text-white/40 hover:text-white/60')}>All</button>
-                      {URGENCY_OPTIONS.map((u) => (
-                        <button key={u} onClick={() => setUrgencyFilter(u)} className={cn('px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border cursor-pointer transition-colors', urgencyFilter === u ? 'border-white/20 bg-white/10 text-white' : 'border-white/5 text-white/40 hover:text-white/60')}>{u}</button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="w-px h-5 bg-white/10" />
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">Type</span>
-                    <div className="flex gap-1">
-                      <button onClick={() => setTypeFilter('all')} className={cn('px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border cursor-pointer transition-colors', typeFilter === 'all' ? 'border-white/20 bg-white/10 text-white' : 'border-white/5 text-white/40 hover:text-white/60')}>All</button>
-                      {EXEC_TYPE_OPTIONS.map((t) => (
-                        <button key={t} onClick={() => setTypeFilter(t)} className={cn('px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border cursor-pointer transition-colors', typeFilter === t ? 'border-white/20 bg-white/10 text-white' : 'border-white/5 text-white/40 hover:text-white/60')}>{t}</button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="w-px h-5 bg-white/10" />
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">Sort</span>
-                    <div className="flex gap-1">
-                      {SORT_OPTIONS.map((s) => (
-                        <button key={s.key} onClick={() => setSortBy(s.key)} className={cn('px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border cursor-pointer transition-colors', sortBy === s.key ? 'border-white/20 bg-white/10 text-white' : 'border-white/5 text-white/40 hover:text-white/60')}>{s.label}</button>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {pendingActions.length === 0 ? (
-                <motion.div className="glass-card glass-card-overlay rounded-[32px] p-8 flex items-center justify-center">
-                  <EmptyState
-                    icon={CheckCircle2}
-                    title="All pending actions are cleared"
-                    description="You can review completed and deferred items in execution history."
-                    accentColor="var(--state-healthy)"
-                    action={{ label: 'Open execution history', onClick: () => navigate('/execute/history') }}
-                  />
-                </motion.div>
-              ) : null}
-
-              {pendingActions.map((action) => (
+                </div>
+              </div>
+              {tier1Actions.map((action) => (
                 <ActionCard
                   key={action.id}
                   action={action}
@@ -316,119 +317,86 @@ export default function ExecutePage() {
                     setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'deferred' })
                     showToast({ message: 'Action dismissed', variant: 'info' })
                   }}
+                  batchMode
+                  batchChecked={batchSelected.has(action.id)}
+                  onBatchToggle={() => toggleBatchItem(action.id)}
                 />
               ))}
+            </motion.div>
+          )}
 
-              {deferredActions.length > 0 ? (
-                <div className="mt-8">
-                  <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 pl-2 mb-4">Deferred ({deferredActions.length})</h2>
-                  <div className="flex flex-col gap-3">
-                    {deferredActions.map((action) => (
-                      <motion.div key={action.id} variants={fadeUpVariant}>
-                        <motion.div className="glass-card rounded-[24px] p-4 md:p-6 lg:p-8 flex items-center gap-4 opacity-70 hover:opacity-100 transition-opacity">
-                          <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-[var(--state-warning)]/20 shadow-inner" style={{ background: 'rgba(234,179,8,0.1)' }}>
-                            <Clock size={18} style={{ color: 'var(--state-warning)' }} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <span className="text-base font-light tracking-wide text-white/90">{action.title}</span>
-                            <span className="text-xs font-mono block text-white/40 mt-1">{action.id}</span>
-                          </div>
-                          <span className="text-xs font-mono text-white/30 tracking-widest">{action.timestampLabel}</span>
-                        </motion.div>
-                      </motion.div>
+          {/* Tier 2: Direct Capital Movement — collapsed by default */}
+          {tier2Actions.length > 0 && (
+            <motion.div variants={fadeUpVariant} className="flex flex-col gap-4">
+              <button
+                onClick={() => setTier2Expanded(v => !v)}
+                className="flex items-center gap-3 w-full text-left group"
+              >
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">
+                  {RISK_TIER_CONFIG[2].label}
+                </h2>
+                <span className="text-[10px] font-mono text-white/30">{tier2Actions.length} items</span>
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-widest text-amber-400/60 border border-amber-400/20 px-2 py-0.5 rounded-md bg-amber-400/5">
+                  <Lock size={9} />
+                  Requires individual review
+                </span>
+                <ChevronDown size={14} className={cn(
+                  'ml-auto text-white/30 transition-transform duration-200',
+                  tier2Expanded && 'rotate-180',
+                )} />
+              </button>
+              <AnimatePresence>
+                {tier2Expanded && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
+                    className="overflow-hidden flex flex-col gap-4"
+                  >
+                    {tier2Actions.map((action) => (
+                      <ActionCard
+                        key={action.id}
+                        action={action}
+                        fadeUpVariant={fadeUpVariant}
+                        isMobile={isMobile}
+                        onSheetOpen={() => {
+                          sheetFlow.setConsentReviewed(false)
+                          sheetFlow.setConfirmAction(null)
+                          setSheetAction(action)
+                        }}
+                        onDefer={() => {
+                          setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'deferred' })
+                          showToast({ message: 'Action dismissed', variant: 'info' })
+                        }}
+                      />
                     ))}
-                  </div>
-                </div>
-              ) : null}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
 
-              {rejectedActions.length > 0 ? (
-                <div className="mt-8">
-                  <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 pl-2 mb-4">Rejected ({rejectedActions.length})</h2>
-                  <div className="flex flex-col gap-3">
-                    {rejectedActions.map((action) => (
-                      <motion.div key={action.id} variants={fadeUpVariant}>
-                        <motion.div className="glass-card rounded-[24px] p-4 md:p-6 lg:p-8 flex items-center gap-4 opacity-50 hover:opacity-80 transition-opacity">
-                          <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-[var(--state-critical)]/20 shadow-inner" style={{ background: 'rgba(239,68,68,0.1)' }}>
-                            <XCircle size={18} style={{ color: 'var(--state-critical)' }} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <span className="text-base font-light tracking-wide text-white/90">{action.title}</span>
-                            <span className="text-xs font-mono block text-white/40 mt-1">{action.id}</span>
-                          </div>
-                          <span className="text-xs font-mono text-white/30 tracking-widest">{action.timestampLabel}</span>
-                        </motion.div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
+          {pendingActions.length === 0 && (
+            <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-[32px] p-8 flex items-center justify-center">
+              <EmptyState
+                icon={CheckCircle2}
+                title="All pending actions are cleared"
+                description="You can review completed and deferred items in execution history."
+                accentColor="var(--state-healthy)"
+                action={{ label: 'Open execution history', onClick: () => navigate('/execute/history') }}
+              />
+            </motion.div>
+          )}
 
-              {completedActions.length > 0 ? (
-                <div className="mt-8">
-                  <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 pl-2 mb-4">Completed ({completedActions.length})</h2>
-                  <div className="flex flex-col gap-3">
-                    {completedActions.map((action) => (
-                      <motion.div key={action.id} variants={fadeUpVariant}>
-                        <motion.div className="glass-card rounded-[24px] p-4 md:p-6 lg:p-8 flex items-center gap-4 opacity-50 hover:opacity-80 transition-opacity">
-                          <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-[var(--state-healthy)]/20 shadow-inner" style={{ background: 'rgba(34,197,94,0.1)' }}>
-                            <CheckCircle2 size={18} style={{ color: 'var(--state-healthy)' }} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <span className="text-base font-light tracking-wide text-white/90">{action.title}</span>
-                            <span className="text-xs font-mono block text-white/40 mt-1">{action.id}</span>
-                          </div>
-                          <span className="text-xs font-mono text-white/30 tracking-widest">{action.timestampLabel}</span>
-                        </motion.div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-            </motion.section>
-          </div>
-
-          {/* Sidebar */}
-          <motion.aside className="w-full lg:w-[320px] xl:w-[380px] shrink-0 flex flex-col gap-6" aria-label="Execute sidebar" variants={staggerContainerVariant}>
-            <div className="sticky top-24 flex flex-col gap-6">
-              {/* Queue Summary */}
-              <motion.div variants={fadeUpVariant}>
-                <div className="glass-card glass-card-overlay rounded-[24px] p-6 flex flex-col gap-4">
-                  <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-3 mb-1 relative z-10">Queue Summary</h3>
-                  <div className="space-y-3 relative z-10">
-                    <StatRow label="Pending actions" value={String(pendingCount)} valueColor="var(--state-warning)" glow />
-                    <StatRow label="Completed today" value={String(completedCount)} valueColor="var(--state-healthy)" glow />
-                    <StatRow label="Auto-approved" value={String(state.execute.autoApprovedCount)} />
-                    <StatRow label="Rollbacks (24h)" value={String(state.execute.rollbackCount24h)} valueColor="var(--engine-govern)" glow />
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Rollback Safety */}
-              <motion.div variants={fadeUpVariant}>
-                <div className="glass-card rounded-[24px] p-6 flex flex-col gap-4">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-govern)]/10 to-transparent pointer-events-none" />
-                  <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-3 mb-1 relative z-10">Rollback Safety</h3>
-                  <p className="text-sm leading-relaxed text-white/70 tracking-wide relative z-10">
-                    All actions are reversible within 24 hours. Rollback requests are processed immediately.
-                  </p>
-                  <div className="relative z-10 flex items-center gap-3 mt-1 bg-white/[0.02] border border-white/[0.05] p-3 rounded-xl">
-                    <RotateCcw size={14} style={{ color: 'var(--engine-govern)' }} />
-                    <span className="text-xs font-mono font-medium tracking-wide" style={{ color: 'var(--engine-govern)' }}>
-                      {state.execute.rollbackCount24h} active rollbacks
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div variants={fadeUpVariant} className="flex">
-                <Link to="/execute/history" className={cn(buttonVariants({ variant: 'glass', size: 'lg' }), 'w-full rounded-2xl text-sm px-6 py-4 flex items-center justify-between border border-white/[0.1] hover:bg-white/[0.05] transition-all')}>
-                  <span className="font-semibold tracking-wide text-white/80">Review execution history</span>
-                  <ArrowUpRight size={18} className="text-white/40" />
-                </Link>
-              </motion.div>
-            </div>
-          </motion.aside>
-        </div>)}
+          {/* History link */}
+          <motion.div variants={fadeUpVariant} className="flex">
+            <Link to="/execute/history" className={cn(buttonVariants({ variant: 'glass', size: 'lg' }), 'w-full max-w-md rounded-2xl text-sm px-6 py-4 flex items-center justify-between border border-white/[0.1] hover:bg-white/[0.05] transition-all')}>
+              <span className="font-semibold tracking-wide text-white/80">Review execution history</span>
+              <ArrowUpRight size={18} className="text-white/40" />
+            </Link>
+          </motion.div>
+        </motion.section>
 
       </motion.div>
 
@@ -560,12 +528,18 @@ function ActionCard({
   isMobile,
   onSheetOpen,
   onDefer,
+  batchMode,
+  batchChecked,
+  onBatchToggle,
 }: {
   action: ExecuteActionEntity & { status: ActionStatus }
   fadeUpVariant: import('framer-motion').Variants
   isMobile: boolean
   onSheetOpen: () => void
   onDefer: () => void
+  batchMode?: boolean
+  batchChecked?: boolean
+  onBatchToggle?: () => void
 }) {
   const typeBadge = EXECUTION_TYPE_BADGE[action.executionType]
   const isExpiringSoon = action.expiresIn && (action.expiresIn.includes('h') && parseInt(action.expiresIn) <= 4)
@@ -578,6 +552,15 @@ function ActionCard({
       >
 
         <div className="relative z-10 flex items-center gap-2 flex-wrap mb-1">
+          {batchMode && (
+            <input
+              type="checkbox"
+              checked={batchChecked}
+              onChange={onBatchToggle}
+              className="accent-amber-500 cursor-pointer mr-1"
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
           <span className="text-sm font-mono font-bold tracking-wide" style={{ color: 'var(--engine-execute)' }}>
             {action.id}
           </span>

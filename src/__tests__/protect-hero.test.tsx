@@ -82,11 +82,11 @@ describe('ProtectAnomalyRadar', () => {
     expect(screen.getByText(/1 critical threat detected/i)).toBeInTheDocument()
   })
 
-  it('renders action spotlight with alert id, merchant, and amount', () => {
+  it('renders action spotlight with alert id, counterparty, and amount', () => {
     renderRadar()
     // THR-001 appears in both action spotlight and audit chain
     expect(screen.getAllByText(THR_001.id).length).toBeGreaterThanOrEqual(1)
-    expect(screen.getByText(THR_001.merchant)).toBeInTheDocument()
+    expect(screen.getByText(THR_001.counterparty)).toBeInTheDocument()
     expect(screen.getByText(THR_001.amount)).toBeInTheDocument()
   })
 
@@ -155,7 +155,7 @@ describe('ProtectThreatPosture', () => {
         resolvedCount={1}
         fpRate="0.01%"
         modelUpdate="2d ago"
-        topAlert={{ id: 'THR-002', merchant: 'Unknown Vendor', severity: 'High' }}
+        topAlert={{ id: 'THR-002', counterparty: 'Unknown Vendor', severity: 'High' }}
         onOpenTopAlert={onOpen}
       />,
     )
@@ -170,7 +170,7 @@ describe('ProtectThreatPosture', () => {
       <ProtectThreatPosture
         activeCount={4} highCount={1} mediumCount={2} lowCount={1}
         resolvedCount={1} fpRate="0.01%" modelUpdate="2d ago"
-        topAlert={{ id: 'THR-002', merchant: 'Unknown Vendor', severity: 'High' }}
+        topAlert={{ id: 'THR-002', counterparty: 'Unknown Vendor', severity: 'High' }}
         onOpenTopAlert={vi.fn()}
       />,
     )
@@ -191,7 +191,7 @@ describe('ProtectThreatPosture', () => {
       <ProtectThreatPosture
         activeCount={4} highCount={1} mediumCount={2} lowCount={1}
         resolvedCount={1} fpRate="0.01%" modelUpdate="2d ago"
-        topAlert={{ id: 'THR-002', merchant: 'Unknown Vendor', severity: 'High' }}
+        topAlert={{ id: 'THR-002', counterparty: 'Unknown Vendor', severity: 'High' }}
         onOpenTopAlert={vi.fn()}
       />,
     )

@@ -10,6 +10,8 @@ import {
   Zap,
   ExternalLink,
   Filter,
+  ShieldCheck,
+  ChevronDown,
 } from 'lucide-react'
 import { Link, useRouter } from '@/router'
 import { EmptyState, EngineBadge } from '@/components/poseidon'
@@ -62,6 +64,7 @@ export default function ExecuteHistoryPage() {
   const { navigate } = useRouter()
 
   const [decisionFilter, setDecisionFilter] = useState<DecisionFilter>('all')
+  const [showAutopsy, setShowAutopsy] = useState(false)
 
   const events = state.execute.events
   const actions = useMemo(() => selectExecuteActionsView(), [])
@@ -128,19 +131,65 @@ export default function ExecuteHistoryPage() {
               {[
                 { label: 'Total Decisions', value: String(totalDecisions), color: 'var(--engine-execute)' },
                 { label: 'Approval Rate', value: totalDecisions > 0 ? `${approvalRate}%` : '-', color: 'var(--state-healthy)' },
-                { label: 'Monthly Savings', value: formatUsd(savings.currentMonthlySavingsUsd), color: 'var(--engine-execute)' },
-                { label: 'Compliance', value: `${DEMO_THREAD.complianceScore}/100`, color: 'var(--engine-govern)' },
+                { label: 'Monthly Optimization', value: formatUsd(savings.currentMonthlySavingsUsd), color: 'var(--engine-execute)' },
+                { label: 'Compliance', value: '__pill__', color: 'var(--engine-govern)' },
               ].map((kpi, i) => (
                 <div key={kpi.label} className={cn('flex flex-col gap-1.5', i > 0 && 'md:border-l md:border-white/[0.06] md:pl-6')}>
                   <span className="text-xs font-semibold uppercase tracking-widest text-white/40">{kpi.label}</span>
-                  <span
-                    className="text-2xl md:text-3xl font-mono tabular-nums font-medium"
-                    style={{ color: kpi.color }}
-                  >
-                    {kpi.value}
-                  </span>
+                  {kpi.value === '__pill__' ? (
+                    <span
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold px-3 py-1 rounded-full w-fit"
+                      style={{
+                        background: 'color-mix(in srgb, var(--engine-govern) 12%, transparent)',
+                        color: 'var(--engine-govern)',
+                        border: '1px solid color-mix(in srgb, var(--engine-govern) 25%, transparent)',
+                      }}
+                    >
+                      <ShieldCheck size={14} />
+                      Verified by Poseidon
+                    </span>
+                  ) : (
+                    <span
+                      className="text-2xl md:text-3xl font-mono tabular-nums font-medium"
+                      style={{ color: kpi.color }}
+                    >
+                      {kpi.value}
+                    </span>
+                  )}
                 </div>
               ))}
+            </div>
+          </motion.div>
+
+          {/* Decision Autopsy — progressive disclosure */}
+          <motion.div variants={fadeUp}>
+            <button
+              onClick={() => setShowAutopsy(v => !v)}
+              className="flex items-center gap-2 text-[11px] text-white/40 hover:text-white/70 transition-colors"
+            >
+              <span>Decision Autopsy View</span>
+              <ChevronDown size={12} className={cn('transition-transform duration-200', showAutopsy && 'rotate-180')} />
+            </button>
+            <div className={cn(
+              'overflow-hidden transition-all duration-300',
+              showAutopsy ? 'max-h-[200px] opacity-100 mt-3' : 'max-h-0 opacity-0',
+            )}>
+              <div className="glass-card glass-card-overlay rounded-2xl p-5 flex flex-col gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] uppercase tracking-widest text-white/30">Compliance Score</span>
+                    <span className="text-lg font-mono" style={{ color: 'var(--engine-govern)' }}>{DEMO_THREAD.complianceScore}/100</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] uppercase tracking-widest text-white/30">KYC Check</span>
+                    <span className="text-lg font-mono" style={{ color: 'var(--state-healthy)' }}>Passed</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] uppercase tracking-widest text-white/30">AML Screening</span>
+                    <span className="text-lg font-mono" style={{ color: 'var(--state-healthy)' }}>Clear</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
         </motion.section>

@@ -55,3 +55,48 @@
 @media (prefers-reduced-motion: reduce) {
   .audit-stream-scroll { animation: none !important; }
 }
+
+/* ── v5.0: Agent Provenance — Parallel Neon Palette ──
+ * Separate from engine colors — no collision.
+ * GPT-4o=Orange, Sonnet=Indigo, Opus=Pink, GPT-4o-mini=Teal
+ */
+
+@layer base {
+  :root {
+    --agent-gpt4o: #FF6B35;
+    --agent-gpt4o-mini: #14B8A6;
+    --agent-sonnet: #6366F1;
+    --agent-opus: #EC4899;
+    --agent-unknown: #94A3B8;
+  }
+}
+
+/* Agent neon glow classes */
+.neon-glow-agent-gpt4o {
+  box-shadow: 0 0 8px rgba(255, 107, 53, 0.4), 0 0 20px rgba(255, 107, 53, 0.15);
+}
+.neon-glow-agent-gpt4o-mini {
+  box-shadow: 0 0 8px rgba(20, 184, 166, 0.4), 0 0 20px rgba(20, 184, 166, 0.15);
+}
+.neon-glow-agent-sonnet {
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.4), 0 0 20px rgba(99, 102, 241, 0.15);
+}
+.neon-glow-agent-opus {
+  box-shadow: 0 0 8px rgba(236, 72, 153, 0.4), 0 0 20px rgba(236, 72, 153, 0.15);
+}
+.neon-glow-agent-unknown {
+  box-shadow: 0 0 8px rgba(148, 163, 184, 0.3), 0 0 16px rgba(148, 163, 184, 0.1);
+}
+
+/* Agent badge background classes */
+.badge-agent-gpt4o { background: rgba(255, 107, 53, 0.15); color: #FF6B35; }
+.badge-agent-gpt4o-mini { background: rgba(20, 184, 166, 0.15); color: #14B8A6; }
+.badge-agent-sonnet { background: rgba(99, 102, 241, 0.15); color: #6366F1; }
+.badge-agent-opus { background: rgba(236, 72, 153, 0.15); color: #EC4899; }
+.badge-agent-unknown { background: rgba(148, 163, 184, 0.12); color: #94A3B8; }
+
+/* Agent neon text */
+.neon-text-agent-gpt4o { color: #FF6B35; text-shadow: 0 0 6px rgba(255, 107, 53, 0.5); }
+.neon-text-agent-sonnet { color: #6366F1; text-shadow: 0 0 6px rgba(99, 102, 241, 0.5); }
+.neon-text-agent-opus { color: #EC4899; text-shadow: 0 0 6px rgba(236, 72, 153, 0.5); }
+.neon-text-agent-gpt4o-mini { color: #14B8A6; text-shadow: 0 0 6px rgba(20, 184, 166, 0.5); }

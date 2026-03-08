@@ -20,32 +20,43 @@ export interface ExecutionStep {
 
 export type DecisionStatus = 'Verified' | 'Pending review' | 'Flagged'
 
+// ─── B2B Entity Types ───────────────────────────────────────────────────────
+
+export type ClientTier = 'VIP' | 'Standard'
+export type AlternativeType = 'lending' | 'restructure' | 'hedge' | 'compliance'
+
 export interface CriticalAlertEntity {
   id: string
   amountUsd: number
-  merchant: string
+  counterparty: string
   confidence: number
-  cardLast4: string
+  clientName: string
+  clientTier: ClientTier
+  transactionType: string
   signalId: string
 }
 
 export interface ProtectThreatEntity {
   id: string
-  merchant: string
+  counterparty: string
   amountUsd: number
   confidence: number
   severity: 'Critical' | 'High' | 'Medium' | 'Low'
   description: string
   relativeTime: string
   sortOrder: number
+  compositePriority: number
+  clientName?: string
+  regulatoryFlag?: string
 }
 
 export interface RecommendationEntity {
   id: string
   title: string
-  monthlySavingsUsd: number
-  annualSavingsUsd: number
+  projectedBenefitUsd: number
+  annualBenefitUsd: number
   confidence: number
+  alternativeType: AlternativeType
 }
 
 export interface ExecuteActionFactor {
@@ -75,6 +86,8 @@ export interface ExecuteActionEntity {
   sourceEngine: ExecuteEngineName
   sourceEntityId?: string
   rollbackWindowHours?: number
+  riskTier: 1 | 2
+  compositePriority: number
 }
 
 export interface GovernLedgerEntryEntity {
@@ -132,6 +145,77 @@ export interface ArchitecturalTrust {
   llmTrainingOptOut: boolean
 }
 
+// ─── Decision Council Metrics ───────────────────────────────────────────────
+
+export interface CouncilMetrics {
+  falsePositiveReductionPercent: number
+  recommendationChangedPercent: number
+  modelDisagreementRate: number
+  avgTimeToDecisionMinutes: number
+  humanOverrideRate: number
+  confidenceSpread: { min: number; max: number }
+}
+
+// ─── Event Entity + Deliberation ────────────────────────────────────────────
+
+export type EventStatus = 'active' | 'resolved' | 'escalated'
+
+export interface EventChildren {
+  threats: string[]
+  alternatives: string[]
+  actions: string[]
+  auditEntries: string[]
+}
+
+export interface CanonicalEvent {
+  id: string
+  title: string
+  clientName: string
+  clientTier: ClientTier
+  timestampIso: string
+  status: EventStatus
+  children: EventChildren
+  deliberationTraces: DeliberationTrace[]
+}
+
+export type DeliberationPosition = 'support' | 'oppose' | 'modify'
+
+export interface DeliberationRound {
+  roleId: string
+  modelId: string
+  position: DeliberationPosition
+  argument: string
+  confidence: number
+  factors: Array<{ label: string; weight: number }>
+}
+
+export interface DeliberationConsensus {
+  score: number
+  adoptedModelId: string
+  rationale: string
+}
+
+export interface DeliberationTrace {
+  id: string
+  eventId: string
+  rounds: DeliberationRound[]
+  consensus: DeliberationConsensus
+}
+
+// ─── Priority Queue ─────────────────────────────────────────────────────────
+
+export type PriorityKind = 'threat' | 'action' | 'audit'
+
+export interface PriorityItem {
+  kind: PriorityKind
+  engine: EngineName
+  compositePriority: number
+  item: ProtectThreatEntity | ExecuteActionEntity | GovernAuditEntryEntity
+  eventId?: string
+}
+
+// ─── Canonical Universe ─────────────────────────────────────────────────────
+
 export interface CanonicalUniverseV1 {
   schemaVersion: '1.1.0'
   generatedAt: string
@@ -139,13 +223,13 @@ export interface CanonicalUniverseV1 {
     systemConfidence: number
     complianceScore: number
     pendingActions: number
-    monthlySavingsCurrentUsd: number
-    monthlySavingsPotentialUsd: number
+    monthlyOptimizationCurrentUsd: number
+    monthlyOptimizationPotentialUsd: number
     decisionsAuditedTotal: number
     verifiedDecisions: number
     pendingReviewDecisions: number
     flaggedDecisions: number
-    emergencyFund: {
+    liquidityReserve: {
       percent: number
       currentUsd: number
       targetUsd: number
@@ -154,6 +238,7 @@ export interface CanonicalUniverseV1 {
     platformProfileCount: number
     cohort: CohortMetrics
     architecturalTrust: ArchitecturalTrust
+    councilMetrics: CouncilMetrics
   }
   entities: {
     criticalAlert: CriticalAlertEntity
@@ -162,10 +247,12 @@ export interface CanonicalUniverseV1 {
     executeActions: ExecuteActionEntity[]
     governAuditEntries: GovernAuditEntryEntity[]
     dashboardActivities: DashboardActivityEntity[]
+    events: CanonicalEvent[]
   }
   relations: {
     alertToAction: Record<string, string[]>
     recommendationToAction: Record<string, string[]>
     actionToDecision: Record<string, string[]>
+    eventToChildren: Record<string, EventChildren>
   }
 }

@@ -16,12 +16,12 @@ const DEFAULT_PROPS = {
   activeThreats: 3,
   monthlySavings: 612,
   pendingActions: 5,
-  decisionsAudited: 10249,
+  decisionsAudited: 10250,
   decisionsVerified: 10191,
   recommendationCount: 8,
   criticalSignal: {
     id: 'THR-001',
-    merchant: 'TechElectro Store',
+    counterparty: 'TechElectro Store',
     amount: '$2,847',
     confidence: 0.94,
     severity: 'Critical' as const,
@@ -73,7 +73,7 @@ describe('DashboardCoordinationProof', () => {
     expect(screen.getAllByTestId('engine-card-execute').length).toBeGreaterThanOrEqual(1)
   })
 
-  it('renders critical signal with merchant when non-null', () => {
+  it('renders critical signal with counterparty when non-null', () => {
     renderHero()
     expect(screen.getAllByText('TechElectro Store').length).toBeGreaterThanOrEqual(1)
     expect(screen.getAllByText(/94% confidence/).length).toBeGreaterThanOrEqual(1)
@@ -116,7 +116,7 @@ describe('DashboardCoordinationProof', () => {
     expect(rail).toBeInTheDocument()
     // CountUp renders aria-label with formatted value
     const countUp = rail.querySelector('[aria-label]')
-    expect(countUp?.getAttribute('aria-label')).toContain('10,249')
+    expect(countUp?.getAttribute('aria-label')).toContain('10,250')
   })
 
   it('renders audit stream as aria-hidden container', () => {
@@ -177,7 +177,7 @@ describe('DashboardPage integration', () => {
     renderDashboard()
     const rail = screen.getByTestId('govern-rail')
     const countUp = rail.querySelector('[aria-label]')
-    expect(countUp?.getAttribute('aria-label')).toContain('10,249')
+    expect(countUp?.getAttribute('aria-label')).toContain('10,250')
   })
 
   it('navigates to protect alert detail when Review Signal is clicked', () => {

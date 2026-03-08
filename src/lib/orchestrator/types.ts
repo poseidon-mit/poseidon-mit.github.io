@@ -275,6 +275,32 @@ export interface LocalFirstStatus {
   isOffline: boolean
 }
 
+// ─── Workspace v4.0 re-export ────────────────────────────────────────────────
+// Full workspace types live in workspace/workspace-types.ts.
+// Re-export key types so consumers can import from either location.
+export type {
+  WorkspaceLayout,
+  WorkspaceAction,
+  DynamicSuggestionCard,
+  BentoCardStreamingState,
+  GenerativeUIControl,
+  DecisionAutopsyData,
+  UserContext,
+  StreamingStatus,
+} from '@/lib/orchestrator/workspace/workspace-types'
+
+// ─── Workspace v5.0 re-export ────────────────────────────────────────────────
+export type {
+  AutonomyLevel,
+  AutonomyConfig,
+  AgentColorConfig,
+  PinnedArtifact,
+  ScopedCheckpoint,
+  SandboxPreviewState,
+  V5WorkspaceExtensions,
+  V5WorkspaceAction,
+} from '@/lib/orchestrator/workspace/v5/v5-types'
+
 // ─── Workbench State ──────────────────────────────────────────────────────────
 
 export interface BentoCardState {
@@ -327,6 +353,13 @@ export interface WorkbenchState {
 
   // Govern
   governScore: GovernScore
+
+  // Chat (v3.0)
+  chatThread: ChatThread
+  activeFrictionGate: ActiveFrictionGate | null
+
+  // Workspace (v4.0)
+  workspace: import('@/lib/orchestrator/workspace/workspace-types').WorkspaceLayout
 }
 
 // ─── Reducer Actions ──────────────────────────────────────────────────────────
@@ -361,9 +394,77 @@ export type WorkbenchAction =
   // Local-First
   | { type: 'UPDATE_LOCAL_FIRST_STATUS'; updates: Partial<LocalFirstStatus> }
 
+  // Chat (v3.0)
+  | { type: 'ADD_CHAT_MESSAGE'; message: ChatMessage }
+  | { type: 'SET_CHAT_PROCESSING'; isProcessing: boolean }
+  | { type: 'SET_FRICTION_GATE'; gate: ActiveFrictionGate }
+  | { type: 'RESOLVE_FRICTION_GATE' }
+  | { type: 'CLEAR_CHAT_THREAD' }
+
+  // Workspace (v4.0)
+  | import('@/lib/orchestrator/workspace/workspace-types').WorkspaceAction
+
   // Session
   | { type: 'LOAD_SESSION'; state: WorkbenchState }
   | { type: 'PURGE_SESSION' }
+
+// ─── Chat Message Types ──────────────────────────────────────────────────────
+
+export type ChatArtifactType =
+  | BentoCardType
+  | 'friction-gate'
+
+export interface ChatArtifact {
+  id: string
+  type: ChatArtifactType
+  title: string
+  engine: EngineName
+  data: unknown
+  metadata?: {
+    dataSource?: DataSourceRef
+    confidence?: number
+    proofBadge?: ProofBadge
+    riskLevel?: RiskLevel
+  }
+}
+
+export interface FrictionGateData {
+  gateType: 'passkey' | 'approval' | 'preview' | 'confirm'
+  title: string
+  description: string
+  intentId: string
+  riskLevel: RiskLevel
+  frictionTier: FrictionTier
+  actionLabel: string
+  cancelLabel: string
+  resolved?: boolean
+  resolvedAt?: string
+}
+
+export interface ChatMessage {
+  id: string
+  timestamp: string
+  role: 'user' | 'assistant' | 'system'
+  content: string
+  artifact?: ChatArtifact | null
+  intentId?: string
+  auditEventId?: string
+}
+
+export interface ChatThread {
+  messages: ChatMessage[]
+  isProcessing: boolean
+  error: string | null
+}
+
+export interface ActiveFrictionGate {
+  id: string
+  gateType: 'passkey' | 'approval' | 'preview' | 'confirm'
+  intentId: string
+  riskLevel: RiskLevel
+  isResolved: boolean
+  resolvedAt?: string
+}
 
 // ─── Tier UI Config ───────────────────────────────────────────────────────────
 

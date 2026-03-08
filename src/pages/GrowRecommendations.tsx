@@ -12,7 +12,7 @@ import { RECOMMENDATIONS_FOR_LIST } from './grow/recommendation-detail-data'
 import type { RecommendationListItem } from './grow/recommendation-detail-data'
 
 type SortMode = 'benefit' | 'easiest'
-type Category = 'All' | 'Savings' | 'Debt' | 'Investment'
+type Category = 'All' | 'Efficiency' | 'Risk Mitigation' | 'Revenue Growth'
 type Difficulty = 'Easy' | 'Medium' | 'Hard'
 
 const SORT_LABELS: Record<SortMode, string> = {
@@ -20,7 +20,7 @@ const SORT_LABELS: Record<SortMode, string> = {
   easiest: 'Easiest first',
 }
 
-const CATEGORY_OPTIONS: Category[] = ['All', 'Savings', 'Debt', 'Investment']
+const CATEGORY_OPTIONS: Category[] = ['All', 'Efficiency', 'Risk Mitigation', 'Revenue Growth']
 
 const DIFFICULTY_ORDER: Record<Difficulty, number> = { Easy: 0, Medium: 1, Hard: 2 }
 

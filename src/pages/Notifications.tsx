@@ -27,14 +27,14 @@ interface Notification {
 }
 
 const notifications: Notification[] = [
-  { id: 'N-001', engine: 'Protect', category: 'security', title: 'Suspicious transaction flagged', body: `Card ending ${DEMO_THREAD.criticalAlert.cardLast4} flagged for your review after unrecognized $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} charge.`, time: 'Just now', read: false, actionLink: '/protect/alert-detail' },
-  { id: 'N-002', engine: 'Protect', category: 'security', title: 'Login from new device detected', body: 'IP 203.0.113.42 — if this was you, no action needed.', time: '12m ago', read: false, actionLink: '/protect' },
-  { id: 'N-003', engine: 'Grow', category: 'growth', title: `Emergency fund milestone — $${DEMO_THREAD.emergencyFund.current.toLocaleString()} reached`, body: `You are now ${DEMO_THREAD.emergencyFund.percent}% toward your $${DEMO_THREAD.emergencyFund.target.toLocaleString()} goal.`, time: '1h ago', read: false },
-  { id: 'N-004', engine: 'Grow', category: 'growth', title: 'New savings recommendation available', body: 'Subscription consolidation could save $140/mo.', time: '2h ago', read: false },
-  { id: 'N-005', engine: 'Execute', category: 'actions', title: 'Action approved — Bill negotiation sent', body: 'Internet bill renegotiation request submitted to ISP.', time: '3h ago', read: true, actionLink: '/execute/history' },
-  { id: 'N-006', engine: 'Execute', category: 'actions', title: '2 actions expiring soon', body: 'Streaming consolidation and card freeze expire in 18h.', time: '4h ago', read: true, actionLink: '/execute/approval' },
-  { id: 'N-007', engine: 'Govern', category: 'system', title: 'Weekly audit report ready', body: '10,249 decisions audited. 100% coverage maintained.', time: '6h ago', read: true, actionLink: '/govern/audit' },
-  { id: 'N-008', engine: 'Govern', category: 'system', title: 'Model update — FraudDetection v3.3', body: 'New model deployed with 0.2% accuracy improvement.', time: '8h ago', read: true }];
+  { id: 'N-001', engine: 'Protect', category: 'security', title: 'AML compliance flag — wire review required', body: `Account ${DEMO_THREAD.criticalAlert.signalId} flagged for review: $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} wire to ${DEMO_THREAD.criticalAlert.counterparty}.`, time: 'Just now', read: false, actionLink: '/protect/alert-detail' },
+  { id: 'N-002', engine: 'Protect', category: 'security', title: 'Counterparty exposure alert', body: 'Meridian Trade Corp — new counterparty, jurisdiction risk elevated. Enhanced due diligence initiated.', time: '12m ago', read: false, actionLink: '/protect' },
+  { id: 'N-003', engine: 'Grow', category: 'growth', title: `Liquidity reserve — $${DEMO_THREAD.liquidityReserve.current.toLocaleString()} reached`, body: `${DEMO_THREAD.liquidityReserve.percent}% toward institutional target of $${DEMO_THREAD.liquidityReserve.target.toLocaleString()}.`, time: '1h ago', read: false },
+  { id: 'N-004', engine: 'Grow', category: 'growth', title: 'New optimization recommendation', body: 'Securities-backed lending alternative could save $315K over 3 years vs. cash wire.', time: '2h ago', read: false },
+  { id: 'N-005', engine: 'Execute', category: 'actions', title: 'Action authorized — Credit facility setup', body: 'Margin account opening request submitted to operations.', time: '3h ago', read: true, actionLink: '/execute/history' },
+  { id: 'N-006', engine: 'Execute', category: 'actions', title: '2 actions awaiting authorization', body: 'Wire transfer and portfolio rebalance expire in 18h.', time: '4h ago', read: true, actionLink: '/execute/approval' },
+  { id: 'N-007', engine: 'Govern', category: 'system', title: 'Weekly audit report ready', body: `${DEMO_THREAD.decisionsAudited.toLocaleString()} decisions audited. 100% coverage maintained.`, time: '6h ago', read: true, actionLink: '/govern/audit' },
+  { id: 'N-008', engine: 'Govern', category: 'system', title: 'Decision Council threshold update', body: 'Policy engine recalibrated: council invocation threshold adjusted to $500K.', time: '8h ago', read: true }];
 
 
 const engineBadgeCls: Record<string, string> = { Protect: 'bg-emerald-500/20 text-emerald-400', Grow: 'bg-violet-500/20 text-violet-400', Execute: 'bg-amber-500/20 text-amber-400', Govern: 'bg-blue-500/20 text-blue-400' };

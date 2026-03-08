@@ -146,10 +146,10 @@ describe('ExecutePage featured action selection', () => {
     )
   }
 
-  it('selects EXE-002 as initial featured action (high urgency, shortest expiry)', () => {
+  it('selects EXE-001 as initial featured action (high urgency, shortest expiry)', () => {
     const { container } = renderExecute()
     const hero = container.querySelector('[role="region"]') as HTMLElement
-    expect(within(hero).getByText('Flag suspicious merchant charge')).toBeInTheDocument()
+    expect(within(hero).getByText('Wire transfer authorization — Elias Vance')).toBeInTheDocument()
   })
 })
 
@@ -167,10 +167,10 @@ describe('ExecutePage hero state mutation', () => {
     return (
       <>
         <button
-          data-testid="approve-exe002"
+          data-testid="approve-exe001"
           onClick={() => setExecuteDecision({
-            actionId: 'EXE-002',
-            actionTitle: 'Flag suspicious wire transfer',
+            actionId: 'EXE-001',
+            actionTitle: 'Wire transfer authorization — Elias Vance',
             decision: 'approved',
           })}
         />
@@ -190,22 +190,22 @@ describe('ExecutePage hero state mutation', () => {
     )
   }
 
-  it('updates featured action after approving EXE-002', () => {
+  it('updates featured action after approving EXE-001', () => {
     const { container } = renderWithState()
     const hero = container.querySelector('[role="region"]') as HTMLElement
 
-    // Before: EXE-002
-    expect(within(hero).getByText('Flag suspicious merchant charge')).toBeInTheDocument()
+    // Before: EXE-001
+    expect(within(hero).getByText('Wire transfer authorization — Elias Vance')).toBeInTheDocument()
 
-    // Approve EXE-002
-    fireEvent.click(screen.getByTestId('approve-exe002'))
+    // Approve EXE-001
+    fireEvent.click(screen.getByTestId('approve-exe001'))
 
-    // After: next featured action should be EXE-001 (high urgency, 14h expiry)
-    expect(within(hero).getByText('Portfolio rebalance')).toBeInTheDocument()
-    expect(within(hero).queryByText('Flag suspicious merchant charge')).not.toBeInTheDocument()
+    // After: next featured action should be EXE-002 (high urgency, 6h expiry)
+    expect(within(hero).getByText('Margin account setup')).toBeInTheDocument()
+    expect(within(hero).queryByText('Wire transfer authorization — Elias Vance')).not.toBeInTheDocument()
   })
 
-  it('updates hero number and subtitle after approving EXE-002', () => {
+  it('updates hero number and subtitle after approving EXE-001', () => {
     const { container } = renderWithState()
     const hero = container.querySelector('[role="region"]') as HTMLElement
 
@@ -214,7 +214,7 @@ describe('ExecutePage hero state mutation', () => {
     expect(heroNumber?.textContent).toBe('5')
     expect(hero.textContent).toContain('5 actions pending')
 
-    fireEvent.click(screen.getByTestId('approve-exe002'))
+    fireEvent.click(screen.getByTestId('approve-exe001'))
 
     // After: hero number = 4
     expect(heroNumber?.textContent).toBe('4')
@@ -248,7 +248,7 @@ describe('ExecutePage hero navigation', () => {
     const btn = within(hero).getByRole('button', { name: /review & approve/i })
     fireEvent.click(btn)
     expect(window.location.pathname).toBe('/execute/approval')
-    expect(window.location.search).toBe('?actionId=EXE-002')
+    expect(window.location.search).toBe('?actionId=EXE-001')
   })
 
   it('renders consent trust badge with zero auto-executions', () => {
@@ -332,5 +332,42 @@ describe('ExecutePage empty queue state', () => {
     // Empty state reached via page-level state derivation
     expect(within(hero).getByText('Queue clear')).toBeInTheDocument()
     expect(within(hero).queryByText(/actions pending/)).not.toBeInTheDocument()
+  })
+})
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 6: TIER 2 ACCORDION (STEP 1C)
+   ═══════════════════════════════════════════════════════ */
+
+describe('Execute Tier 2 accordion', () => {
+  beforeEach(() => {
+    resetDemoStateStorage()
+    window.history.pushState({}, '', '/execute')
+  })
+
+  function renderExecute() {
+    return render(
+      <DemoStateProvider>
+        <RouterProvider>
+          <ExecutePage />
+        </RouterProvider>
+      </DemoStateProvider>,
+    )
+  }
+
+  it('Tier 2 section header is visible but content is collapsed by default', () => {
+    renderExecute()
+    // The header label should be visible
+    expect(screen.getByText(/capital movement/i)).toBeInTheDocument()
+    // The "Requires individual review" badge should be visible
+    expect(screen.getByText(/requires individual review/i)).toBeInTheDocument()
+  })
+
+  it('expands Tier 2 cards on header click', () => {
+    renderExecute()
+    const tier2Header = screen.getByText(/capital movement/i).closest('button')!
+    fireEvent.click(tier2Header)
+    // After expansion, the "Requires individual review" badge should still be visible
+    expect(screen.getByText(/requires individual review/i)).toBeInTheDocument()
   })
 })

@@ -141,7 +141,7 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
       {/* Info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap mb-1">
-          <span className="text-sm font-medium text-white/90 truncate">{threat.merchant}</span>
+          <span className="text-sm font-medium text-white/90 truncate">{threat.counterparty}</span>
           <span
             className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border"
             style={{

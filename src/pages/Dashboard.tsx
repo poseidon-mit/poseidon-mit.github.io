@@ -23,6 +23,7 @@ import {
   selectExecuteActionsView,
   selectGovernAuditSummaryView,
   selectGovernAuditEntries,
+  computeFinancialHealthScore,
   formatUsd,
 } from '@/domain/poseidon-universe'
 import type { ExecuteActionEntity } from '@/domain/poseidon-universe'
@@ -105,7 +106,7 @@ function ProtectPanel({
               <SeverityBadge severity={toDisplaySeverity(threat.severity)} />
               <div className="flex-1 min-w-0">
                 <div className="text-sm text-white/80 font-medium truncate">
-                  {threat.merchant}
+                  {threat.counterparty}
                 </div>
                 <div className="text-xs text-white/40 truncate">
                   {threat.description}
@@ -389,6 +390,18 @@ export default function DashboardPage() {
     : pendingCount > 3 ? 'execute'
     : 'grow'
 
+  const allActionsCount = allActions.length
+  const healthScore = useMemo(
+    () =>
+      computeFinancialHealthScore({
+        activeThreats: activeThreats.length,
+        totalThreats: activeThreats.length + dismissed.size,
+        pendingActions: pendingCount,
+        totalActions: allActionsCount,
+      }),
+    [activeThreats.length, dismissed.size, pendingCount, allActionsCount],
+  )
+
   return (
     <div className="selection:bg-cyan-500/30">
       <motion.main
@@ -401,18 +414,24 @@ export default function DashboardPage() {
       >
         {/* ── Coordination Proof Hero ── */}
         <motion.section variants={itemVariants} className="flex flex-col gap-6 mb-10">
-          <EngineBadge engine="dashboard" icon={LayoutDashboard} label="Command Center" />
+          <div className="flex items-center justify-between">
+            <EngineBadge engine="dashboard" icon={LayoutDashboard} label="Command Center" />
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-white/50">Financial Health</span>
+              <span className="font-mono tabular-nums text-white/80">{Math.round(healthScore.score)}/100</span>
+            </div>
+          </div>
           <DashboardCoordinationProof
             dominantEngine={dominantEngine}
             activeThreats={activeThreats.length}
-            monthlySavings={dashboardView.monthlySavingsPotentialUsd}
+            monthlySavings={dashboardView.monthlyOptimizationPotentialUsd}
             pendingActions={pendingCount}
             decisionsAudited={governSummary.total}
             decisionsVerified={governSummary.verified}
             recommendationCount={dashboardView.recommendationCount}
             criticalSignal={topThreat ? {
               id: topThreat.id,
-              merchant: topThreat.merchant,
+              counterparty: topThreat.counterparty,
               amount: topThreat.amount,
               confidence: topThreat.confidence,
               severity: topThreat.severity,

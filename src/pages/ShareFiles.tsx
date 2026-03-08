@@ -111,7 +111,7 @@ const ShareFiles: React.FC = () => {
       <div className="relative z-10 font-manrope">
         <PublicTopBar />
 
-        <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-20 pt-32 md:px-10">
+        <main id="main-content" className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-20 pt-32 md:px-10">
           <div className="mb-8">
             <Link
               to="/"

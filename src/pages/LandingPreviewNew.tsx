@@ -33,7 +33,7 @@ const staggerContainer = {
 
 const metrics = [
   { label: 'System Confidence', value: '0.92', color: '#2dd4bf', data: [3, 5, 4, 7, 6, 8, 7, 9, 8, 9.2] },
-  { label: 'Decisions Audited', value: '10,249', color: '#818cf8', data: [2, 4, 5, 3, 6, 7, 8, 7, 10, 12] },
+  { label: 'Decisions Audited', value: '10,250', color: '#818cf8', data: [2, 4, 5, 3, 6, 7, 8, 7, 10, 12] },
   { label: 'Threats Blocked', value: '23', color: '#fbbf24', data: [1, 0, 2, 1, 3, 2, 1, 3, 2, 2.3] },
   { label: 'Response Time', value: '<200ms', color: '#60a5fa', data: [5, 4, 3, 4, 3, 2, 3, 2, 2, 1.8] },
 ];
@@ -137,10 +137,10 @@ export default function LandingPreviewNew() {
           </div>
           <div className="relative mx-auto max-w-5xl">
             <motion.h1 className="text-balance text-5xl font-bold leading-tight text-white md:text-6xl lg:text-7xl" variants={fadeUp} initial="hidden" animate="visible">
-              Safer satisfying money decisions, in one place.
+              Higher-assurance decisions, in one place.
             </motion.h1>
             <motion.p className="mx-auto mt-6 max-w-2xl text-lg text-slate-300 md:text-xl" variants={fadeUp} initial="hidden" animate="visible">
-              Four AI engines working together. Every decision explainable, auditable, and reversible.
+              Multiple AI models deliberate, challenge, and document every recommendation before you authorize it.
             </motion.p>
             <motion.div className="mt-8 flex flex-wrap items-center justify-center gap-4" variants={fadeUp} initial="hidden" animate="visible">
               <a href="/dashboard" className="rounded-xl bg-gradient-to-r from-teal-500 to-cyan-400 px-8 py-4 text-lg font-semibold text-slate-950 shadow-[0_0_30px_rgba(13,217,180,0.3)]">

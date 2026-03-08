@@ -177,10 +177,10 @@ export default function Landing() {
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <span className="text-sm font-mono font-bold text-green-400">
-                      ${DEMO_THREAD.criticalAlert.amount.toLocaleString()} Suspicious Charge Flagged
+                      ${DEMO_THREAD.criticalAlert.amount.toLocaleString()} Suspicious Transfer Flagged
                     </span>
                     <span className="text-xs text-white/40">
-                      {Math.round(DEMO_THREAD.criticalAlert.confidence * 100)}% confidence · {DEMO_THREAD.criticalAlert.merchant}
+                      {Math.round(DEMO_THREAD.criticalAlert.confidence * 100)}% confidence · {DEMO_THREAD.criticalAlert.counterparty}
                     </span>
                     <span className="hidden md:block text-xs text-white/25">
                       {LANDING_COPY.hero.protectProof.sublabel}
@@ -276,11 +276,11 @@ export default function Landing() {
                   <CountUp value={DEMO_THREAD.decisionsAudited} locale className="text-2xl md:text-3xl font-mono font-semibold text-white/90" />
                   <p className="text-xs text-white/40 mt-2">Decisions audited & logged</p>
                 </motion.div>
-                {/* Grow — Cohort savings */}
+                {/* Grow — Cohort optimization */}
                 <motion.div variants={fadeUp} className="relative rounded-2xl border border-violet-500/15 bg-white/[0.03] p-5 text-center overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(139,92,246,0.1)]">
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
                   <CountUp value={cohort.avgMonthlySavingsUsd} prefix="$" locale className="text-2xl md:text-3xl font-mono font-semibold text-white/90" />
-                  <p className="text-xs text-white/40 mt-2">Avg cohort savings found</p>
+                  <p className="text-xs text-white/40 mt-2">Avg monthly optimization identified</p>
                 </motion.div>
                 {/* Execute — Zero auto-executions */}
                 <motion.div variants={fadeUp} className="relative rounded-2xl border border-amber-500/15 bg-white/[0.03] p-5 text-center overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(234,179,8,0.1)]">
@@ -391,7 +391,7 @@ export default function Landing() {
                     <span className="text-white/10">·</span>
                     <span>${DEMO_THREAD.criticalAlert.amount.toLocaleString()}</span>
                     <span className="text-white/10">·</span>
-                    <span>{DEMO_THREAD.criticalAlert.merchant}</span>
+                    <span>{DEMO_THREAD.criticalAlert.counterparty}</span>
                   </div>
                 </motion.div>
 
@@ -430,11 +430,11 @@ export default function Landing() {
                     <span className="text-2xl font-mono font-semibold text-amber-400">{DEMO_THREAD.pendingActions}</span>
                     <span className="text-sm text-white/40">queued</span>
                     <span className="text-white/10">·</span>
-                    <span className="text-sm font-mono text-amber-400/70">${DEMO_THREAD.monthlySavings}/mo</span>
+                    <span className="text-sm font-mono text-amber-400/70">${DEMO_THREAD.monthlyOptimization.toLocaleString()}/mo</span>
                   </div>
                   <div className="flex flex-col gap-1.5 text-xs text-white/30 font-mono">
-                    <span>EXE-001 Portfolio rebalance — $12,400</span>
-                    <span>EXE-002 Flag suspicious charge — ${DEMO_THREAD.criticalAlert.amount.toLocaleString()}</span>
+                    <span>EXE-001 Wire transfer authorization — $2,500,000</span>
+                    <span>EXE-002 Margin account setup — ${DEMO_THREAD.criticalAlert.amount.toLocaleString()}</span>
                   </div>
                 </motion.div>
 
@@ -456,9 +456,9 @@ export default function Landing() {
                     </div>
                   </div>
                   <div className="flex flex-col gap-1 text-[11px] text-white/25 font-mono overflow-hidden max-h-16">
-                    <span>GV-2026-0319-847 Portfolio rebalance · 0.97</span>
-                    <span>GV-2026-0319-846 Flag merchant charge · {DEMO_THREAD.criticalAlert.confidence}</span>
-                    <span>GV-2026-0319-845 Subscription consolidation · 0.89</span>
+                    <span>GV-2026-0319-847 Wire authorization review · 0.97</span>
+                    <span>GV-2026-0319-846 AML compliance flag · {DEMO_THREAD.criticalAlert.confidence}</span>
+                    <span>GV-2026-0319-845 Credit facility approval · 0.89</span>
                   </div>
                 </motion.div>
               </div>

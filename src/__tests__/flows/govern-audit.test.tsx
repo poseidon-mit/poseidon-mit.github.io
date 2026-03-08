@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { RouterProvider } from '../../router';
-import GovernTrust from '../../pages/GovernTrust';
+import GovernTrust from '../../pages/Govern';
 import GovernAuditLedger from '../../pages/GovernAuditLedger';
 import GovernAuditDetail from '../../pages/GovernAuditDetail';
 
@@ -19,26 +19,19 @@ describe('Govern audit flow', () => {
     );
   }
 
-  describe('GOV01 - Trust Dashboard', () => {
-    it('displays trust score', () => {
+  describe('GOV01 - Govern Dashboard', () => {
+    it('displays decisions audited headline', () => {
       renderWithRouter(GovernTrust);
-      // "97" appears in hero KPIs + main content — use getAllByText
-      expect(screen.getAllByText(/97/).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(/Decisions Audited/i).length).toBeGreaterThan(0);
     });
 
-    it('shows trust components', () => {
+    it('shows decision audit trail', () => {
       renderWithRouter(GovernTrust);
-      // These may appear in both hero KPIs and trust components table
-      expect(screen.getAllByText(/Accuracy/i).length).toBeGreaterThan(0);
-      expect(screen.getAllByText(/Transparency/i).length).toBeGreaterThan(0);
-      expect(screen.getAllByText(/Fairness/i).length).toBeGreaterThan(0);
-      expect(screen.getAllByText(/Compliance/i).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(/Decision Audit Trail/i).length).toBeGreaterThan(0);
     });
 
-    it('has governance contract set', () => {
-      const { container } = renderWithRouter(GovernTrust);
-      expect(container.querySelector('footer[aria-label="Governance verification footer"]')).not.toBeNull();
-    });
+    // GovernFooter is injected by AuthenticatedLayout, not by the page component.
+    // Footer coverage tested in govern-footer-integration.test.tsx.
   });
 
   describe('GOV02 - Audit Ledger', () => {
@@ -52,10 +45,8 @@ describe('Govern audit flow', () => {
       expect(screen.getAllByText(/protect/i).length).toBeGreaterThan(0);
     });
 
-    it('has governance contract set', () => {
-      const { container } = renderWithRouter(GovernAuditLedger);
-      expect(container.querySelector('footer[aria-label="Governance verification footer"]')).not.toBeNull();
-    });
+    // GovernFooter is injected by AuthenticatedLayout, not by the page component.
+    // Footer coverage tested in govern-footer-integration.test.tsx.
   });
 
   describe('GOV03 - Audit Detail', () => {
@@ -77,9 +68,7 @@ describe('Govern audit flow', () => {
       expect(compliantElements.length).toBe(3);
     });
 
-    it('has governance contract set', () => {
-      const { container } = renderWithRouter(GovernAuditDetail);
-      expect(container.querySelector('footer[aria-label="Governance verification footer"]')).not.toBeNull();
-    });
+    // GovernFooter is injected by AuthenticatedLayout, not by the page component.
+    // Footer coverage tested in govern-footer-integration.test.tsx.
   });
 });

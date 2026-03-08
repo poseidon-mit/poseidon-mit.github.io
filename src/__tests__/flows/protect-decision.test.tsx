@@ -30,10 +30,10 @@ describe('Protect decision flow (PRT02)', () => {
     expect(screen.getByText(/Evidence analysis/i)).toBeInTheDocument();
   });
 
-  it('renders decision section with recommended actions', () => {
+  it('renders decision section with recommended action', () => {
     renderPRT02();
-    expect(screen.getByText(/Recommended actions/i)).toBeInTheDocument();
-    expect(screen.getByText(/Block & investigate/i)).toBeInTheDocument();
+    expect(screen.getByText(/Recommended Action/i)).toBeInTheDocument();
+    expect(screen.getByText(/Block & Dispute/i)).toBeInTheDocument();
   });
 
   it('shows fraud severity as critical', () => {
@@ -48,22 +48,22 @@ describe('Protect decision flow (PRT02)', () => {
     expect(screen.getAllByText(expected).length).toBeGreaterThan(0);
   });
 
-  it('has governance contract set', () => {
+  it('has breadcrumb navigation', () => {
     const { container } = renderPRT02();
-    const govFooter = container.querySelector('footer[aria-label="Governance verification footer"]');
-    expect(govFooter).not.toBeNull();
+    const nav = container.querySelector('nav[aria-label="Breadcrumb"]');
+    expect(nav).not.toBeNull();
   });
 
-  it('provides dispute link', () => {
+  it('provides dispute action button', () => {
     renderPRT02();
-    expect(screen.getByRole('link', { name: /Open execute queue/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Block & Dispute/i })).toBeInTheDocument();
   });
 
   it('signal section appears before decision controls in DOM order', () => {
     const { container } = renderPRT02();
     const content = container.textContent ?? '';
     const signalPos = content.indexOf('Alert type');
-    const decisionPos = content.indexOf('Recommended actions');
+    const decisionPos = content.indexOf('Recommended Action');
     expect(signalPos).toBeGreaterThanOrEqual(0);
     expect(decisionPos).toBeGreaterThanOrEqual(0);
     expect(signalPos).toBeLessThan(decisionPos);

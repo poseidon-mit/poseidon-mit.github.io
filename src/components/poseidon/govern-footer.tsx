@@ -10,7 +10,8 @@ export interface GovernFooterProps {
   auditId: string
   pageContext?: string
   className?: string
-  activeTopThreat?: { id: string; merchant: string; confidence: number } | null
+  activeTopThreat?: { id: string; counterparty: string; confidence: number } | null
+  latestExecuteEvent?: { govId: string; actionId: string; actionTitle: string } | null
 }
 
 export function GovernFooter({
@@ -18,11 +19,14 @@ export function GovernFooter({
   pageContext,
   className = '',
   activeTopThreat,
+  latestExecuteEvent,
 }: GovernFooterProps) {
-  const streamText = activeTopThreat
+  const streamText = latestExecuteEvent
+    ? `[EXECUTE INITIATED]   ·   [Action: ${latestExecuteEvent.actionTitle}]   ·   [GOVERNANCE LOGGED: ${latestExecuteEvent.govId}]`
+    : activeTopThreat
     ? [
         `[PROTECT MODEL v2.4]`,
-        `[Target: ${activeTopThreat.id} (${activeTopThreat.merchant})]`,
+        `[Target: ${activeTopThreat.id} (${activeTopThreat.counterparty})]`,
         `[Confidence: ${Math.round(activeTopThreat.confidence * 100)}%]`,
         `[Human Approval Required]`,
         `[Govern Ledger: Recording]`,
@@ -38,7 +42,8 @@ export function GovernFooter({
       {/* Immutable Event Stream */}
       <div className="overflow-hidden border-b border-white/[0.04] py-1.5 px-4 md:px-6">
         <div
-          className="whitespace-nowrap text-[10px] font-mono text-white/20 animate-[scroll-left_20s_linear_infinite]"
+          key={streamText}
+          className={`whitespace-nowrap text-[10px] font-mono animate-[scroll-left_20s_linear_infinite] ${latestExecuteEvent ? 'text-amber-400/30' : 'text-white/20'}`}
           aria-hidden="true"
         >
           {streamText}{'      '}{streamText}

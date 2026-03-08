@@ -70,6 +70,7 @@ export default function GrowRecommendationDetailPage() {
 
       <motion.div
         id="main-content"
+        role="main"
         className={`${PAGE_CONTENT_CLASS} flex flex-col gap-8 pb-12`}
         style={PAGE_CONTENT_STYLE}
         initial="hidden"

@@ -2,10 +2,14 @@ import { CANONICAL_UNIVERSE } from './canonical'
 import { ENGINE_COLOR_MAP, type EngineLabel } from '@/lib/engine-color-map'
 import type {
   CanonicalUniverseV1,
+  CanonicalEvent,
+  DeliberationTrace,
+  EventChildren,
   ExecuteActionEntity,
   ExecutionType,
   GovernAuditEntryEntity,
   GovernLedgerEntryEntity,
+  PriorityItem,
   ProtectThreatEntity,
   UrgencyLevel,
 } from './types'
@@ -23,8 +27,8 @@ export function selectDashboardView(pendingActionsOverride?: number) {
       typeof pendingActionsOverride === 'number'
         ? pendingActionsOverride
         : universe.metrics.pendingActions,
-    monthlySavingsCurrentUsd: universe.metrics.monthlySavingsCurrentUsd,
-    monthlySavingsPotentialUsd: universe.metrics.monthlySavingsPotentialUsd,
+    monthlyOptimizationCurrentUsd: universe.metrics.monthlyOptimizationCurrentUsd,
+    monthlyOptimizationPotentialUsd: universe.metrics.monthlyOptimizationPotentialUsd,
     recommendationCount: universe.entities.recommendations.length,
     criticalAlert: universe.entities.criticalAlert,
     activities: universe.entities.dashboardActivities,
@@ -39,9 +43,10 @@ export function selectCriticalAlert() {
   return getCanonicalUniverse().entities.criticalAlert
 }
 
-export function selectGrowEmergencyFundView() {
-  return getCanonicalUniverse().metrics.emergencyFund
+export function selectGrowLiquidityReserveView() {
+  return getCanonicalUniverse().metrics.liquidityReserve
 }
+
 
 export function selectExecuteActionsView(): ExecuteActionEntity[] {
   return getCanonicalUniverse().entities.executeActions
@@ -50,8 +55,8 @@ export function selectExecuteActionsView(): ExecuteActionEntity[] {
 export function selectExecuteSavingsView() {
   const universe = getCanonicalUniverse()
   return {
-    currentMonthlySavingsUsd: universe.metrics.monthlySavingsCurrentUsd,
-    potentialMonthlySavingsUsd: universe.metrics.monthlySavingsPotentialUsd,
+    currentMonthlySavingsUsd: universe.metrics.monthlyOptimizationCurrentUsd,
+    potentialMonthlySavingsUsd: universe.metrics.monthlyOptimizationPotentialUsd,
   }
 }
 
@@ -71,7 +76,7 @@ export function selectExecuteQueueStats() {
     total: actions.length,
     byUrgency,
     byType,
-    potentialSavingsUsd: getCanonicalUniverse().metrics.monthlySavingsPotentialUsd,
+    potentialSavingsUsd: getCanonicalUniverse().metrics.monthlyOptimizationPotentialUsd,
   }
 }
 
@@ -192,8 +197,8 @@ export function computeFinancialHealthScore(overrides: {
     ? 100
     : (1 - overrides.activeThreats / overrides.totalThreats) * 100
 
-  const potentialUsd = universe.metrics.monthlySavingsPotentialUsd
-  const currentUsd = universe.metrics.monthlySavingsCurrentUsd
+  const potentialUsd = universe.metrics.monthlyOptimizationPotentialUsd
+  const currentUsd = universe.metrics.monthlyOptimizationCurrentUsd
   const growScore = potentialUsd === 0
     ? 100
     : (currentUsd / potentialUsd) * 100
@@ -269,6 +274,98 @@ export function selectCrossEngineChains(): CrossEngineChain[] {
 
   return chains
 }
+
+/* ── Event Selectors (Phase 0B) ── */
+
+export function selectEventById(eventId: string): CanonicalEvent | null {
+  return getCanonicalUniverse().entities.events.find((e) => e.id === eventId) ?? null
+}
+
+export function selectEventChildren(eventId: string): EventChildren | null {
+  return getCanonicalUniverse().relations.eventToChildren[eventId] ?? null
+}
+
+export function selectDeliberationTrace(eventId: string): DeliberationTrace | null {
+  const event = selectEventById(eventId)
+  if (!event) return null
+  return event.deliberationTraces[0] ?? null
+}
+
+/**
+ * Unified cross-engine priority queue.
+ * Merges threats + actions + pending audit entries, sorted by compositePriority descending.
+ */
+export function selectPriorityQueue(): PriorityItem[] {
+  const universe = getCanonicalUniverse()
+  const items: PriorityItem[] = []
+
+  for (const threat of universe.entities.protectThreats) {
+    const eventId = Object.entries(universe.relations.eventToChildren).find(
+      ([, children]) => children.threats.includes(threat.id),
+    )?.[0]
+    items.push({
+      kind: 'threat',
+      engine: 'Protect',
+      compositePriority: threat.compositePriority,
+      item: threat,
+      eventId,
+    })
+  }
+
+  for (const action of universe.entities.executeActions) {
+    const eventId = Object.entries(universe.relations.eventToChildren).find(
+      ([, children]) => children.actions.includes(action.id),
+    )?.[0]
+    items.push({
+      kind: 'action',
+      engine: 'Execute',
+      compositePriority: action.compositePriority,
+      item: action,
+      eventId,
+    })
+  }
+
+  for (const audit of universe.entities.governAuditEntries) {
+    if (audit.status === 'Verified') continue
+    items.push({
+      kind: 'audit',
+      engine: 'Govern',
+      compositePriority: audit.confidence * 100,
+      item: audit,
+    })
+  }
+
+  return items.sort((a, b) => b.compositePriority - a.compositePriority)
+}
+
+/**
+ * Visual tier based on composite priority score, not raw severity.
+ */
+export function selectVisualTier(item: { compositePriority: number }): 'attention' | 'monitoring' {
+  return item.compositePriority >= 60 ? 'attention' : 'monitoring'
+}
+
+/**
+ * Event-level audit chain. Replaces selectAlertAuditChain for event-based traversal.
+ */
+export function selectEventAuditChain(eventId: string) {
+  const event = selectEventById(eventId)
+  if (!event) return null
+  return {
+    eventId,
+    threats: event.children.threats,
+    alternatives: event.children.alternatives,
+    actions: event.children.actions,
+    auditEntries: event.children.auditEntries,
+    deliberation: event.deliberationTraces[0] ?? null,
+  }
+}
+
+export function selectCouncilMetrics() {
+  return getCanonicalUniverse().metrics.councilMetrics
+}
+
+/* ── Formatting Utilities ── */
 
 export function formatUsd(value: number): string {
   return `$${value.toLocaleString()}`

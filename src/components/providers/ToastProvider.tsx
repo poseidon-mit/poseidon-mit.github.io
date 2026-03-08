@@ -11,16 +11,23 @@ import { Toast } from '@/components/ui/toast'
 
 export type ToastVariant = 'info' | 'success' | 'warning' | 'error'
 
+interface ToastAction {
+  label: string
+  onClick: () => void
+}
+
 interface ToastItem {
   id: string
   message: string
   variant: ToastVariant
+  action?: ToastAction
 }
 
 interface ToastInput {
   message: string
   variant?: ToastVariant
   durationMs?: number
+  action?: ToastAction
 }
 
 interface ToastContextValue {
@@ -53,9 +60,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const showToast = useCallback(
-    ({ message, variant = 'info', durationMs = 4000 }: ToastInput) => {
+    ({ message, variant = 'info', durationMs = 4000, action }: ToastInput) => {
       const id = createToastId()
-      setToasts((prev) => [{ id, message, variant }, ...prev].slice(0, 3))
+      setToasts((prev) => [{ id, message, variant, action }, ...prev].slice(0, 3))
 
       const timerId = window.setTimeout(() => {
         dismissToast(id)
@@ -93,6 +100,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             <Toast
               variant={toast.variant}
               message={toast.message}
+              action={toast.action}
               onDismiss={() => dismissToast(toast.id)}
             />
           </div>

@@ -12,36 +12,11 @@ import { Button } from '@/components/ui/button';
 import { TalkToMoneyFab } from '@/components/ui/TalkToMoneyFab';
 import { type EngineName } from '@/lib/engine-tokens';
 import { cn } from '@/lib/utils';
+import { BREADCRUMB_MAP } from '@/lib/breadcrumb-registry';
 import { Sidebar, NAV_ITEMS, ENGINE_ITEMS, TONE_CLASSES } from '../navigation/Sidebar';
 import { TopBar } from '../navigation/TopBar';
 import { useDemoState } from '@/lib/demo-state/provider';
 import { getPendingExecuteCount } from '@/lib/demo-state/selectors';
-
-/* ─── Breadcrumb definitions ─────────────────────────────── */
-const BREADCRUMB_MAP: Record<string, string[]> = {
-  '/dashboard': ['Dashboard'],
-  '/dashboard/notifications': ['Dashboard', 'Notifications'],
-  '/protect': ['Protect Engine'],
-  '/protect/alert-detail': ['Protect Engine', 'Alert Detail'],
-  '/protect/dispute': ['Protect Engine', 'Dispute'],
-  '/grow': ['Grow Engine'],
-  '/grow/goal': ['Grow Engine', 'Goal Detail'],
-  '/grow/scenarios': ['Grow Engine', 'Scenarios'],
-  '/grow/recommendations': ['Grow Engine', 'Recommendations'],
-  '/grow/recommendation': ['Grow Engine', 'Recommendation Detail'],
-  '/execute': ['Execute Engine'],
-  '/execute/approval': ['Execute Engine', 'Approval Queue'],
-  '/execute/history': ['Execute Engine', 'History'],
-  '/execute/queue': ['Execute Engine', 'Action Queue'],
-  '/govern': ['Govern Engine'],
-  '/govern/audit': ['Govern Engine', 'Audit Ledger'],
-  '/govern/audit-detail': ['Govern Engine', 'Audit Detail'],
-  '/settings': ['Settings'],
-  '/settings/ai': ['Settings', 'AI Preferences'],
-  '/settings/integrations': ['Settings', 'Integrations'],
-  '/settings/rights': ['Settings', 'Rights & Privacy'],
-  '/orchestrator': ['Orchestrator Workbench'],
-};
 
 /* ─── Helpers ────────────────────────────────────────────── */
 function getActiveSection(path: string) {

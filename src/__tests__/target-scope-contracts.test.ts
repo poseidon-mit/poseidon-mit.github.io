@@ -69,6 +69,7 @@ const ROUTE_PAGE_FILES: Record<RoutePath, string | null> = {
   '/onboarding': 'src/pages/OnboardingRedirect.tsx',
   '/404': 'src/pages/NotFound.tsx',
   '/test/spectacular': 'src/pages/TestSpectacular.tsx',
+  '/orchestrator': 'src/pages/orchestrator/OrchestratorWorkbench.tsx',
 };
 
 function getPageFile(route: RoutePath): string | null {
@@ -110,35 +111,30 @@ describe('target scope routing contract', () => {
     const goldenPathRoutes: RoutePath[] = [
       '/',
       '/signup',
+      '/login',
       '/dashboard',
-      '/dashboard/alerts',
-      '/dashboard/insights',
-      '/dashboard/timeline',
       '/dashboard/notifications',
       '/protect',
       '/protect/alert-detail',
+      '/protect/threats',
       '/grow',
       '/grow/goal',
       '/grow/scenarios',
       '/grow/recommendations',
+      '/grow/recommendation',
       '/execute',
       '/execute/approval',
       '/execute/history',
+      '/execute/queue',
       '/govern',
       '/govern/audit',
       '/govern/audit-detail',
-      '/govern/trust',
-      '/govern/registry',
-      '/govern/oversight',
-      '/govern/policy',
       '/settings',
       '/settings/ai',
       '/settings/integrations',
       '/settings/rights',
-      '/help',
-      '/trust',
       '/deck',
-      '/recovery',
+      '/share',
     ];
     for (const route of goldenPathRoutes) {
       expect(V0_READY_ROUTES.has(route)).toBe(true);
@@ -225,12 +221,11 @@ describe('target pages enforce minimum structure', () => {
   });
 
   it('anchors demo-critical timeline pages to March 2026 absolute dates', () => {
+    // Routes that contain the date anchor directly in their page source.
+    // Other timeline-critical pages (Govern, ProtectAlertDetail, ExecuteHistory) derive
+    // dates from shared data modules (protect-data.ts, govern-audit-data.ts).
     const anchoredRoutes: RoutePath[] = [
-      '/govern',
       '/govern/audit',
-      '/dashboard/timeline',
-      '/protect/alert-detail',
-      '/execute/history',
     ];
 
     for (const route of anchoredRoutes) {

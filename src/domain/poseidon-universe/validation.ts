@@ -34,7 +34,7 @@ export function validateCanonicalUniverse(universe: CanonicalUniverseV1): string
     issues.push('cohort.recommendationAcceptanceRate out of range')
   }
   if (c.avgMonthlySavingsUsd <= 0) {
-    issues.push('cohort.avgMonthlySavingsUsd must be positive')
+    issues.push('cohort.avgMonthlyOptimizationUsd must be positive')
   }
   if (c.projected3yAdvantageUsd <= 0) {
     issues.push('cohort.projected3yAdvantageUsd must be positive')

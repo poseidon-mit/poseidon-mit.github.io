@@ -19,21 +19,8 @@ export function GovernAuditDetail() {
   const resolvedTimestamp = formatDemoTimestamp(auditEntry.timestamp);
   const resolvedConfidence = formatConfidence(auditEntry.explanation.confidence);
 
-  const metaRows = [
-    { label: 'Audit ID', value: auditEntry.id, highlight: false },
-    { label: 'Engine', value: auditEntry.engine, highlight: false },
-    { label: 'Decision type', value: auditEntry.type, highlight: true },
-    { label: 'Action', value: auditEntry.action, highlight: false },
-    { label: 'Timestamp', value: resolvedTimestamp, highlight: false },
-    { label: 'Model', value: `${auditEntry.model.name} v${auditEntry.model.version}`, highlight: false },
-    { label: 'Model accuracy', value: `${auditEntry.model.accuracy}%`, highlight: false }];
-
-
-
-
   return (
     <>
-
       <SubPageNav engine="govern" parentPath="/govern" parentLabel="Govern" currentLabel={`Audit: ${auditEntry.action}`} />
 
       <motion.div
@@ -43,100 +30,137 @@ export function GovernAuditDetail() {
         variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
-        role="main">
-
-        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
-          <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
-            <h1 className={`${PAGE_HEADING_CLASS} mb-2 break-words`} style={PAGE_HEADING_STYLE}>Audit log for <span className="text-[var(--engine-govern)]">{auditEntry.id}</span></h1>
-          </motion.div>
-
-          <motion.div variants={fadeUpVariant}>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mt-4">
-              {[
-                { label: 'Timestamp', value: resolvedTimestamp, color: 'white' },
-                { label: 'Confidence', value: resolvedConfidence, color: 'var(--engine-govern)' },
-                { label: 'Model', value: auditEntry.model.name, subValue: `v${auditEntry.model.version}`, color: 'var(--engine-execute)' }].
-                map((kpi) => <div
-                  key={kpi.label} className="glass-card glass-card-overlay rounded-[24px] p-4 md:p-5">
-                  <div className="relative z-10 flex flex-col gap-1.5">
-                    <p className="text-[9px] md:text-[10px] uppercase tracking-widest font-semibold text-white/50">{kpi.label}</p>
-                    <div className="flex flex-col">
-                      <p className="text-lg md:text-xl font-light font-mono truncate" style={{ color: kpi.color }}>{kpi.value}</p>
-                      {kpi.subValue && <p className="text-[10px] text-white/40 mt-0.5">{kpi.subValue}</p>}
-                    </div>
-                  </div>
-                </div>
-                )}
-            </div>
-          </motion.div>
+        role="main"
+      >
+        {/* H1 — Core Assertion */}
+        <motion.section variants={fadeUpVariant} className="flex flex-col gap-1">
+          <p className="text-[10px] uppercase tracking-widest text-white/40 font-semibold mb-2">{auditEntry.id}</p>
+          <h1 className={`${PAGE_HEADING_CLASS} break-words`} style={PAGE_HEADING_STYLE}>
+            {auditEntry.coreAssertion}
+          </h1>
+          <p className="text-sm text-white/40 mt-2 font-mono">{resolvedTimestamp}</p>
         </motion.section>
 
-        <div className="flex flex-col gap-6 lg:gap-8">
-          <motion.div variants={staggerContainerVariant} className="flex flex-col gap-6 lg:gap-8">
-            <motion.div variants={fadeUpVariant}>
-              <div className="glass-card glass-card-overlay rounded-[32px] p-6 lg:p-8">
-                <h2 className="relative z-10 section-label-bordered mb-6">Decision Metadata</h2>
-                <div className="relative z-10 flex flex-col gap-4">
-                  {metaRows.map((row) =>
-                    <div key={row.label} className="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-white/[0.04] last:border-0 gap-2 sm:gap-4">
-                      <span className="text-[10px] uppercase tracking-widest text-white/50 shrink-0">{row.label}</span>
-                      <span className={`text-sm tracking-wide sm:text-right break-words ${row.highlight ? 'text-[var(--engine-govern)] font-medium' : 'text-white/80 font-light'}`}>{row.value}</span>
-                    </div>
-                  )}
+        {/* Two-column grid: Base Reality + Decision Reconstruction */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+          {/* Left: Base Reality */}
+          <motion.div variants={fadeUpVariant}>
+            <div className="glass-card glass-card-overlay rounded-[24px] p-6 lg:p-8 flex flex-col gap-6 h-full">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4">
+                Base Reality
+              </h2>
+
+              {/* Factual rows */}
+              <div className="flex flex-col gap-0">
+                {auditEntry.baseReality.map((row) => (
+                  <div
+                    key={row.label}
+                    className="flex items-center justify-between py-3 border-b border-white/[0.04] last:border-0"
+                  >
+                    <span className="text-[10px] uppercase tracking-widest text-white/50 font-semibold">{row.label}</span>
+                    <span className="text-sm text-white/90 font-light text-right">{row.value}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Data source pills */}
+              <div className="flex flex-col gap-3 pt-2">
+                <h3 className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">Data Sources</h3>
+                <div className="flex flex-wrap gap-2">
+                  {auditEntry.dataSources.map((src) => (
+                    <span
+                      key={src}
+                      className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs font-mono tracking-wide text-white/70"
+                    >
+                      {src}
+                    </span>
+                  ))}
                 </div>
               </div>
-            </motion.div>
 
-            <motion.div variants={fadeUpVariant}>
-              <div className="glass-card rounded-[32px] p-6 lg:p-10" style={{ borderTopWidth: 4, borderTopColor: 'var(--engine-govern)' }}>
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(20,184,166,0.1),transparent_70%)] pointer-events-none" />
-                <h2 className="relative z-10 text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4 mb-6">Decision Reconstruction</h2>
-
-                <div className="relative z-10 flex flex-col gap-5 md:gap-8">
-                  <div className="flex flex-col gap-4">
-                    <p className="text-xl md:text-2xl text-white/90 font-light leading-relaxed">{auditEntry.explanation.summary}</p>
-                    <div className="flex items-center gap-4 bg-white/[0.02] border border-white/[0.04] rounded-2xl p-4">
-                      <ConfidenceIndicator value={auditEntry.explanation.confidence} colorOverride="var(--engine-govern)" size="lg" glow />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-5 pt-6 border-t border-white/[0.06]">
-                    <div className="flex flex-col gap-3">
-                      <h3 className="text-[10px] uppercase tracking-widest text-[#94a3b8] font-semibold flex items-center gap-2">Data Sources Analyzed</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {auditEntry.dataSources?.map(src => (
-                          <span key={src} className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs font-mono tracking-wide text-white/70 shadow-sm">{src}</span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <h3 className="text-[10px] uppercase tracking-widest text-white/50 font-semibold mb-2 mt-2">Contributing Factors</h3>
-                    {auditEntry.topFactors.map((factor) =>
-                      <div key={factor.label} className="flex flex-col gap-3 group">
-                        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
-                          <span className="text-sm tracking-wide text-white/90 flex-1">{factor.label}</span>
-                          <span className="text-xs text-white/40 italic sm:text-right">{factor.note}</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <div className="flex-1 h-2 rounded-full overflow-hidden bg-black/40 shadow-inner border border-white/[0.03]">
-                            <div className="h-full rounded-full transition-all duration-700 bg-[var(--engine-govern)]/60 group-hover:bg-[var(--engine-govern)]" style={{ width: `${factor.contribution * 100}%` }} />
-                          </div>
-                          <span className="text-[10px] uppercase font-mono tracking-widest text-white/50 w-12 text-right">{formatConfidence(factor.contribution)}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+              {/* Model info */}
+              <div className="flex flex-col gap-2 pt-2 border-t border-white/[0.06]">
+                <h3 className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">Model</h3>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-white/80 font-mono">{auditEntry.model.name}</span>
+                  <span className="text-[10px] text-white/40">v{auditEntry.model.version}</span>
+                  <span className="text-[10px] text-white/40 ml-auto">{auditEntry.model.accuracy}% accuracy</span>
                 </div>
               </div>
-            </motion.div>
-
+            </div>
           </motion.div>
 
+          {/* Right: Decision Reconstruction — SHAP bars */}
+          <motion.div variants={fadeUpVariant}>
+            <div className="glass-card glass-card-overlay rounded-[24px] p-6 lg:p-8 flex flex-col gap-6 h-full" style={{ borderTopWidth: 4, borderTopColor: 'var(--engine-govern)' }}>
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4">
+                Decision Reconstruction
+              </h2>
+
+              <div className="flex flex-col gap-5">
+                {auditEntry.topFactors.map((factor) => (
+                  <div key={factor.label} className="flex flex-col gap-2 group">
+                    <div className="flex items-end justify-between gap-2">
+                      <span className="text-sm tracking-wide text-white/90">{factor.label}</span>
+                      <span className="text-[10px] font-mono tracking-widest text-white/50">{formatConfidence(factor.contribution)}</span>
+                    </div>
+                    <div className="flex-1 h-2 rounded-full overflow-hidden bg-black/40 shadow-inner border border-white/[0.03]">
+                      <div
+                        className="h-full rounded-full transition-all duration-700 bg-[var(--engine-govern)]/60 group-hover:bg-[var(--engine-govern)]"
+                        style={{ width: `${factor.contribution * 100}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-white/40 italic">{factor.note}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
         </div>
 
-      </motion.div>
-    </>);
+        {/* Bottom: Compliance & Record */}
+        <motion.div variants={fadeUpVariant}>
+          <div className="glass-card glass-card-overlay rounded-[24px] p-6 lg:p-8 flex flex-col gap-6">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4">
+              Compliance &amp; Record
+            </h2>
 
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-12">
+              {/* Compliance badges */}
+              <div className="flex flex-wrap gap-4">
+                {([
+                  { key: 'gdpr' as const, label: 'GDPR' },
+                  { key: 'ecoa' as const, label: 'ECOA' },
+                  { key: 'ccpa' as const, label: 'CCPA' },
+                ]).map((reg) => (
+                  <div
+                    key={reg.key}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06]"
+                  >
+                    <span className="text-sm font-semibold text-white/90">{reg.label}</span>
+                    {auditEntry.compliance[reg.key] && (
+                      <span className="text-xs font-medium text-emerald-400">Compliant</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Confidence indicator */}
+              <div className="flex items-center gap-4 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                <ConfidenceIndicator value={auditEntry.explanation.confidence} colorOverride="var(--engine-govern)" size="lg" glow />
+                <span className="text-xs text-white/50">{resolvedConfidence} confidence</span>
+              </div>
+            </div>
+
+            {/* Explanation summary */}
+            <div className="pt-4 border-t border-white/[0.06]">
+              <p className="text-sm text-white/70 leading-relaxed">{auditEntry.explanation.summary}</p>
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    </>
+  );
 }
 
 export default GovernAuditDetail;

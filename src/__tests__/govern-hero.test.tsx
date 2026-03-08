@@ -7,11 +7,11 @@ import GovernPage from '../pages/Govern'
 /* ── Test data ── */
 
 const DEFAULT_PROPS = {
-  decisionsAudited: 10249,
+  decisionsAudited: 10250,
   engineBreakdown: [
     { engine: 'Protect', count: 4102, percent: 40, color: 'var(--engine-protect)' },
     { engine: 'Grow', count: 3287, percent: 32, color: 'var(--engine-grow)' },
-    { engine: 'Execute', count: 1850, percent: 18, color: 'var(--engine-execute)' },
+    { engine: 'Execute', count: 1851, percent: 18, color: 'var(--engine-execute)' },
     { engine: 'Govern', count: 1010, percent: 10, color: 'var(--engine-govern)' },
   ],
   auditEntries: [
@@ -19,34 +19,34 @@ const DEFAULT_PROPS = {
       id: 'GV-2026-0319-847',
       engine: 'Execute',
       engineColor: 'var(--engine-execute)',
-      action: 'Portfolio rebalance',
-      confidence: 0.97,
+      action: 'Margin account setup — Vance',
+      confidence: 0.94,
       time: '2:28 PM',
       status: 'Verified' as const,
       modelVersion: 'ExecutePlanner v4.1.0',
-      topFactor: 'Risk concentration',
+      topFactor: 'Collateral sufficiency',
     },
     {
       id: 'GV-2026-0319-846',
       engine: 'Protect',
       engineColor: 'var(--engine-protect)',
-      action: 'Flag suspicious wire transfer ($2,847)',
+      action: 'AML flag — $2.5M wire to Cayman Reef Holdings Ltd.',
       confidence: 0.94,
       time: '2:15 PM',
       status: 'Verified' as const,
       modelVersion: 'FraudDetectionV3.2 v3.2.1',
-      topFactor: 'Merchant risk',
+      topFactor: 'Counterparty risk',
     },
     {
       id: 'GV-2026-0319-845',
       engine: 'Grow',
       engineColor: 'var(--engine-grow)',
-      action: 'Subscription consolidation',
-      confidence: 0.89,
+      action: 'Securities-backed lending alternative proposed',
+      confidence: 0.93,
       time: '1:52 PM',
       status: 'Verified' as const,
       modelVersion: 'GrowthForecast v3.2.0',
-      topFactor: 'Billing category overlap',
+      topFactor: 'Alternative path benefit',
     },
   ],
 }
@@ -63,7 +63,7 @@ function renderHero(overrides: Partial<typeof DEFAULT_PROPS> = {}) {
 describe('GovernImmutableLedger', () => {
   it('renders CountUp aria-label with locale-formatted total', () => {
     renderHero()
-    expect(screen.getByLabelText('10,249')).toBeInTheDocument()
+    expect(screen.getByLabelText('10,250')).toBeInTheDocument()
   })
 
   it('renders the headline', () => {
@@ -81,9 +81,9 @@ describe('GovernImmutableLedger', () => {
 
   it('renders audit entries', () => {
     renderHero()
-    expect(screen.getByText('Portfolio rebalance')).toBeInTheDocument()
-    expect(screen.getByText('Flag suspicious wire transfer ($2,847)')).toBeInTheDocument()
-    expect(screen.getByText('Subscription consolidation')).toBeInTheDocument()
+    expect(screen.getByText('Margin account setup — Vance')).toBeInTheDocument()
+    expect(screen.getByText('AML flag — $2.5M wire to Cayman Reef Holdings Ltd.')).toBeInTheDocument()
+    expect(screen.getByText('Securities-backed lending alternative proposed')).toBeInTheDocument()
   })
 })
 

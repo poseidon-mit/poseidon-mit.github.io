@@ -44,7 +44,7 @@ export interface DashboardCoordinationProofProps {
 
   criticalSignal: {
     id: string
-    merchant: string
+    counterparty: string
     amount: string
     confidence: number
     severity: HeroSeverity
@@ -247,7 +247,7 @@ export function DashboardCoordinationProof({
       {/* ── Zone A: Action ── */}
       <HeroBento.Action>
         <h1
-          className="text-2xl md:text-3xl lg:text-4xl font-light tracking-tight text-white mb-3"
+          className="text-2xl md:text-3xl lg:text-4xl font-light tracking-tight leading-tight text-white mb-4"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           Your money, finally coordinated.
@@ -374,8 +374,8 @@ function ProtectCard({
             <span className="text-xs font-mono text-white/40">{criticalSignal.id}</span>
           </div>
 
-          <p className="text-sm font-medium text-white/90 truncate">
-            {criticalSignal.merchant}
+          <p className="text-sm font-medium text-white/90 line-clamp-1">
+            {criticalSignal.counterparty}
           </p>
 
           <div className="flex items-center gap-2 text-xs text-white/50">

@@ -246,7 +246,7 @@ export default function ProtectPage() {
                                 <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest">{t.time}</span>
                               </div>
                               <div>
-                                <h3 className="text-base font-medium text-white/90 truncate mr-4">{t.merchant}</h3>
+                                <h3 className="text-base font-medium text-white/90 truncate mr-4">{t.counterparty}</h3>
                                 <span className="text-sm font-mono text-white/70 block mt-1">{t.amount}</span>
                               </div>
                               <div className="flex items-center justify-between mt-2 pt-4 border-t border-white/[0.06]">
@@ -258,7 +258,7 @@ export default function ProtectPage() {
                             <div className="hidden md:grid md:grid-cols-5 lg:grid-cols-6 items-center gap-4 relative z-10">
                               <div className="col-span-2 flex flex-col gap-1">
                                 <span className="text-xs font-mono font-medium" style={{ color: "var(--engine-protect)" }}>{t.id}</span>
-                                <h3 className="text-base font-medium text-white/90 truncate mr-4">{t.merchant}</h3>
+                                <h3 className="text-base font-medium text-white/90 truncate mr-4">{t.counterparty}</h3>
                                 <span className="text-xs text-white/40">{t.description}</span>
                               </div>
                               <div className="flex flex-col items-end">
@@ -372,7 +372,7 @@ export default function ProtectPage() {
                       {sheetThreat.severity}
                     </span>
                   </div>
-                  <h2 className="text-lg font-light text-white">{sheetThreat.merchant}</h2>
+                  <h2 className="text-lg font-light text-white">{sheetThreat.counterparty}</h2>
                   <p className="text-sm text-white/50 mt-1">{sheetThreat.description}</p>
                 </ActionSheetHeader>
                 <ActionSheetBody>

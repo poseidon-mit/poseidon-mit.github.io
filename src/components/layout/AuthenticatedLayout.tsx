@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { AppNavShell } from './AppNavShell';
 import { AuroraPulse, GovernFooter } from '@/components/poseidon';
 import { getGovernanceMeta } from '@/lib/governance-meta';
 import { useDismissedAlerts } from '@/pages/protect/useDismissedAlerts';
-import { CANONICAL_UNIVERSE } from '@/domain/poseidon-universe/canonical';
+import { selectPriorityQueue } from '@/domain/poseidon-universe/selectors';
+import type { ProtectThreatEntity } from '@/domain/poseidon-universe/types';
 
 interface AuthenticatedLayoutProps {
     children: React.ReactNode;
@@ -23,12 +24,39 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
     const meta = getGovernanceMeta(path);
     const { dismissed } = useDismissedAlerts();
 
-    const activeTopThreat = useMemo(
-        () => CANONICAL_UNIVERSE.entities.protectThreats
-            .filter(t => !dismissed.has(t.id) && (t.severity === 'Critical' || t.severity === 'High'))
-            .sort((a, b) => b.sortOrder - a.sortOrder)[0] ?? null,
-        [dismissed]
-    );
+    const [latestExecuteEvent, setLatestExecuteEvent] = useState<{
+        govId: string;
+        actionId: string;
+        actionTitle: string;
+    } | null>(null);
+
+    useEffect(() => {
+        const handler = (e: Event) => {
+            const detail = (e as CustomEvent).detail as {
+                govId: string;
+                actionId: string;
+                actionTitle: string;
+            };
+            setLatestExecuteEvent(detail);
+        };
+        window.addEventListener('poseidon:execute-approved', handler);
+        return () => window.removeEventListener('poseidon:execute-approved', handler);
+    }, []);
+
+    useEffect(() => {
+        if (!latestExecuteEvent) return;
+        const timer = setTimeout(() => setLatestExecuteEvent(null), 8000);
+        return () => clearTimeout(timer);
+    }, [latestExecuteEvent]);
+
+    const activeTopThreat = useMemo(() => {
+        const topThreat = selectPriorityQueue()
+            .filter((p) => p.kind === 'threat' && !dismissed.has(p.item.id))
+            .at(0);
+        if (!topThreat) return null;
+        const threat = topThreat.item as ProtectThreatEntity;
+        return { id: threat.id, counterparty: threat.counterparty, confidence: threat.confidence };
+    }, [dismissed]);
 
     return (
         <AppNavShell path={path}>
@@ -59,10 +87,8 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
                             <GovernFooter
                                 auditId={meta.auditId}
                                 pageContext={meta.pageContext}
-                                activeTopThreat={activeTopThreat
-                                    ? { id: activeTopThreat.id, merchant: activeTopThreat.merchant, confidence: activeTopThreat.confidence }
-                                    : null
-                                }
+                                activeTopThreat={activeTopThreat}
+                                latestExecuteEvent={latestExecuteEvent}
                                 className="opacity-70 hover:opacity-100 transition-opacity duration-500"
                             />
                         </div>

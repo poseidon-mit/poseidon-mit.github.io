@@ -9,6 +9,7 @@ export interface ToastProps {
     id?: string
     message: string
     variant?: ToastVariant
+    action?: { label: string; onClick: () => void }
     onDismiss?: () => void
     className?: string
 }
@@ -20,7 +21,7 @@ const variantsConfig = {
     error: { icon: XCircle, color: 'text-red-400', border: 'border-red-500/20', bg: 'bg-red-500/10' },
 }
 
-export function Toast({ message, variant = 'info', onDismiss, className }: ToastProps) {
+export function Toast({ message, variant = 'info', action, onDismiss, className }: ToastProps) {
     const config = variantsConfig[variant]
     const Icon = config.icon
 
@@ -43,6 +44,15 @@ export function Toast({ message, variant = 'info', onDismiss, className }: Toast
 
             <Icon className={cn('relative z-10 size-5 shrink-0', config.color)} />
             <p className="relative z-10 flex-1 text-sm font-medium text-slate-100">{message}</p>
+
+            {action && (
+                <button
+                    onClick={action.onClick}
+                    className="relative z-10 shrink-0 rounded-md px-2 py-1 text-xs font-semibold text-white/90 transition-colors hover:text-white border border-white/15 hover:border-white/30"
+                >
+                    {action.label}
+                </button>
+            )}
 
             {onDismiss && (
                 <button

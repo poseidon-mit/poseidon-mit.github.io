@@ -29,10 +29,10 @@ const DEFAULT_PROPS = {
   simulationData: SIMULATION_DATA,
   currentPercentile: 23,
   projectedPercentile: 67,
-  cohortBracket: 'your income bracket',
+  cohortBracket: 'your portfolio tier',
   topRecommendation: {
     rank: 1,
-    title: 'Reduce Credit Card Interest',
+    title: 'Corporate Credit Facility Optimization',
     monthlySavings: 164,
     confidence: 0.88,
   },
@@ -77,7 +77,7 @@ describe('GrowGrowthAdvantage', () => {
 
   it('renders top recommendation title and monthly savings', () => {
     renderHero()
-    expect(screen.getByText('Reduce Credit Card Interest')).toBeInTheDocument()
+    expect(screen.getByText('Corporate Credit Facility Optimization')).toBeInTheDocument()
     expect(screen.getByText(/\$164\/mo/)).toBeInTheDocument()
   })
 
@@ -97,13 +97,13 @@ describe('GrowGrowthAdvantage', () => {
 
   it('hides Next Best Action pane when topRecommendation is null', () => {
     renderHero({ topRecommendation: null, onQueueTopAction: null })
-    expect(screen.queryByText('Reduce Credit Card Interest')).not.toBeInTheDocument()
+    expect(screen.queryByText('Corporate Credit Facility Optimization')).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /queue for execution/i })).not.toBeInTheDocument()
   })
 
   it('omits cohort acceptance rate when not provided', () => {
     renderHero()
-    expect(screen.queryByText(/cohort acceptance rate/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/tier adoption rate/)).not.toBeInTheDocument()
   })
 
   it('hides replay and delta buttons when reduced motion is preferred', () => {
@@ -129,17 +129,17 @@ describe('GrowGrowthAdvantage', () => {
       expect(screen.queryByRole('button', { name: /see poseidon delta/i })).not.toBeInTheDocument()
     })
 
-    it('renders cohort acceptance rate after optimize', () => {
+    it('renders tier adoption rate after optimize', () => {
       renderHero({ cohortAcceptanceRate: 0.89 })
       fireEvent.click(screen.getByRole('button', { name: /see poseidon delta/i }))
-      expect(screen.getByText(/89% cohort acceptance rate/)).toBeInTheDocument()
+      expect(screen.getByText(/89% tier adoption rate/)).toBeInTheDocument()
     })
 
     it('renders platform profile count after optimize', () => {
       renderHero({ platformProfileCount: 184290 })
       fireEvent.click(screen.getByRole('button', { name: /see poseidon delta/i }))
       expect(screen.getByText(/184,290/)).toBeInTheDocument()
-      expect(screen.getByText(/active profiles/)).toBeInTheDocument()
+      expect(screen.getByText(/active portfolios/)).toBeInTheDocument()
     })
 
     it('replay click does not regress visible content', () => {
@@ -149,7 +149,7 @@ describe('GrowGrowthAdvantage', () => {
       act(() => vi.advanceTimersByTime(1200))
       expect(screen.getByText(/\+\$24,437/)).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /view all/i })).toBeInTheDocument()
-      expect(screen.getByText(/89% cohort acceptance rate/)).toBeInTheDocument()
+      expect(screen.getByText(/89% tier adoption rate/)).toBeInTheDocument()
     })
   })
 })
@@ -193,5 +193,25 @@ describe('GrowPage integration', () => {
     const expected = RECOMMENDATIONS_SUMMARY.reduce((s, r) => s + r.monthly, 0)
     // $X/mo appears in both summary stats and KPI card
     expect(screen.getAllByText(new RegExp(`\\$${expected.toLocaleString()}/mo`)).length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('dismiss replaces top recommendation with next best', () => {
+    renderGrowPage()
+    // Get current top recommendation title
+    const sorted = [...RECOMMENDATIONS_SUMMARY].sort((a, b) => a.rank - b.rank)
+    const firstTitle = sorted[0].title
+    const secondTitle = sorted[1]?.title
+
+    // Verify the top recommendation is displayed
+    expect(screen.getByText(firstTitle)).toBeInTheDocument()
+
+    // Click "Not useful"
+    const dismissBtn = screen.getByRole('button', { name: /not useful/i })
+    fireEvent.click(dismissBtn)
+
+    // The first recommendation should be gone and second should appear
+    if (secondTitle) {
+      expect(screen.getByText(secondTitle)).toBeInTheDocument()
+    }
   })
 })

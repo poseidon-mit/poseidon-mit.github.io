@@ -17,10 +17,14 @@ import type {
   WorkbenchAction,
   BentoCardState,
   GovernScore,
+  ActiveFrictionGate,
+  BentoCardStreamingState,
 } from '@/lib/orchestrator/types'
+import type { WorkspaceLayout } from '@/lib/orchestrator/workspace/workspace-types'
 import { THEME_STANDARD } from '@/lib/orchestrator/theme-tokens'
 import { createEmptyTrail } from '@/lib/orchestrator/audit-chain'
 import { generateId } from '@/lib/orchestrator/crypto'
+import { createDefaultV5Extensions } from '@/lib/orchestrator/workspace/v5/v5-types'
 
 // ─── Initial State ───────────────────────────────────────────────────────────
 
@@ -61,6 +65,24 @@ function createInitialState(): WorkbenchState {
         humanOversight: 85,
       },
       computedAt: new Date().toISOString(),
+    },
+
+    chatThread: {
+      messages: [],
+      isProcessing: false,
+      error: null,
+    },
+    activeFrictionGate: null,
+
+    workspace: {
+      activeSuggestions: [],
+      streamingCards: {},
+      autopsyTarget: null,
+      chatDrawerOpen: false,
+      autopsyDrawerOpen: false,
+      userContext: null,
+      generativeControls: {},
+      v5: createDefaultV5Extensions(),
     },
   }
 }
@@ -266,6 +288,273 @@ function workbenchReducer(
         localFirstStatus: {
           ...state.localFirstStatus,
           ...action.updates,
+        },
+      }
+
+    // ─── Chat (v3.0) ──────────────────────────────────────────────────
+    case 'ADD_CHAT_MESSAGE':
+      return {
+        ...state,
+        chatThread: {
+          ...state.chatThread,
+          messages: [...state.chatThread.messages, action.message],
+        },
+      }
+
+    case 'SET_CHAT_PROCESSING':
+      return {
+        ...state,
+        chatThread: {
+          ...state.chatThread,
+          isProcessing: action.isProcessing,
+        },
+      }
+
+    case 'SET_FRICTION_GATE':
+      return {
+        ...state,
+        activeFrictionGate: action.gate,
+      }
+
+    case 'RESOLVE_FRICTION_GATE':
+      return {
+        ...state,
+        activeFrictionGate: state.activeFrictionGate
+          ? { ...state.activeFrictionGate, isResolved: true, resolvedAt: new Date().toISOString() }
+          : null,
+      }
+
+    case 'CLEAR_CHAT_THREAD':
+      return {
+        ...state,
+        chatThread: { messages: [], isProcessing: false, error: null },
+        activeFrictionGate: null,
+      }
+
+    // ─── Workspace (v4.0) ────────────────────────────────────────────
+    case 'SET_SUGGESTIONS':
+      return {
+        ...state,
+        workspace: { ...state.workspace, activeSuggestions: action.suggestions },
+      }
+
+    case 'SET_CARD_STREAMING_STATE':
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          streamingCards: {
+            ...state.workspace.streamingCards,
+            [action.cardId]: {
+              ...state.workspace.streamingCards[action.cardId],
+              ...action.state,
+            } as BentoCardStreamingState,
+          },
+        },
+      }
+
+    case 'SET_AUTOPSY_TARGET':
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          autopsyTarget: action.cardId,
+          autopsyDrawerOpen: action.cardId !== null,
+        },
+      }
+
+    case 'TOGGLE_CHAT_DRAWER':
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          chatDrawerOpen: !state.workspace.chatDrawerOpen,
+        },
+      }
+
+    case 'TOGGLE_AUTOPSY_DRAWER':
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          autopsyDrawerOpen: !state.workspace.autopsyDrawerOpen,
+          autopsyTarget: state.workspace.autopsyDrawerOpen ? null : state.workspace.autopsyTarget,
+        },
+      }
+
+    case 'SET_WORKSPACE_LAYOUT':
+      return {
+        ...state,
+        workspace: { ...state.workspace, ...action.layout },
+      }
+
+    case 'UPDATE_GENERATIVE_CONTROL': {
+      const controls = state.workspace.generativeControls[action.cardId] ?? []
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          generativeControls: {
+            ...state.workspace.generativeControls,
+            [action.cardId]: controls.map((ctrl) =>
+              ctrl.id === action.controlId
+                ? { ...ctrl, currentValue: action.value as never }
+                : ctrl,
+            ),
+          },
+        },
+      }
+    }
+
+    case 'SET_USER_CONTEXT':
+      return {
+        ...state,
+        workspace: { ...state.workspace, userContext: action.context },
+      }
+
+    case 'SET_GENERATIVE_CONTROLS':
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          generativeControls: {
+            ...state.workspace.generativeControls,
+            [action.cardId]: action.controls,
+          },
+        },
+      }
+
+    // ─── v5.0: Autonomy, Provenance, Pin, Sandbox, Revert ─────────
+    case 'SET_AUTONOMY_LEVEL':
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          v5: state.workspace.v5
+            ? { ...state.workspace.v5, autonomy: action.config }
+            : null,
+        },
+      }
+
+    case 'PIN_ARTIFACT':
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          v5: state.workspace.v5
+            ? {
+                ...state.workspace.v5,
+                pinnedArtifacts: [...state.workspace.v5.pinnedArtifacts, action.artifact],
+              }
+            : null,
+        },
+      }
+
+    case 'UNPIN_ARTIFACT':
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          v5: state.workspace.v5
+            ? {
+                ...state.workspace.v5,
+                pinnedArtifacts: state.workspace.v5.pinnedArtifacts.filter(
+                  (a) => a.id !== action.artifactId,
+                ),
+              }
+            : null,
+        },
+      }
+
+    case 'REORDER_PINNED':
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          v5: state.workspace.v5
+            ? {
+                ...state.workspace.v5,
+                pinnedArtifacts: action.orderedIds
+                  .map((id, i) => {
+                    const found = state.workspace.v5!.pinnedArtifacts.find((a) => a.id === id)
+                    return found ? { ...found, position: i } : null
+                  })
+                  .filter(Boolean) as typeof state.workspace.v5.pinnedArtifacts,
+              }
+            : null,
+        },
+      }
+
+    case 'UPDATE_SANDBOX_PREVIEW':
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          v5: state.workspace.v5
+            ? {
+                ...state.workspace.v5,
+                sandboxPreview: { ...state.workspace.v5.sandboxPreview, ...action.preview },
+              }
+            : null,
+        },
+      }
+
+    case 'TOGGLE_SANDBOX_PREVIEW':
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          v5: state.workspace.v5
+            ? {
+                ...state.workspace.v5,
+                sandboxPreview: {
+                  ...state.workspace.v5.sandboxPreview,
+                  isOpen: !state.workspace.v5.sandboxPreview.isOpen,
+                },
+              }
+            : null,
+        },
+      }
+
+    case 'RECORD_ARTIFACT_CHECKPOINT':
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          v5: state.workspace.v5
+            ? {
+                ...state.workspace.v5,
+                pinnedArtifacts: state.workspace.v5.pinnedArtifacts.map((a) =>
+                  a.id === action.artifactId
+                    ? { ...a, checkpoint: action.checkpoint }
+                    : a,
+                ),
+              }
+            : null,
+        },
+      }
+
+    case 'REVERT_ARTIFACT':
+      return {
+        ...state,
+        workspace: {
+          ...state.workspace,
+          v5: state.workspace.v5
+            ? {
+                ...state.workspace.v5,
+                pinnedArtifacts: state.workspace.v5.pinnedArtifacts.map((a) =>
+                  a.id === action.artifactId && a.checkpoint
+                    ? {
+                        ...a,
+                        artifact: {
+                          ...a.artifact,
+                          data: a.checkpoint.snapshotData,
+                        },
+                      }
+                    : a,
+                ),
+              }
+            : null,
         },
       }
 

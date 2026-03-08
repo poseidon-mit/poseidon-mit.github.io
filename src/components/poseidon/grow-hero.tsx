@@ -42,6 +42,7 @@ export interface GrowGrowthAdvantageProps {
   } | null
   onViewRecommendations: () => void
   onQueueTopAction: (() => void) | null
+  onDismissTopAction?: () => void
   cohortAcceptanceRate?: number
   platformProfileCount?: number
 }
@@ -73,12 +74,12 @@ function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: 
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full bg-[#94A3B8]" />
-          <span className="text-white/50">Status Quo:</span>
+          <span className="text-white/50">Current Path:</span>
           <span className="ml-auto font-mono text-white/90">${data.baseline.toLocaleString()}</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full bg-[var(--engine-grow)]" />
-          <span className="text-white/50">AI Optimized:</span>
+          <span className="text-white/50">Poseidon-Optimized:</span>
           <span className="ml-auto font-mono text-[var(--engine-grow)]">${aiOptimized.toLocaleString()}</span>
         </div>
       </div>
@@ -163,7 +164,7 @@ function HeroChart({
   const midBandY = finalBaseline + (finalAiOptimized - finalBaseline) / 2
   return (
     <div
-      className="h-[200px] md:h-[260px]"
+      className="h-[280px] md:h-[360px]"
       role="img"
       aria-label={`3-year growth: baseline $${finalBaseline.toLocaleString()}, AI optimized $${finalAiOptimized.toLocaleString()}, advantage +$${(finalAiOptimized - finalBaseline).toLocaleString()}`}
     >
@@ -261,6 +262,7 @@ function HeroKpiStrip({
   cohortBracket,
   topRecommendation,
   onQueueTopAction,
+  onDismissTopAction,
   cohortAcceptanceRate,
   platformProfileCount,
   isOptimized,
@@ -272,16 +274,17 @@ function HeroKpiStrip({
   cohortBracket: string
   topRecommendation: GrowGrowthAdvantageProps['topRecommendation']
   onQueueTopAction: (() => void) | null
+  onDismissTopAction?: () => void
   cohortAcceptanceRate?: number
   platformProfileCount?: number
   isOptimized: boolean
 }) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       {/* Card 1: Savings */}
-      <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-2">
+      <div className="bg-white/[0.02] rounded-2xl p-5 md:p-6 flex flex-col gap-2">
         <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
-          Monthly Savings
+          Monthly Optimization
         </span>
         <span className="text-xl font-mono font-semibold tabular-nums" style={{ color: 'var(--engine-grow)' }}>
           ${totalMonthlySavings.toLocaleString()}/mo
@@ -292,9 +295,9 @@ function HeroKpiStrip({
       </div>
 
       {/* Card 2: Cohort */}
-      <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-3">
+      <div className="bg-white/[0.02] rounded-2xl p-5 md:p-6 flex flex-col gap-3">
         <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
-          Cohort Intelligence
+          Tier Benchmarking
         </span>
         <p className="text-sm text-white/70">
           {ordinal(currentPercentile)} &rarr; {ordinal(projectedPercentile)} percentile in {cohortBracket}
@@ -327,12 +330,12 @@ function HeroKpiStrip({
         )}>
           {cohortAcceptanceRate != null && (
             <p className="text-xs text-white/40 mt-1">
-              {Math.round(cohortAcceptanceRate * 100)}% cohort acceptance rate
+              {Math.round(cohortAcceptanceRate * 100)}% tier adoption rate
             </p>
           )}
           {platformProfileCount != null && (
             <p className="text-[10px] text-white/25 font-mono mt-2">
-              Across {platformProfileCount.toLocaleString()} active profiles
+              Across {platformProfileCount.toLocaleString()} active portfolios
             </p>
           )}
         </div>
@@ -340,7 +343,7 @@ function HeroKpiStrip({
 
       {/* Card 3: Top Action */}
       {topRecommendation && onQueueTopAction && (
-        <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-3">
+        <div className="bg-white/[0.02] rounded-2xl p-5 md:p-6 flex flex-col gap-3">
           <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
             Next Best Action
           </span>
@@ -374,6 +377,14 @@ function HeroKpiStrip({
           >
             Queue for Execution <Zap size={14} />
           </button>
+          {onDismissTopAction && (
+            <button
+              onClick={onDismissTopAction}
+              className="text-[10px] text-white/25 hover:text-white/50 transition-colors self-center"
+            >
+              Not useful
+            </button>
+          )}
         </div>
       )}
     </div>
@@ -396,6 +407,7 @@ export function GrowGrowthAdvantage({
   topRecommendation,
   onViewRecommendations,
   onQueueTopAction,
+  onDismissTopAction,
   cohortAcceptanceRate,
   platformProfileCount,
 }: GrowGrowthAdvantageProps) {
@@ -484,6 +496,7 @@ export function GrowGrowthAdvantage({
           cohortBracket={cohortBracket}
           topRecommendation={topRecommendation}
           onQueueTopAction={onQueueTopAction}
+          onDismissTopAction={onDismissTopAction}
           cohortAcceptanceRate={cohortAcceptanceRate}
           platformProfileCount={platformProfileCount}
           isOptimized={isOptimized}

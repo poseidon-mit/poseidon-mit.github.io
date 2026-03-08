@@ -11,13 +11,13 @@ import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADIN
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
 import { usePageTitle } from '@/hooks/use-page-title';
-import { selectGrowEmergencyFundView } from '@/domain/poseidon-universe';
+import { selectGrowLiquidityReserveView } from '@/domain/poseidon-universe';
 
 
 /* ── Cross-thread ── */
-const emergencyFund = selectGrowEmergencyFundView();
-const EMERGENCY_FUND_PROGRESS = emergencyFund.percent;
-const EMERGENCY_FUND_CURRENT = emergencyFund.currentUsd;
+const liquidityReserve = selectGrowLiquidityReserveView();
+const RESERVE_PROGRESS = liquidityReserve.percent;
+const RESERVE_CURRENT = liquidityReserve.currentUsd;
 
 /* ── Scenario definitions ── */
 interface Scenario {
@@ -33,17 +33,17 @@ interface Scenario {
 const BASE_DATA = (factor: number): ForecastPoint[] =>
   Array.from({ length: 12 }, (_, i) => ({
     x: i,
-    median: EMERGENCY_FUND_CURRENT + i * factor,
-    low: EMERGENCY_FUND_CURRENT + i * (factor * 0.7),
-    high: EMERGENCY_FUND_CURRENT + i * (factor * 1.3)
+    median: RESERVE_CURRENT + i * factor,
+    low: RESERVE_CURRENT + i * (factor * 0.7),
+    high: RESERVE_CURRENT + i * (factor * 1.3)
   }));
 
 const SCENARIOS: Scenario[] = [
   {
     id: "conservative",
     name: "Conservative",
-    desc: "Keep current pace. Lower risk, longer timeline.",
-    monthlySave: 420,
+    desc: "Maintain current allocation. Lower risk, longer timeline.",
+    monthlySave: 420_000,
     monthsToGoal: 7,
     confidence: 0.92,
     data: BASE_DATA(250)
@@ -51,8 +51,8 @@ const SCENARIOS: Scenario[] = [
   {
     id: "moderate",
     name: "Moderate boost",
-    desc: "Increase monthly by $60. Balanced risk-reward.",
-    monthlySave: 480,
+    desc: "Increase monthly allocation by $60K. Balanced risk-reward.",
+    monthlySave: 480_000,
     monthsToGoal: 5,
     confidence: 0.87,
     data: BASE_DATA(320)
@@ -60,8 +60,8 @@ const SCENARIOS: Scenario[] = [
   {
     id: "aggressive",
     name: "Aggressive",
-    desc: "Maximize contributions. Fastest path, tighter budget.",
-    monthlySave: 600,
+    desc: "Maximize allocations. Fastest path, tighter capital deployment.",
+    monthlySave: 600_000,
     monthsToGoal: 4,
     confidence: 0.79,
     data: BASE_DATA(420)
@@ -102,7 +102,7 @@ export default function GrowScenariosPage() {
               Compare growth paths
             </h1>
             <p className="text-lg md:text-xl text-white/50 max-w-2xl font-light leading-relaxed tracking-wide">
-              Emergency fund at <span className="text-white/80 font-medium">{EMERGENCY_FUND_PROGRESS}%</span>. Choose a scenario to see projected outcomes.
+              Liquidity reserve at <span className="text-white/80 font-medium">{RESERVE_PROGRESS}%</span>. Choose a scenario to see projected outcomes.
             </p>
           </motion.div>
         </motion.section>
@@ -175,7 +175,7 @@ export default function GrowScenariosPage() {
             <div className="relative z-10 flex-1 flex flex-col justify-center gap-4">
               <ForecastBand data={activeScenario.data} width={800} height={180} engine="grow" className="w-full" />
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/[0.04]">
-                <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest px-2">Now ($7,300)</span>
+                <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest px-2">Now (${RESERVE_CURRENT.toLocaleString()})</span>
                 <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest px-2">
                   +12 months (${activeScenario.data[11].median.toLocaleString()} projected)
                 </span>
@@ -199,7 +199,7 @@ export default function GrowScenariosPage() {
                 </p>
               </div>
               <p className="text-base text-white/50 leading-relaxed tracking-wide mt-2">
-                This will queue a monthly transfer of <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-white/[0.05] rounded-md border border-[var(--engine-grow)]/20">${activeScenario.monthlySave}</span> for approval in the Execute engine.
+                This will queue a monthly allocation of <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-white/[0.05] rounded-md border border-[var(--engine-grow)]/20">${activeScenario.monthlySave.toLocaleString()}</span> for authorization in the Execute engine.
               </p>
             </div>
             <div className="relative z-10 flex flex-wrap items-center gap-4 md:ml-auto">
