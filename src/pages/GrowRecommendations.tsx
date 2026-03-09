@@ -233,11 +233,14 @@ function RecommendationCard({ rec }: { rec: RecommendationListItem }) {
         ...(tier === 'focus' ? focusGlowStyle('var(--engine-grow)') : {}),
       }}
     >
-      {/* Title row */}
-      <div className="flex items-center gap-2 flex-wrap">
+      {/* Primary row: title + amount + difficulty */}
+      <div className="flex items-center gap-3 flex-wrap">
         <span className={cn('text-white/90', styles.titleSize)}>{rec.title}</span>
+        <span className={styles.amountSize} style={{ color: 'var(--engine-grow)' }}>
+          ${rec.annualSavings.toLocaleString()}/yr
+        </span>
         <span
-          className="inline-flex items-center rounded-full px-1.5 sm:px-2 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase tracking-widest border border-transparent"
+          className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border border-transparent"
           style={{ background: diff.bg, color: diff.color }}
         >
           {rec.difficulty}
@@ -249,14 +252,8 @@ function RecommendationCard({ rec }: { rec: RecommendationListItem }) {
         <p className="text-sm text-white/55 leading-relaxed line-clamp-2">{rec.description}</p>
       )}
 
-      {/* Bottom row: amount + CTA */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-baseline gap-1">
-          <span className={styles.amountSize} style={{ color: 'var(--engine-grow)' }}>
-            ${rec.annualSavings.toLocaleString()}
-          </span>
-          <span className="text-[10px] text-white/40">/yr</span>
-        </div>
+      {/* CTA row */}
+      <div className="flex items-center justify-end">
         {tier === 'focus' ? (
           <span
             className={cn(

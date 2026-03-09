@@ -405,17 +405,17 @@ export function OnboardingBottomSheet() {
 
       <AnimatePresence mode="wait">
         {step === 0 && (
-          <motion.div key="step-connect" {...fadeUp} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
+          <motion.div key="step-connect" variants={fadeUp} initial="hidden" animate="visible" exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
             <StepConnect onNext={handleConnectDone} onSkip={handleSkip} />
           </motion.div>
         )}
         {step === 1 && (
-          <motion.div key="step-engines" {...fadeUp} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
+          <motion.div key="step-engines" variants={fadeUp} initial="hidden" animate="visible" exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
             <StepEngines onNext={handleEnginesDone} onSkip={handleSkip} />
           </motion.div>
         )}
         {step === 2 && (
-          <motion.div key="step-policy" {...fadeUp} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
+          <motion.div key="step-policy" variants={fadeUp} initial="hidden" animate="visible" exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
             <StepPolicy onDone={handlePolicyDone} />
           </motion.div>
         )}

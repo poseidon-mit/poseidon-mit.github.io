@@ -8,6 +8,7 @@ import { useDemoState } from '@/lib/demo-state/provider'
 import { getPendingExecuteCount } from '@/lib/demo-state/selectors'
 import {
   selectCohortMetrics,
+  selectCohortHeadlines,
   selectDashboardView,
   selectExecuteActionsView,
   selectGovernAuditSummaryView,
@@ -148,6 +149,11 @@ export default function DashboardPage() {
             cohortAvgSavingsUsd={cohort.avgMonthlySavingsUsd}
           />
         </motion.section>
+
+        {/* ── Cohort Insight ── */}
+        <motion.p variants={itemVariants} className="text-xs text-muted-foreground -mt-4">
+          <span className="text-primary/70">Similar users</span> · {selectCohortHeadlines().dashboard}
+        </motion.p>
 
       </motion.main>
 

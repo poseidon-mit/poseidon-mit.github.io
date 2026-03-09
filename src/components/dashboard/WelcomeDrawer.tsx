@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Shield, TrendingUp, Zap, ChevronRight } from 'lucide-react'
 import { BottomSheet } from '@/components/ui/sheet'
 import { Link } from '@/router'
+import { selectProtectThreats, selectExecuteActionsView, selectRecommendationsSummary } from '@/domain/poseidon-universe'
 
 const DRAWER_KEY = 'poseidon-drawer-seen'
 const SHOW_DELAY_MS = 500
@@ -15,34 +16,43 @@ interface EngineCard {
   href: string
 }
 
-const CARDS: EngineCard[] = [
-  {
-    engine: 'Protect',
-    color: 'var(--engine-protect)',
-    icon: Shield,
-    headline: '3 threats detected',
-    detail: 'Suspicious transactions flagged for review',
-    href: '/protect',
-  },
-  {
-    engine: 'Grow',
-    color: 'var(--engine-grow)',
-    icon: TrendingUp,
-    headline: '$444/mo savings found',
-    detail: 'AI-identified optimization opportunities',
-    href: '/grow',
-  },
-  {
-    engine: 'Execute',
-    color: 'var(--engine-execute)',
-    icon: Zap,
-    headline: '5 actions ready',
-    detail: 'Review and approve to optimize',
-    href: '/execute',
-  },
-]
+function useEngineCards(): EngineCard[] {
+  return useMemo(() => {
+    const threatCount = selectProtectThreats().length
+    const monthlySavings = selectRecommendationsSummary().reduce((sum, r) => sum + r.monthly, 0)
+    const actionCount = selectExecuteActionsView().length
+
+    return [
+      {
+        engine: 'Protect',
+        color: 'var(--engine-protect)',
+        icon: Shield,
+        headline: `${threatCount} threats detected`,
+        detail: 'Suspicious transactions flagged for review',
+        href: '/protect',
+      },
+      {
+        engine: 'Grow',
+        color: 'var(--engine-grow)',
+        icon: TrendingUp,
+        headline: `$${monthlySavings}/mo savings found`,
+        detail: 'AI-identified optimization opportunities',
+        href: '/grow',
+      },
+      {
+        engine: 'Execute',
+        color: 'var(--engine-execute)',
+        icon: Zap,
+        headline: `${actionCount} actions ready`,
+        detail: 'Review and approve to optimize',
+        href: '/execute',
+      },
+    ]
+  }, [])
+}
 
 export function WelcomeDrawer() {
+  const CARDS = useEngineCards()
   const [open, setOpen] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout>>()
 

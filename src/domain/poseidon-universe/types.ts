@@ -1,3 +1,34 @@
+export type AccountType = 'checking' | 'savings' | 'credit-card' | 'retirement' | 'brokerage' | 'auto-loan'
+
+export interface AccountEntity {
+  id: string
+  label: string
+  institution: string
+  last4: string
+  type: AccountType
+  balanceUsd: number
+  apr?: number
+  apy?: number
+}
+
+export interface GoalEntity {
+  id: string
+  title: string
+  currentUsd: number
+  targetUsd: number
+  monthlyContributionUsd: number
+  engine: EngineName
+}
+
+export interface CanonicalBalanceSheet {
+  accounts: AccountEntity[]
+  totalAssets: number
+  totalLiabilities: number
+  netWorth: number
+  monthlyIncome: number
+  monthlyExpenses: number
+}
+
 export type EngineName = 'Protect' | 'Grow' | 'Execute' | 'Govern'
 export type ExecuteEngineName = 'Protect' | 'Grow' | 'Execute'
 
@@ -261,6 +292,13 @@ export interface CanonicalUniverseV1 {
     cohort: CohortMetrics
     architecturalTrust: ArchitecturalTrust
     councilMetrics: CouncilMetrics
+    cohortHeadlines: {
+      dashboard: string
+      protect: string
+      grow: string
+      execute: string
+      govern: string
+    }
   }
   entities: {
     criticalAlert: CriticalAlertEntity
@@ -270,7 +308,10 @@ export interface CanonicalUniverseV1 {
     governAuditEntries: GovernAuditEntryEntity[]
     dashboardActivities: DashboardActivityEntity[]
     events: CanonicalEvent[]
+    accounts: AccountEntity[]
+    goals: GoalEntity[]
   }
+  balanceSheet: CanonicalBalanceSheet
   relations: {
     alertToAction: Record<string, string[]>
     recommendationToAction: Record<string, string[]>

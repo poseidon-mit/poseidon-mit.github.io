@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MessageCircle, Download, RotateCcw, ChevronDown, Lock } from 'lucide-react';
 import { useRouter } from '@/router';
-import { SubPageNav, ConfidenceIndicator, DecryptText } from '@/components/poseidon';
+import { SubPageNav, ConfidenceIndicator } from '@/components/poseidon';
 import { getMotionPreset } from '@/lib/motion-presets';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
@@ -43,16 +43,9 @@ export function GovernAuditDetail() {
         animate="visible"
         role="main"
       >
-        {/* Immutable watermark */}
-        <div className="pointer-events-none fixed inset-0 flex items-center justify-center opacity-[0.015] z-0 select-none overflow-hidden" aria-hidden="true">
-          <span className="text-[120px] md:text-[200px] font-bold uppercase tracking-[0.3em] text-white whitespace-nowrap rotate-[-15deg]" style={{ fontFamily: 'var(--font-display)' }}>
-            IMMUTABLE RECORD
-          </span>
-        </div>
-
         {/* What Happened */}
         <motion.section variants={fadeUpVariant} className="flex flex-col gap-1">
-          <DecryptText text={auditEntry.id} duration={1000} delay={200} className="text-[10px] uppercase tracking-widest text-white/40 font-semibold mb-2 font-mono block" as="span" />
+          <span className="text-[11px] uppercase tracking-widest text-white/40 font-semibold mb-2 font-mono block">{auditEntry.id}</span>
           <h1 className={`${PAGE_HEADING_CLASS} break-words`} style={PAGE_HEADING_STYLE}>
             {auditEntry.coreAssertion}
           </h1>
@@ -78,9 +71,9 @@ export function GovernAuditDetail() {
                       key={row.label}
                       className="flex items-center justify-between py-3 border-b border-white/[0.04] last:border-0"
                     >
-                      <span className="text-[10px] uppercase tracking-widest text-white/50 font-semibold">{row.label}</span>
+                      <span className="text-xs uppercase tracking-widest text-white/50 font-semibold">{row.label}</span>
                       <span className={cn(
-                        'text-sm text-right',
+                        'text-base text-right',
                         isPrevious ? 'text-white/40 line-through' : isTarget ? 'text-white/90 font-medium' : 'text-white/90 font-light',
                       )}>
                         {row.value}
@@ -131,7 +124,7 @@ export function GovernAuditDetail() {
 
           {/* Right: Why This Decision — SHAP bars */}
           <motion.div variants={fadeUpVariant}>
-            <div className="glass-card glass-card-overlay rounded-xl p-6 lg:p-8 flex flex-col gap-6 h-full" style={{ borderTopWidth: 4, borderTopColor: 'var(--engine-govern)' }}>
+            <div className="glass-card glass-card-overlay rounded-xl p-6 lg:p-8 flex flex-col gap-6 h-full" style={{ borderTopWidth: 2, borderTopColor: 'var(--engine-govern)' }}>
               <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4">
                 Why This Decision
               </h2>

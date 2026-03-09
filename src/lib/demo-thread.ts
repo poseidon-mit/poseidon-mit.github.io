@@ -58,15 +58,15 @@ function readCriticalAlert(value: unknown): CriticalAlertThread {
   };
 }
 
-const _monthlyOptimization = readNumber(CROSS_SCREEN_DATA_THREAD.monthly_optimization.value, 24_500);
+const _monthlyOptimization = readNumber(CROSS_SCREEN_DATA_THREAD.monthly_optimization.value, 0);
 const _liquidityReserve = readLiquidityReserve(CROSS_SCREEN_DATA_THREAD.liquidity_reserve.value);
 const _criticalAlert = readCriticalAlert(CROSS_SCREEN_DATA_THREAD.critical_alert_thr001.value);
 
 export const DEMO_THREAD = {
   systemConfidence: readNumber(CROSS_SCREEN_DATA_THREAD.system_confidence.value, 0.92),
-  decisionsAudited: readNumber(CROSS_SCREEN_DATA_THREAD.decisions_audited.value, 10250),
+  decisionsAudited: readNumber(CROSS_SCREEN_DATA_THREAD.decisions_audited.value, 58),
   complianceScore: readNumber(CROSS_SCREEN_DATA_THREAD.compliance_score.value, 96),
-  pendingActions: readNumber(CROSS_SCREEN_DATA_THREAD.pending_actions.value, 5),
+  pendingActions: readNumber(CROSS_SCREEN_DATA_THREAD.pending_actions.value, 7),
 
   // B2B primary fields
   monthlyOptimization: _monthlyOptimization,

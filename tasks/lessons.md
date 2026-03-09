@@ -9,3 +9,4 @@
 - When the user upgrades the request from incremental UX refinement to a from-scratch redesign, replace obsolete assumptions in `tasks/todo.md` immediately instead of layering the new direction on top of the old plan.
 - When reviewing a strategy against the current repo, separate "blocked by current canonical/contracts" from "acceptable if canonical/contracts are intentionally being rewritten"; otherwise the review overstates implementation risk.
 - When the user explicitly requires English-only output, switch all subsequent responses to English immediately and keep them there for the rest of the thread.
+- When the user narrows a UI audit to a specific component state, verify that exact live state on both desktop and mobile before drafting remediation guidance.

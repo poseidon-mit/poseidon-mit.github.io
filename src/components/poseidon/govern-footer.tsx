@@ -15,6 +15,8 @@ export interface GovernFooterProps {
   activeTopThreat?: { id: string; counterparty: string; confidence: number } | null
   latestExecuteEvent?: { govId: string; actionId: string; actionTitle: string } | null
   traceBinding?: GovernTraceBinding
+  /** Compact mode: single-line, no ticker, no laser-scan. For detail/approval screens. */
+  compact?: boolean
 }
 
 export function GovernFooter({
@@ -24,6 +26,7 @@ export function GovernFooter({
   activeTopThreat,
   latestExecuteEvent,
   traceBinding,
+  compact = false,
 }: GovernFooterProps) {
   const streamText = latestExecuteEvent
     ? `Action approved   ·   ${latestExecuteEvent.actionTitle}   ·   Logged: ${latestExecuteEvent.govId}`
@@ -35,10 +38,36 @@ export function GovernFooter({
     ? `/govern/audit-detail?decision=${traceBinding.auditDecisionId}`
     : `/govern/audit-detail?decision=${auditId}`
 
-  const isActive = !!(latestExecuteEvent || activeTopThreat)
+  const isActive = !compact && !!(latestExecuteEvent || activeTopThreat)
   const displayId = traceBinding ? traceBinding.auditDecisionId : auditId
   const hashPreview = `0x${displayId.replace(/[^A-Za-z0-9]/g, '').slice(0, 8).toUpperCase()}`
 
+  /* ── Compact mode: single-line evidence trail, no animation ── */
+  if (compact) {
+    return (
+      <footer
+        className={cn('mt-8 rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-2.5 md:px-6', className)}
+        role="contentinfo"
+        aria-label="Governance verification footer"
+      >
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-2">
+            <ShieldCheck size={14} className="text-blue-500 engine-text-govern shrink-0" />
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-500/70">Verified</span>
+          </div>
+          <a
+            href={deepLinkHref}
+            className="text-xs font-mono text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-1.5"
+          >
+            {displayId}
+            <ExternalLink size={11} className="text-slate-600" aria-hidden="true" />
+          </a>
+        </div>
+      </footer>
+    )
+  }
+
+  /* ── Full mode: overview/list screens ── */
   return (
     <footer
       className={cn(
@@ -52,12 +81,13 @@ export function GovernFooter({
       aria-label="Governance verification footer"
       style={isActive ? { backgroundImage: 'linear-gradient(90deg, transparent 30%, rgba(59,130,246,0.12) 50%, transparent 70%)' } : undefined}
     >
-      {/* Immutable Event Stream */}
+      {/* Immutable Event Stream — only scroll when active */}
       <div className="overflow-hidden border-b border-white/[0.04] py-1.5 px-4 md:px-6">
         <div
           key={streamText}
           className={cn(
-            'whitespace-nowrap text-[10px] font-mono animate-[scroll-left_20s_linear_infinite]',
+            'whitespace-nowrap text-[10px] font-mono',
+            isActive ? 'animate-[scroll-left_20s_linear_infinite]' : '',
             latestExecuteEvent
               ? 'text-amber-400/30 engine-text-execute'
               : isActive ? 'text-white/30' : 'text-white/20',
@@ -65,7 +95,7 @@ export function GovernFooter({
           style={latestExecuteEvent ? { opacity: 0.3 } : undefined}
           aria-hidden="true"
         >
-          {streamText}{'      '}{streamText}
+          {isActive ? <>{streamText}{'      '}{streamText}</> : streamText}
         </div>
       </div>
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between px-4 py-3 md:px-6 md:py-4">

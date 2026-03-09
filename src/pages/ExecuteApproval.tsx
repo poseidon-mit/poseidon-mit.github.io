@@ -9,7 +9,6 @@ import {
   Timer,
   ArrowRight,
   Loader2,
-  Lock,
 } from 'lucide-react'
 import { Link, useRouter } from '@/router'
 import { ShapWaterfall, EmptyState, EngineBadge, ConfidenceIndicator, SubPageNav, ProofChips } from '@/components/poseidon'
@@ -107,24 +106,6 @@ export function ExecuteApproval() {
         animate="visible"
         role="main"
       >
-        {/* Security indicators */}
-        <motion.div variants={fadeUpVariant} className="flex items-center justify-center gap-6 py-2 text-[10px] uppercase tracking-widest text-white/30 font-mono">
-          <span className="flex items-center gap-1.5">
-            <Lock size={10} />
-            E2E Encrypted
-          </span>
-          <span className="w-px h-3 bg-white/10" />
-          <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/80" />
-            Secure Connection
-          </span>
-          <span className="w-px h-3 bg-white/10" />
-          <span className="flex items-center gap-1.5">
-            <ShieldCheck size={10} />
-            Govern Monitored
-          </span>
-        </motion.div>
-
         {/* Compact Hero */}
         <motion.div variants={fadeUpVariant} className="glass-card rounded-3xl p-6 md:p-8 flex flex-col gap-4">
           <div className="flex items-center gap-2 flex-wrap">
@@ -193,150 +174,62 @@ export function ExecuteApproval() {
           )}
         </motion.div>
 
-        {/* Split-Pane Layout: Left=Evidence (55%) · Right=Execution+Consent (45%) */}
-        <div className="grid grid-cols-1 lg:grid-cols-[55fr_45fr] gap-4 md:gap-6">
-
-          {/* ═══ LEFT PANE: Evidence ═══ */}
-          <div className="flex flex-col gap-4 md:gap-6">
-            {/* The Catalyst */}
-            <motion.div variants={fadeUpVariant}>
-              <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
-                <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 flex items-center gap-2">
-                  <Zap size={12} className="text-amber-500/70" />
-                  The Catalyst
-                </h2>
-                <div className="flex items-center gap-2">
-                  <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest border border-white/[0.05] ${ENGINE_BADGE_CLASS[action.sourceEngine]}`}>
-                    {action.sourceEngine}
-                  </span>
-                  <ArrowRight size={12} className="text-white/20" />
-                  <span className="text-xs text-white/50">Execute</span>
-                </div>
-                <p className="text-sm text-white/70 leading-relaxed">{action.description}</p>
+        {/* Impact Assessment — immediately after hero */}
+        <motion.div variants={fadeUpVariant}>
+          <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 flex items-center gap-2">
+              <Zap size={12} className="text-amber-500/70" />
+              Impact Assessment
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/15 p-4">
+                <p className="text-[10px] font-semibold text-emerald-400/80 uppercase tracking-widest mb-2">If approved</p>
+                <p className="text-sm text-white/70 font-light leading-relaxed">{action.impact.approved}</p>
               </div>
-            </motion.div>
-
-            {/* Decision Drivers (SHAP) + ProofChips */}
-            <motion.div variants={fadeUpVariant}>
-              <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
-                <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">Decision Drivers</h2>
-                <p className="text-sm text-white/60 leading-relaxed">
-                  Primary signal: <span className="text-white/80 font-medium">{action.factors[0]?.label}</span> at {action.factors[0]?.value.toFixed(2)}, supported by {action.factors.length - 1} additional factors.
-                </p>
-                <ShapWaterfall
-                  factors={action.factors.map((f) => ({ name: f.label, value: f.value }))}
-                  baseValue={50}
-                  className="mt-1"
-                />
-                {action.factors.length > 1 && (
-                  <ProofChips
-                    total={action.amountLabel}
-                    parts={action.factors.slice(0, 3).map((f) => ({ label: f.label, value: Math.round(f.value * 100) }))}
-                    formatValue={(v) => `${v}%`}
-                  />
-                )}
+              <div className="rounded-2xl bg-amber-500/5 border border-amber-500/15 p-4">
+                <p className="text-[10px] font-semibold text-amber-400/80 uppercase tracking-widest mb-2">If deferred</p>
+                <p className="text-sm text-white/70 font-light leading-relaxed">{action.impact.deferred}</p>
               </div>
-            </motion.div>
-
-            {/* Impact */}
-            <motion.div variants={fadeUpVariant}>
-              <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
-                <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 flex items-center gap-2">
-                  <Zap size={12} className="text-amber-500/70" />
-                  Impact Assessment
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/15 p-4">
-                    <p className="text-[10px] font-semibold text-emerald-400/80 uppercase tracking-widest mb-2">If approved</p>
-                    <p className="text-sm text-white/70 font-light leading-relaxed">{action.impact.approved}</p>
-                  </div>
-                  <div className="rounded-2xl bg-amber-500/5 border border-amber-500/15 p-4">
-                    <p className="text-[10px] font-semibold text-amber-400/80 uppercase tracking-widest mb-2">If deferred</p>
-                    <p className="text-sm text-white/70 font-light leading-relaxed">{action.impact.deferred}</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Deliberation Trace (if available) */}
-            {deliberationTrace && (
-              <motion.div variants={fadeUpVariant}>
-                <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
-                  <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">Deliberation Trace</h2>
-                  <div className="flex flex-col gap-3">
-                    {deliberationTrace.rounds.map((round, i) => (
-                      <div key={i} className="flex items-start gap-3 text-sm">
-                        <div className={cn(
-                          'w-2 h-2 rounded-full mt-1.5 shrink-0',
-                          round.position === 'support' && 'bg-emerald-400',
-                          round.position === 'oppose' && 'bg-red-400',
-                          round.position === 'modify' && 'bg-amber-400',
-                        )} />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-xs font-semibold text-white/80">{round.roleId}</span>
-                            <span className={cn(
-                              'text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-full border',
-                              round.position === 'support' && 'text-emerald-400/80 border-emerald-500/20 bg-emerald-500/5',
-                              round.position === 'oppose' && 'text-red-400/80 border-red-500/20 bg-red-500/5',
-                              round.position === 'modify' && 'text-amber-400/80 border-amber-500/20 bg-amber-500/5',
-                            )}>
-                              {round.position}
-                            </span>
-                            <span className="text-[10px] font-mono text-white/30">{Math.round(round.confidence * 100)}%</span>
-                          </div>
-                          <p className="text-xs text-white/50 leading-relaxed">{round.argument}</p>
-                        </div>
-                      </div>
-                    ))}
-                    {deliberationTrace.consensus && (
-                      <div className="rounded-xl bg-blue-500/5 border border-blue-500/15 p-3 mt-1">
-                        <p className="text-[10px] font-semibold text-blue-400/80 uppercase tracking-widest mb-1">Consensus</p>
-                        <p className="text-xs text-white/60">{deliberationTrace.consensus.rationale}</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            )}
+            </div>
           </div>
+        </motion.div>
 
-          {/* ═══ RIGHT PANE: Execution Plan + Consent ═══ */}
-          <div className="flex flex-col gap-4 md:gap-6">
-            {/* Execution Plan */}
-            <motion.div variants={fadeUpVariant}>
-              <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
-                <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 flex items-center gap-2">
-                  <Zap size={12} className="text-amber-500/70" />
-                  Execution Plan
-                </h2>
-                <div className="flex flex-col gap-3">
-                  {action.steps.map((step, i) => (
-                    <div key={step.id} className="flex items-center gap-3">
-                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-mono font-bold border border-white/10 text-white/40 shrink-0">
-                        {i + 1}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <span className="text-sm text-white/70">{step.label}</span>
-                        {step.requiresConsent && (
-                          <ShieldCheck size={10} className="inline ml-1.5 text-amber-400/60" />
-                        )}
-                      </div>
-                      {step.estimatedDuration && (
-                        <span className="text-[10px] font-mono text-white/30 shrink-0">{step.estimatedDuration}</span>
+        {/* Consent Gate + Execution Plan — decision in first viewport */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+          {/* Execution Plan */}
+          <motion.div variants={fadeUpVariant}>
+            <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4 h-full">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 flex items-center gap-2">
+                <Zap size={12} className="text-amber-500/70" />
+                Execution Plan
+              </h2>
+              <div className="flex flex-col gap-3">
+                {action.steps.map((step, i) => (
+                  <div key={step.id} className="flex items-center gap-3">
+                    <span className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-mono font-bold border border-white/10 text-white/40 shrink-0">
+                      {i + 1}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-sm text-white/70">{step.label}</span>
+                      {step.requiresConsent && (
+                        <ShieldCheck size={10} className="inline ml-1.5 text-amber-400/60" />
                       )}
                     </div>
-                  ))}
-                </div>
-                <p className="text-xs text-white/40 font-mono">
-                  {action.steps.length} steps · {action.steps.filter(s => s.estimatedDuration).map(s => s.estimatedDuration).join(' + ')}
-                </p>
+                    {step.estimatedDuration && (
+                      <span className="text-[10px] font-mono text-white/30 shrink-0">{step.estimatedDuration}</span>
+                    )}
+                  </div>
+                ))}
               </div>
-            </motion.div>
+              <p className="text-xs text-white/40 font-mono">
+                {action.steps.length} steps · {action.steps.filter(s => s.estimatedDuration).map(s => s.estimatedDuration).join(' + ')}
+              </p>
+            </div>
+          </motion.div>
 
-            {/* Consent Gate */}
-            <motion.div variants={fadeUpVariant}>
-              <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4 lg:sticky lg:top-24">
+          {/* Consent Gate */}
+          <motion.div variants={fadeUpVariant}>
+            <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4 h-full">
                 {isAlreadyDecided ? (
                   <div className="flex flex-col items-center gap-3 py-4">
                     <CheckCircle2 className="w-10 h-10" style={{ color: 'var(--state-healthy)' }} />
@@ -451,9 +344,94 @@ export function ExecuteApproval() {
                 )}
               </div>
             </motion.div>
-          </div>
 
         </div>
+
+        {/* Full Analysis — collapsible evidence section */}
+        <details className="group">
+          <summary className="flex items-center gap-2 cursor-pointer list-none text-white/40 hover:text-white/60 transition-colors py-2">
+            <span className="text-xs font-semibold uppercase tracking-widest">Full Analysis</span>
+            <span className="text-xs text-white/30 group-open:rotate-180 transition-transform">▾</span>
+          </summary>
+          <div className="flex flex-col gap-4 md:gap-6 mt-4">
+            {/* The Catalyst */}
+            <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 flex items-center gap-2">
+                <Zap size={12} className="text-amber-500/70" />
+                The Catalyst
+              </h2>
+              <div className="flex items-center gap-2">
+                <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest border border-white/[0.05] ${ENGINE_BADGE_CLASS[action.sourceEngine]}`}>
+                  {action.sourceEngine}
+                </span>
+                <ArrowRight size={12} className="text-white/20" />
+                <span className="text-xs text-white/50">Execute</span>
+              </div>
+              <p className="text-sm text-white/70 leading-relaxed">{action.description}</p>
+            </div>
+
+            {/* Decision Drivers (SHAP) + ProofChips */}
+            <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">Decision Drivers</h2>
+              <p className="text-sm text-white/60 leading-relaxed">
+                Primary signal: <span className="text-white/80 font-medium">{action.factors[0]?.label}</span> at {action.factors[0]?.value.toFixed(2)}, supported by {action.factors.length - 1} additional factors.
+              </p>
+              <ShapWaterfall
+                factors={action.factors.map((f) => ({ name: f.label, value: f.value }))}
+                baseValue={50}
+                className="mt-1"
+              />
+              {action.factors.length > 1 && (
+                <ProofChips
+                  total={action.amountLabel}
+                  parts={action.factors.slice(0, 3).map((f) => ({ label: f.label, value: Math.round(f.value * 100) }))}
+                  formatValue={(v) => `${v}%`}
+                />
+              )}
+            </div>
+
+            {/* Deliberation Trace (if available) */}
+            {deliberationTrace && (
+              <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">Deliberation Trace</h2>
+                <div className="flex flex-col gap-3">
+                  {deliberationTrace.rounds.map((round, i) => (
+                    <div key={i} className="flex items-start gap-3 text-sm">
+                      <div className={cn(
+                        'w-2 h-2 rounded-full mt-1.5 shrink-0',
+                        round.position === 'support' && 'bg-emerald-400',
+                        round.position === 'oppose' && 'bg-red-400',
+                        round.position === 'modify' && 'bg-amber-400',
+                      )} />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs font-semibold text-white/80">{round.roleId}</span>
+                          <span className={cn(
+                            'text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-full border',
+                            round.position === 'support' && 'text-emerald-400/80 border-emerald-500/20 bg-emerald-500/5',
+                            round.position === 'oppose' && 'text-red-400/80 border-red-500/20 bg-red-500/5',
+                            round.position === 'modify' && 'text-amber-400/80 border-amber-500/20 bg-amber-500/5',
+                          )}>
+                            {round.position}
+                          </span>
+                          <span className="text-[10px] font-mono text-white/30">{Math.round(round.confidence * 100)}%</span>
+                        </div>
+                        <p className="text-xs text-white/50 leading-relaxed">{round.argument}</p>
+                      </div>
+                    </div>
+                  ))}
+                  {deliberationTrace.consensus && (
+                    <div className="rounded-xl bg-blue-500/5 border border-blue-500/15 p-3 mt-1">
+                      <p className="text-[10px] font-semibold text-blue-400/80 uppercase tracking-widest mb-1">Consensus</p>
+                      <p className="text-xs text-white/60">{deliberationTrace.consensus.rationale}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </details>
+
       </motion.div>
 
       {/* Confirmation Dialog */}

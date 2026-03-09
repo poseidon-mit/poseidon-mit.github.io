@@ -4,7 +4,7 @@ import { useRouter } from '@/router'
 import { ShieldCheck } from "lucide-react"
 import { EngineBadge } from '@/components/poseidon'
 import { ProtectAnomalyRadar, ProtectThreatPosture } from '@/components/poseidon/protect-hero'
-import { selectAlertAuditChain, selectThreatFactors } from '@/domain/poseidon-universe'
+import { selectAlertAuditChain, selectCohortHeadlines, selectThreatFactors } from '@/domain/poseidon-universe'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
@@ -111,7 +111,7 @@ export default function ProtectPage() {
                 auditChain={auditChain}
                 remainingCount={activeThreats.length - 1}
                 totalExposure={totalExposure}
-                fpRate="0.01%"
+                fpRate="0.8%"
                 onReviewThreat={() => navigate(`/protect/alert-detail?alertId=${criticalAlert.id}`)}
               />
             </motion.div>
@@ -123,7 +123,7 @@ export default function ProtectPage() {
                 mediumCount={activeThreats.filter(t => t.severity === 'Medium').length}
                 lowCount={activeThreats.filter(t => t.severity === 'Low').length}
                 resolvedCount={dismissed.size}
-                fpRate="0.01%"
+                fpRate="0.8%"
                 modelUpdate="2d ago"
                 topAlert={topAlert}
                 onOpenTopAlert={topAlert ? () => navigate(`/protect/alert-detail?alertId=${topAlert.id}`) : null}
@@ -132,6 +132,10 @@ export default function ProtectPage() {
           )}
         </motion.section>
 
+        {/* ── Cohort Insight ── */}
+        <motion.p variants={fadeUpVariant} className="text-xs text-muted-foreground -mt-2">
+          <span className="text-primary/70">Similar users</span> · {selectCohortHeadlines().protect}
+        </motion.p>
 
       </motion.div>
     </>

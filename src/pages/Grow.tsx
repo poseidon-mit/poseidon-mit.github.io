@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useRouter } from '@/router'
 import { TrendingUp } from 'lucide-react'
 import { EngineBadge } from '@/components/poseidon'
+import { selectCohortHeadlines } from '@/domain/poseidon-universe'
 import { GrowGrowthAdvantage } from '@/components/poseidon/grow-hero'
 import { GROWTH_SIMULATION_DATA, PROJECTED_3Y_ADVANTAGE } from '@/lib/grow-simulation-data'
 import { getMotionPreset } from '@/lib/motion-presets'
@@ -58,6 +59,11 @@ export default function GrowPage() {
             />
           </motion.div>
         </motion.section>
+
+        {/* ── Cohort Insight ── */}
+        <motion.p variants={fadeUpVariant} className="text-xs text-muted-foreground -mt-2">
+          <span className="text-primary/70">Similar users</span> · {selectCohortHeadlines().grow}
+        </motion.p>
 
       </motion.div>
     </>

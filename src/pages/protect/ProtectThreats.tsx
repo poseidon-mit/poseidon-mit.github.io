@@ -247,8 +247,10 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap mb-1">
+        {/* Primary row: counterparty + amount */}
+        <div className="flex items-center gap-3 flex-wrap mb-1">
           <span className={cn('text-white/90 truncate', styles.titleSize)}>{threat.counterparty}</span>
+          <span className={cn(styles.amountSize, 'text-white/80')}>{threat.amount}</span>
           <span
             className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border"
             style={{
@@ -266,13 +268,13 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
           <p className="text-sm text-white/55 leading-relaxed mb-1.5 line-clamp-2">{threat.description}</p>
         )}
 
-        {/* Structured meta */}
+        {/* Secondary meta */}
         <div className={cn('flex items-center gap-3 flex-wrap', styles.metaSize)}>
-          <span className={cn(styles.amountSize, 'text-white/80')}>{threat.amount}</span>
-          <span className="text-white/40">·</span>
           <span className="text-white/55">{threat.time}</span>
           <span className="text-white/40">·</span>
           <span style={{ color: config.color }}>{Math.round(threat.confidence * 100)}% confidence</span>
+          <span className="text-white/40">·</span>
+          <span className="font-mono text-white/40">{threat.id}</span>
         </div>
       </div>
 

@@ -22,23 +22,23 @@ export const CARD_TIER_STYLES = {
   },
   standard: {
     padding: 'p-5 lg:p-6',
-    titleSize: 'text-sm font-medium',
+    titleSize: 'text-base font-medium',
     descSize: 'text-xs text-white/55 leading-relaxed',
-    metaSize: 'text-[10px] text-white/40',
+    metaSize: 'text-xs text-white/45',
     iconSize: 16,
     iconBoxSize: 'w-10 h-10 rounded-xl',
     gap: 'gap-4',
-    amountSize: 'text-base font-mono font-bold',
+    amountSize: 'text-lg font-mono font-bold',
   },
   compact: {
     padding: 'p-4',
     titleSize: 'text-sm font-medium',
     descSize: 'hidden',
-    metaSize: 'text-[10px] text-white/40',
+    metaSize: 'text-[11px] text-white/40',
     iconSize: 14,
     iconBoxSize: 'w-8 h-8 rounded-lg',
     gap: 'gap-3',
-    amountSize: 'text-sm font-mono font-bold',
+    amountSize: 'text-base font-mono font-bold',
   },
 } as const satisfies Record<CardTier, {
   padding: string

@@ -157,3 +157,37 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 **Known Pre-existing Gaps (not in scope):**
 - 13 test files with 36 failures are pre-existing (demo-coherence, dashboard-hero, protect-hero, screen-contracts-v4, flows/rights-exercise) — reference selectors/patterns not yet implemented
 - Domain data files (canonical.ts, govern-audit-data.ts, decision-protocol.ts) retain financial narrative data — tracked as deferred
+
+---
+
+## UI Precision Analysis Plan (2026-03-09)
+
+**Goal:** Diagnose why the current interface reads as small, monochrome, over-lit, and effect-heavy, then produce a Precision-led response plan for a separate implementation AI. Scope expanded to an end-to-end whole-screen audit across core app routes, including text volume, layout placement, and task-flow fitness.
+
+- [x] Audit current typography scale, density, and readability across shared tokens and core routes
+- [x] Audit current color hierarchy and identify where neutral overuse flattens meaning
+- [x] Audit glass / neon / blur / glow usage and identify where effects overpower content hierarchy
+- [x] Audit route-by-route information architecture against end-to-end user goals
+- [x] Validate findings against live rendering across flagship and detail routes
+- [x] Write one long-form Japanese chat-style document with prioritized remediation guidance
+
+**Review notes:**
+- Live route crawl completed across 25 routes with desktop text-volume census and spot-checked mobile rendering.
+- Shared-system issues confirmed: typography fragmentation, neutral-overloaded surfaces, repeated 10px/12px metadata, and persistent effect layers reducing clarity.
+- E2E flow issues confirmed: dashboard is summary-heavy but action-light, detail pages over-stack forensic evidence above decision support, and sticky GovernFooter visually interrupts multiple pages.
+
+## Bottom Sheet Display Audit Plan (2026-03-09)
+
+**Goal:** Verify the broken Bottom Sheet in live Desktop and Mobile rendering, identify the concrete layout/viewport/container failures, and produce an implementation plan for another AI.
+
+- [x] Confirm which Bottom Sheet variant matches the reported bug and reproduce it in the live app
+- [x] Capture Desktop rendering and inspect positioning, max-height, scroll, and z-layer behavior
+- [x] Capture Mobile rendering and inspect viewport fit, safe-area, drag handle, and content reachability
+- [x] Trace the issue back to shared sheet primitives versus route-specific content
+- [x] Write a Japanese chat-style remediation plan with prioritized fixes and validation criteria
+
+**Review notes:**
+- The reported UI matches `Dashboard` → `OnboardingBottomSheet`, not the Talk to Money sheet. The live app reproduced the same collapsed state on both desktop and mobile.
+- Primary rendering defect is route-specific: `OnboardingBottomSheet.tsx` spreads `fadeUp` variants directly into `motion.div`, which passes a truthy `hidden` prop to the DOM and forces the active step content to `display: none`.
+- Shared primitive issues remain after temporarily removing `hidden` in the live DOM: desktop still uses a bottom-docked 512px sheet that visually floats over the dashboard, and mobile allows the sheet to overlap the 64px bottom navigation.
+- Mobile reachability is broken even after content is shown: the `Continue` CTA renders under the bottom nav, so the primary action is partially obscured.

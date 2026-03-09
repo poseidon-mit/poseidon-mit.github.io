@@ -43,17 +43,17 @@ const SCENARIOS: Scenario[] = [
     id: "conservative",
     name: "Conservative",
     desc: "Maintain current contributions. Lower risk, longer timeline.",
-    monthlySave: 420_000,
-    monthsToGoal: 7,
+    monthlySave: 400,
+    monthsToGoal: 66,
     confidence: 0.92,
     data: BASE_DATA(250)
   },
   {
     id: "moderate",
     name: "Moderate boost",
-    desc: "Increase monthly contribution by $60K. Balanced risk-reward.",
-    monthlySave: 480_000,
-    monthsToGoal: 5,
+    desc: "Increase monthly contribution by $100. Balanced risk-reward.",
+    monthlySave: 500,
+    monthsToGoal: 48,
     confidence: 0.87,
     data: BASE_DATA(320)
   },
@@ -61,8 +61,8 @@ const SCENARIOS: Scenario[] = [
     id: "aggressive",
     name: "Aggressive",
     desc: "Maximize contributions. Fastest path, most aggressive growth.",
-    monthlySave: 600_000,
-    monthsToGoal: 4,
+    monthlySave: 700,
+    monthsToGoal: 30,
     confidence: 0.79,
     data: BASE_DATA(420)
   }];

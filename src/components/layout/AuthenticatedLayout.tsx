@@ -100,17 +100,21 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
                     </Suspense>
 
                     {/* Layer 2: Final Verification (GovernFooter) */}
-                    {meta?.showFooter && (
-                        <div className="mt-4 pt-3 lg:sticky lg:bottom-0 lg:z-10">
-                            <GovernFooter
-                                auditId={meta.auditId}
-                                pageContext={meta.pageContext}
-                                activeTopThreat={activeTopThreat}
-                                latestExecuteEvent={latestExecuteEvent}
-                                traceBinding={traceBinding}
-                            />
-                        </div>
-                    )}
+                    {meta?.showFooter && (() => {
+                        const isDetailRoute = /\/(detail|approval|audit-detail)/.test(path) || path.includes('/alert/');
+                        return (
+                            <div className={`mt-4 pt-3${isDetailRoute ? '' : ' lg:sticky lg:bottom-0 lg:z-10'}`}>
+                                <GovernFooter
+                                    auditId={meta.auditId}
+                                    pageContext={meta.pageContext}
+                                    activeTopThreat={activeTopThreat}
+                                    latestExecuteEvent={latestExecuteEvent}
+                                    traceBinding={traceBinding}
+                                    compact={isDetailRoute}
+                                />
+                            </div>
+                        );
+                    })()}
                 </div>
             </div>
         </AppNavShell>

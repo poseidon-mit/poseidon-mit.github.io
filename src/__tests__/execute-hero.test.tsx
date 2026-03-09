@@ -209,16 +209,16 @@ describe('ExecutePage hero state mutation', () => {
     const { container } = renderWithState()
     const hero = container.querySelector('[role="region"]') as HTMLElement
 
-    // Before: hero number = 5
+    // Before: hero number = 7
     const heroNumber = hero.querySelector('.text-4xl')
-    expect(heroNumber?.textContent).toBe('5')
-    expect(hero.textContent).toContain('5 actions pending')
+    expect(heroNumber?.textContent).toBe('7')
+    expect(hero.textContent).toContain('7 actions pending')
 
     fireEvent.click(screen.getByTestId('approve-exe001'))
 
-    // After: hero number = 4
-    expect(heroNumber?.textContent).toBe('4')
-    expect(hero.textContent).toContain('4 actions pending')
+    // After: hero number = 6
+    expect(heroNumber?.textContent).toBe('6')
+    expect(hero.textContent).toContain('6 actions pending')
   })
 })
 
@@ -294,7 +294,7 @@ describe('ExecutePage empty queue state', () => {
 
   function FullApprovalHarness() {
     const { setExecuteDecision } = useDemoState()
-    const actionIds = ['EXE-001', 'EXE-002', 'EXE-003', 'EXE-004', 'EXE-005']
+    const actionIds = ['EXE-001', 'EXE-002', 'EXE-003', 'EXE-004', 'EXE-005', 'EXE-006', 'EXE-007']
     return (
       <>
         {actionIds.map((id) => (
@@ -324,8 +324,8 @@ describe('ExecutePage empty queue state', () => {
     )
     const hero = container.querySelector('[role="region"]') as HTMLElement
 
-    // Approve all 5 actions
-    for (const id of ['exe-001', 'exe-002', 'exe-003', 'exe-004', 'exe-005']) {
+    // Approve all 7 actions
+    for (const id of ['exe-001', 'exe-002', 'exe-003', 'exe-004', 'exe-005', 'exe-006', 'exe-007']) {
       fireEvent.click(screen.getByTestId(`approve-${id}`))
     }
 

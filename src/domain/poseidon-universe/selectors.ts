@@ -8,6 +8,8 @@ import {
 } from './canonical'
 import { ENGINE_COLOR_MAP, type EngineLabel } from '@/lib/engine-color-map'
 import type {
+  AccountEntity,
+  CanonicalBalanceSheet,
   CanonicalUniverseV1,
   CanonicalEvent,
   DeliberationTrace,
@@ -15,6 +17,7 @@ import type {
   EventChildren,
   ExecuteActionEntity,
   ExecutionType,
+  GoalEntity,
   GovernAuditEntryEntity,
   GovernLedgerEntryEntity,
   GrowthSimulationPoint,
@@ -557,4 +560,28 @@ export function formatUsd(value: number): string {
 
 export function formatPercent(value: number, decimals = 0): string {
   return `${value.toFixed(decimals)}%`
+}
+
+/* ── Account & Balance Sheet Selectors ── */
+
+export function selectAccounts(): AccountEntity[] {
+  return getCanonicalUniverse().entities.accounts
+}
+
+export function selectBalanceSheet(): CanonicalBalanceSheet {
+  return getCanonicalUniverse().balanceSheet
+}
+
+export function selectGoals(): GoalEntity[] {
+  return getCanonicalUniverse().entities.goals
+}
+
+export function selectAccountByLast4(last4: string): AccountEntity | undefined {
+  return getCanonicalUniverse().entities.accounts.find(a => a.last4 === last4)
+}
+
+/* ── Cohort Headlines ── */
+
+export function selectCohortHeadlines() {
+  return getCanonicalUniverse().metrics.cohortHeadlines
 }

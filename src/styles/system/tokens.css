@@ -197,27 +197,41 @@
   --font-size-h3: clamp(1.1rem, 2.5vw, 1.5rem);
   --font-size-body-lg: clamp(1.0625rem, 1.2vw + 0.75rem, 1.3125rem);
   --font-size-body: clamp(0.9375rem, 1vw + 0.75rem, 1.1875rem);
+
+  /* ── Semantic UI Tiers (Precision: 4 levels only) ── */
   --font-size-body-sm: 16px;
   --font-size-caption: 15px;
-  --font-size-label: 14px;
+  --font-size-support: 14px;   /* Secondary text, descriptions */
+  --font-size-label: 12px;     /* Badges, chips, small labels */
+  --font-size-id: 11px;        /* Audit IDs, timestamps, mono metadata */
   --font-size-small: 13px;
   --font-size-badge: 13px;
-  --font-size-ui-11: 11px;
-  --font-size-ui-11-5: 11.5px;
-  --font-size-ui-11-8: 11.8px;
-  --font-size-ui-12: 12px;
-  --font-size-ui-12-8: 12.8px;
-  --font-size-ui-13-8: 13.8px;
-  --font-size-ui-14-4: 14.4px;
-  --font-size-ui-15-2: 15.2px;
-  --font-size-ui-16: 16px;
-  --font-size-ui-16-8: 16.8px;
-  --font-size-ui-17-6: 17.6px;
+
+  /* ── Deprecated fine-grained aliases (map to semantic tiers) ── */
+  --font-size-ui-11: var(--font-size-id);
+  --font-size-ui-11-5: var(--font-size-id);
+  --font-size-ui-11-8: var(--font-size-label);
+  --font-size-ui-12: var(--font-size-label);
+  --font-size-ui-12-8: var(--font-size-label);
+  --font-size-ui-13-8: var(--font-size-support);
+  --font-size-ui-14-4: var(--font-size-support);
+  --font-size-ui-15-2: var(--font-size-caption);
+  --font-size-ui-16: var(--font-size-body-sm);
+  --font-size-ui-16-8: var(--font-size-body-sm);
+  --font-size-ui-17-6: var(--font-size-body-sm);
   --font-size-ui-20: 20px;
-  --font-size-ui-20-8: 20.8px;
-  --font-size-ui-21-6: 21.6px;
-  --font-size-ui-22-4: 22.4px;
-  --font-size-ui-25-6: 25.6px;
+  --font-size-ui-20-8: 20px;
+  --font-size-ui-21-6: 22px;
+  --font-size-ui-22-4: 22px;
+  --font-size-ui-25-6: 26px;
+
+  /* ── Surface Elevation (Precision: 3 levels) ── */
+  --surface-canvas: transparent;
+  --surface-canvas-border: transparent;
+  --surface-task: rgba(255, 255, 255, 0.03);
+  --surface-task-border: rgba(255, 255, 255, 0.08);
+  --surface-evidence: rgba(255, 255, 255, 0.05);
+  --surface-evidence-border: rgba(255, 255, 255, 0.12);
   --line-height-tight: 1.1;
   --line-height-body: 1.5;
   --line-height-relaxed: 1.65;

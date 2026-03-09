@@ -54,7 +54,7 @@ export function BottomSheet({ open, onDismiss, children, className = '', persist
           <motion.div
             key="sheet-content"
             role="dialog"
-            aria-modal="false"
+            aria-modal={persistent ? "true" : "false"}
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
@@ -67,7 +67,7 @@ export function BottomSheet({ open, onDismiss, children, className = '', persist
             dragConstraints={{ top: 0 }}
             dragElastic={0.2}
             onDragEnd={handleDragEnd}
-            className={`fixed bottom-0 left-0 right-0 z-[210] mx-auto max-w-lg rounded-t-3xl border border-white/10 bg-slate-900/95 backdrop-blur-xl shadow-2xl max-h-[75vh] lg:max-h-[520px] overflow-hidden ${className}`}
+            className={`fixed bottom-0 left-0 right-0 z-[210] mx-auto max-w-lg rounded-t-3xl border border-white/10 bg-slate-900/95 backdrop-blur-xl shadow-2xl max-h-[75vh] lg:max-h-[520px] overflow-hidden lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 lg:rounded-3xl ${className}`}
           >
             {/* Drag handle */}
             <div className="flex justify-center pt-3 pb-1">
@@ -85,7 +85,7 @@ export function BottomSheet({ open, onDismiss, children, className = '', persist
               </button>
             )}
 
-            <div className="px-5 pb-6 overflow-y-auto max-h-[calc(75vh-3rem)] lg:max-h-[calc(520px-3rem)]">
+            <div className="px-5 pb-24 lg:pb-6 overflow-y-auto max-h-[calc(75vh-3rem)] lg:max-h-[calc(520px-3rem)]">
               {children}
             </div>
           </motion.div>

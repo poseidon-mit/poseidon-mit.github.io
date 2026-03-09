@@ -22,18 +22,18 @@ const RESERVE_TARGET = liquidityReserve.targetUsd;
 /* ── Forecast data (goal-specific) ── */
 const FORECAST_DATA: ForecastPoint[] = Array.from({ length: 12 }, (_, i) => ({
   x: i,
-  median: RESERVE_CURRENT + i * 250_000,
-  low: RESERVE_CURRENT + i * 180_000,
-  high: RESERVE_CURRENT + i * 320_000
+  median: RESERVE_CURRENT + i * 250,
+  low: RESERVE_CURRENT + i * 180,
+  high: RESERVE_CURRENT + i * 320
 }));
 
 /* ── Monthly contribution data ── */
 const ALLOCATIONS = [
-  { month: "Oct", amount: 350_000 },
-  { month: "Nov", amount: 380_000 },
-  { month: "Dec", amount: 360_000 },
-  { month: "Jan", amount: 420_000 },
-  { month: "Feb", amount: 420_000 }];
+  { month: "Oct", amount: 350 },
+  { month: "Nov", amount: 380 },
+  { month: "Dec", amount: 360 },
+  { month: "Jan", amount: 420 },
+  { month: "Feb", amount: 420 }];
 
 
 export default function GrowGoalPage() {
@@ -96,7 +96,7 @@ export default function GrowGoalPage() {
                 <span className="font-mono text-white/90 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] font-medium">${RESERVE_CURRENT.toLocaleString()}</span> of ${RESERVE_TARGET.toLocaleString()}
               </p>
               <p className="text-base text-white/50 tracking-wide mt-4 max-w-xl leading-relaxed">
-                At your current savings rate, the reserve will reach target in approximately <span className="text-white/80 font-medium">3 months</span>.
+                At your current savings rate, the reserve will reach target in approximately <span className="text-white/80 font-medium">14 months</span>.
               </p>
             </div>
           </motion.div>
@@ -120,12 +120,12 @@ export default function GrowGoalPage() {
                       <div
                         className="h-full rounded-full"
                         style={{
-                          width: `${c.amount / 450_000 * 100}%`,
+                          width: `${c.amount / 450 * 100}%`,
                           background: "var(--engine-grow)"
                         }} />
                     </div>
                     <span className="text-sm font-mono font-bold flex-shrink-0 w-16 text-right text-[var(--engine-grow)]">
-                      ${(c.amount / 1000).toFixed(0)}K
+                      ${c.amount}
                     </span>
                   </div>
                 </div>
@@ -166,7 +166,7 @@ export default function GrowGoalPage() {
                 </p>
               </div>
               <p className="text-base text-white/50 leading-relaxed tracking-wide mt-2">
-                Increasing the monthly allocation by <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-white/[0.05] rounded-md border border-[var(--engine-grow)]/20">$60K</span> would accelerate reserve target by <strong className="text-white/80 font-medium">3 weeks</strong>.
+                Increasing the monthly allocation by <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-white/[0.05] rounded-md border border-[var(--engine-grow)]/20">$60</span> would accelerate reserve target by <strong className="text-white/80 font-medium">3 weeks</strong>.
               </p>
             </div>
             <div className="relative z-10 flex flex-wrap items-center gap-4 md:ml-auto">

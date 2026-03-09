@@ -18,6 +18,7 @@ import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import {
   selectExecuteActionsView,
   selectArchitecturalTrust,
+  selectCohortHeadlines,
   selectExecuteActionById,
 } from '@/domain/poseidon-universe'
 import type { ExecuteEngineName, UrgencyLevel } from '@/domain/poseidon-universe'
@@ -177,6 +178,11 @@ export default function ExecutePage() {
             />
           </motion.div>
         </motion.section>
+
+        {/* ── Cohort Insight ── */}
+        <motion.p variants={fadeUpVariant} className="text-xs text-muted-foreground -mt-2">
+          <span className="text-primary/70">Similar users</span> · {selectCohortHeadlines().execute}
+        </motion.p>
 
       </motion.div>
 

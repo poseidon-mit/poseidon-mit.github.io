@@ -78,7 +78,7 @@ function LiveAuditStream({
 
   return (
     <div
-      className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.03]"
+      className="absolute inset-0 overflow-hidden pointer-events-none opacity-0"
       aria-hidden="true"
       data-testid="audit-stream"
     >

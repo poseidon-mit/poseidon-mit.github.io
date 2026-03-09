@@ -86,7 +86,7 @@ export interface DemoState {
   support: DemoSupportState
 }
 
-const DEFAULT_EXECUTE_IDS = ['EXE-001', 'EXE-002', 'EXE-003', 'EXE-004', 'EXE-005'] as const
+const DEFAULT_EXECUTE_IDS = ['EXE-001', 'EXE-002', 'EXE-003', 'EXE-004', 'EXE-005', 'EXE-006', 'EXE-007'] as const
 
 function createDefaultExecuteActionStates(): Record<string, DemoExecuteActionState> {
   return Object.fromEntries(

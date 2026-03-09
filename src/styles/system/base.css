@@ -41,7 +41,7 @@ body::after {
   z-index: -2;
   pointer-events: none;
   filter: blur(40px);
-  opacity: 0.4;
+  opacity: 0.1;
   background: radial-gradient(circle at 20% 20%, rgba(21, 225, 194, 0.25), transparent 55%),
     radial-gradient(circle at 85% 10%, rgba(143, 107, 255, 0.25), transparent 55%),
     radial-gradient(circle at 50% 60%, rgba(88, 166, 255, 0.15), transparent 55%);
@@ -51,7 +51,7 @@ body::after {
 body::after {
   inset: auto -10% -30% -10%;
   height: 70vh;
-  opacity: 0.35;
+  opacity: 0.08;
   background: radial-gradient(circle at 20% 60%, rgba(247, 178, 74, 0.2), transparent 55%),
     radial-gradient(circle at 70% 50%, rgba(21, 225, 194, 0.15), transparent 60%);
   animation: aurora 22s ease-in-out infinite reverse;
@@ -65,14 +65,14 @@ body::after {
 
   body::before {
     filter: blur(60px);
-    opacity: 0.75;
+    opacity: 0.15;
     background: radial-gradient(circle at 20% 20%, rgba(21, 225, 194, 0.35), transparent 55%),
       radial-gradient(circle at 85% 10%, rgba(143, 107, 255, 0.35), transparent 55%),
       radial-gradient(circle at 50% 60%, rgba(88, 166, 255, 0.2), transparent 55%);
   }
 
   body::after {
-    opacity: 0.6;
+    opacity: 0.1;
     filter: blur(60px);
     background: radial-gradient(circle at 20% 60%, rgba(247, 178, 74, 0.28), transparent 55%),
       radial-gradient(circle at 70% 50%, rgba(21, 225, 194, 0.2), transparent 60%);

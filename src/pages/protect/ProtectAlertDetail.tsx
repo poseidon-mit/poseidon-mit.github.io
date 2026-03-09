@@ -180,7 +180,7 @@ export default function ProtectAlertDetailPage() {
       '',
       `Transaction    ${alert.amount} · ${alert.counterparty}`,
       `Date           ${dateStr}`,
-      `Account        Checking ****4821`,
+      `Account        Visa ****4821`,
       `AI Confidence  ${formatConfidence(alert.confidence)} (${alert.severity})`,
       '',
       'Key Findings',
@@ -256,14 +256,139 @@ export default function ProtectAlertDetailPage() {
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Amount</span><span className="text-2xl md:text-3xl font-bold font-mono tabular-nums" style={{ color: severityTheme.color, textShadow: `0 0 20px ${severityTheme.color}40` }}>{alert.amount}</span></div>
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Confidence</span><ConfidenceIndicator value={alert.confidence} colorOverride={severityTheme.color} size="lg" glow /></div>
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Alert type</span><span className="text-sm md:text-base text-white/70 tracking-wide break-words">{alert.description}</span></div>
-              <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Account</span><div className="flex items-center gap-2"><CreditCard size={16} className="text-white/30" /><span className="text-base font-mono font-medium text-white/80">{`Checking ****4821`}</span></div></div>
-              <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Location</span><div className="flex items-center gap-2"><MapPin size={16} className="text-white/30" /><span className="text-base text-white/80 tracking-wide">{"Online"}</span></div><span className="text-xs font-semibold tracking-wide" style={{ color: severityTheme.color }}>Flagged IP: 203.0.113.42</span></div>
+              <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Account</span><div className="flex items-center gap-2"><CreditCard size={16} className="text-white/30" /><span className="text-base font-mono font-medium text-white/80">{`Visa ****4821`}</span></div></div>
+              <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Location</span><div className="flex items-center gap-2"><MapPin size={16} className="text-white/30" /><span className="text-base text-white/80 tracking-wide">{"Online"}</span></div><span className="text-xs font-semibold tracking-wide" style={{ color: severityTheme.color }}>Flagged IP: 47.186.93.118</span></div>
             </div>
           </div>
         </motion.div>
 
+        {/* ── Recommended Action (verdict first) ── */}
+        <motion.div variants={fadeUpVariant}>
+          {disputeState === 'idle' && (
+            <div className="glass-card rounded-2xl p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 transition-all" style={{ borderColor: 'var(--state-critical)' }}>
+              <div className="absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none" style={{ backgroundImage: `linear-gradient(to bottom right, ${severityTheme.bg}, transparent)` }} />
+              <div className="relative z-10 flex flex-col gap-1">
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Recommended Action</h3>
+                <p className="text-sm font-medium tracking-wide" style={{ color: severityTheme.color }}>{`AI recommends blocking (${formatConfidence(alert.confidence)} confidence)`}</p>
+              </div>
+              <div className="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+                <button onClick={() => setDisputeState('drafting')} className={cn(buttonVariants({ variant: "default" }), "rounded-2xl px-8 py-4 transition-all font-bold tracking-wide border-none text-white shadow-lg")} style={{ background: severityTheme.color, boxShadow: `0 0 30px ${severityTheme.shadow}` }}>
+                  <span className="flex items-center justify-center gap-2"><XCircle size={18} /> Block & Report</span>
+                </button>
+                <button onClick={() => { dismiss(alert.id); navigate('/protect') }} className={cn(buttonVariants({ variant: "ghost" }), "rounded-2xl px-6 py-4 border border-white/[0.08] hover:bg-white/[0.05] text-white/50 hover:text-white/70 font-medium tracking-wide transition-all flex items-center justify-center gap-2")}>
+                  <CheckCircle2 size={18} /> This was Me
+                </button>
+              </div>
+            </div>
+          )}
+
+          {disputeState === 'drafting' && (
+            <div className="glass-card rounded-2xl p-6 lg:p-8 flex flex-col gap-6" style={{ borderColor: 'var(--engine-execute)', background: 'rgba(234, 179, 8, 0.05)' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-execute)]/20 to-transparent pointer-events-none" />
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Case Brief</h3>
+              <div className="flex flex-col lg:flex-row gap-6 relative z-10">
+                <div className="flex-1 flex flex-col gap-4">
+                  <div className="rounded-[20px] bg-black/40 border border-white/[0.06] p-5 font-mono text-xs leading-relaxed shadow-inner">
+                    <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-white/60">
+                      <span className="text-white/40">Transaction</span>
+                      <span><span className="text-red-400 font-bold">{alert.amount}</span>{' · '}<span className="text-white/90 font-bold">{alert.counterparty}</span></span>
+                      <span className="text-white/40">Date</span>
+                      <span className="text-white/70">{caseBrief.dateStr}</span>
+                      <span className="text-white/40">Account</span>
+                      <span className="text-white/70">Visa ****4821</span>
+                      <span className="text-white/40">AI Confidence</span>
+                      <span className="font-bold" style={{ color: severityTheme.color }}>{formatConfidence(alert.confidence)} ({alert.severity})</span>
+                    </div>
+                    <div className="mt-4 pt-3 border-t border-white/[0.06]">
+                      <p className="text-[10px] uppercase tracking-widest text-[var(--engine-execute)] font-semibold mb-2">Key Findings</p>
+                      <ul className="flex flex-col gap-1.5">
+                        {caseBrief.findings.map((f, i) => (
+                          <li key={i} className="text-white/70 flex gap-2">
+                            <span className="text-[var(--engine-execute)] shrink-0">·</span>
+                            <span>{f}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
+                      <span className="text-white/40">Reference <span className="text-white/70 font-bold">{caseBrief.caseId}</span></span>
+                      <button
+                        onClick={handleCopyBrief}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-semibold uppercase tracking-widest transition-all border border-white/[0.08] hover:border-[var(--engine-execute)]/40 hover:bg-[var(--engine-execute)]/10 text-white/50 hover:text-white/80"
+                      >
+                        {copied ? <><Check size={12} className="text-emerald-400" />Copied</> : <><Copy size={12} />Copy to clipboard</>}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="rounded-[20px] border border-dashed border-[var(--engine-execute)]/30 hover:border-[var(--engine-execute)]/60 cursor-pointer p-4 text-center bg-[var(--engine-execute)]/5 hover:bg-[var(--engine-execute)]/10 transition-colors group">
+                    <Upload className="w-6 h-6 text-white/40 group-hover:text-white/80 mx-auto mb-2 transition-colors drop-shadow-sm" />
+                    <p className="text-xs font-medium tracking-wide text-white/80">Attach Supporting Documents</p>
+                    <p className="text-[10px] text-white/40 mt-1">Receipts, invoices, or correspondence that support your claim</p>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-3 lg:justify-end lg:w-48 shrink-0">
+                  <button onClick={() => { setDisputeState('submitted'); setTimeout(() => { setDisputeState('neutralized'); window.dispatchEvent(new CustomEvent('poseidon:execute-approved', { detail: { govId: caseBrief.caseId, actionId: alert.id, actionTitle: `Dispute filed: ${alert.counterparty} ${alert.amount}` } })) }, 2000) }} className={cn(buttonVariants({ variant: "default" }), "w-full rounded-xl py-3 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.5)] bg-[var(--engine-execute)] border-none text-black font-bold tracking-wide flex items-center justify-center gap-2 transition-all")}><Zap size={16} />Email to Bank</button>
+                  <button onClick={() => setDisputeState('idle')} className={cn(buttonVariants({ variant: "ghost" }), "w-full rounded-xl py-3 border border-white/10 hover:bg-white/10 text-white/60 font-medium")}>Cancel</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {disputeState === 'submitted' && (
+            <div className="glass-card rounded-2xl p-6 lg:p-8 !border-emerald-500/30 !bg-emerald-500/10 flex flex-col sm:flex-row sm:items-center gap-6 text-center sm:text-left">
+              <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none" />
+              <div className="relative z-10 flex items-center gap-4 shrink-0">
+                <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+                  <CheckCircle2 className="h-7 w-7 text-emerald-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-light tracking-wide text-white" style={{ fontFamily: "var(--font-display)" }}>Dispute Filed</h3>
+                  <p className="text-sm text-white/70 tracking-wide">Case <span className="font-mono text-emerald-300 font-bold bg-emerald-500/10 px-1 rounded border border-emerald-500/20">{caseBrief.caseId}</span> sent to your bank.</p>
+                </div>
+              </div>
+              <div className="relative z-10 bg-black/40 border border-white/10 rounded-xl p-3 flex-1 text-left">
+                <p className="text-xs text-white/50 uppercase tracking-widest font-semibold mb-1">Next Step</p>
+                <p className="text-sm font-medium text-emerald-400">Your bank will review within 10 business days (Reg E). Provisional credit may apply within 48h.</p>
+              </div>
+            </div>
+          )}
+
+          {disputeState === 'neutralized' && (
+            <motion.div
+              initial={prefersReducedMotion ? {} : { scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+              className="glass-card rounded-2xl p-8 !border-emerald-500/30 flex flex-col items-center gap-4 text-center"
+            >
+              <motion.div
+                initial={prefersReducedMotion ? {} : { scale: 0, rotate: -20 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.2 }}
+                className="w-20 h-20 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center"
+              >
+                <ShieldCheck className="w-10 h-10 text-emerald-400" />
+              </motion.div>
+              <h3 className="text-xl font-light tracking-wide text-white" style={{ fontFamily: 'var(--font-display)' }}>
+                Threat Neutralized
+              </h3>
+              <p className="text-sm text-white/50 max-w-md">
+                Your account has been secured. Dispute filed as case{' '}
+                <Link to={`/govern/audit-detail?decision=${caseBrief.caseId}`} className="font-mono text-emerald-300 font-bold underline underline-offset-2 hover:text-emerald-200 transition-colors">{caseBrief.caseId}</Link>.
+                Your bank will review within 10 business days.
+              </p>
+            </motion.div>
+          )}
+        </motion.div>
+
+        {/* ── Supporting Evidence (collapsible timeline + drivers) ── */}
+        <details className="group">
+          <summary className="flex items-center gap-2 cursor-pointer list-none text-white/40 hover:text-white/60 transition-colors py-2">
+            <span className="text-xs font-semibold uppercase tracking-widest">Timeline &amp; Evidence</span>
+            <span className="text-xs text-white/30 group-open:rotate-180 transition-transform">▾</span>
+          </summary>
+
         {/* ── Timeline ── */}
-        <motion.div variants={fadeUpVariant} className="mb-8">
+        <div className="mt-4 mb-6">
           <div className="glass-card rounded-2xl p-6 lg:p-8 flex flex-col gap-4 transition-all">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
             <div className="relative z-10 hidden md:flex items-center justify-between" role="list" aria-label="Alert timeline">
@@ -296,7 +421,7 @@ export default function ProtectAlertDetailPage() {
               ))}
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* ── Decision Drivers + Evidence ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
@@ -358,126 +483,7 @@ export default function ProtectAlertDetailPage() {
             </div>
           </motion.div>
         </div>
-
-        {/* ── Actions ── */}
-        <motion.div variants={fadeUpVariant}>
-          {disputeState === 'idle' && (
-            <div className="glass-card rounded-2xl p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 transition-all" style={{ borderColor: 'var(--state-critical)' }}>
-              <div className="absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none" style={{ backgroundImage: `linear-gradient(to bottom right, ${severityTheme.bg}, transparent)` }} />
-              <div className="relative z-10 flex flex-col gap-1">
-                <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Recommended Action</h3>
-                <p className="text-sm font-medium tracking-wide" style={{ color: severityTheme.color }}>{`AI recommends blocking (${formatConfidence(alert.confidence)} confidence)`}</p>
-              </div>
-              <div className="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
-                <button onClick={() => setDisputeState('drafting')} className={cn(buttonVariants({ variant: "default" }), "rounded-2xl px-8 py-4 transition-all font-bold tracking-wide border-none text-white shadow-lg")} style={{ background: severityTheme.color, boxShadow: `0 0 30px ${severityTheme.shadow}` }}>
-                  <span className="flex items-center justify-center gap-2"><XCircle size={18} /> Block & Report</span>
-                </button>
-                <button onClick={() => { dismiss(alert.id); navigate('/protect') }} className={cn(buttonVariants({ variant: "ghost" }), "rounded-2xl px-6 py-4 border border-white/[0.08] hover:bg-white/[0.05] text-white/50 hover:text-white/70 font-medium tracking-wide transition-all flex items-center justify-center gap-2")}>
-                  <CheckCircle2 size={18} /> This was Me
-                </button>
-              </div>
-            </div>
-          )}
-
-          {disputeState === 'drafting' && (
-            <div className="glass-card rounded-2xl p-6 lg:p-8 flex flex-col gap-6" style={{ borderColor: 'var(--engine-execute)', background: 'rgba(234, 179, 8, 0.05)' }}>
-              <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-execute)]/20 to-transparent pointer-events-none" />
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 relative z-10 border-b border-white/[0.06] pb-4">Case Brief</h3>
-              <div className="flex flex-col lg:flex-row gap-6 relative z-10">
-                <div className="flex-1 flex flex-col gap-4">
-                  {/* Case Brief — structured reference for bank dispute */}
-                  <div className="rounded-[20px] bg-black/40 border border-white/[0.06] p-5 font-mono text-xs leading-relaxed shadow-inner">
-                    <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-white/60">
-                      <span className="text-white/40">Transaction</span>
-                      <span><span className="text-red-400 font-bold">{alert.amount}</span>{' · '}<span className="text-white/90 font-bold">{alert.counterparty}</span></span>
-                      <span className="text-white/40">Date</span>
-                      <span className="text-white/70">{caseBrief.dateStr}</span>
-                      <span className="text-white/40">Account</span>
-                      <span className="text-white/70">Checking ****4821</span>
-                      <span className="text-white/40">AI Confidence</span>
-                      <span className="font-bold" style={{ color: severityTheme.color }}>{formatConfidence(alert.confidence)} ({alert.severity})</span>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-white/[0.06]">
-                      <p className="text-[10px] uppercase tracking-widest text-[var(--engine-execute)] font-semibold mb-2">Key Findings</p>
-                      <ul className="flex flex-col gap-1.5">
-                        {caseBrief.findings.map((f, i) => (
-                          <li key={i} className="text-white/70 flex gap-2">
-                            <span className="text-[var(--engine-execute)] shrink-0">·</span>
-                            <span>{f}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
-                      <span className="text-white/40">Reference <span className="text-white/70 font-bold">{caseBrief.caseId}</span></span>
-                      <button
-                        onClick={handleCopyBrief}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-semibold uppercase tracking-widest transition-all border border-white/[0.08] hover:border-[var(--engine-execute)]/40 hover:bg-[var(--engine-execute)]/10 text-white/50 hover:text-white/80"
-                      >
-                        {copied ? <><Check size={12} className="text-emerald-400" />Copied</> : <><Copy size={12} />Copy to clipboard</>}
-                      </button>
-                    </div>
-                  </div>
-                  {/* Upload supporting docs */}
-                  <div className="rounded-[20px] border border-dashed border-[var(--engine-execute)]/30 hover:border-[var(--engine-execute)]/60 cursor-pointer p-4 text-center bg-[var(--engine-execute)]/5 hover:bg-[var(--engine-execute)]/10 transition-colors group">
-                    <Upload className="w-6 h-6 text-white/40 group-hover:text-white/80 mx-auto mb-2 transition-colors drop-shadow-sm" />
-                    <p className="text-xs font-medium tracking-wide text-white/80">Attach Supporting Documents</p>
-                    <p className="text-[10px] text-white/40 mt-1">Receipts, invoices, or correspondence that support your claim</p>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-3 lg:justify-end lg:w-48 shrink-0">
-                  <button onClick={() => { setDisputeState('submitted'); setTimeout(() => { setDisputeState('neutralized'); window.dispatchEvent(new CustomEvent('poseidon:execute-approved', { detail: { govId: caseBrief.caseId, actionId: alert.id, actionTitle: `Dispute filed: ${alert.counterparty} ${alert.amount}` } })) }, 2000) }} className={cn(buttonVariants({ variant: "default" }), "w-full rounded-xl py-3 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.5)] bg-[var(--engine-execute)] border-none text-black font-bold tracking-wide flex items-center justify-center gap-2 transition-all")}><Zap size={16} />Email to Bank</button>
-                  <button onClick={() => setDisputeState('idle')} className={cn(buttonVariants({ variant: "ghost" }), "w-full rounded-xl py-3 border border-white/10 hover:bg-white/10 text-white/60 font-medium")}>Cancel</button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {disputeState === 'submitted' && (
-            <div className="glass-card rounded-2xl p-6 lg:p-8 !border-emerald-500/30 !bg-emerald-500/10 flex flex-col sm:flex-row sm:items-center gap-6 text-center sm:text-left">
-              <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none" />
-              <div className="relative z-10 flex items-center gap-4 shrink-0">
-                <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
-                  <CheckCircle2 className="h-7 w-7 text-emerald-400" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-light tracking-wide text-white" style={{ fontFamily: "var(--font-display)" }}>Dispute Filed</h3>
-                  <p className="text-sm text-white/70 tracking-wide">Case <span className="font-mono text-emerald-300 font-bold bg-emerald-500/10 px-1 rounded border border-emerald-500/20">{caseBrief.caseId}</span> sent to your bank.</p>
-                </div>
-              </div>
-              <div className="relative z-10 bg-black/40 border border-white/10 rounded-xl p-3 flex-1 text-left">
-                <p className="text-xs text-white/50 uppercase tracking-widest font-semibold mb-1">Next Step</p>
-                <p className="text-sm font-medium text-emerald-400">Your bank will review within 10 business days (Reg E). Provisional credit may apply within 48h.</p>
-              </div>
-            </div>
-          )}
-
-          {disputeState === 'neutralized' && (
-            <motion.div
-              initial={prefersReducedMotion ? {} : { scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-              className="glass-card rounded-2xl p-8 !border-emerald-500/30 flex flex-col items-center gap-4 text-center"
-            >
-              <motion.div
-                initial={prefersReducedMotion ? {} : { scale: 0, rotate: -20 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.2 }}
-                className="w-20 h-20 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center"
-              >
-                <ShieldCheck className="w-10 h-10 text-emerald-400" />
-              </motion.div>
-              <h3 className="text-xl font-light tracking-wide text-white" style={{ fontFamily: 'var(--font-display)' }}>
-                Threat Neutralized
-              </h3>
-              <p className="text-sm text-white/50 max-w-md">
-                Your account has been secured. Dispute filed as case{' '}
-                <Link to={`/govern/audit-detail?decision=${caseBrief.caseId}`} className="font-mono text-emerald-300 font-bold underline underline-offset-2 hover:text-emerald-200 transition-colors">{caseBrief.caseId}</Link>.
-                Your bank will review within 10 business days.
-              </p>
-            </motion.div>
-          )}
-        </motion.div>
+        </details>
 
       </motion.div>
     </>

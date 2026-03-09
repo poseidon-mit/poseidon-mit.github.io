@@ -6,7 +6,7 @@ import { getMotionPreset } from '@/lib/motion-presets'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
-import { selectGovernAuditEntries, selectGovernAuditSummaryView, selectGovernEngineBreakdown } from '@/domain/poseidon-universe'
+import { selectCohortHeadlines, selectGovernAuditEntries, selectGovernAuditSummaryView, selectGovernEngineBreakdown } from '@/domain/poseidon-universe'
 import { ENGINE_COLOR_MAP, type EngineLabel } from '@/lib/engine-color-map'
 import { AUDIT_DECISIONS } from '@/lib/govern-audit-data'
 export default function GovernPage() {
@@ -50,6 +50,11 @@ export default function GovernPage() {
             />
           </motion.div>
         </motion.section>
+
+        {/* ── Cohort Insight ── */}
+        <motion.p variants={fadeUpVariant} className="text-xs text-muted-foreground -mt-2">
+          <span className="text-primary/70">Similar users</span> · {selectCohortHeadlines().govern}
+        </motion.p>
 
       </motion.div>
     </>

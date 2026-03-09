@@ -45,11 +45,19 @@ export {
   selectAllEngineSpotlights,
   selectThreatFactors,
   selectThreatTiming,
+  selectAccounts,
+  selectBalanceSheet,
+  selectGoals,
+  selectAccountByLast4,
+  selectCohortHeadlines,
 } from './selectors'
 export type { AlertAuditChain, CrossEngineChain, SpotlightKind, SpotlightContext, SpotlightItem } from './selectors'
 export type {
+  AccountEntity,
+  AccountType,
   AlternativeType,
   ArchitecturalTrust,
+  CanonicalBalanceSheet,
   CanonicalEvent,
   CanonicalUniverseV1,
   ClientTier,
@@ -73,6 +81,7 @@ export type {
   ExecuteStepStatus,
   ExecutionStep,
   ExecutionType,
+  GoalEntity,
   GovernAuditEntryEntity,
   GovernLedgerEntryEntity,
   PriorityItem,

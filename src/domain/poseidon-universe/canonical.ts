@@ -7,11 +7,13 @@
  */
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import type {
+  AccountEntity,
   CanonicalEvent,
   CanonicalUniverseV1,
   DashboardActivityEntity,
   DeliberationTrace,
   ExecuteActionEntity,
+  GoalEntity,
   GovernAuditEntryEntity,
   GrowthSimulationPoint,
   ProtectThreatEntity,
@@ -23,9 +25,9 @@ import type {
 } from './types'
 import type { ExecutionType } from './types'
 
-const VERIFIED_DECISIONS = 44
-const PENDING_REVIEW_DECISIONS = 2
-const FLAGGED_DECISIONS = 1
+const VERIFIED_DECISIONS = 52
+const PENDING_REVIEW_DECISIONS = 4
+const FLAGGED_DECISIONS = 2
 
 // ─── Dashboard Activities ────────────────────────────────────────────────────
 
@@ -57,8 +59,14 @@ const DASHBOARD_ACTIVITIES: DashboardActivityEntity[] = [
   {
     id: 'ACT-005',
     kind: 'system',
-    label: `Monthly optimization ${formatUsd(DEMO_THREAD.monthlyOptimization)} confirmed`,
+    label: 'Poseidon identified $759/mo in potential savings across 10 recommendations',
     relativeTime: '3h ago',
+  },
+  {
+    id: 'ACT-006',
+    kind: 'protect',
+    label: 'Comcast bill increase detected — $89 → $99/mo without prior notification',
+    relativeTime: '4h ago',
   },
 ]
 
@@ -70,6 +78,8 @@ const THREAT_TIMING: Record<string, ThreatTiming> = {
   'THR-003': { detected: '2026-03-07T16:42:00-04:00', updated: '2026-03-07T16:44:00-04:00', times: ['16:42', '16:43', '16:44', '16:45'] },
   'THR-004': { detected: '2026-03-05T11:08:00-04:00', updated: '2026-03-05T11:10:00-04:00', times: ['11:08', '11:09', '11:10', '11:11'] },
   'THR-005': { detected: '2026-03-06T23:47:00-04:00', updated: '2026-03-06T23:49:00-04:00', times: ['23:47', '23:48', '23:49', '23:50'] },
+  'THR-006': { detected: '2026-03-09T07:15:00-04:00', updated: '2026-03-09T07:17:00-04:00', times: ['07:15', '07:16', '07:17', '07:18'] },
+  'THR-007': { detected: '2026-03-09T06:30:00-04:00', updated: '2026-03-09T06:32:00-04:00', times: ['06:30', '06:31', '06:32', '06:33'] },
 }
 const DEFAULT_THREAT_TIMING: ThreatTiming = { detected: '2026-03-09T14:28:00-04:00', updated: '2026-03-09T14:30:00-04:00', times: ['14:28', '14:29', '14:30', '14:31'] }
 
@@ -123,6 +133,26 @@ const THREAT_FACTORS: Record<string, ThreatFactor[]> = {
     { id: 'e5', title: 'Cohort Risk Pattern', weight: 0.80, heroCue: 'Matches 634 confirmed unauthorized ATM withdrawal cases', details: 'Unfamiliar ATM + late night + high amount pattern matches 634 confirmed unauthorized withdrawal cases across the platform. Similarity score: 0.87. In 72% of confirmed cases, a cloned card was used.', model: 'GBM-FraudDetection v3.0' },
     { id: 'm1', title: 'PIN Authentication', weight: 0.60, details: 'ATM withdrawals require PIN entry. Successful PIN authentication suggests the cardholder (or someone with the PIN) initiated the transaction. PIN compromise is less common than card-not-present fraud.', model: 'AE-AuthStrength v2.0', mitigating: true },
     { id: 'm2', title: 'Account Balance', weight: 0.45, details: 'Your checking account balance is $8,200. The $800 withdrawal is within normal liquidity range and did not trigger overdraft protection. No account balance anomaly detected.', model: 'BayesNet-BalanceContext v1.8', mitigating: true },
+  ],
+  /* ── THR-006: Comcast Xfinity, $99.00, Medium ── */
+  'THR-006': [
+    { id: 'e1', title: 'Bill Increase Without Notice', weight: 0.82, heroCue: 'Monthly charge increased from $89 to $99 without notification', details: 'Comcast Xfinity bill increased from $89/month to $99/month — a $10/month (11.2%) increase. No promotional rate change notification was detected in email or account alerts.', model: 'IsoForest-Anomaly v4.1' },
+    { id: 'e2', title: 'No Promotional Change Detected', weight: 0.75, heroCue: 'No plan upgrade or add-on corresponds to the price increase', details: 'Your internet plan (200 Mbps) has not changed in the past 18 months. The $10 increase does not correspond to any service upgrade, add-on, or promotional rate expiration in the current billing cycle.', model: 'LSTM-TemporalSeq v2.0' },
+    { id: 'e3', title: 'ISP Rate Hike Pattern', weight: 0.70, heroCue: 'Comcast has raised rates for 34% of users this quarter', details: 'Across Poseidon users, 34% of Comcast subscribers experienced a rate increase of $5-$15/month in Q1 2026. This appears to be a systematic rate adjustment, not an individual billing error.', model: 'GBM-CohortImpact v3.0' },
+    { id: 'e4', title: 'Competitor Pricing Gap', weight: 0.68, heroCue: 'Comparable plans available for $49-$69/mo from competitors', details: 'Local competitors offer 200+ Mbps plans at $49.99 (Verizon Fios) to $69.99 (T-Mobile Home Internet). Your new $99/month rate is 42-99% above market alternatives.', model: 'XGB-MarketComparison v2.3' },
+    { id: 'e5', title: 'Retention Offer Likelihood', weight: 0.78, heroCue: '67% of users who called got $25-$35/mo discount', details: 'Historical data shows 67% of Comcast subscribers who contacted retention department after a rate increase received a promotional rate reduction of $25-$35/month. Average call time: 18 minutes.', model: 'GBM-FraudDetection v3.0' },
+    { id: 'm1', title: 'Service Continuity', weight: 0.55, details: 'You have been a Comcast subscriber for 18 months with no service interruptions. Switching providers would require equipment return and new installation, typically 3-5 days.', model: 'AE-ServiceValue v2.0', mitigating: true },
+    { id: 'm2', title: 'Budget Impact', weight: 0.40, details: 'The $10/month increase represents 0.15% of your monthly expenses. Low absolute impact, but combined with other subscription increases, the cumulative effect is $22/month ($264/year) across services.', model: 'BayesNet-BudgetImpact v1.8', mitigating: true },
+  ],
+  /* ── THR-007: APP*CLOUDSVCS, $14.99, Medium ── */
+  'THR-007': [
+    { id: 'e1', title: 'Unrecognized Recurring Charge', weight: 0.88, heroCue: 'Charge from APP*CLOUDSVCS not linked to any known subscription', details: '$14.99 recurring charge from APP*CLOUDSVCS has appeared on your Visa ending 4821 for 3 consecutive months. This billing descriptor does not match any subscription service in your recognized merchant list.', model: 'IsoForest-Anomaly v4.1' },
+    { id: 'e2', title: 'Descriptor Obscurity', weight: 0.76, heroCue: 'Generic billing descriptor — difficult to identify the actual service', details: 'The descriptor "APP*CLOUDSVCS" is a generic billing aggregator name used by multiple app stores and SaaS providers. Without additional research, the actual service cannot be identified from the transaction data alone.', model: 'LSTM-TemporalSeq v2.0' },
+    { id: 'e3', title: 'No Corresponding Activity', weight: 0.80, heroCue: 'No app usage, login, or email receipt found for this service', details: 'Cross-referencing your email receipts, app store purchase history, and digital subscription records found no matching service for $14.99/month from APP*CLOUDSVCS. This charge may be from a forgotten trial conversion.', model: 'GNN-SubscriptionTracker v1.5' },
+    { id: 'e4', title: 'Trial Conversion Pattern', weight: 0.72, heroCue: 'First charge appeared 3 months ago — typical free trial conversion window', details: 'The charge first appeared 3 months ago, consistent with a free trial conversion to paid subscription. 23% of free trials convert without explicit user action, and 68% of those are eventually cancelled when discovered.', model: 'XGB-MarketComparison v2.3' },
+    { id: 'e5', title: 'Cohort Unknown Charge Rate', weight: 0.65, heroCue: '18% of users have at least one unrecognized recurring charge', details: 'Across Poseidon users, 18% carry at least one recurring charge they cannot identify. Average annual cost of forgotten subscriptions: $240/user. Early identification and cancellation typically saves $180-$240/year.', model: 'GBM-CohortImpact v3.0' },
+    { id: 'm1', title: 'Low Amount', weight: 0.50, details: '$14.99 is within common app subscription pricing ($9.99-$19.99/mo). The amount itself is not anomalous for a digital subscription service.', model: 'AE-AmountContext v2.0', mitigating: true },
+    { id: 'm2', title: 'Consistent Billing', weight: 0.45, details: 'The charge has appeared at the same amount for 3 consecutive months with no variation. Consistent billing patterns are more typical of legitimate subscriptions than fraudulent charges.', model: 'BayesNet-BillingPattern v1.8', mitigating: true },
   ],
 }
 
@@ -193,6 +223,32 @@ const PROTECT_THREATS: ProtectThreatEntity[] = [
     compositePriority: 52,
     timing: THREAT_TIMING['THR-005'] ?? DEFAULT_THREAT_TIMING,
     factors: THREAT_FACTORS['THR-005'],
+  },
+  {
+    id: 'THR-006',
+    counterparty: 'Comcast Xfinity',
+    amountUsd: 99.00,
+    confidence: 0.82,
+    severity: 'Medium',
+    description: 'Bill increase — $89 → $99/mo without prior notification',
+    relativeTime: '6h ago',
+    sortOrder: 3,
+    compositePriority: 48,
+    timing: THREAT_TIMING['THR-006'] ?? DEFAULT_THREAT_TIMING,
+    factors: THREAT_FACTORS['THR-006'],
+  },
+  {
+    id: 'THR-007',
+    counterparty: 'APP*CLOUDSVCS',
+    amountUsd: 14.99,
+    confidence: 0.76,
+    severity: 'Medium',
+    description: 'Unrecognized recurring subscription — $14.99/mo for 3 months, no matching service found',
+    relativeTime: '8h ago',
+    sortOrder: 2,
+    compositePriority: 45,
+    timing: THREAT_TIMING['THR-007'] ?? DEFAULT_THREAT_TIMING,
+    factors: THREAT_FACTORS['THR-007'],
   },
 ]
 
@@ -270,6 +326,24 @@ const RECOMMENDATIONS: RecommendationEntity[] = [
     confidence: 0.77,
     alternativeType: 'negotiation',
     compositePriority: Math.round(360 * 0.77 / 10),   // 28
+  },
+  {
+    id: 'REC-009',
+    title: 'Increase 401(k) to Employer Match',
+    projectedBenefitUsd: 300,
+    annualBenefitUsd: 3600,
+    confidence: 0.95,
+    alternativeType: 'savings',
+    compositePriority: Math.round(3600 * 0.95 / 10),  // 342
+  },
+  {
+    id: 'REC-010',
+    title: 'Cancel Unrecognized Subscription',
+    projectedBenefitUsd: 15,
+    annualBenefitUsd: 180,
+    confidence: 0.88,
+    alternativeType: 'subscription',
+    compositePriority: Math.round(180 * 0.88 / 10),   // 16
   },
 ]
 
@@ -444,6 +518,72 @@ const EXECUTE_ACTIONS: ExecuteActionEntity[] = [
       { id: 'EXE-005-S4', label: 'Process and verify', description: 'Cancellation request submitted. Next billing cycle will reflect the savings', actor: 'agent', status: 'waiting', requiresConsent: false, estimatedDuration: '1 billing cycle' },
     ],
   },
+  {
+    id: 'EXE-006',
+    title: 'Dispute duplicate DoorDash charge',
+    engine: 'Protect',
+    amountLabel: '$67.43',
+    confidence: 0.72,
+    timestampLabel: '16:44',
+    description: 'Initiate dispute for the duplicate $67.43 DoorDash charge. Only one delivery order matches this time window — the second charge is a processing error.',
+    urgency: 'medium',
+    impact: {
+      approved: 'Dispute filed with your card issuer. Refund of $67.43 expected within 5 business days based on similar cases.',
+      deferred: 'Duplicate charge remains on your statement. You can still dispute within 60 days.',
+    },
+    reversible: true,
+    expiresIn: null,
+    factors: [
+      { label: 'Duplicate amount match', value: 0.94 },
+      { label: 'Time proximity (4 min)', value: 0.88 },
+      { label: 'Single order confirmation', value: 0.85 },
+    ],
+    executionType: 'semi-auto',
+    category: 'protection',
+    sourceEngine: 'Protect',
+    sourceEntityId: 'THR-003',
+    riskTier: 1,
+    compositePriority: 62,
+    steps: [
+      { id: 'EXE-006-S1', label: 'Compile duplicate evidence', description: 'Poseidon gathered transaction timestamps, order records, and DoorDash billing history showing only one delivery', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '2s' },
+      { id: 'EXE-006-S2', label: 'Draft dispute letter', description: 'Generated dispute citing duplicate billing — two identical $67.43 charges 4 minutes apart with single order confirmation', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '2s' },
+      { id: 'EXE-006-S3', label: 'Approve and submit dispute', description: 'You review the evidence and authorize Poseidon to file the duplicate charge dispute', actor: 'user', status: 'current', requiresConsent: true, estimatedDuration: '~1 min' },
+      { id: 'EXE-006-S4', label: 'Track refund', description: 'Poseidon monitors the dispute status. Based on 892 similar cases, 97% are refunded within 5 business days', actor: 'agent', status: 'waiting', requiresConsent: false, estimatedDuration: '3-5 days' },
+    ],
+  },
+  {
+    id: 'EXE-007',
+    title: 'Cancel unrecognized subscription',
+    engine: 'Protect',
+    amountLabel: '$14.99/mo',
+    confidence: 0.76,
+    timestampLabel: '06:32',
+    description: 'Cancel the unrecognized $14.99/month recurring charge from APP*CLOUDSVCS. No matching service, app usage, or email receipt was found for this subscription.',
+    urgency: 'medium',
+    impact: {
+      approved: 'Subscription cancelled and future charges from this merchant stopped. Saves $180/year. Refund request filed for prior charges.',
+      deferred: 'You continue paying $14.99/month ($180/year) for a service you may not use.',
+    },
+    reversible: true,
+    expiresIn: null,
+    factors: [
+      { label: 'No matching service found', value: 0.88 },
+      { label: 'Descriptor obscurity', value: 0.76 },
+      { label: 'Trial conversion pattern', value: 0.72 },
+    ],
+    executionType: 'semi-auto',
+    category: 'subscription',
+    sourceEngine: 'Protect',
+    sourceEntityId: 'THR-007',
+    riskTier: 1,
+    compositePriority: 50,
+    steps: [
+      { id: 'EXE-007-S1', label: 'Identify billing source', description: 'Poseidon cross-referenced APP*CLOUDSVCS against app stores, email receipts, and subscription databases — no match found', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '3s' },
+      { id: 'EXE-007-S2', label: 'Prepare cancellation', description: 'Generated cancellation request and partial refund inquiry for the 3 months of unrecognized charges ($44.97)', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '2s' },
+      { id: 'EXE-007-S3', label: 'Confirm cancellation', description: 'You confirm the subscription cancellation and authorize stopping future charges from this merchant on your Visa ending 4821', actor: 'user', status: 'current', requiresConsent: true, estimatedDuration: '~30s' },
+      { id: 'EXE-007-S4', label: 'Verify and monitor', description: 'Poseidon monitors your next billing cycle to confirm the charge stops appearing. Refund request tracked separately', actor: 'agent', status: 'waiting', requiresConsent: false, estimatedDuration: '1 billing cycle' },
+    ],
+  },
 ]
 
 // ─── Govern Audit Entries ───────────────────────────────────────────────────
@@ -533,6 +673,86 @@ const GOVERN_AUDIT_ENTRIES: GovernAuditEntryEntity[] = [
     evidence: 3,
     status: 'Verified',
     compositePriority: governPriority('Verified', 0.91),
+  },
+  {
+    id: 'GV-2026-0305-040',
+    timestampIso: '2026-03-05T11:10:00-04:00',
+    type: 'Protect',
+    action: 'Geographic velocity anomaly assessed — Shell gas station',
+    confidence: 0.65,
+    evidence: 5,
+    status: 'Verified',
+    compositePriority: governPriority('Verified', 0.65),
+  },
+  {
+    id: 'GV-2026-0304-039',
+    timestampIso: '2026-03-04T14:20:00-04:00',
+    type: 'Grow',
+    action: 'Auto loan refinance opportunity identified — $564/yr savings',
+    confidence: 0.84,
+    evidence: 4,
+    status: 'Verified',
+    compositePriority: governPriority('Verified', 0.84),
+  },
+  {
+    id: 'GV-2026-0309-049',
+    timestampIso: '2026-03-09T07:17:00-04:00',
+    type: 'Protect',
+    action: 'Internet bill increase detected — Comcast $89 → $99/mo',
+    confidence: 0.82,
+    evidence: 5,
+    status: 'Pending review',
+    compositePriority: governPriority('Pending review', 0.82),
+  },
+  {
+    id: 'GV-2026-0309-050',
+    timestampIso: '2026-03-09T06:32:00-04:00',
+    type: 'Protect',
+    action: 'Unrecognized subscription charge flagged — APP*CLOUDSVCS $14.99/mo',
+    confidence: 0.76,
+    evidence: 5,
+    status: 'Pending review',
+    compositePriority: governPriority('Pending review', 0.76),
+  },
+  {
+    id: 'GV-2026-0309-051',
+    timestampIso: '2026-03-09T06:35:00-04:00',
+    type: 'Grow',
+    action: 'Unknown subscription review recommendation generated',
+    confidence: 0.88,
+    evidence: 4,
+    status: 'Verified',
+    compositePriority: governPriority('Verified', 0.88),
+  },
+  {
+    id: 'GV-2026-0308-044B',
+    timestampIso: '2026-03-08T10:00:00-04:00',
+    type: 'Grow',
+    action: '401(k) employer match optimization identified — $3,600/yr',
+    confidence: 0.95,
+    evidence: 4,
+    status: 'Verified',
+    compositePriority: governPriority('Verified', 0.95),
+  },
+  {
+    id: 'GV-2026-0307-044B',
+    timestampIso: '2026-03-07T16:50:00-04:00',
+    type: 'Execute',
+    action: 'DoorDash duplicate charge dispute queued',
+    confidence: 0.72,
+    evidence: 5,
+    status: 'Flagged',
+    compositePriority: governPriority('Flagged', 0.72),
+  },
+  {
+    id: 'GV-2026-0309-052',
+    timestampIso: '2026-03-09T06:40:00-04:00',
+    type: 'Execute',
+    action: 'Unrecognized subscription cancellation queued',
+    confidence: 0.76,
+    evidence: 5,
+    status: 'Flagged',
+    compositePriority: governPriority('Flagged', 0.76),
   },
 ]
 
@@ -626,8 +846,21 @@ const CANONICAL_EVENTS: CanonicalEvent[] = [
     children: {
       threats: ['THR-003'],
       alternatives: [],
-      actions: [],
-      auditEntries: ['GV-2026-0307-044'],
+      actions: ['EXE-006'],
+      auditEntries: ['GV-2026-0307-044', 'GV-2026-0307-044B'],
+    },
+    deliberationTraces: [],
+  },
+  {
+    id: 'EVT-003',
+    title: 'Unrecognized subscription — APP*CLOUDSVCS $14.99/mo',
+    timestampIso: '2026-03-09T06:30:00-04:00',
+    status: 'active',
+    children: {
+      threats: ['THR-007'],
+      alternatives: ['REC-010'],
+      actions: ['EXE-007'],
+      auditEntries: ['GV-2026-0309-050', 'GV-2026-0309-051', 'GV-2026-0309-052'],
     },
     deliberationTraces: [],
   },
@@ -637,18 +870,18 @@ const CANONICAL_EVENTS: CanonicalEvent[] = [
 
 export const CANONICAL_GROWTH_SIMULATION_DATA: GrowthSimulationPoint[] = [
   { year: 'Now', baseline: 130000, aiOptimized: 130000, low: 130000, high: 130000 },
-  { year: '3M',  baseline: 130975, aiOptimized: 132100, low: 131950, high: 132275 },
-  { year: '6M',  baseline: 131950, aiOptimized: 134200, low: 133900, high: 134550 },
-  { year: '9M',  baseline: 132925, aiOptimized: 136300, low: 135850, high: 136825 },
-  { year: '1Y',  baseline: 133900, aiOptimized: 138400, low: 137800, high: 139100 },
-  { year: '15M', baseline: 134904, aiOptimized: 140650, low: 139900, high: 141475 },
-  { year: '18M', baseline: 135909, aiOptimized: 142900, low: 142000, high: 143850 },
-  { year: '21M', baseline: 136913, aiOptimized: 145150, low: 144100, high: 146275 },
-  { year: '2Y',  baseline: 137917, aiOptimized: 147400, low: 146200, high: 148700 },
-  { year: '27M', baseline: 138951, aiOptimized: 149559, low: 148200, high: 151025 },
-  { year: '30M', baseline: 139986, aiOptimized: 151718, low: 150200, high: 153350 },
-  { year: '33M', baseline: 141020, aiOptimized: 153878, low: 152200, high: 155675 },
-  { year: '3Y',  baseline: 142055, aiOptimized: 156037, low: 154200, high: 158000 },
+  { year: '3M',  baseline: 130975, aiOptimized: 133280, low: 133000, high: 133580 },
+  { year: '6M',  baseline: 131950, aiOptimized: 136620, low: 136100, high: 137200 },
+  { year: '9M',  baseline: 132925, aiOptimized: 140020, low: 139200, high: 140920 },
+  { year: '1Y',  baseline: 133900, aiOptimized: 143500, low: 142400, high: 144700 },
+  { year: '15M', baseline: 134904, aiOptimized: 147040, low: 145700, high: 148500 },
+  { year: '18M', baseline: 135909, aiOptimized: 150650, low: 149100, high: 152350 },
+  { year: '21M', baseline: 136913, aiOptimized: 154330, low: 152500, high: 156300 },
+  { year: '2Y',  baseline: 137917, aiOptimized: 158080, low: 156000, high: 160300 },
+  { year: '27M', baseline: 138951, aiOptimized: 161520, low: 159200, high: 164000 },
+  { year: '30M', baseline: 139986, aiOptimized: 165040, low: 162500, high: 167750 },
+  { year: '33M', baseline: 141020, aiOptimized: 168630, low: 165900, high: 171550 },
+  { year: '3Y',  baseline: 142055, aiOptimized: 172300, low: 169300, high: 175500 },
 ]
 
 const FINAL_SIM = CANONICAL_GROWTH_SIMULATION_DATA[CANONICAL_GROWTH_SIMULATION_DATA.length - 1]
@@ -656,11 +889,24 @@ export const CANONICAL_PROJECTED_3Y_ADVANTAGE = FINAL_SIM.aiOptimized - FINAL_SI
 
 // ─── Recommendation Detail Data ─────────────────────────────────────────────
 
+const REC_TO_AUDIT_ID: Record<number, string> = {
+  1: 'GV-2026-0309-047',
+  2: 'GV-2026-0308-045',
+  3: 'GV-2026-0307-044',
+  4: 'GV-2026-0305-041',
+  5: 'GV-2026-0308-044B',
+  6: 'GV-2026-0307-043',
+  7: 'GV-2026-0304-039',
+  8: 'GV-2026-0309-049',
+  9: 'GV-2026-0308-044B',
+  10: 'GV-2026-0309-051',
+}
+
 const growModelInfo = (recNum: number) => ({
   name: 'GrowthOptimizer' as const,
   version: '3.2',
   accuracy: 0.912,
-  auditId: `GV-2026-0309-R${String(recNum).padStart(2, '0')}`,
+  auditId: REC_TO_AUDIT_ID[recNum] ?? `GV-2026-0309-R${String(recNum).padStart(2, '0')}`,
 })
 
 export const CANONICAL_RECOMMENDATION_DETAILS: RecommendationDetail[] = [
@@ -970,6 +1216,78 @@ export const CANONICAL_RECOMMENDATION_DETAILS: RecommendationDetail[] = [
     modelInfo: growModelInfo(8),
     dataSources: ['Internet bill detection (18 months)', 'Promotional rate expiration detection', 'Competitor pricing analysis (local ISPs)', 'Retention success rate data'],
   },
+  {
+    id: 9, title: 'Increase 401(k) to Employer Match', category: 'Revenue Growth',
+    monthlySavings: 300, annualSavings: 3600, confidence: 0.95,
+    dataBasis: 'Based on your payroll data and employer 401(k) match policy',
+    situationLabel: 'Your 401(k) Contribution',
+    currentItems: [
+      { name: 'Current 401(k) contribution', cost: 0, usage: 'medium', note: '4% of salary ($483/mo) — employer matches up to 6%' },
+      { name: 'Employer match (current)', cost: 0, usage: 'medium', note: '4% match ($483/mo) — you\'re capturing 67% of available match' },
+      { name: 'Uncaptured match', cost: 0, usage: 'none', note: '2% uncaptured ($242/mo) — $2,900/year in free money left on the table' },
+    ],
+    currentTotal: 0,
+    insights: [
+      'You\'re contributing 4% to your 401(k) but your employer matches up to 6% — you\'re leaving $2,900/year in free money on the table',
+      'Increasing your contribution by 2% ($242/month) captures the full employer match — effectively a 100% return on that $242',
+      '4,200 Poseidon users who increased their contribution to capture full employer match gained an average of $3,600/year in total value',
+    ],
+    changes: [
+      { action: 'increase', item: 'Increase 401(k) contribution from 4% to 6%', from: '4% ($483/mo)', to: '6% ($725/mo) + full employer match', savings: 300 },
+    ],
+    newTotal: 0,
+    alternatives: [],
+    ratesAsOf: 'Mar 9, 2026',
+    steps: [
+      { step: 1, title: 'Review paycheck impact', description: 'Poseidon calculated the net paycheck reduction: approximately $180/month after tax savings from pre-tax contribution increase.', type: 'auto', estimatedTime: '1 minute' },
+      { step: 2, title: 'Update 401(k) election', description: 'Log into your Fidelity 401(k) portal and change your contribution rate from 4% to 6%.', type: 'manual', estimatedTime: '5 minutes' },
+      { step: 3, title: 'Verify next paycheck', description: 'Poseidon monitors your next paycheck to confirm the contribution change took effect and employer match increased.', type: 'auto', estimatedTime: '1 pay period' },
+    ],
+    executionType: 'manual',
+    factors: [
+      'You\'re leaving $2,900/year in employer match on the table — this is the highest-return financial action available to you',
+      'The 2% increase costs you ~$180/month after tax savings, but captures $242/month in employer match — a 134% guaranteed return',
+      'Pre-tax contributions reduce your taxable income — the $242/month increase only reduces take-home pay by ~$180/month',
+    ],
+    cohortProof: '4,200 Poseidon users who increased their 401(k) contribution to capture full employer match gained an average of $3,600/year in combined contribution and match value',
+    modelInfo: growModelInfo(9),
+    dataSources: ['Payroll contribution analysis', 'Employer match policy verification', 'Tax impact calculator', '401(k) match optimization cohort data'],
+  },
+  {
+    id: 10, title: 'Cancel Unrecognized Subscription', category: 'Efficiency',
+    monthlySavings: 15, annualSavings: 180, confidence: 0.88,
+    dataBasis: 'Based on 3 months of recurring charge analysis',
+    situationLabel: 'Your Unrecognized Subscription',
+    currentItems: [
+      { name: 'APP*CLOUDSVCS', cost: 14.99, usage: 'none', note: '$14.99/mo · recurring 3 months · no matching app or service found' },
+    ],
+    currentTotal: 14.99,
+    insights: [
+      'A $14.99/month charge from APP*CLOUDSVCS has appeared for 3 consecutive months with no identifiable service',
+      'Cross-referencing your email receipts, app store history, and subscription records found no matching service',
+      '68% of Poseidon users who discovered unrecognized subscriptions confirmed they were forgotten free trial conversions',
+    ],
+    changes: [
+      { action: 'cancel', item: 'Cancel APP*CLOUDSVCS subscription and stop future charges', savings: 15 },
+    ],
+    newTotal: 0,
+    alternatives: [],
+    ratesAsOf: 'Mar 9, 2026',
+    steps: [
+      { step: 1, title: 'Identify the charge source', description: 'Poseidon searched email receipts, app stores, and subscription databases — no match found for APP*CLOUDSVCS.', type: 'auto', estimatedTime: '1 minute' },
+      { step: 2, title: 'Cancel and prevent', description: 'Authorize Poseidon to stop future charges from this merchant on your Visa ending 4821.', type: 'semi-auto', estimatedTime: '2 minutes' },
+      { step: 3, title: 'Request partial refund', description: 'Poseidon files a refund inquiry for the 3 months of unrecognized charges ($44.97 total).', type: 'semi-auto', estimatedTime: '5-10 business days' },
+    ],
+    executionType: 'semi-auto',
+    factors: [
+      'No identifiable service matches this $14.99/month charge — high likelihood of forgotten trial conversion or unauthorized billing',
+      'The generic billing descriptor "APP*CLOUDSVCS" is used by multiple billing aggregators, making manual identification difficult',
+      'Stopping the merchant prevents future charges immediately while the refund inquiry is processed separately',
+    ],
+    cohortProof: '68% of Poseidon users who discovered and cancelled unrecognized subscription charges confirmed they were forgotten free trial conversions — average savings of $15/month per cancelled subscription',
+    modelInfo: growModelInfo(10),
+    dataSources: ['Recurring charge detection (6 months)', 'Email receipt cross-reference', 'App store purchase history', 'Billing descriptor database'],
+  },
 ]
 
 export const CANONICAL_RECOMMENDATIONS_SUMMARY = CANONICAL_RECOMMENDATION_DETAILS.map(r => ({
@@ -1011,6 +1329,23 @@ export const CANONICAL_RECOMMENDATIONS_FOR_LIST: RecommendationListItem[] = CANO
   }
 })
 
+// ─── Accounts & Balance Sheet ─────────────────────────────────────────────
+
+const ACCOUNTS: AccountEntity[] = [
+  { id: 'ACCT-001', label: 'Chase Checking', institution: 'Chase', last4: '1038', type: 'checking', balanceUsd: 8200, apy: 0.01 },
+  { id: 'ACCT-002', label: 'Chase Savings', institution: 'Chase', last4: '7733', type: 'savings', balanceUsd: 23000, apy: 0.01 },
+  { id: 'ACCT-003', label: 'Chase Visa', institution: 'Chase', last4: '4821', type: 'credit-card', balanceUsd: -4800, apr: 22.9 },
+  { id: 'ACCT-004', label: 'Fidelity 401(k)', institution: 'Fidelity', last4: '9102', type: 'retirement', balanceUsd: 87000 },
+  { id: 'ACCT-005', label: 'Schwab Brokerage', institution: 'Schwab', last4: '5521', type: 'brokerage', balanceUsd: 35000 },
+  { id: 'ACCT-006', label: 'Capital One Auto Loan', institution: 'Capital One', last4: '6630', type: 'auto-loan', balanceUsd: -18200, apr: 6.9 },
+]
+
+const GOALS: GoalEntity[] = [
+  { id: 'GOAL-001', title: 'Emergency Fund', currentUsd: 14280, targetUsd: 40800, monthlyContributionUsd: 500, engine: 'Grow' },
+  { id: 'GOAL-002', title: 'Pay Off Credit Card', currentUsd: 0, targetUsd: 4800, monthlyContributionUsd: 229, engine: 'Grow' },
+  { id: 'GOAL-003', title: 'Maximize 401(k) Match', currentUsd: 483, targetUsd: 725, monthlyContributionUsd: 242, engine: 'Grow' },
+]
+
 // ─── Canonical Universe Export ───────────────────────────────────────────────
 
 export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
@@ -1019,10 +1354,10 @@ export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
   metrics: {
     systemConfidence: DEMO_THREAD.systemConfidence,
     complianceScore: DEMO_THREAD.complianceScore,
-    pendingActions: DEMO_THREAD.pendingActions,
-    monthlyOptimizationCurrentUsd: DEMO_THREAD.monthlyOptimization,
+    pendingActions: EXECUTE_ACTIONS.length,
+    monthlyOptimizationCurrentUsd: 0,
     monthlyOptimizationPotentialUsd: RECOMMENDATIONS.reduce((s, r) => s + r.projectedBenefitUsd, 0),
-    decisionsAuditedTotal: DEMO_THREAD.decisionsAudited,
+    decisionsAuditedTotal: VERIFIED_DECISIONS + PENDING_REVIEW_DECISIONS + FLAGGED_DECISIONS,
     verifiedDecisions: VERIFIED_DECISIONS,
     pendingReviewDecisions: PENDING_REVIEW_DECISIONS,
     flaggedDecisions: FLAGGED_DECISIONS,
@@ -1031,12 +1366,12 @@ export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
       currentUsd: DEMO_THREAD.liquidityReserve.current,
       targetUsd: DEMO_THREAD.liquidityReserve.target,
     },
-    engineBreakdown: { Protect: 18, Grow: 14, Execute: 9, Govern: 6 },
+    engineBreakdown: { Protect: 22, Grow: 18, Execute: 11, Govern: 7 },
     platformProfileCount: 184_290,
     architecturalTrust: {
       autoExecutionsWithoutConsent: 0,
       auditCoveragePercent: 100,
-      falsePositiveRate: 0.032,
+      falsePositiveRate: 0.008,
       llmRetentionDays: 0,
       llmTrainingOptOut: true,
     },
@@ -1068,6 +1403,13 @@ export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
       humanOverrideRate: 0.08,
       confidenceSpread: { min: 0.65, max: 0.94 },
     },
+    cohortHeadlines: {
+      dashboard: 'Poseidon users with your profile save $438/mo on average — you\'re saving $0/mo currently',
+      protect: 'Users like you see ~2 anomalies per month. You have 7 this week — elevated risk detected',
+      grow: '12,847 similar users who acted on their top 3 recommendations saved $4,200/year',
+      execute: '89% of users approve their top recommendation within 24 hours',
+      govern: 'Poseidon\'s models disagreed on 31% of decisions before presenting them to you',
+    },
   },
   entities: {
     criticalAlert: {
@@ -1084,16 +1426,29 @@ export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
     governAuditEntries: GOVERN_AUDIT_ENTRIES,
     dashboardActivities: DASHBOARD_ACTIVITIES,
     events: CANONICAL_EVENTS,
+    accounts: ACCOUNTS,
+    goals: GOALS,
+  },
+  balanceSheet: {
+    accounts: ACCOUNTS,
+    totalAssets: 153200,
+    totalLiabilities: 23000,
+    netWorth: 130200,
+    monthlyIncome: 8500,
+    monthlyExpenses: 6800,
   },
   relations: {
     alertToAction: {
       [DEMO_THREAD.criticalAlert.id]: ['EXE-001'],
+      'THR-003': ['EXE-006'],
+      'THR-007': ['EXE-007'],
     },
     recommendationToAction: {
       'REC-001': ['EXE-002'],
       'REC-002': ['EXE-003'],
       'REC-004': ['EXE-005'],
       'REC-006': ['EXE-004'],
+      'REC-010': ['EXE-007'],
     },
     actionToDecision: {
       'EXE-001': ['GV-2026-0309-048'],
@@ -1101,6 +1456,8 @@ export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
       'EXE-003': ['GV-2026-0308-045'],
       'EXE-004': ['GV-2026-0307-043'],
       'EXE-005': ['GV-2026-0305-041'],
+      'EXE-006': ['GV-2026-0307-044B'],
+      'EXE-007': ['GV-2026-0309-052'],
     },
     eventToChildren: Object.fromEntries(
       CANONICAL_EVENTS.map((e) => [e.id, e.children]),

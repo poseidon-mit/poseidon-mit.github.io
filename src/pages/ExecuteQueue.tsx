@@ -252,36 +252,28 @@ function QueueCard({ action }: { action: ExecuteActionEntity }) {
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap mb-1">
+        {/* Primary row: title + amount + urgency */}
+        <div className="flex items-center gap-3 flex-wrap mb-1">
           <span className={cn('text-white/90 truncate', styles.titleSize)}>{action.title}</span>
+          <span className={cn(styles.amountSize)} style={{ color: `var(${token.cssVar})` }}>
+            {action.amountLabel}
+          </span>
           <span className={cn('inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest', URGENCY_BADGE[action.urgency])}>
             {action.urgency}
           </span>
           {action.expiresIn && (
-            <span className={cn('inline-flex items-center gap-1 text-[10px] font-semibold tracking-widest uppercase', isExpiringSoon ? 'text-red-400' : 'text-white/40')}>
-              <Timer size={10} className={isExpiringSoon ? 'animate-pulse' : ''} />
+            <span className={cn('inline-flex items-center gap-1 text-xs font-semibold', isExpiringSoon ? 'text-red-400' : 'text-white/40')}>
+              <Timer size={12} className={isExpiringSoon ? 'animate-pulse' : ''} />
               {action.expiresIn}
             </span>
           )}
         </div>
 
-        {/* Focus tier: prominent amount on own line */}
-        {tier === 'focus' && (
-          <span className="text-lg font-mono font-bold block mb-1" style={{ color: `var(${token.cssVar})` }}>
-            {action.amountLabel}
-          </span>
-        )}
-
+        {/* Secondary meta */}
         <div className={cn('flex items-center gap-3 flex-wrap', styles.metaSize)}>
           <span className="font-mono text-white/55">{action.id}</span>
           <span className="text-white/40">·</span>
           <span style={{ color: `var(${token.cssVar})` }}>{action.engine}</span>
-          {tier !== 'focus' && (
-            <>
-              <span className="text-white/40">·</span>
-              <span className="font-mono text-white/55">{action.amountLabel}</span>
-            </>
-          )}
           <span className="text-white/40">·</span>
           <span className="text-white/55">{Math.round(action.confidence * 100)}% confidence</span>
         </div>

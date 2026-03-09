@@ -2,7 +2,7 @@ import { useState, type KeyboardEvent } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Bell, Settings2 } from 'lucide-react';
 import { Link } from '@/router';
-import { EmptyState, KpiCard } from '@/components/poseidon';
+import { EmptyState } from '@/components/poseidon';
 import { getMotionPreset } from '@/lib/motion-presets';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { usePageTitle } from '@/hooks/use-page-title';
@@ -32,10 +32,13 @@ const notifications: Notification[] = [
   { id: 'N-002', engine: 'Protect', category: 'security', title: 'Subscription price increase detected', body: 'Spotify increased from $10.99 to $11.99 without prior notification.', time: '12m ago', read: false, actionLink: '/protect' },
   { id: 'N-003', engine: 'Grow', category: 'growth', title: `Emergency fund — $${DEMO_THREAD.liquidityReserve.current.toLocaleString()} saved`, body: `${DEMO_THREAD.liquidityReserve.percent}% toward your $${DEMO_THREAD.liquidityReserve.target.toLocaleString()} goal.`, time: '1h ago', read: false },
   { id: 'N-004', engine: 'Grow', category: 'growth', title: 'New savings opportunity found', body: 'Switching to a high-yield savings account could earn you $840/year more in interest.', time: '2h ago', read: false },
-  { id: 'N-005', engine: 'Execute', category: 'actions', title: 'Action approved — Charge disputed', body: 'Dispute filed with Visa for AMZN $347.89 charge.', time: '3h ago', read: true, actionLink: '/execute/history' },
+  { id: 'N-005', engine: 'Execute', category: 'actions', title: 'Dispute package compiled', body: 'Dispute package compiled for AMZN $347.89 charge — Awaiting your approval in Execute.', time: '3h ago', read: true, actionLink: '/execute/approval' },
   { id: 'N-006', engine: 'Execute', category: 'actions', title: '2 actions awaiting your approval', body: 'Savings transfer and balance transfer expire in 18h.', time: '4h ago', read: true, actionLink: '/execute/approval' },
   { id: 'N-007', engine: 'Govern', category: 'system', title: 'Weekly audit report ready', body: `${DEMO_THREAD.decisionsAudited.toLocaleString()} decisions audited. 100% coverage maintained.`, time: '6h ago', read: true, actionLink: '/govern/audit' },
-  { id: 'N-008', engine: 'Govern', category: 'system', title: 'Privacy check complete', body: 'Zero data shared with AI training. All models run in zero-retention mode.', time: '8h ago', read: true }];
+  { id: 'N-008', engine: 'Govern', category: 'system', title: 'Privacy check complete', body: 'Zero data shared with AI training. All models run in zero-retention mode.', time: '8h ago', read: true },
+  { id: 'N-009', engine: 'Protect', category: 'security', title: 'Comcast bill increase detected', body: 'Comcast bill increase detected — $89 → $99/mo without notification.', time: '6h ago', read: false, actionLink: '/protect' },
+  { id: 'N-010', engine: 'Protect', category: 'security', title: 'Unrecognized subscription charge', body: 'Unrecognized recurring charge — APP*CLOUDSVCS $14.99/mo for 3 months.', time: '8h ago', read: false, actionLink: '/protect' },
+  { id: 'N-011', engine: 'Grow', category: 'growth', title: '401(k) employer match opportunity', body: 'You may be leaving $3,600/yr in employer match on the table — increase 401(k) from 4% to 6%.', time: '1d ago', read: false }];
 
 
 const engineBadgeCls = ENGINE_BADGE_CLASS;
@@ -121,24 +124,8 @@ export function Notifications() {
           </p>
         </motion.div>
 
-        {/* KPI bar */}
-        <motion.div variants={fadeUpVariant}>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: 'Unread', value: String(unreadCount), color: 'var(--engine-execute)' },
-              { label: 'Security', value: String(categoryCounts.security), color: 'var(--engine-protect)' },
-              { label: 'Growth', value: String(categoryCounts.growth), color: 'var(--engine-grow)' },
-              { label: 'Actions', value: String(categoryCounts.actions), color: 'var(--engine-dashboard)' },
-            ].map((kpi) => (
-              <KpiCard key={kpi.label} label={kpi.label} value={kpi.value} color={kpi.color} />
-            ))}
-          </div>
-        </motion.div>
-
-        {/* 2-column layout */}
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Main feed */}
-          <motion.div variants={fadeUpVariant} className="flex-1 min-w-0 lg:w-2/3 flex flex-col gap-4">
+        {/* Main feed — full width */}
+        <motion.div variants={fadeUpVariant} className="flex flex-col gap-4">
             {/* Header controls */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -197,7 +184,7 @@ export function Notifications() {
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-[10px] text-white/30">{notif.time}</span>
                       {notif.actionLink &&
-                        <Link to={notif.actionLink} className="text-[10px] text-cyan-400 state-text-active hover:underline" onClick={(e) => e.stopPropagation()}>View</Link>
+                        <Link to={notif.actionLink} className="text-xs font-medium text-cyan-400 state-text-active hover:underline" onClick={(e) => e.stopPropagation()}>View →</Link>
                       }
                     </div>
                   </div>
@@ -209,66 +196,60 @@ export function Notifications() {
             </div>
           </motion.div>
 
-          {/* Side rail */}
-          <aside className="w-full lg:w-72 shrink-0 flex flex-col gap-4" aria-label="Notification preferences">
-            {/* Preferences */}
-            <motion.div variants={fadeUpVariant}>
-              <div className="glass-card glass-card-overlay rounded-xl p-6 flex flex-col gap-4">
-                <div className="relative z-10 flex items-center gap-2 mb-2">
-                  <Settings2 className="h-4 w-4" style={{ color: 'var(--engine-dashboard)' }} />
-                  <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest">Alert Preferences</h3>
-                </div>
-                <div className="relative z-10 space-y-3">
-                  {[
-                    { label: 'Security alerts', type: 'Push + Email', enabled: true },
-                    { label: 'Growth insights', type: 'Push only', enabled: true },
-                    { label: 'Action updates', type: 'Push only', enabled: true },
-                    { label: 'System notices', type: 'Email digest', enabled: false }
-                  ].map((pref) => (
-                    <div key={pref.label} className="flex items-center justify-between py-1 border-b border-white/[0.04] last:border-0 pb-3">
-                      <div>
-                        <span className="text-sm font-medium text-white tracking-wide">{pref.label}</span>
-                        <span className="text-[10px] text-white/40 block uppercase tracking-widest font-semibold mt-0.5">{pref.type}</span>
-                      </div>
-                      <div className={`w-9 h-5 rounded-full relative ${pref.enabled ? 'bg-cyan-500 engine-indicator-dashboard' : 'bg-white/10'}`}>
-                        <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${pref.enabled ? 'left-4' : 'left-0.5'}`} />
-                      </div>
+        {/* Preferences — collapsible bottom section */}
+        <motion.details variants={fadeUpVariant} className="group mt-4">
+          <summary className="flex items-center gap-2 cursor-pointer list-none text-white/40 hover:text-white/60 transition-colors py-2">
+            <Settings2 className="h-4 w-4" style={{ color: 'var(--engine-dashboard)' }} />
+            <span className="text-xs font-semibold uppercase tracking-widest">Alert Preferences &amp; Stats</span>
+            <span className="text-xs text-white/30 ml-auto group-open:rotate-180 transition-transform">▾</span>
+          </summary>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+            <div className="glass-card glass-card-overlay rounded-xl p-5 flex flex-col gap-3">
+              <div className="relative z-10 space-y-3">
+                {[
+                  { label: 'Security alerts', type: 'Push + Email', enabled: true },
+                  { label: 'Growth insights', type: 'Push only', enabled: true },
+                  { label: 'Action updates', type: 'Push only', enabled: true },
+                  { label: 'System notices', type: 'Email digest', enabled: false }
+                ].map((pref) => (
+                  <div key={pref.label} className="flex items-center justify-between py-1 border-b border-white/[0.04] last:border-0">
+                    <div>
+                      <span className="text-sm font-medium text-white tracking-wide">{pref.label}</span>
+                      <span className="text-[11px] text-white/40 block mt-0.5">{pref.type}</span>
                     </div>
-                  ))}
-                  <div className="pt-2">
-                    <span className="text-xs text-white/50 block mb-1">Digest frequency</span>
-                    <select className="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white/70 focus:outline-none">
-                      <option>Daily</option>
-                      <option>Weekly</option>
-                      <option>Monthly</option>
-                    </select>
+                    <div className={`w-9 h-5 rounded-full relative ${pref.enabled ? 'bg-cyan-500 engine-indicator-dashboard' : 'bg-white/10'}`}>
+                      <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${pref.enabled ? 'left-4' : 'left-0.5'}`} />
+                    </div>
                   </div>
-                </div>
-                <p className="relative z-10 text-[10px] text-white/30 mt-4 uppercase tracking-widest font-semibold border-t border-white/[0.04] pt-4">3 channels active · Push + Email for security</p>
-              </div>
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div variants={fadeUpVariant}>
-              <div className="glass-card glass-card-overlay rounded-xl p-6 flex flex-col gap-4">
-                <h3 className="relative z-10 text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Notification Stats</h3>
-                <div className="relative z-10 space-y-3">
-                  {[
-                    { label: 'Total today', value: String(notifications.length), color: 'text-white' },
-                    { label: 'Unread', value: String(unreadCount), color: 'text-amber-400 engine-text-execute' },
-                    { label: 'Security', value: String(categoryCounts.security), color: 'text-emerald-400 engine-text-protect' },
-                    { label: 'Actioned (7d)', value: '87%', color: 'text-cyan-400 engine-text-dashboard' }
-                  ].map((row) => (
-                    <div key={row.label} className="flex justify-between items-center py-1 border-b border-white/[0.04] last:border-0">
-                      <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">{row.label}</span>
-                      <span className={`text-sm font-mono ${row.color}`}>{row.value}</span>
-                    </div>
-                  ))}
+                ))}
+                <div className="pt-2">
+                  <span className="text-xs text-white/50 block mb-1">Digest frequency</span>
+                  <select className="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white/70 focus:outline-none">
+                    <option>Daily</option>
+                    <option>Weekly</option>
+                    <option>Monthly</option>
+                  </select>
                 </div>
               </div>
-            </motion.div>
-          </aside>
-        </div>
+            </div>
+            <div className="glass-card glass-card-overlay rounded-xl p-5 flex flex-col gap-3">
+              <h3 className="relative z-10 text-xs font-semibold text-white/50 uppercase tracking-widest">Stats</h3>
+              <div className="relative z-10 space-y-2">
+                {[
+                  { label: 'Total today', value: String(notifications.length), color: 'text-white' },
+                  { label: 'Unread', value: String(unreadCount), color: 'text-amber-400 engine-text-execute' },
+                  { label: 'Security', value: String(categoryCounts.security), color: 'text-emerald-400 engine-text-protect' },
+                  { label: 'Actioned (7d)', value: '87%', color: 'text-cyan-400 engine-text-dashboard' }
+                ].map((row) => (
+                  <div key={row.label} className="flex justify-between items-center py-1 border-b border-white/[0.04] last:border-0">
+                    <span className="text-xs text-white/50">{row.label}</span>
+                    <span className={`text-sm font-mono ${row.color}`}>{row.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.details>
 
       </motion.div>
     </>);

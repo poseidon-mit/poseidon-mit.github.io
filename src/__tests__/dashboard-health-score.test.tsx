@@ -50,12 +50,12 @@ describe('Dashboard reactive state', () => {
 
   it('pending actions count decreases when an action is approved', () => {
     renderDashboard()
-    // Before: narrative mentions 5 actions
-    expect(screen.getByText(/5 actions ready for your approval/)).toBeInTheDocument()
+    // Before: narrative mentions 7 actions
+    expect(screen.getByText(/7 actions ready for your approval/)).toBeInTheDocument()
 
     fireEvent.click(screen.getByTestId('approve-exe001'))
 
-    // After: narrative mentions 4 actions
-    expect(screen.getByText(/4 actions ready for your approval/)).toBeInTheDocument()
+    // After: narrative mentions 6 actions
+    expect(screen.getByText(/6 actions ready for your approval/)).toBeInTheDocument()
   })
 })

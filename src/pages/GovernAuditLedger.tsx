@@ -289,7 +289,7 @@ function CompactAuditCard({ entry }: { entry: AuditEntryRow }) {
             {entry.id}
           </span>
           <span
-            className="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-widest border border-transparent"
+            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border border-transparent"
             style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}
           >
             {entry.type}
@@ -343,19 +343,16 @@ function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
             {entry.id}
           </span>
           <span
-            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest"
+            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest"
             style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}
           >
             {entry.type}
           </span>
           <span
-            className={cn(
-              'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest',
-              tier === 'focus' ? 'text-[10px]' : '',
-            )}
+            className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest"
             style={{ background: sCfg.bg, color: sCfg.color }}
           >
-            <StatusIcon size={tier === 'focus' ? 11 : 9} />
+            <StatusIcon size={11} />
             {entry.status}
           </span>
           <span className="text-[10px] text-white/40 ml-auto shrink-0">{entry.timestamp}</span>

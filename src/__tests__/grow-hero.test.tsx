@@ -16,25 +16,25 @@ import { useReducedMotionSafe } from '../hooks/useReducedMotionSafe'
 
 const SIMULATION_DATA = [
   { year: 'Now', baseline: 130000, aiOptimized: 130000 },
-  { year: '3M',  baseline: 130975, aiOptimized: 132100 },
-  { year: '6M',  baseline: 131950, aiOptimized: 134200 },
-  { year: '9M',  baseline: 132925, aiOptimized: 136300 },
-  { year: '1Y',  baseline: 133900, aiOptimized: 138400 },
-  { year: '15M', baseline: 134904, aiOptimized: 140650 },
-  { year: '18M', baseline: 135909, aiOptimized: 142900 },
-  { year: '21M', baseline: 136913, aiOptimized: 145150 },
-  { year: '2Y',  baseline: 137917, aiOptimized: 147400 },
-  { year: '27M', baseline: 138951, aiOptimized: 149559 },
-  { year: '30M', baseline: 139986, aiOptimized: 151718 },
-  { year: '33M', baseline: 141020, aiOptimized: 153878 },
-  { year: '3Y',  baseline: 142055, aiOptimized: 156037 },
+  { year: '3M',  baseline: 130975, aiOptimized: 133280 },
+  { year: '6M',  baseline: 131950, aiOptimized: 136620 },
+  { year: '9M',  baseline: 132925, aiOptimized: 140020 },
+  { year: '1Y',  baseline: 133900, aiOptimized: 143500 },
+  { year: '15M', baseline: 134904, aiOptimized: 147040 },
+  { year: '18M', baseline: 135909, aiOptimized: 150650 },
+  { year: '21M', baseline: 136913, aiOptimized: 154330 },
+  { year: '2Y',  baseline: 137917, aiOptimized: 158080 },
+  { year: '27M', baseline: 138951, aiOptimized: 161520 },
+  { year: '30M', baseline: 139986, aiOptimized: 165040 },
+  { year: '33M', baseline: 141020, aiOptimized: 168630 },
+  { year: '3Y',  baseline: 142055, aiOptimized: 172300 },
 ]
 
 const DEFAULT_PROPS = {
-  projectedGain: 13982,
-  totalMonthlySavings: 444,
+  projectedGain: 30245,
+  totalMonthlySavings: 759,
   avgConfidence: 0.87,
-  recommendationCount: 8,
+  recommendationCount: 10,
   simulationData: SIMULATION_DATA,
   onViewRecommendations: vi.fn(),
 }
@@ -51,7 +51,7 @@ function renderHero(overrides: Partial<typeof DEFAULT_PROPS> = {}) {
 describe('GrowGrowthAdvantage', () => {
   it('renders the projected gain number formatted with commas', () => {
     renderHero()
-    expect(screen.getByText(/\+\$13,982/)).toBeInTheDocument()
+    expect(screen.getByText(/\+\$30,245/)).toBeInTheDocument()
   })
 
   it('fires onViewRecommendations when View all button is clicked', () => {
@@ -63,8 +63,8 @@ describe('GrowGrowthAdvantage', () => {
 
   it('renders summary stats', () => {
     renderHero()
-    expect(screen.getAllByText(/\$444\/mo/).length).toBeGreaterThanOrEqual(1)
-    expect(screen.getAllByText(/8 recommendations/).length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText(/\$759\/mo/).length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText(/10 recommendations/).length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText(/87% avg confidence/)).toBeInTheDocument()
   })
 
@@ -102,7 +102,7 @@ describe('GrowGrowthAdvantage', () => {
       fireEvent.click(screen.getByRole('button', { name: /see poseidon delta/i }))
       fireEvent.click(screen.getByRole('button', { name: /replay/i }))
       act(() => vi.advanceTimersByTime(1200))
-      expect(screen.getByText(/\+\$13,982/)).toBeInTheDocument()
+      expect(screen.getByText(/\+\$30,245/)).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /view all/i })).toBeInTheDocument()
     })
   })
@@ -124,8 +124,8 @@ describe('GrowPage integration', () => {
 
   it('renders hero with derived projected gain', () => {
     renderGrowPage()
-    // FINAL_DATA.aiOptimized(156037) - FINAL_DATA.baseline(142055) = 13982
-    expect(screen.getByText(/\+\$13,982/)).toBeInTheDocument()
+    // FINAL_DATA.aiOptimized(172300) - FINAL_DATA.baseline(142055) = 30245
+    expect(screen.getByText(/\+\$30,245/)).toBeInTheDocument()
   })
 
   it('navigates to /grow/recommendations when View all is clicked', () => {
