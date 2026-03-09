@@ -238,6 +238,32 @@
   100% { border-color: rgba(255,255,255,0.06); box-shadow: none; }
 }
 
+/* ── GovernFooter Laser Scan ── */
+
+@keyframes laser-scan {
+  0% {
+    background-position: -100% 0;
+    border-color: rgba(59,130,246,0.5);
+    box-shadow: 0 0 8px rgba(59,130,246,0.2);
+  }
+  50% {
+    background-position: 100% 0;
+    border-color: rgba(59,130,246,0.3);
+    box-shadow: 0 0 20px rgba(59,130,246,0.25);
+  }
+  100% {
+    background-position: 200% 0;
+    border-color: rgba(255,255,255,0.06);
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .laser-scan-animated {
+    animation: none !important;
+  }
+}
+
 /* ── Landing Grid Overlay ── */
 
 .landing-grid-overlay {

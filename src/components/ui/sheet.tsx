@@ -45,7 +45,7 @@ export function BottomSheet({ open, onDismiss, children, className = '', persist
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: prefersReduced ? 0 : 0.2 }}
-            className="fixed inset-0 z-40 bg-black/30"
+            className="fixed inset-0 z-[200] bg-black/30"
             onClick={persistent ? undefined : onDismiss}
             aria-hidden="true"
           />
@@ -67,7 +67,7 @@ export function BottomSheet({ open, onDismiss, children, className = '', persist
             dragConstraints={{ top: 0 }}
             dragElastic={0.2}
             onDragEnd={handleDragEnd}
-            className={`fixed bottom-0 left-0 right-0 z-50 mx-auto max-w-lg rounded-t-3xl border border-white/10 bg-slate-900/95 backdrop-blur-xl shadow-2xl max-h-[55vh] lg:max-h-[420px] overflow-hidden ${className}`}
+            className={`fixed bottom-0 left-0 right-0 z-[210] mx-auto max-w-lg rounded-t-3xl border border-white/10 bg-slate-900/95 backdrop-blur-xl shadow-2xl max-h-[75vh] lg:max-h-[520px] overflow-hidden ${className}`}
           >
             {/* Drag handle */}
             <div className="flex justify-center pt-3 pb-1">
@@ -85,7 +85,7 @@ export function BottomSheet({ open, onDismiss, children, className = '', persist
               </button>
             )}
 
-            <div className="px-5 pb-6 overflow-y-auto max-h-[calc(55vh-3rem)] lg:max-h-[calc(420px-3rem)]">
+            <div className="px-5 pb-6 overflow-y-auto max-h-[calc(75vh-3rem)] lg:max-h-[calc(520px-3rem)]">
               {children}
             </div>
           </motion.div>

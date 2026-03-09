@@ -132,7 +132,7 @@ function HeroChart({
   isOptimized,
   totalMonthlySavings,
 }: {
-  chartData: { year: string; baseline: number; band: number }[]
+  chartData: { year: string; baseline: number; band: number; aiOptimized: number }[]
   finalBaseline: number
   finalAiOptimized: number
   isReplaying: boolean
@@ -141,6 +141,21 @@ function HeroChart({
   totalMonthlySavings: number
 }) {
   const midBandY = finalBaseline + (finalAiOptimized - finalBaseline) / 2
+
+  /* Dynamic Y-axis domain — fills the chart area instead of wasting space */
+  const { yMin, yMax, yTicks } = useMemo(() => {
+    const allValues = chartData.flatMap(d => [d.baseline, d.baseline + d.band])
+    const min = Math.min(...allValues)
+    const max = Math.max(...allValues)
+    const padding = (max - min) * 0.12
+    const domainMin = Math.floor((min - padding) / 2000) * 2000
+    const domainMax = Math.ceil((max + padding) / 2000) * 2000
+    const step = Math.ceil((domainMax - domainMin) / 4 / 2000) * 2000
+    const ticks: number[] = []
+    for (let v = domainMin + step; v <= domainMax; v += step) ticks.push(v)
+    return { yMin: domainMin, yMax: domainMax, yTicks: ticks }
+  }, [chartData])
+
   return (
     <div
       className="h-full min-h-[280px]"
@@ -148,12 +163,20 @@ function HeroChart({
       aria-label={`3-year growth: baseline $${finalBaseline.toLocaleString()}, AI optimized $${finalAiOptimized.toLocaleString()}, advantage +$${(finalAiOptimized - finalBaseline).toLocaleString()}`}
     >
       <ResponsiveContainer key={replayKey} width="100%" height="100%">
-        <AreaChart data={chartData} margin={{ top: 20, right: 65, left: 10, bottom: 10 }}>
+        <AreaChart data={chartData} margin={{ top: 20, right: 80, left: 10, bottom: 10 }}>
           <defs>
             <linearGradient id="advantageZoneGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--engine-grow)" stopOpacity={0.35} />
-              <stop offset="100%" stopColor="var(--engine-grow)" stopOpacity={0.05} />
+              <stop offset="0%" stopColor="var(--engine-grow)" stopOpacity={0.5} />
+              <stop offset="40%" stopColor="var(--engine-grow)" stopOpacity={0.2} />
+              <stop offset="100%" stopColor="var(--engine-grow)" stopOpacity={0.02} />
             </linearGradient>
+            <filter id="glowGrow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
           </defs>
           <CartesianGrid
             horizontal={true}
@@ -174,11 +197,11 @@ function HeroChart({
             tickFormatter={(v: number) => `$${Math.round(v / 1000)}k`}
             axisLine={false}
             tickLine={false}
-            domain={[128000, 160000]}
-            ticks={[130000, 140000, 150000, 160000]}
+            domain={[yMin, yMax]}
+            ticks={yTicks}
           />
 
-          <Tooltip content={<ChartTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.1)' }} />
+          <Tooltip content={<ChartTooltip />} cursor={{ stroke: 'rgba(139, 92, 246, 0.25)', strokeDasharray: '4 4' }} />
 
           {/* Layer 1: invisible baseline area (lifts the band up) */}
           <Area
@@ -188,8 +211,8 @@ function HeroChart({
             fill="transparent"
             stroke="none"
             isAnimationActive={isReplaying}
-            animationDuration={1200}
-            animationEasing="ease-out"
+            animationDuration={1400}
+            animationEasing="ease-in-out"
           />
 
           {/* Layer 2: violet advantage band (delta between AI and baseline) */}
@@ -203,8 +226,21 @@ function HeroChart({
             dot={{ r: 4, fill: '#0F1D32', stroke: 'var(--engine-grow)', strokeWidth: 2 }}
             activeDot={{ r: 5, fill: 'var(--engine-grow)' }}
             isAnimationActive={isReplaying}
-            animationDuration={1200}
-            animationEasing="ease-out"
+            animationDuration={1400}
+            animationEasing="ease-in-out"
+          />
+
+          {/* Glow underlay — blurred duplicate of the AI-optimized line */}
+          <Line
+            type="monotone"
+            dataKey="aiOptimized"
+            stroke="var(--engine-grow)"
+            strokeWidth={5}
+            dot={false}
+            activeDot={false}
+            isAnimationActive={false}
+            style={{ filter: 'url(#glowGrow)', opacity: 0.4 }}
+            legendType="none"
           />
 
           {/* Layer 3: visible dashed baseline line */}
@@ -280,6 +316,7 @@ export function GrowGrowthAdvantage({
       year: d.year,
       baseline: d.baseline,
       band: d.aiOptimized - d.baseline,
+      aiOptimized: d.aiOptimized,
     })),
     [simulationData],
   )

@@ -12,6 +12,8 @@ export const easings = {
   standard: [0.2, 0.8, 0.2, 1] as const,
   emphasized: [0.2, 0, 0, 1] as const,
   decelerate: [0, 0, 0.2, 1] as const,
+  /** Premium scroll-reveal curve — fast attack, long deceleration tail */
+  poseidonScroll: [0.23, 1, 0.32, 1] as const,
 }
 
 /* ── Spring config (Apple creator-studio baseline) ── */

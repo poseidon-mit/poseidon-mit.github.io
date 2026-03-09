@@ -50,4 +50,9 @@ export const LANDING_COPY = {
     title: 'Start your demo in under 60 seconds.',
     button: 'Explore Demo',
   },
+  institutional: {
+    label: 'Academic Affiliation',
+    program: 'MIT Professional Education — CTO Program Capstone',
+    cohort: '2026 MAR · Group 7',
+  },
 } as const

@@ -19,7 +19,7 @@ import { cn } from '@/lib/utils'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
-import { CARD_TIER_STYLES, focusGradientStyle, type CardTier } from '@/lib/card-variants'
+import { CARD_TIER_STYLES, focusGlowStyle, type CardTier } from '@/lib/card-variants'
 import { selectGovernAuditEntries, selectSpotlightAuditEntry } from '@/domain/poseidon-universe'
 
 /* ── Types ── */
@@ -206,7 +206,7 @@ export default function GovernAuditPage() {
               </div>
               <Link
                 to={`/govern/audit-detail?decision=${encodeURIComponent(spotlightEntry.id)}`}
-                className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
+                className="shrink-0 hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
                 style={{
                   borderColor: 'color-mix(in srgb, var(--engine-govern) 30%, transparent)',
                   color: 'var(--engine-govern)',
@@ -313,15 +313,16 @@ function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
   const borderColor = typeColor[entry.type]
 
   return (
-    <div
+    <Link
+      to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
       className={cn(
-        'glass-card glass-card-overlay rounded-[20px] flex items-center hover:border-white/[0.12] transition-colors border-l-2',
+        'glass-card glass-card-overlay rounded-[20px] flex items-center hover:border-white/[0.12] transition-colors border-l-2 group block',
         styles.padding,
         styles.gap,
       )}
       style={{
         borderLeftColor: borderColor,
-        ...(tier === 'focus' ? focusGradientStyle(sCfg.color) : {}),
+        ...(tier === 'focus' ? focusGlowStyle(sCfg.color) : {}),
       }}
     >
       {/* Type icon */}
@@ -375,10 +376,9 @@ function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
         </div>
       </div>
 
-      {/* CTA */}
-      <Link
-        to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
-        className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
+      {/* CTA — hidden on mobile, card itself is the touch target */}
+      <span
+        className="shrink-0 hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
         style={{
           borderColor: 'color-mix(in srgb, var(--engine-govern) 30%, transparent)',
           color: 'var(--engine-govern)',
@@ -387,7 +387,7 @@ function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
       >
         View details
         <ArrowRight size={12} />
-      </Link>
-    </div>
+      </span>
+    </Link>
   )
 }

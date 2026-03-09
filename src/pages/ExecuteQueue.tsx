@@ -11,7 +11,7 @@ import { selectExecuteActionsView, selectSpotlightAction } from '@/domain/poseid
 import type { ExecuteActionEntity, UrgencyLevel } from '@/domain/poseidon-universe'
 import { getEngineToken, fromDomainEngine } from '@/lib/engine-tokens'
 import { cn } from '@/lib/utils'
-import { CARD_TIER_STYLES, focusGradientStyle, type CardTier } from '@/lib/card-variants'
+import { CARD_TIER_STYLES, focusGlowStyle, type CardTier } from '@/lib/card-variants'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 
 const URGENCY_ORDER: Record<UrgencyLevel, number> = { high: 0, medium: 1, low: 2 }
@@ -184,7 +184,7 @@ function SpotlightCard({ action }: { action: ExecuteActionEntity }) {
       <Link
         to={`/execute/approval?actionId=${action.id}`}
         className={cn(
-          'self-start inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors',
+          'self-start hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors',
           'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950',
           'hover:from-amber-400 hover:to-yellow-400',
         )}
@@ -230,15 +230,16 @@ function QueueCard({ action }: { action: ExecuteActionEntity }) {
   const styles = CARD_TIER_STYLES[tier]
 
   return (
-    <div
+    <Link
+      to={`/execute/approval?actionId=${action.id}`}
       className={cn(
-        'glass-card glass-card-overlay rounded-[20px] flex items-center hover:border-white/[0.12] transition-colors border-l-2',
+        'glass-card glass-card-overlay rounded-[20px] flex items-center hover:border-white/[0.12] transition-colors border-l-2 group block',
         styles.padding,
         styles.gap,
       )}
       style={{
         borderLeftColor: `var(${token.cssVar})`,
-        ...(tier === 'focus' ? focusGradientStyle(`var(${token.cssVar})`) : {}),
+        ...(tier === 'focus' ? focusGlowStyle(`var(${token.cssVar})`) : {}),
       }}
     >
       {/* Engine dot */}
@@ -286,22 +287,20 @@ function QueueCard({ action }: { action: ExecuteActionEntity }) {
         </div>
       </div>
 
-      {/* CTA */}
+      {/* CTA — hidden on mobile, card itself is the touch target */}
       {tier === 'focus' ? (
-        <Link
-          to={`/execute/approval?actionId=${action.id}`}
+        <span
           className={cn(
-            'shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors',
+            'shrink-0 hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors',
             'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950',
-            'hover:from-amber-400 hover:to-yellow-400',
+            'group-hover:from-amber-400 group-hover:to-yellow-400',
           )}
         >
           Review &amp; Approve
-        </Link>
+        </span>
       ) : (
-        <Link
-          to={`/execute/approval?actionId=${action.id}`}
-          className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
+        <span
+          className="shrink-0 hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
           style={{
             borderColor: `color-mix(in srgb, var(${token.cssVar}) 30%, transparent)`,
             color: `var(${token.cssVar})`,
@@ -309,8 +308,8 @@ function QueueCard({ action }: { action: ExecuteActionEntity }) {
           }}
         >
           Review &amp; Approve
-        </Link>
+        </span>
       )}
-    </div>
+    </Link>
   )
 }

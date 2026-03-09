@@ -28,10 +28,11 @@ export interface AuditDecision {
 export const DEFAULT_DECISION_ID = 'GV-2026-0309-048'
 
 export const ROUTE_TO_DECISION: Record<string, string> = {
-  '/protect':  'GV-2026-0309-048',
-  '/grow':     'GV-2026-0309-047',
-  '/execute':  'GV-2026-0307-043',
-  '/govern':   'GV-2026-0305-041',
+  '/dashboard': 'GV-2026-0309-048',
+  '/protect':   'GV-2026-0309-048',
+  '/grow':      'GV-2026-0309-047',
+  '/execute':   'GV-2026-0307-043',
+  '/govern':    'GV-2026-0305-041',
 }
 
 const sharedFraudFactors = [
@@ -197,6 +198,24 @@ export const AUDIT_DECISIONS: Record<string, AuditDecision> = {
     dataSources: ['ATM Transaction Network', 'Location Pattern Analysis', 'Card Usage History'],
     coreAssertion: 'Poseidon flagged an $800 late-night ATM withdrawal at an unfamiliar location',
     baseReality: [{ label: 'Amount', value: '$800' }, { label: 'Time', value: '11:47 PM' }, { label: 'Location', value: 'Unfamiliar ATM — 12 mi from home' }, { label: 'Outcome', value: 'User confirmed legitimate' }],
+  },
+  'POS-DIS-001': {
+    id: 'POS-DIS-001',
+    engine: 'Protect',
+    type: 'dispute_filed',
+    action: 'Dispute filed for suspicious charge',
+    timestamp: '2026-03-09T10:45:00-04:00',
+    model: { name: 'FraudDetectionV3', version: '3.2.1', accuracy: 99.7 },
+    explanation: {
+      summary: `Dispute filed for $${DEMO_THREAD.criticalAlert.amount} charge from ${DEMO_THREAD.criticalAlert.counterparty}. Evidence compiled from transaction anomaly detection, merchant pattern analysis, and timing verification. Case submitted to card issuer under Reg E protections. Provisional credit of $${DEMO_THREAD.criticalAlert.amount} expected within 2 business days.`,
+      confidence: DEMO_THREAD.criticalAlert.confidence,
+    },
+    topFactors: sharedFraudFactors,
+    compliance: { gdpr: true, ecoa: true, ccpa: true },
+    userFeedback: { correct: true, comment: 'Confirmed unrecognized charge. Dispute initiated successfully.' },
+    dataSources: ['Transaction History (90 days)', 'Merchant Recognition Database', 'Card Network Fraud Patterns', 'Reg E Compliance Engine'],
+    coreAssertion: `Poseidon filed dispute case POS-DIS-001 for $${DEMO_THREAD.criticalAlert.amount} suspicious charge and compiled evidence package`,
+    baseReality: [{ label: 'Case ID', value: 'POS-DIS-001' }, { label: 'Amount', value: `$${DEMO_THREAD.criticalAlert.amount}` }, { label: 'Merchant', value: DEMO_THREAD.criticalAlert.counterparty }, { label: 'Status', value: 'Filed — bank review pending' }],
   },
   'GV-2026-0305-041': {
     id: 'GV-2026-0305-041',

@@ -1,5 +1,5 @@
 import { type PointerEvent as RPointerEvent, useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { Shield, TrendingUp, Zap, Scale, ArrowRight, ExternalLink, Play, Presentation } from 'lucide-react'
 import { PublicTopBar } from '@/components/landing/PublicTopBar'
 import { Link } from '@/router'
@@ -7,7 +7,7 @@ import { CountUp, CohortFraudTrend } from '@/components/poseidon'
 import { selectCohortMetrics, selectArchitecturalTrust } from '@/domain/poseidon-universe'
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import { LANDING_COPY } from '@/content/landing-copy'
-import { getMotionPreset } from '@/lib/motion-presets'
+import { getMotionPreset, easings } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 /** Pointer-tracking spotlight for dark-theme Bento cards (desktop only, skips touch) */
@@ -49,9 +49,16 @@ export default function Landing() {
   const spotExecute = useSpotlight()
   const spotGovern = useSpotlight()
 
+  /* ── Parallax orbs for lower-half spatial dynamics ── */
+  const { scrollYProgress } = useScroll()
+  const orbY1 = useTransform(scrollYProgress, [0, 1], prefersCalmMotion ? [0, 0] : [0, -80])
+  const orbY2 = useTransform(scrollYProgress, [0, 1], prefersCalmMotion ? [0, 0] : [0, -50])
+  const orbY3 = useTransform(scrollYProgress, [0, 1], prefersCalmMotion ? [0, 0] : [0, -100])
+  const orbY4 = useTransform(scrollYProgress, [0, 1], prefersCalmMotion ? [0, 0] : [0, -60])
+
   const sectionRevealProps = prefersCalmMotion
     ? ({ initial: false, animate: 'visible' } as const)
-    : ({ initial: 'hidden', whileInView: 'visible', viewport: { once: true, margin: '-80px' } } as const)
+    : ({ initial: 'hidden', whileInView: 'visible', viewport: { once: true, margin: '-80px' }, transition: { ease: [...easings.poseidonScroll] as [number, number, number, number], duration: 0.8 } } as const)
 
   useEffect(() => {
     const video = videoRef.current
@@ -231,17 +238,7 @@ export default function Landing() {
                 </a>
               </motion.div>
 
-              {/* Trust bar */}
-              <motion.div variants={fadeUp} className="flex flex-wrap md:flex-nowrap items-center justify-center gap-x-3 gap-y-2 text-[11px] md:text-xs text-white/30 font-mono uppercase tracking-widest">
-                {LANDING_COPY.hero.trustItems.map((item, i) => (
-                  <span key={item} className="flex items-center gap-2">
-                    {i > 0 && <span className="text-white/10">//</span>}
-                    {item}
-                  </span>
-                ))}
-              </motion.div>
-
-              {/* 2 Floating Proof Cards — below trust bar for visual separation */}
+              {/* 2 Floating Proof Cards — above trust bar for visual hierarchy */}
               <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl mt-6 md:mt-10">
                 {/* Protect proof */}
                 <div className="rounded-2xl border border-green-500/20 bg-white/[0.03] md:backdrop-blur-sm p-4">
@@ -278,11 +275,21 @@ export default function Landing() {
                   </div>
                 </div>
               </motion.div>
+
+              {/* Trust bar */}
+              <motion.div variants={fadeUp} className="flex flex-wrap md:flex-nowrap items-center justify-center gap-x-3 gap-y-2 text-[11px] md:text-xs text-white/30 font-mono uppercase tracking-widest">
+                {LANDING_COPY.hero.trustItems.map((item, i) => (
+                  <span key={item} className="flex items-center gap-2">
+                    {i > 0 && <span className="text-white/10">//</span>}
+                    {item}
+                  </span>
+                ))}
+              </motion.div>
             </motion.div>
           </section>
 
           {/* ═══ Section 2: Platform Intelligence ═══ */}
-          <section className="relative w-full py-28 md:py-36 px-6">
+          <section className="relative w-full py-32 md:py-40 px-6">
             <motion.div
               className="max-w-5xl mx-auto"
               variants={stagger}
@@ -324,6 +331,37 @@ export default function Landing() {
               </div>
             </motion.div>
           </section>
+
+          {/* ═══ Dark-Luxe Spatial Dynamics wrapper (sections 3–6) ═══ */}
+          <div className="relative overflow-hidden">
+            {/* Ambient glow orbs — engine-colored depth lights */}
+            <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+              <motion.div className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] rounded-full bg-emerald-900/[0.07] blur-[160px] will-change-transform" style={{ y: orbY1 }} />
+              <motion.div className="absolute top-[30%] -left-[15%] w-[500px] h-[500px] rounded-full bg-violet-900/[0.06] blur-[140px] will-change-transform" style={{ y: orbY2 }} />
+              <motion.div className="absolute top-[60%] -right-[5%] w-[400px] h-[400px] rounded-full bg-amber-900/[0.05] blur-[120px] will-change-transform" style={{ y: orbY3 }} />
+              <motion.div className="absolute top-[85%] -left-[10%] w-[500px] h-[500px] rounded-full bg-blue-900/[0.06] blur-[140px] will-change-transform" style={{ y: orbY4 }} />
+            </div>
+
+            {/* Cinematic noise texture — ultra-subtle grain overlay */}
+            <svg className="pointer-events-none absolute inset-0 w-full h-full opacity-[0.025]" aria-hidden="true">
+              <filter id="landingNoise">
+                <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+                <feColorMatrix type="saturate" values="0" />
+              </filter>
+              <rect width="100%" height="100%" filter="url(#landingNoise)" />
+            </svg>
+
+            {/* Section connector — vertical data-flow line */}
+            <div className="pointer-events-none absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 hidden md:block" aria-hidden="true">
+              <div className="absolute inset-0 bg-gradient-to-b from-white/0 via-white/[0.04] to-white/0" />
+              {!prefersCalmMotion && (
+                <motion.div
+                  className="absolute left-1/2 -translate-x-1/2 w-1 h-8 rounded-full bg-gradient-to-b from-transparent via-cyan-400/30 to-transparent blur-[2px]"
+                  animate={{ top: ['0%', '100%'] }}
+                  transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                />
+              )}
+            </div>
 
           {/* ═══ Section 3: Coordination Gap ═══ */}
           <section className="relative w-full py-32 md:py-40 px-6 border-y border-white/[0.04]">
@@ -399,6 +437,7 @@ export default function Landing() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 {/* Protect */}
                 <motion.div ref={spotProtect.ref} onPointerMove={spotProtect.onPointerMove} variants={fadeUp} className="group relative rounded-[32px] border border-green-500/15 bg-white/[0.02] p-6 md:p-8 flex flex-col gap-5 shadow-[0_1px_2px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_0_24px_rgba(34,197,94,0.1)] overflow-hidden">
+                  <div aria-hidden="true" className="pointer-events-none absolute -bottom-4 inset-x-4 h-16 rounded-full -z-10 blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden md:block" style={{ background: 'radial-gradient(ellipse at center, rgba(34,197,94,0.15), transparent 70%)' }} />
                   <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[32px] opacity-0 transition-opacity duration-300 group-hover:opacity-100 hidden md:block" style={{ background: 'radial-gradient(420px circle at var(--spot-x,50%) var(--spot-y,50%), rgba(34,197,94,0.08), transparent 60%)' }} />
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-green-500 to-transparent" />
                   <div className="flex items-center gap-2">
@@ -425,6 +464,7 @@ export default function Landing() {
 
                 {/* Grow */}
                 <motion.div ref={spotGrow.ref} onPointerMove={spotGrow.onPointerMove} variants={fadeUp} className="group relative rounded-[32px] border border-violet-500/15 bg-white/[0.02] p-6 md:p-8 flex flex-col gap-5 shadow-[0_1px_2px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_0_24px_rgba(139,92,246,0.1)] overflow-hidden">
+                  <div aria-hidden="true" className="pointer-events-none absolute -bottom-4 inset-x-4 h-16 rounded-full -z-10 blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden md:block" style={{ background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.15), transparent 70%)' }} />
                   <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[32px] opacity-0 transition-opacity duration-300 group-hover:opacity-100 hidden md:block" style={{ background: 'radial-gradient(420px circle at var(--spot-x,50%) var(--spot-y,50%), rgba(139,92,246,0.08), transparent 60%)' }} />
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
                   <div className="flex items-center gap-2">
@@ -449,6 +489,7 @@ export default function Landing() {
 
                 {/* Execute */}
                 <motion.div ref={spotExecute.ref} onPointerMove={spotExecute.onPointerMove} variants={fadeUp} className="group relative rounded-[32px] border border-amber-500/15 bg-white/[0.02] p-6 md:p-8 flex flex-col gap-5 shadow-[0_1px_2px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_0_24px_rgba(234,179,8,0.1)] overflow-hidden">
+                  <div aria-hidden="true" className="pointer-events-none absolute -bottom-4 inset-x-4 h-16 rounded-full -z-10 blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden md:block" style={{ background: 'radial-gradient(ellipse at center, rgba(234,179,8,0.15), transparent 70%)' }} />
                   <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[32px] opacity-0 transition-opacity duration-300 group-hover:opacity-100 hidden md:block" style={{ background: 'radial-gradient(420px circle at var(--spot-x,50%) var(--spot-y,50%), rgba(234,179,8,0.08), transparent 60%)' }} />
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
                   <div className="flex items-center gap-2">
@@ -470,6 +511,7 @@ export default function Landing() {
 
                 {/* Govern */}
                 <motion.div ref={spotGovern.ref} onPointerMove={spotGovern.onPointerMove} variants={fadeUp} className="group relative rounded-[32px] border border-blue-500/15 bg-white/[0.02] p-6 md:p-8 flex flex-col gap-5 shadow-[0_1px_2px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_0_24px_rgba(59,130,246,0.1)] overflow-hidden">
+                  <div aria-hidden="true" className="pointer-events-none absolute -bottom-4 inset-x-4 h-16 rounded-full -z-10 blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden md:block" style={{ background: 'radial-gradient(ellipse at center, rgba(59,130,246,0.15), transparent 70%)' }} />
                   <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[32px] opacity-0 transition-opacity duration-300 group-hover:opacity-100 hidden md:block" style={{ background: 'radial-gradient(420px circle at var(--spot-x,50%) var(--spot-y,50%), rgba(59,130,246,0.08), transparent 60%)' }} />
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                   <div className="flex items-center gap-2">
@@ -496,6 +538,44 @@ export default function Landing() {
             </motion.div>
           </section>
 
+          {/* ═══ Section 5.5: Institutional Affiliation ═══ */}
+          <section className="relative w-full py-24 md:py-32 px-6">
+            <motion.div
+              className="max-w-3xl mx-auto flex flex-col items-center text-center gap-8"
+              variants={stagger}
+              {...sectionRevealProps}
+            >
+              <motion.div variants={fadeUp} className="flex items-center gap-3">
+                <div className="h-px w-8 bg-white/10" />
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/30 font-mono">
+                  {LANDING_COPY.institutional.label}
+                </p>
+                <div className="h-px w-8 bg-white/10" />
+              </motion.div>
+              <motion.a
+                variants={fadeUp}
+                href="https://online.professionalprogramsmit.com/blended-professional-certificate-in-technology-strategy-and-leadership"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col items-center gap-6 p-8 rounded-3xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all"
+              >
+                <img
+                  src="/mit-logo.png"
+                  alt="MIT Professional Education"
+                  className="h-16 md:h-20 w-auto opacity-80 group-hover:opacity-100 transition-opacity"
+                />
+                <div className="flex flex-col items-center gap-2">
+                  <p className="text-sm text-white/50 group-hover:text-white/70 transition-colors">
+                    {LANDING_COPY.institutional.program}
+                  </p>
+                  <p className="text-[11px] text-white/25 font-mono uppercase tracking-wider">
+                    {LANDING_COPY.institutional.cohort}
+                  </p>
+                </div>
+              </motion.a>
+            </motion.div>
+          </section>
+
           {/* ═══ Section 6: Final CTA + Footer ═══ */}
           <section className="relative w-full py-32 md:py-40 px-6">
             <motion.div
@@ -516,6 +596,7 @@ export default function Landing() {
               </motion.div>
             </motion.div>
           </section>
+          </div>{/* end Dark-Luxe Spatial Dynamics wrapper */}
         </main>
 
         {/* Footer */}
@@ -537,7 +618,7 @@ export default function Landing() {
               ))}
             </div>
             <p className="text-[11px] text-white/20 font-mono tracking-wider uppercase">
-              2026 MAR MIT CTO PROGRAM CAPSTONE - GROUP7
+              {LANDING_COPY.institutional.cohort} · {LANDING_COPY.institutional.label}
             </p>
           </div>
         </footer>

@@ -8,7 +8,7 @@ import {
   ArrowRight,
 } from 'lucide-react'
 import { useRouter } from '@/router'
-import { SubPageNav, ConfidenceIndicator } from '@/components/poseidon'
+import { SubPageNav, ConfidenceIndicator, CountUp } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -51,6 +51,7 @@ export default function GrowRecommendationDetailPage() {
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const [transparencyOpen, setTransparencyOpen] = useState(false)
+  const [projectionYears, setProjectionYears] = useState<3 | 5 | 10>(5)
 
   const rec = useMemo(() => {
     const id = Number(new URLSearchParams(search).get('id'))
@@ -83,10 +84,32 @@ export default function GrowRecommendationDetailPage() {
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
           <motion.div variants={fadeUpVariant} className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-              <p className="text-4xl md:text-5xl font-light tabular-nums" style={{ color: 'var(--engine-grow)', fontFamily: 'var(--font-display)' }}>
-                ${rec.monthlySavings}<span className="text-lg text-white/40 font-normal">/mo</span>
+              <p className="text-4xl md:text-5xl font-light tabular-nums" style={{ fontFamily: 'var(--font-display)' }}>
+                <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">${rec.monthlySavings}</span>
+                <span className="text-lg text-white/40 font-normal">/mo</span>
               </p>
               <p className="text-xs text-white/40 font-mono">${rec.annualSavings.toLocaleString()}/year</p>
+              {/* Projection calculator */}
+              <div className="flex items-center gap-3 mt-2">
+                <span className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">Projected</span>
+                {([3, 5, 10] as const).map((y) => (
+                  <button
+                    key={y}
+                    onClick={() => setProjectionYears(y)}
+                    className={cn(
+                      'px-3 py-1.5 rounded-lg text-xs font-bold transition-all',
+                      projectionYears === y
+                        ? 'bg-[var(--engine-grow)]/20 text-[var(--engine-grow)] border border-[var(--engine-grow)]/30'
+                        : 'bg-white/[0.03] text-white/40 border border-white/[0.06] hover:bg-white/[0.06]',
+                    )}
+                  >
+                    {y}Y
+                  </button>
+                ))}
+                <span className="text-lg font-mono font-semibold tabular-nums ml-2" style={{ color: 'var(--engine-grow)' }}>
+                  <CountUp value={rec.monthlySavings * 12 * projectionYears} prefix="$" locale duration={600} />
+                </span>
+              </div>
             </div>
             <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>
               {rec.title}
@@ -296,16 +319,19 @@ export default function GrowRecommendationDetailPage() {
             {/* CTA buttons (non-functional demo) */}
             <div className="flex flex-col sm:flex-row gap-3 mt-6 pt-6 border-t border-white/[0.06]">
               {rec.steps.some(s => s.type === 'auto') && (
-                <button
+                <motion.button
                   type="button"
-                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-default w-full sm:w-auto"
+                  whileHover={prefersReducedMotion ? {} : { scale: 1.02 }}
+                  whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all cursor-default w-full sm:w-auto relative overflow-hidden"
                   style={{
-                    background: 'var(--engine-grow)',
+                    background: 'linear-gradient(135deg, var(--engine-grow), color-mix(in srgb, var(--engine-grow) 70%, white))',
                     color: 'var(--bg-oled)',
+                    boxShadow: '0 0 24px rgba(139,92,246,0.3)',
                   }}
                 >
-                  <Zap size={14} /> Execute Auto Steps
-                </button>
+                  <Zap size={14} /> Execute Strategy
+                </motion.button>
               )}
               <button
                 type="button"

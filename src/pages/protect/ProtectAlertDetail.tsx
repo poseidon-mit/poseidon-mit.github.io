@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell, ResponsiveContainer, LabelList } from 'recharts'
-import { useRouter } from '@/router'
+import { useRouter, Link } from '@/router'
 import { SubPageNav, ConfidenceIndicator } from '@/components/poseidon'
 import {
   AlertTriangle,
@@ -16,6 +16,7 @@ import {
   Zap,
   Copy,
   Check,
+  ShieldCheck,
 } from "lucide-react"
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
 import { getMotionPreset, accordionVariants, accordionTransition } from '@/lib/motion-presets'
@@ -139,7 +140,7 @@ export default function ProtectAlertDetailPage() {
   usePageTitle('Alert Detail')
   const { search, navigate } = useRouter()
   const [expandedId, setExpandedId] = useState<string | null>(null)
-  const [disputeState, setDisputeState] = useState<'idle' | 'drafting' | 'submitted'>('idle')
+  const [disputeState, setDisputeState] = useState<'idle' | 'drafting' | 'submitted' | 'neutralized'>('idle')
   const [copied, setCopied] = useState(false)
 
   const { dismiss } = useDismissedAlerts()
@@ -231,7 +232,17 @@ export default function ProtectAlertDetailPage() {
               <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>{`Alert #${alert.id}`}</h1>
               <span className="text-sm tracking-wide text-white/40 font-mono mt-1">{`Detected: ${detectedAt} • Updated: ${updatedAt}`}</span>
             </div>
-            <span className="inline-flex items-center gap-1.5 md:gap-2 rounded-full px-3 py-1.5 text-xs md:px-4 md:py-2 md:text-sm font-bold uppercase tracking-widest" style={{ background: severityTheme.bg, border: `1px solid ${severityTheme.border}`, color: severityTheme.color }} aria-label={`Alert status: ${alert.severity}`}><AlertTriangle size={16} />{alert.severity}</span>
+            <span className="relative inline-flex items-center gap-1.5 md:gap-2 rounded-full px-3 py-1.5 text-xs md:px-4 md:py-2 md:text-sm font-bold uppercase tracking-widest" style={{ background: severityTheme.bg, border: `1px solid ${severityTheme.border}`, color: severityTheme.color }} aria-label={`Alert status: ${alert.severity}`}>
+              {alert.severity === 'critical' && !prefersReducedMotion && (
+                <motion.div
+                  className="absolute inset-0 rounded-full pointer-events-none"
+                  style={{ background: `radial-gradient(circle, ${severityTheme.color}33, transparent 70%)` }}
+                  animate={{ scale: [1, 1.6, 1], opacity: [0.6, 0, 0.6] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                />
+              )}
+              <AlertTriangle size={16} />{alert.severity}
+            </span>
           </motion.div>
         </motion.section>
 
@@ -242,7 +253,7 @@ export default function ProtectAlertDetailPage() {
 
             <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6 lg:gap-8 relative z-10">
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Counterparty</span><span className="text-base md:text-lg font-medium text-white/90">{alert.counterparty}</span></div>
-              <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Amount</span><span className="text-lg md:text-2xl font-light font-mono" style={{ color: severityTheme.color }}>{alert.amount}</span></div>
+              <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Amount</span><span className="text-2xl md:text-3xl font-bold font-mono tabular-nums" style={{ color: severityTheme.color, textShadow: `0 0 20px ${severityTheme.color}40` }}>{alert.amount}</span></div>
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Confidence</span><ConfidenceIndicator value={alert.confidence} colorOverride={severityTheme.color} size="lg" glow /></div>
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Alert type</span><span className="text-sm md:text-base text-white/70 tracking-wide break-words">{alert.description}</span></div>
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Account</span><div className="flex items-center gap-2"><CreditCard size={16} className="text-white/30" /><span className="text-base font-mono font-medium text-white/80">{`Checking ****4821`}</span></div></div>
@@ -415,7 +426,7 @@ export default function ProtectAlertDetailPage() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-3 lg:justify-end lg:w-48 shrink-0">
-                  <button onClick={() => setDisputeState('submitted')} className={cn(buttonVariants({ variant: "default" }), "w-full rounded-xl py-3 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.5)] bg-[var(--engine-execute)] border-none text-black font-bold tracking-wide flex items-center justify-center gap-2 transition-all")}><Zap size={16} />Email to Bank</button>
+                  <button onClick={() => { setDisputeState('submitted'); setTimeout(() => { setDisputeState('neutralized'); window.dispatchEvent(new CustomEvent('poseidon:execute-approved', { detail: { govId: caseBrief.caseId, actionId: alert.id, actionTitle: `Dispute filed: ${alert.counterparty} ${alert.amount}` } })) }, 2000) }} className={cn(buttonVariants({ variant: "default" }), "w-full rounded-xl py-3 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.5)] bg-[var(--engine-execute)] border-none text-black font-bold tracking-wide flex items-center justify-center gap-2 transition-all")}><Zap size={16} />Email to Bank</button>
                   <button onClick={() => setDisputeState('idle')} className={cn(buttonVariants({ variant: "ghost" }), "w-full rounded-xl py-3 border border-white/10 hover:bg-white/10 text-white/60 font-medium")}>Cancel</button>
                 </div>
               </div>
@@ -439,6 +450,32 @@ export default function ProtectAlertDetailPage() {
                 <p className="text-sm font-medium text-emerald-400">Your bank will review within 10 business days (Reg E). Provisional credit may apply within 48h.</p>
               </div>
             </div>
+          )}
+
+          {disputeState === 'neutralized' && (
+            <motion.div
+              initial={prefersReducedMotion ? {} : { scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+              className="glass-card rounded-2xl p-8 !border-emerald-500/30 flex flex-col items-center gap-4 text-center"
+            >
+              <motion.div
+                initial={prefersReducedMotion ? {} : { scale: 0, rotate: -20 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.2 }}
+                className="w-20 h-20 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center"
+              >
+                <ShieldCheck className="w-10 h-10 text-emerald-400" />
+              </motion.div>
+              <h3 className="text-xl font-light tracking-wide text-white" style={{ fontFamily: 'var(--font-display)' }}>
+                Threat Neutralized
+              </h3>
+              <p className="text-sm text-white/50 max-w-md">
+                Your account has been secured. Dispute filed as case{' '}
+                <Link to={`/govern/audit-detail?decision=${caseBrief.caseId}`} className="font-mono text-emerald-300 font-bold underline underline-offset-2 hover:text-emerald-200 transition-colors">{caseBrief.caseId}</Link>.
+                Your bank will review within 10 business days.
+              </p>
+            </motion.div>
           )}
         </motion.div>
 

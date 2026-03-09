@@ -57,3 +57,11 @@ export function focusGradientStyle(accentColor: string) {
     background: `linear-gradient(135deg, color-mix(in srgb, ${accentColor} 6%, transparent), transparent 60%)`,
   }
 }
+
+/** Enhanced focus-tier glow — gradient tint + soft box-shadow for high-priority visual weight */
+export function focusGlowStyle(accentColor: string) {
+  return {
+    background: `linear-gradient(135deg, color-mix(in srgb, ${accentColor} 6%, transparent), transparent 60%)`,
+    boxShadow: `0 0 24px color-mix(in srgb, ${accentColor} 8%, transparent), inset 0 1px 0 rgba(255,255,255,0.03)`,
+  }
+}

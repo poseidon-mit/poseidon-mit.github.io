@@ -11,6 +11,7 @@
   --bg-oled: hsl(0 0% 7%);
   --bg-vantablack: #050505;
   --bg-surface: #151D2C;
+  --surface-primary: #080C14;
 
   /* ── Colors — Glass ── */
   --glass-bg: rgba(8, 12, 24, 0.62);

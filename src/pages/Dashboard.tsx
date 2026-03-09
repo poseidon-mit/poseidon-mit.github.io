@@ -17,7 +17,7 @@ import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 import { THREATS, severityConfig } from '@/pages/protect/protect-data'
 import { useDismissedAlerts } from '@/pages/protect/useDismissedAlerts'
 import { DashboardCoordinationProof } from '@/components/poseidon'
-import { WelcomeDrawer } from '@/components/dashboard/WelcomeDrawer'
+import { OnboardingBottomSheet } from '@/components/dashboard/OnboardingBottomSheet'
 import type { EngineName } from '@/lib/engine-tokens'
 
 /* ── Urgency sort helpers ── */
@@ -151,7 +151,7 @@ export default function DashboardPage() {
 
       </motion.main>
 
-      <WelcomeDrawer />
+      <OnboardingBottomSheet />
     </div>
   )
 }

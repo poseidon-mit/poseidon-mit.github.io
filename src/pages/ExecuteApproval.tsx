@@ -9,6 +9,7 @@ import {
   Timer,
   ArrowRight,
   Loader2,
+  Lock,
 } from 'lucide-react'
 import { Link, useRouter } from '@/router'
 import { ShapWaterfall, EmptyState, EngineBadge, ConfidenceIndicator, SubPageNav, ProofChips } from '@/components/poseidon'
@@ -106,6 +107,24 @@ export function ExecuteApproval() {
         animate="visible"
         role="main"
       >
+        {/* Security indicators */}
+        <motion.div variants={fadeUpVariant} className="flex items-center justify-center gap-6 py-2 text-[10px] uppercase tracking-widest text-white/30 font-mono">
+          <span className="flex items-center gap-1.5">
+            <Lock size={10} />
+            E2E Encrypted
+          </span>
+          <span className="w-px h-3 bg-white/10" />
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/80" />
+            Secure Connection
+          </span>
+          <span className="w-px h-3 bg-white/10" />
+          <span className="flex items-center gap-1.5">
+            <ShieldCheck size={10} />
+            Govern Monitored
+          </span>
+        </motion.div>
+
         {/* Compact Hero */}
         <motion.div variants={fadeUpVariant} className="glass-card rounded-3xl p-6 md:p-8 flex flex-col gap-4">
           <div className="flex items-center gap-2 flex-wrap">
@@ -134,6 +153,31 @@ export function ExecuteApproval() {
             <div className="flex items-center gap-3">
               <span className="text-xs uppercase tracking-widest text-white/40">Confidence</span>
               <ConfidenceIndicator value={action.confidence} format="percent" size="lg" />
+            </div>
+          </div>
+
+          {/* Money flow path */}
+          <div className="flex items-center gap-3 mt-1">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+              <span className="text-xs text-white/60 font-mono">You</span>
+            </div>
+            <motion.div
+              className="flex-1 flex items-center gap-1"
+              initial={prefersReducedMotion ? {} : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+            >
+              <div className="flex-1 h-px bg-gradient-to-r from-white/10 via-[var(--engine-execute)]/40 to-white/10" />
+              <motion.div
+                animate={prefersReducedMotion ? {} : { x: [0, 4, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <ArrowRight size={14} style={{ color: 'var(--engine-execute)' }} />
+              </motion.div>
+              <div className="flex-1 h-px bg-gradient-to-r from-white/10 via-[var(--engine-execute)]/40 to-white/10" />
+            </motion.div>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+              <span className="text-xs text-white/60 font-mono truncate max-w-[120px]">{action.title.split(' ').slice(-1)[0]}</span>
             </div>
           </div>
 
@@ -420,7 +464,7 @@ export function ExecuteApproval() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="execute-approval-confirm-title"
-            style={{ background: '#0f1e35', border: '1px solid rgba(255,255,255,0.12)' }}
+            style={{ background: 'var(--bg, #080C14)', border: '1px solid rgba(255,255,255,0.12)' }}
           >
             <div className="flex flex-col gap-4 p-2">
               <div>

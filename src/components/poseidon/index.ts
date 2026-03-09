@@ -77,3 +77,6 @@ export { CrossEngineTrail, type CrossEngineTrailProps } from './cross-engine-tra
 export { ProofChips, type ProofChipsProps, type ProofPart } from './proof-chips'
 export { SlideToApprove, type SlideToApproveProps } from './slide-to-approve'
 export { ExportButton, type ExportButtonProps, type ExportFormat } from './export-button'
+
+/* ── Decrypt Text Animation ── */
+export { DecryptText, type DecryptTextProps } from './decrypt-text'

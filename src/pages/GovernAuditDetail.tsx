@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MessageCircle, Download, RotateCcw, ChevronDown } from 'lucide-react';
+import { MessageCircle, Download, RotateCcw, ChevronDown, Lock } from 'lucide-react';
 import { useRouter } from '@/router';
-import { SubPageNav, ConfidenceIndicator } from '@/components/poseidon';
+import { SubPageNav, ConfidenceIndicator, DecryptText } from '@/components/poseidon';
 import { getMotionPreset } from '@/lib/motion-presets';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
@@ -43,9 +43,16 @@ export function GovernAuditDetail() {
         animate="visible"
         role="main"
       >
+        {/* Immutable watermark */}
+        <div className="pointer-events-none fixed inset-0 flex items-center justify-center opacity-[0.015] z-0 select-none overflow-hidden" aria-hidden="true">
+          <span className="text-[120px] md:text-[200px] font-bold uppercase tracking-[0.3em] text-white whitespace-nowrap rotate-[-15deg]" style={{ fontFamily: 'var(--font-display)' }}>
+            IMMUTABLE RECORD
+          </span>
+        </div>
+
         {/* What Happened */}
         <motion.section variants={fadeUpVariant} className="flex flex-col gap-1">
-          <p className="text-[10px] uppercase tracking-widest text-white/40 font-semibold mb-2">{auditEntry.id}</p>
+          <DecryptText text={auditEntry.id} duration={1000} delay={200} className="text-[10px] uppercase tracking-widest text-white/40 font-semibold mb-2 font-mono block" as="span" />
           <h1 className={`${PAGE_HEADING_CLASS} break-words`} style={PAGE_HEADING_STYLE}>
             {auditEntry.coreAssertion}
           </h1>
@@ -61,17 +68,26 @@ export function GovernAuditDetail() {
                 The Facts
               </h2>
 
-              {/* Factual rows */}
+              {/* Factual rows — visual diff treatment for before/after pairs */}
               <div className="flex flex-col gap-0">
-                {auditEntry.baseReality.map((row) => (
-                  <div
-                    key={row.label}
-                    className="flex items-center justify-between py-3 border-b border-white/[0.04] last:border-0"
-                  >
-                    <span className="text-[10px] uppercase tracking-widest text-white/50 font-semibold">{row.label}</span>
-                    <span className="text-sm text-white/90 font-light text-right">{row.value}</span>
-                  </div>
-                ))}
+                {auditEntry.baseReality.map((row) => {
+                  const isPrevious = /^(previous|current apr|old|before)/i.test(row.label)
+                  const isTarget = /^(current(?! apr)|target|new|after|available)/i.test(row.label)
+                  return (
+                    <div
+                      key={row.label}
+                      className="flex items-center justify-between py-3 border-b border-white/[0.04] last:border-0"
+                    >
+                      <span className="text-[10px] uppercase tracking-widest text-white/50 font-semibold">{row.label}</span>
+                      <span className={cn(
+                        'text-sm text-right',
+                        isPrevious ? 'text-white/40 line-through' : isTarget ? 'text-white/90 font-medium' : 'text-white/90 font-light',
+                      )}>
+                        {row.value}
+                      </span>
+                    </div>
+                  )
+                })}
               </div>
 
               {/* Data source pills */}
@@ -233,6 +249,14 @@ export function GovernAuditDetail() {
             </button>
           </div>
         </motion.section>
+
+        {/* Permanently sealed footer */}
+        <motion.div variants={fadeUpVariant} className="flex items-center justify-center gap-3 py-6 border-t border-white/[0.04]">
+          <Lock size={12} className="text-white/20" />
+          <p className="text-[10px] uppercase tracking-[0.2em] text-white/20 font-mono">
+            Permanently sealed on Poseidon immutable ledger · {auditEntry.id}
+          </p>
+        </motion.div>
 
       </motion.div>
     </>

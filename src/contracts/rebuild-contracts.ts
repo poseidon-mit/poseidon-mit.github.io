@@ -759,7 +759,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionLabel: 'Open integrations',
     primaryActionPath: '/settings/integrations',
     first5sMessage: 'Tune AI control and explanation preferences.',
-    governance: { auditId: 'GV-2026-0216-SETT-AI', pageContext: 'AI configuration', engine: 'dashboard' },
+    governance: { auditId: 'GV-2026-0216-SETT-AI', pageContext: 'AI configuration', engine: 'dashboard', showFooter: false },
     evidence: EVIDENCE_NONE,
   }),
   '/settings/integrations': routeMeta({
@@ -773,7 +773,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionLabel: 'Open rights controls',
     primaryActionPath: '/settings/rights',
     first5sMessage: 'Manage third-party integrations securely.',
-    governance: { auditId: 'GV-2026-0216-SETT-INT', pageContext: 'integrations', engine: 'dashboard' },
+    governance: { auditId: 'GV-2026-0216-SETT-INT', pageContext: 'integrations', engine: 'dashboard', showFooter: false },
     evidence: EVIDENCE_NONE,
   }),
   '/settings/rights': routeMeta({
@@ -787,7 +787,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionLabel: 'Return to dashboard',
     primaryActionPath: '/dashboard',
     first5sMessage: 'Exercise data rights with clear control boundaries.',
-    governance: { auditId: 'GV-2026-0216-SETT-RTS', pageContext: 'data rights', engine: 'dashboard' },
+    governance: { auditId: 'GV-2026-0216-SETT-RTS', pageContext: 'data rights', engine: 'dashboard', showFooter: false },
     evidence: EVIDENCE_NONE,
   }),
 

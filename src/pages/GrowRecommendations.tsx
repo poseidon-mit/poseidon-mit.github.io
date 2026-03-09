@@ -8,7 +8,7 @@ import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { cn } from '@/lib/utils'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
-import { CARD_TIER_STYLES, focusGradientStyle, type CardTier } from '@/lib/card-variants'
+import { CARD_TIER_STYLES, focusGlowStyle, type CardTier } from '@/lib/card-variants'
 import { selectSpotlightRecommendation } from '@/domain/poseidon-universe'
 import { RECOMMENDATIONS_FOR_LIST } from './grow/recommendation-detail-data'
 import type { RecommendationListItem } from './grow/recommendation-detail-data'
@@ -166,7 +166,7 @@ export function GrowRecommendations() {
               <Link
                 to={`/grow/recommendation?id=${spotlightRec.id}`}
                 className={cn(
-                  'self-start inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors',
+                  'self-start hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors',
                   'bg-gradient-to-r from-violet-500 to-purple-500 text-white',
                   'hover:from-violet-400 hover:to-purple-400',
                 )}
@@ -230,7 +230,7 @@ function RecommendationCard({ rec }: { rec: RecommendationListItem }) {
       )}
       style={{
         borderLeftColor: 'var(--engine-grow)',
-        ...(tier === 'focus' ? focusGradientStyle('var(--engine-grow)') : {}),
+        ...(tier === 'focus' ? focusGlowStyle('var(--engine-grow)') : {}),
       }}
     >
       {/* Title row */}
@@ -260,7 +260,7 @@ function RecommendationCard({ rec }: { rec: RecommendationListItem }) {
         {tier === 'focus' ? (
           <span
             className={cn(
-              'inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-colors',
+              'hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-colors',
               'bg-gradient-to-r from-violet-500/20 to-purple-500/20 text-[var(--engine-grow)] border border-[var(--engine-grow)]/30',
               'group-hover:border-[var(--engine-grow)]/50',
             )}
@@ -270,7 +270,7 @@ function RecommendationCard({ rec }: { rec: RecommendationListItem }) {
           </span>
         ) : (
           <span
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[10px] sm:text-xs font-semibold border transition-colors group-hover:border-[var(--engine-grow)]/50"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[10px] sm:text-xs font-semibold border transition-colors group-hover:border-[var(--engine-grow)]/50"
             style={{
               borderColor: 'color-mix(in srgb, var(--engine-grow) 30%, transparent)',
               color: 'var(--engine-grow)',

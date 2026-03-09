@@ -8,7 +8,7 @@ import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { cn } from '@/lib/utils'
-import { CARD_TIER_STYLES, focusGradientStyle, type CardTier } from '@/lib/card-variants'
+import { CARD_TIER_STYLES, focusGlowStyle, type CardTier } from '@/lib/card-variants'
 import { THREATS, severityConfig } from './protect-data'
 import type { ThreatRow, ThreatSeverity } from './protect-data'
 import { useDismissedAlerts } from './useDismissedAlerts'
@@ -200,11 +200,11 @@ function SpotlightCard({ threat }: { threat: ThreatRow }) {
       {/* Description */}
       <p className="text-sm text-white/55 leading-relaxed">{threat.description}</p>
 
-      {/* Full-width CTA */}
+      {/* Full-width CTA — hidden on mobile (card is tappable) */}
       <Link
         to={`/protect/alert-detail?alertId=${threat.id}`}
         className={cn(
-          'w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-colors',
+          'hidden sm:inline-flex w-full items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-colors',
           'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950',
           'hover:from-emerald-400 hover:to-cyan-400',
         )}
@@ -222,15 +222,16 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
   const styles = CARD_TIER_STYLES[tier]
 
   return (
-    <div
+    <Link
+      to={`/protect/alert-detail?alertId=${threat.id}`}
       className={cn(
-        'glass-card glass-card-overlay rounded-[20px] flex items-center hover:border-white/[0.12] transition-colors border-l-2',
+        'glass-card glass-card-overlay rounded-[20px] flex items-center hover:border-white/[0.12] transition-colors border-l-2 group block',
         styles.padding,
         styles.gap,
       )}
       style={{
         borderLeftColor: config.color,
-        ...(tier === 'focus' ? focusGradientStyle(config.color) : {}),
+        ...(tier === 'focus' ? focusGlowStyle(config.color) : {}),
       }}
     >
       {/* Severity icon */}
@@ -275,23 +276,21 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
         </div>
       </div>
 
-      {/* CTA */}
+      {/* CTA — hidden on mobile, card itself is the touch target */}
       {tier === 'focus' ? (
-        <Link
-          to={`/protect/alert-detail?alertId=${threat.id}`}
+        <span
           className={cn(
-            'shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors',
+            'shrink-0 hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors',
             'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950',
-            'hover:from-emerald-400 hover:to-cyan-400',
+            'group-hover:from-emerald-400 group-hover:to-cyan-400',
           )}
         >
           Investigate
           <ArrowRight size={14} />
-        </Link>
+        </span>
       ) : (
-        <Link
-          to={`/protect/alert-detail?alertId=${threat.id}`}
-          className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
+        <span
+          className="shrink-0 hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
           style={{
             borderColor: 'color-mix(in srgb, var(--engine-protect) 30%, transparent)',
             color: 'var(--engine-protect)',
@@ -300,8 +299,8 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
         >
           Investigate
           <ArrowRight size={12} />
-        </Link>
+        </span>
       )}
-    </div>
+    </Link>
   )
 }
