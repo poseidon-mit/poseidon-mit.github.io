@@ -121,9 +121,6 @@ export function Sidebar({ path }: { path: string }) {
 
             {/* Nav groups */}
             <nav className="flex flex-1 flex-col gap-1.5 px-4" aria-label="Main navigation">
-                <span className="px-4 pt-4 pb-3 text-xs font-bold uppercase tracking-widest text-slate-500">
-                    Platform
-                </span>
                 {ENGINE_ITEMS.map((item) => {
                     const isActive = path === item.path || path.startsWith(item.path + '/');
                     const Icon = item.icon;
@@ -163,9 +160,7 @@ export function Sidebar({ path }: { path: string }) {
                     );
                 })}
 
-                <span className="px-4 pt-8 pb-3 text-xs font-bold uppercase tracking-widest text-slate-500">
-                    System
-                </span>
+                <div className="pt-6" />
                 {SYSTEM_ITEMS.map((item) => {
                     const isActive = path === item.path || path.startsWith(item.path + '/');
                     const Icon = item.icon;

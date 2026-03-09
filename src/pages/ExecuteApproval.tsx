@@ -316,7 +316,7 @@ export function ExecuteApproval() {
                         className="mt-0.5 h-4 w-4 rounded border-white/20 bg-transparent accent-amber-500 cursor-pointer"
                       />
                       <span className="text-sm text-white/70 leading-relaxed group-hover:text-white/90 transition-colors">
-                        I have reviewed the execution plan and understand the expected outcome of this action.
+                        I've reviewed the details and understand what this action will do.
                       </span>
                     </label>
 
@@ -324,8 +324,8 @@ export function ExecuteApproval() {
                     {isTier2 ? (
                       <div className="flex flex-col gap-3">
                         <SlideToApprove
-                          label="Slide to Authorize"
-                          completedLabel="Authorized"
+                          label="Slide to Approve"
+                          completedLabel="Approved"
                           disabled={!consentReviewed}
                           onAuthorize={() => {
                             setSlideAuthorized(true)

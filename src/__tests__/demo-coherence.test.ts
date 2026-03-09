@@ -155,10 +155,10 @@ describe('demo coherence invariants', () => {
     expect(landingSource).not.toMatch(/LLM Zero-Retention/)
   })
 
-  it('Govern.tsx renders privacy mandates inline', () => {
+  it('Govern.tsx renders summary bar with transparency messaging', () => {
     const governSource = readSource('src/pages/Govern.tsx')
-    expect(governSource).toContain('AI data window')
-    expect(governSource).toContain('Privacy control')
+    expect(governSource).toContain('100% transparency')
+    expect(governSource).toContain('AI decisions audited')
   })
 
   it('keeps risk incidents flagged tied to canonical via contract', () => {
@@ -222,10 +222,10 @@ describe('demo coherence invariants', () => {
     }
   })
 
-  it('THR-005 does not frame commodity exposure as inherently suspicious', () => {
+  it('THR-005 ATM withdrawal uses factual, non-accusatory language', () => {
     const thr005 = CANONICAL_UNIVERSE.entities.protectThreats.find(t => t.id === 'THR-005')!
+    expect(thr005.description).toMatch(/ATM|unfamiliar/i)
     expect(thr005.description).not.toMatch(/high-risk category/i)
-    expect(thr005.description).toMatch(/market risk|concentration|commodity/i)
     const factors = selectThreatFactors('THR-005')
     const allText = factors.map(f => `${(f as any).heroCue ?? ''} ${f.details}`).join(' ')
     expect(allText).not.toMatch(/inherently suspicious/i)
@@ -240,11 +240,11 @@ describe('demo coherence invariants', () => {
     expect(allStepText).not.toMatch(/88%.*overlap|content overlap/i)
   })
 
-  it('REC-002 vendor negotiation steps are not auto', () => {
-    const rec002 = recommendationDetails.find(r => r.id === 2)!
-    const allStepText = rec002.steps.map(s => `${s.description} ${s.type}`).join(' ')
+  it('REC-008 internet negotiation steps require manual action', () => {
+    const rec008 = recommendationDetails.find(r => r.id === 8)!
+    const allStepText = rec008.steps.map(s => `${s.description} ${s.type}`).join(' ')
     expect(allStepText).not.toMatch(/Poseidon will submit/i)
-    const negotiateStep = rec002.steps.find(s => /negotiate/i.test(s.title))!
-    expect(negotiateStep.type).not.toBe('auto')
+    const callStep = rec008.steps.find(s => /call|negotiate|retention/i.test(s.title))!
+    expect(callStep.type).not.toBe('auto')
   })
 })

@@ -15,26 +15,26 @@ import { useReducedMotionSafe } from '../hooks/useReducedMotionSafe'
 /* ── Test data ── */
 
 const SIMULATION_DATA = [
-  { year: 'Now', baseline: 200000, aiOptimized: 200000 },
-  { year: '1Y', baseline: 204000, aiOptimized: 211584 },
-  { year: '2Y', baseline: 208080, aiOptimized: 223797 },
-  { year: '3Y', baseline: 212242, aiOptimized: 236679 },
+  { year: 'Now', baseline: 130000, aiOptimized: 130000 },
+  { year: '1Y', baseline: 133900, aiOptimized: 138400 },
+  { year: '2Y', baseline: 137917, aiOptimized: 147400 },
+  { year: '3Y', baseline: 142055, aiOptimized: 156037 },
 ]
 
 const DEFAULT_PROPS = {
-  projectedGain: 24437,
-  totalMonthlySavings: 612,
+  projectedGain: 13982,
+  totalMonthlySavings: 444,
   avgConfidence: 0.87,
   recommendationCount: 8,
   simulationData: SIMULATION_DATA,
   currentPercentile: 23,
   projectedPercentile: 67,
-  cohortBracket: 'your portfolio tier',
+  cohortBracket: 'your income bracket',
   topRecommendation: {
     rank: 1,
-    title: 'Corporate Credit Facility Optimization',
-    monthlySavings: 164,
-    confidence: 0.88,
+    title: 'Switch to High-Yield Savings',
+    monthlySavings: 70,
+    confidence: 0.93,
   },
   onViewRecommendations: vi.fn(),
   onQueueTopAction: vi.fn(),
@@ -52,7 +52,7 @@ function renderHero(overrides: Partial<typeof DEFAULT_PROPS> = {}) {
 describe('GrowGrowthAdvantage', () => {
   it('renders the projected gain number formatted with commas', () => {
     renderHero()
-    expect(screen.getByText(/\+\$24,437/)).toBeInTheDocument()
+    expect(screen.getByText(/\+\$13,982/)).toBeInTheDocument()
   })
 
   it('fires onViewRecommendations when View all button is clicked', () => {
@@ -76,14 +76,14 @@ describe('GrowGrowthAdvantage', () => {
 
   it('renders top recommendation title and monthly savings', () => {
     renderHero()
-    expect(screen.getByText('Corporate Credit Facility Optimization')).toBeInTheDocument()
-    expect(screen.getByText(/\$164\/mo/)).toBeInTheDocument()
+    expect(screen.getByText('Switch to High-Yield Savings')).toBeInTheDocument()
+    expect(screen.getByText(/\$70\/mo/)).toBeInTheDocument()
   })
 
   it('renders summary stats', () => {
     renderHero()
-    // $612/mo appears in both summary stats and KPI card
-    expect(screen.getAllByText(/\$612\/mo/).length).toBeGreaterThanOrEqual(1)
+    // $444/mo appears in both summary stats and KPI card
+    expect(screen.getAllByText(/\$444\/mo/).length).toBeGreaterThanOrEqual(1)
     expect(screen.getAllByText(/8 recommendations/).length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText(/87% avg confidence/)).toBeInTheDocument()
   })
@@ -96,7 +96,7 @@ describe('GrowGrowthAdvantage', () => {
 
   it('hides Next Best Action pane when topRecommendation is null', () => {
     renderHero({ topRecommendation: null, onQueueTopAction: null })
-    expect(screen.queryByText('Corporate Credit Facility Optimization')).not.toBeInTheDocument()
+    expect(screen.queryByText('Switch to High-Yield Savings')).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /queue for execution/i })).not.toBeInTheDocument()
   })
 
@@ -146,7 +146,7 @@ describe('GrowGrowthAdvantage', () => {
       fireEvent.click(screen.getByRole('button', { name: /see poseidon delta/i }))
       fireEvent.click(screen.getByRole('button', { name: /replay/i }))
       act(() => vi.advanceTimersByTime(1200))
-      expect(screen.getByText(/\+\$24,437/)).toBeInTheDocument()
+      expect(screen.getByText(/\+\$13,982/)).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /view all/i })).toBeInTheDocument()
       expect(screen.getByText(/184,290/)).toBeInTheDocument()
     })
@@ -169,8 +169,8 @@ describe('GrowPage integration', () => {
 
   it('renders hero with derived projected gain', () => {
     renderGrowPage()
-    // FINAL_DATA.aiOptimized(236679) - FINAL_DATA.baseline(212242) = 24437
-    expect(screen.getByText(/\+\$24,437/)).toBeInTheDocument()
+    // FINAL_DATA.aiOptimized(156037) - FINAL_DATA.baseline(142055) = 13982
+    expect(screen.getByText(/\+\$13,982/)).toBeInTheDocument()
   })
 
   it('navigates to /grow/recommendations when View all is clicked', () => {

@@ -3,19 +3,28 @@ import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import { ROUTE_META_CONTRACT } from '../contracts/rebuild-contracts'
 
-describe('GovernFooter is a visible persistent proof system on critical routes', () => {
+describe('GovernFooter visibility policy follows conditional display rules', () => {
 
-    const flagshipRoutes = ['/dashboard', '/protect', '/grow', '/execute', '/govern']
+    // Routes where GovernFooter should be visible (detail/recommendation/approval pages)
+    const routesWithFooter = ['/execute', '/govern']
+    // Routes where GovernFooter should be hidden (overview/summary pages)
+    const routesWithoutFooter = ['/dashboard', '/protect', '/grow']
 
-    test('GovernFooter visibility policy is updated in route contracts', () => {
-        // TARGET: All flagship routes must have showFooter: true (or undefined, which defaults to true)
-        for (const route of flagshipRoutes) {
+    test('GovernFooter is visible on detail and approval routes', () => {
+        for (const route of routesWithFooter) {
             const contract = ROUTE_META_CONTRACT[route]
             expect(contract, `Route contract missing for ${route}`).toBeTruthy()
-
             const showFooter = contract.governance.showFooter
-            // showFooter must be true (not explicitly false)
-            expect(showFooter).not.toBe(false)
+            expect(showFooter, `${route} should have showFooter not false`).not.toBe(false)
+        }
+    })
+
+    test('GovernFooter is hidden on overview routes', () => {
+        for (const route of routesWithoutFooter) {
+            const contract = ROUTE_META_CONTRACT[route]
+            expect(contract, `Route contract missing for ${route}`).toBeTruthy()
+            const showFooter = contract.governance.showFooter
+            expect(showFooter, `${route} should have showFooter: false`).toBe(false)
         }
     })
 

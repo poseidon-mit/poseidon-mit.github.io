@@ -21,7 +21,7 @@ for arg in "$@"; do
   esac
 done
 
-BANNED_REGEX="\bFinancial Health\b|\bVIP\b|\bAML\b|\bwire transfer\b|\bMargin account\b|\bAuto-Approve\b|\bBlock & Dispute\b|\bProtect Engine\b|\bGrow Engine\b|\bExecute Engine\b|\bGovern Engine\b|\bValidating\b|\bBroadcasting\b|\bEngine status\b|\bActivate engines\b|\bLLM data retention\b|\bno model training\b|\bDecision Reconstruction\b|\bOpt-out status\b"
+BANNED_REGEX="\bFinancial Health\b|\bVIP\b|\bAML\b|\bwire transfer\b|\bMargin account\b|\bAuto-Approve\b|\bBlock & Dispute\b|\bProtect Engine\b|\bGrow Engine\b|\bExecute Engine\b|\bGovern Engine\b|\bValidating\b|\bBroadcasting\b|\bEngine status\b|\bActivate engines\b|\bLLM data retention\b|\bno model training\b|\bDecision Reconstruction\b|\bOpt-out status\b|\bCommand Center\b|\bAuthorization Queue\b|\bfully coordinated\b|\boffshore\b|\bElias Vance\b|\bSarah Chen\b|\bVIP client\b|\bcredit facility\b|\bsecurities-backed\b|\binstitutional\b|\bCayman Reef\b|\bcounterparty risk\b|\bAML/KYC\b"
 
 # CSS utility class patterns to exclude (false positives from design system tokens)
 CSS_CLASS_EXCLUDE="engine-text-|engine-bg-|engine-border-|engine-ring-"
@@ -79,6 +79,7 @@ CUSTOMER_FILES=(
   "src/features/talk-to-money/TalkToMoneyConversation.tsx"
   "src/features/talk-to-money/TalkToMoneyPanel.tsx"
   "src/features/talk-to-money/TalkToMoneySheet.tsx"
+  "src/domain/poseidon-universe/canonical.ts"
 )
 
 DEFERRED_FILES=(
@@ -87,7 +88,6 @@ DEFERRED_FILES=(
   "src/pages/share/Share.tsx"
   "src/lib/decision-protocol.ts"
   "src/lib/govern-audit-data.ts"
-  "src/domain/poseidon-universe/canonical.ts"
 )
 
 # 1. Customer Check

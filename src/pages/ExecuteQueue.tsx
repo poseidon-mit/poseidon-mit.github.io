@@ -72,14 +72,14 @@ export default function ExecuteQueuePage() {
         </div>
 
         <motion.div variants={fadeUp} className="flex flex-col gap-3">
-          <EngineBadge engine="execute" icon={Zap} label="Execute · Authorization Queue" className="self-start" />
+          <EngineBadge engine="execute" icon={Zap} label="Execute · Approval Queue" className="self-start" />
           <h1 className="text-2xl md:text-3xl font-light tracking-tight text-white">
-            Authorization Queue
+            Approval Queue
           </h1>
           <p className="text-white/50 text-base">
             {pendingActions.length === 0
               ? 'All actions have been reviewed.'
-              : `${pendingActions.length} action${pendingActions.length !== 1 ? 's' : ''} awaiting your authorization.`}
+              : `${pendingActions.length} action${pendingActions.length !== 1 ? 's' : ''} awaiting your approval.`}
           </p>
         </motion.div>
       </motion.section>

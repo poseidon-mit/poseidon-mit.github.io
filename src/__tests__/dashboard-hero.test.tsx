@@ -7,29 +7,29 @@ import DashboardPage from '../pages/Dashboard'
 /* ── Test data ── */
 
 const AUDIT_ENTRIES = [
-  { id: 'GV-001', type: 'Protect', action: 'Flag wire transfer', confidence: 0.94 },
-  { id: 'GV-002', type: 'Grow', action: 'Subscription consolidation', confidence: 0.89 },
-  { id: 'GV-003', type: 'Execute', action: 'Portfolio rebalance', confidence: 0.97 },
+  { id: 'GV-001', type: 'Protect', action: 'Suspicious charge flagged', confidence: 0.94 },
+  { id: 'GV-002', type: 'Grow', action: 'High-yield savings opportunity', confidence: 0.93 },
+  { id: 'GV-003', type: 'Execute', action: 'Emergency fund auto-transfer', confidence: 0.90 },
 ]
 
 const DEFAULT_PROPS = {
   activeThreats: 3,
-  monthlySavings: 612,
+  monthlySavings: 444,
   pendingActions: 5,
-  decisionsAudited: 10250,
-  decisionsVerified: 10191,
+  decisionsAudited: 47,
+  decisionsVerified: 44,
   recommendationCount: 8,
   criticalSignal: {
     id: 'THR-001',
-    counterparty: 'TechElectro Store',
-    amount: '$2,847',
+    counterparty: 'AMZN Mktp US*3K7R2F',
+    amount: '$347.89',
     confidence: 0.94,
     severity: 'Critical' as const,
   },
   nextApproval: {
-    id: 'EXE-002',
-    title: 'Flag suspicious wire transfer',
-    amountLabel: '$2,847',
+    id: 'EXE-001',
+    title: 'Dispute unrecognized charge',
+    amountLabel: '$347.89',
     engine: 'Protect',
     urgency: 'high' as const,
   },
@@ -51,37 +51,37 @@ function renderHero(overrides: Partial<typeof DEFAULT_PROPS> = {}) {
 describe('DashboardCoordinationProof', () => {
   it('renders the headline', () => {
     renderHero()
-    expect(screen.getByRole('heading', { level: 1, name: /fully coordinated/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: /finally coordinated/i })).toBeInTheDocument()
   })
 
   it('renders narrative with threat amount and savings', () => {
     renderHero()
-    const narrative = screen.getByText(/\$2,847 anomaly/)
+    const narrative = screen.getByText(/\$347\.89 anomaly/)
     expect(narrative).toBeInTheDocument()
-    expect(narrative.textContent).toMatch(/\$612\/mo/)
+    expect(narrative.textContent).toMatch(/\$444\/mo/)
   })
 
   it('renders narrative with verified count', () => {
     renderHero()
-    expect(screen.getByText(/10,191 verified/)).toBeInTheDocument()
+    expect(screen.getByText(/44 verified/)).toBeInTheDocument()
   })
 
   it('renders engine pulse badges for protect, grow, execute', () => {
     renderHero()
-    // EnginePulseBadge renders engine values — threats, opportunity, pending
+    // EnginePulseBadge renders engine values — threats, savings/mo, to approve
     expect(screen.getByText('threats')).toBeInTheDocument()
-    expect(screen.getByText('opportunity')).toBeInTheDocument()
-    expect(screen.getByText('pending')).toBeInTheDocument()
+    expect(screen.getByText('savings/mo')).toBeInTheDocument()
+    expect(screen.getByText('to approve')).toBeInTheDocument()
   })
 
   it('omits "Execute queued" from narrative when pendingActions is 0', () => {
     renderHero({ pendingActions: 0, nextApproval: null, onReviewApproval: null })
     // Narrative is inside a <p> tag — find the specific narrative paragraph
-    const narrativeEls = screen.getAllByText(/\$612\/mo/)
+    const narrativeEls = screen.getAllByText(/\$444\/mo/)
     const narrativeP = narrativeEls.find((el) => el.tagName === 'P')
     expect(narrativeP).toBeDefined()
-    expect(narrativeP!.textContent).not.toMatch(/queued 0 actions/)
-    expect(narrativeP!.textContent).not.toMatch(/Execute queued/)
+    expect(narrativeP!.textContent).not.toMatch(/0 action/)
+    expect(narrativeP!.textContent).not.toMatch(/ready for your approval/)
   })
 
   it('uses singular "action" when pendingActions is 1', () => {
@@ -89,13 +89,11 @@ describe('DashboardCoordinationProof', () => {
     expect(screen.getByText(/1 action(?!s)/)).toBeInTheDocument()
   })
 
-  it('renders govern rail with audited count', () => {
+  it('renders govern rail with trust narrative', () => {
     renderHero()
     const rail = screen.getByTestId('govern-rail')
     expect(rail).toBeInTheDocument()
-    // CountUp renders aria-label with formatted value
-    const countUp = rail.querySelector('[aria-label]')
-    expect(countUp?.getAttribute('aria-label')).toContain('10,250')
+    expect(rail.textContent).toContain('verified and auditable')
   })
 
   it('renders audit stream as aria-hidden container', () => {
@@ -107,14 +105,14 @@ describe('DashboardCoordinationProof', () => {
 
   it('fires onReviewThreat callback on click', () => {
     const { props } = renderHero()
-    const btns = screen.getAllByRole('button', { name: /review critical threat/i })
+    const btns = screen.getAllByRole('button', { name: /review flagged charge/i })
     fireEvent.click(btns[0])
     expect(props.onReviewThreat).toHaveBeenCalledOnce()
   })
 
   it('hides review threat button when criticalSignal is null', () => {
     renderHero({ criticalSignal: null, onReviewThreat: null })
-    expect(screen.queryByRole('button', { name: /review critical threat/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /review flagged charge/i })).not.toBeInTheDocument()
   })
 
   it('cohort avg savings are not rendered by default', () => {
@@ -137,16 +135,15 @@ describe('DashboardPage integration', () => {
     )
   }
 
-  it('renders hero with derived governance data', () => {
+  it('renders hero with govern trust narrative', () => {
     renderDashboard()
     const rail = screen.getByTestId('govern-rail')
-    const countUp = rail.querySelector('[aria-label]')
-    expect(countUp?.getAttribute('aria-label')).toContain('10,250')
+    expect(rail.textContent).toContain('verified and auditable')
   })
 
-  it('renders Command Center badge above hero', () => {
+  it('renders Dashboard badge above hero', () => {
     renderDashboard()
-    expect(screen.getByText('Command Center')).toBeInTheDocument()
+    expect(screen.getByText('Dashboard')).toBeInTheDocument()
   })
 
   it('does not render duplicate h1 elements', () => {

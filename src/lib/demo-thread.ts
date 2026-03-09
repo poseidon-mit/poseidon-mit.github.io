@@ -20,7 +20,7 @@ function readNumber(value: unknown, fallback: number): number {
 }
 
 function readLiquidityReserve(value: unknown): LiquidityReserveThread {
-  const fallback: LiquidityReserveThread = { percent: 82, current: 41_000_000, target: 50_000_000 };
+  const fallback: LiquidityReserveThread = { percent: 35, current: 14_280, target: 40_800 };
   if (!value || typeof value !== 'object') return fallback;
   const candidate = value as Record<string, unknown>;
   return {
@@ -33,11 +33,11 @@ function readLiquidityReserve(value: unknown): LiquidityReserveThread {
 function readCriticalAlert(value: unknown): CriticalAlertThread {
   const fallback: CriticalAlertThread = {
     id: 'THR-001',
-    amount: 2_500_000,
-    counterparty: 'Cayman Reef Holdings Ltd.',
+    amount: 347.89,
+    counterparty: 'AMZN Mktp US*3K7R2F',
     confidence: 0.94,
-    cardLast4: 'ACCT-7291',
-    signalId: 'PRT-2026-0216-003',
+    cardLast4: '4821',
+    signalId: 'PRT-2026-0309-001',
   };
   if (!value || typeof value !== 'object') return fallback;
   const candidate = value as Record<string, unknown>;

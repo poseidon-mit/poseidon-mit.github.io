@@ -3,14 +3,14 @@ export const JETON_COPY = {
     eyebrow: 'POSEIDON FINANCIAL OS',
     titleA: 'Your Money.',
     titleB: 'AI-Governed.',
-    body: 'Four engines. One command center. Every decision explainable, auditable, and reversible.',
+    body: 'Four engines. One dashboard. Every decision explainable, auditable, and reversible.',
     primaryCta: 'Start Now',
     secondaryCta: 'Explore Product',
     trustLine: 'Bank-grade encryption · GDPR ready · SOC 2 Type II in progress',
   },
   valueProp: {
     eyebrow: 'THE PLATFORM',
-    title: 'Four AI Engines. One Command Center.',
+    title: 'Four AI Engines. One Dashboard.',
     body: 'Protect, Grow, Execute, and Govern work together as one operating layer for high-trust financial decisions.',
   },
   governance: {

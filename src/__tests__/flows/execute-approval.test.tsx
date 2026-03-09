@@ -11,7 +11,7 @@ import ExecuteApproval from '../../pages/ExecuteApproval';
 describe('Execute approval flow (EXE02)', () => {
   beforeEach(() => {
     // Set URL to a valid action so the approval page renders
-    window.history.pushState({}, '', '/execute/approval?actionId=EXE-001');
+    window.history.pushState({}, '', '/execute/approval?actionId=EXE-003');
   });
 
   function renderEXE02() {
@@ -24,8 +24,8 @@ describe('Execute approval flow (EXE02)', () => {
 
   it('starts with slide-to-authorize disabled (Tier 2)', () => {
     renderEXE02();
-    // EXE-001 is riskTier 2, uses SlideToApprove instead of button
-    const slider = screen.getByRole('slider', { name: /Slide to Authorize/i });
+    // EXE-003 is riskTier 2, uses SlideToApprove instead of button
+    const slider = screen.getByRole('slider', { name: /Slide to Approve/i });
     expect(slider).toBeInTheDocument();
   });
 
@@ -39,7 +39,7 @@ describe('Execute approval flow (EXE02)', () => {
     fireEvent.click(checkbox);
 
     // After checking, slider should be interactive (not disabled)
-    const slider = screen.getByRole('slider', { name: /Slide to Authorize/i });
+    const slider = screen.getByRole('slider', { name: /Slide to Approve/i });
     expect(slider).not.toHaveClass('opacity-50');
   });
 
@@ -73,7 +73,7 @@ describe('Execute approval flow (EXE02)', () => {
 describe('Execution Stream (Step 5)', () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    window.history.pushState({}, '', '/execute/approval?actionId=EXE-001');
+    window.history.pushState({}, '', '/execute/approval?actionId=EXE-003');
   });
   afterEach(() => {
     vi.useRealTimers();
@@ -90,7 +90,7 @@ describe('Execution Stream (Step 5)', () => {
     const checkbox = consentLabel.querySelector('input[type="checkbox"]') as HTMLInputElement;
     fireEvent.click(checkbox);
     // Authorize via slider keyboard Enter (Tier 2)
-    const slider = screen.getByRole('slider', { name: /Slide to Authorize/i });
+    const slider = screen.getByRole('slider', { name: /Slide to Approve/i });
     fireEvent.keyDown(slider, { key: 'Enter' });
     // Confirm in dialog
     const confirmBtn = screen.getByRole('button', { name: /^Approve$/i });
@@ -124,7 +124,7 @@ describe('Execution Stream (Step 5)', () => {
     const checkbox = consentLabel.querySelector('input[type="checkbox"]') as HTMLInputElement;
     fireEvent.click(checkbox);
     // Authorize via slider keyboard Enter (Tier 2)
-    const slider = screen.getByRole('slider', { name: /Slide to Authorize/i });
+    const slider = screen.getByRole('slider', { name: /Slide to Approve/i });
     fireEvent.keyDown(slider, { key: 'Enter' });
     const confirmBtn = screen.getByRole('button', { name: /^Approve$/i });
     fireEvent.click(confirmBtn);

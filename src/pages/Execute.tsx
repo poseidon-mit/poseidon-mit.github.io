@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   Zap,
   CheckCircle2,
@@ -8,7 +8,6 @@ import {
   User,
   Timer,
   Lock,
-  ChevronDown,
 } from 'lucide-react'
 import { useRouter, Link } from '@/router'
 import { UndoBanner } from '@/components/execute/UndoBanner'
@@ -31,7 +30,6 @@ import {
 } from '@/domain/poseidon-universe'
 import type { ExecuteActionEntity, ExecuteEngineName, ExecutionType, UrgencyLevel } from '@/domain/poseidon-universe'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
-import { getRiskTier, RISK_TIER_CONFIG } from '@/lib/execute-risk-tier'
 import { dispatchApprovalBridge } from '@/lib/execute-approval-bridge'
 
 /* ═══════════════════════════════════════════
@@ -60,6 +58,19 @@ function statusFromDecision(value: DemoExecuteDecision): ActionStatus {
     default:
       return 'pending'
   }
+}
+
+function formatExpiryDate(expiresIn: string | null): string | null {
+  if (!expiresIn) return null
+  const now = new Date(2026, 2, 9) // Demo date: 2026-03-09
+  const n = parseInt(expiresIn)
+  if (expiresIn.includes('d')) {
+    now.setDate(now.getDate() + n)
+  } else if (expiresIn.includes('h')) {
+    now.setHours(now.getHours() + n)
+    return `Expires ${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
+  }
+  return `Expires ${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
 }
 
 /* ═══════════════════════════════════════════
@@ -141,14 +152,7 @@ export default function ExecutePage() {
     return items
   }, [queue, urgencyFilter, typeFilter, sortBy])
 
-  // Risk-tiered split
-  const tier1Actions = useMemo(() => pendingActions.filter(a => getRiskTier(a) === 1), [pendingActions])
-  const tier2Actions = useMemo(() => pendingActions.filter(a => getRiskTier(a) === 2), [pendingActions])
-
-  // Tier 2 collapse state
-  const [tier2Expanded, setTier2Expanded] = useState(false)
-
-  // Batch selection state for Tier 1
+  // Batch selection state
   const [batchSelected, setBatchSelected] = useState<Set<string>>(new Set())
   const toggleBatchItem = (id: string) => setBatchSelected(prev => {
     const next = new Set(prev)
@@ -156,12 +160,12 @@ export default function ExecutePage() {
     return next
   })
   const toggleBatchAll = () => {
-    if (batchSelected.size === tier1Actions.length) setBatchSelected(new Set())
-    else setBatchSelected(new Set(tier1Actions.map(a => a.id)))
+    if (batchSelected.size === pendingActions.length) setBatchSelected(new Set())
+    else setBatchSelected(new Set(pendingActions.map(a => a.id)))
   }
   const handleBatchApprove = () => {
     for (const id of batchSelected) {
-      const a = tier1Actions.find(x => x.id === id)
+      const a = pendingActions.find(x => x.id === id)
       if (!a) continue
       setExecuteDecision({ actionId: a.id, actionTitle: a.title, decision: 'approved' })
       dispatchApprovalBridge(a, navigate, showToast)
@@ -233,101 +237,53 @@ export default function ExecutePage() {
           </motion.div>
         </motion.section>
 
-        {/* Risk-Tiered Queue */}
-        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-8">
+        {/* Action Queue */}
+        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-4">
 
-          {/* Tier 1: Low-Friction Operations */}
-          {tier1Actions.length > 0 && (
-            <motion.div variants={fadeUpVariant} className="flex flex-col gap-4">
-              <div className="flex items-center justify-between flex-wrap gap-3">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">
-                    {RISK_TIER_CONFIG[1].label}
-                  </h2>
-                  <span className="text-[10px] font-mono text-white/30">{tier1Actions.length} items</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <label className="flex items-center gap-2 cursor-pointer text-xs text-white/50 hover:text-white/70 transition-colors">
-                    <input
-                      type="checkbox"
-                      checked={batchSelected.size === tier1Actions.length && tier1Actions.length > 0}
-                      onChange={toggleBatchAll}
-                      className="accent-amber-500 cursor-pointer"
-                    />
-                    Select all
-                  </label>
-                  {batchSelected.size > 0 && (
-                    <button
-                      onClick={handleBatchApprove}
-                      className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-amber-600/80 engine-solid-execute text-white hover:bg-amber-600/90 transition-colors cursor-pointer"
-                    >
-                      Approve Selected ({batchSelected.size})
-                    </button>
-                  )}
-                </div>
-              </div>
-              {tier1Actions.map((action) => (
-                <ActionCard
-                  key={action.id}
-                  action={action}
-                  fadeUpVariant={fadeUpVariant}
-                  onDefer={() => {
-                    setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'deferred' })
-                    showToast({ message: 'Action dismissed', variant: 'info' })
-                  }}
-                  batchMode
-                  batchChecked={batchSelected.has(action.id)}
-                  onBatchToggle={() => toggleBatchItem(action.id)}
-                />
-              ))}
-            </motion.div>
-          )}
-
-          {/* Tier 2: Direct Capital Movement — collapsed by default */}
-          {tier2Actions.length > 0 && (
-            <motion.div variants={fadeUpVariant} className="flex flex-col gap-4">
-              <button
-                onClick={() => setTier2Expanded(v => !v)}
-                className="flex items-center gap-3 w-full text-left group"
-              >
+          {pendingActions.length > 0 && (
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
                 <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">
-                  {RISK_TIER_CONFIG[2].label}
+                  Pending Actions
                 </h2>
-                <span className="text-[10px] font-mono text-white/30">{tier2Actions.length} items</span>
-                <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-widest text-amber-400/60 engine-text-execute border border-amber-400/20 px-2 py-0.5 rounded-md bg-amber-400/5 engine-bg-execute">
-                  <Lock size={9} />
-                  Requires individual review
-                </span>
-                <ChevronDown size={14} className={cn(
-                  'ml-auto text-white/30 transition-transform duration-200',
-                  tier2Expanded && 'rotate-180',
-                )} />
-              </button>
-              <AnimatePresence>
-                {tier2Expanded && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
-                    className="overflow-hidden flex flex-col gap-4"
+                <span className="text-[10px] font-mono text-white/30">{pendingActions.length} items</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <label className="flex items-center gap-2 cursor-pointer text-xs text-white/50 hover:text-white/70 transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={batchSelected.size === pendingActions.length && pendingActions.length > 0}
+                    onChange={toggleBatchAll}
+                    className="accent-amber-500 cursor-pointer"
+                  />
+                  Select all
+                </label>
+                {batchSelected.size > 0 && (
+                  <button
+                    onClick={handleBatchApprove}
+                    className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-amber-600/80 engine-solid-execute text-white hover:bg-amber-600/90 transition-colors cursor-pointer"
                   >
-                    {tier2Actions.map((action) => (
-                      <ActionCard
-                        key={action.id}
-                        action={action}
-                        fadeUpVariant={fadeUpVariant}
-                        onDefer={() => {
-                          setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'deferred' })
-                          showToast({ message: 'Action dismissed', variant: 'info' })
-                        }}
-                      />
-                    ))}
-                  </motion.div>
+                    Approve Selected ({batchSelected.size})
+                  </button>
                 )}
-              </AnimatePresence>
-            </motion.div>
+              </div>
+            </div>
           )}
+
+          {pendingActions.map((action) => (
+            <ActionCard
+              key={action.id}
+              action={action}
+              fadeUpVariant={fadeUpVariant}
+              onDefer={() => {
+                setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'deferred' })
+                showToast({ message: 'Action dismissed', variant: 'info' })
+              }}
+              batchMode
+              batchChecked={batchSelected.has(action.id)}
+              onBatchToggle={() => toggleBatchItem(action.id)}
+            />
+          ))}
 
           {pendingActions.length === 0 && (
             <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-8 flex items-center justify-center">
@@ -376,6 +332,7 @@ function ActionCard({
   onBatchToggle?: () => void
 }) {
   const typeBadge = EXECUTION_TYPE_BADGE[action.executionType]
+  const expiryLabel = formatExpiryDate(action.expiresIn)
   const isExpiringSoon = action.expiresIn && (action.expiresIn.includes('h') && parseInt(action.expiresIn) <= 4)
 
   return (
@@ -395,9 +352,6 @@ function ActionCard({
               onClick={(e) => e.stopPropagation()}
             />
           )}
-          <span className="text-sm font-mono font-bold tracking-wide" style={{ color: 'var(--engine-execute)' }}>
-            {action.id}
-          </span>
           <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest shadow-inner border border-white/[0.05] ${ENGINE_BADGE_CLASS[action.engine]}`}>
             {action.engine}
           </span>
@@ -405,13 +359,13 @@ function ActionCard({
             {action.executionType === 'auto' ? <Bot size={10} /> : action.executionType === 'manual' ? <User size={10} /> : null}
             {typeBadge.label}
           </span>
-          {action.expiresIn && (
+          {expiryLabel && (
             <span className={cn(
-              'inline-flex items-center gap-1 text-[10px] font-semibold tracking-widest uppercase ml-1',
+              'inline-flex items-center gap-1 text-[10px] font-semibold tracking-widest ml-1',
               isExpiringSoon ? 'text-red-400 state-text-critical' : 'text-white/40',
             )}>
               <Timer size={10} className={isExpiringSoon ? 'animate-pulse' : ''} />
-              {action.expiresIn}
+              {expiryLabel}
             </span>
           )}
           <span className="ml-auto text-xs font-mono text-white/40 tracking-widest">{action.timestampLabel}</span>

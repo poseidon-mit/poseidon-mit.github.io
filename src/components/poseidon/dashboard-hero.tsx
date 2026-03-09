@@ -10,7 +10,6 @@
  */
 import { ArrowRight, Shield, TrendingUp, Zap, Scale, type LucideIcon } from 'lucide-react'
 import { Link } from '@/router'
-import { CountUp } from './count-up'
 import { HeroBento } from './hero-bento'
 import { ListPortalBar } from './list-portal-bar'
 import { CostOfInaction } from './cost-of-inaction'
@@ -127,9 +126,9 @@ function EnginePulseBadge({
       className="flex-1 min-h-[48px] flex items-center gap-2.5 md:gap-3 rounded-xl bg-white/[0.03] border border-white/[0.06] px-3 md:px-4 py-3 border-t-2 transition-colors hover:bg-white/[0.06]"
       style={{ borderTopColor: color }}
     >
-      <Icon size={16} style={{ color }} className="shrink-0" />
+      <Icon size={16} style={{ color }} className="shrink-0 opacity-60" />
       <div className="flex flex-col gap-0.5 min-w-0">
-        <span className="text-base md:text-lg font-mono font-semibold tabular-nums truncate" style={{ color }}>
+        <span className="text-base md:text-lg font-mono font-semibold tabular-nums truncate text-white/80">
           {value}
         </span>
         <span className="text-[10px] md:text-xs text-white/40 uppercase tracking-widest font-medium">
@@ -142,7 +141,7 @@ function EnginePulseBadge({
 
 /* ── Govern Foundation Rail ── */
 
-function GovernFoundationRail({ decisionsAudited }: { decisionsAudited: number }) {
+function GovernFoundationRail() {
   return (
     <div
       className="border-t border-white/[0.06] px-6 md:px-10 py-4 flex items-center gap-3"
@@ -150,8 +149,7 @@ function GovernFoundationRail({ decisionsAudited }: { decisionsAudited: number }
     >
       <Scale size={14} style={{ color: 'var(--engine-govern)' }} className="shrink-0" />
       <span className="text-xs text-white/40">
-        <CountUp value={decisionsAudited} locale className="text-xs font-mono tabular-nums text-white/60" />
-        {' '}AI decisions audited by Govern
+        Every decision Poseidon makes is verified and auditable
       </span>
     </div>
   )
@@ -186,7 +184,7 @@ function buildNarrative({
 
   if (pendingActions > 0) {
     const actionWord = pendingActions === 1 ? 'action' : 'actions'
-    parts.push(`Execute queued ${pendingActions} ${actionWord}`)
+    parts.push(`${pendingActions} ${actionWord} ready for your approval`)
   }
 
   const joined = parts.length > 2
@@ -234,7 +232,7 @@ export function DashboardCoordinationProof({
           className="text-2xl md:text-3xl lg:text-4xl font-light tracking-tight leading-tight text-white mb-4"
           style={{ fontFamily: 'var(--font-display)' }}
         >
-          Your operations, fully coordinated.
+          Your money, finally coordinated.
         </h1>
         <p className="text-sm md:text-base text-white/50 leading-relaxed max-w-3xl">
           {narrative}
@@ -252,11 +250,11 @@ export function DashboardCoordinationProof({
               'flex items-center gap-2',
             )}
           >
-            Review critical threat <ArrowRight size={12} />
+            Review flagged charge <ArrowRight size={12} />
           </button>
         )}
 
-        <GovernFoundationRail decisionsAudited={decisionsAudited} />
+        <GovernFoundationRail />
       </HeroBento.Action>
 
       {/* ── Zone B: Proof — EnginePulseStrip ── */}
@@ -273,14 +271,14 @@ export function DashboardCoordinationProof({
             icon={TrendingUp}
             color="var(--engine-grow)"
             value={`+${formatUsd(monthlySavings)}`}
-            label="opportunity"
+            label="savings/mo"
             to="/grow/recommendations"
           />
           <EnginePulseBadge
             icon={Zap}
             color="var(--engine-execute)"
             value={String(pendingActions)}
-            label="pending"
+            label="to approve"
             to="/execute/queue"
           />
         </div>
@@ -298,8 +296,8 @@ export function DashboardCoordinationProof({
         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
           <ListPortalBar engine="protect" label="View all threats" count={activeThreats} destination={{ type: 'route', to: '/protect/threats' }} />
           <ListPortalBar engine="grow" label="View recommendations" count={recommendationCount} destination={{ type: 'route', to: '/grow/recommendations' }} />
-          <ListPortalBar engine="execute" label="Pending actions" count={pendingActions} destination={{ type: 'route', to: '/execute/queue' }} />
-          <ListPortalBar engine="govern" label="Audit ledger" count={decisionsAudited} destination={{ type: 'route', to: '/govern/audit' }} />
+          <ListPortalBar engine="execute" label="Actions to approve" count={pendingActions} destination={{ type: 'route', to: '/execute/queue' }} />
+          <ListPortalBar engine="govern" label="Decision history" count={decisionsAudited} destination={{ type: 'route', to: '/govern/audit' }} />
         </div>
       </HeroBento.Portal>
     </HeroBento>

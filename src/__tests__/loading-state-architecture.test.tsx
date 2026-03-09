@@ -34,8 +34,8 @@ describe('Loading state architecture follows the 3-class contract', () => {
   test('Inline state change on Execute page does not trigger a loading progressbar', () => {
     renderWithRouter(<Execute />, { initialPath: '/execute' })
 
-    const reviewButton = screen.getByText(/Requires individual review/i)
-    fireEvent.click(reviewButton)
+    const selectAllCheckbox = screen.getByText(/Select all/i)
+    fireEvent.click(selectAllCheckbox)
 
     // After a simple inline state toggle, no loading indicator should appear
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument()

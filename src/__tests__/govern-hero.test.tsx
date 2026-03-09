@@ -7,46 +7,46 @@ import GovernPage from '../pages/Govern'
 /* ── Test data ── */
 
 const DEFAULT_PROPS = {
-  decisionsAudited: 10250,
+  decisionsAudited: 47,
   engineBreakdown: [
-    { engine: 'Protect', count: 4102, percent: 40, color: 'var(--engine-protect)' },
-    { engine: 'Grow', count: 3287, percent: 32, color: 'var(--engine-grow)' },
-    { engine: 'Execute', count: 1851, percent: 18, color: 'var(--engine-execute)' },
-    { engine: 'Govern', count: 1010, percent: 10, color: 'var(--engine-govern)' },
+    { engine: 'Protect', count: 19, percent: 40, color: 'var(--engine-protect)' },
+    { engine: 'Grow', count: 15, percent: 32, color: 'var(--engine-grow)' },
+    { engine: 'Execute', count: 8, percent: 17, color: 'var(--engine-execute)' },
+    { engine: 'Govern', count: 5, percent: 11, color: 'var(--engine-govern)' },
   ],
   auditEntries: [
     {
-      id: 'GV-2026-0319-847',
-      engine: 'Execute',
-      engineColor: 'var(--engine-execute)',
-      action: 'Margin account setup — Vance',
-      confidence: 0.94,
-      time: '2:28 PM',
-      status: 'Verified' as const,
-      modelVersion: 'ExecutePlanner v4.1.0',
-      topFactor: 'Collateral sufficiency',
-    },
-    {
-      id: 'GV-2026-0319-846',
+      id: 'GV-2026-0309-048',
       engine: 'Protect',
       engineColor: 'var(--engine-protect)',
-      action: 'AML flag — $2.5M wire to Cayman Reef Holdings Ltd.',
+      action: 'Suspicious charge flagged — AMZN $347.89',
       confidence: 0.94,
-      time: '2:15 PM',
+      time: '10:32 AM',
       status: 'Verified' as const,
-      modelVersion: 'FraudDetectionV3.2 v3.2.1',
-      topFactor: 'Counterparty risk',
+      modelVersion: 'FraudDetectionV3 v3.2.1',
+      topFactor: 'Amount deviation',
     },
     {
-      id: 'GV-2026-0319-845',
+      id: 'GV-2026-0309-047',
       engine: 'Grow',
       engineColor: 'var(--engine-grow)',
-      action: 'Securities-backed lending alternative proposed',
+      action: 'High-yield savings opportunity identified — $840/yr potential',
       confidence: 0.93,
-      time: '1:52 PM',
+      time: '9:15 AM',
       status: 'Verified' as const,
-      modelVersion: 'GrowthForecast v3.2.0',
-      topFactor: 'Alternative path benefit',
+      modelVersion: 'FinancialStrategyAI v3.2.0',
+      topFactor: 'Interest rate gap',
+    },
+    {
+      id: 'GV-2026-0308-046',
+      engine: 'Protect',
+      engineColor: 'var(--engine-protect)',
+      action: 'Subscription price increase detected — Spotify $10.99 → $11.99',
+      confidence: 0.87,
+      time: '9:17 AM',
+      status: 'Verified' as const,
+      modelVersion: 'FraudDetectionV3 v3.2.1',
+      topFactor: 'Price change detection',
     },
   ],
 }
@@ -63,7 +63,7 @@ function renderHero(overrides: Partial<typeof DEFAULT_PROPS> = {}) {
 describe('GovernImmutableLedger', () => {
   it('renders CountUp aria-label with locale-formatted total', () => {
     renderHero()
-    expect(screen.getByLabelText('10,250')).toBeInTheDocument()
+    expect(screen.getByLabelText('47')).toBeInTheDocument()
   })
 
   it('renders the headline', () => {
@@ -75,15 +75,15 @@ describe('GovernImmutableLedger', () => {
     renderHero()
     expect(screen.getByText(/Protect 40%/)).toBeInTheDocument()
     expect(screen.getByText(/Grow 32%/)).toBeInTheDocument()
-    expect(screen.getByText(/Execute 18%/)).toBeInTheDocument()
-    expect(screen.getByText(/Govern 10%/)).toBeInTheDocument()
+    expect(screen.getByText(/Execute 17%/)).toBeInTheDocument()
+    expect(screen.getByText(/Govern 11%/)).toBeInTheDocument()
   })
 
   it('renders audit entries', () => {
     renderHero()
-    expect(screen.getByText('Margin account setup — Vance')).toBeInTheDocument()
-    expect(screen.getByText('AML flag — $2.5M wire to Cayman Reef Holdings Ltd.')).toBeInTheDocument()
-    expect(screen.getByText('Securities-backed lending alternative proposed')).toBeInTheDocument()
+    expect(screen.getByText('Suspicious charge flagged — AMZN $347.89')).toBeInTheDocument()
+    expect(screen.getByText('High-yield savings opportunity identified — $840/yr potential')).toBeInTheDocument()
+    expect(screen.getByText('Subscription price increase detected — Spotify $10.99 → $11.99')).toBeInTheDocument()
   })
 })
 

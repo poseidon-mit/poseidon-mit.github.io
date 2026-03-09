@@ -199,14 +199,12 @@ function RecommendationCard({ rec }: { rec: RecommendationListItem }) {
 
   return (
     <div
-      className="glass-card glass-card-overlay rounded-[20px] p-5 lg:p-6 flex items-center gap-4 hover:border-white/[0.12] transition-colors border-l-2"
+      className="glass-card glass-card-overlay rounded-[20px] p-4 sm:p-5 lg:p-6 flex items-center gap-3 sm:gap-4 hover:border-white/[0.12] transition-colors border-l-2"
       style={{ borderLeftColor: 'var(--engine-grow)' }}
     >
       {/* Amount hero */}
-      <div
-        className="w-16 shrink-0 text-right hidden sm:block"
-      >
-        <span className="text-base font-mono font-bold" style={{ color: 'var(--engine-grow)' }}>
+      <div className="w-14 sm:w-16 shrink-0 text-right">
+        <span className="text-sm sm:text-base font-mono font-bold" style={{ color: 'var(--engine-grow)' }}>
           ${rec.annualSavings.toLocaleString()}
         </span>
         <span className="text-[10px] text-white/30 block">/yr</span>
@@ -214,23 +212,23 @@ function RecommendationCard({ rec }: { rec: RecommendationListItem }) {
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap mb-1">
-          <span className="text-sm font-medium text-white/90 truncate">{rec.title}</span>
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap mb-1">
+          <span className="text-sm font-medium text-white/90 line-clamp-2">{rec.title}</span>
           <span
-            className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border border-transparent"
+            className="inline-flex items-center rounded-full px-1.5 sm:px-2 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase tracking-widest border border-transparent"
             style={{ background: diff.bg, color: diff.color }}
           >
             {rec.difficulty}
           </span>
         </div>
-        <p className="text-xs text-white/40 mb-1 truncate">{rec.description}</p>
+        <p className="text-xs text-white/40 mb-1 line-clamp-2">{rec.description}</p>
         <p className="text-[10px] text-white/25 truncate">{rec.evidence}</p>
       </div>
 
       {/* CTA */}
       <Link
         to={`/grow/recommendation?id=${rec.id}`}
-        className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
+        className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[10px] sm:text-xs font-semibold border transition-colors"
         style={{
           borderColor: 'color-mix(in srgb, var(--engine-grow) 30%, transparent)',
           color: 'var(--engine-grow)',

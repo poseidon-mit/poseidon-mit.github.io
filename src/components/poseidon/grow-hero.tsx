@@ -107,7 +107,7 @@ function HeroHeadline({
         </span>
         <h2 className="text-xl md:text-2xl lg:text-3xl font-light tracking-tight text-white"
             style={{ fontFamily: 'var(--font-display)' }}>
-          Your 3-year advantage, quantified.
+          Your 3-year advantage.
         </h2>
         <span className="text-xs font-medium uppercase tracking-widest text-white/40">
           Projected 3-year advantage
@@ -177,8 +177,12 @@ function HeroChart({
             tickLine={false}
           />
           <YAxis
-            hide
-            domain={[(d: number) => Math.round(d * 0.88), (d: number) => Math.round(d * 1.06)]}
+            width={50}
+            tick={{ fill: '#64748B', fontSize: 10 }}
+            tickFormatter={(v: number) => `$${Math.round(v / 1000)}k`}
+            axisLine={false}
+            tickLine={false}
+            domain={[(d: number) => Math.round(d * 0.95), (d: number) => Math.round(d * 1.03)]}
           />
 
           {/* Layer 1: invisible baseline area (lifts the band up) */}

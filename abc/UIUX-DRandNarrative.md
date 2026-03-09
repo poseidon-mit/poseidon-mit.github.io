@@ -9,7 +9,7 @@
 - 議論を見ている人が最高に価値を感じる議論を初心者にもわかりやすい表現で限界まで続けてください。
 - 自分の意見を正当化するために根拠と理由を明確化してください。否定する場合は必ず代替案を出してください。
 
-### テーマ：
+#### テーマ：
 ・以下について。
 
 
@@ -18,69 +18,59 @@
 
 !!以下全てがテーマ（長文）
 
-Web UIの最後のブラッシュアップです。以下全部を綺麗に治す３つの違った目線からのアプローチを作成してください。
+Web UIのいろんな文言や数字が、B2Bになってしまっている。MITの最終の本番で見せるときは、個人が見るので、個人がリアリティを持ってPoseidonの価値を理解してもらえる様にならないといけない。
 
+例えば、Protect, Govern, Grow、Execute全てのデータがB2Bになっている。
 
+Cayman Reef Holdings Ltd.
 
-現在抱えている問題は以下のとおりでもれなく直したいです。
+AMOUNT$2,500,000
 
-・全体的に画面が暗すぎる
+[Grow](http://192.168.68.66:5173/grow)/Optimize Cash Management & Payment Timing
 
-Dashboard
+$28500/mo
 
-・「$2,500,000 at risk if unreviewed」が現実味を持った数字になっていない
+$342,000/year
 
-・Financial Health40/100はユーザが一眼見た時に何かわからない。
+# Optimize Cash Management & Payment Timing
 
-・protect/threats、grow/recommendations、execute/queue、govern/audit、execute/queue：字に偏っている、かつ、時が多すぎてユーザが一眼見た時に何かわからない。
+92%
 
-Grow
+AUTO
 
-・以下のWordが現実味がない。MONTHLY OPTIMIZATION$221,900/mo8 recommendations
+Based on 12 months of treasury operations and payment flow analysis
 
-STRATEGY IMPACT
+## YOUR CASH MANAGEMENT INEFFICIENCIES
 
-Organizations who adopted these strategies gained +$2,662,800/yr on average
+REVIEW
 
-Current position+$2,662,800/yr potential
+Early payment discount forfeitures
 
-Based on 184,290 active portfolios
+Missed 2/10 Net 30 terms on 68% of eligible invoices
 
-・グラフがせっかくあるのに、有用な情報を与えられていない。どういう情報を見せるべきかのアイディア出しが必要
+$14200.00
 
-・grow/recommendationはごちゃごちゃしている。細かい情報があるがユーザが何を見たら良いかよくわからない。From Scratchでデザインし直すする必要あり。
+REVIEW
 
-・protect/alert-detaiはアイディアは良いが、１つ１つが派手すぎて見ていて疲れる。From Scratchでデザインし直す必要あり
+Wire transfer fees (avoidable)
 
-・execute/approvalはアイディアは良いが、１つ１つが派手すぎて見ていて疲れる。From Scratchでデザインし直す必要あり。特にDECISION DRIVERSはユーザ目線でわかりにくすぎるので別のものに変えることも要検討。
+Avg 42 unnecessary wires/mo × $35 each vs ACH at $0.25
 
-・Executeのこの画面はUIが異質すぎる。他と合わせて
+$6800.00
 
-CONFIRM APPROVAL
+DORMANT
 
-### Margin account setup
+FX conversion spreads
 
-Open margin account and set credit facility for securities-backed lending path
+Sub-optimal spot execution on $2.1M/mo cross-border payments
 
+$7500.00
 
+Current total
 
+EXECUTE · APPROVALEXECUTEAUTOEXPIRES IN 3D
 
-
-
-
-Executeはトップ画面（execute/）はこの部分は全部削除したい。
-
-## IMMEDIATE ATTENTION
-
-1 items
-
-Select all
-
-EXE-004EXECUTEAUTO3D11:20
-
-### Compliance filing — quarterly report
-
-Quarterly compliance report generation and filing for regulatory submission
+# Compliance filing — quarterly report
 
 \-
 
@@ -88,23 +78,81 @@ CONFIDENCE
 
 78%
 
-STEPS:1231 consent required
+Quarterly compliance report generation and filing for regulatory submission
 
-[Review & Approve](http://192.168.68.66:5173/execute/approval?actionId=EXE-004)Dismiss
+## THE CATALYST
 
-BACKGROUND OPTIMIZATIONS3 itemsREQUIRES INDIVIDUAL REVIEW
+EXECUTEExecute
 
-[Review execution history](http://192.168.68.66:5173/execute/history)
+Quarterly compliance report generation and filing for regulatory submission
 
-・execute/queue
+## DECISION DRIVERS
+
+Primary signal: Data completeness at 0.84, supported by 2 additional factors.
+
+Data completeness
+
++0.8
+
+Regulatory alignment
+
++0.8
+
+Historical accuracy
+
++0.7
+
+Base50Final: 52.3
+
+\-
+
+## IMPACT ASSESSMENT
+
+IF APPROVED
+
+Report filed and confirmation logged to audit trail.
+
+IF DEFERRED
+
+Filing deadline approaches; reminder escalated in 24h.
+
+## EXECUTION PLAN
+
+1
+
+Aggregate reporting data
+
+6s
+
+2
+
+Approve filing
+
+~1 min
+
+3
+
+Submit and archive
+
+30s
+
+3 steps · 6s + ~1 min + 30s
 
 
 
 
 
-## ・Govern/もHERO以外に画面位表示したくない。COMPLIANCE DASHBOARD、RECENT DECISIONS、CROSS-ENGINE TRACE、Historyの部分は全部削除
+・Governanceフッターは必要な時だけ表示してほしい。例えば、Protect、protect/threats、画面には不要でprotect/alert-detailには必要。これはAIがRecommendしたときに飲みGovernanceフッターが表示され、そのGovernance Ledgerの明細にはGovernance Footerから飛ぶことができる、というアイディアである。
 
-・govern/auditは字が多すぎ、かつ、字だけの説明でどれが重要なのかユーザ目線でよくわからない
+・Growのグラフが微妙すぎる。まずY軸方向に広く表示されすぎで、グラフが表示領域の上２０％ぐらいにしか表示されていないので画面全体に細かいグラフが表示される様にして。
+
+・grow/recommendations：文字多すぎ。モバイルではバッジが大きく表示される。文字が表示領域が小さく、切れまくって表示される文字が表示されてない
+
+・Executeはexecute/画面のIMMEDIATE ATTENTION、BACKGROUND OPTIMIZATIONSは削除
+
+・Govern画面（govern/）は、Compliance Dashboard、Recent Decisions、Cross-Engine TRACE、Historyは全て不要。
+
+
 
 
 

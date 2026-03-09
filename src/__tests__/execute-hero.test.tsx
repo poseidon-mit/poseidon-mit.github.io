@@ -11,13 +11,13 @@ import ExecutePage from '../pages/Execute'
 
 const DEFAULT_PROPS = {
   queueTotal: 5,
-  urgentCount: 2,
+  urgentCount: 1,
   agentStepsCompleted: 2,
   agentStepsTotal: 3,
   featuredAction: {
-    id: 'EXE-002',
-    title: 'Flag suspicious wire transfer',
-    amountLabel: '$2,847',
+    id: 'EXE-001',
+    title: 'Dispute unrecognized charge',
+    amountLabel: '$347.89',
     confidence: 0.94,
     engine: 'Protect' as const,
     sourceEngine: 'Protect' as const,
@@ -63,8 +63,8 @@ describe('ExecuteApprovalCommandDeck', () => {
 
   it('renders featured action title and amount', () => {
     const { hero } = renderHero()
-    expect(within(hero).getByText('Flag suspicious wire transfer')).toBeInTheDocument()
-    expect(within(hero).getByText('$2,847')).toBeInTheDocument()
+    expect(within(hero).getByText('Dispute unrecognized charge')).toBeInTheDocument()
+    expect(within(hero).getByText('$347.89')).toBeInTheDocument()
   })
 
   it('renders engine source breakdown with counts', () => {
@@ -107,7 +107,7 @@ describe('ExecuteApprovalCommandDeck', () => {
   it('renders empty state when featuredAction is null', () => {
     const { hero } = renderHero({ featuredAction: null, onReviewApproval: null })
     expect(within(hero).getByText('Queue clear')).toBeInTheDocument()
-    expect(within(hero).queryByText('Flag suspicious wire transfer')).not.toBeInTheDocument()
+    expect(within(hero).queryByText('Dispute unrecognized charge')).not.toBeInTheDocument()
     expect(within(hero).queryByText('Agent Prepared')).not.toBeInTheDocument()
     expect(within(hero).queryByText('Cross-Engine Sources')).not.toBeInTheDocument()
     expect(within(hero).queryByRole('button', { name: /review & approve/i })).not.toBeInTheDocument()
@@ -149,7 +149,7 @@ describe('ExecutePage featured action selection', () => {
   it('selects EXE-001 as initial featured action (high urgency, shortest expiry)', () => {
     const { container } = renderExecute()
     const hero = container.querySelector('[role="region"]') as HTMLElement
-    expect(within(hero).getByText('Wire transfer authorization — Elias Vance')).toBeInTheDocument()
+    expect(within(hero).getByText('Dispute unrecognized charge')).toBeInTheDocument()
   })
 })
 
@@ -170,7 +170,7 @@ describe('ExecutePage hero state mutation', () => {
           data-testid="approve-exe001"
           onClick={() => setExecuteDecision({
             actionId: 'EXE-001',
-            actionTitle: 'Wire transfer authorization — Elias Vance',
+            actionTitle: 'Dispute unrecognized charge',
             decision: 'approved',
           })}
         />
@@ -195,14 +195,14 @@ describe('ExecutePage hero state mutation', () => {
     const hero = container.querySelector('[role="region"]') as HTMLElement
 
     // Before: EXE-001
-    expect(within(hero).getByText('Wire transfer authorization — Elias Vance')).toBeInTheDocument()
+    expect(within(hero).getByText('Dispute unrecognized charge')).toBeInTheDocument()
 
     // Approve EXE-001
     fireEvent.click(screen.getByTestId('approve-exe001'))
 
-    // After: next featured action should be EXE-002 (high urgency, 6h expiry)
-    expect(within(hero).getByText('Margin account setup')).toBeInTheDocument()
-    expect(within(hero).queryByText('Wire transfer authorization — Elias Vance')).not.toBeInTheDocument()
+    // After: next featured action should be EXE-002 (medium urgency)
+    expect(within(hero).getByText('Transfer to high-yield savings')).toBeInTheDocument()
+    expect(within(hero).queryByText('Dispute unrecognized charge')).not.toBeInTheDocument()
   })
 
   it('updates hero number and subtitle after approving EXE-001', () => {
@@ -336,10 +336,10 @@ describe('ExecutePage empty queue state', () => {
 })
 
 /* ═══════════════════════════════════════════════════════
-   SECTION 6: TIER 2 ACCORDION (STEP 1C)
+   SECTION 6: SINGLE QUEUE (post-tier-removal)
    ═══════════════════════════════════════════════════════ */
 
-describe('Execute Tier 2 accordion', () => {
+describe('Execute single queue layout', () => {
   beforeEach(() => {
     resetDemoStateStorage()
     window.history.pushState({}, '', '/execute')
@@ -355,19 +355,16 @@ describe('Execute Tier 2 accordion', () => {
     )
   }
 
-  it('Tier 2 section header is visible but content is collapsed by default', () => {
+  it('renders all pending actions in a single list', () => {
     renderExecute()
-    // The header label should be visible
-    expect(screen.getByText(/background optimizations/i)).toBeInTheDocument()
-    // The "Requires individual review" badge should be visible
-    expect(screen.getByText(/requires individual review/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/pending actions/i).length).toBeGreaterThanOrEqual(1)
+    // No tier labels
+    expect(screen.queryByText(/immediate attention/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/background optimizations/i)).not.toBeInTheDocument()
   })
 
-  it('expands Tier 2 cards on header click', () => {
+  it('renders batch selection controls', () => {
     renderExecute()
-    const tier2Header = screen.getByText(/background optimizations/i).closest('button')!
-    fireEvent.click(tier2Header)
-    // After expansion, the "Requires individual review" badge should still be visible
-    expect(screen.getByText(/requires individual review/i)).toBeInTheDocument()
+    expect(screen.getByText(/select all/i)).toBeInTheDocument()
   })
 })

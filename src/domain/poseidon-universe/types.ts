@@ -4,7 +4,7 @@ export type ExecuteEngineName = 'Protect' | 'Grow' | 'Execute'
 export type UrgencyLevel = 'high' | 'medium' | 'low'
 
 export type ExecutionType = 'auto' | 'semi-auto' | 'manual' | 'hybrid'
-export type ExecuteCategory = 'protection' | 'savings' | 'investment' | 'compliance' | 'rebalance'
+export type ExecuteCategory = 'protection' | 'savings' | 'investment' | 'compliance' | 'rebalance' | 'subscription'
 export type ExecuteStepActor = 'agent' | 'user'
 export type ExecuteStepStatus = 'completed' | 'current' | 'waiting' | 'blocked'
 
@@ -20,18 +20,18 @@ export interface ExecutionStep {
 
 export type DecisionStatus = 'Verified' | 'Pending review' | 'Flagged'
 
-// ─── B2B Entity Types ───────────────────────────────────────────────────────
+// ─── Entity Types ────────────────────────────────────────────────────────────
 
-export type ClientTier = 'VIP' | 'Standard'
-export type AlternativeType = 'lending' | 'restructure' | 'hedge' | 'compliance'
+export type ClientTier = 'Standard'
+export type AlternativeType = 'lending' | 'restructure' | 'hedge' | 'compliance' | 'savings' | 'transfer' | 'subscription' | 'negotiation' | 'rebalance'
 
 export interface CriticalAlertEntity {
   id: string
   amountUsd: number
   counterparty: string
   confidence: number
-  clientName: string
-  clientTier: ClientTier
+  clientName?: string
+  clientTier?: ClientTier
   transactionType: string
   signalId: string
 }
@@ -192,8 +192,8 @@ export interface EventChildren {
 export interface CanonicalEvent {
   id: string
   title: string
-  clientName: string
-  clientTier: ClientTier
+  clientName?: string
+  clientTier?: ClientTier
   timestampIso: string
   status: EventStatus
   children: EventChildren

@@ -129,7 +129,7 @@ export default function DashboardPage() {
         {/* ── Coordination Proof Hero ── */}
         <motion.section variants={itemVariants} className="flex flex-col gap-6 mb-10">
           <div className="flex items-center justify-between">
-            <EngineBadge engine="dashboard" icon={LayoutDashboard} label="Command Center" />
+            <EngineBadge engine="dashboard" icon={LayoutDashboard} label="Dashboard" />
             <div className="flex items-center gap-2 text-sm">
               <span className="text-white/50">Financial Wellness</span>
               <span className="font-mono tabular-nums text-white/80">{Math.round(healthScore.score)}/100</span>

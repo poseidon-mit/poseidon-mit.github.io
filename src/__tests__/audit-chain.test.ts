@@ -7,7 +7,7 @@ describe('selectAlertAuditChain', () => {
     expect(chain).toEqual({
       alertId: 'THR-001',
       actionId: 'EXE-001',
-      decisionId: 'GV-2026-0319-846',
+      decisionId: 'GV-2026-0309-048',
     })
   })
 
@@ -26,6 +26,6 @@ describe('selectAlertAuditChain', () => {
     expect(chain).not.toBeNull()
     expect(chain!.alertId).toBe('THR-001')
     expect(chain!.actionId).toBe('EXE-001')
-    expect(chain!.decisionId).toBe('GV-2026-0319-846')
+    expect(chain!.decisionId).toBe('GV-2026-0309-048')
   })
 })
