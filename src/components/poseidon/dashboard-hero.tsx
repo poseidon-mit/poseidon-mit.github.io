@@ -78,7 +78,7 @@ function LiveAuditStream({
 
   return (
     <div
-      className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.06]"
+      className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.03]"
       aria-hidden="true"
       data-testid="audit-stream"
     >
@@ -229,7 +229,7 @@ export function DashboardCoordinationProof({
       {/* ── Zone A: Action ── */}
       <HeroBento.Action>
         <h1
-          className="text-2xl md:text-3xl lg:text-4xl font-light tracking-tight leading-tight text-white mb-4"
+          className="text-2xl md:text-3xl lg:text-4xl font-light tracking-tight leading-tight text-white mb-4 drop-shadow-sm"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           Your money, finally coordinated.
@@ -259,7 +259,7 @@ export function DashboardCoordinationProof({
 
       {/* ── Zone B: Proof — EnginePulseStrip ── */}
       <HeroBento.Proof>
-        <div className="flex gap-3 md:gap-6">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-6">
           <EnginePulseBadge
             icon={Shield}
             color="var(--engine-protect)"

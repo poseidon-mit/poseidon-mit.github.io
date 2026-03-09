@@ -637,9 +637,18 @@ const CANONICAL_EVENTS: CanonicalEvent[] = [
 
 export const CANONICAL_GROWTH_SIMULATION_DATA: GrowthSimulationPoint[] = [
   { year: 'Now', baseline: 130000, aiOptimized: 130000, low: 130000, high: 130000 },
-  { year: '1Y', baseline: 133900, aiOptimized: 138400, low: 137800, high: 139100 },
-  { year: '2Y', baseline: 137917, aiOptimized: 147400, low: 146200, high: 148700 },
-  { year: '3Y', baseline: 142055, aiOptimized: 156037, low: 154200, high: 158000 },
+  { year: '3M',  baseline: 130975, aiOptimized: 132100, low: 131950, high: 132275 },
+  { year: '6M',  baseline: 131950, aiOptimized: 134200, low: 133900, high: 134550 },
+  { year: '9M',  baseline: 132925, aiOptimized: 136300, low: 135850, high: 136825 },
+  { year: '1Y',  baseline: 133900, aiOptimized: 138400, low: 137800, high: 139100 },
+  { year: '15M', baseline: 134904, aiOptimized: 140650, low: 139900, high: 141475 },
+  { year: '18M', baseline: 135909, aiOptimized: 142900, low: 142000, high: 143850 },
+  { year: '21M', baseline: 136913, aiOptimized: 145150, low: 144100, high: 146275 },
+  { year: '2Y',  baseline: 137917, aiOptimized: 147400, low: 146200, high: 148700 },
+  { year: '27M', baseline: 138951, aiOptimized: 149559, low: 148200, high: 151025 },
+  { year: '30M', baseline: 139986, aiOptimized: 151718, low: 150200, high: 153350 },
+  { year: '33M', baseline: 141020, aiOptimized: 153878, low: 152200, high: 155675 },
+  { year: '3Y',  baseline: 142055, aiOptimized: 156037, low: 154200, high: 158000 },
 ]
 
 const FINAL_SIM = CANONICAL_GROWTH_SIMULATION_DATA[CANONICAL_GROWTH_SIMULATION_DATA.length - 1]

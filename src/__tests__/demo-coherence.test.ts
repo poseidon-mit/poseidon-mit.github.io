@@ -93,7 +93,6 @@ describe('demo coherence invariants', () => {
   it('uses selectCohortMetrics on downstream pages', () => {
     const cohortPages = [
       { file: 'src/pages/Landing.tsx', selector: 'selectCohortMetrics' },
-      { file: 'src/pages/Grow.tsx', selector: 'selectCohortMetrics' },
       { file: 'src/pages/Dashboard.tsx', selector: 'selectCohortMetrics' },
     ]
 
@@ -155,10 +154,10 @@ describe('demo coherence invariants', () => {
     expect(landingSource).not.toMatch(/LLM Zero-Retention/)
   })
 
-  it('Govern.tsx renders summary bar with transparency messaging', () => {
+  it('Govern.tsx renders hero with immutable ledger', () => {
     const governSource = readSource('src/pages/Govern.tsx')
-    expect(governSource).toContain('100% transparency')
-    expect(governSource).toContain('AI decisions audited')
+    expect(governSource).toContain('GovernImmutableLedger')
+    expect(governSource).toContain('decisionsAudited')
   })
 
   it('keeps risk incidents flagged tied to canonical via contract', () => {
@@ -195,8 +194,8 @@ describe('demo coherence invariants', () => {
     expect(src).toContain('selectAlertAuditChain')
   })
 
-  it('renders platform profile count on downstream grow page', () => {
-    expect(readSource('src/components/poseidon/grow-hero.tsx')).toContain('platformProfileCount')
+  it('renders chart with simulation data on grow hero', () => {
+    expect(readSource('src/components/poseidon/grow-hero.tsx')).toContain('simulationData')
   })
 
   it('uses read-only honest language — no "block" in user-facing copy', () => {

@@ -1,25 +1,17 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import {
   Zap,
-  CheckCircle2,
-  ArrowUpRight,
-  Bot,
-  User,
-  Timer,
   Lock,
 } from 'lucide-react'
-import { useRouter, Link } from '@/router'
+import { useRouter } from '@/router'
 import { UndoBanner } from '@/components/execute/UndoBanner'
 import { ExecuteApprovalCommandDeck } from '@/components/poseidon/execute-hero'
-import { EmptyState, EngineBadge, ConfidenceIndicator } from '@/components/poseidon'
+import { EngineBadge } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
-import { ENGINE_BADGE_CLASS, ENGINE_COLOR_MAP } from '@/lib/engine-color-map'
-import { EXECUTION_TYPE_BADGE } from '@/lib/execution-type-config'
+import { ENGINE_COLOR_MAP } from '@/lib/engine-color-map'
 import { useDemoState } from '@/lib/demo-state/provider'
 import type { DemoExecuteDecision } from '@/lib/demo-state/types'
-import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
 import { useToast } from '@/hooks/useToast'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
@@ -28,9 +20,8 @@ import {
   selectArchitecturalTrust,
   selectExecuteActionById,
 } from '@/domain/poseidon-universe'
-import type { ExecuteActionEntity, ExecuteEngineName, ExecutionType, UrgencyLevel } from '@/domain/poseidon-universe'
+import type { ExecuteEngineName, UrgencyLevel } from '@/domain/poseidon-universe'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
-import { dispatchApprovalBridge } from '@/lib/execute-approval-bridge'
 
 /* ═══════════════════════════════════════════
    CONSTANTS
@@ -38,9 +29,6 @@ import { dispatchApprovalBridge } from '@/lib/execute-approval-bridge'
 
 type ActionStatus = 'pending' | 'approved' | 'rejected' | 'deferred'
 
-// Execution type badge config — shared from lib/execution-type-config.ts
-
-type SortKey = 'urgency' | 'confidence' | 'default'
 const URGENCY_ORDER: Record<UrgencyLevel, number> = { high: 0, medium: 1, low: 2 }
 
 /* ═══════════════════════════════════════════
@@ -60,19 +48,6 @@ function statusFromDecision(value: DemoExecuteDecision): ActionStatus {
   }
 }
 
-function formatExpiryDate(expiresIn: string | null): string | null {
-  if (!expiresIn) return null
-  const now = new Date(2026, 2, 9) // Demo date: 2026-03-09
-  const n = parseInt(expiresIn)
-  if (expiresIn.includes('d')) {
-    now.setDate(now.getDate() + n)
-  } else if (expiresIn.includes('h')) {
-    now.setHours(now.getHours() + n)
-    return `Expires ${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
-  }
-  return `Expires ${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
-}
-
 /* ═══════════════════════════════════════════
    COMPONENT
    ═══════════════════════════════════════════ */
@@ -82,14 +57,10 @@ export default function ExecutePage() {
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const { navigate, search } = useRouter()
-  const { state, setExecuteDecision, resetExecuteDecision } = useDemoState()
+  const { state, resetExecuteDecision } = useDemoState()
   const { showToast } = useToast()
   const trust = selectArchitecturalTrust()
 
-  // Filter/sort state
-  const [urgencyFilter, setUrgencyFilter] = useState<UrgencyLevel | 'all'>('all')
-  const [typeFilter, setTypeFilter] = useState<ExecutionType | 'all'>('all')
-  const [sortBy, setSortBy] = useState<SortKey>('default')
   const allActions = useMemo(() => selectExecuteActionsView(), [])
 
   const queue = useMemo(
@@ -142,36 +113,6 @@ export default function ExecutePage() {
       color: ENGINE_COLOR_MAP[engine as keyof typeof ENGINE_COLOR_MAP],
     }))
   }, [allPending])
-
-  const pendingActions = useMemo(() => {
-    let items = queue.filter((item) => item.status === 'pending')
-    if (urgencyFilter !== 'all') items = items.filter((a) => a.urgency === urgencyFilter)
-    if (typeFilter !== 'all') items = items.filter((a) => a.executionType === typeFilter)
-    if (sortBy === 'urgency') items = [...items].sort((a, b) => URGENCY_ORDER[a.urgency] - URGENCY_ORDER[b.urgency])
-    if (sortBy === 'confidence') items = [...items].sort((a, b) => b.confidence - a.confidence)
-    return items
-  }, [queue, urgencyFilter, typeFilter, sortBy])
-
-  // Batch selection state
-  const [batchSelected, setBatchSelected] = useState<Set<string>>(new Set())
-  const toggleBatchItem = (id: string) => setBatchSelected(prev => {
-    const next = new Set(prev)
-    if (next.has(id)) next.delete(id); else next.add(id)
-    return next
-  })
-  const toggleBatchAll = () => {
-    if (batchSelected.size === pendingActions.length) setBatchSelected(new Set())
-    else setBatchSelected(new Set(pendingActions.map(a => a.id)))
-  }
-  const handleBatchApprove = () => {
-    for (const id of batchSelected) {
-      const a = pendingActions.find(x => x.id === id)
-      if (!a) continue
-      setExecuteDecision({ actionId: a.id, actionTitle: a.title, decision: 'approved' })
-      dispatchApprovalBridge(a, navigate, showToast)
-    }
-    setBatchSelected(new Set())
-  }
 
   const undoActionId = useMemo(() => new URLSearchParams(search).get('undo'), [search])
   const undoAction = useMemo(
@@ -237,186 +178,9 @@ export default function ExecutePage() {
           </motion.div>
         </motion.section>
 
-        {/* Action Queue */}
-        <motion.section variants={staggerContainerVariant} className="flex flex-col gap-4">
-
-          {pendingActions.length > 0 && (
-            <div className="flex items-center justify-between flex-wrap gap-3">
-              <div className="flex items-center gap-3">
-                <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">
-                  Pending Actions
-                </h2>
-                <span className="text-[10px] font-mono text-white/30">{pendingActions.length} items</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <label className="flex items-center gap-2 cursor-pointer text-xs text-white/50 hover:text-white/70 transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={batchSelected.size === pendingActions.length && pendingActions.length > 0}
-                    onChange={toggleBatchAll}
-                    className="accent-amber-500 cursor-pointer"
-                  />
-                  Select all
-                </label>
-                {batchSelected.size > 0 && (
-                  <button
-                    onClick={handleBatchApprove}
-                    className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-amber-600/80 engine-solid-execute text-white hover:bg-amber-600/90 transition-colors cursor-pointer"
-                  >
-                    Approve Selected ({batchSelected.size})
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-
-          {pendingActions.map((action) => (
-            <ActionCard
-              key={action.id}
-              action={action}
-              fadeUpVariant={fadeUpVariant}
-              onDefer={() => {
-                setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'deferred' })
-                showToast({ message: 'Action dismissed', variant: 'info' })
-              }}
-              batchMode
-              batchChecked={batchSelected.has(action.id)}
-              onBatchToggle={() => toggleBatchItem(action.id)}
-            />
-          ))}
-
-          {pendingActions.length === 0 && (
-            <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-8 flex items-center justify-center">
-              <EmptyState
-                icon={CheckCircle2}
-                title="All pending actions are cleared"
-                description="You can review completed and deferred items in execution history."
-                accentColor="var(--state-healthy)"
-                action={{ label: 'Open execution history', onClick: () => navigate('/execute/history') }}
-              />
-            </motion.div>
-          )}
-
-          {/* History link */}
-          <motion.div variants={fadeUpVariant} className="flex">
-            <Link to="/execute/history" className={cn(buttonVariants({ variant: 'glass', size: 'lg' }), 'w-full max-w-md rounded-2xl text-sm px-6 py-4 flex items-center justify-between border border-white/[0.1] hover:bg-white/[0.05] transition-all')}>
-              <span className="font-semibold tracking-wide text-white/80">Review execution history</span>
-              <ArrowUpRight size={18} className="text-white/40" />
-            </Link>
-          </motion.div>
-        </motion.section>
-
       </motion.div>
 
     </>
   )
 }
 
-/* ═══════════════════════════════════════════
-   ACTION CARD SUB-COMPONENT
-   ═══════════════════════════════════════════ */
-
-function ActionCard({
-  action,
-  fadeUpVariant,
-  onDefer,
-  batchMode,
-  batchChecked,
-  onBatchToggle,
-}: {
-  action: ExecuteActionEntity & { status: ActionStatus }
-  fadeUpVariant: import('framer-motion').Variants
-  onDefer: () => void
-  batchMode?: boolean
-  batchChecked?: boolean
-  onBatchToggle?: () => void
-}) {
-  const typeBadge = EXECUTION_TYPE_BADGE[action.executionType]
-  const expiryLabel = formatExpiryDate(action.expiresIn)
-  const isExpiringSoon = action.expiresIn && (action.expiresIn.includes('h') && parseInt(action.expiresIn) <= 4)
-
-  return (
-    <motion.div variants={fadeUpVariant}>
-      <motion.div
-        className="glass-card glass-card-overlay rounded-xl p-4 md:p-6 lg:p-8 hover:border-white/[0.15] flex flex-col gap-5 transition-colors"
-        style={{ borderLeftWidth: 4, borderLeftColor: ENGINE_COLOR_MAP[action.engine] }}
-      >
-
-        <div className="relative z-10 flex items-center gap-2 flex-wrap mb-1">
-          {batchMode && (
-            <input
-              type="checkbox"
-              checked={batchChecked}
-              onChange={onBatchToggle}
-              className="accent-amber-500 cursor-pointer mr-1"
-              onClick={(e) => e.stopPropagation()}
-            />
-          )}
-          <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest shadow-inner border border-white/[0.05] ${ENGINE_BADGE_CLASS[action.engine]}`}>
-            {action.engine}
-          </span>
-          <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest border ${typeBadge.cls}`}>
-            {action.executionType === 'auto' ? <Bot size={10} /> : action.executionType === 'manual' ? <User size={10} /> : null}
-            {typeBadge.label}
-          </span>
-          {expiryLabel && (
-            <span className={cn(
-              'inline-flex items-center gap-1 text-[10px] font-semibold tracking-widest ml-1',
-              isExpiringSoon ? 'text-red-400 state-text-critical' : 'text-white/40',
-            )}>
-              <Timer size={10} className={isExpiringSoon ? 'animate-pulse' : ''} />
-              {expiryLabel}
-            </span>
-          )}
-          <span className="ml-auto text-xs font-mono text-white/40 tracking-widest">{action.timestampLabel}</span>
-        </div>
-
-        <div className="relative z-10">
-          <h3 className="text-xl md:text-2xl font-light text-white mb-2">{action.title}</h3>
-          <p className="text-sm text-white/50 leading-relaxed tracking-wide">{action.description}</p>
-        </div>
-
-        <div className="relative z-10 flex flex-wrap items-center gap-6 py-3 border-y border-white/[0.06] my-1">
-          <span className="text-xl font-mono font-light tracking-wide tabular-nums text-[var(--engine-execute)]">{action.amountLabel}</span>
-          <div className="w-px h-6 bg-white/[0.06]" />
-          <div className="flex items-center gap-3">
-            <span className="text-xs uppercase tracking-widest text-white/40">Confidence</span>
-            <ConfidenceIndicator value={action.confidence} format="percent" glow />
-          </div>
-        </div>
-
-        {/* Step preview */}
-        <div className="relative z-10 flex items-center gap-2 text-xs text-white/40">
-          <span className="font-semibold tracking-widest uppercase">Steps:</span>
-          {action.steps.map((step, i) => (
-            <span key={step.id} className={cn(
-              'inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-mono font-bold border',
-              step.status === 'completed' ? 'border-[var(--state-healthy)]/30 bg-[var(--state-healthy)]/10 text-[var(--state-healthy)]'
-                : step.status === 'current' ? 'border-[var(--engine-execute)]/40 bg-[var(--engine-execute)]/15 text-[var(--engine-execute)]'
-                : 'border-white/10 text-white/30',
-            )}>
-              {i + 1}
-            </span>
-          ))}
-          <span className="text-white/30 ml-1">{action.steps.filter((s) => s.requiresConsent).length} consent required</span>
-        </div>
-
-        <div className="relative z-10 flex flex-wrap gap-4 mt-1">
-          <Link
-            to={`/execute/approval?actionId=${action.id}`}
-            className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'rounded-2xl text-sm px-6 py-3 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_30px_rgba(251,191,36,0.5)] transition-all bg-[var(--engine-execute)] hover:opacity-90 text-black border-none font-semibold flex items-center')}
-          >
-            Review & Approve
-            <ArrowUpRight size={16} className="ml-2" />
-          </Link>
-          <button
-            className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'rounded-2xl text-sm px-6 py-3 border border-white/10 hover:bg-white/10 transition-all font-semibold text-white/50 hover:text-white cursor-pointer')}
-            onClick={onDefer}
-          >
-            Dismiss
-          </button>
-        </div>
-      </motion.div>
-    </motion.div>
-  )
-}

@@ -141,11 +141,6 @@ describe('DashboardPage integration', () => {
     expect(rail.textContent).toContain('verified and auditable')
   })
 
-  it('renders Dashboard badge above hero', () => {
-    renderDashboard()
-    expect(screen.getByText('Dashboard')).toBeInTheDocument()
-  })
-
   it('does not render duplicate h1 elements', () => {
     renderDashboard()
     const headings = screen.getAllByRole('heading', { level: 1 })

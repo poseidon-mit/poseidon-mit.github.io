@@ -1,23 +1,15 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from '@/router'
 import { TrendingUp } from 'lucide-react'
 import { EngineBadge } from '@/components/poseidon'
 import { GrowGrowthAdvantage } from '@/components/poseidon/grow-hero'
-import { selectCohortMetrics, selectPlatformProfileCount } from '@/domain/poseidon-universe'
 import { GROWTH_SIMULATION_DATA, PROJECTED_3Y_ADVANTAGE } from '@/lib/grow-simulation-data'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { RECOMMENDATIONS_SUMMARY } from './grow/recommendation-detail-data'
-
-const COHORT_DATA = {
-  currentPercentile: 23,
-  projectedPercentile: 67,
-  bracket: 'your portfolio tier',
-}
-
 
 export default function GrowPage() {
   usePageTitle('Grow')
@@ -35,15 +27,6 @@ export default function GrowPage() {
     const sum = RECOMMENDATIONS_SUMMARY.reduce((s, r) => s + r.confidence, 0)
     return sum / RECOMMENDATIONS_SUMMARY.length
   }, [])
-
-  const cohort = selectCohortMetrics()
-  const platformProfileCount = selectPlatformProfileCount()
-
-  const [dismissedRanks, setDismissedRanks] = useState<Set<number>>(new Set())
-  const remaining = RECOMMENDATIONS_SUMMARY.filter(r => !dismissedRanks.has(r.rank))
-  const topRec = remaining.length > 0
-    ? remaining.reduce((best, r) => r.rank < best.rank ? r : best)
-    : null
 
   return (
     <>
@@ -71,20 +54,7 @@ export default function GrowPage() {
               avgConfidence={avgConfidence}
               recommendationCount={RECOMMENDATIONS_SUMMARY.length}
               simulationData={[...GROWTH_SIMULATION_DATA]}
-              currentPercentile={COHORT_DATA.currentPercentile}
-              projectedPercentile={COHORT_DATA.projectedPercentile}
-              cohortBracket={COHORT_DATA.bracket}
-              topRecommendation={topRec ? {
-                rank: topRec.rank,
-                title: topRec.title,
-                monthlySavings: topRec.monthly,
-                confidence: topRec.confidence,
-              } : null}
               onViewRecommendations={() => navigate('/grow/recommendations')}
-              onQueueTopAction={topRec ? () => navigate('/execute') : null}
-              onDismissTopAction={topRec ? () => setDismissedRanks(prev => new Set(prev).add(topRec.rank)) : undefined}
-              cohortAcceptanceRate={cohort.recommendationAcceptanceRate}
-              platformProfileCount={platformProfileCount}
             />
           </motion.div>
         </motion.section>

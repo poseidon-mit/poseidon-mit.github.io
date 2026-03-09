@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { useRouter } from '@/router'
 import { motion } from 'framer-motion'
-import { LayoutDashboard } from 'lucide-react'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -13,12 +12,12 @@ import {
   selectExecuteActionsView,
   selectGovernAuditSummaryView,
   selectGovernAuditEntries,
-  computeFinancialHealthScore,
 } from '@/domain/poseidon-universe'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 import { THREATS, severityConfig } from '@/pages/protect/protect-data'
 import { useDismissedAlerts } from '@/pages/protect/useDismissedAlerts'
-import { EngineBadge, DashboardCoordinationProof } from '@/components/poseidon'
+import { DashboardCoordinationProof } from '@/components/poseidon'
+import { WelcomeDrawer } from '@/components/dashboard/WelcomeDrawer'
 import type { EngineName } from '@/lib/engine-tokens'
 
 /* ── Urgency sort helpers ── */
@@ -104,18 +103,6 @@ export default function DashboardPage() {
     : pendingCount > 3 ? 'execute'
     : 'grow'
 
-  const allActionsCount = allActions.length
-  const healthScore = useMemo(
-    () =>
-      computeFinancialHealthScore({
-        activeThreats: activeThreats.length,
-        totalThreats: activeThreats.length + dismissed.size,
-        pendingActions: pendingCount,
-        totalActions: allActionsCount,
-      }),
-    [activeThreats.length, dismissed.size, pendingCount, allActionsCount],
-  )
-
   return (
     <div className="selection:bg-cyan-500/30">
       <motion.main
@@ -128,13 +115,6 @@ export default function DashboardPage() {
       >
         {/* ── Coordination Proof Hero ── */}
         <motion.section variants={itemVariants} className="flex flex-col gap-6 mb-10">
-          <div className="flex items-center justify-between">
-            <EngineBadge engine="dashboard" icon={LayoutDashboard} label="Dashboard" />
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-white/50">Financial Wellness</span>
-              <span className="font-mono tabular-nums text-white/80">{Math.round(healthScore.score)}/100</span>
-            </div>
-          </div>
           <DashboardCoordinationProof
             dominantEngine={dominantEngine}
             activeThreats={activeThreats.length}
@@ -171,6 +151,7 @@ export default function DashboardPage() {
 
       </motion.main>
 
+      <WelcomeDrawer />
     </div>
   )
 }

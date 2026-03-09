@@ -5,10 +5,10 @@ import { ROUTE_META_CONTRACT } from '../contracts/rebuild-contracts'
 
 describe('GovernFooter visibility policy follows conditional display rules', () => {
 
-    // Routes where GovernFooter should be visible (detail/recommendation/approval pages)
-    const routesWithFooter = ['/execute', '/govern']
-    // Routes where GovernFooter should be hidden (overview/summary pages)
-    const routesWithoutFooter = ['/dashboard', '/protect', '/grow']
+    // Routes where GovernFooter should be visible (detail/recommendation pages only)
+    const routesWithFooter = ['/protect/alert-detail', '/grow/recommendation', '/govern/audit-detail']
+    // Routes where GovernFooter should be hidden (overview/list pages)
+    const routesWithoutFooter = ['/dashboard', '/protect', '/grow', '/execute', '/execute/queue', '/grow/recommendations', '/govern', '/govern/audit']
 
     test('GovernFooter is visible on detail and approval routes', () => {
         for (const route of routesWithFooter) {

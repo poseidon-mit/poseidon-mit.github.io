@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach } from 'vitest'
-import { render, screen, fireEvent, within } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { RouterProvider } from '../router'
 import { DemoStateProvider } from '../lib/demo-state/provider'
 import { useDemoState } from '../lib/demo-state/provider'
@@ -7,8 +7,7 @@ import { resetDemoStateStorage } from '../lib/demo-state/storage'
 import DashboardPage from '../pages/Dashboard'
 
 /**
- * Tests that the Financial Health Score on the Dashboard hero
- * updates reactively when demo state changes (dismiss alerts, approve actions).
+ * Tests that the Dashboard hero updates reactively when demo state changes.
  */
 
 function TestHarness() {
@@ -19,7 +18,7 @@ function TestHarness() {
         data-testid="approve-exe001"
         onClick={() => setExecuteDecision({
           actionId: 'EXE-001',
-          actionTitle: 'Portfolio rebalance',
+          actionTitle: 'Dispute unrecognized charge',
           decision: 'approved',
         })}
       />
@@ -39,36 +38,24 @@ function renderDashboard() {
   )
 }
 
-describe('Dashboard Financial Wellness Score', () => {
+describe('Dashboard reactive state', () => {
   beforeEach(() => {
     resetDemoStateStorage()
   })
 
-  it('renders the wellness score', () => {
+  it('renders the hero headline', () => {
     renderDashboard()
-    const healthLabel = screen.getByText('Financial Wellness')
-    expect(healthLabel).toBeInTheDocument()
-    // The score is a sibling of the label inside the same container
-    const container = healthLabel.closest('div')!
-    expect(container.textContent).toMatch(/\d+\/100/)
+    expect(screen.getByText('Your money, finally coordinated.')).toBeInTheDocument()
   })
 
-  it('wellness score increases when an execute action is approved', () => {
+  it('pending actions count decreases when an action is approved', () => {
     renderDashboard()
-    const healthLabel = screen.getByText('Financial Wellness')
-    const container = healthLabel.closest('div')!
+    // Before: narrative mentions 5 actions
+    expect(screen.getByText(/5 actions ready for your approval/)).toBeInTheDocument()
 
-    const getScore = () => {
-      const match = container.textContent!.match(/(\d+)\/100/)
-      return match ? parseInt(match[1]) : 0
-    }
-
-    const initial = getScore()
-
-    // Approve an action — Execute sub-score should improve
     fireEvent.click(screen.getByTestId('approve-exe001'))
 
-    const updated = getScore()
-    expect(updated).toBeGreaterThanOrEqual(initial)
+    // After: narrative mentions 4 actions
+    expect(screen.getByText(/4 actions ready for your approval/)).toBeInTheDocument()
   })
 })

@@ -154,7 +154,7 @@ export function ExecuteApprovalCommandDeck({
           {/* Amount + Confidence */}
           <div className="flex items-center gap-4">
             <span
-              className="text-xl font-mono tabular-nums font-light"
+              className="text-2xl font-mono tabular-nums font-bold"
               style={{ color: 'var(--engine-execute)' }}
             >
               {featuredAction.amountLabel}

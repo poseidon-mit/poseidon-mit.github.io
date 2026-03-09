@@ -16,20 +16,17 @@ describe('Landing layout remains structurally immutable', () => {
     expect(dashboardCta).not.toBeNull()
   })
 
-  test('Secondary CTA links to /signup', () => {
-    const { container } = renderWithRouter(<Landing />, { initialPath: '/' })
-    const signupCta = container.querySelector('a[href="/signup"]')
-    expect(signupCta).not.toBeNull()
+  test('Secondary CTA links to /dashboard', () => {
+    renderWithRouter(<Landing />, { initialPath: '/' })
+    const getStartedLink = screen.getByText(new RegExp('Get Started', 'i'))
+    expect(getStartedLink.tagName).toBe('A')
+    expect(getStartedLink.getAttribute('href')).toBe('/dashboard')
   })
 
-  test('/dashboard CTA appears before /signup CTA in DOM order', () => {
+  test('Both CTAs link to /dashboard', () => {
     const { container } = renderWithRouter(<Landing />, { initialPath: '/' })
-    const allLinks = Array.from(container.querySelectorAll('a'))
-    const dashboardIndex = allLinks.findIndex((a) => a.getAttribute('href') === '/dashboard')
-    const signupIndex = allLinks.findIndex((a) => a.getAttribute('href') === '/signup')
-    expect(dashboardIndex).toBeGreaterThanOrEqual(0)
-    expect(signupIndex).toBeGreaterThanOrEqual(0)
-    expect(dashboardIndex).toBeLessThan(signupIndex)
+    const dashboardLinks = container.querySelectorAll('a[href="/dashboard"]')
+    expect(dashboardLinks.length).toBeGreaterThanOrEqual(2)
   })
 
   test('Footer login link exists', () => {

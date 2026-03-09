@@ -28,7 +28,7 @@ const CARDS: EngineCard[] = [
     engine: 'Grow',
     color: 'var(--engine-grow)',
     icon: TrendingUp,
-    headline: '$847/mo savings found',
+    headline: '$444/mo savings found',
     detail: 'AI-identified optimization opportunities',
     href: '/grow',
   },

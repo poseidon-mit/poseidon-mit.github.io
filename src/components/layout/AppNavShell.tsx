@@ -9,7 +9,6 @@ import { usePresentationMode } from '@/hooks/usePresentationMode';
 import { usePWA } from '@/hooks/usePWA';
 import { CommandPalette } from './CommandPalette';
 import { Button } from '@/components/ui/button';
-import { TalkToMoneyFab } from '@/components/ui/TalkToMoneyFab';
 import { type EngineName } from '@/lib/engine-tokens';
 import { cn } from '@/lib/utils';
 import { BREADCRUMB_MAP } from '@/lib/breadcrumb-registry';
@@ -126,8 +125,7 @@ export function AppNavShell({
         <div className="h-16 lg:hidden" aria-hidden="true" />
       </div>
 
-      {/* ── Talk to Money FAB (all routes) ── */}
-      <TalkToMoneyFab />
+      {/* Talk to Money FAB disabled */}
 
       {/* ── Mobile bottom navigation ── */}
       <nav

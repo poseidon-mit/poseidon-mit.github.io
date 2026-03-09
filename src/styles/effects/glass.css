@@ -231,6 +231,13 @@
   color: rgba(255, 255, 255, 0.4);
 }
 
+/* ── GovernFooter Active Write Pulse ── */
+
+@keyframes audit-write-pulse {
+  0% { border-color: rgba(59,130,246,0.4); box-shadow: 0 0 12px rgba(59,130,246,0.15); }
+  100% { border-color: rgba(255,255,255,0.06); box-shadow: none; }
+}
+
 /* ── Landing Grid Overlay ── */
 
 .landing-grid-overlay {

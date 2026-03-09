@@ -355,16 +355,11 @@ describe('Execute single queue layout', () => {
     )
   }
 
-  it('renders all pending actions in a single list', () => {
+  it('renders hero-only layout without action list', () => {
     renderExecute()
-    expect(screen.getAllByText(/pending actions/i).length).toBeGreaterThanOrEqual(1)
-    // No tier labels
-    expect(screen.queryByText(/immediate attention/i)).not.toBeInTheDocument()
-    expect(screen.queryByText(/background optimizations/i)).not.toBeInTheDocument()
-  })
-
-  it('renders batch selection controls', () => {
-    renderExecute()
-    expect(screen.getByText(/select all/i)).toBeInTheDocument()
+    // Hero renders the command deck
+    expect(screen.getByTestId('system-status-row')).toBeInTheDocument()
+    // No action list or batch controls on the page
+    expect(screen.queryByText(/select all/i)).not.toBeInTheDocument()
   })
 })

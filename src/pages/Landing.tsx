@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { type PointerEvent as RPointerEvent, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Shield, TrendingUp, Zap, Scale, ArrowRight, ExternalLink, Play, Presentation } from 'lucide-react'
 import { PublicTopBar } from '@/components/landing/PublicTopBar'
@@ -9,6 +9,28 @@ import { DEMO_THREAD } from '@/lib/demo-thread'
 import { LANDING_COPY } from '@/content/landing-copy'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+
+/** Pointer-tracking spotlight for dark-theme Bento cards (desktop only, skips touch) */
+function useSpotlight() {
+  const ref = useRef<HTMLDivElement>(null)
+  const frame = useRef<number | null>(null)
+  const pt = useRef({ x: 0, y: 0 })
+  const onPointerMove = (e: RPointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'touch') return
+    const rect = ref.current?.getBoundingClientRect()
+    if (!rect) return
+    pt.current = { x: e.clientX - rect.left, y: e.clientY - rect.top }
+    if (!frame.current) {
+      frame.current = requestAnimationFrame(() => {
+        ref.current?.style.setProperty('--spot-x', `${pt.current.x}px`)
+        ref.current?.style.setProperty('--spot-y', `${pt.current.y}px`)
+        frame.current = null
+      })
+    }
+  }
+  useEffect(() => () => { if (frame.current) cancelAnimationFrame(frame.current) }, [])
+  return { ref, onPointerMove }
+}
 
 export default function Landing() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -22,6 +44,11 @@ export default function Landing() {
   const { fadeUp, staggerContainer: stagger } = getMotionPreset(prefersCalmMotion)
   const cohort = selectCohortMetrics()
   const trust = selectArchitecturalTrust()
+  const spotProtect = useSpotlight()
+  const spotGrow = useSpotlight()
+  const spotExecute = useSpotlight()
+  const spotGovern = useSpotlight()
+
   const sectionRevealProps = prefersCalmMotion
     ? ({ initial: false, animate: 'visible' } as const)
     : ({ initial: 'hidden', whileInView: 'visible', viewport: { once: true, margin: '-80px' } } as const)
@@ -148,7 +175,7 @@ export default function Landing() {
               variants={stagger}
             >
               {/* Badge */}
-              <motion.div variants={fadeUp} className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md">
+              <motion.div variants={fadeUp} className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 md:backdrop-blur-md">
                 <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
                 <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider">{LANDING_COPY.hero.badge}</span>
               </motion.div>
@@ -167,10 +194,57 @@ export default function Landing() {
                 </p>
               </motion.div>
 
-              {/* 2 Floating Proof Cards */}
-              <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl">
+              {/* CTAs — primary=1, secondary=1 per route contract */}
+              <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                <Link
+                  to="/dashboard"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-8 py-4 min-h-[44px] text-sm font-semibold text-slate-950 hover:from-emerald-400 hover:to-cyan-400 transition-all cta-primary-glow"
+                >
+                  {LANDING_COPY.hero.primaryCta} <ArrowRight size={16} />
+                </Link>
+                <Link
+                  to="/dashboard"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 md:backdrop-blur-xl px-8 py-4 min-h-[44px] text-sm font-medium text-white hover:bg-white/10 transition-colors"
+                >
+                  {LANDING_COPY.hero.secondaryCta} <ArrowRight size={14} />
+                </Link>
+              </motion.div>
+
+              {/* Deliverables */}
+              <motion.div variants={fadeUp} className="flex items-center justify-center gap-3">
+                <Link
+                  to="/deck"
+                  className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] md:backdrop-blur-md px-5 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 hover:border-white/25 transition-all"
+                >
+                  <Presentation size={14} className="text-cyan-400/70" />
+                  Presentation
+                </Link>
+                <a
+                  href={LANDING_COPY.hero.videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] md:backdrop-blur-md px-5 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 hover:border-white/25 transition-all"
+                >
+                  <Play size={14} className="text-red-400/70" />
+                  Video
+                  <ExternalLink size={10} className="text-white/30" />
+                </a>
+              </motion.div>
+
+              {/* Trust bar */}
+              <motion.div variants={fadeUp} className="flex flex-wrap md:flex-nowrap items-center justify-center gap-x-3 gap-y-2 text-[11px] md:text-xs text-white/30 font-mono uppercase tracking-widest">
+                {LANDING_COPY.hero.trustItems.map((item, i) => (
+                  <span key={item} className="flex items-center gap-2">
+                    {i > 0 && <span className="text-white/10">//</span>}
+                    {item}
+                  </span>
+                ))}
+              </motion.div>
+
+              {/* 2 Floating Proof Cards — below trust bar for visual separation */}
+              <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl mt-6 md:mt-10">
                 {/* Protect proof */}
-                <div className="rounded-2xl border border-green-500/20 bg-white/[0.03] backdrop-blur-sm p-4">
+                <div className="rounded-2xl border border-green-500/20 bg-white/[0.03] md:backdrop-blur-sm p-4">
                   <div className="flex items-center gap-1.5 mb-3">
                     <Shield size={12} className="text-green-400" />
                     <span className="text-[11px] font-semibold uppercase tracking-widest text-green-400/60">Protect</span>
@@ -189,13 +263,13 @@ export default function Landing() {
                 </div>
 
                 {/* Grow proof */}
-                <div className="rounded-2xl border border-violet-500/20 bg-white/[0.03] backdrop-blur-sm p-4">
+                <div className="rounded-2xl border border-violet-500/20 bg-white/[0.03] md:backdrop-blur-sm p-4">
                   <div className="flex items-center gap-1.5 mb-3">
                     <TrendingUp size={12} className="text-violet-400" />
                     <span className="text-[11px] font-semibold uppercase tracking-widest text-violet-400/60">Grow</span>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <span className="text-sm font-mono font-bold text-violet-400">
+                    <span className="text-sm font-mono font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
                       +${cohort.projected3yAdvantageUsd.toLocaleString()}
                     </span>
                     <span className="text-xs text-white/40">
@@ -204,58 +278,11 @@ export default function Landing() {
                   </div>
                 </div>
               </motion.div>
-
-              {/* CTAs — primary=1, secondary=1 per route contract */}
-              <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-                <Link
-                  to="/dashboard"
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-8 py-4 min-h-[44px] text-sm font-semibold text-slate-950 hover:from-emerald-400 hover:to-cyan-400 transition-all cta-primary-glow"
-                >
-                  {LANDING_COPY.hero.primaryCta} <ArrowRight size={16} />
-                </Link>
-                <Link
-                  to="/signup"
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl px-8 py-4 min-h-[44px] text-sm font-medium text-white hover:bg-white/10 transition-colors"
-                >
-                  {LANDING_COPY.hero.secondaryCta} <ArrowRight size={14} />
-                </Link>
-              </motion.div>
-
-              {/* Deliverables */}
-              <motion.div variants={fadeUp} className="flex items-center justify-center gap-3">
-                <Link
-                  to="/deck"
-                  className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur-md px-5 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 hover:border-white/25 transition-all"
-                >
-                  <Presentation size={14} className="text-cyan-400/70" />
-                  Presentation
-                </Link>
-                <a
-                  href={LANDING_COPY.hero.videoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur-md px-5 py-2.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 hover:border-white/25 transition-all"
-                >
-                  <Play size={14} className="text-red-400/70" />
-                  Video
-                  <ExternalLink size={10} className="text-white/30" />
-                </a>
-              </motion.div>
-
-              {/* Trust bar */}
-              <motion.div variants={fadeUp} className="flex flex-wrap md:flex-nowrap items-center justify-center gap-x-3 gap-y-2 text-[11px] md:text-xs text-white/30 font-mono uppercase tracking-widest mt-4">
-                {LANDING_COPY.hero.trustItems.map((item, i) => (
-                  <span key={item} className="flex items-center gap-2">
-                    {i > 0 && <span className="text-white/10">//</span>}
-                    {item}
-                  </span>
-                ))}
-              </motion.div>
             </motion.div>
           </section>
 
           {/* ═══ Section 2: Platform Intelligence ═══ */}
-          <section className="relative w-full py-20 px-6">
+          <section className="relative w-full py-28 md:py-36 px-6">
             <motion.div
               className="max-w-5xl mx-auto"
               variants={stagger}
@@ -271,35 +298,35 @@ export default function Landing() {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                 {/* Govern — Decisions audited */}
-                <motion.div variants={fadeUp} className="relative rounded-2xl border border-blue-500/15 bg-white/[0.03] p-5 text-center overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(59,130,246,0.1)]">
+                <motion.div variants={fadeUp} className="relative rounded-2xl border border-blue-500/15 bg-white/[0.03] p-5 text-center overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_0_24px_rgba(59,130,246,0.1)]">
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                   <CountUp value={DEMO_THREAD.decisionsAudited} locale className="text-2xl md:text-3xl font-mono font-semibold text-white/90" />
-                  <p className="text-xs text-white/40 mt-2">Decisions audited & logged</p>
+                  <p className="text-[10px] sm:text-xs text-white/40 mt-2">Decisions audited & logged</p>
                 </motion.div>
                 {/* Grow — Cohort optimization */}
-                <motion.div variants={fadeUp} className="relative rounded-2xl border border-violet-500/15 bg-white/[0.03] p-5 text-center overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(139,92,246,0.1)]">
+                <motion.div variants={fadeUp} className="relative rounded-2xl border border-violet-500/15 bg-white/[0.03] p-5 text-center overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_0_24px_rgba(139,92,246,0.1)]">
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
                   <CountUp value={cohort.avgMonthlySavingsUsd} prefix="$" locale className="text-2xl md:text-3xl font-mono font-semibold text-white/90" />
-                  <p className="text-xs text-white/40 mt-2">Avg monthly optimization identified</p>
+                  <p className="text-[10px] sm:text-xs text-white/40 mt-2">Avg monthly optimization identified</p>
                 </motion.div>
                 {/* Execute — Zero auto-executions */}
-                <motion.div variants={fadeUp} className="relative rounded-2xl border border-amber-500/15 bg-white/[0.03] p-5 text-center overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(234,179,8,0.1)]">
+                <motion.div variants={fadeUp} className="relative rounded-2xl border border-amber-500/15 bg-white/[0.03] p-5 text-center overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_0_24px_rgba(234,179,8,0.1)]">
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
                   <span className="text-2xl md:text-3xl font-mono font-semibold text-white/90">{trust.autoExecutionsWithoutConsent}</span>
-                  <p className="text-xs text-white/40 mt-2">Auto-executions without human consent</p>
+                  <p className="text-[10px] sm:text-xs text-white/40 mt-2">Auto-executions without human consent</p>
                 </motion.div>
                 {/* Govern — Audit coverage */}
-                <motion.div variants={fadeUp} className="relative rounded-2xl border border-blue-500/15 bg-white/[0.03] p-5 text-center overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(59,130,246,0.1)]">
+                <motion.div variants={fadeUp} className="relative rounded-2xl border border-blue-500/15 bg-white/[0.03] p-5 text-center overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_0_24px_rgba(59,130,246,0.1)]">
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                   <span className="text-2xl md:text-3xl font-mono font-semibold text-white/90">{trust.auditCoveragePercent}%</span>
-                  <p className="text-xs text-white/40 mt-2">AI decisions fully audited</p>
+                  <p className="text-[10px] sm:text-xs text-white/40 mt-2">AI decisions fully audited</p>
                 </motion.div>
               </div>
             </motion.div>
           </section>
 
           {/* ═══ Section 3: Coordination Gap ═══ */}
-          <section className="relative w-full py-24 px-6 border-y border-white/[0.04]">
+          <section className="relative w-full py-32 md:py-40 px-6 border-y border-white/[0.04]">
             <motion.div
               className="max-w-4xl mx-auto text-center"
               variants={stagger}
@@ -308,7 +335,7 @@ export default function Landing() {
               <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-light tracking-tight text-white mb-4">
                 {LANDING_COPY.gap.title}
               </motion.h2>
-              <motion.p variants={fadeUp} className="text-base text-white/40 mb-16 max-w-2xl mx-auto">
+              <motion.p variants={fadeUp} className="text-base text-white/40 mb-20 max-w-2xl mx-auto">
                 {LANDING_COPY.gap.subtitle}
               </motion.p>
 
@@ -325,7 +352,7 @@ export default function Landing() {
           </section>
 
           {/* ═══ Section 4: Architecture Principle ═══ */}
-          <section className="relative w-full py-24 px-6">
+          <section className="relative w-full py-32 md:py-40 px-6">
             <motion.div
               className="max-w-4xl mx-auto"
               variants={stagger}
@@ -334,7 +361,7 @@ export default function Landing() {
               <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-light tracking-tight text-white text-center mb-4">
                 {LANDING_COPY.architecture.title}
               </motion.h2>
-              <motion.p variants={fadeUp} className="text-base text-white/40 text-center mb-16">
+              <motion.p variants={fadeUp} className="text-base text-white/40 text-center mb-20">
                 {LANDING_COPY.architecture.subtitle}
               </motion.p>
 
@@ -359,24 +386,25 @@ export default function Landing() {
           </section>
 
           {/* ═══ Section 5: 4 Engines Bento Grid ═══ */}
-          <section className="relative w-full py-24 px-6">
+          <section className="relative w-full py-32 md:py-40 px-6">
             <motion.div
               className="max-w-5xl mx-auto"
               variants={stagger}
               {...sectionRevealProps}
             >
-              <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-light tracking-tight text-white text-center mb-16">
+              <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-light tracking-tight text-white text-center mb-20">
                 {LANDING_COPY.engines.title}
               </motion.h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 {/* Protect */}
-                <motion.div variants={fadeUp} className="group relative rounded-[32px] border border-green-500/15 bg-white/[0.02] p-6 md:p-8 flex flex-col gap-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(34,197,94,0.1)] overflow-hidden">
+                <motion.div ref={spotProtect.ref} onPointerMove={spotProtect.onPointerMove} variants={fadeUp} className="group relative rounded-[32px] border border-green-500/15 bg-white/[0.02] p-6 md:p-8 flex flex-col gap-5 shadow-[0_1px_2px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_0_24px_rgba(34,197,94,0.1)] overflow-hidden">
+                  <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[32px] opacity-0 transition-opacity duration-300 group-hover:opacity-100 hidden md:block" style={{ background: 'radial-gradient(420px circle at var(--spot-x,50%) var(--spot-y,50%), rgba(34,197,94,0.08), transparent 60%)' }} />
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-green-500 to-transparent" />
                   <div className="flex items-center gap-2">
                     <Shield size={16} className="text-green-400" />
-                    <span className="text-xs font-semibold uppercase tracking-widest text-white/30">Protect</span>
-                    <span className="ml-auto text-[11px] font-mono text-green-400/60 bg-green-500/10 px-2 py-0.5 rounded-full">Flagged for Review</span>
+                    <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-widest text-white/30">Protect</span>
+                    <span className="ml-auto text-[10px] sm:text-[11px] font-mono text-green-400/60 bg-green-500/10 px-2 py-0.5 rounded-full truncate">Flagged for Review</span>
                   </div>
                   <CohortFraudTrend
                     variant="compact"
@@ -386,79 +414,82 @@ export default function Landing() {
                     factors={cohort.fraudTrend.factors}
                     accentColor="var(--engine-protect)"
                   />
-                  <div className="flex items-center gap-2 text-xs text-white/30 font-mono">
+                  <div className="flex items-center gap-2 text-[10px] sm:text-xs text-white/30 font-mono">
                     <span>THR-001</span>
                     <span className="text-white/10">·</span>
-                    <span>${DEMO_THREAD.criticalAlert.amount.toLocaleString()}</span>
-                    <span className="text-white/10">·</span>
-                    <span>{DEMO_THREAD.criticalAlert.counterparty}</span>
+                    <span className="truncate">${DEMO_THREAD.criticalAlert.amount.toLocaleString()}</span>
+                    <span className="hidden sm:inline text-white/10">·</span>
+                    <span className="hidden sm:inline truncate">{DEMO_THREAD.criticalAlert.counterparty}</span>
                   </div>
                 </motion.div>
 
                 {/* Grow */}
-                <motion.div variants={fadeUp} className="group relative rounded-[32px] border border-violet-500/15 bg-white/[0.02] p-6 md:p-8 flex flex-col gap-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(139,92,246,0.1)] overflow-hidden">
+                <motion.div ref={spotGrow.ref} onPointerMove={spotGrow.onPointerMove} variants={fadeUp} className="group relative rounded-[32px] border border-violet-500/15 bg-white/[0.02] p-6 md:p-8 flex flex-col gap-5 shadow-[0_1px_2px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_0_24px_rgba(139,92,246,0.1)] overflow-hidden">
+                  <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[32px] opacity-0 transition-opacity duration-300 group-hover:opacity-100 hidden md:block" style={{ background: 'radial-gradient(420px circle at var(--spot-x,50%) var(--spot-y,50%), rgba(139,92,246,0.08), transparent 60%)' }} />
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
                   <div className="flex items-center gap-2">
                     <TrendingUp size={16} className="text-violet-400" />
-                    <span className="text-xs font-semibold uppercase tracking-widest text-white/30">Grow</span>
+                    <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-widest text-white/30">Grow</span>
                   </div>
                   <div className="flex items-baseline gap-1">
                     <span className="text-white/30 text-sm">+</span>
-                    <span className="text-2xl font-mono font-semibold text-violet-400">
+                    <span className="text-2xl font-mono font-semibold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
                       ${cohort.projected3yAdvantageUsd.toLocaleString()}
                     </span>
                   </div>
-                  <span className="text-xs text-white/40">
+                  <span className="text-[10px] sm:text-xs text-white/40">
                     Projected 3-year advantage · {Math.round(cohort.recommendationAcceptanceRate * 100)}% acceptance rate
                   </span>
-                  {/* Mini trajectory */}
-                  <svg className="w-full h-12 text-violet-400/30" viewBox="0 0 200 40" preserveAspectRatio="none">
+                  {/* Mini trajectory — hidden on small screens */}
+                  <svg className="hidden sm:block w-full h-12 text-violet-400/30" viewBox="0 0 200 40" preserveAspectRatio="none">
                     <path d="M0 35 C40 32, 80 25, 120 18 S180 5, 200 2" fill="none" stroke="currentColor" strokeWidth="2" />
                     <path d="M0 38 L200 38" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 4" />
                   </svg>
                 </motion.div>
 
                 {/* Execute */}
-                <motion.div variants={fadeUp} className="group relative rounded-[32px] border border-amber-500/15 bg-white/[0.02] p-6 md:p-8 flex flex-col gap-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(234,179,8,0.1)] overflow-hidden">
+                <motion.div ref={spotExecute.ref} onPointerMove={spotExecute.onPointerMove} variants={fadeUp} className="group relative rounded-[32px] border border-amber-500/15 bg-white/[0.02] p-6 md:p-8 flex flex-col gap-5 shadow-[0_1px_2px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_0_24px_rgba(234,179,8,0.1)] overflow-hidden">
+                  <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[32px] opacity-0 transition-opacity duration-300 group-hover:opacity-100 hidden md:block" style={{ background: 'radial-gradient(420px circle at var(--spot-x,50%) var(--spot-y,50%), rgba(234,179,8,0.08), transparent 60%)' }} />
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
                   <div className="flex items-center gap-2">
                     <Zap size={16} className="text-amber-400" />
-                    <span className="text-xs font-semibold uppercase tracking-widest text-white/30">Execute</span>
-                    <span className="ml-auto text-[11px] font-mono text-amber-400/60 bg-amber-500/10 px-2 py-0.5 rounded-full">Requires Your Approval</span>
+                    <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-widest text-white/30">Execute</span>
+                    <span className="ml-auto text-[10px] sm:text-[11px] font-mono text-amber-400/60 bg-amber-500/10 px-2 py-0.5 rounded-full truncate">Requires Your Approval</span>
                   </div>
-                  <div className="flex items-baseline gap-3">
-                    <span className="text-2xl font-mono font-semibold text-amber-400">{DEMO_THREAD.pendingActions}</span>
+                  <div className="flex items-baseline gap-3 flex-wrap">
+                    <span className="text-2xl font-mono font-semibold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">{DEMO_THREAD.pendingActions}</span>
                     <span className="text-sm text-white/40">queued</span>
                     <span className="text-white/10">·</span>
                     <span className="text-sm font-mono text-amber-400/70">${DEMO_THREAD.monthlyOptimization.toLocaleString()}/mo</span>
                   </div>
-                  <div className="flex flex-col gap-1.5 text-xs text-white/30 font-mono">
-                    <span>EXE-001 Payment authorization — $2,500,000</span>
-                    <span>EXE-002 Account configuration — ${DEMO_THREAD.criticalAlert.amount.toLocaleString()}</span>
+                  <div className="flex flex-col gap-1.5 text-[10px] sm:text-xs text-white/30 font-mono">
+                    <span className="truncate">EXE-001 Payment authorization — $2,500,000</span>
+                    <span className="truncate">EXE-002 Account configuration — ${DEMO_THREAD.criticalAlert.amount.toLocaleString()}</span>
                   </div>
                 </motion.div>
 
                 {/* Govern */}
-                <motion.div variants={fadeUp} className="group relative rounded-[32px] border border-blue-500/15 bg-white/[0.02] p-6 md:p-8 flex flex-col gap-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(59,130,246,0.1)] overflow-hidden">
+                <motion.div ref={spotGovern.ref} onPointerMove={spotGovern.onPointerMove} variants={fadeUp} className="group relative rounded-[32px] border border-blue-500/15 bg-white/[0.02] p-6 md:p-8 flex flex-col gap-5 shadow-[0_1px_2px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.03)] transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_0_24px_rgba(59,130,246,0.1)] overflow-hidden">
+                  <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[32px] opacity-0 transition-opacity duration-300 group-hover:opacity-100 hidden md:block" style={{ background: 'radial-gradient(420px circle at var(--spot-x,50%) var(--spot-y,50%), rgba(59,130,246,0.08), transparent 60%)' }} />
                   <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                   <div className="flex items-center gap-2">
                     <Scale size={16} className="text-blue-400" />
-                    <span className="text-xs font-semibold uppercase tracking-widest text-white/30">Govern</span>
+                    <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-widest text-white/30">Govern</span>
                   </div>
-                  <div className="flex items-baseline gap-4">
+                  <div className="flex items-baseline gap-4 flex-wrap">
                     <div>
                       <CountUp value={DEMO_THREAD.decisionsAudited} locale className="text-2xl font-mono font-semibold text-white/90" />
-                      <span className="text-xs text-white/30 ml-1.5">audited</span>
+                      <span className="text-[10px] sm:text-xs text-white/30 ml-1.5">audited</span>
                     </div>
                     <div>
                       <span className="text-2xl font-mono font-semibold text-white/90">{trust.auditCoveragePercent}%</span>
-                      <span className="text-xs text-white/30 ml-1.5">fully audited</span>
+                      <span className="text-[10px] sm:text-xs text-white/30 ml-1.5">fully audited</span>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-1 text-[11px] text-white/25 font-mono overflow-hidden max-h-16">
-                    <span>GV-2026-0319-847 Transaction review · 0.97</span>
-                    <span>GV-2026-0319-846 Risk assessment flag · {DEMO_THREAD.criticalAlert.confidence}</span>
-                    <span>GV-2026-0319-845 Account approval · 0.89</span>
+                  <div className="hidden sm:flex flex-col gap-1 text-[11px] text-white/25 font-mono overflow-hidden max-h-16">
+                    <span className="truncate">GV-2026-0319-847 Transaction review · 0.97</span>
+                    <span className="truncate">GV-2026-0319-846 Risk assessment flag · {DEMO_THREAD.criticalAlert.confidence}</span>
+                    <span className="truncate">GV-2026-0319-845 Account approval · 0.89</span>
                   </div>
                 </motion.div>
               </div>
@@ -466,7 +497,7 @@ export default function Landing() {
           </section>
 
           {/* ═══ Section 6: Final CTA + Footer ═══ */}
-          <section className="relative w-full py-24 px-6">
+          <section className="relative w-full py-32 md:py-40 px-6">
             <motion.div
               className="max-w-2xl mx-auto text-center"
               variants={stagger}
@@ -488,7 +519,7 @@ export default function Landing() {
         </main>
 
         {/* Footer */}
-        <footer className="w-full border-t border-white/[0.06] py-12 px-6">
+        <footer className="w-full border-t border-white/[0.06] py-16 md:py-20 px-6">
           <div className="max-w-5xl mx-auto flex flex-col gap-6 items-center text-center">
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/40">
               <Link to="/deck" className="hover:text-white transition-colors">Presentation</Link>

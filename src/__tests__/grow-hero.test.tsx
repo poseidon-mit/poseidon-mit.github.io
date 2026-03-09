@@ -16,9 +16,18 @@ import { useReducedMotionSafe } from '../hooks/useReducedMotionSafe'
 
 const SIMULATION_DATA = [
   { year: 'Now', baseline: 130000, aiOptimized: 130000 },
-  { year: '1Y', baseline: 133900, aiOptimized: 138400 },
-  { year: '2Y', baseline: 137917, aiOptimized: 147400 },
-  { year: '3Y', baseline: 142055, aiOptimized: 156037 },
+  { year: '3M',  baseline: 130975, aiOptimized: 132100 },
+  { year: '6M',  baseline: 131950, aiOptimized: 134200 },
+  { year: '9M',  baseline: 132925, aiOptimized: 136300 },
+  { year: '1Y',  baseline: 133900, aiOptimized: 138400 },
+  { year: '15M', baseline: 134904, aiOptimized: 140650 },
+  { year: '18M', baseline: 135909, aiOptimized: 142900 },
+  { year: '21M', baseline: 136913, aiOptimized: 145150 },
+  { year: '2Y',  baseline: 137917, aiOptimized: 147400 },
+  { year: '27M', baseline: 138951, aiOptimized: 149559 },
+  { year: '30M', baseline: 139986, aiOptimized: 151718 },
+  { year: '33M', baseline: 141020, aiOptimized: 153878 },
+  { year: '3Y',  baseline: 142055, aiOptimized: 156037 },
 ]
 
 const DEFAULT_PROPS = {
@@ -27,17 +36,7 @@ const DEFAULT_PROPS = {
   avgConfidence: 0.87,
   recommendationCount: 8,
   simulationData: SIMULATION_DATA,
-  currentPercentile: 23,
-  projectedPercentile: 67,
-  cohortBracket: 'your income bracket',
-  topRecommendation: {
-    rank: 1,
-    title: 'Switch to High-Yield Savings',
-    monthlySavings: 70,
-    confidence: 0.93,
-  },
   onViewRecommendations: vi.fn(),
-  onQueueTopAction: vi.fn(),
 }
 
 function renderHero(overrides: Partial<typeof DEFAULT_PROPS> = {}) {
@@ -62,27 +61,8 @@ describe('GrowGrowthAdvantage', () => {
     expect(props.onViewRecommendations).toHaveBeenCalledOnce()
   })
 
-  it('fires onQueueTopAction when Queue for Execution button is clicked', () => {
-    const { props } = renderHero()
-    const btn = screen.getByRole('button', { name: /queue for execution/i })
-    fireEvent.click(btn)
-    expect(props.onQueueTopAction).toHaveBeenCalledOnce()
-  })
-
-  it('renders strategy impact section', () => {
-    renderHero()
-    expect(screen.getByText(/Strategy Impact/)).toBeInTheDocument()
-  })
-
-  it('renders top recommendation title and monthly savings', () => {
-    renderHero()
-    expect(screen.getByText('Switch to High-Yield Savings')).toBeInTheDocument()
-    expect(screen.getByText(/\$70\/mo/)).toBeInTheDocument()
-  })
-
   it('renders summary stats', () => {
     renderHero()
-    // $444/mo appears in both summary stats and KPI card
     expect(screen.getAllByText(/\$444\/mo/).length).toBeGreaterThanOrEqual(1)
     expect(screen.getAllByText(/8 recommendations/).length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText(/87% avg confidence/)).toBeInTheDocument()
@@ -92,17 +72,6 @@ describe('GrowGrowthAdvantage', () => {
     renderHero()
     const chart = screen.getByRole('img', { name: /3-year growth/i })
     expect(chart).toBeInTheDocument()
-  })
-
-  it('hides Next Best Action pane when topRecommendation is null', () => {
-    renderHero({ topRecommendation: null, onQueueTopAction: null })
-    expect(screen.queryByText('Switch to High-Yield Savings')).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /queue for execution/i })).not.toBeInTheDocument()
-  })
-
-  it('omits cohort acceptance rate when not provided', () => {
-    renderHero()
-    expect(screen.queryByText(/tier adoption rate/)).not.toBeInTheDocument()
   })
 
   it('hides replay and delta buttons when reduced motion is preferred', () => {
@@ -128,27 +97,13 @@ describe('GrowGrowthAdvantage', () => {
       expect(screen.queryByRole('button', { name: /see poseidon delta/i })).not.toBeInTheDocument()
     })
 
-    it('renders active portfolios count after optimize', () => {
-      renderHero({ cohortAcceptanceRate: 0.89, platformProfileCount: 184290 })
-      fireEvent.click(screen.getByRole('button', { name: /see poseidon delta/i }))
-      expect(screen.getByText(/184,290/)).toBeInTheDocument()
-    })
-
-    it('renders platform profile count after optimize', () => {
-      renderHero({ platformProfileCount: 184290 })
-      fireEvent.click(screen.getByRole('button', { name: /see poseidon delta/i }))
-      expect(screen.getByText(/184,290/)).toBeInTheDocument()
-      expect(screen.getByText(/active portfolios/)).toBeInTheDocument()
-    })
-
     it('replay click does not regress visible content', () => {
-      renderHero({ cohortAcceptanceRate: 0.89, platformProfileCount: 184290 })
+      renderHero()
       fireEvent.click(screen.getByRole('button', { name: /see poseidon delta/i }))
       fireEvent.click(screen.getByRole('button', { name: /replay/i }))
       act(() => vi.advanceTimersByTime(1200))
       expect(screen.getByText(/\+\$13,982/)).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /view all/i })).toBeInTheDocument()
-      expect(screen.getByText(/184,290/)).toBeInTheDocument()
     })
   })
 })
@@ -180,37 +135,9 @@ describe('GrowPage integration', () => {
     expect(window.location.pathname).toBe('/grow/recommendations')
   })
 
-  it('navigates to /execute when Queue for Execution is clicked', () => {
-    renderGrowPage()
-    const btn = screen.getByRole('button', { name: /queue for execution/i })
-    fireEvent.click(btn)
-    expect(window.location.pathname).toBe('/execute')
-  })
-
   it('derives totalMonthlySavings from RECOMMENDATIONS_SUMMARY', () => {
     renderGrowPage()
     const expected = RECOMMENDATIONS_SUMMARY.reduce((s, r) => s + r.monthly, 0)
-    // $X/mo appears in both summary stats and KPI card
     expect(screen.getAllByText(new RegExp(`\\$${expected.toLocaleString()}/mo`)).length).toBeGreaterThanOrEqual(1)
-  })
-
-  it('dismiss replaces top recommendation with next best', () => {
-    renderGrowPage()
-    // Get current top recommendation title
-    const sorted = [...RECOMMENDATIONS_SUMMARY].sort((a, b) => a.rank - b.rank)
-    const firstTitle = sorted[0].title
-    const secondTitle = sorted[1]?.title
-
-    // Verify the top recommendation is displayed
-    expect(screen.getByText(firstTitle)).toBeInTheDocument()
-
-    // Click "Not useful"
-    const dismissBtn = screen.getByRole('button', { name: /not useful/i })
-    fireEvent.click(dismissBtn)
-
-    // The first recommendation should be gone and second should appear
-    if (secondTitle) {
-      expect(screen.getByText(secondTitle)).toBeInTheDocument()
-    }
   })
 })

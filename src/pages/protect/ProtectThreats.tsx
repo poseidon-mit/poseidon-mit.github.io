@@ -8,8 +8,9 @@ import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { cn } from '@/lib/utils'
+import { CARD_TIER_STYLES, focusGradientStyle, type CardTier } from '@/lib/card-variants'
 import { THREATS, severityConfig } from './protect-data'
-import type { ThreatRow } from './protect-data'
+import type { ThreatRow, ThreatSeverity } from './protect-data'
 import { useDismissedAlerts } from './useDismissedAlerts'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 
@@ -19,6 +20,12 @@ const SORT_LABELS: Record<SortMode, string> = {
   critical: 'Critical first',
   confidence: 'Highest confidence',
   recent: 'Most recent',
+}
+
+function getThreatTier(severity: ThreatSeverity): CardTier {
+  if (severity === 'Critical') return 'focus'
+  if (severity === 'High') return 'standard'
+  return 'compact'
 }
 
 export default function ProtectThreatsPage() {
@@ -160,15 +167,15 @@ function SpotlightCard({ threat }: { threat: ThreatRow }) {
       {/* Header row */}
       <div className="flex items-center gap-3 flex-wrap">
         <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center border shrink-0"
+          className="w-12 h-12 rounded-2xl flex items-center justify-center border shrink-0"
           style={{
             borderColor: `color-mix(in srgb, ${config.color} 30%, transparent)`,
             background: `color-mix(in srgb, ${config.color} 10%, transparent)`,
           }}
         >
-          <AlertTriangle size={16} style={{ color: config.color }} />
+          <AlertTriangle size={20} style={{ color: config.color }} />
         </div>
-        <span className="text-base md:text-lg font-medium text-white/90">{threat.counterparty}</span>
+        <span className="text-base md:text-lg font-semibold text-white/90">{threat.counterparty}</span>
         <span
           className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border"
           style={{
@@ -181,17 +188,17 @@ function SpotlightCard({ threat }: { threat: ThreatRow }) {
         </span>
       </div>
 
-      {/* Full description */}
-      <p className="text-sm text-white/60 leading-relaxed">{threat.description}</p>
-
-      {/* Meta row */}
-      <div className="flex items-center gap-3 text-sm text-white/40 flex-wrap">
-        <span className="font-mono font-bold text-white/70">{threat.amount}</span>
-        <span>·</span>
-        <span>{threat.time}</span>
-        <span>·</span>
-        <span style={{ color: config.color }}>{Math.round(threat.confidence * 100)}% confidence</span>
+      {/* Structured data row */}
+      <div className="flex items-center gap-4 flex-wrap">
+        <span className="text-lg font-mono font-bold text-white/90">{threat.amount}</span>
+        <span className="text-sm text-white/55">{threat.time}</span>
+        <span className="text-sm font-semibold" style={{ color: config.color }}>
+          {Math.round(threat.confidence * 100)}% confidence
+        </span>
       </div>
+
+      {/* Description */}
+      <p className="text-sm text-white/55 leading-relaxed">{threat.description}</p>
 
       {/* Full-width CTA */}
       <Link
@@ -211,27 +218,36 @@ function SpotlightCard({ threat }: { threat: ThreatRow }) {
 
 function ThreatCard({ threat }: { threat: ThreatRow }) {
   const config = severityConfig[threat.severity]
+  const tier = getThreatTier(threat.severity)
+  const styles = CARD_TIER_STYLES[tier]
 
   return (
     <div
-      className="glass-card glass-card-overlay rounded-[20px] p-5 lg:p-6 flex items-center gap-4 hover:border-white/[0.12] transition-colors border-l-2"
-      style={{ borderLeftColor: config.color }}
+      className={cn(
+        'glass-card glass-card-overlay rounded-[20px] flex items-center hover:border-white/[0.12] transition-colors border-l-2',
+        styles.padding,
+        styles.gap,
+      )}
+      style={{
+        borderLeftColor: config.color,
+        ...(tier === 'focus' ? focusGradientStyle(config.color) : {}),
+      }}
     >
       {/* Severity icon */}
       <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center border shrink-0"
+        className={cn(styles.iconBoxSize, 'flex items-center justify-center border shrink-0')}
         style={{
           borderColor: `color-mix(in srgb, ${config.color} 30%, transparent)`,
           background: `color-mix(in srgb, ${config.color} 10%, transparent)`,
         }}
       >
-        <AlertTriangle size={16} style={{ color: config.color }} />
+        <AlertTriangle size={styles.iconSize} style={{ color: config.color }} />
       </div>
 
       {/* Info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap mb-1">
-          <span className="text-sm font-medium text-white/90 truncate">{threat.counterparty}</span>
+          <span className={cn('text-white/90 truncate', styles.titleSize)}>{threat.counterparty}</span>
           <span
             className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border"
             style={{
@@ -243,29 +259,49 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
             {threat.severity}
           </span>
         </div>
-        <p className="text-xs text-white/40 mb-1 truncate">{threat.description}</p>
-        <div className="flex items-center gap-3 text-xs text-white/40 flex-wrap">
-          <span className="font-mono font-bold text-white/70">{threat.amount}</span>
-          <span>·</span>
-          <span>{threat.time}</span>
-          <span>·</span>
+
+        {/* Focus tier: show description */}
+        {tier === 'focus' && (
+          <p className="text-sm text-white/55 leading-relaxed mb-1.5 line-clamp-2">{threat.description}</p>
+        )}
+
+        {/* Structured meta */}
+        <div className={cn('flex items-center gap-3 flex-wrap', styles.metaSize)}>
+          <span className={cn(styles.amountSize, 'text-white/80')}>{threat.amount}</span>
+          <span className="text-white/40">·</span>
+          <span className="text-white/55">{threat.time}</span>
+          <span className="text-white/40">·</span>
           <span style={{ color: config.color }}>{Math.round(threat.confidence * 100)}% confidence</span>
         </div>
       </div>
 
       {/* CTA */}
-      <Link
-        to={`/protect/alert-detail?alertId=${threat.id}`}
-        className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
-        style={{
-          borderColor: 'color-mix(in srgb, var(--engine-protect) 30%, transparent)',
-          color: 'var(--engine-protect)',
-          background: 'color-mix(in srgb, var(--engine-protect) 10%, transparent)',
-        }}
-      >
-        Investigate
-        <ArrowRight size={12} />
-      </Link>
+      {tier === 'focus' ? (
+        <Link
+          to={`/protect/alert-detail?alertId=${threat.id}`}
+          className={cn(
+            'shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors',
+            'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950',
+            'hover:from-emerald-400 hover:to-cyan-400',
+          )}
+        >
+          Investigate
+          <ArrowRight size={14} />
+        </Link>
+      ) : (
+        <Link
+          to={`/protect/alert-detail?alertId=${threat.id}`}
+          className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
+          style={{
+            borderColor: 'color-mix(in srgb, var(--engine-protect) 30%, transparent)',
+            color: 'var(--engine-protect)',
+            background: 'color-mix(in srgb, var(--engine-protect) 10%, transparent)',
+          }}
+        >
+          Investigate
+          <ArrowRight size={12} />
+        </Link>
+      )}
     </div>
   )
 }

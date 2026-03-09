@@ -556,7 +556,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionLabel: 'Review in Execute',
     primaryActionPath: '/execute',
     first5sMessage: 'AI recommendations ranked by impact and confidence.',
-    governance: { auditId: 'GV-2026-0216-GROW-RC', pageContext: 'growth recommendations', engine: 'grow' },
+    governance: { auditId: 'GV-2026-0216-GROW-RC', pageContext: 'growth recommendations', engine: 'grow', showFooter: false },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/grow/recommendation': routeMeta({
@@ -586,7 +586,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionPath: '/govern/audit',
     first5sMessage: 'Approve high-impact actions with context.',
     demoPriority: 'P0',
-    governance: { auditId: 'GV-2026-0216-EXEC', pageContext: 'this execution batch', engine: 'execute', showFooter: true },
+    governance: { auditId: 'GV-2026-0216-EXEC', pageContext: 'this execution batch', engine: 'execute', showFooter: false },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/execute/approval': routeMeta({
@@ -629,7 +629,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionPath: '/execute/approval',
     first5sMessage: 'Review all pending actions awaiting your approval.',
     demoPriority: 'P0',
-    governance: { auditId: 'GV-2026-0216-EXEC-QUE', pageContext: 'pending action queue', engine: 'execute' },
+    governance: { auditId: 'GV-2026-0216-EXEC-QUE', pageContext: 'pending action queue', engine: 'execute', showFooter: false },
     evidence: EVIDENCE_SUMMARY,
   }),
 
@@ -645,7 +645,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionPath: '/govern/audit',
     first5sMessage: 'Trace every decision with audit-ready transparency.',
     demoPriority: 'P0',
-    governance: { auditId: 'GV-2026-0216-GOV', pageContext: 'governance decisions', engine: 'govern', showFooter: true },
+    governance: { auditId: 'GV-2026-0216-GOV', pageContext: 'governance decisions', engine: 'govern', showFooter: false },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/govern/trust': routeMeta({
@@ -673,7 +673,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionLabel: 'Back to govern overview',
     primaryActionPath: '/govern',
     first5sMessage: 'Review immutable decision ledger entries.',
-    governance: { auditId: 'GV-2026-0216-GOV-AUD', pageContext: 'audit ledger', engine: 'govern' },
+    governance: { auditId: 'GV-2026-0216-GOV-AUD', pageContext: 'audit ledger', engine: 'govern', showFooter: false },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/govern/audit-detail': routeMeta({

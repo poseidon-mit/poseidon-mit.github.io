@@ -75,16 +75,20 @@ export function GovernImmutableLedger({
 
         {/* Engine Breakdown Bar */}
         <div className="flex flex-col gap-2 pt-2">
-          <div className="flex h-3 rounded-full overflow-hidden" role="img" aria-label="Engine breakdown">
+          <div className="flex h-5 rounded-full overflow-hidden" role="img" aria-label="Engine breakdown">
             {engineBreakdown.map((seg) => (
               <div
                 key={seg.engine}
-                className="transition-all"
+                className="transition-all flex items-center justify-center"
                 style={{
                   width: `${seg.percent}%`,
                   backgroundColor: seg.color,
                 }}
-              />
+              >
+                {seg.percent >= 20 && (
+                  <span className="text-[9px] font-bold text-slate-950">{seg.percent}%</span>
+                )}
+              </div>
             ))}
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] uppercase tracking-widest text-white/40">
@@ -102,8 +106,8 @@ export function GovernImmutableLedger({
 
       </HeroBento.Action>
 
-      <HeroBento.Proof>
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
+      <HeroBento.Proof className="gap-4">
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-white/40">
           Decision Audit Trail
         </span>
 

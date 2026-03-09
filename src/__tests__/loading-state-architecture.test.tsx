@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import { screen, fireEvent } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import { renderWithRouter } from '../test/render-with-router'
@@ -31,13 +31,10 @@ describe('Loading state architecture follows the 3-class contract', () => {
     expect(layoutSrc).toContain('PageSkeleton')
   })
 
-  test('Inline state change on Execute page does not trigger a loading progressbar', () => {
+  test('Execute page renders without a loading progressbar', () => {
     renderWithRouter(<Execute />, { initialPath: '/execute' })
 
-    const selectAllCheckbox = screen.getByText(/Select all/i)
-    fireEvent.click(selectAllCheckbox)
-
-    // After a simple inline state toggle, no loading indicator should appear
+    // No loading indicator should appear on render
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument()
   })
 })

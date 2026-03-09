@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
+import { CARD_TIER_STYLES, focusGradientStyle, type CardTier } from '@/lib/card-variants'
 import { selectGovernAuditEntries, selectSpotlightAuditEntry } from '@/domain/poseidon-universe'
 
 /* ── Types ── */
@@ -44,6 +45,12 @@ const statusCfg: Record<DecisionStatus, { color: string; bg: string; icon: Lucid
   Verified: { color: 'var(--engine-govern)', bg: 'rgba(59,130,246,0.12)', icon: CheckCircle2 },
   'Pending review': { color: 'var(--state-warning)', bg: 'rgba(245,158,11,0.12)', icon: Clock },
   Flagged: { color: 'var(--state-critical)', bg: 'rgba(239,68,68,0.12)', icon: AlertTriangle },
+}
+
+function getAuditTier(status: DecisionStatus): CardTier {
+  if (status === 'Flagged') return 'focus'
+  if (status === 'Pending review') return 'standard'
+  return 'compact'
 }
 
 const toTimestamp = (iso: string) =>
@@ -160,7 +167,7 @@ export default function GovernAuditPage() {
           </div>
 
           {filtered.length < entries.length && (
-            <p className="text-xs text-white/30">
+            <p className="text-xs text-white/40">
               Showing {filtered.length} of {entries.length}
             </p>
           )}
@@ -191,7 +198,7 @@ export default function GovernAuditPage() {
               </span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-white/80 font-medium">{spotlightEntry.action}</p>
-                <div className="flex items-center gap-3 mt-1 text-xs text-white/40">
+                <div className="flex items-center gap-3 mt-1 text-xs text-white/55">
                   <span className="font-mono">{spotlightEntry.id}</span>
                   <span>{Math.round(spotlightEntry.confidence * 100)}% confidence</span>
                   <span>{spotlightEntry.evidence} evidence</span>
@@ -228,9 +235,30 @@ export default function GovernAuditPage() {
         </motion.div>
       ) : (
         <motion.div variants={fadeUp} className="flex flex-col gap-3">
-          {filtered.map(entry => (
+          {/* Flagged + Pending review entries — full width stack */}
+          {filtered.filter(e => e.status !== 'Verified').map(entry => (
             <AuditEntryCard key={entry.id} entry={entry} />
           ))}
+
+          {/* Separator between non-verified and verified */}
+          {filtered.some(e => e.status !== 'Verified') && filtered.some(e => e.status === 'Verified') && (
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-px bg-white/[0.08]" />
+              <span className="text-xs font-mono text-white/30 uppercase tracking-widest shrink-0">
+                {filtered.filter(e => e.status === 'Verified').length} verified
+              </span>
+              <div className="flex-1 h-px bg-white/[0.08]" />
+            </div>
+          )}
+
+          {/* Verified entries — 2-col compact grid */}
+          {filtered.some(e => e.status === 'Verified') && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {filtered.filter(e => e.status === 'Verified').map(entry => (
+                <CompactAuditCard key={entry.id} entry={entry} />
+              ))}
+            </div>
+          )}
         </motion.div>
       )}
     </motion.main>
@@ -247,24 +275,64 @@ type AuditEntryRow = {
   status: DecisionStatus
 }
 
+/** Compact card for verified entries — single row, no confidence/evidence */
+function CompactAuditCard({ entry }: { entry: AuditEntryRow }) {
+  return (
+    <Link
+      to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
+      className="glass-card glass-card-overlay rounded-[16px] p-4 flex items-center gap-3 hover:border-white/[0.12] transition-colors border-l-2 group"
+      style={{ borderLeftColor: typeColor[entry.type] }}
+    >
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-xs font-mono font-medium" style={{ color: 'var(--engine-govern)' }}>
+            {entry.id}
+          </span>
+          <span
+            className="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-widest border border-transparent"
+            style={{ background: typeBg[entry.type], color: typeColor[entry.type] }}
+          >
+            {entry.type}
+          </span>
+        </div>
+        <span className="text-sm text-white/70 truncate block">{entry.action}</span>
+        <span className="text-[10px] text-white/40 mt-1 block">{entry.timestamp}</span>
+      </div>
+      <ArrowRight size={14} className="shrink-0 text-white/30 group-hover:text-[var(--engine-govern)] transition-colors" />
+    </Link>
+  )
+}
+
 function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
   const sCfg = statusCfg[entry.status]
   const StatusIcon = sCfg.icon
+  const tier = getAuditTier(entry.status)
+  const styles = CARD_TIER_STYLES[tier]
+
+  // Border-left colored by engine type (not uniform govern-blue)
+  const borderColor = typeColor[entry.type]
 
   return (
     <div
-      className="glass-card glass-card-overlay rounded-[20px] p-5 lg:p-6 flex items-center gap-4 hover:border-white/[0.12] transition-colors border-l-2"
-      style={{ borderLeftColor: 'var(--engine-govern)' }}
+      className={cn(
+        'glass-card glass-card-overlay rounded-[20px] flex items-center hover:border-white/[0.12] transition-colors border-l-2',
+        styles.padding,
+        styles.gap,
+      )}
+      style={{
+        borderLeftColor: borderColor,
+        ...(tier === 'focus' ? focusGradientStyle(sCfg.color) : {}),
+      }}
     >
       {/* Type icon */}
       <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center border shrink-0"
+        className={cn(styles.iconBoxSize, 'flex items-center justify-center border shrink-0')}
         style={{
           borderColor: `color-mix(in srgb, ${typeColor[entry.type]} 30%, transparent)`,
           background: typeBg[entry.type],
         }}
       >
-        <CircleDot size={16} style={{ color: typeColor[entry.type] }} />
+        <CircleDot size={styles.iconSize} style={{ color: typeColor[entry.type] }} />
       </div>
 
       {/* Info */}
@@ -280,19 +348,30 @@ function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
             {entry.type}
           </span>
           <span
-            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest"
+            className={cn(
+              'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest',
+              tier === 'focus' ? 'text-[10px]' : '',
+            )}
             style={{ background: sCfg.bg, color: sCfg.color }}
           >
-            <StatusIcon size={9} />
+            <StatusIcon size={tier === 'focus' ? 11 : 9} />
             {entry.status}
           </span>
-          <span className="text-[10px] text-white/30 ml-auto shrink-0">{entry.timestamp}</span>
+          <span className="text-[10px] text-white/40 ml-auto shrink-0">{entry.timestamp}</span>
         </div>
-        <p className="text-sm text-white/70 truncate mb-1">{entry.action}</p>
-        <div className="flex items-center gap-3 text-xs text-white/40">
-          <span>{Math.round(entry.confidence * 100)}% confidence</span>
-          <span>·</span>
-          <span>{entry.evidence} evidence</span>
+
+        {/* Action description — truncated for compact, visible for focus/standard */}
+        <p className={cn(
+          'text-white/70 mb-1',
+          tier === 'compact' ? 'text-xs truncate' : 'text-sm',
+        )}>
+          {entry.action}
+        </p>
+
+        <div className={cn('flex items-center gap-3', styles.metaSize)}>
+          <span className="text-white/55">{Math.round(entry.confidence * 100)}% confidence</span>
+          <span className="text-white/40">·</span>
+          <span className="text-white/55">{entry.evidence} evidence</span>
         </div>
       </div>
 

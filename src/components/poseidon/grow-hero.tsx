@@ -10,15 +10,13 @@
  * - HeroKpiStrip: 3 KPI cards (savings, cohort, top action)
  */
 import { useState, useMemo, useCallback } from 'react'
-import { ArrowRight, Zap, RotateCcw } from 'lucide-react'
+import { ArrowRight, RotateCcw } from 'lucide-react'
 import {
-  AreaChart, Area, Line, XAxis, YAxis,
+  AreaChart, Area, Line, XAxis, YAxis, Tooltip, CartesianGrid,
   ReferenceDot, ReferenceLine, Label, ResponsiveContainer,
 } from 'recharts'
 import { HeroBento } from './hero-bento'
 import { ListPortalBar } from './list-portal-bar'
-import { CostOfInaction } from './cost-of-inaction'
-import { ConfidenceIndicator } from './confidence-indicator'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
@@ -31,20 +29,7 @@ export interface GrowGrowthAdvantageProps {
   avgConfidence: number
   recommendationCount: number
   simulationData: { year: string; baseline: number; aiOptimized: number }[]
-  currentPercentile: number
-  projectedPercentile: number
-  cohortBracket: string
-  topRecommendation: {
-    rank: number
-    title: string
-    monthlySavings: number
-    confidence: number
-  } | null
   onViewRecommendations: () => void
-  onQueueTopAction: (() => void) | null
-  onDismissTopAction?: () => void
-  cohortAcceptanceRate?: number
-  platformProfileCount?: number
 }
 
 /* ── Helpers ── */
@@ -158,32 +143,42 @@ function HeroChart({
   const midBandY = finalBaseline + (finalAiOptimized - finalBaseline) / 2
   return (
     <div
-      className="h-[320px] md:h-[400px]"
+      className="h-full min-h-[280px]"
       role="img"
       aria-label={`3-year growth: baseline $${finalBaseline.toLocaleString()}, AI optimized $${finalAiOptimized.toLocaleString()}, advantage +$${(finalAiOptimized - finalBaseline).toLocaleString()}`}
     >
       <ResponsiveContainer key={replayKey} width="100%" height="100%">
-        <AreaChart data={chartData} margin={{ top: 10, right: 55, left: 5, bottom: 5 }}>
+        <AreaChart data={chartData} margin={{ top: 20, right: 65, left: 10, bottom: 10 }}>
           <defs>
             <linearGradient id="advantageZoneGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="var(--engine-grow)" stopOpacity={0.35} />
               <stop offset="100%" stopColor="var(--engine-grow)" stopOpacity={0.05} />
             </linearGradient>
           </defs>
+          <CartesianGrid
+            horizontal={true}
+            vertical={false}
+            stroke="rgba(255,255,255,0.04)"
+            strokeDasharray="4 4"
+          />
           <XAxis
             dataKey="year"
-            tick={{ fill: '#64748B', fontSize: 11 }}
+            tick={{ fill: '#94A3B8', fontSize: 11 }}
             axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
             tickLine={false}
+            interval={1}
           />
           <YAxis
             width={50}
-            tick={{ fill: '#64748B', fontSize: 10 }}
+            tick={{ fill: '#94A3B8', fontSize: 10 }}
             tickFormatter={(v: number) => `$${Math.round(v / 1000)}k`}
             axisLine={false}
             tickLine={false}
-            domain={[(d: number) => Math.round(d * 0.95), (d: number) => Math.round(d * 1.03)]}
+            domain={[128000, 160000]}
+            ticks={[130000, 140000, 150000, 160000]}
           />
+
+          <Tooltip content={<ChartTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.1)' }} />
 
           {/* Layer 1: invisible baseline area (lifts the band up) */}
           <Area
@@ -250,140 +245,6 @@ function HeroChart({
   )
 }
 
-/* ── HeroKpiStrip ── */
-
-function HeroKpiStrip({
-  totalMonthlySavings,
-  recommendationCount,
-  currentPercentile,
-  projectedPercentile,
-  cohortBracket,
-  topRecommendation,
-  onQueueTopAction,
-  onDismissTopAction,
-  cohortAcceptanceRate,
-  platformProfileCount,
-  isOptimized,
-}: {
-  totalMonthlySavings: number
-  recommendationCount: number
-  currentPercentile: number
-  projectedPercentile: number
-  cohortBracket: string
-  topRecommendation: GrowGrowthAdvantageProps['topRecommendation']
-  onQueueTopAction: (() => void) | null
-  onDismissTopAction?: () => void
-  cohortAcceptanceRate?: number
-  platformProfileCount?: number
-  isOptimized: boolean
-}) {
-  return (
-    <div className="flex flex-col gap-4">
-      {/* Card 1: Savings */}
-      <div className="bg-white/[0.02] rounded-2xl p-5 md:p-6 flex flex-col gap-2">
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
-          Monthly Optimization
-        </span>
-        <span className="text-xl font-mono font-semibold tabular-nums" style={{ color: 'var(--engine-grow)' }}>
-          ${totalMonthlySavings.toLocaleString()}/mo
-        </span>
-        <span className="text-xs text-white/40">
-          {recommendationCount} recommendations
-        </span>
-      </div>
-
-      {/* Card 2: Adoption Impact */}
-      <div className="bg-white/[0.02] rounded-2xl p-5 md:p-6 flex flex-col gap-3">
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
-          Strategy Impact
-        </span>
-        <p className="text-sm text-white/70 leading-relaxed">
-          Accounts using these strategies gained{' '}
-          <span className="font-mono font-semibold" style={{ color: 'var(--engine-grow)' }}>
-            +${totalMonthlySavings > 0 ? (totalMonthlySavings * 12).toLocaleString() : '—'}/yr
-          </span>{' '}
-          on average
-        </p>
-        {/* Potential bar */}
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center justify-between text-[10px]">
-            <span className="text-white/30">Current position</span>
-            <span className="font-mono font-semibold" style={{ color: 'var(--engine-grow)' }}>
-              +${totalMonthlySavings > 0 ? (totalMonthlySavings * 12).toLocaleString() : '—'}/yr potential
-            </span>
-          </div>
-          <div className="relative h-1.5 rounded-full bg-white/[0.04]">
-            <div
-              className="absolute inset-y-0 left-0 rounded-full"
-              style={{
-                width: `${Math.min(Math.round((totalMonthlySavings * 12 / (totalMonthlySavings * 12 + 5000)) * 100), 90)}%`,
-                background: 'linear-gradient(to right, color-mix(in srgb, var(--engine-grow) 40%, transparent), var(--engine-grow))',
-              }}
-            />
-          </div>
-        </div>
-        <div className={cn(
-          'transition-all duration-700 delay-300',
-          isOptimized ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'
-        )}>
-          {platformProfileCount != null && (
-            <p className="text-[10px] text-white/25 font-mono mt-1">
-              Based on {platformProfileCount.toLocaleString()} active portfolios
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* Card 3: Top Action */}
-      {topRecommendation && onQueueTopAction && (
-        <div className="bg-white/[0.02] rounded-2xl p-5 md:p-6 flex flex-col gap-3">
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
-            Next Best Action
-          </span>
-          <div className="flex items-start gap-3">
-            <div
-              className="flex-shrink-0 w-8 h-8 rounded-full border border-[var(--engine-grow)]/30 bg-[var(--engine-grow)]/10 flex items-center justify-center text-xs font-semibold tabular-nums"
-              style={{ color: 'var(--engine-grow)' }}
-            >
-              {topRecommendation.rank}
-            </div>
-            <div className="flex-1 min-w-0 flex flex-col gap-1.5">
-              <p className="text-sm font-semibold text-white/90 leading-snug line-clamp-2">
-                {topRecommendation.title}
-              </p>
-              <span className="text-xs font-mono" style={{ color: 'var(--engine-grow)' }}>
-                ${topRecommendation.monthlySavings}/mo
-              </span>
-              <ConfidenceIndicator value={topRecommendation.confidence} accentColor="var(--engine-grow)" format="percent" />
-            </div>
-          </div>
-          <button
-            onClick={onQueueTopAction}
-            className={cn(
-              buttonVariants({ variant: 'default', size: 'sm' }),
-              'w-full rounded-xl px-5 py-2.5 min-h-[44px]',
-              'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950',
-              'font-semibold tracking-wide text-xs',
-              'hover:from-amber-400 hover:to-yellow-400 transition-all',
-              'flex items-center justify-center gap-2',
-            )}
-          >
-            Queue for Execution <Zap size={14} />
-          </button>
-          {onDismissTopAction && (
-            <button
-              onClick={onDismissTopAction}
-              className="text-[10px] text-white/25 hover:text-white/50 transition-colors self-center"
-            >
-              Not useful
-            </button>
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
-
 /* ═══════════════════════════════════════════════════════
    GROWTH ADVANTAGE HERO
    ═══════════════════════════════════════════════════════ */
@@ -394,15 +255,7 @@ export function GrowGrowthAdvantage({
   avgConfidence,
   recommendationCount,
   simulationData,
-  currentPercentile,
-  projectedPercentile,
-  cohortBracket,
-  topRecommendation,
   onViewRecommendations,
-  onQueueTopAction,
-  onDismissTopAction,
-  cohortAcceptanceRate,
-  platformProfileCount,
 }: GrowGrowthAdvantageProps) {
   const prefersReducedMotion = useReducedMotionSafe()
   const [isOptimized, setIsOptimized] = useState(false)
@@ -432,7 +285,7 @@ export function GrowGrowthAdvantage({
   )
 
   return (
-    <HeroBento engine="grow" className="xl:grid-cols-[2fr_3fr]">
+    <HeroBento engine="grow" className="md:grid-cols-[2fr_3fr]">
       {/* Zone A: Action */}
       <HeroBento.Action>
         <HeroHeadline
@@ -481,21 +334,6 @@ export function GrowGrowthAdvantage({
           totalMonthlySavings={totalMonthlySavings}
         />
 
-        <HeroKpiStrip
-          totalMonthlySavings={totalMonthlySavings}
-          recommendationCount={recommendationCount}
-          currentPercentile={currentPercentile}
-          projectedPercentile={projectedPercentile}
-          cohortBracket={cohortBracket}
-          topRecommendation={topRecommendation}
-          onQueueTopAction={onQueueTopAction}
-          onDismissTopAction={onDismissTopAction}
-          cohortAcceptanceRate={cohortAcceptanceRate}
-          platformProfileCount={platformProfileCount}
-          isOptimized={isOptimized}
-        />
-
-        <CostOfInaction label={`Missing $${projectedGain.toLocaleString()} over 3 years`} severity="high" />
       </HeroBento.Proof>
 
       {/* Zone C: Portal */}
