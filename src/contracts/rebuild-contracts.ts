@@ -130,8 +130,6 @@ export const DEFAULT_CTA_BUDGET: CtaBudget = {
 
 export const TARGET_SCOPE_READY_ROUTES = [
   '/',
-  '/deck',
-  '/share',
   '/signup',
   '/login',
   '/dashboard',
@@ -139,7 +137,6 @@ export const TARGET_SCOPE_READY_ROUTES = [
   '/protect',
   '/protect/alert-detail',
   '/protect/threats',
-  '/protect/dispute',
   '/grow',
   '/grow/goal',
   '/grow/scenarios',
@@ -156,8 +153,6 @@ export const TARGET_SCOPE_READY_ROUTES = [
   '/settings/ai',
   '/settings/integrations',
   '/settings/rights',
-  '/orchestrator',
-  '/test/spectacular',
   '/404',
 ] as const;
 
@@ -403,7 +398,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionPath: '/execute',
     first5sMessage: 'See risk, opportunities, and actions in one screen.',
     demoPriority: 'P0',
-    governance: { auditId: 'GV-2026-0216-DASH', pageContext: 'financial overview', engine: 'dashboard', showFooter: false },
+    governance: { auditId: 'GV-2026-0216-DASH', pageContext: 'financial overview', engine: 'dashboard', showFooter: true },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/dashboard/alerts': routeMeta({
@@ -475,7 +470,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionPath: '/protect/alert-detail',
     first5sMessage: 'Catch financial threats before they escalate.',
     demoPriority: 'P0',
-    governance: { auditId: 'GV-2026-0216-PRT-SIG', pageContext: 'threat signals', engine: 'protect', showFooter: false },
+    governance: { auditId: 'GV-2026-0216-PRT-SIG', pageContext: 'threat signals', engine: 'protect', showFooter: true },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/protect/alert-detail': routeMeta({
@@ -507,21 +502,6 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     evidence: EVIDENCE_SUMMARY,
   }),
 
-  '/protect/dispute': routeMeta({
-    route: '/protect/dispute',
-    screenType: 'app',
-    navType: 'app-shell',
-    parentRoute: '/protect',
-    intent: 'audit',
-    navGroup: 'engine',
-    cognitiveLoad: 'high',
-    primaryActionLabel: 'Return to protect',
-    primaryActionPath: '/protect',
-    first5sMessage: 'Manage the dispute workflow with audit traceability.',
-    governance: { auditId: 'GV-2026-0216-PRT-DSP', pageContext: 'dispute resolution', engine: 'protect' },
-    evidence: EVIDENCE_SUMMARY,
-  }),
-
   '/grow': routeMeta({
     route: '/grow',
     screenType: 'app',
@@ -534,7 +514,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionPath: '/execute',
     first5sMessage: 'Forecast outcomes and compare growth paths.',
     demoPriority: 'P1',
-    governance: { auditId: 'GV-2026-0216-GROW', pageContext: 'growth projections', engine: 'grow', showFooter: false },
+    governance: { auditId: 'GV-2026-0216-GROW', pageContext: 'growth projections', engine: 'grow', showFooter: true },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/grow/goal': routeMeta({
@@ -665,7 +645,7 @@ export const ROUTE_META_CONTRACT: Record<string, RouteMetaContract> = {
     primaryActionPath: '/govern/audit',
     first5sMessage: 'Trace every decision with audit-ready transparency.',
     demoPriority: 'P0',
-    governance: { auditId: 'GV-2026-0216-GOV', pageContext: 'governance decisions', engine: 'govern', showFooter: false },
+    governance: { auditId: 'GV-2026-0216-GOV', pageContext: 'governance decisions', engine: 'govern', showFooter: true },
     evidence: EVIDENCE_SUMMARY,
   }),
   '/govern/trust': routeMeta({
@@ -1004,14 +984,14 @@ export const CROSS_SCREEN_DATA_THREAD: Record<CrossThreadKey, CrossThreadDatum> 
     value: 24,
     displayFormat: '24 flagged',
     ownerRoutes: ['/protect'],
-    description: 'Rolling 30d risk incidents flagged by Protect engine.',
+    description: 'Rolling 30d risk incidents flagged by Protect.',
   },
   avg_monthly_exposure: {
     key: 'avg_monthly_exposure',
     value: 280,
     displayFormat: '$280/mo',
     ownerRoutes: ['/protect'],
-    description: 'Avg monthly loss exposure identified by Protect engine.',
+    description: 'Avg monthly loss exposure identified by Protect.',
   },
   platform_profile_count: {
     key: 'platform_profile_count',

@@ -96,7 +96,7 @@ export default function GrowGoalPage() {
                 <span className="font-mono text-white/90 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] font-medium">${RESERVE_CURRENT.toLocaleString()}</span> of ${RESERVE_TARGET.toLocaleString()}
               </p>
               <p className="text-base text-white/50 tracking-wide mt-4 max-w-xl leading-relaxed">
-                At current allocation rate, the reserve will reach target in approximately <span className="text-white/80 font-medium">3 months</span>.
+                At your current savings rate, the reserve will reach target in approximately <span className="text-white/80 font-medium">3 months</span>.
               </p>
             </div>
           </motion.div>

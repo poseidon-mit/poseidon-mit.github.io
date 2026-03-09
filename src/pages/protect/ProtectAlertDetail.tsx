@@ -359,7 +359,7 @@ export default function ProtectAlertDetailPage() {
               </div>
               <div className="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
                 <button onClick={() => setDisputeState('drafting')} className={cn(buttonVariants({ variant: "default" }), "rounded-2xl px-8 py-4 transition-all font-bold tracking-wide border-none text-white shadow-lg")} style={{ background: severityTheme.color, boxShadow: `0 0 30px ${severityTheme.shadow}` }}>
-                  <span className="flex items-center justify-center gap-2"><XCircle size={18} /> Block & Dispute</span>
+                  <span className="flex items-center justify-center gap-2"><XCircle size={18} /> Block & Report</span>
                 </button>
                 <button onClick={() => { dismiss(alert.id); navigate('/protect') }} className={cn(buttonVariants({ variant: "ghost" }), "rounded-2xl px-6 py-4 border border-white/[0.08] hover:bg-white/[0.05] text-white/50 hover:text-white/70 font-medium tracking-wide transition-all flex items-center justify-center gap-2")}>
                   <CheckCircle2 size={18} /> This was Me

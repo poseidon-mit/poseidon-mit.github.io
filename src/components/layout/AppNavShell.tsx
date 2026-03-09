@@ -3,7 +3,7 @@ import {
   Bell,
   Settings,
 } from 'lucide-react';
-import { Link } from '@/router';
+import { Link, useRouter } from '@/router';
 import { useCommandPalette } from '@/hooks/useCommandPalette';
 import { usePresentationMode } from '@/hooks/usePresentationMode';
 import { usePWA } from '@/hooks/usePWA';
@@ -17,6 +17,8 @@ import { Sidebar, NAV_ITEMS, ENGINE_ITEMS, TONE_CLASSES } from '../navigation/Si
 import { TopBar } from '../navigation/TopBar';
 import { useDemoState } from '@/lib/demo-state/provider';
 import { getPendingExecuteCount } from '@/lib/demo-state/selectors';
+import { useDismissedAlerts } from '@/pages/protect/useDismissedAlerts';
+import { CANONICAL_UNIVERSE } from '@/domain/poseidon-universe/canonical';
 
 /* ─── Helpers ────────────────────────────────────────────── */
 function getActiveSection(path: string) {
@@ -39,6 +41,7 @@ export function AppNavShell({
   const activeSection = useMemo(() => getActiveSection(path), [path]);
   const activeEngine = useMemo(() => getActiveEngine(path), [path]);
   const breadcrumbs = useMemo(() => BREADCRUMB_MAP[path] ?? ['Unknown'], [path]);
+  const { navigate } = useRouter();
   const { isOpen: isPaletteOpen, open: openPalette, close: closePalette } = useCommandPalette();
   const { isPresentation } = usePresentationMode();
   const { isOffline } = usePWA();
@@ -47,6 +50,17 @@ export function AppNavShell({
   const activeToneClasses = activeTone ? TONE_CLASSES[activeTone] : undefined;
 
   const pendingExecuteCount = useMemo(() => getPendingExecuteCount(state), [state]);
+  const { dismissed } = useDismissedAlerts();
+  const activeProtectCount = useMemo(
+    () => CANONICAL_UNIVERSE.entities.protectThreats.filter(
+      t => (t.severity === 'Critical' || t.severity === 'High') && !dismissed.has(t.id)
+    ).length,
+    [dismissed]
+  );
+  const mobileBadges: Record<string, number> = useMemo(() => ({
+    '/protect': activeProtectCount,
+    '/execute': pendingExecuteCount,
+  }), [activeProtectCount, pendingExecuteCount]);
 
   useEffect(() => {
     closePalette();
@@ -99,7 +113,7 @@ export function AppNavShell({
             <Link to="/settings" className={cn("relative flex h-9 w-9 items-center justify-center rounded-lg transition-colors", path === '/settings' ? 'text-slate-50' : 'text-slate-400')} aria-label="Settings">
               <Settings className="h-5 w-5" aria-hidden="true" />
             </Link>
-            <Button variant="ghost" size="icon" className="relative !h-9 !min-h-9 !w-9 rounded-lg !px-0 text-slate-400">
+            <Button variant="ghost" size="icon" className="relative !h-9 !min-h-9 !w-9 rounded-lg !px-0 text-slate-400" onClick={() => navigate('/dashboard/notifications')} aria-label="Notifications">
               <Bell className="h-5 w-5" aria-hidden="true" />
               <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" aria-hidden="true" />
             </Button>
@@ -138,6 +152,11 @@ export function AppNavShell({
               <span className={cn('h-1 w-1 rounded-full transition-opacity duration-150', tone.indicator, isActive ? 'opacity-100' : 'opacity-0')} aria-hidden="true" />
               <div className="relative">
                 <Icon className="h-5 w-5" aria-hidden="true" />
+                {(mobileBadges[item.path] ?? 0) > 0 && (
+                  <span className="absolute -top-1 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-bold text-white" aria-hidden="true">
+                    {mobileBadges[item.path]}
+                  </span>
+                )}
               </div>
               <span className="text-[10px] font-medium">{item.label}</span>
             </Link>

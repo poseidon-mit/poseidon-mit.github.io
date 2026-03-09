@@ -5,6 +5,7 @@
  * Renders: verified badge | audit ID (mono) | "Request human review" button.
  */
 import { ShieldCheck, Shield, ExternalLink, User } from 'lucide-react'
+import type { GovernTraceBinding } from '@/lib/govern-trace'
 
 export interface GovernFooterProps {
   auditId: string
@@ -12,6 +13,7 @@ export interface GovernFooterProps {
   className?: string
   activeTopThreat?: { id: string; counterparty: string; confidence: number } | null
   latestExecuteEvent?: { govId: string; actionId: string; actionTitle: string } | null
+  traceBinding?: GovernTraceBinding
 }
 
 export function GovernFooter({
@@ -20,18 +22,17 @@ export function GovernFooter({
   className = '',
   activeTopThreat,
   latestExecuteEvent,
+  traceBinding,
 }: GovernFooterProps) {
   const streamText = latestExecuteEvent
-    ? `[EXECUTE INITIATED]   ·   [Action: ${latestExecuteEvent.actionTitle}]   ·   [GOVERNANCE LOGGED: ${latestExecuteEvent.govId}]`
+    ? `Action approved   ·   ${latestExecuteEvent.actionTitle}   ·   Logged: ${latestExecuteEvent.govId}`
     : activeTopThreat
-    ? [
-        `[PROTECT MODEL v2.4]`,
-        `[Target: ${activeTopThreat.id} (${activeTopThreat.counterparty})]`,
-        `[Confidence: ${Math.round(activeTopThreat.confidence * 100)}%]`,
-        `[Human Approval Required]`,
-        `[Govern Ledger: Recording]`,
-      ].join('   ·   ')
-    : `[POSEIDON AI ORCHESTRATOR]   ·   [All Engines Monitoring]   ·   [Govern Ledger: Active]`
+    ? `Alert detected   ·   ${activeTopThreat.id} (${activeTopThreat.counterparty})   ·   Confidence: ${Math.round(activeTopThreat.confidence * 100)}%`
+    : `Poseidon is monitoring your finances   ·   All decisions are logged`
+
+  const deepLinkHref = traceBinding
+    ? `/govern/audit-detail?decision=${traceBinding.auditDecisionId}`
+    : `/govern/audit-detail?decision=${auditId}`
 
   return (
     <footer
@@ -61,9 +62,12 @@ export function GovernFooter({
         </span>
       </div>
       <div className="flex items-center gap-2">
-        <span className="text-xs font-mono text-slate-500">
-          {auditId}
-        </span>
+        <a
+          href={deepLinkHref}
+          className="text-xs font-mono text-slate-500 hover:text-slate-300 transition-colors"
+        >
+          {traceBinding ? traceBinding.auditDecisionId : auditId}
+        </a>
         <ExternalLink size={12} className="text-slate-500" aria-hidden="true" />
       </div>
       <button

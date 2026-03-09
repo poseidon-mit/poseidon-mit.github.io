@@ -50,7 +50,7 @@ describe('GovernFooter integration (AuthenticatedLayout)', () => {
 
     const footer = container.querySelector('footer[aria-label="Governance verification footer"]');
     expect(footer).not.toBeNull();
-    expect(footer!.textContent).toContain('EXECUTE INITIATED');
+    expect(footer!.textContent).toContain('Action approved');
     expect(footer!.textContent).toContain('Portfolio rebalance');
     expect(footer!.textContent).toContain('GV-2026-0319-847');
   });

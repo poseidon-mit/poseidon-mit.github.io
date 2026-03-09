@@ -35,14 +35,14 @@ export function SettingsAIContent() {
 
   return (
     <>
-        {/* ── Protect Engine ── */}
+        {/* ── Protect ── */}
         <motion.section variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-6 flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10">
               <ShieldAlert size={16} style={{ color: 'var(--engine-protect)' }} />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white">Protect Engine</h2>
+              <h2 className="text-base font-semibold text-white">Protect</h2>
               <p className="text-xs text-white/40">Alert sensitivity</p>
             </div>
           </div>
@@ -66,14 +66,14 @@ export function SettingsAIContent() {
           </div>
         </motion.section>
 
-        {/* ── Grow Engine ── */}
+        {/* ── Grow ── */}
         <motion.section variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-6 flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-violet-500/10">
               <TrendingUp size={16} style={{ color: 'var(--engine-grow)' }} />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white">Grow Engine</h2>
+              <h2 className="text-base font-semibold text-white">Grow</h2>
               <p className="text-xs text-white/40">Investment posture</p>
             </div>
           </div>

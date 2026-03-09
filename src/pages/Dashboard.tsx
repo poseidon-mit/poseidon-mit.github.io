@@ -20,8 +20,6 @@ import { THREATS, severityConfig } from '@/pages/protect/protect-data'
 import { useDismissedAlerts } from '@/pages/protect/useDismissedAlerts'
 import { EngineBadge, DashboardCoordinationProof } from '@/components/poseidon'
 import type { EngineName } from '@/lib/engine-tokens'
-import { GuidedSetupDrawer } from '@/components/dashboard/GuidedSetupDrawer'
-import { OnboardingArrivalSheet } from '@/components/dashboard/OnboardingArrivalSheet'
 
 /* ── Urgency sort helpers ── */
 
@@ -133,7 +131,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <EngineBadge engine="dashboard" icon={LayoutDashboard} label="Command Center" />
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-white/50">Financial Health</span>
+              <span className="text-white/50">Financial Wellness</span>
               <span className="font-mono tabular-nums text-white/80">{Math.round(healthScore.score)}/100</span>
             </div>
           </div>
@@ -173,12 +171,6 @@ export default function DashboardPage() {
 
       </motion.main>
 
-      {/* ── Drawers ── */}
-      {state.auth.entryIntent === 'agentic' && !state.onboarding.completed && (
-        <GuidedSetupDrawer />
-      )}
-      {/* ArrivalSheet: entryIntent 不問。sessionStorage key のみで一度きり制御 */}
-      <OnboardingArrivalSheet />
     </div>
   )
 }

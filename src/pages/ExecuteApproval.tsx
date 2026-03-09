@@ -534,7 +534,7 @@ export function ExecuteApproval() {
             </div>
             {executionPhase === 'confirmed' && (
               <p className="text-xs text-center font-mono" style={{ color: 'var(--state-healthy)' }}>
-                Transaction confirmed. Redirecting...
+                Action confirmed. Redirecting...
               </p>
             )}
           </div>
@@ -545,14 +545,14 @@ export function ExecuteApproval() {
 }
 
 const EXECUTION_STEPS = [
-  { phase: 'validating', label: 'Validating', detail: 'Checking compliance rules...' },
-  { phase: 'signing', label: 'Signing', detail: 'Applying cryptographic signature...' },
-  { phase: 'broadcasting', label: 'Broadcasting', detail: 'Submitting to settlement network...' },
-  { phase: 'confirmed', label: 'Confirmed', detail: 'Transaction settled.' },
+  { phase: 'reviewing', label: 'Reviewing', detail: 'Verifying your request...' },
+  { phase: 'signing', label: 'Signing', detail: 'Securing your approval...' },
+  { phase: 'submitting', label: 'Submitting', detail: 'Processing your action...' },
+  { phase: 'confirmed', label: 'Confirmed', detail: 'Action completed.' },
 ] as const
 
 function getStepStatus(stepPhase: string, currentPhase: string): 'pending' | 'active' | 'completed' {
-  const order = ['validating', 'signing', 'broadcasting', 'confirmed']
+  const order = ['reviewing', 'signing', 'submitting', 'confirmed']
   const stepIdx = order.indexOf(stepPhase)
   const currentIdx = order.indexOf(currentPhase)
   if (stepIdx < currentIdx) return 'completed'

@@ -39,23 +39,23 @@ function renderDashboard() {
   )
 }
 
-describe('Dashboard Financial Health Score', () => {
+describe('Dashboard Financial Wellness Score', () => {
   beforeEach(() => {
     resetDemoStateStorage()
   })
 
-  it('renders the health score', () => {
+  it('renders the wellness score', () => {
     renderDashboard()
-    const healthLabel = screen.getByText('Financial Health')
+    const healthLabel = screen.getByText('Financial Wellness')
     expect(healthLabel).toBeInTheDocument()
     // The score is a sibling of the label inside the same container
     const container = healthLabel.closest('div')!
     expect(container.textContent).toMatch(/\d+\/100/)
   })
 
-  it('health score increases when an execute action is approved', () => {
+  it('wellness score increases when an execute action is approved', () => {
     renderDashboard()
-    const healthLabel = screen.getByText('Financial Health')
+    const healthLabel = screen.getByText('Financial Wellness')
     const container = healthLabel.closest('div')!
 
     const getScore = () => {

@@ -294,7 +294,7 @@ function HeroKpiStrip({
           Strategy Impact
         </span>
         <p className="text-sm text-white/70 leading-relaxed">
-          Organizations who adopted these strategies gained{' '}
+          Accounts using these strategies gained{' '}
           <span className="font-mono font-semibold" style={{ color: 'var(--engine-grow)' }}>
             +${totalMonthlySavings > 0 ? (totalMonthlySavings * 12).toLocaleString() : '—'}/yr
           </span>{' '}

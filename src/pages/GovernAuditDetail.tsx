@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { MessageCircle, Download, RotateCcw, ChevronDown } from 'lucide-react';
 import { useRouter } from '@/router';
 import { SubPageNav, ConfidenceIndicator } from '@/components/poseidon';
 import { getMotionPreset } from '@/lib/motion-presets';
@@ -7,17 +9,26 @@ import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date';
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout';
 import { AUDIT_DECISIONS, DEFAULT_DECISION_ID } from '@/lib/govern-audit-data';
+import { useToast } from '@/hooks/useToast';
+import { cn } from '@/lib/utils';
+
+const COMPLIANCE_TOOLTIPS: Record<string, string> = {
+  gdpr: 'Your data rights under European privacy law',
+  ecoa: 'Equal treatment in financial decisions',
+  ccpa: 'Your California privacy protections',
+};
 
 export function GovernAuditDetail() {
   const prefersReducedMotion = useReducedMotionSafe();
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion);
   usePageTitle('Audit Detail');
+  const { showToast } = useToast();
+  const [techOpen, setTechOpen] = useState(false);
 
   const { search } = useRouter();
   const decisionId = new URLSearchParams(search).get('decision');
   const auditEntry = decisionId && AUDIT_DECISIONS[decisionId] || AUDIT_DECISIONS[DEFAULT_DECISION_ID];
   const resolvedTimestamp = formatDemoTimestamp(auditEntry.timestamp);
-  const resolvedConfidence = formatConfidence(auditEntry.explanation.confidence);
 
   return (
     <>
@@ -32,7 +43,7 @@ export function GovernAuditDetail() {
         animate="visible"
         role="main"
       >
-        {/* H1 — Core Assertion */}
+        {/* What Happened */}
         <motion.section variants={fadeUpVariant} className="flex flex-col gap-1">
           <p className="text-[10px] uppercase tracking-widest text-white/40 font-semibold mb-2">{auditEntry.id}</p>
           <h1 className={`${PAGE_HEADING_CLASS} break-words`} style={PAGE_HEADING_STYLE}>
@@ -41,13 +52,13 @@ export function GovernAuditDetail() {
           <p className="text-sm text-white/40 mt-2 font-mono">{resolvedTimestamp}</p>
         </motion.section>
 
-        {/* Two-column grid: Base Reality + Decision Reconstruction */}
+        {/* Two-column grid: The Facts + Why This Decision */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-          {/* Left: Base Reality */}
+          {/* Left: The Facts */}
           <motion.div variants={fadeUpVariant}>
             <div className="glass-card glass-card-overlay rounded-xl p-6 lg:p-8 flex flex-col gap-6 h-full">
               <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4">
-                Base Reality
+                The Facts
               </h2>
 
               {/* Factual rows */}
@@ -78,23 +89,35 @@ export function GovernAuditDetail() {
                 </div>
               </div>
 
-              {/* Model info */}
-              <div className="flex flex-col gap-2 pt-2 border-t border-white/[0.06]">
-                <h3 className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">Model</h3>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-white/80 font-mono">{auditEntry.model.name}</span>
-                  <span className="text-[10px] text-white/40">v{auditEntry.model.version}</span>
-                  <span className="text-[10px] text-white/40 ml-auto">{auditEntry.model.accuracy}% accuracy</span>
-                </div>
+              {/* Model info — de-emphasized */}
+              <div className="pt-2 border-t border-white/[0.06]">
+                <p className="text-xs text-white/50">
+                  Analyzed by <span className="text-white/70 font-mono">{auditEntry.model.name}</span> — {auditEntry.model.accuracy}% accuracy
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setTechOpen(v => !v)}
+                  className="flex items-center gap-1 mt-2 text-[10px] uppercase tracking-widest text-white/30 hover:text-white/50 transition-colors cursor-pointer"
+                >
+                  Technical details
+                  <ChevronDown size={10} className={cn('transition-transform', techOpen && 'rotate-180')} />
+                </button>
+                {techOpen && (
+                  <div className="flex items-center gap-3 mt-2 text-xs text-white/40">
+                    <span className="font-mono">{auditEntry.model.name}</span>
+                    <span>v{auditEntry.model.version}</span>
+                    <span>{auditEntry.model.accuracy}% accuracy</span>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
 
-          {/* Right: Decision Reconstruction — SHAP bars */}
+          {/* Right: Why This Decision — SHAP bars */}
           <motion.div variants={fadeUpVariant}>
             <div className="glass-card glass-card-overlay rounded-xl p-6 lg:p-8 flex flex-col gap-6 h-full" style={{ borderTopWidth: 4, borderTopColor: 'var(--engine-govern)' }}>
               <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4">
-                Decision Reconstruction
+                Why This Decision
               </h2>
 
               <div className="flex flex-col gap-5">
@@ -118,15 +141,15 @@ export function GovernAuditDetail() {
           </motion.div>
         </div>
 
-        {/* Bottom: Compliance & Record */}
+        {/* Your Protections */}
         <motion.div variants={fadeUpVariant}>
           <div className="glass-card glass-card-overlay rounded-xl p-6 lg:p-8 flex flex-col gap-6">
             <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4">
-              Compliance &amp; Record
+              Your Protections
             </h2>
 
             <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-12">
-              {/* Compliance badges */}
+              {/* Compliance badges with tooltips */}
               <div className="flex flex-wrap gap-4">
                 {([
                   { key: 'gdpr' as const, label: 'GDPR' },
@@ -135,12 +158,16 @@ export function GovernAuditDetail() {
                 ]).map((reg) => (
                   <div
                     key={reg.key}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06]"
+                    className="flex flex-col gap-1 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06]"
+                    title={COMPLIANCE_TOOLTIPS[reg.key]}
                   >
-                    <span className="text-sm font-semibold text-white/90">{reg.label}</span>
-                    {auditEntry.compliance[reg.key] && (
-                      <span className="text-xs font-medium text-emerald-400">Compliant</span>
-                    )}
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-semibold text-white/90">{reg.label}</span>
+                      {auditEntry.compliance[reg.key] && (
+                        <span className="text-xs font-medium text-emerald-400">Protected</span>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-white/30">{COMPLIANCE_TOOLTIPS[reg.key]}</span>
                   </div>
                 ))}
               </div>
@@ -148,7 +175,7 @@ export function GovernAuditDetail() {
               {/* Confidence indicator */}
               <div className="flex items-center gap-4 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
                 <ConfidenceIndicator value={auditEntry.explanation.confidence} colorOverride="var(--engine-govern)" size="lg" glow />
-                <span className="text-xs text-white/50">{resolvedConfidence} confidence</span>
+                <span className="text-xs text-white/50">{formatConfidence(auditEntry.explanation.confidence)} confidence</span>
               </div>
             </div>
 
@@ -158,6 +185,55 @@ export function GovernAuditDetail() {
             </div>
           </div>
         </motion.div>
+
+        {/* What You Can Do */}
+        <motion.section variants={fadeUpVariant} className="flex flex-col gap-4">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4 px-2">
+            What You Can Do
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button
+              type="button"
+              onClick={() => {
+                // Find and click the Talk to Money FAB to open with audit context
+                const fab = document.querySelector<HTMLButtonElement>('[aria-label*="Talk to Money"]')
+                if (fab) fab.click()
+              }}
+              className="glass-card rounded-2xl p-5 md:p-6 flex flex-col gap-3 hover:bg-white/[0.04] transition-colors cursor-pointer text-left"
+            >
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-400/20">
+                <MessageCircle size={18} className="text-violet-400" />
+              </div>
+              <h3 className="text-sm font-semibold text-white">I disagree with this</h3>
+              <p className="text-xs text-white/40 leading-relaxed">Talk to our AI about this decision and share your perspective.</p>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => showToast({ message: 'Review request submitted', variant: 'success' })}
+              className="glass-card rounded-2xl p-5 md:p-6 flex flex-col gap-3 hover:bg-white/[0.04] transition-colors cursor-pointer text-left"
+            >
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-400/20">
+                <RotateCcw size={18} className="text-blue-400" />
+              </div>
+              <h3 className="text-sm font-semibold text-white">Request review</h3>
+              <p className="text-xs text-white/40 leading-relaxed">Ask for a human review of this automated decision.</p>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => showToast({ message: 'Preparing download...', variant: 'info' })}
+              className="glass-card rounded-2xl p-5 md:p-6 flex flex-col gap-3 hover:bg-white/[0.04] transition-colors cursor-pointer text-left"
+            >
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-400/20">
+                <Download size={18} className="text-emerald-400" />
+              </div>
+              <h3 className="text-sm font-semibold text-white">Download record</h3>
+              <p className="text-xs text-white/40 leading-relaxed">Get a copy of this decision record for your files.</p>
+            </button>
+          </div>
+        </motion.section>
+
       </motion.div>
     </>
   );

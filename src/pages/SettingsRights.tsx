@@ -103,7 +103,7 @@ export function SettingsRightsContent() {
         {/* ── Governance badge ── */}
         <motion.div variants={fadeUpVariant}>
           <div className="mission-govern-badge" data-audit-id="GV-2026-0216-SETT-RTS">
-            <p className="text-[10px] text-white/30 font-mono">Audit ID: GV-2026-0216-SETT-RTS · Rights & Privacy · Poseidon Govern Engine</p>
+            <p className="text-[10px] text-white/30 font-mono">Audit ID: GV-2026-0216-SETT-RTS · Rights & Privacy · Poseidon Govern</p>
           </div>
         </motion.div>
     </>

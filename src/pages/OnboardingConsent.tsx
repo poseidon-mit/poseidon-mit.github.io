@@ -43,8 +43,8 @@ const CONSENT_ITEMS: ConsentItemDef[] = [
   {
     id: 'approve',
     icon: CheckCircle,
-    label: 'Auto-Approve',
-    desc: 'AI can execute under $50 (configurable)',
+    label: 'Quick Actions',
+    desc: 'AI can handle routine transactions (configurable)',
     amber: true,
   },
 ];
@@ -59,7 +59,7 @@ export default function OnboardingConsentPage() {
 
   const toggleConsent = (id: string) => {
     if (id === 'approve' && !consents['approve']) {
-      // Turning ON Auto-Approve requires confirmation
+      // Turning ON Quick Actions requires confirmation
       setShowApproveDialog(true);
       return;
     }
@@ -171,9 +171,9 @@ export default function OnboardingConsentPage() {
             <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center mb-3">
               <AlertTriangle className="w-6 h-6 text-amber-400" />
             </div>
-            <DialogTitle className="text-white font-display text-lg font-semibold">Enable Auto-Approve?</DialogTitle>
+            <DialogTitle className="text-white font-display text-lg font-semibold">Enable Quick Actions?</DialogTitle>
             <DialogDescription className="text-slate-400 text-sm mt-2 leading-relaxed">
-              Poseidon will be able to execute transactions under <span className="text-amber-400 font-medium">$50</span> without additional confirmation. You can change this limit at any time in Settings.
+              Poseidon will be able to handle routine transactions without additional confirmation. You can adjust this at any time in Settings.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-3 mt-2">
@@ -181,7 +181,7 @@ export default function OnboardingConsentPage() {
               onClick={confirmApprove}
               className="w-full rounded-xl py-5 text-sm font-semibold bg-amber-500 text-slate-950 hover:bg-amber-400 transition-colors"
             >
-              Yes, Enable Auto-Approve
+              Yes, Enable Quick Actions
             </Button>
             <Button
               onClick={() => setShowApproveDialog(false)}

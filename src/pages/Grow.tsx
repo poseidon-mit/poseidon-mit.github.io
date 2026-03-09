@@ -20,7 +20,7 @@ const COHORT_DATA = {
 
 
 export default function GrowPage() {
-  usePageTitle('Grow Engine')
+  usePageTitle('Grow')
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const { navigate } = useRouter()
@@ -60,9 +60,9 @@ export default function GrowPage() {
         {/* ── Hero ── */}
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
           <motion.div variants={fadeUpVariant} className="flex items-center gap-2">
-            <EngineBadge engine="grow" icon={TrendingUp} label="Engine status: Good" />
+            <EngineBadge engine="grow" icon={TrendingUp} label="Optimization Active" />
           </motion.div>
-          <h1 className="sr-only">Grow Engine</h1>
+          <h1 className="sr-only">Grow</h1>
 
           <motion.div variants={fadeUpVariant}>
             <GrowGrowthAdvantage

@@ -27,7 +27,7 @@ const TRACE_ENGINES = [
 ] as const
 
 export default function GovernPage() {
-  usePageTitle('Govern Engine')
+  usePageTitle('Govern')
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const { navigate } = useRouter()
@@ -70,9 +70,9 @@ export default function GovernPage() {
         {/* ── Prelude ── */}
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
           <motion.div variants={fadeUpVariant} className="flex items-center gap-2">
-            <EngineBadge engine="govern" icon={Scale} label="Engine status: Good" />
+            <EngineBadge engine="govern" icon={Scale} label="Audit Active" />
           </motion.div>
-          <h1 className="sr-only">Govern Engine</h1>
+          <h1 className="sr-only">Govern</h1>
           <motion.div variants={fadeUpVariant}>
           <GovernImmutableLedger
             decisionsAudited={auditSummary.total}
@@ -104,7 +104,7 @@ export default function GovernPage() {
                 <span className="text-2xl font-mono font-semibold" style={{ color: 'var(--engine-govern)' }}>
                   90-day
                 </span>
-                <span className="text-xs text-white/40">LLM data retention</span>
+                <span className="text-xs text-white/40">AI data window</span>
                 <span className="text-[10px] text-white/25 font-mono">
                   Rolling window · auto-purge enabled
                 </span>
@@ -115,9 +115,9 @@ export default function GovernPage() {
                 <span className="text-2xl font-mono font-semibold" style={{ color: 'var(--engine-govern)' }}>
                   Available
                 </span>
-                <span className="text-xs text-white/40">Opt-out status</span>
+                <span className="text-xs text-white/40">Privacy control</span>
                 <span className="text-[10px] text-white/25 font-mono">
-                  Available on request · no model training
+                  Available on request · your data stays private
                 </span>
               </div>
             </div>

@@ -69,10 +69,9 @@ describe('GrowGrowthAdvantage', () => {
     expect(props.onQueueTopAction).toHaveBeenCalledOnce()
   })
 
-  it('renders cohort percentiles', () => {
+  it('renders strategy impact section', () => {
     renderHero()
-    expect(screen.getByText(/23rd/)).toBeInTheDocument()
-    expect(screen.getByText(/67th/)).toBeInTheDocument()
+    expect(screen.getByText(/Strategy Impact/)).toBeInTheDocument()
   })
 
   it('renders top recommendation title and monthly savings', () => {
@@ -129,10 +128,10 @@ describe('GrowGrowthAdvantage', () => {
       expect(screen.queryByRole('button', { name: /see poseidon delta/i })).not.toBeInTheDocument()
     })
 
-    it('renders tier adoption rate after optimize', () => {
-      renderHero({ cohortAcceptanceRate: 0.89 })
+    it('renders active portfolios count after optimize', () => {
+      renderHero({ cohortAcceptanceRate: 0.89, platformProfileCount: 184290 })
       fireEvent.click(screen.getByRole('button', { name: /see poseidon delta/i }))
-      expect(screen.getByText(/89% tier adoption rate/)).toBeInTheDocument()
+      expect(screen.getByText(/184,290/)).toBeInTheDocument()
     })
 
     it('renders platform profile count after optimize', () => {
@@ -143,13 +142,13 @@ describe('GrowGrowthAdvantage', () => {
     })
 
     it('replay click does not regress visible content', () => {
-      renderHero({ cohortAcceptanceRate: 0.89 })
+      renderHero({ cohortAcceptanceRate: 0.89, platformProfileCount: 184290 })
       fireEvent.click(screen.getByRole('button', { name: /see poseidon delta/i }))
       fireEvent.click(screen.getByRole('button', { name: /replay/i }))
       act(() => vi.advanceTimersByTime(1200))
       expect(screen.getByText(/\+\$24,437/)).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /view all/i })).toBeInTheDocument()
-      expect(screen.getByText(/89% tier adoption rate/)).toBeInTheDocument()
+      expect(screen.getByText(/184,290/)).toBeInTheDocument()
     })
   })
 })

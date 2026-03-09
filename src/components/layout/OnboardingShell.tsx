@@ -7,7 +7,7 @@ const STEP_ITEMS = [
   { id: 1, label: 'Connect sources' },
   { id: 2, label: 'Define priorities' },
   { id: 3, label: 'Set consent bounds' },
-  { id: 4, label: 'Activate engines' },
+  { id: 4, label: 'Get started' },
 ] as const;
 
 export interface OnboardingShellProps {

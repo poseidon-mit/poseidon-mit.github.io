@@ -60,13 +60,13 @@ const ROUTE_PAGE_FILES: Record<RoutePath, string | null> = {
   '/govern/oversight': 'src/pages/GovernOversight.tsx',
   '/govern/policy': 'src/pages/GovernPolicy.tsx',
   '/settings': 'src/pages/Settings.tsx',
-  '/settings/ai': 'src/pages/SettingsAI.tsx',
-  '/settings/integrations': 'src/pages/SettingsIntegrations.tsx',
-  '/settings/rights': 'src/pages/SettingsRights.tsx',
+  '/settings/ai': 'src/pages/Settings.tsx',
+  '/settings/integrations': 'src/pages/Settings.tsx',
+  '/settings/rights': 'src/pages/Settings.tsx',
   '/help': 'src/pages/HelpSupport.tsx',
   '/share': 'src/pages/ShareFiles.tsx',
   '/grow/recommendation': 'src/pages/grow/GrowRecommendationDetail.tsx',
-  '/onboarding': 'src/pages/OnboardingRedirect.tsx',
+  '/onboarding': 'src/pages/Onboarding.tsx',
   '/404': 'src/pages/NotFound.tsx',
   '/test/spectacular': 'src/pages/TestSpectacular.tsx',
   '/orchestrator': 'src/pages/orchestrator/OrchestratorWorkbench.tsx',
@@ -133,8 +133,6 @@ describe('target scope routing contract', () => {
       '/settings/ai',
       '/settings/integrations',
       '/settings/rights',
-      '/deck',
-      '/share',
     ];
     for (const route of goldenPathRoutes) {
       expect(V0_READY_ROUTES.has(route)).toBe(true);

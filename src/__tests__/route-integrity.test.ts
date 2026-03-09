@@ -9,7 +9,7 @@ import { describe, expect, it } from 'vitest'
 import { routeLoaders } from '../router/lazyRoutes'
 import { BREADCRUMB_MAP } from '../lib/breadcrumb-registry'
 import { CANONICAL_UNIVERSE } from '../domain/poseidon-universe/canonical'
-import { AUDIT_DECISIONS } from '../lib/govern-audit-data'
+import { AUDIT_DECISIONS, ROUTE_TO_DECISION } from '../lib/govern-audit-data'
 
 const REDESIGNED_ROUTES = [
   '/execute',
@@ -35,6 +35,12 @@ describe('Route registry integrity (Execute + Govern)', () => {
       expect(BREADCRUMB_MAP).toHaveProperty(route)
     },
   )
+
+  it('ROUTE_TO_DECISION keys all resolve to valid AUDIT_DECISIONS entries', () => {
+    for (const [route, decisionId] of Object.entries(ROUTE_TO_DECISION)) {
+      expect(AUDIT_DECISIONS[decisionId], `${route} → ${decisionId} not found in AUDIT_DECISIONS`).toBeDefined()
+    }
+  })
 
   it('all actionToDecision target GV IDs exist in AUDIT_DECISIONS', () => {
     const { actionToDecision } = CANONICAL_UNIVERSE.relations

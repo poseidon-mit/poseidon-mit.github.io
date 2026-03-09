@@ -4,10 +4,10 @@ import { pickTopAlert } from '../pages/protect/Protect'
 import { ProtectAnomalyRadar, ProtectThreatPosture } from '../components/poseidon/protect-hero'
 import {
   THREATS,
-  ALERT_FACTOR_ITEMS,
   deriveFactors,
 } from '../pages/protect/protect-data'
 import type { ThreatSeverity } from '../pages/protect/protect-data'
+import { selectThreatFactors } from '../domain/poseidon-universe'
 
 /* ── Mock router (Link component needs it) ── */
 vi.mock('../router', () => ({
@@ -22,8 +22,8 @@ vi.mock('../router', () => ({
 const THR_001 = THREATS.find(t => t.id === 'THR-001')!
 
 function makeRadarAxes(alertId: string, confidence: number) {
-  const items = ALERT_FACTOR_ITEMS[alertId]
-  if (!items) return []
+  const items = selectThreatFactors(alertId)
+  if (!items.length) return []
   const derived = deriveFactors(items, confidence)
   return derived
     .filter(f => !f.mitigating)
@@ -36,8 +36,8 @@ function makeRadarAxes(alertId: string, confidence: number) {
 }
 
 function makeEvidenceCues(alertId: string) {
-  const items = ALERT_FACTOR_ITEMS[alertId]
-  if (!items) return []
+  const items = selectThreatFactors(alertId)
+  if (!items.length) return []
   return items
     .filter(i => !i.mitigating && i.heroCue)
     .sort((a, b) => b.weight - a.weight)
@@ -104,20 +104,11 @@ describe('ProtectAnomalyRadar', () => {
     expect(auditLink).toHaveAttribute('href', '/govern/audit-detail?decision=GV-2026-0319-846')
   })
 
-  it('hides View Audit Trail when auditChain is null', () => {
+  it('renders View Audit Trail with generic link when auditChain is null', () => {
     renderRadar({ auditChain: null })
-    expect(screen.queryByRole('link', { name: /view audit trail/i })).not.toBeInTheDocument()
-  })
-
-  it('renders audit chain IDs when auditChain provided', () => {
-    renderRadar()
-    expect(screen.getByText('EXE-002')).toBeInTheDocument()
-    expect(screen.getByText('GV-2026-0319-846')).toBeInTheDocument()
-  })
-
-  it('hides audit chain IDs when auditChain is null', () => {
-    renderRadar({ auditChain: null })
-    expect(screen.queryByText('EXE-002')).not.toBeInTheDocument()
+    const auditLink = screen.getByRole('link', { name: /view audit trail/i })
+    expect(auditLink).toBeInTheDocument()
+    expect(auditLink).toHaveAttribute('href', '/govern/audit')
   })
 
   it('shows bridge line with remaining count and total exposure', () => {

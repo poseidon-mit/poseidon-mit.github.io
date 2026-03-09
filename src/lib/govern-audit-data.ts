@@ -27,6 +27,13 @@ export interface AuditDecision {
 
 export const DEFAULT_DECISION_ID = 'GV-2026-0319-846'
 
+export const ROUTE_TO_DECISION: Record<string, string> = {
+  '/protect':  'GV-2026-0319-847',
+  '/grow':     'GV-2026-0317-840',
+  '/execute':  'GV-2026-0319-848',
+  '/govern':   'GV-2026-0319-846',
+}
+
 const sharedFactors = [
   { label: 'Amount deviation', contribution: 0.95, note: 'Transaction 3x typical volume for this counterparty' },
   { label: 'Jurisdiction anomaly', contribution: 0.92, note: 'New offshore destination not in approved counterparty list' },

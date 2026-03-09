@@ -52,7 +52,7 @@ describe('Govern audit flow', () => {
   describe('GOV03 - Audit Detail', () => {
     it('shows decision reconstruction', () => {
       renderWithRouter(GovernAuditDetail);
-      expect(screen.getAllByText(/Decision reconstruction/i).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(/Why This Decision/i).length).toBeGreaterThan(0);
     });
 
     it('shows compliance flags', () => {
@@ -62,10 +62,10 @@ describe('Govern audit flow', () => {
       expect(screen.getAllByText(/CCPA/i).length).toBeGreaterThan(0);
     });
 
-    it('all compliance flags show compliant', () => {
+    it('all compliance flags show protected', () => {
       renderWithRouter(GovernAuditDetail);
-      const compliantElements = screen.getAllByText(/Compliant/i);
-      expect(compliantElements.length).toBe(3);
+      const protectedElements = screen.getAllByText(/Protected/i);
+      expect(protectedElements.length).toBe(3);
     });
 
     // GovernFooter is injected by AuthenticatedLayout, not by the page component.

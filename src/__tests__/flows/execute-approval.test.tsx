@@ -101,7 +101,7 @@ describe('Execution Stream (Step 5)', () => {
   it('shows execution stream overlay after approval', () => {
     renderAndApprove();
     expect(screen.getByText('Execution Stream')).toBeInTheDocument();
-    expect(screen.getByText('Validating')).toBeInTheDocument();
+    expect(screen.getByText('Reviewing')).toBeInTheDocument();
   });
 
   it('progresses through phases with timers', () => {
@@ -109,9 +109,9 @@ describe('Execution Stream (Step 5)', () => {
     act(() => { vi.advanceTimersByTime(1200) });
     expect(screen.getByText('Signing')).toBeInTheDocument();
     act(() => { vi.advanceTimersByTime(1600) });
-    expect(screen.getByText('Broadcasting')).toBeInTheDocument();
+    expect(screen.getByText('Submitting')).toBeInTheDocument();
     act(() => { vi.advanceTimersByTime(1400) });
-    expect(screen.getByText(/Transaction confirmed/i)).toBeInTheDocument();
+    expect(screen.getByText(/Action confirmed/i)).toBeInTheDocument();
   });
 
   it('prevents double-click from triggering duplicate execution', () => {

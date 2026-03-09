@@ -6,6 +6,8 @@ import { getGovernanceMeta } from '@/lib/governance-meta';
 import { useDismissedAlerts } from '@/pages/protect/useDismissedAlerts';
 import { selectPriorityQueue } from '@/domain/poseidon-universe/selectors';
 import type { ProtectThreatEntity } from '@/domain/poseidon-universe/types';
+import { ROUTE_TO_DECISION, AUDIT_DECISIONS } from '@/lib/govern-audit-data';
+import type { GovernTraceBinding } from '@/lib/govern-trace';
 
 interface AuthenticatedLayoutProps {
     children: React.ReactNode;
@@ -23,6 +25,20 @@ interface AuthenticatedLayoutProps {
  */
 export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps) {
     const meta = getGovernanceMeta(path);
+
+    const traceBinding = useMemo<GovernTraceBinding | undefined>(() => {
+        const decisionId = ROUTE_TO_DECISION[path];
+        if (!decisionId) return undefined;
+        const decision = AUDIT_DECISIONS[decisionId];
+        if (!decision) return undefined;
+        return {
+            route: path,
+            eventId: decision.id,
+            auditDecisionId: decision.id,
+            summary: decision.explanation.summary,
+            nextAction: decision.action,
+        };
+    }, [path]);
     const { dismissed } = useDismissedAlerts();
 
     const [latestExecuteEvent, setLatestExecuteEvent] = useState<{
@@ -91,7 +107,7 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
                                 pageContext={meta.pageContext}
                                 activeTopThreat={activeTopThreat}
                                 latestExecuteEvent={latestExecuteEvent}
-                                className="opacity-70 hover:opacity-100 transition-opacity duration-500"
+                                traceBinding={traceBinding}
                             />
                         </div>
                     )}

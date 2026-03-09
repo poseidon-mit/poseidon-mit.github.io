@@ -28,12 +28,12 @@ interface Notification {
 }
 
 const notifications: Notification[] = [
-  { id: 'N-001', engine: 'Protect', category: 'security', title: 'AML compliance flag — wire review required', body: `Account ${DEMO_THREAD.criticalAlert.signalId} flagged for review: $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} wire to ${DEMO_THREAD.criticalAlert.counterparty}.`, time: 'Just now', read: false, actionLink: '/protect/alert-detail' },
+  { id: 'N-001', engine: 'Protect', category: 'security', title: 'Risk flag — transaction review required', body: `Account ${DEMO_THREAD.criticalAlert.signalId} flagged for review: $${DEMO_THREAD.criticalAlert.amount.toLocaleString()} transfer to ${DEMO_THREAD.criticalAlert.counterparty}.`, time: 'Just now', read: false, actionLink: '/protect/alert-detail' },
   { id: 'N-002', engine: 'Protect', category: 'security', title: 'Counterparty exposure alert', body: 'Meridian Trade Corp — new counterparty, jurisdiction risk elevated. Enhanced due diligence initiated.', time: '12m ago', read: false, actionLink: '/protect' },
   { id: 'N-003', engine: 'Grow', category: 'growth', title: `Liquidity reserve — $${DEMO_THREAD.liquidityReserve.current.toLocaleString()} reached`, body: `${DEMO_THREAD.liquidityReserve.percent}% toward institutional target of $${DEMO_THREAD.liquidityReserve.target.toLocaleString()}.`, time: '1h ago', read: false },
   { id: 'N-004', engine: 'Grow', category: 'growth', title: 'New optimization recommendation', body: 'Securities-backed lending alternative could save $315K over 3 years vs. cash wire.', time: '2h ago', read: false },
-  { id: 'N-005', engine: 'Execute', category: 'actions', title: 'Action authorized — Credit facility setup', body: 'Margin account opening request submitted to operations.', time: '3h ago', read: true, actionLink: '/execute/history' },
-  { id: 'N-006', engine: 'Execute', category: 'actions', title: '2 actions awaiting authorization', body: 'Wire transfer and portfolio rebalance expire in 18h.', time: '4h ago', read: true, actionLink: '/execute/approval' },
+  { id: 'N-005', engine: 'Execute', category: 'actions', title: 'Action authorized — Credit facility setup', body: 'Account opening request submitted to operations.', time: '3h ago', read: true, actionLink: '/execute/history' },
+  { id: 'N-006', engine: 'Execute', category: 'actions', title: '2 actions awaiting authorization', body: 'Transfer and portfolio rebalance expire in 18h.', time: '4h ago', read: true, actionLink: '/execute/approval' },
   { id: 'N-007', engine: 'Govern', category: 'system', title: 'Weekly audit report ready', body: `${DEMO_THREAD.decisionsAudited.toLocaleString()} decisions audited. 100% coverage maintained.`, time: '6h ago', read: true, actionLink: '/govern/audit' },
   { id: 'N-008', engine: 'Govern', category: 'system', title: 'Decision Council threshold update', body: 'Policy engine recalibrated: council invocation threshold adjusted to $500K.', time: '8h ago', read: true }];
 

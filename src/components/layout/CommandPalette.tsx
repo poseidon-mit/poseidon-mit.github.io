@@ -139,7 +139,7 @@ const PRESENTATION_COMMANDS: Command[] = [
   {
     id: 'present-protect',
     label: 'Present: Protect',
-    description: 'Start presentation at Protect engine',
+    description: 'Start presentation at Protect',
     icon: Presentation,
     tone: 'protect',
     path: '/protect?view=glance&mode=present',
@@ -147,7 +147,7 @@ const PRESENTATION_COMMANDS: Command[] = [
   {
     id: 'present-grow',
     label: 'Present: Grow',
-    description: 'Start presentation at Grow engine',
+    description: 'Start presentation at Grow',
     icon: Presentation,
     tone: 'grow',
     path: '/grow?view=glance&mode=present',
@@ -155,7 +155,7 @@ const PRESENTATION_COMMANDS: Command[] = [
   {
     id: 'present-execute',
     label: 'Present: Execute',
-    description: 'Start presentation at Execute engine',
+    description: 'Start presentation at Execute',
     icon: Presentation,
     tone: 'execute',
     path: '/execute?view=glance&mode=present',
@@ -163,7 +163,7 @@ const PRESENTATION_COMMANDS: Command[] = [
   {
     id: 'present-govern',
     label: 'Present: Govern',
-    description: 'Start presentation at Govern engine',
+    description: 'Start presentation at Govern',
     icon: Presentation,
     tone: 'govern',
     path: '/govern?view=glance&mode=present',

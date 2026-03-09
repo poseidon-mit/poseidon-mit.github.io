@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { type AccentTone, TONE_CLASSES } from './Sidebar';
 import { type EngineName } from '@/lib/engine-tokens';
 import { useDemoState } from '@/lib/demo-state/provider';
+import { useRouter } from '@/router';
 
 interface TopBarProps {
     breadcrumbs: string[];
@@ -24,9 +25,10 @@ export function TopBar({
     onOpenPalette,
 }: TopBarProps) {
     const { state } = useDemoState();
+    const { navigate } = useRouter();
 
     return (
-        <header className="sticky top-0 z-30 hidden h-20 items-center justify-between px-8 lg:px-10 bg-transparent border-b border-white/[0.04] backdrop-blur-3xl lg:flex">
+        <header className="sticky top-0 z-30 hidden h-20 items-center justify-between px-8 lg:px-10 bg-transparent border-b border-white/[0.04] backdrop-blur-xl lg:flex">
             {/* Breadcrumb / Title */}
             {breadcrumbs.length > 1 ? (
                 <nav className="flex items-center gap-1.5" aria-label="Breadcrumb">
@@ -82,6 +84,7 @@ export function TopBar({
                 )}
 
                 <button
+                    onClick={() => navigate('/dashboard/notifications')}
                     className="relative flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 transition-colors duration-300 hover:bg-white/10 hover:text-slate-200"
                     aria-label="Notifications (new)"
                 >

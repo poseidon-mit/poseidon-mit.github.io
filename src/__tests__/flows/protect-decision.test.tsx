@@ -19,10 +19,10 @@ describe('Protect decision flow (PRT02)', () => {
     );
   }
 
-  it('renders signal section', () => {
+  it('renders alert summary with alert type', () => {
     renderPRT02();
-    expect(screen.getAllByText(/Signal/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/Alert type/i)).toBeInTheDocument();
+    expect(screen.getByText(/Counterparty/i)).toBeInTheDocument();
   });
 
   it('renders evidence section', () => {
@@ -33,7 +33,7 @@ describe('Protect decision flow (PRT02)', () => {
   it('renders decision section with recommended action', () => {
     renderPRT02();
     expect(screen.getByText(/Recommended Action/i)).toBeInTheDocument();
-    expect(screen.getByText(/Block & Dispute/i)).toBeInTheDocument();
+    expect(screen.getByText(/Block & Report/i)).toBeInTheDocument();
   });
 
   it('shows fraud severity as critical', () => {
@@ -56,7 +56,7 @@ describe('Protect decision flow (PRT02)', () => {
 
   it('provides dispute action button', () => {
     renderPRT02();
-    expect(screen.getByRole('button', { name: /Block & Dispute/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Block & Report/i })).toBeInTheDocument();
   });
 
   it('signal section appears before decision controls in DOM order', () => {

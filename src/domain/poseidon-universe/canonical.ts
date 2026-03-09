@@ -34,25 +34,25 @@ const DASHBOARD_ACTIVITIES: DashboardActivityEntity[] = [
   {
     id: 'ACT-001',
     kind: 'protect',
-    label: `AML flag: $2.5M wire to ${DEMO_THREAD.criticalAlert.counterparty}`,
+    label: `Suspicious charge: $2,480 at ${DEMO_THREAD.criticalAlert.counterparty}`,
     relativeTime: '2m ago',
   },
   {
     id: 'ACT-002',
     kind: 'grow',
-    label: 'Securities-backed lending alternative proposed — $315K projected advantage',
+    label: 'High-yield savings transfer alternative proposed — $1,250 projected advantage',
     relativeTime: '15m ago',
   },
   {
     id: 'ACT-003',
     kind: 'execute',
-    label: 'Margin account setup queued for authorization',
+    label: 'Dispute package queued for authorization',
     relativeTime: '1h ago',
   },
   {
     id: 'ACT-004',
     kind: 'govern',
-    label: `Compliance check passed (${DEMO_THREAD.complianceScore}/100)`,
+    label: `Automated audit check passed (${DEMO_THREAD.complianceScore}/100)`,
     relativeTime: '2h ago',
   },
   {
@@ -75,15 +75,15 @@ const THREAT_TIMING: Record<string, ThreatTiming> = {
 const DEFAULT_THREAT_TIMING: ThreatTiming = { detected: '2026-03-19T14:28:00-04:00', updated: '2026-03-19T14:30:00-04:00', times: ['14:28', '14:29', '14:30', '14:31'] }
 
 const THREAT_FACTORS: Record<string, ThreatFactor[]> = {
-  /* ── THR-001: Cayman Reef Holdings Ltd., $2,500,000, Critical ── */
+  /* ── THR-001: Global Digital Assets Exch., $2,480, Critical ── */
   'THR-001': [
-    { id: 'e1', title: 'AML Pattern Match', weight: 0.95, heroCue: 'Wire amount 4.2× client\'s offshore transfer baseline', details: '$2,500,000 wire to new offshore counterparty exceeds client\'s 24-month offshore transfer mean of $595K by 4.2×. Percentile rank: 99.4 against peer cohort. Triggers enhanced due diligence under BSA/AML §314(b).', model: 'IsoForest-AMLAnomaly v4.1' },
-    { id: 'e2', title: 'Timing Anomaly', weight: 0.82, heroCue: 'Urgent same-day settlement request outside normal cadence', details: 'Same-day settlement requested for wire exceeding $500K threshold. Client\'s 24-month history shows 0 same-day settlement requests for amounts above $200K. Urgency pattern flagged by temporal sequence model.', model: 'LSTM-TemporalSeq v2.0' },
-    { id: 'e3', title: 'Cross-Account Flow', weight: 0.88, heroCue: 'Liquidation pattern across 3 accounts precedes wire', details: '$2.5M wire preceded by $1.8M securities liquidation and $700K money market redemption across 3 accounts within 72 hours. Cross-account flow pattern absent from client\'s 36-month transaction history.', model: 'GNN-CrossAccount v1.5' },
-    { id: 'e4', title: 'Counterparty Risk', weight: 0.85, heroCue: 'Counterparty registered <90 days, jurisdiction risk elevated', details: 'Cayman Reef Holdings Ltd. incorporated 67 days ago. Jurisdiction risk score: 7.2/10 (Cayman Islands). No prior relationship with Acme Bank. Beneficial ownership structure requires manual verification.', model: 'XGB-CounterpartyRisk v2.3' },
-    { id: 'e5', title: 'Known Fraud Pattern', weight: 0.90, heroCue: 'Matches 847 confirmed AML cases (0.93 similarity)', details: 'Transaction feature vector matches 847 confirmed AML cases across the platform. Similarity score: 0.93. Matched features: amount range, counterparty age, jurisdiction, and liquidation pattern.', model: 'GBM-AMLDetection v3.0' },
-    { id: 'm1', title: 'Client Relationship', weight: 0.55, details: 'Client tenure: 12 years. AUM: $45M. Prior compliance flags: 0. Relationship stability index: 0.97 (top 3% of VIP cohort). No prior AML or sanctions alerts.', model: 'AE-ClientStability v2.0', mitigating: true },
-    { id: 'm2', title: 'Document Context', weight: 0.45, details: 'Client correspondence references a legitimate real estate acquisition in Grand Cayman. Purchase agreement dated 2026-02-28 from a licensed real estate firm. Document AI confidence in legitimacy: 0.82.', model: 'DocAnalysis-Context v1.8', mitigating: true },
+    { id: 'e1', title: 'Unusual Merchant Category', weight: 0.95, heroCue: 'First transaction with this merchant category', details: '$2,480 charge to a high-risk digital asset exchange. Category (Cryptocurrency APIs) has 0 prior transactions in the 36-month account history. Triggers enhanced fraud protection protocol.', model: 'IsoForest-Anomaly v4.1' },
+    { id: 'e2', title: 'Location Discrepancy', weight: 0.82, heroCue: 'Card-not-present transaction from unrecognized IP', details: 'Transaction originated from an IP address block known for anonymization services. Client\'s primary device location is currently recorded as Cambridge, MA.', model: 'GeoNet-Sequence v2.0' },
+    { id: 'e3', title: 'Velocity Pattern', weight: 0.88, heroCue: 'Multiple small test charges preceded this amount', details: '$2,480 charge preceded by three $1.50 test authorizations at gas stations within 4 hours. Classic credential stuffing velocity pattern.', model: 'GNN-Velocity v1.5' },
+    { id: 'e4', title: 'Merchant Risk', weight: 0.85, heroCue: 'Merchant associated with recent credential leaks', details: 'Global Digital Assets Exch. fraud rate increased 400% in the last 72 hours. Merchant risk score currently elevated.', model: 'XGB-MerchantRisk v2.3' },
+    { id: 'e5', title: 'Known Fraud Pattern', weight: 0.90, heroCue: 'Matches 847 confirmed account takeover cases', details: 'Transaction feature vector matches 847 confirmed cases across the platform. Similarity score: 0.93. Matched features: velocity, merchant category, and IP anonymization.', model: 'GBM-FraudDetection v3.0' },
+    { id: 'm1', title: 'Device History', weight: 0.55, details: 'Client tenure: 12 years. Primary device is clean. No other suspicious activity across linked accounts.', model: 'AE-DeviceConfidence v2.0', mitigating: true },
+    { id: 'm2', title: 'Available Credit', weight: 0.45, details: 'Transaction amount is within the available credit limit of $35k. No utilization spikes prior.', model: 'LimitAnalysis-Context v1.8', mitigating: true },
   ],
   /* ── THR-002: Meridian Capital Partners, $890,000, High ── */
   'THR-002': [
@@ -626,9 +626,9 @@ const CANONICAL_EVENTS: CanonicalEvent[] = [
 
 export const CANONICAL_GROWTH_SIMULATION_DATA: GrowthSimulationPoint[] = [
   { year: 'Now', baseline: 200000, aiOptimized: 200000, low: 200000, high: 200000 },
-  { year: '1Y',  baseline: 204000, aiOptimized: 211584, low: 211480, high: 211690 },
-  { year: '2Y',  baseline: 208080, aiOptimized: 223797, low: 223345, high: 224266 },
-  { year: '3Y',  baseline: 212242, aiOptimized: 236679, low: 235609, high: 237812 },
+  { year: '1Y', baseline: 204000, aiOptimized: 211584, low: 211480, high: 211690 },
+  { year: '2Y', baseline: 208080, aiOptimized: 223797, low: 223345, high: 224266 },
+  { year: '3Y', baseline: 212242, aiOptimized: 236679, low: 235609, high: 237812 },
 ]
 
 const FINAL_SIM = CANONICAL_GROWTH_SIMULATION_DATA[CANONICAL_GROWTH_SIMULATION_DATA.length - 1]

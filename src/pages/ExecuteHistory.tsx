@@ -122,7 +122,7 @@ export default function ExecuteHistoryPage() {
             <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>
               Execution History
             </h1>
-            <p className="text-white/50 text-base">Audit log of all AI-automated financial actions with governance traceability.</p>
+            <p className="text-white/50 text-base">History of all your approved and completed actions.</p>
           </motion.div>
 
           {/* Stats Strip */}
@@ -185,7 +185,7 @@ export default function ExecuteHistoryPage() {
                     <span className="text-lg font-mono" style={{ color: 'var(--state-healthy)' }}>Passed</span>
                   </div>
                   <div className="flex flex-col gap-1">
-                    <span className="text-[10px] uppercase tracking-widest text-white/30">AML Screening</span>
+                    <span className="text-[10px] uppercase tracking-widest text-white/30">Risk Screening</span>
                     <span className="text-lg font-mono" style={{ color: 'var(--state-healthy)' }}>Clear</span>
                   </div>
                 </div>

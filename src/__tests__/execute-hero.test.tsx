@@ -254,13 +254,13 @@ describe('ExecutePage hero navigation', () => {
   it('renders consent trust badge with zero auto-executions', () => {
     renderExecute()
     expect(screen.getByText(/auto-executions/)).toBeInTheDocument()
-    expect(screen.getByText(/Your final approval is always required/)).toBeInTheDocument()
+    expect(screen.getByText(/You're always in control/)).toBeInTheDocument()
   })
 
   it('renders prelude in correct order: badge → h1 → status row → hero card', () => {
     const { container } = renderExecute()
     const heroSection = container.querySelector('section')!
-    const badge = screen.getByText('Engine status: Good')
+    const badge = screen.getByText('Queue Active')
     const h1 = screen.getByRole('heading', { level: 1 })
     const statusRow = container.querySelector('[data-testid="system-status-row"]')!
     const heroCard = container.querySelector('[role="region"]')!
@@ -358,14 +358,14 @@ describe('Execute Tier 2 accordion', () => {
   it('Tier 2 section header is visible but content is collapsed by default', () => {
     renderExecute()
     // The header label should be visible
-    expect(screen.getByText(/capital movement/i)).toBeInTheDocument()
+    expect(screen.getByText(/background optimizations/i)).toBeInTheDocument()
     // The "Requires individual review" badge should be visible
     expect(screen.getByText(/requires individual review/i)).toBeInTheDocument()
   })
 
   it('expands Tier 2 cards on header click', () => {
     renderExecute()
-    const tier2Header = screen.getByText(/capital movement/i).closest('button')!
+    const tier2Header = screen.getByText(/background optimizations/i).closest('button')!
     fireEvent.click(tier2Header)
     // After expansion, the "Requires individual review" badge should still be visible
     expect(screen.getByText(/requires individual review/i)).toBeInTheDocument()

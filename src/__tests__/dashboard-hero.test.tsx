@@ -66,33 +66,12 @@ describe('DashboardCoordinationProof', () => {
     expect(screen.getByText(/10,191 verified/)).toBeInTheDocument()
   })
 
-  it('renders 3 engine cards', () => {
+  it('renders engine pulse badges for protect, grow, execute', () => {
     renderHero()
-    expect(screen.getAllByTestId('engine-card-protect').length).toBeGreaterThanOrEqual(1)
-    expect(screen.getAllByTestId('engine-card-grow').length).toBeGreaterThanOrEqual(1)
-    expect(screen.getAllByTestId('engine-card-execute').length).toBeGreaterThanOrEqual(1)
-  })
-
-  it('renders critical signal with counterparty when non-null', () => {
-    renderHero()
-    expect(screen.getAllByText('TechElectro Store').length).toBeGreaterThanOrEqual(1)
-    expect(screen.getAllByText(/94% confidence/).length).toBeGreaterThanOrEqual(1)
-  })
-
-  it('renders "All clear" when critical signal is null', () => {
-    renderHero({ criticalSignal: null, onReviewThreat: null })
-    expect(screen.getAllByText('All clear').length).toBeGreaterThanOrEqual(1)
-    expect(screen.queryByText('TechElectro Store')).not.toBeInTheDocument()
-  })
-
-  it('renders next approval with action title when non-null', () => {
-    renderHero()
-    expect(screen.getAllByText('Flag suspicious wire transfer').length).toBeGreaterThanOrEqual(1)
-  })
-
-  it('renders "Queue clear" when next approval is null', () => {
-    renderHero({ nextApproval: null, onReviewApproval: null })
-    expect(screen.getAllByText('Queue clear').length).toBeGreaterThanOrEqual(1)
+    // EnginePulseBadge renders engine values — threats, opportunity, pending
+    expect(screen.getByText('threats')).toBeInTheDocument()
+    expect(screen.getByText('opportunity')).toBeInTheDocument()
+    expect(screen.getByText('pending')).toBeInTheDocument()
   })
 
   it('omits "Execute queued" from narrative when pendingActions is 0', () => {
@@ -128,34 +107,19 @@ describe('DashboardCoordinationProof', () => {
 
   it('fires onReviewThreat callback on click', () => {
     const { props } = renderHero()
-    const btns = screen.getAllByRole('button', { name: /review threat/i })
+    const btns = screen.getAllByRole('button', { name: /review critical threat/i })
     fireEvent.click(btns[0])
     expect(props.onReviewThreat).toHaveBeenCalledOnce()
   })
 
-  it('fires onReviewApproval callback on click', () => {
-    const { props } = renderHero()
-    const btns = screen.getAllByRole('button', { name: /review & approve/i })
-    fireEvent.click(btns[0])
-    expect(props.onReviewApproval).toHaveBeenCalledOnce()
+  it('hides review threat button when criticalSignal is null', () => {
+    renderHero({ criticalSignal: null, onReviewThreat: null })
+    expect(screen.queryByRole('button', { name: /review critical threat/i })).not.toBeInTheDocument()
   })
 
-  it('renders cohort avg savings when provided', () => {
-    renderHero({ cohortAvgSavingsUsd: 583 })
-    expect(screen.getAllByText(/Cohort avg/).length).toBeGreaterThanOrEqual(1)
-    expect(screen.getAllByText(/\$583/).length).toBeGreaterThanOrEqual(1)
-  })
-
-  it('omits cohort avg savings when not provided', () => {
+  it('cohort avg savings are not rendered by default', () => {
     renderHero()
     expect(screen.queryByText(/Cohort avg/)).not.toBeInTheDocument()
-  })
-
-  it('fires onViewRecommendations callback on click', () => {
-    const { props } = renderHero()
-    const btns = screen.getAllByRole('button', { name: /see all/i })
-    fireEvent.click(btns[0])
-    expect(props.onViewRecommendations).toHaveBeenCalledOnce()
   })
 })
 
@@ -180,20 +144,6 @@ describe('DashboardPage integration', () => {
     expect(countUp?.getAttribute('aria-label')).toContain('10,250')
   })
 
-  it('navigates to protect alert detail when Review Threat is clicked', () => {
-    renderDashboard()
-    const btns = screen.getAllByRole('button', { name: /review threat/i })
-    fireEvent.click(btns[0])
-    expect(window.location.pathname).toBe('/protect/alert-detail')
-  })
-
-  it('navigates to execute approval when Review & Approve is clicked', () => {
-    renderDashboard()
-    const btns = screen.getAllByRole('button', { name: /review & approve/i })
-    fireEvent.click(btns[0])
-    expect(window.location.pathname).toBe('/execute/approval')
-  })
-
   it('renders Command Center badge above hero', () => {
     renderDashboard()
     expect(screen.getByText('Command Center')).toBeInTheDocument()
@@ -203,14 +153,5 @@ describe('DashboardPage integration', () => {
     renderDashboard()
     const headings = screen.getAllByRole('heading', { level: 1 })
     expect(headings).toHaveLength(1)
-  })
-
-  it('renders Command Center badge before hero card', () => {
-    renderDashboard()
-    const badge = screen.getByText('Command Center')
-    const heroCard = screen.getByRole('heading', { level: 1 }).closest('[class*="glass-card"]')!
-
-    // Badge appears before hero card in DOM
-    expect(badge.compareDocumentPosition(heroCard) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 })

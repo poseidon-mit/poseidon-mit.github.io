@@ -42,7 +42,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "conservative",
     name: "Conservative",
-    desc: "Maintain current allocation. Lower risk, longer timeline.",
+    desc: "Maintain current contributions. Lower risk, longer timeline.",
     monthlySave: 420_000,
     monthsToGoal: 7,
     confidence: 0.92,
@@ -51,7 +51,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "moderate",
     name: "Moderate boost",
-    desc: "Increase monthly allocation by $60K. Balanced risk-reward.",
+    desc: "Increase monthly contribution by $60K. Balanced risk-reward.",
     monthlySave: 480_000,
     monthsToGoal: 5,
     confidence: 0.87,
@@ -60,7 +60,7 @@ const SCENARIOS: Scenario[] = [
   {
     id: "aggressive",
     name: "Aggressive",
-    desc: "Maximize allocations. Fastest path, tighter capital deployment.",
+    desc: "Maximize contributions. Fastest path, most aggressive growth.",
     monthlySave: 600_000,
     monthsToGoal: 4,
     confidence: 0.79,
@@ -199,7 +199,7 @@ export default function GrowScenariosPage() {
                 </p>
               </div>
               <p className="text-base text-white/50 leading-relaxed tracking-wide mt-2">
-                This will queue a monthly allocation of <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-white/[0.05] rounded-md border border-[var(--engine-grow)]/20">${activeScenario.monthlySave.toLocaleString()}</span> for authorization in the Execute engine.
+                This will queue a monthly contribution of <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-white/[0.05] rounded-md border border-[var(--engine-grow)]/20">${activeScenario.monthlySave.toLocaleString()}</span> for approval in Execute.
               </p>
             </div>
             <div className="relative z-10 flex flex-wrap items-center gap-4 md:ml-auto">

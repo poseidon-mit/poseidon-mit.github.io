@@ -206,7 +206,7 @@ export default function GovernAuditPage() {
                   background: 'color-mix(in srgb, var(--engine-govern) 10%, transparent)',
                 }}
               >
-                Trace decision
+                View details
                 <ArrowRight size={12} />
               </Link>
             </div>
@@ -306,7 +306,7 @@ function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
           background: 'color-mix(in srgb, var(--engine-govern) 10%, transparent)',
         }}
       >
-        Trace decision
+        View details
         <ArrowRight size={12} />
       </Link>
     </div>

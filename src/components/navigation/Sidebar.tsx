@@ -105,7 +105,7 @@ export function Sidebar({ path }: { path: string }) {
     const navBadges = useMemo(() => buildNavBadges(pendingExecuteCount, activeProtectCount), [pendingExecuteCount, activeProtectCount]);
 
     return (
-        <aside className="fixed top-0 left-0 z-40 hidden h-screen w-[280px] flex-col bg-black/40 backdrop-blur-3xl border-r border-white/[0.04] lg:flex">
+        <aside className="fixed top-0 left-0 z-40 hidden h-screen w-[280px] flex-col bg-black/40 backdrop-blur-xl border-r border-white/[0.04] lg:flex">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 px-8 py-8" aria-label="Poseidon home">
                 <img
@@ -122,7 +122,7 @@ export function Sidebar({ path }: { path: string }) {
             {/* Nav groups */}
             <nav className="flex flex-1 flex-col gap-1.5 px-4" aria-label="Main navigation">
                 <span className="px-4 pt-4 pb-3 text-xs font-bold uppercase tracking-widest text-slate-500">
-                    Engines
+                    Platform
                 </span>
                 {ENGINE_ITEMS.map((item) => {
                     const isActive = path === item.path || path.startsWith(item.path + '/');

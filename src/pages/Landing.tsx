@@ -433,8 +433,8 @@ export default function Landing() {
                     <span className="text-sm font-mono text-amber-400/70">${DEMO_THREAD.monthlyOptimization.toLocaleString()}/mo</span>
                   </div>
                   <div className="flex flex-col gap-1.5 text-xs text-white/30 font-mono">
-                    <span>EXE-001 Wire transfer authorization — $2,500,000</span>
-                    <span>EXE-002 Margin account setup — ${DEMO_THREAD.criticalAlert.amount.toLocaleString()}</span>
+                    <span>EXE-001 Payment authorization — $2,500,000</span>
+                    <span>EXE-002 Account configuration — ${DEMO_THREAD.criticalAlert.amount.toLocaleString()}</span>
                   </div>
                 </motion.div>
 
@@ -456,9 +456,9 @@ export default function Landing() {
                     </div>
                   </div>
                   <div className="flex flex-col gap-1 text-[11px] text-white/25 font-mono overflow-hidden max-h-16">
-                    <span>GV-2026-0319-847 Wire authorization review · 0.97</span>
-                    <span>GV-2026-0319-846 AML compliance flag · {DEMO_THREAD.criticalAlert.confidence}</span>
-                    <span>GV-2026-0319-845 Credit facility approval · 0.89</span>
+                    <span>GV-2026-0319-847 Transaction review · 0.97</span>
+                    <span>GV-2026-0319-846 Risk assessment flag · {DEMO_THREAD.criticalAlert.confidence}</span>
+                    <span>GV-2026-0319-845 Account approval · 0.89</span>
                   </div>
                 </motion.div>
               </div>

@@ -18,7 +18,7 @@ export const LANDING_COPY = {
     videoUrl: 'https://youtu.be/ymwtd7X3CYI?si=QDTH_Yvul-gLER-8',
     trustItems: TRUST_BAR_ITEMS,
     protectProof: {
-      sublabel: 'Evidence: counterparty risk, AML pattern match, jurisdiction flag',
+      sublabel: 'Evidence: counterparty risk, regulatory pattern match, jurisdiction flag',
     },
     growProof: {
       sublabel: 'Projected 3-year advantage per account',
@@ -44,7 +44,7 @@ export const LANDING_COPY = {
     ],
   },
   engines: {
-    title: 'Four engines. One command center.',
+    title: 'Four pillars. One command center.',
   },
   cta: {
     title: 'Start your demo in under 60 seconds.',

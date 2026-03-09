@@ -15,7 +15,7 @@ import {
 } from '../domain/poseidon-universe'
 import { TRUST_POLICIES, TRUST_BAR_ITEMS } from '../content/trust-policies'
 import { LANDING_COPY } from '../content/landing-copy'
-import { ALERT_FACTOR_ITEMS } from '../pages/protect/protect-data'
+import { selectThreatFactors } from '../domain/poseidon-universe'
 import { recommendationDetails } from '../pages/grow/recommendation-detail-data'
 
 const repoRoot = resolve(__dirname, '..', '..')
@@ -50,7 +50,7 @@ describe('demo coherence invariants', () => {
       { file: 'src/pages/Dashboard.tsx', selector: 'selectDashboardView' },
       { file: 'src/pages/protect/protect-data.ts', selector: 'selectProtectThreats' },
       { file: 'src/pages/Execute.tsx', selector: 'selectExecuteActionsView' },
-      { file: 'src/pages/Govern.tsx', selector: 'selectGovernLedgerPreview' },
+      { file: 'src/pages/Govern.tsx', selector: 'selectGovernAuditEntries' },
       { file: 'src/pages/GovernAuditLedger.tsx', selector: 'selectGovernAuditEntries' },
     ]
 
@@ -94,7 +94,6 @@ describe('demo coherence invariants', () => {
     const cohortPages = [
       { file: 'src/pages/Landing.tsx', selector: 'selectCohortMetrics' },
       { file: 'src/pages/Grow.tsx', selector: 'selectCohortMetrics' },
-      { file: 'src/pages/protect/Protect.tsx', selector: 'selectCohortMetrics' },
       { file: 'src/pages/Dashboard.tsx', selector: 'selectCohortMetrics' },
     ]
 
@@ -144,7 +143,7 @@ describe('demo coherence invariants', () => {
   })
 
   it('uses selectArchitecturalTrust on downstream pages', () => {
-    for (const file of ['src/pages/Landing.tsx', 'src/pages/Execute.tsx', 'src/pages/Govern.tsx']) {
+    for (const file of ['src/pages/Landing.tsx', 'src/pages/Execute.tsx']) {
       expect(readSource(file)).toContain('selectArchitecturalTrust')
     }
   })
@@ -156,9 +155,10 @@ describe('demo coherence invariants', () => {
     expect(landingSource).not.toMatch(/LLM Zero-Retention/)
   })
 
-  it('Govern.tsx renders privacy mandates from shared source', () => {
+  it('Govern.tsx renders privacy mandates inline', () => {
     const governSource = readSource('src/pages/Govern.tsx')
-    expect(governSource).toContain('PRIVACY_MANDATES')
+    expect(governSource).toContain('AI data window')
+    expect(governSource).toContain('Privacy control')
   })
 
   it('keeps risk incidents flagged tied to canonical via contract', () => {
@@ -189,10 +189,10 @@ describe('demo coherence invariants', () => {
     )
   })
 
-  it('anchors protect proof thread to sidebar (always visible)', () => {
+  it('anchors protect proof thread to canonical selectors (always visible)', () => {
     const src = readSource('src/pages/protect/Protect.tsx')
-    expect(src).toContain('selectProtectPerformance')
-    expect(src).toMatch(/riskIncidentsFlagged|perf\.riskIncidentsFlagged/)
+    expect(src).toContain('selectThreatFactors')
+    expect(src).toContain('selectAlertAuditChain')
   })
 
   it('renders platform profile count on downstream grow page', () => {
@@ -226,7 +226,7 @@ describe('demo coherence invariants', () => {
     const thr005 = CANONICAL_UNIVERSE.entities.protectThreats.find(t => t.id === 'THR-005')!
     expect(thr005.description).not.toMatch(/high-risk category/i)
     expect(thr005.description).toMatch(/market risk|concentration|commodity/i)
-    const factors = ALERT_FACTOR_ITEMS['THR-005']
+    const factors = selectThreatFactors('THR-005')
     const allText = factors.map(f => `${(f as any).heroCue ?? ''} ${f.details}`).join(' ')
     expect(allText).not.toMatch(/inherently suspicious/i)
   })

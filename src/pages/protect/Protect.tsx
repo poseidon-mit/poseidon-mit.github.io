@@ -36,7 +36,7 @@ export default function ProtectPage() {
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
   const { navigate } = useRouter()
-  usePageTitle('Protect Engine')
+  usePageTitle('Protect')
 
   const { dismissed } = useDismissedAlerts()
   const activeThreats = useMemo(() => THREATS.filter(t => !dismissed.has(t.id)), [dismissed])
@@ -93,14 +93,14 @@ export default function ProtectPage() {
   return (
     <>
 
-      <motion.div id="main-content" className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8`} style={PAGE_CONTENT_STYLE} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main" aria-label="Protect Engine - Threat Detection">
+      <motion.div id="main-content" className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8`} style={PAGE_CONTENT_STYLE} variants={staggerContainerVariant} initial="hidden" animate="visible" role="main" aria-label="Protect - Threat Detection">
 
         {/* ── Hero ── */}
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6 mb-8">
           <motion.div variants={fadeUpVariant} className="flex items-center gap-2">
-            <EngineBadge engine="protect" icon={ShieldCheck} label="Engine status: Good" />
+            <EngineBadge engine="protect" icon={ShieldCheck} label="Protection Active" />
           </motion.div>
-          <h1 className="sr-only">Protect Engine</h1>
+          <h1 className="sr-only">Protect</h1>
 
           {criticalAlert ? (
             <motion.div variants={fadeUpVariant}>

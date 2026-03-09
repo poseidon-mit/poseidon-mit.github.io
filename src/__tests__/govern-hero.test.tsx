@@ -113,14 +113,14 @@ describe('GovernPage integration', () => {
     expect(window.location.pathname).toBe('/govern/audit')
   })
 
-  it('renders Engine status badge above hero', () => {
+  it('renders status badge above hero', () => {
     renderGovern()
-    expect(screen.getByText('Engine status: Good')).toBeInTheDocument()
+    expect(screen.getByText('Audit Active')).toBeInTheDocument()
   })
 
   it('renders prelude in correct order: badge → h1 → hero card', () => {
     renderGovern()
-    const badge = screen.getByText('Engine status: Good')
+    const badge = screen.getByText('Audit Active')
     const h1 = screen.getByRole('heading', { level: 1 })
     const heroCard = screen.getByText('Decisions Audited & Secured').closest('[class*="glass-card"]')!
 

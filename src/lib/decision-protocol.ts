@@ -77,19 +77,19 @@ export interface InvocationPolicy {
 export const INVOCATION_POLICIES: InvocationPolicy[] = [
   {
     mode: 'single',
-    trigger: 'Routine operations under $10K, pre-approved categories',
+    trigger: 'Routine operations under $1K, pre-approved categories',
     requiredRoles: ['compliance'],
     humanReviewRequired: false,
   },
   {
     mode: 'cross-check',
-    trigger: 'Standard operations $10K–$500K or elevated-risk counterparties',
+    trigger: 'Standard operations $1K–$10K or elevated-risk merchants',
     requiredRoles: ['compliance', 'strategy'],
     humanReviewRequired: false,
   },
   {
     mode: 'council',
-    trigger: 'Capital movement >$500K, new counterparties, regulatory flags, VIP clients',
+    trigger: 'Capital movement >$10K, international transfers, regulatory flags, flagged merchants',
     requiredRoles: ['compliance', 'document', 'strategy', 'policy'],
     humanReviewRequired: true,
   },

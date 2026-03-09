@@ -203,11 +203,11 @@ export default function ExecutePage() {
 
         {/* Hero */}
         <motion.section variants={staggerContainerVariant} className="flex flex-col gap-6">
-          <motion.div variants={fadeUpVariant}><EngineBadge engine="execute" icon={Zap} label="Engine status: Good" className="self-start" /></motion.div>
-          <h1 className="sr-only">Execute Engine</h1>
+          <motion.div variants={fadeUpVariant}><EngineBadge engine="execute" icon={Zap} label="Queue Active" className="self-start" /></motion.div>
+          <h1 className="sr-only">Execute</h1>
           <motion.div variants={fadeUpVariant} data-testid="system-status-row" className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-white/30">
             <Lock size={10} className="text-amber-400/50 engine-text-execute" />
-            <span>System Status: <span className="text-amber-400/70 engine-text-execute">{trust.autoExecutionsWithoutConsent}</span> auto-executions · Your final approval is always required</span>
+            <span>System Status: <span className="text-amber-400/70 engine-text-execute">{trust.autoExecutionsWithoutConsent}</span> auto-executions · You're always in control</span>
           </motion.div>
           <motion.div variants={fadeUpVariant}>
             <ExecuteApprovalCommandDeck

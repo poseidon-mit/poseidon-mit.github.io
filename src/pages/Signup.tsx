@@ -21,14 +21,14 @@ export default function SignupPage() {
     setTimeout(() => {
       beginDemoSession({ method: 'passkey', email: DEMO_USER.email, entryIntent: 'agentic' })
       updateOnboarding({ completed: false, completedAt: null })
-      navigate('/dashboard')
+      navigate('/onboarding')
     }, 800)
   }, [beginDemoSession, updateOnboarding, navigate])
 
   const handleSocial = useCallback((method: 'google' | 'apple') => {
     beginDemoSession({ method, email: DEMO_USER.email, entryIntent: 'agentic' })
     updateOnboarding({ completed: false, completedAt: null })
-    navigate('/dashboard')
+    navigate('/onboarding')
   }, [beginDemoSession, updateOnboarding, navigate])
 
   const handleSkip = useCallback(() => {
