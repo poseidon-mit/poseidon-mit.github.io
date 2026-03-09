@@ -1,0 +1,1 @@
+import{r as o}from"./vendor-react-B1hMqR7n.js";import{b as r}from"./index-CenJlDzB.js";import"./vendor-runtime-BvukZrPq.js";import"./vendor-icons-DYOMuHkF.js";import"./vendor-motion-CLKXdj0P.js";function n(){const{navigate:n}=r();return o.useEffect(()=>{n("/onboarding")},[n]),null}export{n as default};

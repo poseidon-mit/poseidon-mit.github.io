@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Guard Vite-only architecture
+        run: npm run guard:vite-only
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit and contract tests
+        run: npm run test:run
+
+      - name: Contract gate
+        run: npm run check:contracts
+
+      - name: Target contract gate
+        run: npm run check:target-contracts
+
+      - name: Design-system gate
+        run: npm run check:design-system
+
+      - name: A11y structure gate
+        run: npm run check:a11y-structure
+
+      - name: Inline-style and hex gate
+        run: npm run check:inline-style-hex
+
+      - name: Production build
+        run: npm run build

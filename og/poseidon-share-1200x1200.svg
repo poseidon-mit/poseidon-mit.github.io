@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" role="img" aria-label="Poseidon.AI square preview">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B1221" />
+      <stop offset="100%" stop-color="#111C33" />
+    </linearGradient>
+    <radialGradient id="glow" cx="0.35" cy="0.2" r="0.7">
+      <stop offset="0%" stop-color="#00F0FF" stop-opacity="0.36" />
+      <stop offset="100%" stop-color="#00F0FF" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)" />
+  <rect width="1200" height="1200" fill="url(#glow)" />
+  <g transform="translate(120 150)">
+    <text x="0" y="0" fill="#BFD3ED" font-size="26" font-family="Inter, system-ui, sans-serif">POSEIDON.AI</text>
+    <text x="0" y="140" fill="#F6FAFF" font-size="88" font-weight="700" font-family="Inter, system-ui, sans-serif">Calm</text>
+    <text x="0" y="235" fill="#F6FAFF" font-size="88" font-weight="700" font-family="Inter, system-ui, sans-serif">Financial AI</text>
+    <text x="0" y="310" fill="#9FB4D4" font-size="34" font-family="Inter, system-ui, sans-serif">Explainable. Actionable. Governed.</text>
+  </g>
+</svg>

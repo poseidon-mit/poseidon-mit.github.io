@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+remote_name="${1:-}"
+remote_url="${2:-}"
+
+# Only auto-dispatch when pushing main to upstream repo.
+if [[ "$remote_name" != "upstream" ]]; then
+  exit 0
+fi
+
+if ! command -v gh >/dev/null 2>&1; then
+  echo "[post-push] gh CLI not found; skipping deploy workflow dispatch." >&2
+  exit 0
+fi
+
+if ! gh auth status >/dev/null 2>&1; then
+  echo "[post-push] gh is not authenticated; skipping deploy workflow dispatch." >&2
+  exit 0
+fi
+
+pushed_main=false
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [[ "$remote_ref" == "refs/heads/main" ]]; then
+    pushed_main=true
+    break
+  fi
+done
+
+if [[ "$pushed_main" != true ]]; then
+  exit 0
+fi
+
+repo="poseidon-mit/poseidon-mit.github.io"
+
+echo "[post-push] Triggering GitHub Pages deploy workflow for $repo..."
+if gh workflow run deploy.yml --repo "$repo" --ref main >/dev/null; then
+  echo "[post-push] Deploy workflow dispatched."
+else
+  echo "[post-push] Failed to dispatch deploy workflow (push already completed)." >&2
+fi

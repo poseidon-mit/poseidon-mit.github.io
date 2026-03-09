@@ -1,0 +1,1 @@
+const t="mx-auto w-full px-4 md:px-6 lg:px-8",x={maxWidth:"1440px"},a="text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white leading-tight",l={fontFamily:"var(--font-display)"};export{x as P,t as a,l as b,a as c};

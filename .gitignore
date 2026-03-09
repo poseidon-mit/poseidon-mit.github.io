@@ -1,0 +1,26 @@
+node_modules
+dist
+.next
+.DS_Store
+*.local
+remotion/out/
+tsconfig.tsbuildinfo
+
+# AI tool configs
+.agent/
+.agents/
+.claude/
+.cursor/
+.interface-design/
+.kiro/
+.windsurf/
+skills/
+
+# Temp files
+tmp/
+
+# Large raw recordings (keep processed versions)
+remotion/public/assets/recordings/*-raw.mp4
+
+# Visual regression screenshots (generated at runtime)
+docs/baselines/screenshots/
