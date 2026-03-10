@@ -9,25 +9,24 @@
 
 @layer base {
   :root {
-    /* ── Glassmorphism 2.0 ── */
-    --glass-border: rgba(255, 255, 255, 0.08);
+    /* ── Light surfaces ── */
+    --glass-border: rgba(0, 0, 0, 0.08);
 
-    /* ── Extended Glass Depth (not part of system tokens SSoT) ── */
-    --glass-depth-surface: rgba(8, 12, 24, 0.62);
-    --glass-depth-elevated: rgba(12, 20, 38, 0.7);
-    --glass-depth-floating: rgba(16, 26, 48, 0.78);
-    --glass-depth-floating-shadow: 0 20px 60px rgba(0,0,0,0.5),
-                                   0 8px 24px rgba(0,0,0,0.3),
-                                   inset 0 1px 0 rgba(255,255,255,0.1);
-    --glass-blur: 16px;
-    --glass-blur-mobile: 10px;
+    /* ── Surface Depth (light) ── */
+    --glass-depth-surface: rgba(255, 255, 255, 0.9);
+    --glass-depth-elevated: rgba(255, 255, 255, 0.95);
+    --glass-depth-floating: rgba(255, 255, 255, 1);
+    --glass-depth-floating-shadow: 0 8px 32px rgba(0,0,0,0.08),
+                                   0 2px 8px rgba(0,0,0,0.04);
+    --glass-blur: 8px;
+    --glass-blur-mobile: 0;
 
-    /* ── Text Gradients ── */
-    --gradient-cyan: linear-gradient(90deg, #bffcff, #00f0ff);
-    --gradient-teal: linear-gradient(90deg, #5eead4, #15e1c2);
-    --gradient-violet: linear-gradient(90deg, #d7b7ff, #8b5cf6);
-    --gradient-amber: linear-gradient(90deg, #ffe0a1, #f59e0b);
-    --gradient-blue: linear-gradient(90deg, #b8d6ff, #58a6ff);
+    /* ── Text Gradients (solid for light theme) ── */
+    --gradient-cyan: linear-gradient(90deg, #0A1628, #0A1628);
+    --gradient-teal: linear-gradient(90deg, #0A1628, #0A1628);
+    --gradient-violet: linear-gradient(90deg, #0A1628, #0A1628);
+    --gradient-amber: linear-gradient(90deg, #0A1628, #0A1628);
+    --gradient-blue: linear-gradient(90deg, #0A1628, #0A1628);
 
     /* ── Additional tracking utilities ── */
     --tracking-display: -0.04em;
@@ -71,21 +70,13 @@
   }
 }
 
-/* Agent neon glow classes */
-.neon-glow-agent-gpt4o {
-  box-shadow: 0 0 8px rgba(255, 107, 53, 0.4), 0 0 20px rgba(255, 107, 53, 0.15);
-}
-.neon-glow-agent-gpt4o-mini {
-  box-shadow: 0 0 8px rgba(20, 184, 166, 0.4), 0 0 20px rgba(20, 184, 166, 0.15);
-}
-.neon-glow-agent-sonnet {
-  box-shadow: 0 0 8px rgba(99, 102, 241, 0.4), 0 0 20px rgba(99, 102, 241, 0.15);
-}
-.neon-glow-agent-opus {
-  box-shadow: 0 0 8px rgba(236, 72, 153, 0.4), 0 0 20px rgba(236, 72, 153, 0.15);
-}
+/* Agent glow classes (suppressed in light theme) */
+.neon-glow-agent-gpt4o,
+.neon-glow-agent-gpt4o-mini,
+.neon-glow-agent-sonnet,
+.neon-glow-agent-opus,
 .neon-glow-agent-unknown {
-  box-shadow: 0 0 8px rgba(148, 163, 184, 0.3), 0 0 16px rgba(148, 163, 184, 0.1);
+  box-shadow: none;
 }
 
 /* Agent badge background classes */
@@ -95,11 +86,11 @@
 .badge-agent-opus { background: rgba(236, 72, 153, 0.15); color: #EC4899; }
 .badge-agent-unknown { background: rgba(148, 163, 184, 0.12); color: #94A3B8; }
 
-/* Agent neon text */
-.neon-text-agent-gpt4o { color: #FF6B35; text-shadow: 0 0 6px rgba(255, 107, 53, 0.5); }
-.neon-text-agent-sonnet { color: #6366F1; text-shadow: 0 0 6px rgba(99, 102, 241, 0.5); }
-.neon-text-agent-opus { color: #EC4899; text-shadow: 0 0 6px rgba(236, 72, 153, 0.5); }
-.neon-text-agent-gpt4o-mini { color: #14B8A6; text-shadow: 0 0 6px rgba(20, 184, 166, 0.5); }
+/* Agent text (no glow in light theme) */
+.neon-text-agent-gpt4o { color: #FF6B35; text-shadow: none; }
+.neon-text-agent-sonnet { color: #6366F1; text-shadow: none; }
+.neon-text-agent-opus { color: #EC4899; text-shadow: none; }
+.neon-text-agent-gpt4o-mini { color: #14B8A6; text-shadow: none; }
 
 /* ── Precision Mode — Agent Glow Suppression ── */
 .theme-precision .neon-glow-agent-gpt4o,

@@ -20,9 +20,9 @@
   overflow: hidden;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  background: var(--surface-task, rgba(255, 255, 255, 0.03));
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-  border: 1px solid var(--surface-task-border, rgba(255, 255, 255, 0.08));
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   transition: background-color 150ms ease, border-color 150ms ease;
 }
 
@@ -30,7 +30,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.01), transparent);
+  background: transparent;
   pointer-events: none;
   z-index: 0;
 }
@@ -43,27 +43,27 @@
   box-shadow: var(--ds-surface-shadow);
 }
 
-/* App shell background with atmospheric depth */
+/* App shell background */
 .app-bg-oled,
 .app-bg-depth {
-  background: var(--bg-oled);
+  background: #FAFAF9;
   background-image: none;
 }
 
 /* Glass panel variants for shell chrome */
 .glass-sidebar {
-  background: rgba(8, 12, 20, 0.95);
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  background: #FFFFFF;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;
 }
 
 .glass-header {
-  background: rgba(8, 12, 20, 0.95);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .cta-primary-glow {
@@ -77,12 +77,12 @@
   transform: translateY(-1px);
 }
 
-/* Landing liquid glass CTA treatment */
+/* Landing CTA treatment */
 .btn-liquid-glass {
   position: relative;
   isolation: isolate;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  border: 2px solid #0A1628;
   box-shadow: none;
 }
 
@@ -120,9 +120,9 @@
 
 .shimmer {
   background: linear-gradient(90deg,
-      rgba(255, 255, 255, 0.03) 25%,
-      rgba(255, 255, 255, 0.08) 50%,
-      rgba(255, 255, 255, 0.03) 75%);
+      rgba(0, 0, 0, 0.03) 25%,
+      rgba(0, 0, 0, 0.06) 50%,
+      rgba(0, 0, 0, 0.03) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
   border-radius: 8px;
@@ -131,19 +131,19 @@
 @media (prefers-reduced-motion: reduce) {
   .shimmer {
     animation: none;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.04);
   }
 }
 
-/* ── Engine-aware Glass Hover Glow ── */
+/* ── Engine-aware Hover ── */
 
 .glass-hover-protect:hover,
 .glass-hover-dashboard:hover,
 .glass-hover-grow:hover,
 .glass-hover-execute:hover,
 .glass-hover-govern:hover {
-  border-color: rgba(255, 255, 255, 0.15) !important;
-  box-shadow: none;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 /* ── Aurora Pulse Animation ── */
@@ -176,10 +176,10 @@
   font-size: clamp(1.75rem, 3.5vw, 2.75rem);
 }
 
-/* ── Focus-visible ring (cyan engine accent) ── */
+/* ── Focus-visible ring ── */
 
 :focus-visible {
-  outline: 2px solid rgba(0, 240, 255, 0.7);
+  outline: 2px solid #0A1628;
   outline-offset: 2px;
   border-radius: var(--radius-sm, 12px);
 }
@@ -210,7 +210,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.5);
+  color: #71717A;
 }
 
 .section-label-bordered {
@@ -218,8 +218,8 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.5);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: #71717A;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   padding-bottom: 0.75rem;
 }
 
@@ -228,7 +228,7 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.4);
+  color: #A1A1AA;
 }
 
 /* ── GovernFooter Active Write Pulse ── */
@@ -267,10 +267,7 @@
 /* ── Landing Grid Overlay ── */
 
 .landing-grid-overlay {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background-image: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,48 +1,48 @@
 /* ── Poseidon v2 — Mobile-First Design Tokens ── */
 :root {
   /* ── Fonts ── */
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-display: 'Inter', system-ui, sans-serif;
   --font-body: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Noto Sans JP', ui-monospace, monospace;
 
-  /* ── Colors — Background (Precision: darker base, #050505 floor) ── */
-  --bg: #080C14;
-  --bg-deep: #030508;
-  --bg-oled: hsl(0 0% 7%);
-  --bg-vantablack: #050505;
-  --bg-surface: #151D2C;
-  --surface-primary: #080C14;
+  /* ── Colors — Background (Light Theme) ── */
+  --bg: #FAFAF9;
+  --bg-deep: #F4F4F5;
+  --bg-oled: #FAFAF9;
+  --bg-vantablack: #FAFAF9;
+  --bg-surface: #FFFFFF;
+  --surface-primary: #FAFAF9;
 
-  /* ── Colors — Glass ── */
-  --glass-bg: rgba(8, 12, 24, 0.62);
-  --glass-bg-apple: rgba(255, 255, 255, 0.03);
-  --glass-bg-strong: rgba(8, 12, 24, 0.72);
-  --glass-bg-soft: rgba(10, 16, 28, 0.6);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-border-apple: rgba(255, 255, 255, 0.1);
-  --glass-border-strong: rgba(255, 255, 255, 0.16);
+  /* ── Colors — Glass (Light: subtle shadows instead) ── */
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-bg-apple: rgba(255, 255, 255, 0.9);
+  --glass-bg-strong: rgba(255, 255, 255, 0.95);
+  --glass-bg-soft: rgba(255, 255, 255, 0.7);
+  --glass-bg-subtle: rgba(0, 0, 0, 0.02);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-border-apple: rgba(0, 0, 0, 0.06);
+  --glass-border-strong: rgba(0, 0, 0, 0.12);
 
-  /* ── Glass — Page-level blue-tinted (engine/mission cards) ── */
-  --glass-border-page: rgba(155, 195, 238, 0.24);
-  --glass-border-page-strong: rgba(163, 203, 244, 0.26);
-  --glass-bg-card-inner: rgba(12, 27, 52, 0.72);
-  --glass-bg-card-section: rgba(11, 24, 45, 0.68);
+  /* ── Glass — Page-level (light cards) ── */
+  --glass-border-page: rgba(0, 0, 0, 0.08);
+  --glass-border-page-strong: rgba(0, 0, 0, 0.12);
+  --glass-bg-card-inner: rgba(255, 255, 255, 0.9);
+  --glass-bg-card-section: rgba(255, 255, 255, 0.8);
 
-  --glass-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --glass-shadow-apple-base: 0 2px 8px rgba(0, 0, 0, 0.12);
-  --glass-shadow-apple-elevated: 0 4px 16px rgba(0, 0, 0, 0.15);
+  --glass-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --glass-shadow-apple-base: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --glass-shadow-apple-elevated: 0 4px 12px rgba(0, 0, 0, 0.08);
   --glass-inner-highlight: none;
   --glass-inset: none;
-  --glass-edge: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --glass-edge: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
   --glass-backdrop: none;
   --glass-backdrop-mobile: none;
 
   /* ── Colors — Text ── */
-  --text: #f8fafc;
-  --muted: rgba(255, 255, 255, 0.72);
-  --muted-2: rgba(255, 255, 255, 0.62);
-  --text-on-accent: #04141a;
+  --text: #0A1628;
+  --muted: rgba(0, 0, 0, 0.55);
+  --muted-2: rgba(0, 0, 0, 0.45);
+  --text-on-accent: #FFFFFF;
 
   /* ── Colors — Accents (Precision-calibrated) ── */
   --accent-cyan: #00B8C4;
@@ -67,12 +67,12 @@
   --state-warning-rgb: 217, 140, 0;
   --state-critical-rgb: 217, 48, 37;
 
-  /* ── Colors — Engine Themes ── */
-  --engine-dashboard: #00F0FF;
-  --engine-protect: #22C55E;
-  --engine-grow: #8B5CF6;
-  --engine-execute: #EAB308;
-  --engine-govern: #3B82F6;
+  /* ── Colors — Engine Themes (Light-adjusted) ── */
+  --engine-dashboard: #00B8C4;
+  --engine-protect: #16A34A;
+  --engine-grow: #7C3AED;
+  --engine-execute: #CA8A04;
+  --engine-govern: #2563EB;
 
   /* ── Neon — All disabled (Precision default) ── */
   --neon-cyan-mobile: none;
@@ -108,23 +108,23 @@
   --icon-glow-blue: none;
   --icon-glow-red: none;
 
-  /* ── Text Gradients (Precision: muted endpoints) ── */
-  --text-gradient-cyan: linear-gradient(90deg, #b0eef2 0%, #00B8C4 100%);
-  --text-gradient-teal: linear-gradient(90deg, #4dd8be 0%, #0F9D8A 100%);
-  --text-gradient-violet: linear-gradient(90deg, #d7b7ff 0%, #8b5cf6 100%);
-  --text-gradient-amber: linear-gradient(90deg, #ffe0a1 0%, #f59e0b 100%);
-  --text-gradient-blue: linear-gradient(90deg, #b8d6ff 0%, #58a6ff 100%);
+  /* ── Text Gradients (solid for light theme) ── */
+  --text-gradient-cyan: linear-gradient(90deg, #0A1628, #0A1628);
+  --text-gradient-teal: linear-gradient(90deg, #0A1628, #0A1628);
+  --text-gradient-violet: linear-gradient(90deg, #0A1628, #0A1628);
+  --text-gradient-amber: linear-gradient(90deg, #0A1628, #0A1628);
+  --text-gradient-blue: linear-gradient(90deg, #0A1628, #0A1628);
   --text-shadow-neon: none;
 
-  /* ── Badge & Warning (Precision: desaturated, no glow) ── */
-  --badge-bg: rgba(0, 184, 196, 0.10);
-  --badge-border: 1px solid rgba(0, 184, 196, 0.35);
-  --badge-text: #d0f4f7;
+  /* ── Badge & Warning (Light theme) ── */
+  --badge-bg: rgba(37, 99, 235, 0.08);
+  --badge-border: 1px solid rgba(37, 99, 235, 0.25);
+  --badge-text: #2563EB;
   --badge-shadow: none;
   --badge-box: none;
-  --warning-bg: rgba(217, 48, 37, 0.12);
-  --warning-border: 1px solid rgba(217, 48, 37, 0.30);
-  --warning-text: #e87c73;
+  --warning-bg: rgba(220, 38, 38, 0.08);
+  --warning-border: 1px solid rgba(220, 38, 38, 0.25);
+  --warning-text: #DC2626;
   --warning-shadow: none;
   --warning-box: none;
 
@@ -135,14 +135,14 @@
   --radius-card: 18px;
   --radius-inner: 10px;
 
-  /* ── Interactive States ── */
-  --state-hover-bg: rgba(255, 255, 255, 0.06);
-  --state-active-bg: rgba(255, 255, 255, 0.12);
-  --state-focus-ring: 0 0 0 2px rgba(0, 184, 196, 0.40);
-  --state-disabled-text: rgba(255, 255, 255, 0.4);
-  --state-error-border: rgba(217, 48, 37, 0.45);
-  --state-success-border: rgba(15, 157, 138, 0.45);
-  --state-loading-bg: rgba(255, 255, 255, 0.04);
+  /* ── Interactive States (Light) ── */
+  --state-hover-bg: rgba(0, 0, 0, 0.04);
+  --state-active-bg: rgba(0, 0, 0, 0.08);
+  --state-focus-ring: 0 0 0 2px rgba(10, 22, 40, 0.3);
+  --state-disabled-text: rgba(0, 0, 0, 0.3);
+  --state-error-border: rgba(220, 38, 38, 0.4);
+  --state-success-border: rgba(22, 163, 74, 0.4);
+  --state-loading-bg: rgba(0, 0, 0, 0.03);
 
   /* ── Motion ── */
   --motion-duration-fast: 120ms;
@@ -225,13 +225,13 @@
   --font-size-ui-22-4: 22px;
   --font-size-ui-25-6: 26px;
 
-  /* ── Surface Elevation (Precision: 3 levels) ── */
+  /* ── Surface Elevation (Light: 3 levels) ── */
   --surface-canvas: transparent;
   --surface-canvas-border: transparent;
-  --surface-task: rgba(255, 255, 255, 0.03);
-  --surface-task-border: rgba(255, 255, 255, 0.08);
-  --surface-evidence: rgba(255, 255, 255, 0.05);
-  --surface-evidence-border: rgba(255, 255, 255, 0.12);
+  --surface-task: rgba(255, 255, 255, 0.9);
+  --surface-task-border: rgba(0, 0, 0, 0.08);
+  --surface-evidence: rgba(255, 255, 255, 0.95);
+  --surface-evidence-border: rgba(0, 0, 0, 0.1);
   --line-height-tight: 1.1;
   --line-height-body: 1.5;
   --line-height-relaxed: 1.65;
@@ -299,7 +299,7 @@
 
 /* ── Focus Visible ── */
 :focus-visible {
-  outline: 3px solid var(--accent-violet);
+  outline: 2px solid #0A1628;
   outline-offset: 2px;
 }
 
@@ -309,7 +309,7 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 [tabindex]:focus-visible {
-  outline: 3px solid var(--accent-violet);
+  outline: 2px solid #0A1628;
   outline-offset: 2px;
 }
 
@@ -334,8 +334,8 @@ textarea:focus-visible,
   transform: translateX(-50%);
   z-index: var(--z-skip-link);
   padding: 12px 24px;
-  background: var(--accent-cyan);
-  color: var(--bg-deep);
+  background: #0A1628;
+  color: #FFFFFF;
   border-radius: var(--radius-sm);
   font-weight: 600;
   text-decoration: none;

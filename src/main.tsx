@@ -26,8 +26,8 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
             minHeight: '100vh',
             display: 'grid',
             placeItems: 'center',
-            background: 'var(--bg-oled)',
-            color: 'rgba(241,245,249,0.72)',
+            background: '#FAFAF9',
+            color: '#3F3F46',
             fontFamily: 'Inter, system-ui, sans-serif',
             textAlign: 'center',
             gap: '16px',
@@ -35,15 +35,15 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
         >
           <div>
             <div style={{ fontSize: '2rem', marginBottom: '8px' }}>⚠</div>
-            <p style={{ color: '#e2e8f0', fontWeight: 600, marginBottom: '4px' }}>Something went wrong</p>
-            <pre style={{ textAlign: 'left', maxWidth: '600px', fontSize: '12px', background: 'rgba(0,0,0,0.5)', padding: '12px', borderRadius: '8px', overflow: 'auto', maxHeight: '200px', color: '#f87171' }}>
+            <p style={{ color: '#0A1628', fontWeight: 600, marginBottom: '4px' }}>Something went wrong</p>
+            <pre style={{ textAlign: 'left', maxWidth: '600px', fontSize: '12px', background: '#F4F4F5', padding: '12px', borderRadius: '8px', overflow: 'auto', maxHeight: '200px', color: '#DC2626' }}>
               {this.state.error?.message}
               {'\n'}
               {this.state.error?.stack?.slice(0, 500)}
             </pre>
             <button
               onClick={() => window.location.replace('/')}
-              style={{ marginTop: '16px', padding: '8px 20px', borderRadius: '8px', background: 'var(--accent-cyan)', color: 'var(--bg-oled)', fontWeight: 600, border: 'none', cursor: 'pointer' }}
+              style={{ marginTop: '16px', padding: '8px 20px', borderRadius: '8px', background: '#0A1628', color: '#FFFFFF', fontWeight: 600, border: 'none', cursor: 'pointer' }}
             >
               Return to Home
             </button>
@@ -73,30 +73,19 @@ function RouteLoadingFallback() {
 
   return (
     <div
-      className="fixed inset-0 z-[100] grid place-items-center bg-transparent backdrop-blur-md"
+      className="fixed inset-0 z-[100] grid place-items-center bg-[#FAFAF9]"
       role="status"
       aria-live="polite"
       aria-label="Loading page"
     >
-      <div className="absolute inset-0 bg-black/60 pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/10 rounded-full pointer-events-none opacity-50" />
-
-      <div className="relative z-10 flex flex-col items-center gap-6">
-        {/* Animated Rings */}
-        <div className="relative w-16 h-16 flex items-center justify-center">
-          <div className="absolute inset-0 rounded-full border border-white/10" />
-          <div className="absolute inset-0 rounded-full border border-cyan-400/30 border-t-transparent animate-spin" style={{ animationDuration: '2s' }} />
-          <div className="absolute inset-2 rounded-full border border-emerald-400/20 border-b-transparent animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }} />
-          <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+      <div className="flex flex-col items-center gap-6">
+        <div className="relative w-10 h-10 flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full border-2 border-zinc-200 border-t-zinc-600 animate-spin" style={{ animationDuration: '1s' }} />
         </div>
 
-        {/* Typography */}
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-cyan-400/80">
-            Loading Interface
-          </span>
-          <span className="text-sm font-medium tracking-wide text-white/50">
-            Secure Connection Established
+        <div className="flex flex-col items-center gap-1">
+          <span className="text-sm font-medium text-zinc-400">
+            Loading...
           </span>
         </div>
 
@@ -104,9 +93,9 @@ function RouteLoadingFallback() {
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="mt-4 rounded-xl border border-white/10 bg-white/5 px-6 py-2.5 text-xs font-bold tracking-wide text-white/80 hover:bg-white/10 hover:text-white transition-all shadow-[0_0_20px_rgba(255,255,255,0.05)] backdrop-blur-md"
+            className="mt-2 rounded-lg border border-zinc-200 bg-white px-5 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
           >
-            Force Reload
+            Reload
           </button>
         ) : null}
       </div>

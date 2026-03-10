@@ -1,5 +1,4 @@
 export const APP_SHELL_PREFIXES = [
-  '/dashboard',
   '/protect',
   '/grow',
   '/execute',

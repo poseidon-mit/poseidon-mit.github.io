@@ -1,4 +1,4 @@
-/* ── Poseidon v2 — Mobile-First Base ── */
+/* ── Poseidon v2 — Light Theme Base ── */
 * {
   box-sizing: border-box;
 }
@@ -11,11 +11,11 @@ html {
 
 body {
   margin: 0;
-  font-family: var(--font-body);
+  font-family: var(--font-body, 'Inter', system-ui, sans-serif);
   font-size: 16px;
   line-height: 1.5;
-  color: var(--text);
-  background: radial-gradient(120% 70% at 50% 0%, #121b33 0%, #060712 45%, var(--bg-deep) 100%);
+  color: var(--color-text-primary, #0A1628);
+  background: #FAFAF9;
   min-height: 100dvh;
   overflow-x: hidden;
   overscroll-behavior-y: contain;
@@ -29,68 +29,6 @@ a {
 #root {
   position: relative;
   z-index: 0;
-}
-
-/* ── Aurora background — Reduced on mobile for GPU savings ── */
-body::before,
-body::after {
-  content: '';
-  position: fixed;
-  inset: -30% -10% auto -10%;
-  height: 80vh;
-  z-index: -2;
-  pointer-events: none;
-  filter: blur(40px);
-  opacity: 0.08;
-  background: radial-gradient(circle at 20% 20%, rgba(21, 225, 194, 0.16), transparent 55%),
-    radial-gradient(circle at 85% 10%, rgba(143, 107, 255, 0.16), transparent 55%),
-    radial-gradient(circle at 50% 60%, rgba(88, 166, 255, 0.09), transparent 55%);
-  animation: aurora 18s ease-in-out infinite;
-}
-
-body::after {
-  inset: auto -10% -30% -10%;
-  height: 70vh;
-  opacity: 0.06;
-  background: radial-gradient(circle at 20% 60%, rgba(247, 178, 74, 0.13), transparent 55%),
-    radial-gradient(circle at 70% 50%, rgba(21, 225, 194, 0.09), transparent 60%);
-  animation: aurora 22s ease-in-out infinite reverse;
-}
-
-/* Desktop: Full aurora effect */
-@media (min-width: 768px) {
-  body {
-    font-size: clamp(17px, 1.2vw + var(--space-3-5), 20px);
-  }
-
-  body::before {
-    filter: blur(60px);
-    opacity: 0.10;
-    background: radial-gradient(circle at 20% 20%, rgba(21, 225, 194, 0.18), transparent 55%),
-      radial-gradient(circle at 85% 10%, rgba(143, 107, 255, 0.18), transparent 55%),
-      radial-gradient(circle at 50% 60%, rgba(88, 166, 255, 0.10), transparent 55%);
-  }
-
-  body::after {
-    opacity: 0.08;
-    filter: blur(60px);
-    background: radial-gradient(circle at 20% 60%, rgba(247, 178, 74, 0.15), transparent 55%),
-      radial-gradient(circle at 70% 50%, rgba(21, 225, 194, 0.10), transparent 60%);
-  }
-}
-
-/* Responsive layout tokens moved to tokens.css */
-
-@keyframes aurora {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(0, -6%, 0);
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

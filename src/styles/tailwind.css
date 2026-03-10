@@ -3,30 +3,30 @@
 @theme inline {
   --font-sans: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --font-display: 'Inter', system-ui, sans-serif;
 
-  /* Engine accent colors */
-  --color-engine-dashboard: #00F0FF;
-  --color-engine-protect: #22C55E;
-  --color-engine-grow: #8B5CF6;
-  --color-engine-execute: #EAB308;
-  --color-engine-govern: #3B82F6;
+  /* Engine accent colors (used sparingly) */
+  --color-engine-dashboard: #00B8C4;
+  --color-engine-protect: #16A34A;
+  --color-engine-grow: #7C3AED;
+  --color-engine-execute: #CA8A04;
+  --color-engine-govern: #2563EB;
 
-  /* Surface colors */
-  --color-surface-base: #0F1420;
-  --color-surface-card: #0F1D32;
-  --color-surface-elevated: #132237;
+  /* Surface colors (light) */
+  --color-surface-base: #FAFAF9;
+  --color-surface-card: #FFFFFF;
+  --color-surface-elevated: #FFFFFF;
 
   /* Text colors */
-  --color-text-primary: #F1F5F9;
-  --color-text-secondary: #CBD5E1;
-  --color-text-muted: #64748B;
+  --color-text-primary: #0A1628;
+  --color-text-secondary: #3F3F46;
+  --color-text-muted: #71717A;
 
   /* Status colors */
-  --color-status-success: #10B981;
-  --color-status-warning: #F59E0B;
-  --color-status-error: #EF4444;
-  --color-status-info: #38BDF8;
+  --color-status-success: #16A34A;
+  --color-status-warning: #CA8A04;
+  --color-status-error: #DC2626;
+  --color-status-info: #2563EB;
 }
 
 @layer base {
@@ -87,18 +87,18 @@
   }
 
   :root {
-    color-scheme: dark;
+    color-scheme: light;
     --engine-dashboard: var(--color-engine-dashboard);
     --engine-protect: var(--color-engine-protect);
     --engine-grow: var(--color-engine-grow);
     --engine-execute: var(--color-engine-execute);
     --engine-govern: var(--color-engine-govern);
 
-    --neon-cyan: var(--color-engine-dashboard);
-    --neon-teal: var(--color-engine-protect);
-    --neon-violet: var(--color-engine-grow);
-    --neon-amber: var(--color-engine-execute);
-    --neon-blue: var(--color-engine-govern);
+    --neon-cyan: none;
+    --neon-teal: none;
+    --neon-violet: none;
+    --neon-amber: none;
+    --neon-blue: none;
   }
 
   * {
@@ -115,7 +115,7 @@
 
   body {
     font-family: var(--font-sans);
-    background: var(--bg-oled, var(--color-surface-base));
+    background: var(--color-surface-base);
     color: var(--color-text-primary);
     line-height: 1.5;
     overflow-x: hidden;
@@ -123,24 +123,12 @@
   }
 
   ::selection {
-    background: color-mix(in srgb, var(--accent-cyan, #00F0FF) 30%, transparent);
+    background: color-mix(in srgb, var(--color-engine-govern) 20%, transparent);
     color: var(--color-text-primary);
   }
 
   #root {
     min-height: 100vh;
     width: 100%;
-  }
-
-  @keyframes neon-pulse {
-
-    0%,
-    100% {
-      box-shadow: 0 0 20px rgba(6, 182, 212, 0.5), 0 0 40px rgba(6, 182, 212, 0.25), 0 0 80px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    }
-
-    50% {
-      box-shadow: 0 0 28px rgba(6, 182, 212, 0.65), 0 0 56px rgba(6, 182, 212, 0.35), 0 0 100px rgba(16, 185, 129, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-    }
   }
 }
