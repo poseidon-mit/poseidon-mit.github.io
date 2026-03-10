@@ -6,12 +6,12 @@
   --font-mono: 'JetBrains Mono', 'Noto Sans JP', ui-monospace, monospace;
 
   /* ── Colors — Background (Light Theme) ── */
-  --bg: #FAFAF9;
-  --bg-deep: #F4F4F5;
-  --bg-oled: #FAFAF9;
-  --bg-vantablack: #FAFAF9;
+  --bg: #F8F7F4;
+  --bg-deep: #F0EFEB;
+  --bg-oled: #F8F7F4;
+  --bg-vantablack: #F8F7F4;
   --bg-surface: #FFFFFF;
-  --surface-primary: #FAFAF9;
+  --surface-primary: #F8F7F4;
 
   /* ── Colors — Glass (Light: subtle shadows instead) ── */
   --glass-bg: rgba(255, 255, 255, 0.8);
@@ -39,7 +39,7 @@
   --glass-backdrop-mobile: none;
 
   /* ── Colors — Text ── */
-  --text: #0A1628;
+  --text: #1A1A1A;
   --muted: rgba(0, 0, 0, 0.55);
   --muted-2: rgba(0, 0, 0, 0.45);
   --text-on-accent: #FFFFFF;
@@ -109,11 +109,11 @@
   --icon-glow-red: none;
 
   /* ── Text Gradients (solid for light theme) ── */
-  --text-gradient-cyan: linear-gradient(90deg, #0A1628, #0A1628);
-  --text-gradient-teal: linear-gradient(90deg, #0A1628, #0A1628);
-  --text-gradient-violet: linear-gradient(90deg, #0A1628, #0A1628);
-  --text-gradient-amber: linear-gradient(90deg, #0A1628, #0A1628);
-  --text-gradient-blue: linear-gradient(90deg, #0A1628, #0A1628);
+  --text-gradient-cyan: linear-gradient(90deg, #1A1A1A, #1A1A1A);
+  --text-gradient-teal: linear-gradient(90deg, #1A1A1A, #1A1A1A);
+  --text-gradient-violet: linear-gradient(90deg, #1A1A1A, #1A1A1A);
+  --text-gradient-amber: linear-gradient(90deg, #1A1A1A, #1A1A1A);
+  --text-gradient-blue: linear-gradient(90deg, #1A1A1A, #1A1A1A);
   --text-shadow-neon: none;
 
   /* ── Badge & Warning (Light theme) ── */

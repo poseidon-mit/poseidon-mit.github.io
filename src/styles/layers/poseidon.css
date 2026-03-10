@@ -22,11 +22,11 @@
     --glass-blur-mobile: 0;
 
     /* ── Text Gradients (solid for light theme) ── */
-    --gradient-cyan: linear-gradient(90deg, #0A1628, #0A1628);
-    --gradient-teal: linear-gradient(90deg, #0A1628, #0A1628);
-    --gradient-violet: linear-gradient(90deg, #0A1628, #0A1628);
-    --gradient-amber: linear-gradient(90deg, #0A1628, #0A1628);
-    --gradient-blue: linear-gradient(90deg, #0A1628, #0A1628);
+    --gradient-cyan: linear-gradient(90deg, #1A1A1A, #1A1A1A);
+    --gradient-teal: linear-gradient(90deg, #1A1A1A, #1A1A1A);
+    --gradient-violet: linear-gradient(90deg, #1A1A1A, #1A1A1A);
+    --gradient-amber: linear-gradient(90deg, #1A1A1A, #1A1A1A);
+    --gradient-blue: linear-gradient(90deg, #1A1A1A, #1A1A1A);
 
     /* ── Additional tracking utilities ── */
     --tracking-display: -0.04em;

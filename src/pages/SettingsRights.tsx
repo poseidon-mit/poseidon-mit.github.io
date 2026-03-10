@@ -32,36 +32,36 @@ export function SettingsRightsContent() {
   return (
     <>
         {/* ── Consent scopes ── */}
-        <motion.section variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-6 flex flex-col gap-4">
+        <motion.section variants={fadeUpVariant} className="rounded-2xl border border-border bg-card p-6 flex flex-col gap-4 shadow-sm">
           <div className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500/10">
-              <Shield size={16} style={{ color: 'var(--engine-govern)' }} />
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50">
+              <Shield size={16} className="text-blue-600" />
             </div>
-            <h2 className="text-base font-semibold text-white">Data consent scopes</h2>
+            <h2 className="text-base font-semibold text-foreground">Data consent scopes</h2>
           </div>
-          <p className="text-xs text-white/50">These are the data operations Poseidon is authorized to perform on your behalf.</p>
+          <p className="text-xs text-muted-foreground">These are the data operations Poseidon is authorized to perform on your behalf.</p>
           <div className="flex flex-col gap-1">
             {CONSENT_SCOPES.map((scope) => (
-              <div key={scope.id} className="flex items-start justify-between gap-4 py-3 border-b border-white/[0.04] last:border-0">
+              <div key={scope.id} className="flex items-start justify-between gap-4 py-3 border-b border-border last:border-0">
                 <div>
-                  <p className="text-sm font-medium text-white">{scope.label}</p>
-                  <p className="text-xs text-white/50">{scope.desc}</p>
+                  <p className="text-sm font-medium text-foreground">{scope.label}</p>
+                  <p className="text-xs text-muted-foreground">{scope.desc}</p>
                 </div>
-                <span className="shrink-0 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active</span>
+                <span className="shrink-0 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200">Active</span>
               </div>
             ))}
           </div>
         </motion.section>
 
         {/* ── Export ── */}
-        <motion.section variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-6 flex flex-col gap-4">
-          <h2 className="text-base font-semibold text-white">Export my data</h2>
-          <p className="text-xs text-white/50">Download a copy of all personal and financial data Poseidon has processed.</p>
+        <motion.section variants={fadeUpVariant} className="rounded-2xl border border-border bg-card p-6 flex flex-col gap-4 shadow-sm">
+          <h2 className="text-base font-semibold text-foreground">Export my data</h2>
+          <p className="text-xs text-muted-foreground">Download a copy of all personal and financial data Poseidon has processed.</p>
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
               onClick={() => handleExport('JSON')}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/[0.08] text-sm text-white/70 hover:text-white hover:bg-white/[0.04] transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors cursor-pointer"
             >
               <Download size={14} />
               Export as JSON
@@ -69,7 +69,7 @@ export function SettingsRightsContent() {
             <button
               type="button"
               onClick={() => handleExport('CSV')}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/[0.08] text-sm text-white/70 hover:text-white hover:bg-white/[0.04] transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors cursor-pointer"
             >
               <Download size={14} />
               Export as CSV
@@ -78,22 +78,22 @@ export function SettingsRightsContent() {
         </motion.section>
 
         {/* ── Delete ── */}
-        <motion.section variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-2xl p-6 flex flex-col gap-4 border border-red-500/10">
-          <h2 className="text-base font-semibold text-red-400">Delete my data</h2>
-          <p className="text-xs text-white/50">Permanently delete all personal and financial data. This action cannot be undone.</p>
+        <motion.section variants={fadeUpVariant} className="rounded-2xl border border-red-200 bg-card p-6 flex flex-col gap-4 shadow-sm">
+          <h2 className="text-base font-semibold text-red-600">Delete my data</h2>
+          <p className="text-xs text-muted-foreground">Permanently delete all personal and financial data. This action cannot be undone.</p>
           <div className="flex flex-col gap-3">
             <input
               type="text"
               placeholder="Type DELETE to confirm"
               value={deleteInput}
               onChange={(e) => setDeleteInput(e.target.value)}
-              className="w-full max-w-xs rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-red-500/40"
+              className="w-full max-w-xs rounded-lg border border-border bg-muted/30 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-red-400"
             />
             <button
               type="button"
               onClick={handleDelete}
               disabled={!isDeleteConfirmed}
-              className="w-fit px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors cursor-pointer disabled:cursor-not-allowed bg-red-500/10 border border-red-500/30 text-red-400 disabled:opacity-40 enabled:hover:bg-red-500/20"
+              className="w-fit px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors cursor-pointer disabled:cursor-not-allowed bg-red-50 border border-red-200 text-red-600 disabled:opacity-40 enabled:hover:bg-red-100"
             >
               {isDeleteConfirmed ? 'Permanently delete all data' : 'Type DELETE above to confirm'}
             </button>
@@ -103,7 +103,7 @@ export function SettingsRightsContent() {
         {/* ── Governance badge ── */}
         <motion.div variants={fadeUpVariant}>
           <div className="mission-govern-badge" data-audit-id="GV-2026-0216-SETT-RTS">
-            <p className="text-[10px] text-white/30 font-mono">Audit ID: GV-2026-0216-SETT-RTS · Rights & Privacy · Poseidon Govern</p>
+            <p className="text-[10px] text-muted-foreground font-mono">Audit ID: GV-2026-0216-SETT-RTS · Rights & Privacy · Poseidon Govern</p>
           </div>
         </motion.div>
     </>

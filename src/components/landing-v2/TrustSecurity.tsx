@@ -30,17 +30,17 @@ const auditEntries = [
 
 export default function TrustSecurity() {
   return (
-    <section className="bg-[#F4F4F5] py-24 px-4">
+    <section className="bg-[#F0EFEB] py-24 px-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
         {/* Left */}
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-[#0A1628]">
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A]">
             Security First
           </p>
-          <h2 className="text-4xl font-bold text-[#0A1628] mt-2">
+          <h2 className="text-4xl font-bold text-[#1A1A1A] mt-2">
             Trust Through Transparency
           </h2>
-          <p className="text-zinc-500 mt-4">
+          <p className="text-stone-500 mt-4">
             Every decision Poseidon makes is logged, explained, and reversible.
             You stay in control with complete visibility into how your money is
             managed.
@@ -50,29 +50,29 @@ export default function TrustSecurity() {
             {bullets.map((text) => (
               <li key={text} className="flex items-start gap-3">
                 <Check className="w-5 h-5 text-[#16A34A] flex-shrink-0 mt-0.5" />
-                <span className="text-zinc-600 text-sm">{text}</span>
+                <span className="text-stone-600 text-sm">{text}</span>
               </li>
             ))}
           </ul>
         </div>
 
         {/* Right — Audit trail card */}
-        <div className="bg-white border border-zinc-200 rounded-2xl p-6 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-4">
+        <div className="bg-white border border-stone-200 rounded-2xl p-6 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-4">
             Live Audit Trail
           </p>
           <div className="space-y-4">
             {auditEntries.map((entry) => (
               <div
                 key={entry.action}
-                className="flex items-start gap-3 pb-4 border-b border-zinc-100 last:border-0 last:pb-0"
+                className="flex items-start gap-3 pb-4 border-b border-stone-100 last:border-0 last:pb-0"
               >
                 <div
                   className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
                   style={{ backgroundColor: entry.color }}
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#0A1628]">
+                  <p className="text-sm font-medium text-[#1A1A1A]">
                     {entry.action}
                   </p>
                   <div className="flex items-center gap-2 mt-0.5">
@@ -82,7 +82,7 @@ export default function TrustSecurity() {
                     >
                       {entry.engine}
                     </span>
-                    <span className="text-xs text-zinc-400">{entry.time}</span>
+                    <span className="text-xs text-stone-400">{entry.time}</span>
                   </div>
                 </div>
               </div>

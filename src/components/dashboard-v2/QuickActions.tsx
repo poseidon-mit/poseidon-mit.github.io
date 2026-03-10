@@ -1,24 +1,25 @@
 import { ArrowRight, CreditCard, Sparkles, BarChart3 } from 'lucide-react'
+import { Link } from '@/router'
 
 const actions = [
-  { label: 'Transfer Money', icon: ArrowRight },
-  { label: 'Pay Bills', icon: CreditCard },
-  { label: 'Ask Poseidon', icon: Sparkles },
-  { label: 'View Reports', icon: BarChart3 },
+  { label: 'Transfer Money', icon: ArrowRight, path: '/execute' },
+  { label: 'Pay Bills', icon: CreditCard, path: '/execute' },
+  { label: 'Ask Poseidon', icon: Sparkles, path: '/help' },
+  { label: 'View Reports', icon: BarChart3, path: '/govern/audit' },
 ] as const
 
 export function QuickActions() {
   return (
     <div className="flex gap-3 overflow-x-auto pb-2">
       {actions.map((action) => (
-        <button
+        <Link
           key={action.label}
-          type="button"
-          className="flex items-center gap-2 px-4 py-3 bg-zinc-100 rounded-lg font-medium text-sm text-[#0A1628] whitespace-nowrap hover:bg-zinc-200 transition-colors"
+          to={action.path}
+          className="flex items-center gap-2 px-4 py-3 bg-stone-100 rounded-lg font-medium text-sm text-[#1A1A1A] whitespace-nowrap hover:bg-stone-200 transition-colors"
         >
           <action.icon className="w-4 h-4" />
           {action.label}
-        </button>
+        </Link>
       ))}
     </div>
   )

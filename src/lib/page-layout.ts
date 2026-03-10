@@ -20,5 +20,5 @@ export const PAGE_CONTENT_STYLE = { maxWidth: '1440px' } as const
  * Usage:
  *   <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>Title</h1>
  */
-export const PAGE_HEADING_CLASS = 'text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-white leading-tight' as const
+export const PAGE_HEADING_CLASS = 'text-4xl md:text-5xl lg:text-7xl font-light tracking-tight text-foreground leading-tight' as const
 export const PAGE_HEADING_STYLE = { fontFamily: 'var(--font-display)' } as const

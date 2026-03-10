@@ -21,9 +21,9 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="bg-[#F4F4F5] py-24 px-4">
+    <section className="bg-[#F0EFEB] py-24 px-4">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-[#0A1628]">
+        <h2 className="text-4xl font-bold text-center text-[#1A1A1A]">
           Get Started in Minutes
         </h2>
 
@@ -33,10 +33,10 @@ export default function HowItWorks() {
               <div className="w-12 h-12 rounded-full bg-[#0A1628] text-white flex items-center justify-center text-lg font-bold mx-auto md:mx-0">
                 {step.number}
               </div>
-              <h3 className="text-xl font-semibold text-[#0A1628] mt-4">
+              <h3 className="text-xl font-semibold text-[#1A1A1A] mt-4">
                 {step.title}
               </h3>
-              <p className="text-zinc-500 mt-2">{step.description}</p>
+              <p className="text-stone-500 mt-2">{step.description}</p>
             </div>
           ))}
         </div>

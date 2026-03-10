@@ -20,7 +20,7 @@ export function SettingsLayout({
   return (
     <div>
       {/* Tab navigation */}
-      <div className="border-b border-white/[0.06] mb-6">
+      <div className="border-b border-border mb-6">
         <nav className="flex overflow-x-auto gap-1 px-4 md:px-6 lg:px-8" aria-label="Settings navigation">
           {SETTINGS_TABS.map((tab) => (
             <button
@@ -30,8 +30,8 @@ export function SettingsLayout({
               className={cn(
                 'shrink-0 px-4 py-2.5 text-sm font-medium rounded-t-lg border-b-2 transition-colors cursor-pointer whitespace-nowrap',
                 currentPath === tab.path
-                  ? 'border-[var(--engine-execute)] text-white'
-                  : 'border-transparent text-white/50 hover:text-white/80'
+                  ? 'border-amber-600 text-foreground'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
               )}
               aria-current={currentPath === tab.path ? 'page' : undefined}
             >

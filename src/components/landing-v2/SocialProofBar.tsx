@@ -9,12 +9,12 @@ const items = [
 
 export default function SocialProofBar() {
   return (
-    <section className="bg-[#F4F4F5] border-y border-zinc-200 py-6 px-4">
+    <section className="bg-[#F0EFEB] border-y border-stone-200 py-6 px-4">
       <div className="flex flex-wrap justify-center gap-8 md:gap-16">
         {items.map((item) => (
           <div
             key={item.label}
-            className="flex items-center gap-2 text-sm text-zinc-500 font-medium"
+            className="flex items-center gap-2 text-sm text-stone-500 font-medium"
           >
             <item.icon className="w-4 h-4" />
             <span>{item.label}</span>

@@ -17,10 +17,10 @@ export default function DashboardPreview() {
   return (
     <section className="bg-white py-24 px-4">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-[#0A1628]">
+        <h2 className="text-4xl font-bold text-center text-[#1A1A1A]">
           Your Command Center
         </h2>
-        <p className="text-zinc-500 text-center mt-4 max-w-2xl mx-auto">
+        <p className="text-stone-500 text-center mt-4 max-w-2xl mx-auto">
           A unified view of your entire financial life, powered by AI.
         </p>
 
@@ -29,11 +29,11 @@ export default function DashboardPreview() {
           <div className="bg-white rounded-xl p-6 md:p-8">
             {/* Net worth */}
             <div>
-              <p className="text-sm text-zinc-500 font-medium">
+              <p className="text-sm text-stone-500 font-medium">
                 Total Net Worth
               </p>
               <div className="flex items-baseline gap-3 mt-1">
-                <span className="text-3xl font-bold text-[#0A1628]">
+                <span className="text-3xl font-bold text-[#1A1A1A]">
                   $847,392
                 </span>
                 <span className="text-sm font-semibold text-[#16A34A]">
@@ -49,14 +49,14 @@ export default function DashboardPreview() {
                 return (
                   <div
                     key={engine.label}
-                    className="border border-zinc-200 rounded-lg p-3"
+                    className="border border-stone-200 rounded-lg p-3"
                   >
                     <div className="flex items-center gap-1.5">
                       <Icon
                         className="w-3.5 h-3.5"
                         style={{ color: engine.color }}
                       />
-                      <span className="text-xs text-zinc-500 font-medium">
+                      <span className="text-xs text-stone-500 font-medium">
                         {engine.label}
                       </span>
                     </div>
@@ -78,7 +78,7 @@ export default function DashboardPreview() {
           {callouts.map((text) => (
             <div key={text} className="flex items-center gap-2">
               <Check className="w-5 h-5 text-[#16A34A] flex-shrink-0" />
-              <span className="text-sm text-zinc-600">{text}</span>
+              <span className="text-sm text-stone-600">{text}</span>
             </div>
           ))}
         </div>

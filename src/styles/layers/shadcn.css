@@ -10,43 +10,43 @@
 @layer base {
   :root {
     /* ── Color Slots (Light Theme) ── */
-    --background: 40 6% 97%;
-    --foreground: 217 63% 10%;
+    --background: 40 7% 96%;
+    --foreground: 0 0% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 217 63% 10%;
+    --card-foreground: 0 0% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 217 63% 10%;
+    --popover-foreground: 0 0% 10%;
 
     --primary: 217 63% 10%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 217 63% 10%;
+    --secondary: 40 6% 94%;
+    --secondary-foreground: 0 0% 10%;
 
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
+    --muted: 40 6% 94%;
+    --muted-foreground: 30 4% 45%;
 
-    --accent: 240 5% 96%;
-    --accent-foreground: 217 63% 10%;
+    --accent: 40 6% 94%;
+    --accent-foreground: 0 0% 10%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
+    --border: 40 5% 90%;
+    --input: 40 5% 90%;
     --ring: 217 63% 10%;
     --radius: 0.75rem;
 
     /* ── Sidebar (shadcn/ui sidebar component) ── */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 217 63% 10%;
+    --sidebar-foreground: 0 0% 10%;
     --sidebar-primary: 217 63% 10%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 5% 96%;
-    --sidebar-accent-foreground: 217 63% 10%;
-    --sidebar-border: 240 6% 90%;
+    --sidebar-accent: 40 6% 94%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 40 5% 90%;
     --sidebar-ring: 217 63% 10%;
 
     /* ── Chart Colors (shadcn/ui charts) ── */

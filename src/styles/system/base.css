@@ -14,8 +14,8 @@ body {
   font-family: var(--font-body, 'Inter', system-ui, sans-serif);
   font-size: 16px;
   line-height: 1.5;
-  color: var(--color-text-primary, #0A1628);
-  background: #FAFAF9;
+  color: var(--color-text-primary, #1A1A1A);
+  background: #F8F7F4;
   min-height: 100dvh;
   overflow-x: hidden;
   overscroll-behavior-y: contain;

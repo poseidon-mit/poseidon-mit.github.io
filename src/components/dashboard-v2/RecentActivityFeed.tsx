@@ -26,18 +26,18 @@ export function RecentActivityFeed() {
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-[#0A1628]">
+        <h2 className="text-lg font-semibold text-[#1A1A1A]">
           Recent Activity
         </h2>
         <Link
-          to="/activity"
+          to="/govern/audit"
           className="text-sm text-[#2563EB] hover:underline"
         >
           View All
         </Link>
       </div>
 
-      <div className="bg-white border border-zinc-200 rounded-xl divide-y divide-zinc-100">
+      <div className="bg-white border border-stone-200 rounded-xl divide-y divide-stone-100">
         {MOCK_RECENT_ACTIVITY.map((item) => {
           const Icon = typeIcons[item.type]
           const color = typeColors[item.type]
@@ -45,22 +45,22 @@ export function RecentActivityFeed() {
           return (
             <div key={item.id} className="flex items-center gap-4 p-4">
               <div
-                className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center shrink-0"
+                className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center shrink-0"
               >
                 <Icon className="w-5 h-5" style={{ color }} />
               </div>
 
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm text-[#0A1628]">
+                <p className="font-medium text-sm text-[#1A1A1A]">
                   {item.title}
                 </p>
-                <p className="text-sm text-zinc-500 truncate">
+                <p className="text-sm text-stone-500 truncate">
                   {item.description}
                 </p>
               </div>
 
               <div className="shrink-0 text-right flex flex-col items-end gap-1">
-                <span className="text-xs text-zinc-400">{item.time}</span>
+                <span className="text-xs text-stone-400">{item.time}</span>
                 {'amount' in item && item.amount != null && (
                   <span
                     className={`font-semibold text-sm ${
@@ -71,12 +71,12 @@ export function RecentActivityFeed() {
                   </span>
                 )}
                 {'action' in item && item.action && (
-                  <button
-                    type="button"
+                  <Link
+                    to={`/${item.type}`}
                     className="text-xs font-medium text-[#2563EB] hover:underline"
                   >
                     {item.action}
-                  </button>
+                  </Link>
                 )}
               </div>
             </div>

@@ -26,8 +26,8 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
             minHeight: '100vh',
             display: 'grid',
             placeItems: 'center',
-            background: '#FAFAF9',
-            color: '#3F3F46',
+            background: '#F8F7F4',
+            color: '#44403C',
             fontFamily: 'Inter, system-ui, sans-serif',
             textAlign: 'center',
             gap: '16px',
@@ -35,8 +35,8 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
         >
           <div>
             <div style={{ fontSize: '2rem', marginBottom: '8px' }}>⚠</div>
-            <p style={{ color: '#0A1628', fontWeight: 600, marginBottom: '4px' }}>Something went wrong</p>
-            <pre style={{ textAlign: 'left', maxWidth: '600px', fontSize: '12px', background: '#F4F4F5', padding: '12px', borderRadius: '8px', overflow: 'auto', maxHeight: '200px', color: '#DC2626' }}>
+            <p style={{ color: '#1A1A1A', fontWeight: 600, marginBottom: '4px' }}>Something went wrong</p>
+            <pre style={{ textAlign: 'left', maxWidth: '600px', fontSize: '12px', background: '#F0EFEB', padding: '12px', borderRadius: '8px', overflow: 'auto', maxHeight: '200px', color: '#DC2626' }}>
               {this.state.error?.message}
               {'\n'}
               {this.state.error?.stack?.slice(0, 500)}
@@ -73,18 +73,18 @@ function RouteLoadingFallback() {
 
   return (
     <div
-      className="fixed inset-0 z-[100] grid place-items-center bg-[#FAFAF9]"
+      className="fixed inset-0 z-[100] grid place-items-center bg-[#F8F7F4]"
       role="status"
       aria-live="polite"
       aria-label="Loading page"
     >
       <div className="flex flex-col items-center gap-6">
         <div className="relative w-10 h-10 flex items-center justify-center">
-          <div className="absolute inset-0 rounded-full border-2 border-zinc-200 border-t-zinc-600 animate-spin" style={{ animationDuration: '1s' }} />
+          <div className="absolute inset-0 rounded-full border-2 border-stone-200 border-t-stone-600 animate-spin" style={{ animationDuration: '1s' }} />
         </div>
 
         <div className="flex flex-col items-center gap-1">
-          <span className="text-sm font-medium text-zinc-400">
+          <span className="text-sm font-medium text-stone-400">
             Loading...
           </span>
         </div>
@@ -93,7 +93,7 @@ function RouteLoadingFallback() {
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="mt-2 rounded-lg border border-zinc-200 bg-white px-5 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
+            className="mt-2 rounded-lg border border-stone-200 bg-white px-5 py-2 text-sm font-medium text-stone-700 hover:bg-stone-50 transition-colors"
           >
             Reload
           </button>

@@ -55,11 +55,11 @@ export function NetWorthCard() {
     MOCK_NET_WORTH
 
   return (
-    <div className="bg-white border border-zinc-200 rounded-2xl p-6 md:p-8">
+    <div className="bg-white border border-stone-200 rounded-2xl p-6 md:p-8">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-zinc-500 font-medium">Total Net Worth</p>
-          <p className="text-4xl md:text-5xl font-bold text-[#0A1628] mt-2">
+          <p className="text-sm text-stone-500 font-medium">Total Net Worth</p>
+          <p className="text-4xl md:text-5xl font-bold text-[#1A1A1A] mt-2">
             {fmt.format(total)}
           </p>
           <p className="text-sm font-medium text-[#16A34A] flex items-center gap-1 mt-2">
@@ -70,20 +70,20 @@ export function NetWorthCard() {
         <MiniSparkline data={MOCK_SPARKLINE_DATA} />
       </div>
 
-      <div className="border-t border-zinc-100 pt-6 mt-6 flex flex-wrap gap-6">
+      <div className="border-t border-stone-100 pt-6 mt-6 flex flex-wrap gap-6">
         <div>
-          <p className="text-sm text-zinc-500">Assets</p>
-          <p className="font-semibold text-[#0A1628]">{fmt.format(assets)}</p>
+          <p className="text-sm text-stone-500">Assets</p>
+          <p className="font-semibold text-[#1A1A1A]">{fmt.format(assets)}</p>
         </div>
         <div>
-          <p className="text-sm text-zinc-500">Liabilities</p>
-          <p className="font-semibold text-[#0A1628]">
+          <p className="text-sm text-stone-500">Liabilities</p>
+          <p className="font-semibold text-[#1A1A1A]">
             {fmt.format(liabilities)}
           </p>
         </div>
         <div>
-          <p className="text-sm text-zinc-500">Monthly Cash Flow</p>
-          <p className="font-semibold text-[#0A1628]">
+          <p className="text-sm text-stone-500">Monthly Cash Flow</p>
+          <p className="font-semibold text-[#1A1A1A]">
             {fmtSigned.format(monthlyCashFlow)}
           </p>
         </div>

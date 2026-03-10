@@ -1,4 +1,5 @@
 import { Shield, TrendingUp, Zap, Eye } from 'lucide-react'
+import { Link } from '@/router'
 import { MOCK_ENGINE_STATUS } from '@/lib/mock-data'
 
 const engineIcons = {
@@ -23,9 +24,10 @@ export function EngineStatusGrid() {
         const color = engineColors[item.engine]
 
         return (
-          <div
+          <Link
             key={item.engine}
-            className="bg-white border border-zinc-200 rounded-xl p-5 hover:shadow-md transition-shadow"
+            to={`/${item.engine}`}
+            className="block bg-white border border-stone-200 rounded-xl p-5 hover:shadow-md transition-shadow"
           >
             <div
               className="w-10 h-10 rounded-lg flex items-center justify-center"
@@ -33,7 +35,7 @@ export function EngineStatusGrid() {
             >
               <Icon className="w-5 h-5" style={{ color }} />
             </div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mt-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-stone-500 mt-3">
               {item.label}
             </p>
             <div className="flex items-center gap-2 mt-1">
@@ -41,15 +43,15 @@ export function EngineStatusGrid() {
                 className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: item.statusColor }}
               />
-              <span className="text-sm font-medium text-[#0A1628]">
+              <span className="text-sm font-medium text-[#1A1A1A]">
                 {item.status}
               </span>
             </div>
-            <p className="text-xl font-bold text-[#0A1628] mt-2">
+            <p className="text-xl font-bold text-[#1A1A1A] mt-2">
               {item.metric}
             </p>
-            <p className="text-sm text-zinc-500">{item.subtext}</p>
-          </div>
+            <p className="text-sm text-stone-500">{item.subtext}</p>
+          </Link>
         )
       })}
     </div>

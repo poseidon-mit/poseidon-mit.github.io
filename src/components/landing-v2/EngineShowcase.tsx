@@ -53,10 +53,10 @@ export default function EngineShowcase() {
   return (
     <section className="py-24 px-4 bg-white">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-[#0A1628]">
+        <h2 className="text-4xl font-bold text-center text-[#1A1A1A]">
           Four Engines. One Platform.
         </h2>
-        <p className="text-zinc-500 text-center mt-4 max-w-2xl mx-auto">
+        <p className="text-stone-500 text-center mt-4 max-w-2xl mx-auto">
           Each engine specializes in a critical aspect of your financial life,
           working together as one coordinated system.
         </p>
@@ -67,7 +67,7 @@ export default function EngineShowcase() {
             return (
               <div
                 key={engine.label}
-                className={`bg-white border border-zinc-200 rounded-2xl p-8 hover:shadow-lg transition-shadow border-l-4 ${engine.borderColor}`}
+                className={`bg-white border border-stone-200 rounded-2xl p-8 hover:shadow-lg transition-shadow border-l-4 ${engine.borderColor}`}
               >
                 <div className="flex items-center gap-2">
                   <div
@@ -83,7 +83,7 @@ export default function EngineShowcase() {
                 </div>
 
                 <div className="flex items-start justify-between mt-4">
-                  <h3 className="text-2xl font-bold text-[#0A1628]">
+                  <h3 className="text-2xl font-bold text-[#1A1A1A]">
                     {engine.title}
                   </h3>
                   <Icon
@@ -92,7 +92,7 @@ export default function EngineShowcase() {
                   />
                 </div>
 
-                <p className="text-zinc-500 mt-2">{engine.description}</p>
+                <p className="text-stone-500 mt-2">{engine.description}</p>
               </div>
             )
           })}

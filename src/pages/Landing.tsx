@@ -8,7 +8,7 @@ import CTAFooter from '@/components/landing-v2/CTAFooter'
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-[#FAFAF9]">
+    <div className="min-h-screen bg-[#F8F7F4]">
       <HeroSection />
       <SocialProofBar />
       <EngineShowcase />

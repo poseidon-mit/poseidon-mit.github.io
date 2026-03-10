@@ -154,10 +154,10 @@ describe('demo coherence invariants', () => {
     expect(landingSource).not.toMatch(/LLM Zero-Retention/)
   })
 
-  it('Govern.tsx renders hero with immutable ledger', () => {
+  it('Govern.tsx renders hero with canonical audit data', () => {
     const governSource = readSource('src/pages/Govern.tsx')
-    expect(governSource).toContain('GovernImmutableLedger')
-    expect(governSource).toContain('decisionsAudited')
+    expect(governSource).toContain('selectGovernAuditSummaryView')
+    expect(governSource).toContain('selectGovernAuditEntries')
   })
 
   it('keeps risk incidents flagged tied to canonical via contract', () => {
@@ -190,8 +190,8 @@ describe('demo coherence invariants', () => {
 
   it('anchors protect proof thread to canonical selectors (always visible)', () => {
     const src = readSource('src/pages/protect/Protect.tsx')
-    expect(src).toContain('selectThreatFactors')
-    expect(src).toContain('selectAlertAuditChain')
+    expect(src).toContain('selectProtectThreats')
+    expect(src).toContain('selectAccounts')
   })
 
   it('renders chart with simulation data on grow hero', () => {

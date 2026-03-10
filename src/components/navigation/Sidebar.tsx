@@ -27,40 +27,40 @@ interface ToneClasses {
 
 export const TONE_CLASSES: Record<AccentTone, ToneClasses> = {
     dashboard: {
-        activeLink: 'text-cyan-50 bg-cyan-500/8 ring-1 ring-cyan-500/15 engine-text-dashboard engine-bg-dashboard engine-ring-dashboard',
-        activeIcon: 'text-cyan-400 engine-text-dashboard',
-        indicator: 'bg-cyan-400 engine-indicator-dashboard',
-        activeSubNav: 'text-cyan-100 bg-cyan-500/20 border-cyan-400/30 engine-text-dashboard engine-bg-dashboard engine-border-dashboard',
+        activeLink: 'text-cyan-700 bg-cyan-50 ring-1 ring-cyan-200 engine-text-dashboard engine-bg-dashboard engine-ring-dashboard',
+        activeIcon: 'text-cyan-600 engine-text-dashboard',
+        indicator: 'bg-cyan-500 engine-indicator-dashboard',
+        activeSubNav: 'text-cyan-700 bg-cyan-50 border-cyan-200 engine-text-dashboard engine-bg-dashboard engine-border-dashboard',
     },
     protect: {
-        activeLink: 'text-emerald-50 bg-emerald-500/8 ring-1 ring-emerald-500/15 engine-text-protect engine-bg-protect engine-ring-protect',
-        activeIcon: 'text-emerald-400 engine-text-protect',
-        indicator: 'bg-emerald-400 engine-indicator-protect',
-        activeSubNav: 'text-emerald-100 bg-emerald-500/20 border-emerald-400/30 engine-text-protect engine-bg-protect engine-border-protect',
+        activeLink: 'text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200 engine-text-protect engine-bg-protect engine-ring-protect',
+        activeIcon: 'text-emerald-600 engine-text-protect',
+        indicator: 'bg-emerald-500 engine-indicator-protect',
+        activeSubNav: 'text-emerald-700 bg-emerald-50 border-emerald-200 engine-text-protect engine-bg-protect engine-border-protect',
     },
     grow: {
-        activeLink: 'text-violet-50 bg-violet-500/8 ring-1 ring-violet-500/15 engine-text-grow engine-bg-grow engine-ring-grow',
-        activeIcon: 'text-violet-400 engine-text-grow',
-        indicator: 'bg-violet-400 engine-indicator-grow',
-        activeSubNav: 'text-violet-100 bg-violet-500/20 border-violet-400/30 engine-text-grow engine-bg-grow engine-border-grow',
+        activeLink: 'text-violet-700 bg-violet-50 ring-1 ring-violet-200 engine-text-grow engine-bg-grow engine-ring-grow',
+        activeIcon: 'text-violet-600 engine-text-grow',
+        indicator: 'bg-violet-500 engine-indicator-grow',
+        activeSubNav: 'text-violet-700 bg-violet-50 border-violet-200 engine-text-grow engine-bg-grow engine-border-grow',
     },
     execute: {
-        activeLink: 'text-amber-50 bg-amber-500/8 ring-1 ring-amber-500/15 engine-text-execute engine-bg-execute engine-ring-execute',
-        activeIcon: 'text-amber-400 engine-text-execute',
-        indicator: 'bg-amber-400 engine-indicator-execute',
-        activeSubNav: 'text-amber-100 bg-amber-500/20 border-amber-400/30 engine-text-execute engine-bg-execute engine-border-execute',
+        activeLink: 'text-amber-700 bg-amber-50 ring-1 ring-amber-200 engine-text-execute engine-bg-execute engine-ring-execute',
+        activeIcon: 'text-amber-600 engine-text-execute',
+        indicator: 'bg-amber-500 engine-indicator-execute',
+        activeSubNav: 'text-amber-700 bg-amber-50 border-amber-200 engine-text-execute engine-bg-execute engine-border-execute',
     },
     govern: {
-        activeLink: 'text-blue-50 bg-blue-500/8 ring-1 ring-blue-500/15 engine-text-govern engine-bg-govern engine-ring-govern',
-        activeIcon: 'text-blue-400 engine-text-govern',
-        indicator: 'bg-blue-400 engine-indicator-govern',
-        activeSubNav: 'text-blue-100 bg-blue-500/20 border-blue-400/30 engine-text-govern engine-bg-govern engine-border-govern',
+        activeLink: 'text-blue-700 bg-blue-50 ring-1 ring-blue-200 engine-text-govern engine-bg-govern engine-ring-govern',
+        activeIcon: 'text-blue-600 engine-text-govern',
+        indicator: 'bg-blue-500 engine-indicator-govern',
+        activeSubNav: 'text-blue-700 bg-blue-50 border-blue-200 engine-text-govern engine-bg-govern engine-border-govern',
     },
     system: {
-        activeLink: 'text-slate-50 bg-white/10 ring-1 ring-white/10',
-        activeIcon: 'text-slate-200',
-        indicator: 'bg-slate-300',
-        activeSubNav: 'text-slate-200 bg-white/10 border-white/20',
+        activeLink: 'text-foreground bg-muted ring-1 ring-border',
+        activeIcon: 'text-foreground',
+        indicator: 'bg-muted-foreground',
+        activeSubNav: 'text-foreground bg-muted border-border',
     },
 };
 
@@ -105,7 +105,7 @@ export function Sidebar({ path }: { path: string }) {
     const navBadges = useMemo(() => buildNavBadges(pendingExecuteCount, activeProtectCount), [pendingExecuteCount, activeProtectCount]);
 
     return (
-        <aside className="fixed top-0 left-0 z-40 hidden h-screen w-[280px] flex-col bg-black/40 backdrop-blur-md border-r border-white/[0.04] lg:flex">
+        <aside className="fixed top-0 left-0 z-40 hidden h-screen w-[280px] flex-col bg-white border-r border-border lg:flex">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 px-8 py-8" aria-label="Poseidon home">
                 <img
@@ -116,7 +116,7 @@ export function Sidebar({ path }: { path: string }) {
                     className="h-16 w-16 object-contain"
                     aria-hidden="true"
                 />
-                <span className="text-2xl font-light tracking-widest text-slate-50">Poseidon</span>
+                <span className="text-2xl font-light tracking-widest text-foreground">Poseidon</span>
             </Link>
 
             {/* Nav groups */}
@@ -135,7 +135,7 @@ export function Sidebar({ path }: { path: string }) {
                                 'group relative flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-300',
                                 isActive
                                     ? tone.activeLink
-                                    : 'text-slate-400 hover:bg-white/[0.06] hover:text-white border border-transparent hover:border-white/5'
+                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground border border-transparent hover:border-border'
                             )}
                             aria-current={isActive ? 'page' : undefined}
                         >
@@ -143,13 +143,13 @@ export function Sidebar({ path }: { path: string }) {
                             <span className="flex-1 text-sm font-medium tracking-wide">
                                 {item.label}
                                 {isProtectAlert && (
-                                    <span className="block text-[9px] font-semibold text-emerald-400/60 engine-text-protect tracking-widest uppercase leading-none mt-0.5">
+                                    <span className="block text-[9px] font-semibold text-emerald-600 engine-text-protect tracking-widest uppercase leading-none mt-0.5">
                                         Action Required
                                     </span>
                                 )}
                             </span>
                             {badge && badge.value > 0 && (
-                                <span className={cn('flex h-[18px] min-w-[18px] flex-shrink-0 items-center justify-center rounded-full px-1 text-[10px] font-bold text-slate-950', TONE_CLASSES[badge.tone].indicator)} aria-hidden="true">
+                                <span className={cn('flex h-[18px] min-w-[18px] flex-shrink-0 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white', TONE_CLASSES[badge.tone].indicator)} aria-hidden="true">
                                     {badge.value}
                                 </span>
                             )}
@@ -168,7 +168,7 @@ export function Sidebar({ path }: { path: string }) {
                             to={item.path}
                             className={cn(
                                 'group flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-300',
-                                isActive ? tone.activeLink : 'text-slate-400 hover:bg-white/[0.06] hover:text-white border border-transparent hover:border-white/5'
+                                isActive ? tone.activeLink : 'text-muted-foreground hover:bg-muted hover:text-foreground border border-transparent hover:border-border'
                             )}
                             aria-current={isActive ? 'page' : undefined}
                         >
@@ -179,11 +179,11 @@ export function Sidebar({ path }: { path: string }) {
                 })}
             </nav>
 
-            <div className="flex items-center gap-4 border-t border-white/[0.06] px-8 py-6 transition-colors duration-300 hover:bg-white/[0.02] cursor-pointer">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-sm font-bold text-slate-300 shadow-inner border border-white/5" aria-hidden="true">
+            <div className="flex items-center gap-4 border-t border-border px-8 py-6 transition-colors duration-300 hover:bg-muted/30 cursor-pointer">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-sm font-bold text-foreground shadow-inner border border-border" aria-hidden="true">
                     {state.user.initials}
                 </div>
-                <span className="text-sm font-medium tracking-wide text-slate-300">{state.user.name}</span>
+                <span className="text-sm font-medium tracking-wide text-foreground">{state.user.name}</span>
             </div>
         </aside>
     );
