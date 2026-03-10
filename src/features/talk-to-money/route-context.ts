@@ -1,5 +1,5 @@
 /**
- * Talk to Money — Route Context Resolver
+ * Talk your money — Route Context Resolver
  *
  * Maps routes to contextual information for the conversational interface.
  */
@@ -7,6 +7,7 @@ import { AUDIT_DECISIONS, ROUTE_TO_DECISION } from '@/lib/govern-audit-data'
 import type { RouteContext } from './types'
 
 const ROUTE_LABELS: Record<string, string> = {
+  '/chat': 'Talk your money',
   '/dashboard': 'Dashboard',
   '/protect': 'Protect',
   '/protect/threats': 'Threat Overview',

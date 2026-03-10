@@ -1,5 +1,5 @@
 /**
- * Talk to Money — Mobile Bottom Sheet
+ * Talk your money — Mobile Bottom Sheet
  *
  * Bottom sheet for mobile (< 768px) with drag-to-dismiss.
  */
@@ -71,7 +71,7 @@ export function TalkToMoneySheet({ messages, routeContext, onSend, onClose }: Sh
         <div className="flex items-center justify-between px-5 py-2 border-b border-white/[0.06]">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-gradient-to-r from-violet-400 to-cyan-400" />
-            <span className="text-sm font-semibold text-white tracking-wide">Talk to Money</span>
+            <span className="text-sm font-semibold text-white tracking-wide">Talk your money</span>
           </div>
           <button
             onClick={onClose}

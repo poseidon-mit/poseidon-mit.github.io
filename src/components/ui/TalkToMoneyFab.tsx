@@ -33,7 +33,7 @@ export function TalkToMoneyFab() {
 
       {/* FAB button */}
       <button
-        aria-label={hasContext ? 'Talk to Money — Context available' : 'Talk to Money'}
+        aria-label={hasContext ? 'Talk your money — Context available' : 'Talk your money'}
         onClick={isOpen ? close : open}
         className={cn(
           'fixed right-6 z-30',
@@ -52,7 +52,7 @@ export function TalkToMoneyFab() {
         )}
       >
         <MessageCircle size={16} />
-        <span>Talk to Money</span>
+        <span>Talk your money</span>
         {hasContext && !isOpen && (
           <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" aria-hidden="true" />
         )}

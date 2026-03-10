@@ -1,5 +1,5 @@
 /**
- * Talk to Money — State Machine Hook
+ * Talk your money — State Machine Hook
  *
  * useReducer-based state machine for the conversational interface.
  */

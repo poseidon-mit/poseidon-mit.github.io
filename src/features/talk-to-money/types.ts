@@ -1,5 +1,5 @@
 /**
- * Talk to Money — Types
+ * Talk your money — Types
  *
  * State machine types for the conversational AI interface.
  */

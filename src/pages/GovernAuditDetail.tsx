@@ -268,7 +268,7 @@ export function GovernAuditDetail() {
           <button
             type="button"
             onClick={() => {
-              const fab = document.querySelector<HTMLButtonElement>('[aria-label*="Talk to Money"]')
+              const fab = document.querySelector<HTMLButtonElement>('[aria-label*="Talk your money"]')
               if (fab) fab.click()
             }}
             className="rounded-2xl border border-gray-200 bg-card p-5 flex flex-col gap-3 hover:bg-gray-50 transition-colors cursor-pointer text-left shadow-sm"

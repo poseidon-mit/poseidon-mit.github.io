@@ -1,5 +1,5 @@
 /**
- * Talk to Money — Shared Conversation Content
+ * Talk your money — Shared Conversation Content
  *
  * Message list + input field, shared between desktop panel and mobile sheet.
  */

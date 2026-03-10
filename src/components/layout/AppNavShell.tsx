@@ -125,7 +125,7 @@ export function AppNavShell({
         <div className="h-16 lg:hidden" aria-hidden="true" />
       </div>
 
-      {/* Talk to Money FAB disabled */}
+      {/* Talk your money FAB disabled */}
 
       {/* ── Mobile bottom navigation ── */}
       <nav

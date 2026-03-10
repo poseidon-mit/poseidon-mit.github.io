@@ -1,5 +1,5 @@
 /**
- * Talk to Money — Desktop Panel
+ * Talk your money — Desktop Panel
  *
  * Right-side sliding panel for desktop (>= 768px).
  */
@@ -21,7 +21,7 @@ export function TalkToMoneyPanel({ messages, routeContext, onSend, onClose }: Pa
       <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-gradient-to-r from-violet-400 to-cyan-400" />
-          <span className="text-sm font-semibold text-white tracking-wide">Talk to Money</span>
+          <span className="text-sm font-semibold text-white tracking-wide">Talk your money</span>
         </div>
         <button
           onClick={onClose}
