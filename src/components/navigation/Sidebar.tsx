@@ -116,7 +116,7 @@ export function Sidebar({ path }: { path: string }) {
                     className="h-16 w-16 object-contain"
                     aria-hidden="true"
                 />
-                <span className="text-2xl font-light tracking-widest text-foreground">Poseidon</span>
+                <span className="text-2xl font-semibold tracking-widest text-foreground">Poseidon</span>
             </Link>
 
             {/* Nav groups */}

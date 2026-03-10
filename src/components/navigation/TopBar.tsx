@@ -28,7 +28,7 @@ export function TopBar({
     const { navigate } = useRouter();
 
     return (
-        <header className="sticky top-0 z-30 hidden h-20 items-center justify-between px-8 lg:px-10 bg-transparent border-b border-white/[0.04] backdrop-blur-md lg:flex">
+        <header className="sticky top-0 z-30 hidden h-20 items-center justify-between px-8 lg:px-10 bg-white/80 border-b border-border backdrop-blur-md lg:flex">
             {/* Breadcrumb / Title */}
             {breadcrumbs.length > 1 ? (
                 <nav className="flex items-center gap-1.5" aria-label="Breadcrumb">
@@ -36,11 +36,11 @@ export function TopBar({
                         const isLast = idx === breadcrumbs.length - 1;
                         return (
                             <React.Fragment key={idx}>
-                                {idx > 0 && <ChevronRight className="h-3 w-3 text-slate-600" aria-hidden="true" />}
+                                {idx > 0 && <ChevronRight className="h-3 w-3 text-muted-foreground" aria-hidden="true" />}
                                 <span
                                     className={cn(
                                         'text-sm transition-colors duration-300',
-                                        isLast ? 'font-medium text-slate-50' : 'text-slate-400 hover:text-slate-300',
+                                        isLast ? 'font-medium text-foreground' : 'text-muted-foreground hover:text-foreground',
                                     )}
                                     aria-current={isLast ? 'page' : undefined}
                                 >
@@ -57,7 +57,7 @@ export function TopBar({
                     })}
                 </nav>
             ) : (
-                <span className="text-sm font-medium text-slate-50">
+                <span className="text-sm font-medium text-foreground">
                     {activeToneClasses && (
                         <span
                             className={cn('mr-1.5 inline-block h-2 w-2 align-middle rounded-full', activeToneClasses.indicator)}
@@ -71,13 +71,13 @@ export function TopBar({
             {/* Utilities */}
             <div className="flex items-center gap-3">
                 {isOffline && (
-                    <span className="flex items-center gap-1.5 rounded-full border border-red-400/20 bg-red-500/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-red-300/80 state-border-critical state-bg-critical state-text-critical" aria-label="Offline">
+                    <span className="flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-red-600" aria-label="Offline">
                         <WifiOff className="h-3 w-3" aria-hidden="true" />
                         Offline
                     </span>
                 )}
                 {isPresentation && (
-                    <span className="flex items-center gap-1.5 rounded-full border border-cyan-400/15 bg-cyan-500/8 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-200/80 state-border-active state-bg-active state-text-active" aria-label="Presentation mode active">
+                    <span className="flex items-center gap-1.5 rounded-full border border-cyan-200 bg-cyan-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-700" aria-label="Presentation mode active">
                         <Radio className="h-3 w-3" aria-hidden="true" />
                         Presenting
                     </span>
@@ -85,15 +85,15 @@ export function TopBar({
 
                 <button
                     onClick={() => navigate('/dashboard/notifications')}
-                    className="relative flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 transition-colors duration-300 hover:bg-white/10 hover:text-slate-200"
+                    className="relative flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors duration-300 hover:bg-muted hover:text-foreground"
                     aria-label="Notifications (new)"
                 >
                     <Bell className="h-4.5 w-4.5" aria-hidden="true" />
-                    <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-red-400 engine-indicator-dashboard ring-2 ring-black" aria-hidden="true" />
+                    <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-red-400 engine-indicator-dashboard ring-2 ring-white" aria-hidden="true" />
                 </button>
 
                 <button
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/10 text-xs font-semibold text-slate-300 transition-colors duration-300 hover:bg-white/20 hover:text-white"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-muted text-xs font-semibold text-foreground transition-colors duration-300 hover:bg-muted/80"
                     aria-label="User menu"
                 >
                     {state.user.initials}

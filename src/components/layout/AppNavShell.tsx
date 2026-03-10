@@ -75,7 +75,7 @@ export function AppNavShell({
   );
 
   return (
-    <div className="app-bg-oled flex min-h-screen selection:bg-white/20 theme-precision">
+    <div className="app-bg-oled flex min-h-screen selection:bg-blue-100 theme-precision">
       <CommandPalette isOpen={isPaletteOpen} onClose={closePalette} />
 
       {/* ── Desktop Sidebar ── */}
@@ -93,7 +93,7 @@ export function AppNavShell({
         />
 
         {/* ── Mobile top header ── */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between px-5 bg-[rgba(8,12,20,0.95)] border-b border-white/[0.04] lg:hidden">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between px-5 bg-white/90 border-b border-border backdrop-blur-md lg:hidden">
           <Link to="/" className="flex items-center gap-1.5" aria-label="Poseidon home">
             <img
               src="/logo.png"
@@ -103,16 +103,16 @@ export function AppNavShell({
               className="h-10 w-10 object-contain"
               aria-hidden="true"
             />
-            <span className="text-sm font-light tracking-widest text-slate-50">Poseidon</span>
+            <span className="text-sm font-semibold tracking-widest text-foreground">Poseidon</span>
           </Link>
           <div className="pointer-events-none absolute left-1/2 flex max-w-[56vw] -translate-x-1/2 items-center gap-2">
-            <span className="truncate text-sm font-medium text-slate-50">{activeSection?.label ?? ''}</span>
+            <span className="truncate text-sm font-medium text-foreground">{activeSection?.label ?? ''}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Link to="/settings" className={cn("relative flex h-9 w-9 items-center justify-center rounded-lg transition-colors", path === '/settings' ? 'text-slate-50' : 'text-slate-400')} aria-label="Settings">
+            <Link to="/settings" className={cn("relative flex h-9 w-9 items-center justify-center rounded-lg transition-colors", path === '/settings' ? 'text-foreground' : 'text-muted-foreground')} aria-label="Settings">
               <Settings className="h-5 w-5" aria-hidden="true" />
             </Link>
-            <Button variant="ghost" size="icon" className="relative !h-9 !min-h-9 !w-9 rounded-lg !px-0 text-slate-400" onClick={() => navigate('/dashboard/notifications')} aria-label="Notifications">
+            <Button variant="ghost" size="icon" className="relative !h-9 !min-h-9 !w-9 rounded-lg !px-0 text-muted-foreground" onClick={() => navigate('/dashboard/notifications')} aria-label="Notifications">
               <Bell className="h-5 w-5" aria-hidden="true" />
               <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" aria-hidden="true" />
             </Button>
@@ -129,7 +129,7 @@ export function AppNavShell({
 
       {/* ── Mobile bottom navigation ── */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex h-16 items-center justify-around border-t border-white/[0.04] bg-[rgba(8,12,20,0.95)] pb-[env(safe-area-inset-bottom,0px)] lg:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 flex h-16 items-center justify-around border-t border-border bg-white/90 backdrop-blur-md pb-[env(safe-area-inset-bottom,0px)] lg:hidden"
         aria-label="Mobile navigation"
       >
         {ENGINE_ITEMS.map((item) => {
@@ -142,7 +142,7 @@ export function AppNavShell({
               to={item.path}
               className={cn(
                 'flex min-h-12 flex-1 flex-col items-center justify-center gap-1 py-2 transition-colors duration-150',
-                isActive ? tone.activeIcon : 'text-slate-500'
+                isActive ? tone.activeIcon : 'text-muted-foreground'
               )}
               onClick={() => handleBottomNavTap(item.path)}
               aria-current={isActive ? 'page' : undefined}
