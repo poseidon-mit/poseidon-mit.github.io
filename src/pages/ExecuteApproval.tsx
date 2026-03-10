@@ -267,28 +267,30 @@ export function ExecuteApproval() {
         </Card>
       </motion.div>
 
-      {/* Decision Drivers (SHAP) — dark card like ProtectAlertDetail */}
+      {/* Decision Drivers (SHAP) */}
       <motion.div variants={fadeUp}>
-        <div className="bg-gray-900 rounded-2xl p-6 lg:p-8 border border-gray-800">
-          <div className="border-b border-white/[0.06] pb-4 mb-4">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Decision Drivers</h3>
-            <p className="text-xs text-white/30 mt-1">
-              Key factors driving this AI decision.
-            </p>
-          </div>
-          <ShapWaterfall
-            factors={action.factors.map((f) => ({ name: f.label, value: f.value }))}
-            baseValue={50}
-            className="mt-1"
-          />
-          {action.factors.length > 1 && (
-            <ProofChips
-              total={action.amountLabel}
-              parts={action.factors.slice(0, 3).map((f) => ({ label: f.label, value: Math.round(f.value * 100) }))}
-              formatValue={(v) => `${v}%`}
+        <Card className="bg-white border-gray-200 shadow-sm">
+          <CardContent className="p-6 lg:p-8">
+            <div className="border-b border-gray-200 pb-4 mb-4">
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-700">Decision Drivers</h3>
+              <p className="text-xs text-gray-500 mt-1">
+                Key factors driving this AI decision.
+              </p>
+            </div>
+            <ShapWaterfall
+              factors={action.factors.map((f) => ({ name: f.label, value: f.value }))}
+              baseValue={50}
+              className="mt-1"
             />
-          )}
-        </div>
+            {action.factors.length > 1 && (
+              <ProofChips
+                total={action.amountLabel}
+                parts={action.factors.slice(0, 3).map((f) => ({ label: f.label, value: Math.round(f.value * 100) }))}
+                formatValue={(v) => `${v}%`}
+              />
+            )}
+          </CardContent>
+        </Card>
       </motion.div>
 
       {/* Deliberation Trace */}

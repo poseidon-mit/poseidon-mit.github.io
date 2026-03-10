@@ -266,19 +266,21 @@ export default function ProtectAlertDetailPage() {
 
         {/* ── SHAP Waterfall Chart (dark card) ── */}
         <motion.div variants={fadeUpVariant}>
-          <div className="bg-gray-900 rounded-2xl p-6 lg:p-8 border border-gray-800">
-            <div className="border-b border-white/[0.06] pb-4 mb-4">
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Decision Drivers</h3>
-              <p className="text-xs text-white/30 tracking-wide mt-1">
-                Key factors driving this AI decision.{' '}
-                <span className="font-mono uppercase tracking-widest text-white/20">Model: Poseidon-ThreatDetect v1.0</span>
-              </p>
-            </div>
+          <Card className="bg-white border-gray-200 shadow-sm">
+            <CardContent className="p-6 lg:p-8">
+              <div className="border-b border-gray-200 pb-4 mb-4">
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-700">Decision Drivers</h3>
+                <p className="text-xs text-gray-500 tracking-wide mt-1">
+                  Key factors driving this AI decision.{' '}
+                  <span className="font-mono uppercase tracking-widest text-gray-400">Model: Poseidon-ThreatDetect v1.0</span>
+                </p>
+              </div>
             <ShapWaterfall
               factors={factors.map(f => ({ name: f.title, value: f.value }))}
               baseValue={0}
             />
-          </div>
+            </CardContent>
+          </Card>
         </motion.div>
 
         {/* ── Recommended Actions / Dispute Workflow ── */}
@@ -336,45 +338,46 @@ export default function ProtectAlertDetailPage() {
 
           {/* Drafting state — dark card for case brief */}
           {disputeState === 'drafting' && (
-            <div className="bg-gray-900 rounded-2xl p-6 lg:p-8 border border-amber-500/30">
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50 border-b border-white/[0.06] pb-4">Case Brief</h3>
+            <Card className="bg-white border-amber-200 shadow-sm">
+              <CardContent className="p-6 lg:p-8">
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-700 border-b border-gray-200 pb-4">Case Brief</h3>
               <div className="flex flex-col lg:flex-row gap-6 mt-4">
                 <div className="flex-1 flex flex-col gap-4">
-                  <div className="rounded-xl bg-black/40 border border-white/[0.06] p-5 font-mono text-xs leading-relaxed">
-                    <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-white/60">
-                      <span className="text-white/40">Transaction</span>
-                      <span><span className="text-red-400 font-bold">{alert.amount}</span>{' · '}<span className="text-white/90 font-bold">{alert.counterparty}</span></span>
-                      <span className="text-white/40">Date</span>
-                      <span className="text-white/70">{caseBrief.dateStr}</span>
-                      {alert.account && <><span className="text-white/40">Account</span><span className="text-white/70">{alert.account}</span></>}
-                      <span className="text-white/40">AI Confidence</span>
-                      <span className="font-bold text-amber-400">{formatConfidence(alert.confidence)} ({alert.severity})</span>
+                  <div className="rounded-xl bg-gray-50 border border-gray-200 p-5 font-mono text-xs leading-relaxed">
+                    <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-gray-700">
+                      <span className="text-gray-500">Transaction</span>
+                      <span><span className="text-red-600 font-bold">{alert.amount}</span>{' · '}<span className="text-gray-900 font-bold">{alert.counterparty}</span></span>
+                      <span className="text-gray-500">Date</span>
+                      <span className="text-gray-700">{caseBrief.dateStr}</span>
+                      {alert.account && <><span className="text-gray-500">Account</span><span className="text-gray-700">{alert.account}</span></>}
+                      <span className="text-gray-500">AI Confidence</span>
+                      <span className="font-bold text-amber-600">{formatConfidence(alert.confidence)} ({alert.severity})</span>
                     </div>
-                    <div className="mt-4 pt-3 border-t border-white/[0.06]">
-                      <p className="text-[10px] uppercase tracking-widest text-amber-400 font-semibold mb-2">Key Findings</p>
+                    <div className="mt-4 pt-3 border-t border-gray-200">
+                      <p className="text-[10px] uppercase tracking-widest text-amber-600 font-semibold mb-2">Key Findings</p>
                       <ul className="flex flex-col gap-1.5">
                         {caseBrief.findings.map((f, i) => (
-                          <li key={i} className="text-white/70 flex gap-2">
-                            <span className="text-amber-400 shrink-0">·</span>
+                          <li key={i} className="text-gray-700 flex gap-2">
+                            <span className="text-amber-600 shrink-0">·</span>
                             <span>{f}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
-                    <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
-                      <span className="text-white/40">Reference <span className="text-white/70 font-bold">{caseBrief.caseId}</span></span>
+                    <div className="mt-4 pt-3 border-t border-gray-200 flex items-center justify-between">
+                      <span className="text-gray-500">Reference <span className="text-gray-900 font-bold">{caseBrief.caseId}</span></span>
                       <button
                         onClick={handleCopyBrief}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-semibold uppercase tracking-widest transition-all border border-white/[0.08] hover:border-amber-400/40 hover:bg-amber-400/10 text-white/50 hover:text-white/80"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-semibold uppercase tracking-widest transition-all border border-gray-300 hover:border-amber-400 hover:bg-amber-50 text-gray-500 hover:text-gray-700"
                       >
                         {copied ? <><Check size={12} className="text-emerald-400" />Copied</> : <><Copy size={12} />Copy to clipboard</>}
                       </button>
                     </div>
                   </div>
-                  <div className="rounded-xl border border-dashed border-amber-400/30 hover:border-amber-400/60 cursor-pointer p-4 text-center bg-amber-400/5 hover:bg-amber-400/10 transition-colors group">
-                    <Upload className="w-6 h-6 text-white/40 group-hover:text-white/80 mx-auto mb-2 transition-colors" />
-                    <p className="text-xs font-medium tracking-wide text-white/80">Attach Supporting Documents</p>
-                    <p className="text-[10px] text-white/40 mt-1">Receipts, invoices, or correspondence</p>
+                  <div className="rounded-xl border border-dashed border-amber-300 hover:border-amber-400 cursor-pointer p-4 text-center bg-amber-50 hover:bg-amber-100 transition-colors group">
+                    <Upload className="w-6 h-6 text-gray-400 group-hover:text-gray-600 mx-auto mb-2 transition-colors" />
+                    <p className="text-xs font-medium tracking-wide text-gray-700">Attach Supporting Documents</p>
+                    <p className="text-[10px] text-gray-500 mt-1">Receipts, invoices, or correspondence</p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-3 lg:justify-end lg:w-48 shrink-0">
@@ -394,13 +397,14 @@ export default function ProtectAlertDetailPage() {
                   </button>
                   <button
                     onClick={() => setDisputeState('idle')}
-                    className={cn(buttonVariants({ variant: "ghost" }), "w-full rounded-xl py-3 border border-white/10 hover:bg-white/10 text-white/60 font-medium")}
+                    className={cn(buttonVariants({ variant: "ghost" }), "w-full rounded-xl py-3 border border-gray-300 hover:bg-gray-100 text-gray-600 font-medium")}
                   >
                     Cancel
                   </button>
                 </div>
               </div>
-            </div>
+              </CardContent>
+            </Card>
           )}
 
           {/* Submitted state */}
