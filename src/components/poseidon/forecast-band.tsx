@@ -63,9 +63,8 @@ export function ForecastBand({
 
   return (
     <svg
-      width={width}
-      height={height}
-      className={cn('inline-block', className)}
+      viewBox={`0 0 ${width} ${height}`}
+      className={cn('inline-block w-full', className)}
       aria-label="Forecast band chart"
     >
       <path d={bandPath} fill={color} fillOpacity={0.12} />

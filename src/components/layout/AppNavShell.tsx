@@ -109,10 +109,10 @@ export function AppNavShell({
             <span className="truncate text-sm font-medium text-foreground">{activeSection?.label ?? ''}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Link to="/settings" className={cn("relative flex h-9 w-9 items-center justify-center rounded-lg transition-colors", path === '/settings' ? 'text-foreground' : 'text-muted-foreground')} aria-label="Settings">
+            <Link to="/settings" className={cn("relative flex h-11 w-11 items-center justify-center rounded-lg transition-colors", path === '/settings' ? 'text-foreground' : 'text-muted-foreground')} aria-label="Settings">
               <Settings className="h-5 w-5" aria-hidden="true" />
             </Link>
-            <Button variant="ghost" size="icon" className="relative !h-9 !min-h-9 !w-9 rounded-lg !px-0 text-muted-foreground" onClick={() => navigate('/dashboard/notifications')} aria-label="Notifications">
+            <Button variant="ghost" size="icon" className="relative !h-11 !min-h-11 !w-11 rounded-lg !px-0 text-muted-foreground" onClick={() => navigate('/dashboard/notifications')} aria-label="Notifications">
               <Bell className="h-5 w-5" aria-hidden="true" />
               <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" aria-hidden="true" />
             </Button>

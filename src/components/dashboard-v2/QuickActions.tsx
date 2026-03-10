@@ -10,12 +10,12 @@ const actions = [
 
 export function QuickActions() {
   return (
-    <div className="flex gap-3 overflow-x-auto pb-2">
+    <div className="flex flex-wrap gap-3">
       {actions.map((action) => (
         <Link
           key={action.label}
           to={action.path}
-          className="flex items-center gap-2 px-4 py-3 bg-stone-100 rounded-lg font-medium text-sm text-[#1A1A1A] whitespace-nowrap hover:bg-stone-200 transition-colors"
+          className="flex items-center gap-2 px-4 py-3 bg-stone-100 rounded-lg font-medium text-sm text-[#1A1A1A] hover:bg-stone-200 transition-colors"
         >
           <action.icon className="w-4 h-4" />
           {action.label}
