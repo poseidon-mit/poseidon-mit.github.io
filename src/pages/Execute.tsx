@@ -17,7 +17,8 @@ import {
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { Progress } from '@/components/ui/progress'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -131,9 +132,9 @@ export default function ExecutePage() {
                   </div>
                 </div>
               </div>
-              <Button asChild className="bg-amber-600 text-white hover:bg-amber-700 shrink-0">
-                <Link to="/execute/queue">Review All Pending</Link>
-              </Button>
+              <Link to="/execute/queue" className={cn(buttonVariants(), "bg-amber-600 text-white hover:bg-amber-700 shrink-0")}>
+                Review All Pending
+              </Link>
             </div>
           </CardContent>
         </Card>
@@ -178,12 +179,12 @@ export default function ExecutePage() {
                 >
                   Reject
                 </Button>
-                <Button asChild variant="outline" size="sm">
-                  <Link to={`/execute/approval?actionId=${action.id}`}>View Details</Link>
-                </Button>
-                <Button asChild size="sm" className="bg-emerald-600 text-white hover:bg-emerald-700">
-                  <Link to={`/execute/approval?actionId=${action.id}`}>Approve</Link>
-                </Button>
+                <Link
+                  to={`/execute/approval?actionId=${action.id}`}
+                  className={cn(buttonVariants({ size: "sm" }), "bg-emerald-600 text-white hover:bg-emerald-700")}
+                >
+                  Review &amp; Approve
+                </Link>
               </div>
             </CardContent>
           </Card>
@@ -282,9 +283,9 @@ export default function ExecutePage() {
                 <History className="h-5 w-5 text-gray-500" />
                 Recent Execution History
               </CardTitle>
-              <Button asChild variant="ghost" size="sm" className="text-sm text-muted-foreground">
-                <Link to="/govern">View Full Log <ArrowRight className="ml-1 h-3.5 w-3.5" /></Link>
-              </Button>
+              <Link to="/govern" className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "text-sm text-muted-foreground")}>
+                View Full Log <ArrowRight className="ml-1 h-3.5 w-3.5" />
+              </Link>
             </div>
           </CardHeader>
           <CardContent>

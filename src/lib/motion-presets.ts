@@ -149,6 +149,8 @@ export const accordionVariants: Variants = {
   hidden: { height: 0, opacity: 0 },
   visible: { height: 'auto', opacity: 1 },
   exit: { height: 0, opacity: 0 },
+  collapsed: { height: 0, opacity: 0 },
+  expanded: { height: 'auto', opacity: 1 },
 }
 
 export const accordionTransition: Transition = {

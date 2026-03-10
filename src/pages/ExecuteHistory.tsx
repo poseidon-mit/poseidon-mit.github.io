@@ -23,7 +23,9 @@ import { useDemoState } from '@/lib/demo-state/provider'
 import type { DemoAuditEvent } from '@/lib/demo-state/types'
 import { selectExecuteActionsView, formatUsd, selectExecuteSavingsView } from '@/domain/poseidon-universe'
 import { DEMO_THREAD } from '@/lib/demo-thread'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 /* ═══════════════════════════════════════════
    CONSTANTS
@@ -46,10 +48,10 @@ const DECISION_COLOR: Record<string, string> = {
 }
 
 const DECISION_BADGE_CLS: Record<string, string> = {
-  approved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-  deferred: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-  rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
-  undo: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+  approved: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  deferred: 'bg-amber-50 text-amber-700 border-amber-200',
+  rejected: 'bg-red-50 text-red-700 border-red-200',
+  undo: 'bg-amber-50 text-amber-700 border-amber-200',
 }
 
 /* ═══════════════════════════════════════════
@@ -111,7 +113,7 @@ export default function ExecuteHistoryPage() {
         {/* Header */}
         <motion.section variants={staggerContainer} className="flex flex-col gap-5">
           <div className="flex items-center justify-between flex-wrap gap-3">
-            <Link to="/execute" className="flex items-center gap-2 text-white/40 hover:text-white transition-colors text-sm">
+            <Link to="/execute" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm">
               <ArrowLeft size={16} />
               Back to Queue
             </Link>
@@ -119,53 +121,57 @@ export default function ExecuteHistoryPage() {
 
           <motion.div variants={fadeUp} className="flex flex-col gap-3">
             <EngineBadge engine="execute" icon={History} label="Execute · History" className="self-start" />
-            <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">
               Execution History
             </h1>
-            <p className="text-white/50 text-base">History of all your approved and completed actions.</p>
+            <p className="text-muted-foreground text-base">History of all your approved and completed actions.</p>
           </motion.div>
 
           {/* Stats Strip */}
-          <motion.div variants={fadeUp} className="glass-card rounded-2xl p-5 md:p-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6">
-              {[
-                { label: 'Total Decisions', value: String(totalDecisions), color: 'var(--engine-execute)' },
-                { label: 'Approval Rate', value: totalDecisions > 0 ? `${approvalRate}%` : '-', color: 'var(--state-healthy)' },
-                { label: 'Monthly Optimization', value: formatUsd(savings.currentMonthlySavingsUsd), color: 'var(--engine-execute)' },
-                { label: 'Compliance', value: '__pill__', color: 'var(--engine-govern)' },
-              ].map((kpi, i) => (
-                <div key={kpi.label} className={cn('flex flex-col gap-1.5', i > 0 && 'md:border-l md:border-white/[0.06] md:pl-6')}>
-                  <span className="text-xs font-semibold uppercase tracking-widest text-white/40">{kpi.label}</span>
-                  {kpi.value === '__pill__' ? (
-                    <span
-                      className="inline-flex items-center gap-1.5 text-sm font-semibold px-3 py-1 rounded-full w-fit"
-                      style={{
-                        background: 'color-mix(in srgb, var(--engine-govern) 12%, transparent)',
-                        color: 'var(--engine-govern)',
-                        border: '1px solid color-mix(in srgb, var(--engine-govern) 25%, transparent)',
-                      }}
-                    >
-                      <ShieldCheck size={14} />
-                      Verified by Poseidon
-                    </span>
-                  ) : (
-                    <span
-                      className="text-2xl md:text-3xl font-mono tabular-nums font-medium"
-                      style={{ color: kpi.color }}
-                    >
-                      {kpi.value}
-                    </span>
-                  )}
+          <motion.div variants={fadeUp}>
+            <Card className="border border-border bg-card shadow-sm">
+              <CardContent className="p-5 md:p-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6">
+                  {[
+                    { label: 'Total Decisions', value: String(totalDecisions), color: 'var(--engine-execute)' },
+                    { label: 'Approval Rate', value: totalDecisions > 0 ? `${approvalRate}%` : '-', color: 'var(--state-healthy)' },
+                    { label: 'Monthly Optimization', value: formatUsd(savings.currentMonthlySavingsUsd), color: 'var(--engine-execute)' },
+                    { label: 'Compliance', value: '__pill__', color: 'var(--engine-govern)' },
+                  ].map((kpi, i) => (
+                    <div key={kpi.label} className={cn('flex flex-col gap-1.5', i > 0 && 'md:border-l md:border-border md:pl-6')}>
+                      <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{kpi.label}</span>
+                      {kpi.value === '__pill__' ? (
+                        <span
+                          className="inline-flex items-center gap-1.5 text-sm font-semibold px-3 py-1 rounded-full w-fit"
+                          style={{
+                            background: 'color-mix(in srgb, var(--engine-govern) 12%, transparent)',
+                            color: 'var(--engine-govern)',
+                            border: '1px solid color-mix(in srgb, var(--engine-govern) 25%, transparent)',
+                          }}
+                        >
+                          <ShieldCheck size={14} />
+                          Verified by Poseidon
+                        </span>
+                      ) : (
+                        <span
+                          className="text-2xl md:text-3xl font-mono tabular-nums font-medium"
+                          style={{ color: kpi.color }}
+                        >
+                          {kpi.value}
+                        </span>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </CardContent>
+            </Card>
           </motion.div>
 
           {/* Decision Autopsy — progressive disclosure */}
           <motion.div variants={fadeUp}>
             <button
               onClick={() => setShowAutopsy(v => !v)}
-              className="flex items-center gap-2 text-[11px] text-white/40 hover:text-white/70 transition-colors"
+              className="flex items-center gap-2 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
             >
               <span>Decision Autopsy View</span>
               <ChevronDown size={12} className={cn('transition-transform duration-200', showAutopsy && 'rotate-180')} />
@@ -174,37 +180,39 @@ export default function ExecuteHistoryPage() {
               'overflow-hidden transition-all duration-300',
               showAutopsy ? 'max-h-[200px] opacity-100 mt-3' : 'max-h-0 opacity-0',
             )}>
-              <div className="glass-card glass-card-overlay rounded-2xl p-5 flex flex-col gap-3">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[10px] uppercase tracking-widest text-white/30">Compliance Score</span>
-                    <span className="text-lg font-mono" style={{ color: 'var(--engine-govern)' }}>{DEMO_THREAD.complianceScore}/100</span>
+              <Card className="border border-border bg-card shadow-sm">
+                <CardContent className="p-5">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Compliance Score</span>
+                      <span className="text-lg font-mono" style={{ color: 'var(--engine-govern)' }}>{DEMO_THREAD.complianceScore}/100</span>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground">KYC Check</span>
+                      <span className="text-lg font-mono" style={{ color: 'var(--state-healthy)' }}>Passed</span>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Risk Screening</span>
+                      <span className="text-lg font-mono" style={{ color: 'var(--state-healthy)' }}>Clear</span>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[10px] uppercase tracking-widest text-white/30">KYC Check</span>
-                    <span className="text-lg font-mono" style={{ color: 'var(--state-healthy)' }}>Passed</span>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[10px] uppercase tracking-widest text-white/30">Risk Screening</span>
-                    <span className="text-lg font-mono" style={{ color: 'var(--state-healthy)' }}>Clear</span>
-                  </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             </div>
           </motion.div>
         </motion.section>
 
         {/* Filter bar */}
         <motion.div variants={fadeUp} className="flex items-center gap-2 flex-wrap">
-          <Filter size={14} className="text-white/40" />
-          <span className="text-[10px] uppercase tracking-widest text-white/40 font-semibold mr-1">Filter</span>
+          <Filter size={14} className="text-muted-foreground" />
+          <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mr-1">Filter</span>
           {(['all', 'approved', 'deferred', 'rejected'] as DecisionFilter[]).map((f) => (
             <button
               key={f}
               onClick={() => setDecisionFilter(f)}
               className={cn(
                 'px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border cursor-pointer transition-colors',
-                decisionFilter === f ? 'border-white/20 bg-white/10 text-white' : 'border-white/5 text-white/40 hover:text-white/60',
+                decisionFilter === f ? 'bg-blue-100 text-blue-700 border-blue-200' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-700',
               )}
             >
               {f} {f === 'approved' ? `(${approvedCount})` : f === 'deferred' ? `(${deferredCount})` : f === 'rejected' ? `(${rejectedCount})` : `(${totalDecisions})`}
@@ -215,15 +223,17 @@ export default function ExecuteHistoryPage() {
         {/* History List */}
         {filteredEvents.length === 0 ? (
           <motion.div variants={fadeUp}>
-            <div className="glass-card glass-card-overlay rounded-xl p-12 flex items-center justify-center">
-              <EmptyState
-                icon={History}
-                title={totalDecisions === 0 ? 'No decisions yet' : 'No matching decisions'}
-                description={totalDecisions === 0 ? 'Actions you approve or defer from the Execute queue will appear here with full audit traceability.' : 'Try adjusting your filter to see more results.'}
-                accentColor="var(--engine-execute)"
-                action={totalDecisions === 0 ? { label: 'Go to Execute queue', onClick: () => navigate('/execute') } : undefined}
-              />
-            </div>
+            <Card className="border border-border bg-card shadow-sm">
+              <CardContent className="p-12 flex items-center justify-center">
+                <EmptyState
+                  icon={History}
+                  title={totalDecisions === 0 ? 'No decisions yet' : 'No matching decisions'}
+                  description={totalDecisions === 0 ? 'Actions you approve or defer from the Execute queue will appear here with full audit traceability.' : 'Try adjusting your filter to see more results.'}
+                  accentColor="var(--engine-execute)"
+                  action={totalDecisions === 0 ? { label: 'Go to Execute queue', onClick: () => navigate('/execute') } : undefined}
+                />
+              </CardContent>
+            </Card>
           </motion.div>
         ) : (
           <motion.div variants={fadeUp} className="flex flex-col gap-3">
@@ -268,22 +278,22 @@ function HistoryRow({ event }: { event: EnrichedEvent }) {
   }, [event.createdAt])
 
   return (
-    <div className="glass-card glass-card-overlay rounded-[20px] p-5 lg:p-6 flex items-center gap-4 hover:border-white/[0.12] transition-colors group">
+    <div className="rounded-xl border border-border bg-card shadow-sm p-5 lg:p-6 flex items-center gap-4 hover:shadow-md transition-shadow group">
 
       {/* Icon */}
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center border shadow-inner shrink-0 relative z-10" style={{ borderColor: `${color}30`, background: `${color}10` }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center border shadow-inner shrink-0" style={{ borderColor: `${color}30`, background: `${color}10` }}>
         <Icon size={18} style={{ color }} />
       </div>
 
       {/* Info */}
-      <div className="flex-1 min-w-0 relative z-10">
+      <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap mb-1">
-          <span className="text-sm font-medium text-white/90 tracking-wide">{event.actionTitle}</span>
+          <span className="text-sm font-medium text-foreground tracking-wide">{event.actionTitle}</span>
           <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border ${badgeCls}`}>
             {event.decision}
           </span>
         </div>
-        <div className="flex items-center gap-3 text-xs text-white/40 flex-wrap">
+        <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
           <span className="font-mono">{event.actionId}</span>
           <span>·</span>
           <span>{event.engine}</span>
@@ -299,9 +309,9 @@ function HistoryRow({ event }: { event: EnrichedEvent }) {
       </div>
 
       {/* Amount + Confidence */}
-      <div className="hidden sm:flex items-center gap-4 shrink-0 relative z-10">
+      <div className="hidden sm:flex items-center gap-4 shrink-0">
         {event.amountLabel !== '-' && (
-          <span className="font-mono text-sm text-white/70">{event.amountLabel}</span>
+          <span className="font-mono text-sm text-foreground">{event.amountLabel}</span>
         )}
         {event.confidence != null && (
           <span className="text-xs font-mono" style={{ color: event.confidence >= 0.9 ? 'var(--state-healthy)' : 'var(--state-warning)' }}>
@@ -310,7 +320,7 @@ function HistoryRow({ event }: { event: EnrichedEvent }) {
         )}
         <Link
           to="/govern/audit"
-          className="text-white/30 hover:text-[var(--engine-govern)] transition-colors p-1"
+          className="text-muted-foreground hover:text-blue-600 transition-colors p-1"
           aria-label="View in Govern audit"
         >
           <ExternalLink size={14} />

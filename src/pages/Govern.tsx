@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -137,16 +137,20 @@ export default function GovernPage() {
                       strokeWidth="8"
                       fill="none"
                       strokeLinecap="round"
-                      strokeDasharray={`${summary.complianceScore * 2.51} 251`}
+                      strokeDasharray="251 251"
                     />
                   </svg>
-                  <span className="absolute text-2xl font-bold text-foreground">{summary.complianceScore}</span>
+                  <span className="absolute text-2xl font-bold text-foreground">{summary.total}</span>
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-foreground">{summary.total} AI actions logged</h2>
                   <p className="text-sm text-muted-foreground">
                     Complete transparency into all automated decisions
                   </p>
+                  <Badge variant="outline" className="border-blue-200 bg-blue-50 text-blue-700 mt-1 gap-1">
+                    <CheckCircle2 className="h-3 w-3" />
+                    100% Auditable
+                  </Badge>
                   <div className="mt-2 flex flex-wrap items-center gap-4 text-sm">
                     <span className="flex items-center gap-1 text-emerald-600">
                       <CheckCircle2 className="h-4 w-4" />
@@ -172,9 +176,7 @@ export default function GovernPage() {
                   <Download className="mr-1.5 h-4 w-4" />
                   Export Report
                 </Button>
-                <Button asChild variant="outline" className="text-foreground">
-                  <Link to="/govern/audit">View Full Ledger</Link>
-                </Button>
+                <Link to="/govern/audit" className={cn(buttonVariants({ variant: "outline" }), "text-foreground")}>View Full Ledger</Link>
               </div>
             </div>
           </CardContent>
@@ -219,9 +221,7 @@ export default function GovernPage() {
                 <Scale className="h-5 w-5 text-blue-600" />
                 Audit Log
               </CardTitle>
-              <Button asChild variant="ghost" size="sm" className="text-sm text-muted-foreground">
-                <Link to="/govern/audit">View All <ChevronRight className="ml-1 h-3.5 w-3.5" /></Link>
-              </Button>
+              <Link to="/govern/audit" className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "text-sm text-muted-foreground")}>View All <ChevronRight className="ml-1 h-3.5 w-3.5" /></Link>
             </div>
           </CardHeader>
           <CardContent>
@@ -255,11 +255,9 @@ export default function GovernPage() {
                           {entry.status}
                         </Badge>
                       </div>
-                      <Button asChild variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground" aria-label="View audit detail">
-                        <Link to={`/govern/audit-detail?auditId=${entry.id}`}>
-                          <ChevronRight className="h-4 w-4" />
-                        </Link>
-                      </Button>
+                      <Link to={`/govern/audit-detail?auditId=${entry.id}`} className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "h-8 w-8 p-0 text-muted-foreground")} aria-label="View audit detail">
+                        <ChevronRight className="h-4 w-4" />
+                      </Link>
                     </div>
                   </div>
                 )

@@ -4,11 +4,12 @@ import { Shield, AlertTriangle, CheckCircle2, ChevronRight, ArrowLeft, Filter, C
 import { Link } from '@/router'
 import { selectAccounts } from '@/domain/poseidon-universe'
 import { getMotionPreset } from '@/lib/motion-presets'
+import { cn } from '@/lib/utils'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Select,
@@ -322,17 +323,16 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
           </div>
 
           {/* Right: action button */}
-          <Button
-            asChild
-            variant={isResolved ? 'outline' : 'default'}
-            size="sm"
-            className="shrink-0"
+          <Link
+            to={`/protect/alert-detail?alertId=${threat.id}`}
+            className={cn(
+              buttonVariants({ variant: isResolved ? 'outline' : 'default', size: 'sm' }),
+              'shrink-0 whitespace-nowrap'
+            )}
           >
-            <Link to={`/protect/alert-detail?alertId=${threat.id}`}>
-              {isResolved ? 'View' : 'Review'}
-              <ChevronRight className="ml-1 h-4 w-4" />
-            </Link>
-          </Button>
+            {isResolved ? 'View' : 'Review'}
+            <ChevronRight className="ml-1 h-4 w-4" />
+          </Link>
         </div>
       </CardContent>
     </Card>

@@ -221,9 +221,9 @@ describe('demo coherence invariants', () => {
     }
   })
 
-  it('THR-005 ATM withdrawal uses factual, non-accusatory language', () => {
+  it('THR-005 password change uses factual, non-accusatory language', () => {
     const thr005 = CANONICAL_UNIVERSE.entities.protectThreats.find(t => t.id === 'THR-005')!
-    expect(thr005.description).toMatch(/ATM|unfamiliar/i)
+    expect(thr005.description).toMatch(/password|confirmed|intentional/i)
     expect(thr005.description).not.toMatch(/high-risk category/i)
     const factors = selectThreatFactors('THR-005')
     const allText = factors.map(f => `${(f as any).heroCue ?? ''} ${f.details}`).join(' ')
@@ -239,11 +239,12 @@ describe('demo coherence invariants', () => {
     expect(allStepText).not.toMatch(/88%.*overlap|content overlap/i)
   })
 
-  it('REC-008 internet negotiation steps require manual action', () => {
-    const rec008 = recommendationDetails.find(r => r.id === 8)!
-    const allStepText = rec008.steps.map(s => `${s.description} ${s.type}`).join(' ')
-    expect(allStepText).not.toMatch(/Poseidon will submit/i)
-    const callStep = rec008.steps.find(s => /call|negotiate|retention/i.test(s.title))!
-    expect(callStep.type).not.toBe('auto')
+  it('REC-003 streaming consolidation is semi-auto with billing-detectable data', () => {
+    const rec003 = recommendationDetails.find(r => r.id === 3)!
+    expect(rec003).toBeDefined()
+    expect(rec003.executionType).toBe('semi-auto')
+    expect(rec003.title).toContain('Streaming')
+    expect(rec003.title).not.toMatch(/gym/i)
+    expect(rec003.dataSources.some(ds => /subscription|billing/i.test(ds))).toBe(true)
   })
 })

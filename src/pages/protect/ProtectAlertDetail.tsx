@@ -65,6 +65,12 @@ export default function ProtectAlertDetailPage() {
   const { search, navigate } = useRouter()
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [disputeState, setDisputeState] = useState<'idle' | 'drafting' | 'submitted' | 'neutralized'>('idle')
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set(['details', 'risk']))
+  const toggleCard = (id: string) => setExpandedCards(prev => {
+    const next = new Set(prev)
+    next.has(id) ? next.delete(id) : next.add(id)
+    return next
+  })
   const [copied, setCopied] = useState(false)
 
   const { dismiss } = useDismissedAlerts()
@@ -188,26 +194,27 @@ export default function ProtectAlertDetailPage() {
 
                 {/* Action buttons — only in idle state */}
                 {disputeState === 'idle' && (
-                  <div className="flex flex-col sm:flex-row gap-2 shrink-0">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => { dismiss(alert.id); navigate('/protect') }}
-                      className="gap-1"
-                    >
-                      <CheckCircle2 className="h-4 w-4" />
-                      This was Me
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => setDisputeState('drafting')}
-                      className="gap-1"
-                    >
-                      <XCircle className="h-4 w-4" />
-                      Block & Report
-                    </Button>
-                  </div>
+                  <>
+                    <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+                      <Button
+                        variant="outline"
+                        onClick={() => { dismiss(alert.id); navigate('/protect') }}
+                        className="gap-1"
+                      >
+                        <CheckCircle2 className="h-4 w-4" />
+                        This was Me
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() => setDisputeState('drafting')}
+                        className="gap-1"
+                      >
+                        <XCircle className="h-4 w-4" />
+                        Block & Report
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">Your response helps train our AI to better protect you</p>
+                  </>
                 )}
               </div>
             </CardContent>
@@ -219,47 +226,89 @@ export default function ProtectAlertDetailPage() {
           {/* Alert Details Card */}
           <motion.div variants={fadeUpVariant}>
             <Card className="bg-white border-gray-200 shadow-sm h-full">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-900">Alert Details</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {alert.account && (
-                  <DetailRow icon={<CreditCard className="h-4 w-4 text-gray-400" />} label="Account" value={alert.account} />
+              <div
+                className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/30 transition-colors"
+                onClick={() => toggleCard('details')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('details') } }}
+              >
+                <h3 className="text-lg font-semibold text-gray-900">Alert Details</h3>
+                <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('details') && 'rotate-180')} />
+              </div>
+              <AnimatePresence initial={false}>
+                {expandedCards.has('details') && (
+                  <motion.div
+                    key="details-content"
+                    variants={accordionVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    transition={accordionTransition}
+                    style={{ overflow: 'hidden' }}
+                  >
+                    <CardContent className="space-y-4">
+                      {alert.account && (
+                        <DetailRow icon={<CreditCard className="h-4 w-4 text-gray-400" />} label="Account" value={alert.account} />
+                      )}
+                      <DetailRow icon={<AlertTriangle className="h-4 w-4 text-gray-400" />} label="Alert Type" value={alert.description} />
+                      <DetailRow icon={<Shield className="h-4 w-4 text-gray-400" />} label="Amount" value={alert.amount} />
+                      {alert.location && (
+                        <DetailRow icon={<MapPin className="h-4 w-4 text-gray-400" />} label="Location" value={alert.location} />
+                      )}
+                      {alert.flaggedIp && (
+                        <DetailRow icon={<Globe className="h-4 w-4 text-gray-400" />} label="IP Address" value={alert.flaggedIp} />
+                      )}
+                      <DetailRow
+                        icon={<Clock className="h-4 w-4 text-gray-400" />}
+                        label="AI Confidence"
+                        value={`${formatConfidence(alert.confidence)} (${alert.severity})`}
+                      />
+                    </CardContent>
+                  </motion.div>
                 )}
-                <DetailRow icon={<AlertTriangle className="h-4 w-4 text-gray-400" />} label="Alert Type" value={alert.description} />
-                <DetailRow icon={<Shield className="h-4 w-4 text-gray-400" />} label="Amount" value={alert.amount} />
-                {alert.location && (
-                  <DetailRow icon={<MapPin className="h-4 w-4 text-gray-400" />} label="Location" value={alert.location} />
-                )}
-                {alert.flaggedIp && (
-                  <DetailRow icon={<Globe className="h-4 w-4 text-gray-400" />} label="IP Address" value={alert.flaggedIp} />
-                )}
-                <DetailRow
-                  icon={<Clock className="h-4 w-4 text-gray-400" />}
-                  label="AI Confidence"
-                  value={`${formatConfidence(alert.confidence)} (${alert.severity})`}
-                />
-              </CardContent>
+              </AnimatePresence>
             </Card>
           </motion.div>
 
           {/* Risk Assessment Card */}
           <motion.div variants={fadeUpVariant}>
             <Card className="bg-white border-gray-200 shadow-sm h-full">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-900">Risk Assessment</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col items-center justify-center py-8">
-                <div className={`flex h-28 w-28 items-center justify-center rounded-full border-4 ${riskLevel.bg} ${riskLevel.ring}`}>
-                  <span className={`text-3xl font-bold ${riskLevel.color}`}>
-                    {Math.round(alert.confidence * 100)}%
-                  </span>
-                </div>
-                <p className={`mt-4 text-lg font-semibold ${riskLevel.color}`}>{riskLevel.label}</p>
-                <p className="mt-1 text-sm text-gray-500 text-center max-w-xs">
-                  Based on AI analysis of {factors.length} risk factors
-                </p>
-              </CardContent>
+              <div
+                className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/30 transition-colors"
+                onClick={() => toggleCard('risk')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('risk') } }}
+              >
+                <h3 className="text-lg font-semibold text-gray-900">Risk Assessment</h3>
+                <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('risk') && 'rotate-180')} />
+              </div>
+              <AnimatePresence initial={false}>
+                {expandedCards.has('risk') && (
+                  <motion.div
+                    key="risk-content"
+                    variants={accordionVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    transition={accordionTransition}
+                    style={{ overflow: 'hidden' }}
+                  >
+                    <CardContent className="flex flex-col items-center justify-center py-8">
+                      <div className={`flex h-28 w-28 items-center justify-center rounded-full border-4 ${riskLevel.bg} ${riskLevel.ring}`}>
+                        <span className={`text-3xl font-bold ${riskLevel.color}`}>
+                          {Math.round(alert.confidence * 100)}%
+                        </span>
+                      </div>
+                      <p className={`mt-4 text-lg font-semibold ${riskLevel.color}`}>{riskLevel.label}</p>
+                      <p className="mt-1 text-sm text-gray-500 text-center max-w-xs">
+                        Based on AI analysis of {factors.length} risk factors
+                      </p>
+                    </CardContent>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </Card>
           </motion.div>
         </div>
@@ -267,19 +316,42 @@ export default function ProtectAlertDetailPage() {
         {/* ── SHAP Waterfall Chart (dark card) ── */}
         <motion.div variants={fadeUpVariant}>
           <Card className="bg-white border-gray-200 shadow-sm">
-            <CardContent className="p-6 lg:p-8">
-              <div className="border-b border-gray-200 pb-4 mb-4">
+            <div
+              className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/30 transition-colors"
+              onClick={() => toggleCard('drivers')}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('drivers') } }}
+            >
+              <div>
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-700">Decision Drivers</h3>
                 <p className="text-xs text-gray-500 tracking-wide mt-1">
                   Key factors driving this AI decision.{' '}
                   <span className="font-mono uppercase tracking-widest text-gray-400">Model: Poseidon-ThreatDetect v1.0</span>
                 </p>
               </div>
-            <ShapWaterfall
-              factors={factors.map(f => ({ name: f.title, value: f.value }))}
-              baseValue={0}
-            />
-            </CardContent>
+              <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform shrink-0', expandedCards.has('drivers') && 'rotate-180')} />
+            </div>
+            <AnimatePresence initial={false}>
+              {expandedCards.has('drivers') && (
+                <motion.div
+                  key="drivers-content"
+                  variants={accordionVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  transition={accordionTransition}
+                  style={{ overflow: 'hidden' }}
+                >
+                  <CardContent className="p-6 lg:p-8 pt-0 lg:pt-0">
+                    <ShapWaterfall
+                      factors={factors.map(f => ({ name: f.title, value: f.value }))}
+                      baseValue={0}
+                    />
+                  </CardContent>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Card>
         </motion.div>
 
@@ -287,52 +359,73 @@ export default function ProtectAlertDetailPage() {
         <motion.div variants={fadeUpVariant}>
           {disputeState === 'idle' && (
             <Card className="bg-white border-gray-200 shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-900">Recommended Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {/* If this was you */}
-                <div className="flex items-center justify-between gap-4 rounded-xl border border-green-200 bg-green-50 p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-100">
-                      <CheckCircle2 className="h-5 w-5 text-green-600" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-900">If this was you</p>
-                      <p className="text-sm text-gray-500">Mark as recognized to improve AI accuracy</p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="shrink-0 border-green-600 text-green-600 hover:bg-green-50"
-                    onClick={() => { dismiss(alert.id); navigate('/protect') }}
+              <div
+                className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/30 transition-colors"
+                onClick={() => toggleCard('actions')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('actions') } }}
+              >
+                <h3 className="text-lg font-semibold text-gray-900">Recommended Actions</h3>
+                <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('actions') && 'rotate-180')} />
+              </div>
+              <AnimatePresence initial={false}>
+                {expandedCards.has('actions') && (
+                  <motion.div
+                    key="actions-content"
+                    variants={accordionVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    transition={accordionTransition}
+                    style={{ overflow: 'hidden' }}
                   >
-                    This was me
-                  </Button>
-                </div>
+                    <CardContent className="space-y-3">
+                      {/* If this was you */}
+                      <div className="flex items-center justify-between gap-4 rounded-xl border border-green-200 bg-green-50 p-4">
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-100">
+                            <CheckCircle2 className="h-5 w-5 text-green-600" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-gray-900">If this was you</p>
+                            <p className="text-sm text-gray-500">Mark as recognized to improve AI accuracy</p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="shrink-0 border-green-600 text-green-600 hover:bg-green-50"
+                          onClick={() => { dismiss(alert.id); navigate('/protect') }}
+                        >
+                          This was me
+                        </Button>
+                      </div>
 
-                {/* If this was NOT you */}
-                <div className="flex items-center justify-between gap-4 rounded-xl border border-red-200 bg-red-50 p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100">
-                      <XCircle className="h-5 w-5 text-red-600" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-900">If this was NOT you</p>
-                      <p className="text-sm text-gray-500">Secure your account immediately</p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    className="shrink-0"
-                    onClick={() => setDisputeState('drafting')}
-                  >
-                    Secure Account
-                  </Button>
-                </div>
-              </CardContent>
+                      {/* If this was NOT you */}
+                      <div className="flex items-center justify-between gap-4 rounded-xl border border-red-200 bg-red-50 p-4">
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100">
+                            <XCircle className="h-5 w-5 text-red-600" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-gray-900">If this was NOT you</p>
+                            <p className="text-sm text-gray-500">Secure your account immediately</p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          className="shrink-0"
+                          onClick={() => setDisputeState('drafting')}
+                        >
+                          Secure Account
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </Card>
           )}
 

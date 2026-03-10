@@ -3,6 +3,6 @@ import { useRouter } from '../router'
 
 export default function OnboardingRedirect() {
   const { navigate } = useRouter()
-  useEffect(() => { navigate('/onboarding') }, [navigate])
+  useEffect(() => { navigate('/') }, [navigate])
   return null
 }

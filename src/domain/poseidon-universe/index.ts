@@ -50,6 +50,7 @@ export {
   selectGoals,
   selectAccountByLast4,
   selectCohortHeadlines,
+  selectGovernFooterView,
 } from './selectors'
 export type { AlertAuditChain, CrossEngineChain, SpotlightKind, SpotlightContext, SpotlightItem } from './selectors'
 export type {

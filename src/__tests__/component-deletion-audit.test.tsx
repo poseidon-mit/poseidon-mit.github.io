@@ -38,8 +38,8 @@ describe('Stale B2B components and structures have been physically eradicated', 
         expect(source).not.toMatch(/<button[^>]*disabled[^>]*>/)
     })
 
-    test('OnboardingConsent does not contain B2B Auto-Approve copy', () => {
-        const source = readFileSync(resolve(rootDir, 'pages/OnboardingConsent.tsx'), 'utf-8')
+    test('OnboardingSheet does not contain B2B Auto-Approve copy', () => {
+        const source = readFileSync(resolve(rootDir, 'components/landing-v2/OnboardingSheet.tsx'), 'utf-8')
         expect(source).not.toContain('Auto-Approve')
         expect(source).not.toMatch(/under \$50/)
     })

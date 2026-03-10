@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { useMemo, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Zap,
   CheckCircle2,
@@ -11,6 +11,7 @@ import {
   Loader2,
   ShieldCheck,
   Clock,
+  ChevronDown,
 } from 'lucide-react'
 import { Link, useRouter } from '@/router'
 import { ShapWaterfall, EmptyState, ConfidenceIndicator, ProofChips } from '@/components/poseidon'
@@ -18,10 +19,10 @@ import { SlideToApprove } from '@/components/poseidon/slide-to-approve'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { usePageTitle } from '@/hooks/use-page-title'
-import { getMotionPreset } from '@/lib/motion-presets'
+import { getMotionPreset, accordionVariants, accordionTransition } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { useToast } from '@/hooks/useToast'
@@ -56,6 +57,13 @@ export function ExecuteApproval() {
   const action = useMemo(() => (actionId ? selectExecuteActionById(actionId) : undefined), [actionId])
 
   usePageTitle(action ? `Approve: ${action.title}` : 'Action Approval')
+
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set(['plan', 'drivers']))
+  const toggleCard = (id: string) => setExpandedCards(prev => {
+    const next = new Set(prev)
+    next.has(id) ? next.delete(id) : next.add(id)
+    return next
+  })
 
   const actionStatus = actionId ? state.execute.actionStates[actionId]?.status ?? 'pending' : 'pending'
   const isAlreadyDecided = actionStatus !== 'pending'
@@ -188,108 +196,174 @@ export function ExecuteApproval() {
       {/* Execution Plan */}
       <motion.div variants={fadeUp}>
         <Card className="border border-border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+          <div
+            className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/30 transition-colors"
+            onClick={() => toggleCard('plan')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('plan') } }}
+          >
+            <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
               <Zap className="h-5 w-5 text-amber-600" />
               Execution Plan
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {action.steps.map((step, i) => (
-                <div key={step.id} className="flex items-center gap-3">
-                  <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold bg-amber-100 text-amber-700 shrink-0">
-                    {i + 1}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-sm text-gray-700">{step.label}</span>
-                    {step.requiresConsent && (
-                      <ShieldCheck size={12} className="inline ml-1.5 text-amber-500" />
-                    )}
+            </h3>
+            <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('plan') && 'rotate-180')} />
+          </div>
+          <AnimatePresence initial={false}>
+            {expandedCards.has('plan') && (
+              <motion.div
+                key="plan-content"
+                variants={accordionVariants}
+                initial="collapsed"
+                animate="expanded"
+                exit="collapsed"
+                transition={accordionTransition}
+                style={{ overflow: 'hidden' }}
+              >
+                <CardContent>
+                  <div className="space-y-3">
+                    {action.steps.map((step, i) => (
+                      <div key={step.id} className="flex items-center gap-3">
+                        <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold bg-amber-100 text-amber-700 shrink-0">
+                          {i + 1}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-sm text-gray-700">{step.label}</span>
+                          {step.requiresConsent && (
+                            <ShieldCheck size={12} className="inline ml-1.5 text-amber-500" />
+                          )}
+                        </div>
+                        {step.estimatedDuration && (
+                          <span className="text-xs font-mono text-gray-400 shrink-0">{step.estimatedDuration}</span>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                  {step.estimatedDuration && (
-                    <span className="text-xs font-mono text-gray-400 shrink-0">{step.estimatedDuration}</span>
-                  )}
-                </div>
-              ))}
-            </div>
-            <p className="text-xs text-gray-400 font-mono mt-4">
-              {action.steps.length} steps · {action.steps.filter(s => s.estimatedDuration).map(s => s.estimatedDuration).join(' + ')}
-            </p>
-          </CardContent>
+                  <p className="text-xs text-gray-400 font-mono mt-4">
+                    {action.steps.length} steps · {action.steps.filter(s => s.estimatedDuration).map(s => s.estimatedDuration).join(' + ')}
+                  </p>
+                </CardContent>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Card>
       </motion.div>
 
       {/* Confidence + SHAP Decision Drivers */}
-      <motion.div variants={fadeUp} className="grid gap-6 lg:grid-cols-2">
-        {/* Confidence & Source */}
+      <motion.div variants={fadeUp}>
         <Card className="border border-border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-900">Why This Action?</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-500">Confidence</span>
-              <div className="flex-1">
-                <Progress value={action.confidence * 100} />
-              </div>
-              <span className="text-sm font-bold text-gray-900">{Math.round(action.confidence * 100)}%</span>
-            </div>
-            {sourceLink && (
-              <Link to={sourceLink.to} className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors">
-                <ExternalLink size={14} />
-                View Original {action.sourceEngine === 'Grow' ? 'Recommendation' : 'Alert'}
-              </Link>
-            )}
-            <p className="text-sm text-gray-500 leading-relaxed">{action.description}</p>
-          </CardContent>
-        </Card>
+          <div
+            className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/30 transition-colors"
+            onClick={() => toggleCard('impact')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('impact') } }}
+          >
+            <h3 className="text-lg font-semibold text-gray-900">Impact Analysis</h3>
+            <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('impact') && 'rotate-180')} />
+          </div>
+          <AnimatePresence initial={false}>
+            {expandedCards.has('impact') && (
+              <motion.div
+                key="impact-content"
+                variants={accordionVariants}
+                initial="collapsed"
+                animate="expanded"
+                exit="collapsed"
+                transition={accordionTransition}
+                style={{ overflow: 'hidden' }}
+              >
+                <CardContent className="pt-0">
+                  <div className="grid gap-6 lg:grid-cols-2">
+                    {/* Confidence & Source */}
+                    <div className="space-y-4">
+                      <h4 className="text-base font-semibold text-gray-900">Why This Action?</h4>
+                      <div className="flex items-center gap-4">
+                        <span className="text-sm text-gray-500">Confidence</span>
+                        <div className="flex-1">
+                          <Progress value={action.confidence * 100} />
+                        </div>
+                        <span className="text-sm font-bold text-gray-900">{Math.round(action.confidence * 100)}%</span>
+                      </div>
+                      {sourceLink && (
+                        <Link to={sourceLink.to} className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors">
+                          <ExternalLink size={14} />
+                          View Original {action.sourceEngine === 'Grow' ? 'Recommendation' : 'Alert'}
+                        </Link>
+                      )}
+                      <p className="text-sm text-gray-500 leading-relaxed">{action.description}</p>
+                    </div>
 
-        {/* Financial Impact */}
-        <Card className="border border-border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-900">Financial Impact</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between py-2 border-b border-gray-100">
-              <span className="text-sm text-gray-500">Transaction Amount</span>
-              <span className="text-sm font-semibold text-gray-900">{action.amountLabel}</span>
-            </div>
-            <div className="flex items-center justify-between py-2 border-b border-gray-100">
-              <span className="text-sm text-gray-500">Expected Benefit</span>
-              <span className="text-sm font-semibold text-emerald-600">{action.impact.approved.match(/\$[\d,]+/)?.[0] ?? 'See details'}</span>
-            </div>
-            <div className="flex items-center justify-between py-2">
-              <span className="text-sm font-medium text-gray-700">Net Benefit</span>
-              <span className="text-sm font-bold text-emerald-600">Positive</span>
-            </div>
-          </CardContent>
+                    {/* Financial Impact */}
+                    <div className="space-y-3">
+                      <h4 className="text-base font-semibold text-gray-900">Financial Impact</h4>
+                      <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                        <span className="text-sm text-gray-500">Transaction Amount</span>
+                        <span className="text-sm font-semibold text-gray-900">{action.amountLabel}</span>
+                      </div>
+                      <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                        <span className="text-sm text-gray-500">Expected Benefit</span>
+                        <span className="text-sm font-semibold text-emerald-600">{action.impact.approved.match(/\$[\d,]+/)?.[0] ?? 'See details'}</span>
+                      </div>
+                      <div className="flex items-center justify-between py-2">
+                        <span className="text-sm font-medium text-gray-700">Net Benefit</span>
+                        <span className="text-sm font-bold text-emerald-600">Positive</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Card>
       </motion.div>
 
       {/* Decision Drivers (SHAP) */}
       <motion.div variants={fadeUp}>
         <Card className="bg-white border-gray-200 shadow-sm">
-          <CardContent className="p-6 lg:p-8">
-            <div className="border-b border-gray-200 pb-4 mb-4">
+          <div
+            className="flex items-center justify-between p-6 lg:px-8 cursor-pointer hover:bg-muted/30 transition-colors"
+            onClick={() => toggleCard('drivers')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('drivers') } }}
+          >
+            <div>
               <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-700">Decision Drivers</h3>
               <p className="text-xs text-gray-500 mt-1">
                 Key factors driving this AI decision.
               </p>
             </div>
-            <ShapWaterfall
-              factors={action.factors.map((f) => ({ name: f.label, value: f.value }))}
-              baseValue={50}
-              className="mt-1"
-            />
-            {action.factors.length > 1 && (
-              <ProofChips
-                total={action.amountLabel}
-                parts={action.factors.slice(0, 3).map((f) => ({ label: f.label, value: Math.round(f.value * 100) }))}
-                formatValue={(v) => `${v}%`}
-              />
+            <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('drivers') && 'rotate-180')} />
+          </div>
+          <AnimatePresence initial={false}>
+            {expandedCards.has('drivers') && (
+              <motion.div
+                key="drivers-content"
+                variants={accordionVariants}
+                initial="collapsed"
+                animate="expanded"
+                exit="collapsed"
+                transition={accordionTransition}
+                style={{ overflow: 'hidden' }}
+              >
+                <CardContent className="p-6 pt-0 lg:px-8">
+                  <ShapWaterfall
+                    factors={action.factors.map((f) => ({ name: f.label, value: f.value }))}
+                    baseValue={0}
+                    className="mt-1"
+                  />
+                  {action.factors.length > 1 && (
+                    <ProofChips
+                      total={action.amountLabel}
+                      parts={action.factors.slice(0, 3).map((f) => ({ label: f.label, value: Math.round(f.value * 100) }))}
+                      formatValue={(v) => `${v}%`}
+                    />
+                  )}
+                </CardContent>
+              </motion.div>
             )}
-          </CardContent>
+          </AnimatePresence>
         </Card>
       </motion.div>
 
@@ -297,44 +371,65 @@ export function ExecuteApproval() {
       {deliberationTrace && (
         <motion.div variants={fadeUp}>
           <Card className="border border-border bg-card shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-900">Deliberation Trace</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {deliberationTrace.rounds.map((round, i) => (
-                  <div key={i} className="flex items-start gap-3 text-sm">
-                    <div className={cn(
-                      'w-2.5 h-2.5 rounded-full mt-1.5 shrink-0',
-                      round.position === 'support' && 'bg-emerald-500',
-                      round.position === 'oppose' && 'bg-red-500',
-                      round.position === 'modify' && 'bg-amber-500',
-                    )} />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-semibold text-gray-800">{round.roleId}</span>
-                        <Badge variant="outline" className={cn(
-                          'text-[10px] uppercase',
-                          round.position === 'support' && 'border-emerald-200 bg-emerald-50 text-emerald-700',
-                          round.position === 'oppose' && 'border-red-200 bg-red-50 text-red-700',
-                          round.position === 'modify' && 'border-amber-200 bg-amber-50 text-amber-700',
-                        )}>
-                          {round.position}
-                        </Badge>
-                        <span className="text-xs font-mono text-gray-400">{Math.round(round.confidence * 100)}%</span>
-                      </div>
-                      <p className="text-xs text-gray-500 leading-relaxed">{round.argument}</p>
+            <div
+              className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/30 transition-colors"
+              onClick={() => toggleCard('trace')}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('trace') } }}
+            >
+              <h3 className="text-lg font-semibold text-gray-900">Deliberation Trace</h3>
+              <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('trace') && 'rotate-180')} />
+            </div>
+            <AnimatePresence initial={false}>
+              {expandedCards.has('trace') && (
+                <motion.div
+                  key="trace-content"
+                  variants={accordionVariants}
+                  initial="collapsed"
+                  animate="expanded"
+                  exit="collapsed"
+                  transition={accordionTransition}
+                  style={{ overflow: 'hidden' }}
+                >
+                  <CardContent>
+                    <div className="space-y-3">
+                      {deliberationTrace.rounds.map((round, i) => (
+                        <div key={i} className="flex items-start gap-3 text-sm">
+                          <div className={cn(
+                            'w-2.5 h-2.5 rounded-full mt-1.5 shrink-0',
+                            round.position === 'support' && 'bg-emerald-500',
+                            round.position === 'oppose' && 'bg-red-500',
+                            round.position === 'modify' && 'bg-amber-500',
+                          )} />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-xs font-semibold text-gray-800">{round.roleId}</span>
+                              <Badge variant="outline" className={cn(
+                                'text-[10px] uppercase',
+                                round.position === 'support' && 'border-emerald-200 bg-emerald-50 text-emerald-700',
+                                round.position === 'oppose' && 'border-red-200 bg-red-50 text-red-700',
+                                round.position === 'modify' && 'border-amber-200 bg-amber-50 text-amber-700',
+                              )}>
+                                {round.position}
+                              </Badge>
+                              <span className="text-xs font-mono text-gray-400">{Math.round(round.confidence * 100)}%</span>
+                            </div>
+                            <p className="text-xs text-gray-500 leading-relaxed">{round.argument}</p>
+                          </div>
+                        </div>
+                      ))}
+                      {deliberationTrace.consensus && (
+                        <div className="rounded-xl bg-blue-50 border border-blue-200 p-3 mt-1">
+                          <p className="text-[10px] font-semibold text-blue-600 uppercase tracking-widest mb-1">Consensus</p>
+                          <p className="text-xs text-blue-800">{deliberationTrace.consensus.rationale}</p>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
-                {deliberationTrace.consensus && (
-                  <div className="rounded-xl bg-blue-50 border border-blue-200 p-3 mt-1">
-                    <p className="text-[10px] font-semibold text-blue-600 uppercase tracking-widest mb-1">Consensus</p>
-                    <p className="text-xs text-blue-800">{deliberationTrace.consensus.rationale}</p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
+                  </CardContent>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Card>
         </motion.div>
       )}
@@ -352,9 +447,7 @@ export function ExecuteApproval() {
                 <p className="text-sm text-gray-700 text-center">
                   This action has been <span className="font-semibold text-gray-900">{actionStatus}</span>.
                 </p>
-                <Button asChild variant="outline">
-                  <Link to="/execute">Back to Queue</Link>
-                </Button>
+                <Link to="/execute" className={cn(buttonVariants({ variant: "outline" }))}>Back to Queue</Link>
               </div>
             ) : (
               <div className="space-y-4">

@@ -12,7 +12,8 @@ import {
   Settings,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -121,16 +122,20 @@ export default function ProtectPage() {
                       strokeWidth="8"
                       fill="none"
                       strokeLinecap="round"
-                      strokeDasharray={`${securityScore * 2.51} 251`}
+                      strokeDasharray="251 251"
                     />
                   </svg>
-                  <span className="absolute text-2xl font-bold text-foreground">{securityScore}</span>
+                  <span className="absolute text-2xl font-bold text-foreground">{accounts.length}</span>
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-foreground">Protection Status</h2>
+                  <h2 className="text-lg font-semibold text-foreground">Accounts Protected</h2>
                   <p className="text-sm text-muted-foreground">
-                    {securityScore >= 90 ? 'Excellent' : securityScore >= 75 ? 'Good' : 'Needs Attention'} — {accounts.length} accounts monitored
+                    All accounts monitored 24/7
                   </p>
+                  <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700 mt-1 gap-1">
+                    <CheckCircle2 className="h-3 w-3" />
+                    100% Monitored
+                  </Badge>
                   <div className="mt-2 flex flex-wrap items-center gap-4 text-sm">
                     <span className="flex items-center gap-1 text-emerald-600">
                       <CheckCircle2 className="h-4 w-4" />
@@ -146,9 +151,7 @@ export default function ProtectPage() {
                 </div>
               </div>
               <div className="flex gap-3">
-                <Button asChild variant="outline" className="text-foreground">
-                  <Link to="/protect/threats">View All Threats</Link>
-                </Button>
+                <Link to="/protect/threats" className={cn(buttonVariants({ variant: "outline" }), "text-foreground")}>View All Threats</Link>
                 <Button className="bg-emerald-600 text-white hover:bg-emerald-700">Run Full Scan</Button>
               </div>
             </div>
@@ -166,9 +169,7 @@ export default function ProtectPage() {
                   <AlertTriangle className="h-5 w-5" />
                   Action Required ({activeThreats.length})
                 </CardTitle>
-                <Button asChild variant="ghost" size="sm" className="text-sm text-muted-foreground">
-                  <Link to="/protect/threats">View all <ChevronRight className="ml-1 h-3 w-3" /></Link>
-                </Button>
+                <Link to="/protect/threats" className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "text-sm text-muted-foreground")}>View all <ChevronRight className="ml-1 h-3 w-3" /></Link>
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -197,12 +198,10 @@ export default function ProtectPage() {
                       </div>
                     </div>
                   </div>
-                  <Button asChild size="sm" className="bg-orange-600 text-white hover:bg-orange-700">
-                    <Link to={`/protect/alert-detail?alertId=${threat.id}`}>
-                      Review
-                      <ChevronRight className="ml-1 h-4 w-4" />
-                    </Link>
-                  </Button>
+                  <Link to={`/protect/alert-detail?alertId=${threat.id}`} className={cn(buttonVariants({ size: "sm" }), "bg-orange-600 text-white hover:bg-orange-700")}>
+                    Review
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </Link>
                 </div>
               ))}
             </CardContent>
@@ -220,9 +219,7 @@ export default function ProtectPage() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg font-semibold text-foreground">Connected Accounts</CardTitle>
-                  <Button asChild variant="ghost" size="sm" className="text-sm text-muted-foreground">
-                    <Link to="/settings/integrations">Manage <Settings className="ml-1 h-3.5 w-3.5" /></Link>
-                  </Button>
+                  <Link to="/settings/integrations" className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "text-sm text-muted-foreground")}>Manage <Settings className="ml-1 h-3.5 w-3.5" /></Link>
                 </div>
               </CardHeader>
               <CardContent>
@@ -328,15 +325,15 @@ export default function ProtectPage() {
                 <CardTitle className="text-lg font-semibold text-foreground">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <Button asChild variant="outline" className="w-full justify-start text-foreground">
-                  <Link to="/protect/threats"><ShieldAlert className="mr-2 h-4 w-4" /> View All Threats</Link>
-                </Button>
-                <Button asChild variant="outline" className="w-full justify-start text-foreground">
-                  <Link to="/govern/audit"><Clock className="mr-2 h-4 w-4" /> Audit Trail</Link>
-                </Button>
-                <Button asChild variant="outline" className="w-full justify-start text-foreground">
-                  <Link to="/settings"><Settings className="mr-2 h-4 w-4" /> Settings</Link>
-                </Button>
+                <Link to="/protect/threats" className={cn(buttonVariants({ variant: "outline" }), "w-full justify-start text-foreground")}>
+                  <ShieldAlert className="mr-2 h-4 w-4" /> View All Threats
+                </Link>
+                <Link to="/govern/audit" className={cn(buttonVariants({ variant: "outline" }), "w-full justify-start text-foreground")}>
+                  <Clock className="mr-2 h-4 w-4" /> Audit Trail
+                </Link>
+                <Link to="/settings" className={cn(buttonVariants({ variant: "outline" }), "w-full justify-start text-foreground")}>
+                  <Settings className="mr-2 h-4 w-4" /> Settings
+                </Link>
               </CardContent>
             </Card>
           </motion.div>

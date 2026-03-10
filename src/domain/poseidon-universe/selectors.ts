@@ -585,3 +585,31 @@ export function selectAccountByLast4(last4: string): AccountEntity | undefined {
 export function selectCohortHeadlines() {
   return getCanonicalUniverse().metrics.cohortHeadlines
 }
+
+/* ── GovernFooter View Selector ── */
+
+const ENGINE_LOWER_TO_DOMAIN: Record<string, string> = {
+  protect: 'Protect',
+  grow: 'Grow',
+  execute: 'Execute',
+  govern: 'Govern',
+}
+
+/**
+ * Returns data for the GovernFooter trust bar.
+ * Optionally filters latest entries by engine (lowercase token name).
+ */
+export function selectGovernFooterView(currentEngine?: string) {
+  const summary = selectGovernAuditSummaryView()
+  const entries = selectGovernAuditEntries()
+
+  const domainEngine = currentEngine ? ENGINE_LOWER_TO_DOMAIN[currentEngine] : undefined
+  const filtered = domainEngine
+    ? entries.filter(e => e.type === domainEngine)
+    : entries
+
+  const latestEntries = filtered.slice(0, 3)
+  const lastRecordIso = entries[0]?.timestampIso ?? null
+
+  return { total: summary.total, latestEntries, lastRecordIso }
+}

@@ -66,7 +66,7 @@ const ROUTE_PAGE_FILES: Record<RoutePath, string | null> = {
   '/help': 'src/pages/HelpSupport.tsx',
   '/share': 'src/pages/ShareFiles.tsx',
   '/grow/recommendation': 'src/pages/grow/GrowRecommendationDetail.tsx',
-  '/onboarding': 'src/pages/Onboarding.tsx',
+  '/onboarding': 'src/pages/OnboardingRedirect.tsx',
   '/404': 'src/pages/NotFound.tsx',
   '/test/spectacular': 'src/pages/TestSpectacular.tsx',
   '/orchestrator': 'src/pages/orchestrator/OrchestratorWorkbench.tsx',

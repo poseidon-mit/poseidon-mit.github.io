@@ -19,7 +19,8 @@ import { cn } from '@/lib/utils'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
-import { CARD_TIER_STYLES, focusGlowStyle, type CardTier } from '@/lib/card-variants'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { selectGovernAuditEntries, selectSpotlightAuditEntry } from '@/domain/poseidon-universe'
 
 /* ── Types ── */
@@ -45,12 +46,6 @@ const statusCfg: Record<DecisionStatus, { color: string; bg: string; icon: Lucid
   Verified: { color: 'var(--engine-govern)', bg: 'rgba(59,130,246,0.12)', icon: CheckCircle2 },
   'Pending review': { color: 'var(--state-warning)', bg: 'rgba(245,158,11,0.12)', icon: Clock },
   Flagged: { color: 'var(--state-critical)', bg: 'rgba(239,68,68,0.12)', icon: AlertTriangle },
-}
-
-function getAuditTier(status: DecisionStatus): CardTier {
-  if (status === 'Flagged') return 'focus'
-  if (status === 'Pending review') return 'standard'
-  return 'compact'
 }
 
 const toTimestamp = (iso: string) =>
@@ -117,7 +112,7 @@ export default function GovernAuditPage() {
         <div>
           <Link
             to="/govern"
-            className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors text-sm"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
           >
             <ArrowLeft size={16} />
             Back to Govern
@@ -126,10 +121,10 @@ export default function GovernAuditPage() {
 
         <motion.div variants={fadeUp} className="flex flex-col gap-3">
           <EngineBadge engine="govern" icon={ShieldCheck} label="Govern · Audit Ledger" className="self-start" />
-          <h1 className="text-2xl md:text-3xl font-light tracking-tight text-white">
+          <h1 className="text-2xl md:text-3xl font-light tracking-tight text-foreground">
             Audit Ledger
           </h1>
-          <p className="text-white/50 text-base">
+          <p className="text-muted-foreground text-base">
             {entries.length} decisions · {verified} verified
             {pending > 0 ? ` · ${pending} pending review` : ''}
           </p>
@@ -137,14 +132,14 @@ export default function GovernAuditPage() {
 
         {/* Search + filter bar */}
         <motion.div variants={fadeUp} className="flex flex-col gap-3">
-          <div className="flex items-center gap-3 rounded-2xl border border-white/[0.08] px-4 py-3 bg-white/[0.02] focus-within:border-[var(--engine-govern)]/50 transition-all">
-            <Search size={16} className="text-white/40 shrink-0" />
+          <div className="flex items-center gap-3 rounded-2xl border border-gray-200 px-4 py-3 bg-white focus-within:border-blue-300 focus-within:ring-1 focus-within:ring-blue-200 transition-all">
+            <Search size={16} className="text-gray-400 shrink-0" />
             <input
               type="search"
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search ID, type, or action…"
-              className="flex-1 bg-transparent text-sm outline-none placeholder:text-white/30 text-white"
+              className="flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400 text-gray-900"
               aria-label="Search audit ledger"
             />
           </div>
@@ -157,8 +152,8 @@ export default function GovernAuditPage() {
                 className={cn(
                   'px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors',
                   activeFilter === tab
-                    ? 'bg-[var(--engine-govern)]/15 text-[var(--engine-govern)] border-[var(--engine-govern)]/30'
-                    : 'bg-white/[0.04] text-white/40 border-white/10 hover:border-white/20 hover:text-white/60',
+                    ? 'bg-blue-100 text-blue-700 border-blue-200'
+                    : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-700',
                 )}
               >
                 {tab}
@@ -167,7 +162,7 @@ export default function GovernAuditPage() {
           </div>
 
           {filtered.length < entries.length && (
-            <p className="text-xs text-white/40">
+            <p className="text-xs text-muted-foreground">
               Showing {filtered.length} of {entries.length}
             </p>
           )}
@@ -197,8 +192,8 @@ export default function GovernAuditPage() {
                 <CircleDot size={16} style={{ color: typeColor[spotlightEntry.type as DecisionType] }} />
               </span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-white/80 font-medium">{spotlightEntry.action}</p>
-                <div className="flex items-center gap-3 mt-1 text-xs text-white/55">
+                <p className="text-sm text-foreground font-medium">{spotlightEntry.action}</p>
+                <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                   <span className="font-mono">{spotlightEntry.id}</span>
                   <span>{Math.round(spotlightEntry.confidence * 100)}% confidence</span>
                   <span>{spotlightEntry.evidence} evidence</span>
@@ -224,14 +219,14 @@ export default function GovernAuditPage() {
       {/* Entry list */}
       {filtered.length === 0 ? (
         <motion.div variants={fadeUp}>
-          <div className="glass-card glass-card-overlay rounded-xl p-12 flex items-center justify-center">
+          <Card className="rounded-xl p-12 flex items-center justify-center">
             <EmptyState
               icon={Search}
               title="No matching decisions"
               description="Try adjusting filters or using a different search term."
               accentColor="var(--engine-govern)"
             />
-          </div>
+          </Card>
         </motion.div>
       ) : (
         <motion.div variants={fadeUp} className="flex flex-col gap-3">
@@ -243,11 +238,11 @@ export default function GovernAuditPage() {
           {/* Separator between non-verified and verified */}
           {filtered.some(e => e.status !== 'Verified') && filtered.some(e => e.status === 'Verified') && (
             <div className="flex items-center gap-3">
-              <div className="flex-1 h-px bg-white/[0.08]" />
-              <span className="text-xs font-mono text-white/30 uppercase tracking-widest shrink-0">
+              <div className="flex-1 h-px bg-border" />
+              <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest shrink-0">
                 {filtered.filter(e => e.status === 'Verified').length} verified
               </span>
-              <div className="flex-1 h-px bg-white/[0.08]" />
+              <div className="flex-1 h-px bg-border" />
             </div>
           )}
 
@@ -280,7 +275,7 @@ function CompactAuditCard({ entry }: { entry: AuditEntryRow }) {
   return (
     <Link
       to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
-      className="glass-card glass-card-overlay rounded-[16px] p-4 flex items-center gap-3 hover:border-white/[0.12] transition-colors border-l-2 group"
+      className="rounded-xl border border-border bg-card shadow-sm p-4 flex items-center gap-3 hover:shadow-md transition-colors border-l-2 group"
       style={{ borderLeftColor: typeColor[entry.type] }}
     >
       <div className="flex-1 min-w-0">
@@ -295,10 +290,10 @@ function CompactAuditCard({ entry }: { entry: AuditEntryRow }) {
             {entry.type}
           </span>
         </div>
-        <span className="text-sm text-white/70 truncate block">{entry.action}</span>
-        <span className="text-[10px] text-white/40 mt-1 block">{entry.timestamp}</span>
+        <span className="text-sm text-foreground truncate block">{entry.action}</span>
+        <span className="text-[10px] text-muted-foreground mt-1 block">{entry.timestamp}</span>
       </div>
-      <ArrowRight size={14} className="shrink-0 text-white/30 group-hover:text-[var(--engine-govern)] transition-colors" />
+      <ArrowRight size={14} className="shrink-0 text-muted-foreground group-hover:text-blue-600 transition-colors" />
     </Link>
   )
 }
@@ -306,8 +301,6 @@ function CompactAuditCard({ entry }: { entry: AuditEntryRow }) {
 function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
   const sCfg = statusCfg[entry.status]
   const StatusIcon = sCfg.icon
-  const tier = getAuditTier(entry.status)
-  const styles = CARD_TIER_STYLES[tier]
 
   // Border-left colored by engine type (not uniform govern-blue)
   const borderColor = typeColor[entry.type]
@@ -315,25 +308,20 @@ function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
   return (
     <Link
       to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
-      className={cn(
-        'glass-card glass-card-overlay rounded-[20px] flex items-center hover:border-white/[0.12] transition-colors border-l-2 group block',
-        styles.padding,
-        styles.gap,
-      )}
+      className="rounded-xl border border-border bg-card shadow-sm p-5 lg:p-6 flex items-center gap-4 transition-colors border-l-2 group block hover:shadow-md"
       style={{
         borderLeftColor: borderColor,
-        ...(tier === 'focus' ? focusGlowStyle(sCfg.color) : {}),
       }}
     >
       {/* Type icon */}
       <div
-        className={cn(styles.iconBoxSize, 'flex items-center justify-center border shrink-0')}
+        className="w-10 h-10 rounded-xl flex items-center justify-center border shrink-0"
         style={{
           borderColor: `color-mix(in srgb, ${typeColor[entry.type]} 30%, transparent)`,
           background: typeBg[entry.type],
         }}
       >
-        <CircleDot size={styles.iconSize} style={{ color: typeColor[entry.type] }} />
+        <CircleDot size={16} style={{ color: typeColor[entry.type] }} />
       </div>
 
       {/* Info */}
@@ -355,21 +343,18 @@ function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
             <StatusIcon size={11} />
             {entry.status}
           </span>
-          <span className="text-[10px] text-white/40 ml-auto shrink-0">{entry.timestamp}</span>
+          <span className="text-[10px] text-muted-foreground ml-auto shrink-0">{entry.timestamp}</span>
         </div>
 
-        {/* Action description — truncated for compact, visible for focus/standard */}
-        <p className={cn(
-          'text-white/70 mb-1',
-          tier === 'compact' ? 'text-xs truncate' : 'text-sm',
-        )}>
+        {/* Action description */}
+        <p className="text-sm text-foreground mb-1">
           {entry.action}
         </p>
 
-        <div className={cn('flex items-center gap-3', styles.metaSize)}>
-          <span className="text-white/55">{Math.round(entry.confidence * 100)}% confidence</span>
-          <span className="text-white/40">·</span>
-          <span className="text-white/55">{entry.evidence} evidence</span>
+        <div className="flex items-center gap-3 text-xs">
+          <span className="text-muted-foreground">{Math.round(entry.confidence * 100)}% confidence</span>
+          <span className="text-muted-foreground">·</span>
+          <span className="text-muted-foreground">{entry.evidence} evidence</span>
         </div>
       </div>
 

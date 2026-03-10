@@ -1,4 +1,4 @@
-export type AccountType = 'checking' | 'savings' | 'credit-card' | 'retirement' | 'brokerage' | 'auto-loan'
+export type AccountType = 'checking' | 'savings' | 'credit-card' | 'retirement' | 'roth-ira' | 'brokerage' | 'auto-loan'
 
 export interface AccountEntity {
   id: string
@@ -9,6 +9,8 @@ export interface AccountEntity {
   balanceUsd: number
   apr?: number
   apy?: number
+  limit?: number      // credit card limit
+  ytdReturn?: number  // investment YTD return percentage
 }
 
 export interface GoalEntity {

@@ -218,6 +218,22 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - Live Playwright reproduction confirmed those spotlight cards do not navigate when tapped. Clicking the spotlight container on `/grow/recommendations`, `/protect/threats`, and `/execute/queue` left the URL unchanged.
 - Non-spotlight list rows are wrapped in `Link` and did navigate in live verification. Example: tapping the Grow list row for `Increase 401(k) to Employer Match` navigated to `/grow/recommendation?id=9`. I did not reproduce a second non-spotlight navigation failure at 390x844, so the implementation AI should still regression-test compact/low-tier rows after fixing the spotlight path.
 - `GrowRecommendationDetail` always renders a monetary `Before -> After -> You save` strip in [`src/pages/grow/GrowRecommendationDetail.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/grow/GrowRecommendationDetail.tsx#L134) regardless of recommendation type.
+
+## Mobile Layout Breakage Audit Plan (2026-03-10)
+
+**Goal:** Audit live mobile rendering with real screenshots, focusing on overflow, clipped content, forced line breaks, hidden CTAs, and bottom-nav/safe-area collisions. This is analysis only unless a follow-up implementation request is given.
+
+- [x] Start the local Vite app and confirm a stable audit URL
+- [x] Capture live mobile screenshots at 375px width across flagship and key detail routes
+- [x] Check each route for horizontal overflow, clipped right edges, broken wrapping, and touch-target issues
+- [x] Cross-check severe issues against DOM/layout measurements to separate content problems from container bugs
+- [x] Write a Japanese chat-style findings report with route-by-route evidence and fix priorities
+
+**Review notes:**
+- Live audit executed against `http://127.0.0.1:5173` with Playwright mobile emulation (`375x812`, touch enabled).
+- Artifacts saved under `output/playwright/mobile-audit/` and `output/playwright/mobile-audit/viewports/`.
+- Severe mobile regressions are concentrated in shared shell interactions: bottom navigation overlays in-viewport content, multiple pages ship 36px or smaller top-bar controls, and several routes rely on non-wrapping horizontal button rows that push actions off-screen.
+- Route-specific breakage is most severe on `Dashboard`, `Dashboard/Notifications`, `Govern`, `Grow/Scenarios`, and `Execute/Queue`; Grow detail pages also render large blank/low-contrast zones that materially reduce usability on mobile.
 - The underlying data model cannot distinguish “monthly spend reduction” from “interest gain”, “employer match capture”, or “allocation rebalance”. `RecommendationDetail` only exposes `monthlySavings`, `currentTotal`, and `newTotal` in [`src/domain/poseidon-universe/types.ts`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/domain/poseidon-universe/types.ts#L363), and the selector returns raw canonical records with no view-model adaptation in [`src/domain/poseidon-universe/selectors.ts`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/domain/poseidon-universe/selectors.ts#L543).
 - Canonical Grow data already contains semantically incompatible cases:
   id `1` “Switch to High-Yield Savings” has `monthlySavings: 70` but `currentTotal: 0` and `newTotal: 0` in [`src/domain/poseidon-universe/canonical.ts`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/domain/poseidon-universe/canonical.ts#L914)

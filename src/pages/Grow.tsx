@@ -11,7 +11,8 @@ import {
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { Progress } from '@/components/ui/progress'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -132,12 +133,8 @@ export default function GrowPage() {
                   <p className="text-xl font-bold text-emerald-700">+{formatUsd(optimizationPotential)}/mo</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button asChild variant="outline" className="text-foreground">
-                    <Link to="/grow/scenarios">Scenarios</Link>
-                  </Button>
-                  <Button asChild className="bg-violet-600 text-white hover:bg-violet-700">
-                    <Link to="/grow/recommendations">Recommendations</Link>
-                  </Button>
+                  <Link to="/grow/scenarios" className={cn(buttonVariants({ variant: "outline" }), "text-foreground")}>Scenarios</Link>
+                  <Link to="/grow/recommendations" className={cn(buttonVariants(), "bg-violet-600 text-white hover:bg-violet-700")}>Recommendations</Link>
                 </div>
               </div>
             </div>
@@ -214,11 +211,9 @@ export default function GrowPage() {
                               <p className="font-bold text-foreground">{formatUsd(goal.currentUsd)}</p>
                               <p className="text-sm text-muted-foreground">of {formatUsd(goal.targetUsd)}</p>
                             </div>
-                            <Button asChild variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground" aria-label="View goal details">
-                              <Link to={`/grow/goal?id=${goal.id}`}>
-                                <ChevronRight className="h-4 w-4" />
-                              </Link>
-                            </Button>
+                            <Link to={`/grow/goal?id=${goal.id}`} className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "h-8 w-8 p-0 text-muted-foreground")} aria-label="View goal details">
+                              <ChevronRight className="h-4 w-4" />
+                            </Link>
                           </div>
                         </div>
                         <div className="space-y-1">
@@ -248,9 +243,7 @@ export default function GrowPage() {
                     <Lightbulb className="h-5 w-5 text-amber-500" />
                     Top Recommendations
                   </CardTitle>
-                  <Button asChild variant="ghost" size="sm" className="text-sm text-muted-foreground">
-                    <Link to="/grow/recommendations">View All</Link>
-                  </Button>
+                  <Link to="/grow/recommendations" className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "text-sm text-muted-foreground")}>View All</Link>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">

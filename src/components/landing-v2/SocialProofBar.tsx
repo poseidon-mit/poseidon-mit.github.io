@@ -1,10 +1,8 @@
 import { Lock, Check } from 'lucide-react'
 
 const items = [
-  { icon: Lock, label: 'MIT Capstone Project' },
-  { icon: Lock, label: 'Bank-Level Security' },
   { icon: Check, label: 'SOC 2 Compliant' },
-  { icon: Lock, label: '256-bit Encryption' },
+  { icon: Lock, label: 'Bank-grade Security' },
 ]
 
 export default function SocialProofBar() {

@@ -10,6 +10,6 @@ export const DEMO_USER: DemoUser = {
   id: 'demo-user-001',
   name: 'Shinji Fujiwara',
   initials: 'SF',
-  email: 'shinji@example.com',
+  email: 'shinji@mit.com',
   plan: 'Pro',
 }

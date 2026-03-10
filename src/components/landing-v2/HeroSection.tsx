@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { ArrowRight, Play, Presentation, Video } from 'lucide-react'
 import { Link } from '@/router'
 import {
@@ -7,16 +7,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
-export default function HeroSection() {
-  const [videoOpen, setVideoOpen] = useState(false)
-  const modalVideoRef = useRef<HTMLVideoElement>(null)
+interface HeroSectionProps {
+  onGetStarted?: () => void
+}
 
-  // Pause modal video when dialog closes
-  useEffect(() => {
-    if (!videoOpen && modalVideoRef.current) {
-      modalVideoRef.current.pause()
-    }
-  }, [videoOpen])
+export default function HeroSection({ onGetStarted }: HeroSectionProps) {
+  const [videoOpen, setVideoOpen] = useState(false)
 
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden">
@@ -54,9 +50,10 @@ export default function HeroSection() {
 
       {/* ── Nav ── */}
       <nav className="relative z-10 flex items-center justify-between px-6 md:px-12 py-5">
-        <span className="text-xl font-bold text-white tracking-tight">
-          Poseidon
-        </span>
+        <div className="flex items-center gap-2">
+          <img src="/favicon.svg" alt="" className="h-7 w-7" />
+          <span className="text-xl font-bold text-white tracking-tight">Poseidon</span>
+        </div>
         <Link
           to="/dashboard"
           className="bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-white/20 transition-colors"
@@ -67,9 +64,9 @@ export default function HeroSection() {
 
       {/* ── Hero content ── */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 pb-16">
-        <p className="text-sm text-white/60 uppercase tracking-wider font-medium">
-          AI-Native Personal Finance
-        </p>
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-1.5">
+          <span className="text-sm text-white/80 font-medium">MIT CTO Program · Group 7</span>
+        </div>
 
         <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white text-center leading-tight mt-6 whitespace-pre-line">
           {'Your Money,\n'}
@@ -81,9 +78,8 @@ export default function HeroSection() {
           one intelligent platform that coordinates your entire financial life.
         </p>
 
-        {/* ── 4 Fixed Buttons ── */}
-        <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 mt-10">
-          {/* 1. Explore Demo */}
+        {/* ── Row 1: Primary actions ── */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
           <Link
             to="/dashboard"
             className="bg-blue-500 text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-blue-600 transition-colors min-w-[160px]"
@@ -91,48 +87,52 @@ export default function HeroSection() {
             <Play className="w-4 h-4" />
             Explore Demo
           </Link>
-
-          {/* 2. Get Started */}
-          <Link
-            to="/dashboard"
-            className="border border-white/30 bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-white/20 transition-colors min-w-[160px]"
+          <button
+            type="button"
+            onClick={onGetStarted}
+            className="border border-white/30 bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-white/20 transition-colors min-w-[160px] cursor-pointer"
           >
             Get Started
             <ArrowRight className="w-4 h-4" />
-          </Link>
+          </button>
+        </div>
 
-          {/* 3. Presentation */}
+        {/* ── Row 2: Secondary actions (ghost) ── */}
+        <div className="flex items-center justify-center gap-4 mt-4">
           <Link
             to="/deck"
-            className="border border-white/30 bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-white/20 transition-colors min-w-[160px]"
+            className="inline-flex items-center gap-2 border border-white/30 bg-white/5 backdrop-blur-sm text-white/80 hover:text-white hover:bg-white/10 text-sm font-medium px-5 py-2.5 rounded-lg transition-colors"
           >
             <Presentation className="w-4 h-4" />
             Presentation
           </Link>
-
-          {/* 4. Video */}
           <button
             type="button"
             onClick={() => setVideoOpen(true)}
-            className="border border-white/30 bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-white/20 transition-colors cursor-pointer min-w-[160px]"
+            className="inline-flex items-center gap-2 border border-white/30 bg-white/5 backdrop-blur-sm text-white/80 hover:text-white hover:bg-white/10 text-sm font-medium px-5 py-2.5 rounded-lg transition-colors cursor-pointer"
           >
             <Video className="w-4 h-4" />
             Video
           </button>
         </div>
 
-        <p className="text-xs text-white/50 mt-8">
-          MIT Capstone &middot; Bank-Level Security
-        </p>
-      </div>
-
-      {/* ── Scroll indicator ── */}
-      <div className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2">
-        <div className="flex flex-col items-center gap-2 text-white/40">
-          <span className="text-[10px] uppercase tracking-widest">Scroll</span>
-          <div className="h-7 w-4 rounded-full border border-current p-1">
-            <div className="h-1.5 w-1 mx-auto animate-bounce rounded-full bg-current" />
-          </div>
+        {/* ── MIT Professional Education ── */}
+        <div className="mt-12 flex flex-col items-center gap-3">
+          <p className="text-[10px] text-white/40 uppercase tracking-widest">
+            Built as part of
+          </p>
+          <a
+            href="https://online.professionalprogramsmit.com/blended-professional-certificate-chief-technology-officer"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-opacity hover:opacity-80"
+          >
+            <img
+              src="/mit-logo.png"
+              alt="MIT Professional Education"
+              className="h-12 w-auto opacity-70"
+            />
+          </a>
         </div>
       </div>
 
@@ -141,15 +141,16 @@ export default function HeroSection() {
         <DialogContent className="max-w-4xl border-0 bg-black p-0 overflow-hidden">
           <DialogTitle className="sr-only">Poseidon Introduction Video</DialogTitle>
           <div style={{ aspectRatio: '16/9' }}>
-            <video
-              ref={modalVideoRef}
-              autoPlay
-              controls
-              className="h-full w-full"
-              poster="/videos/hero-theme-poster-v2.jpg"
-            >
-              <source src="/videos/hero-theme-desktop-v2.mp4" type="video/mp4" />
-            </video>
+            {videoOpen && (
+              <iframe
+                src="https://www.youtube.com/embed/ymwtd7X3CYI?autoplay=1"
+                title="Poseidon Introduction Video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="h-full w-full"
+                style={{ border: 0 }}
+              />
+            )}
           </div>
         </DialogContent>
       </Dialog>

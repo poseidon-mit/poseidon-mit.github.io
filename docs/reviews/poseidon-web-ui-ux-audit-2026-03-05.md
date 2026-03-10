@@ -266,7 +266,7 @@ Recommendation:
 | Savings | `+$612/mo`, `$847/mo`, `$1,968/yr`, `$164/mo` all appear across routes. | Realized, projected, and potential savings are blurred together. | Label savings by type everywhere: realized, projected, queued opportunity, annualized. |
 | Severity | Uses `Critical`, `Warning`, `Info`, `High`, `Medium`, `Low`, and `Flagged`. | Severity feels inconsistent across protect and govern. | Separate alert severity from review status and use one severity taxonomy. |
 | Governance counts | `1,247`, `1,189`, `55`, `3`, `96/100` recur frequently. | Mostly consistent, but some variants show `%` and some show `/100`. | Normalize compliance and audit-status display language. |
-| Demo user identity | `Shinji Fujiwara` and `shinji@example.com` appear throughout. | Feels like seeded demo data, which is fine, but it is not clearly framed as demo identity. | Either label the environment as demo more explicitly or swap to more neutral seeded profile language. |
+| Demo user identity | `Shinji Fujiwara` and `shinji@mit.com` appear throughout. | Feels like seeded demo data, which is fine, but it is not clearly framed as demo identity. | Either label the environment as demo more explicitly or swap to more neutral seeded profile language. |
 | Disabled actions | Export/report/human review buttons appear disabled on several pages. | Disabled controls hurt trust and make the product feel staged. | Replace with either live functionality, gated explanation, or remove them until they work. |
 | Narrative anchor alert | `THR-001 / TechElectro Store / $2,847` is used consistently. | This is actually a strength. | Keep this as a canonical storytelling thread across Protect, Execute, and Govern. |
 

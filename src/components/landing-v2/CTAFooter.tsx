@@ -1,6 +1,11 @@
 import { ArrowRight } from 'lucide-react'
+import { Link } from '@/router'
 
-export default function CTAFooter() {
+interface CTAFooterProps {
+  onGetStarted?: () => void
+}
+
+export default function CTAFooter({ onGetStarted }: CTAFooterProps) {
   return (
     <section className="bg-[#0A1628] py-24 px-4">
       <div className="max-w-4xl mx-auto text-center">
@@ -8,32 +13,27 @@ export default function CTAFooter() {
           Ready to Transform Your Finances?
         </h2>
         <p className="text-white/70 mt-4 text-lg max-w-2xl mx-auto">
-          Join the waitlist and be first to experience AI-native personal
-          finance.
+          Experience AI-native personal finance — protection, growth, execution,
+          and governance in one platform.
         </p>
 
-        {/* Email form */}
-        <form
-          onSubmit={(e) => e.preventDefault()}
-          className="flex flex-col sm:flex-row gap-4 mt-8 max-w-md mx-auto"
-        >
-          <input
-            type="email"
-            placeholder="Enter your email"
-            className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-white/40 text-sm focus:outline-none focus:border-white/50 transition-colors"
-          />
-          <button
-            type="submit"
-            className="bg-white text-[#0A1628] px-6 py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 hover:bg-white/90 transition-colors"
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center gap-2 bg-white text-[#0A1628] px-8 py-4 rounded-lg font-semibold text-sm hover:bg-white/90 transition-colors"
           >
-            Join Waitlist
+            Explore the Demo
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <button
+            type="button"
+            onClick={onGetStarted}
+            className="inline-flex items-center gap-2 border border-white/30 text-white px-8 py-4 rounded-lg font-semibold text-sm hover:bg-white/10 transition-colors cursor-pointer"
+          >
+            Get Started
             <ArrowRight className="w-4 h-4" />
           </button>
-        </form>
-
-        <p className="text-white/50 text-sm mt-4">
-          No credit card required. Cancel anytime.
-        </p>
+        </div>
       </div>
 
       {/* Footer */}
@@ -42,7 +42,7 @@ export default function CTAFooter() {
           <div className="flex items-center gap-4">
             <span className="text-white font-bold">Poseidon</span>
             <span className="text-white/50 text-sm">
-              &copy; 2026 Poseidon.AI. MIT Capstone Project.
+              &copy; 2026 Poseidon.AI
             </span>
           </div>
           <div className="flex items-center gap-6">

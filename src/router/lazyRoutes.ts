@@ -121,7 +121,7 @@ export const routeLoaders = {
   // ─── Activation ─────────────────────────────────────────────────────────────
   '/signup': () => import('../pages/Signup'),
   '/login': () => import('../pages/Login'),
-  '/onboarding': () => import('../pages/Onboarding'),
+  '/onboarding': () => import('../pages/OnboardingRedirect'),
   '/onboarding/priorities': () => import('../pages/OnboardingRedirect'),
   '/onboarding/consent': () => import('../pages/OnboardingRedirect'),
   '/onboarding/activate': () => import('../pages/OnboardingRedirect'),
