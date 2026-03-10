@@ -99,6 +99,10 @@ export interface ProtectThreatEntity {
   regulatoryFlag?: string
   timing?: ThreatTiming
   factors?: ThreatFactor[]
+  /** Detail-screen fields — only render if present */
+  account?: string
+  location?: string
+  flaggedIp?: string
 }
 
 export interface RecommendationEntity {
@@ -356,6 +360,28 @@ export interface ActionStep {
   estimatedTime?: string
 }
 
+/** What kind of before/after comparison this recommendation shows */
+export type ComparisonKind = 'spend' | 'yield' | 'contribution' | 'allocation' | 'coverage'
+
+/** Comparison-specific data for non-spend recommendations */
+export interface RecommendationComparison {
+  kind: ComparisonKind
+  /** yield: APY before/after + annual gain */
+  currentApy?: number
+  newApy?: number
+  annualGain?: number
+  /** contribution: percentage before/after + employer match captured */
+  currentPct?: number
+  newPct?: number
+  matchCapture?: number
+  /** allocation: human-readable mix labels */
+  currentMix?: string
+  newMix?: string
+  /** coverage: months of expenses covered */
+  currentMonths?: number
+  targetMonths?: number
+}
+
 export interface RecommendationDetail {
   id: number
   title: string
@@ -377,6 +403,9 @@ export interface RecommendationDetail {
 
   steps: ActionStep[]
   executionType: ExecutionType
+
+  /** Determines which before/after strip to render. Defaults to 'spend' if omitted. */
+  comparison?: RecommendationComparison
 
   factors: string[]
   cohortProof: string

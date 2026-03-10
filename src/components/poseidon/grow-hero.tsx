@@ -16,7 +16,6 @@ import {
   ReferenceDot, ReferenceLine, Label, ResponsiveContainer,
 } from 'recharts'
 import { HeroBento } from './hero-bento'
-import { ListPortalBar } from './list-portal-bar'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
@@ -103,7 +102,7 @@ function HeroHeadline({
           <button
             onClick={onOptimize}
             aria-label="See Poseidon Delta"
-            className="flex-shrink-0 flex items-center gap-1.5 rounded-xl bg-violet-500/10 border border-violet-500/20 px-3 py-2 min-h-[44px] text-xs font-semibold text-violet-400 hover:bg-violet-500/20 transition-colors engine-bg-grow engine-border-grow engine-text-grow"
+            className="hidden md:flex flex-shrink-0 items-center gap-1.5 rounded-xl bg-violet-500/10 border border-violet-500/20 px-3 py-2 min-h-[44px] text-xs font-semibold text-violet-400 hover:bg-violet-500/20 transition-colors engine-bg-grow engine-border-grow engine-text-grow"
           >
             See Poseidon Delta
           </button>
@@ -223,7 +222,7 @@ function HeroChart({
             fill="url(#advantageZoneGradient)"
             stroke="var(--engine-grow)"
             strokeWidth={2.5}
-            dot={{ r: 4, fill: '#0F1D32', stroke: 'var(--engine-grow)', strokeWidth: 2 }}
+            dot={false}
             activeDot={{ r: 5, fill: 'var(--engine-grow)' }}
             isAnimationActive={isReplaying}
             animationDuration={1400}
@@ -243,14 +242,14 @@ function HeroChart({
             legendType="none"
           />
 
-          {/* Layer 3: visible dashed baseline line */}
+          {/* Layer 3: visible dashed baseline line — dots disabled to reduce noise */}
           <Line
             type="monotone"
             dataKey="baseline"
             stroke="#94A3B8"
             strokeWidth={2}
             strokeDasharray="6 3"
-            dot={{ r: 4, fill: '#0F1D32', stroke: '#94A3B8', strokeWidth: 2, strokeDasharray: 'none' }}
+            dot={false}
             activeDot={{ r: 5, fill: '#94A3B8', strokeDasharray: 'none' }}
             isAnimationActive={false}
           />
@@ -373,14 +372,17 @@ export function GrowGrowthAdvantage({
 
       </HeroBento.Proof>
 
-      {/* Zone C: Portal */}
+      {/* Zone C: Portal — count-only, no duplicate navigation (CTA above is the link) */}
       <HeroBento.Portal>
-        <ListPortalBar
-          engine="grow"
-          label={`${recommendationCount} AI recommendations`}
-          count={recommendationCount}
-          destination={{ type: 'route', to: '/grow/recommendations' }}
-        />
+        <span className="flex items-center gap-3 w-full min-h-[44px] text-sm font-medium text-white/50">
+          <span
+            className="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-bold tabular-nums"
+            style={{ backgroundColor: 'color-mix(in srgb, var(--engine-grow) 20%, transparent)', color: 'var(--engine-grow)' }}
+          >
+            {recommendationCount}
+          </span>
+          <span className="flex-1 truncate">{recommendationCount} AI recommendations</span>
+        </span>
       </HeroBento.Portal>
     </HeroBento>
   )

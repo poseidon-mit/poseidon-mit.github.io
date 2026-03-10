@@ -18,6 +18,8 @@ export type {
   ActionStep,
   RecommendationDetail,
   RecommendationListItem,
+  ComparisonKind,
+  RecommendationComparison,
 } from '@/domain/poseidon-universe'
 
 // Re-export data via canonical selectors

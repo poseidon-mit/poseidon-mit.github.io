@@ -108,9 +108,11 @@ export default function ExecuteQueuePage() {
         <motion.div variants={fadeUp} className="flex flex-col gap-3">
           {/* Priority Spotlight — highest compositePriority action */}
           {spotlightPending && (
-            <PrioritySpotlight engine="execute">
-              <SpotlightCard action={spotlightPending} />
-            </PrioritySpotlight>
+            <Link to={`/execute/approval?actionId=${spotlightPending.id}`} className="block">
+              <PrioritySpotlight engine="execute">
+                <SpotlightCard action={spotlightPending} />
+              </PrioritySpotlight>
+            </Link>
           )}
 
           {/* Separator after spotlight */}
@@ -181,8 +183,7 @@ function SpotlightCard({ action }: { action: ExecuteActionEntity }) {
         <span>{Math.round(action.confidence * 100)}% confidence</span>
       </div>
 
-      <Link
-        to={`/execute/approval?actionId=${action.id}`}
+      <span
         className={cn(
           'self-start hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors',
           'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950',
@@ -191,7 +192,7 @@ function SpotlightCard({ action }: { action: ExecuteActionEntity }) {
       >
         Review &amp; Approve
         <ArrowRight size={14} />
-      </Link>
+      </span>
     </div>
   )
 }

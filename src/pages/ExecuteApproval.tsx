@@ -65,7 +65,6 @@ export function ExecuteApproval() {
   const isTier2 = riskTier === 2
   const deliberationTrace = useMemo(() => {
     if (!action) return null
-    // Try to find deliberation trace via event linkage
     return selectDeliberationTrace(action.sourceEntityId ?? '')
   }, [action])
 
@@ -106,8 +105,10 @@ export function ExecuteApproval() {
         animate="visible"
         role="main"
       >
-        {/* Compact Hero */}
-        <motion.div variants={fadeUpVariant} className="glass-card rounded-3xl p-6 md:p-8 flex flex-col gap-4">
+        {/* ═══════════════════════════════════════════
+            ZONE 1: SUMMARY CARD (Hero + Impact)
+            ═══════════════════════════════════════════ */}
+        <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-3xl p-6 md:p-8 flex flex-col gap-5">
           <div className="flex items-center gap-2 flex-wrap">
             <EngineBadge engine="execute" icon={Zap} label="Execute · Approval" />
             <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest border border-white/[0.05] ${ENGINE_BADGE_CLASS[action.engine]}`}>
@@ -137,31 +138,6 @@ export function ExecuteApproval() {
             </div>
           </div>
 
-          {/* Money flow path */}
-          <div className="flex items-center gap-3 mt-1">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06]">
-              <span className="text-xs text-white/60 font-mono">You</span>
-            </div>
-            <motion.div
-              className="flex-1 flex items-center gap-1"
-              initial={prefersReducedMotion ? {} : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-            >
-              <div className="flex-1 h-px bg-gradient-to-r from-white/10 via-[var(--engine-execute)]/40 to-white/10" />
-              <motion.div
-                animate={prefersReducedMotion ? {} : { x: [0, 4, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <ArrowRight size={14} style={{ color: 'var(--engine-execute)' }} />
-              </motion.div>
-              <div className="flex-1 h-px bg-gradient-to-r from-white/10 via-[var(--engine-execute)]/40 to-white/10" />
-            </motion.div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06]">
-              <span className="text-xs text-white/60 font-mono truncate max-w-[120px]">{action.title.split(' ').slice(-1)[0]}</span>
-            </div>
-          </div>
-
           <p className="text-sm text-white/50 max-w-3xl font-light leading-relaxed">
             {action.description}
           </p>
@@ -172,33 +148,151 @@ export function ExecuteApproval() {
               {sourceLink.label}
             </Link>
           )}
-        </motion.div>
 
-        {/* Impact Assessment — immediately after hero */}
-        <motion.div variants={fadeUpVariant}>
-          <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 flex items-center gap-2">
-              <Zap size={12} className="text-amber-500/70" />
-              Impact Assessment
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/15 p-4">
-                <p className="text-[10px] font-semibold text-emerald-400/80 uppercase tracking-widest mb-2">If approved</p>
-                <p className="text-sm text-white/70 font-light leading-relaxed">{action.impact.approved}</p>
-              </div>
-              <div className="rounded-2xl bg-amber-500/5 border border-amber-500/15 p-4">
-                <p className="text-[10px] font-semibold text-amber-400/80 uppercase tracking-widest mb-2">If deferred</p>
-                <p className="text-sm text-white/70 font-light leading-relaxed">{action.impact.deferred}</p>
-              </div>
+          {/* Impact Assessment — integrated into summary */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-white/[0.06]">
+            <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/15 p-4">
+              <p className="text-[10px] font-semibold text-emerald-400/80 uppercase tracking-widest mb-2">If approved</p>
+              <p className="text-sm text-white/70 font-light leading-relaxed">{action.impact.approved}</p>
+            </div>
+            <div className="rounded-2xl bg-amber-500/5 border border-amber-500/15 p-4">
+              <p className="text-[10px] font-semibold text-amber-400/80 uppercase tracking-widest mb-2">If deferred</p>
+              <p className="text-sm text-white/70 font-light leading-relaxed">{action.impact.deferred}</p>
             </div>
           </div>
         </motion.div>
 
-        {/* Consent Gate + Execution Plan — decision in first viewport */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-          {/* Execution Plan */}
-          <motion.div variants={fadeUpVariant}>
-            <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4 h-full">
+        {/* ═══════════════════════════════════════════
+            ZONE 2: ACTION BLOCK (Consent + Approve)
+            ═══════════════════════════════════════════ */}
+        <motion.div variants={fadeUpVariant}>
+          <div className="glass-card glass-card-overlay rounded-2xl p-5 md:p-6 flex flex-col gap-4" style={{ borderTopWidth: 2, borderTopColor: 'var(--engine-execute)' }}>
+            {isAlreadyDecided ? (
+              <div className="flex flex-col items-center gap-3 py-4">
+                <CheckCircle2 className="w-10 h-10" style={{ color: 'var(--state-healthy)' }} />
+                <p className="text-sm text-white/70 text-center">
+                  This action has been <span className="font-semibold text-white/90">{actionStatus}</span>.
+                </p>
+                <Link
+                  to="/execute"
+                  className={cn(buttonVariants({ variant: 'glass' }), 'rounded-xl px-6 py-2 text-sm border border-white/10')}
+                >
+                  Back to Queue
+                </Link>
+              </div>
+            ) : (
+              <>
+                <label className="flex items-start gap-3 cursor-pointer group" data-slot="consent_scope">
+                  <input
+                    type="checkbox"
+                    checked={consentReviewed}
+                    onChange={(e) => setConsentReviewed(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border-white/20 bg-transparent accent-amber-500 cursor-pointer"
+                  />
+                  <span className="text-sm text-white/70 leading-relaxed group-hover:text-white/90 transition-colors">
+                    I've reviewed the details and understand what this action will do.
+                  </span>
+                </label>
+
+                {/* Tier 2: Slide-to-Authorize · Tier 1: Button */}
+                {isTier2 ? (
+                  <div className="flex flex-col gap-3">
+                    <SlideToApprove
+                      label="Slide to Approve"
+                      completedLabel="Approved"
+                      disabled={!consentReviewed}
+                      onAuthorize={() => {
+                        setSlideAuthorized(true)
+                        setConfirmAction({ type: 'approve' })
+                      }}
+                    />
+                    <div className="flex items-center gap-3">
+                      <button
+                        className={cn(
+                          buttonVariants({ variant: 'glass', size: 'lg' }),
+                          'flex-1 rounded-2xl text-sm px-6 py-3 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer font-semibold',
+                        )}
+                        onClick={() => setConfirmAction({ type: 'defer' })}
+                      >
+                        Defer
+                      </button>
+                      <button
+                        type="button"
+                        className="text-xs text-red-400/60 hover:text-red-400 transition-colors cursor-pointer py-1"
+                        onClick={() => {
+                          setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'rejected' })
+                          showToast({ message: `${action.id} rejected`, variant: 'info' })
+                          navigate('/execute')
+                        }}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      disabled={!consentReviewed}
+                      className={cn(
+                        buttonVariants({ variant: 'glass', size: 'lg' }),
+                        'flex-1 rounded-2xl text-sm px-6 py-3 font-semibold cursor-pointer transition-all',
+                        consentReviewed
+                          ? 'border-transparent'
+                          : 'bg-white/5 text-white/30 border-white/5 cursor-not-allowed',
+                      )}
+                      style={consentReviewed ? {
+                        background: 'color-mix(in srgb, var(--engine-execute) 20%, transparent)',
+                        color: 'var(--engine-execute)',
+                        borderColor: 'color-mix(in srgb, var(--engine-execute) 30%, transparent)',
+                      } : undefined}
+                      onClick={() => setConfirmAction({ type: 'approve' })}
+                    >
+                      Approve Action
+                    </button>
+                    <button
+                      className={cn(
+                        buttonVariants({ variant: 'glass', size: 'lg' }),
+                        'flex-1 rounded-2xl text-sm px-6 py-3 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer font-semibold',
+                      )}
+                      onClick={() => setConfirmAction({ type: 'defer' })}
+                    >
+                      Defer
+                    </button>
+                    <button
+                      type="button"
+                      className="text-xs text-red-400/60 hover:text-red-400 transition-colors cursor-pointer py-1 sm:w-auto"
+                      onClick={() => {
+                        setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'rejected' })
+                        showToast({ message: `${action.id} rejected`, variant: 'info' })
+                        navigate('/execute')
+                      }}
+                    >
+                      Reject
+                    </button>
+                  </div>
+                )}
+
+                {!consentReviewed && (
+                  <p className="text-[10px] text-amber-400/50 text-center">
+                    Review the execution plan and check the consent box to enable approval.
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+        </motion.div>
+
+        {/* ═══════════════════════════════════════════
+            ZONE 3: DETAILS ACCORDION
+            ═══════════════════════════════════════════ */}
+        <details className="group">
+          <summary className="flex items-center gap-2 cursor-pointer list-none text-white/40 hover:text-white/60 transition-colors py-2">
+            <span className="text-xs font-semibold uppercase tracking-widest">Full Analysis</span>
+            <span className="text-xs text-white/30 group-open:rotate-180 transition-transform">▾</span>
+          </summary>
+          <div className="flex flex-col gap-4 md:gap-6 mt-4">
+            {/* Execution Plan */}
+            <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
               <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 flex items-center gap-2">
                 <Zap size={12} className="text-amber-500/70" />
                 Execution Plan
@@ -225,135 +319,7 @@ export function ExecuteApproval() {
                 {action.steps.length} steps · {action.steps.filter(s => s.estimatedDuration).map(s => s.estimatedDuration).join(' + ')}
               </p>
             </div>
-          </motion.div>
 
-          {/* Consent Gate */}
-          <motion.div variants={fadeUpVariant}>
-            <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4 h-full">
-                {isAlreadyDecided ? (
-                  <div className="flex flex-col items-center gap-3 py-4">
-                    <CheckCircle2 className="w-10 h-10" style={{ color: 'var(--state-healthy)' }} />
-                    <p className="text-sm text-white/70 text-center">
-                      This action has been <span className="font-semibold text-white/90">{actionStatus}</span>.
-                    </p>
-                    <Link
-                      to="/execute"
-                      className={cn(buttonVariants({ variant: 'glass' }), 'rounded-xl px-6 py-2 text-sm border border-white/10')}
-                    >
-                      Back to Queue
-                    </Link>
-                  </div>
-                ) : (
-                  <>
-                    <label className="flex items-start gap-3 cursor-pointer group" data-slot="consent_scope">
-                      <input
-                        type="checkbox"
-                        checked={consentReviewed}
-                        onChange={(e) => setConsentReviewed(e.target.checked)}
-                        className="mt-0.5 h-4 w-4 rounded border-white/20 bg-transparent accent-amber-500 cursor-pointer"
-                      />
-                      <span className="text-sm text-white/70 leading-relaxed group-hover:text-white/90 transition-colors">
-                        I've reviewed the details and understand what this action will do.
-                      </span>
-                    </label>
-
-                    {/* Tier 2: Slide-to-Authorize · Tier 1: Button */}
-                    {isTier2 ? (
-                      <div className="flex flex-col gap-3">
-                        <SlideToApprove
-                          label="Slide to Approve"
-                          completedLabel="Approved"
-                          disabled={!consentReviewed}
-                          onAuthorize={() => {
-                            setSlideAuthorized(true)
-                            setConfirmAction({ type: 'approve' })
-                          }}
-                        />
-                        <div className="flex items-center gap-3">
-                          <button
-                            className={cn(
-                              buttonVariants({ variant: 'glass', size: 'lg' }),
-                              'flex-1 rounded-2xl text-sm px-6 py-3 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer font-semibold',
-                            )}
-                            onClick={() => setConfirmAction({ type: 'defer' })}
-                          >
-                            Defer
-                          </button>
-                          <button
-                            type="button"
-                            className="text-xs text-red-400/60 hover:text-red-400 transition-colors cursor-pointer py-1"
-                            onClick={() => {
-                              setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'rejected' })
-                              showToast({ message: `${action.id} rejected`, variant: 'info' })
-                              navigate('/execute')
-                            }}
-                          >
-                            Reject
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col sm:flex-row gap-3">
-                        <button
-                          disabled={!consentReviewed}
-                          className={cn(
-                            buttonVariants({ variant: 'glass', size: 'lg' }),
-                            'flex-1 rounded-2xl text-sm px-6 py-3 font-semibold cursor-pointer transition-all',
-                            consentReviewed
-                              ? 'border-transparent'
-                              : 'bg-white/5 text-white/30 border-white/5 cursor-not-allowed',
-                          )}
-                          style={consentReviewed ? {
-                            background: 'color-mix(in srgb, var(--engine-execute) 20%, transparent)',
-                            color: 'var(--engine-execute)',
-                            borderColor: 'color-mix(in srgb, var(--engine-execute) 30%, transparent)',
-                          } : undefined}
-                          onClick={() => setConfirmAction({ type: 'approve' })}
-                        >
-                          Approve Action
-                        </button>
-                        <button
-                          className={cn(
-                            buttonVariants({ variant: 'glass', size: 'lg' }),
-                            'flex-1 rounded-2xl text-sm px-6 py-3 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer font-semibold',
-                          )}
-                          onClick={() => setConfirmAction({ type: 'defer' })}
-                        >
-                          Defer
-                        </button>
-                        <button
-                          type="button"
-                          className="text-xs text-red-400/60 hover:text-red-400 transition-colors cursor-pointer py-1 sm:w-auto"
-                          onClick={() => {
-                            setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'rejected' })
-                            showToast({ message: `${action.id} rejected`, variant: 'info' })
-                            navigate('/execute')
-                          }}
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    )}
-
-                    {!consentReviewed && (
-                      <p className="text-[10px] text-amber-400/50 text-center">
-                        Review the execution plan and check the consent box to enable approval.
-                      </p>
-                    )}
-                  </>
-                )}
-              </div>
-            </motion.div>
-
-        </div>
-
-        {/* Full Analysis — collapsible evidence section */}
-        <details className="group">
-          <summary className="flex items-center gap-2 cursor-pointer list-none text-white/40 hover:text-white/60 transition-colors py-2">
-            <span className="text-xs font-semibold uppercase tracking-widest">Full Analysis</span>
-            <span className="text-xs text-white/30 group-open:rotate-180 transition-transform">▾</span>
-          </summary>
-          <div className="flex flex-col gap-4 md:gap-6 mt-4">
             {/* The Catalyst */}
             <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
               <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 flex items-center gap-2">

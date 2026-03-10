@@ -130,6 +130,7 @@ export const DEFAULT_CTA_BUDGET: CtaBudget = {
 
 export const TARGET_SCOPE_READY_ROUTES = [
   '/',
+  '/deck',
   '/signup',
   '/login',
   '/dashboard',

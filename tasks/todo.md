@@ -191,3 +191,114 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - Primary rendering defect is route-specific: `OnboardingBottomSheet.tsx` spreads `fadeUp` variants directly into `motion.div`, which passes a truthy `hidden` prop to the DOM and forces the active step content to `display: none`.
 - Shared primitive issues remain after temporarily removing `hidden` in the live DOM: desktop still uses a bottom-docked 512px sheet that visually floats over the dashboard, and mobile allows the sheet to overlap the 64px bottom navigation.
 - Mobile reachability is broken even after content is shown: the `Continue` CTA renders under the bottom nav, so the primary action is partially obscured.
+
+---
+
+## Mobile Grow / Protect / Execute Investigation Plan (2026-03-10)
+
+**Goal:** Investigate three reported issues without implementing fixes:
+1. `Grow` mobile hero visual defects
+2. Mobile tap-to-detail failures in `ProtectThreats`, `GrowRecommendations`, and `ExecuteQueue`
+3. Trust-breaking zero-value detail rendering in `grow/recommendation?id=1`, plus broader detail-screen data integrity risks in Grow and Protect
+
+- [x] Inspect route/page/component code paths for Grow, Protect, Execute, shared layout, router, and canonical data
+- [x] Reproduce reported mobile defects on live app at `http://127.0.0.1:5173` with 390x844 viewport
+- [x] Run targeted tests to see whether current automation catches the regressions
+- [x] Derive root causes and a concrete implementation order for a separate AI
+- [x] Record review notes and handoff-ready remediation plan
+
+**Findings:**
+- `Grow` hero has two separate controls leading from the same hero to `/grow/recommendations`: the primary CTA button in [`src/components/poseidon/grow-hero.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/grow-hero.tsx#L348) and the portal bar link in [`src/components/poseidon/grow-hero.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/grow-hero.tsx#L376). This matches the user report of duplicate links from the same hero zone.
+- The top-right Grow hero control overflows on mobile because the header row is a non-wrapping `justify-between` flex layout in [`src/components/poseidon/grow-hero.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/grow-hero.tsx#L85) while the `See Poseidon Delta` badge keeps its intrinsic width in [`src/components/poseidon/grow-hero.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/grow-hero.tsx#L103). Live Playwright measurement at 390px viewport showed the button extending `43.03px` past the hero card’s right edge.
+- The Grow chart is visually noisy on mobile because both the advantage band and the baseline line render dots at every point in [`src/components/poseidon/grow-hero.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/grow-hero.tsx#L219) and [`src/components/poseidon/grow-hero.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/grow-hero.tsx#L247). In the live DOM, the chart rendered 28 circles for the 13-point simulation, which aligns with the “too many dots” complaint.
+- The mobile top item is non-navigable in all three list pages because each `PrioritySpotlight` wraps plain content, not a `Link`, while its only explicit CTA is hidden on mobile with `hidden sm:inline-flex`:
+  `GrowRecommendations` in [`src/pages/GrowRecommendations.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/GrowRecommendations.tsx#L142)
+  `ProtectThreats` in [`src/pages/protect/ProtectThreats.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/protect/ProtectThreats.tsx#L119)
+  `ExecuteQueue` in [`src/pages/ExecuteQueue.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/ExecuteQueue.tsx#L109)
+- Live Playwright reproduction confirmed those spotlight cards do not navigate when tapped. Clicking the spotlight container on `/grow/recommendations`, `/protect/threats`, and `/execute/queue` left the URL unchanged.
+- Non-spotlight list rows are wrapped in `Link` and did navigate in live verification. Example: tapping the Grow list row for `Increase 401(k) to Employer Match` navigated to `/grow/recommendation?id=9`. I did not reproduce a second non-spotlight navigation failure at 390x844, so the implementation AI should still regression-test compact/low-tier rows after fixing the spotlight path.
+- `GrowRecommendationDetail` always renders a monetary `Before -> After -> You save` strip in [`src/pages/grow/GrowRecommendationDetail.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/grow/GrowRecommendationDetail.tsx#L134) regardless of recommendation type.
+- The underlying data model cannot distinguish “monthly spend reduction” from “interest gain”, “employer match capture”, or “allocation rebalance”. `RecommendationDetail` only exposes `monthlySavings`, `currentTotal`, and `newTotal` in [`src/domain/poseidon-universe/types.ts`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/domain/poseidon-universe/types.ts#L363), and the selector returns raw canonical records with no view-model adaptation in [`src/domain/poseidon-universe/selectors.ts`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/domain/poseidon-universe/selectors.ts#L543).
+- Canonical Grow data already contains semantically incompatible cases:
+  id `1` “Switch to High-Yield Savings” has `monthlySavings: 70` but `currentTotal: 0` and `newTotal: 0` in [`src/domain/poseidon-universe/canonical.ts`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/domain/poseidon-universe/canonical.ts#L914)
+  id `5` “Rebalance 401(k) Allocation” is non-cash optimization with `0 -> 0` in [`src/domain/poseidon-universe/canonical.ts`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/domain/poseidon-universe/canonical.ts#L1066)
+  id `6` “Build Emergency Fund” is contribution planning with `0 -> 0` in [`src/domain/poseidon-universe/canonical.ts`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/domain/poseidon-universe/canonical.ts#L1106)
+  id `9` “Increase 401(k) to Employer Match” shows positive benefit but `0 -> 0` in [`src/domain/poseidon-universe/canonical.ts`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/domain/poseidon-universe/canonical.ts#L1220)
+- Protect detail has separate trust risks that should be folded into the same root fix plan:
+  invalid or missing `alertId` silently falls back to the first threat in [`src/pages/protect/ProtectAlertDetail.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/protect/ProtectAlertDetail.tsx#L148)
+  missing timing falls back to static demo timestamps in [`src/pages/protect/ProtectAlertDetail.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/protect/ProtectAlertDetail.tsx#L201)
+  account, location, and flagged IP are hardcoded display values in [`src/pages/protect/ProtectAlertDetail.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/protect/ProtectAlertDetail.tsx#L259)
+  the severity pulse for critical alerts is dead code because the comparison uses lowercase `'critical'` while the type uses `'Critical'` in [`src/pages/protect/ProtectAlertDetail.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/protect/ProtectAlertDetail.tsx#L236)
+- Protect threat entities do not currently carry enough detail-specific fields to support truthful rendering. The domain type stops at counterparty, amount, severity, timing, and factors in [`src/domain/poseidon-universe/types.ts`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/domain/poseidon-universe/types.ts#L88), so the UI fills gaps with fabricated literals.
+- Detail-screen governance proof is also inconsistent:
+  `AuthenticatedLayout` decides compact footer mode with a route regex that misses both `/grow/recommendation` and `/protect/alert-detail` in [`src/components/layout/AuthenticatedLayout.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/layout/AuthenticatedLayout.tsx#L104)
+  as a result, Grow recommendation detail currently renders the full ticker footer with unrelated active Protect alert text
+  route-to-audit mapping is route-level only in [`src/lib/govern-audit-data.ts`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/lib/govern-audit-data.ts#L30), so detail pages cannot deep-link to entity-specific audit records even when the screen is entity-specific
+- Current automation does not catch any of these issues. The following test files all passed while the bugs remained live:
+  [`src/__tests__/grow-hero.test.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/__tests__/grow-hero.test.tsx)
+  [`src/__tests__/grow-recommendations.test.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/__tests__/grow-recommendations.test.tsx)
+  [`src/__tests__/protect-threats.test.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/__tests__/protect-threats.test.tsx)
+  [`src/__tests__/execute-deep-link.test.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/__tests__/execute-deep-link.test.tsx)
+  [`src/__tests__/demo-coherence.test.ts`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/__tests__/demo-coherence.test.ts)
+
+**Root cause summary:**
+- UI structure issue: Grow hero still contains two parallel navigation affordances inherited from the bento pattern, but on mobile they compete for scarce horizontal space and duplicate intent.
+- Mobile interaction issue: spotlight cards rely on desktop-only CTA visibility, yet the spotlight container itself is not a link.
+- Data contract issue: Grow detail UI assumes every recommendation can be rendered as a spend comparison, but canonical data mixes spend reduction, yield uplift, contribution increase, and allocation change under one flat numeric contract.
+- Truthfulness issue: Protect detail UI renders fields that the canonical model does not own, so it falls back to hardcoded values and silent defaults.
+- Proof-binding issue: detail pages are wired at route granularity instead of entity granularity, so footer evidence can describe the wrong object.
+
+**Implementation plan for the separate AI:**
+1. Fix the mobile navigation regression first.
+   Convert each spotlight card into a full-card `Link` or pass a tappable wrapper into `PrioritySpotlight`.
+   Keep the desktop CTA visible if desired, but mobile must have exactly one tappable target and the whole spotlight surface should navigate.
+   Add regression tests that specifically click the spotlight card itself on mobile-sized render trees for Grow, Protect, and Execute.
+2. Fix the Grow hero mobile layout next.
+   Remove one of the two recommendation navigations from the hero. Recommended: keep the prominent primary CTA, remove the portal bar on `Grow` only, or make the portal bar non-navigational metadata on mobile.
+   Reflow the headline row below `md`: stack the delta badge below the text or move it into the KPI row so it cannot overflow.
+   Reduce chart point density on small screens. Recommended options: disable baseline dots below `sm`, reduce advantage dots to start/end only below `sm`, and shorten or bucket x-axis labels to key milestones.
+   Add a viewport regression test or Playwright snapshot assertion for 375/390 widths.
+3. Replace the Grow detail summary contract instead of patching individual records.
+   Introduce a discriminated comparison model in the domain layer, for example `comparison.kind = 'spend' | 'yield' | 'contribution' | 'allocation' | 'coverage'`.
+   Create a dedicated selector such as `selectRecommendationDetailView(id)` that maps canonical facts into UI-ready sections.
+   Only render `Before/After` money totals for `kind: 'spend'`.
+   For yield recommendations, render APY / annual interest before-after.
+   For employer match or contribution changes, render contribution percent and employer match captured.
+   For allocation / emergency fund cases, render allocation percentages or months-of-coverage progress, not `$0.00 -> $0.00`.
+   Add validation rules so a recommendation cannot expose a view kind that lacks the fields required for that view.
+4. Audit and harden Protect detail truthfulness.
+   Remove silent fallback to `THREATS[0]`; if `alertId` is missing/invalid, route back safely or show a controlled not-found state.
+   Remove static default timing and static account/location/IP unless the canonical entity provides those values.
+   Extend `ProtectThreatEntity` with the detail fields actually needed, or derive them from canonical related entities; do not fabricate.
+   Fix the critical severity case mismatch and add a unit test for the animated critical badge path.
+5. Repair detail-page audit proof binding.
+   Expand detail-route detection in `AuthenticatedLayout` so `/grow/recommendation` and `/protect/alert-detail` are compact detail screens.
+   Stop injecting unrelated `activeTopThreat` ticker content into entity detail pages.
+   Move audit binding from route-level to entity-level for Grow recommendation detail and Protect alert detail, ideally by deriving decision IDs from `id` / `alertId`.
+   If entity-specific audit evidence does not exist yet, render a neutral “view route audit record” state instead of a misleading unrelated ticker.
+6. Expand automated coverage after the refactor.
+   `Grow` hero tests: assert only one recommendation navigation on mobile and no horizontal overflow in the headline controls.
+   `GrowRecommendations`, `ProtectThreats`, `ExecuteQueue`: assert spotlight cards are links or clickable navigation targets on mobile.
+   `GrowRecommendationDetail`: assert no spend-comparison strip renders for non-spend recommendation kinds.
+   Domain validation: fail if a recommendation detail uses a comparison kind with missing required fields, or if Protect detail fields are absent but the screen tries to render them.
+   Optional Playwright smoke: 390x844 route crawl for `/grow`, `/grow/recommendations`, `/protect/threats`, `/execute/queue`, `/grow/recommendation?id=1`, `/protect/alert-detail?alertId=THR-001`.
+
+**Suggested execution order:**
+- Phase 1: spotlight-card tap fixes plus tests
+- Phase 2: Grow hero mobile cleanup plus tests
+- Phase 3: Grow detail view-model refactor plus canonical validation
+- Phase 4: Protect detail truthfulness refactor plus canonical type expansion
+- Phase 5: governance footer/detail-proof cleanup plus final mobile smoke
+
+**Definition of done:**
+- On 375px and 390px widths, Grow hero has one recommendation navigation, no control overflow, and reduced chart dot noise.
+- Spotlight cards on Protect/Grow/Execute list pages navigate when the card surface is tapped on mobile.
+- No Grow detail page shows meaningless `$0.00 -> $0.00` comparisons.
+- Protect detail renders only data that exists in canonical sources; invalid IDs do not silently show another alert.
+- Detail-page Govern footer never shows unrelated Protect alert ticker text on Grow or Protect entity detail screens.
+- New automated tests fail on the current buggy behavior and pass after the fix.
+
+**Review notes:**
+- Live browser reproduction was done on `http://127.0.0.1:5173` at 390x844.
+- Relevant existing tests all passed despite the live regressions, so the implementation must include test additions rather than only code fixes.
+- No implementation was performed in this task. This section is a handoff artifact for a separate implementation AI.

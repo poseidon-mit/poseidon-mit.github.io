@@ -1,8 +1,7 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MessageCircle, Download, RotateCcw, ChevronDown, Lock } from 'lucide-react';
+import { MessageCircle, Download, RotateCcw, Lock, Shield, TrendingUp, Zap, Scale } from 'lucide-react';
 import { useRouter } from '@/router';
-import { SubPageNav, ConfidenceIndicator } from '@/components/poseidon';
+import { SubPageNav, ConfidenceIndicator, EngineBadge } from '@/components/poseidon';
 import { getMotionPreset } from '@/lib/motion-presets';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
@@ -10,20 +9,65 @@ import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date';
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout';
 import { AUDIT_DECISIONS, DEFAULT_DECISION_ID } from '@/lib/govern-audit-data';
 import { useToast } from '@/hooks/useToast';
-import { cn } from '@/lib/utils';
 
-const COMPLIANCE_TOOLTIPS: Record<string, string> = {
-  gdpr: 'Your data rights under European privacy law',
-  ecoa: 'Equal treatment in financial decisions',
-  ccpa: 'Your California privacy protections',
+/* ── Helpers ── */
+
+const ENGINE_MAP: Record<string, { engine: 'protect' | 'grow' | 'execute' | 'govern'; icon: typeof Shield }> = {
+  Protect: { engine: 'protect', icon: Shield },
+  Grow:    { engine: 'grow',    icon: TrendingUp },
+  Execute: { engine: 'execute', icon: Zap },
+  Govern:  { engine: 'govern',  icon: Scale },
 };
+
+const COMPLIANCE_INFO: Array<{ key: 'gdpr' | 'ecoa' | 'ccpa'; label: string; description: string }> = [
+  { key: 'gdpr', label: 'GDPR', description: 'Your data rights under European privacy law' },
+  { key: 'ecoa', label: 'ECOA', description: 'Equal treatment in financial decisions' },
+  { key: 'ccpa', label: 'CCPA', description: 'Your California privacy protections' },
+];
+
+/**
+ * Transform baseReality key-value pairs into a readable narrative sentence.
+ */
+function narrateBaseReality(baseReality: Array<{ label: string; value: string }>): string {
+  const map = new Map(baseReality.map(r => [r.label.toLowerCase(), r.value]));
+
+  const parts: string[] = [];
+
+  // Amount-related
+  const amount = map.get('amount') || map.get('charge amount') || map.get('transaction amount');
+  if (amount) parts.push(`a transaction of ${amount}`);
+
+  // Merchant/counterparty
+  const merchant = map.get('merchant') || map.get('counterparty') || map.get('vendor');
+  if (merchant) parts.push(`from ${merchant}`);
+
+  // Service/product
+  const service = map.get('service') || map.get('product') || map.get('category');
+  if (service) parts.push(`for ${service}`);
+
+  // Account
+  const account = map.get('account') || map.get('card');
+  if (account) parts.push(`on account ${account}`);
+
+  // Risk level
+  const risk = map.get('risk level') || map.get('severity');
+  if (risk) parts.push(`assessed at ${risk.toLowerCase()} risk`);
+
+  if (parts.length > 0) {
+    return parts[0].charAt(0).toUpperCase() + parts.join(', ').slice(1) + '.';
+  }
+
+  // Fallback: render as readable list
+  return baseReality.map(r => `${r.label}: ${r.value}`).join(' · ');
+}
+
+/* ── Page ── */
 
 export function GovernAuditDetail() {
   const prefersReducedMotion = useReducedMotionSafe();
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion);
   usePageTitle('Audit Detail');
   const { showToast } = useToast();
-  const [techOpen, setTechOpen] = useState(false);
 
   const { search } = useRouter();
   const decisionId = new URLSearchParams(search).get('decision');
@@ -36,175 +80,188 @@ export function GovernAuditDetail() {
 
       <motion.div
         id="main-content"
-        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 lg:gap-12 pb-12 pt-8 lg:pt-12`}
+        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-8 md:gap-10 pb-12 pt-8 lg:pt-12`}
         style={PAGE_CONTENT_STYLE}
         variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
         role="main"
       >
-        {/* What Happened */}
-        <motion.section variants={fadeUpVariant} className="flex flex-col gap-1">
-          <span className="text-[11px] uppercase tracking-widest text-white/40 font-semibold mb-2 font-mono block">{auditEntry.id}</span>
-          <h1 className={`${PAGE_HEADING_CLASS} break-words`} style={PAGE_HEADING_STYLE}>
-            {auditEntry.coreAssertion}
-          </h1>
-          <p className="text-sm text-white/40 mt-2 font-mono">{resolvedTimestamp}</p>
-        </motion.section>
-
-        {/* Two-column grid: The Facts + Why This Decision */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-          {/* Left: The Facts */}
-          <motion.div variants={fadeUpVariant}>
-            <div className="glass-card glass-card-overlay rounded-xl p-6 lg:p-8 flex flex-col gap-6 h-full">
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4">
-                The Facts
-              </h2>
-
-              {/* Factual rows — visual diff treatment for before/after pairs */}
-              <div className="flex flex-col gap-0">
-                {auditEntry.baseReality.map((row) => {
-                  const isPrevious = /^(previous|current apr|old|before)/i.test(row.label)
-                  const isTarget = /^(current(?! apr)|target|new|after|available)/i.test(row.label)
-                  return (
-                    <div
-                      key={row.label}
-                      className="flex items-center justify-between py-3 border-b border-white/[0.04] last:border-0"
-                    >
-                      <span className="text-xs uppercase tracking-widest text-white/50 font-semibold">{row.label}</span>
-                      <span className={cn(
-                        'text-base text-right',
-                        isPrevious ? 'text-white/40 line-through' : isTarget ? 'text-white/90 font-medium' : 'text-white/90 font-light',
-                      )}>
-                        {row.value}
-                      </span>
-                    </div>
-                  )
-                })}
-              </div>
-
-              {/* Data source pills */}
-              <div className="flex flex-col gap-3 pt-2">
-                <h3 className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">Data Sources</h3>
-                <div className="flex flex-wrap gap-2">
-                  {auditEntry.dataSources.map((src) => (
-                    <span
-                      key={src}
-                      className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs font-mono tracking-wide text-white/70"
-                    >
-                      {src}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Model info — de-emphasized */}
-              <div className="pt-2 border-t border-white/[0.06]">
-                <p className="text-xs text-white/50">
-                  Analyzed by <span className="text-white/70 font-mono">{auditEntry.model.name}</span> — {auditEntry.model.accuracy}% accuracy
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setTechOpen(v => !v)}
-                  className="flex items-center gap-1 mt-2 text-[10px] uppercase tracking-widest text-white/30 hover:text-white/50 transition-colors cursor-pointer"
-                >
-                  Technical details
-                  <ChevronDown size={10} className={cn('transition-transform', techOpen && 'rotate-180')} />
-                </button>
-                {techOpen && (
-                  <div className="flex items-center gap-3 mt-2 text-xs text-white/40">
-                    <span className="font-mono">{auditEntry.model.name}</span>
-                    <span>v{auditEntry.model.version}</span>
-                    <span>{auditEntry.model.accuracy}% accuracy</span>
-                  </div>
-                )}
-              </div>
+        {/* ═══════════════════════════════════════════
+            PHASE 1: THE CATALYST — Context
+            ═══════════════════════════════════════════ */}
+        <motion.section variants={fadeUpVariant}>
+          <div className="glass-card glass-card-overlay rounded-xl p-6 lg:p-8 flex flex-col gap-5">
+            <div className="flex items-center gap-3">
+              <span className="text-[10px] uppercase tracking-widest text-[var(--engine-govern)] font-bold">Phase 1</span>
+              <span className="h-px flex-1 bg-[var(--engine-govern)]/20" />
             </div>
-          </motion.div>
-
-          {/* Right: Why This Decision — SHAP bars */}
-          <motion.div variants={fadeUpVariant}>
-            <div className="glass-card glass-card-overlay rounded-xl p-6 lg:p-8 flex flex-col gap-6 h-full" style={{ borderTopWidth: 2, borderTopColor: 'var(--engine-govern)' }}>
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4">
-                Why This Decision
-              </h2>
-
-              <div className="flex flex-col gap-5">
-                {auditEntry.topFactors.map((factor) => (
-                  <div key={factor.label} className="flex flex-col gap-2 group">
-                    <div className="flex items-end justify-between gap-2">
-                      <span className="text-sm tracking-wide text-white/90">{factor.label}</span>
-                      <span className="text-[10px] font-mono tracking-widest text-white/50">{formatConfidence(factor.contribution)}</span>
-                    </div>
-                    <div className="flex-1 h-2 rounded-full overflow-hidden bg-black/40 shadow-inner border border-white/[0.03]">
-                      <div
-                        className="h-full rounded-full transition-all duration-700 bg-[var(--engine-govern)]/60 group-hover:bg-[var(--engine-govern)]"
-                        style={{ width: `${factor.contribution * 100}%` }}
-                      />
-                    </div>
-                    <p className="text-xs text-white/40 italic">{factor.note}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Your Protections */}
-        <motion.div variants={fadeUpVariant}>
-          <div className="glass-card glass-card-overlay rounded-xl p-6 lg:p-8 flex flex-col gap-6">
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4">
-              Your Protections
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)]">
+              The Catalyst
             </h2>
 
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-12">
-              {/* Compliance badges with tooltips */}
-              <div className="flex flex-wrap gap-4">
-                {([
-                  { key: 'gdpr' as const, label: 'GDPR' },
-                  { key: 'ecoa' as const, label: 'ECOA' },
-                  { key: 'ccpa' as const, label: 'CCPA' },
-                ]).map((reg) => (
+            <h1 className={`${PAGE_HEADING_CLASS} break-words`} style={PAGE_HEADING_STYLE}>
+              {auditEntry.coreAssertion}
+            </h1>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <EngineBadge engine={(ENGINE_MAP[auditEntry.engine] || ENGINE_MAP.Govern).engine} icon={(ENGINE_MAP[auditEntry.engine] || ENGINE_MAP.Govern).icon} label={auditEntry.engine} />
+              <span className="text-[11px] uppercase tracking-widest text-white/40 font-semibold font-mono">{auditEntry.id}</span>
+              <span className="text-sm text-white/40 font-mono">{resolvedTimestamp}</span>
+            </div>
+
+            {/* Narrative from baseReality */}
+            <p className="text-sm text-white/70 leading-relaxed">
+              {narrateBaseReality(auditEntry.baseReality)}
+            </p>
+
+            {/* Key facts as subtle tags */}
+            <div className="flex flex-wrap gap-2 pt-2">
+              {auditEntry.baseReality.map((row) => (
+                <span
+                  key={row.label}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs"
+                >
+                  <span className="text-white/40 font-mono uppercase tracking-wider text-[10px]">{row.label}</span>
+                  <span className="text-white/80">{row.value}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        </motion.section>
+
+        {/* ═══════════════════════════════════════════
+            PHASE 2: THE ANALYSIS — Decision Journey
+            ═══════════════════════════════════════════ */}
+        <motion.section variants={fadeUpVariant}>
+          <div className="glass-card glass-card-overlay rounded-xl p-6 lg:p-8 flex flex-col gap-5">
+            <div className="flex items-center gap-3">
+              <span className="text-[10px] uppercase tracking-widest text-[var(--engine-govern)] font-bold">Phase 2</span>
+              <span className="h-px flex-1 bg-[var(--engine-govern)]/20" />
+            </div>
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)]">
+              The Analysis
+            </h2>
+
+            {/* Decision journey — vertical timeline of factors */}
+            <div className="flex flex-col gap-0 relative">
+              {/* Vertical connector line */}
+              <div className="absolute left-[15px] top-4 bottom-4 w-px bg-[var(--engine-govern)]/20" />
+
+              {auditEntry.topFactors.map((factor, i) => (
+                <div key={factor.label} className="flex gap-4 relative py-4">
+                  {/* Step indicator */}
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full border border-[var(--engine-govern)]/30 bg-[var(--engine-govern)]/10 flex items-center justify-center text-[10px] font-mono font-bold z-10" style={{ color: 'var(--engine-govern)' }}>
+                    {i + 1}
+                  </div>
+
+                  {/* Factor content */}
+                  <div className="flex-1 min-w-0 flex flex-col gap-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm font-medium tracking-wide text-white/90">{factor.label}</span>
+                      <span className="text-xs font-mono font-bold tabular-nums" style={{ color: 'var(--engine-govern)' }}>
+                        {formatConfidence(factor.contribution)}
+                      </span>
+                    </div>
+                    {/* Contribution bar */}
+                    <div className="h-1.5 rounded-full overflow-hidden bg-black/40 border border-white/[0.03]">
+                      <motion.div
+                        className="h-full rounded-full"
+                        style={{ background: 'var(--engine-govern)' }}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${factor.contribution * 100}%` }}
+                        transition={{ duration: 0.8, delay: i * 0.15, ease: 'easeOut' }}
+                      />
+                    </div>
+                    <p className="text-xs text-white/50 leading-relaxed">{factor.note}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Data sources */}
+            <div className="flex flex-col gap-2 pt-4 border-t border-white/[0.06]">
+              <span className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">Sources analyzed</span>
+              <div className="flex flex-wrap gap-2">
+                {auditEntry.dataSources.map((src) => (
+                  <span
+                    key={src}
+                    className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs font-mono tracking-wide text-white/60"
+                  >
+                    {src}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Model info — integrated directly */}
+            <p className="text-xs text-white/40 font-mono">
+              Model: {auditEntry.model.name} v{auditEntry.model.version} · {auditEntry.model.accuracy}% accuracy
+            </p>
+          </div>
+        </motion.section>
+
+        {/* ═══════════════════════════════════════════
+            PHASE 3: THE OUTCOME — Protections
+            ═══════════════════════════════════════════ */}
+        <motion.section variants={fadeUpVariant}>
+          <div className="glass-card glass-card-overlay rounded-xl p-6 lg:p-8 flex flex-col gap-5">
+            <div className="flex items-center gap-3">
+              <span className="text-[10px] uppercase tracking-widest text-[var(--engine-govern)] font-bold">Phase 3</span>
+              <span className="h-px flex-1 bg-[var(--engine-govern)]/20" />
+            </div>
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)]">
+              The Outcome
+            </h2>
+
+            {/* Concluding narrative */}
+            <p className="text-base text-white/80 leading-relaxed font-light" style={{ fontFamily: 'var(--font-display)' }}>
+              {auditEntry.explanation.summary}
+            </p>
+
+            {/* Confidence */}
+            <div className="flex items-center gap-4 py-4 px-5 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+              <ConfidenceIndicator value={auditEntry.explanation.confidence} colorOverride="var(--engine-govern)" size="lg" glow />
+              <div className="flex flex-col gap-0.5">
+                <span className="text-sm font-semibold text-white/90">{formatConfidence(auditEntry.explanation.confidence)} confidence</span>
+                <span className="text-xs text-white/40">AI decision certainty for this action</span>
+              </div>
+            </div>
+
+            {/* Compliance protections — always visible */}
+            <div className="flex flex-col gap-3 pt-4 border-t border-white/[0.06]">
+              <span className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">Your Regulatory Protections</span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {COMPLIANCE_INFO.map((reg) => (
                   <div
                     key={reg.key}
-                    className="flex flex-col gap-1 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06]"
-                    title={COMPLIANCE_TOOLTIPS[reg.key]}
+                    className="flex flex-col gap-1.5 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.06]"
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
                       <span className="text-sm font-semibold text-white/90">{reg.label}</span>
                       {auditEntry.compliance[reg.key] && (
-                        <span className="text-xs font-medium text-emerald-400">Protected</span>
+                        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Active</span>
                       )}
                     </div>
-                    <span className="text-[10px] text-white/30">{COMPLIANCE_TOOLTIPS[reg.key]}</span>
+                    <span className="text-xs text-white/40 leading-relaxed">{reg.description}</span>
                   </div>
                 ))}
               </div>
-
-              {/* Confidence indicator */}
-              <div className="flex items-center gap-4 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
-                <ConfidenceIndicator value={auditEntry.explanation.confidence} colorOverride="var(--engine-govern)" size="lg" glow />
-                <span className="text-xs text-white/50">{formatConfidence(auditEntry.explanation.confidence)} confidence</span>
-              </div>
-            </div>
-
-            {/* Explanation summary */}
-            <div className="pt-4 border-t border-white/[0.06]">
-              <p className="text-sm text-white/70 leading-relaxed">{auditEntry.explanation.summary}</p>
             </div>
           </div>
-        </motion.div>
+        </motion.section>
 
-        {/* What You Can Do */}
+        {/* ═══════════════════════════════════════════
+            YOUR VOICE — Actions
+            ═══════════════════════════════════════════ */}
         <motion.section variants={fadeUpVariant} className="flex flex-col gap-4">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--engine-govern)] border-b border-white/[0.06] pb-4 px-2">
-            What You Can Do
+            Your Voice
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
               type="button"
               onClick={() => {
-                // Find and click the Talk to Money FAB to open with audit context
                 const fab = document.querySelector<HTMLButtonElement>('[aria-label*="Talk to Money"]')
                 if (fab) fab.click()
               }}

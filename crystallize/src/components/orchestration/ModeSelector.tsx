@@ -70,7 +70,7 @@ export function ModeSelector({ mode, onChange }: ModeSelectorProps) {
         <div
           className={cn(
             'glass-surface',
-            'absolute top-full mt-2 left-0 z-50',
+            'absolute bottom-full mb-2 left-0 z-50',
             'w-64 rounded-md',
             'py-1 shadow-lg',
             'border border-neutral-700',

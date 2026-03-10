@@ -50,7 +50,7 @@ export function PromptTemplateSelector({ templates, onApply }: PromptTemplateSel
         <div
           className={cn(
             'glass-surface',
-            'absolute top-full mt-2 left-0 z-50',
+            'absolute bottom-full mb-2 left-0 z-50',
             'w-80 rounded-md',
             'py-1 shadow-lg',
             'border border-neutral-700',

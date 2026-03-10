@@ -92,7 +92,7 @@ export function InputBar({
                   key={model}
                   onClick={() => handleToggleModel(model)}
                   className={cn(
-                    'w-10 h-10 rounded-full font-semibold transition-all flex items-center justify-center',
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium text-sm transition-all',
                     isActive
                       ? 'ring-2 ring-offset-2 ring-offset-slate-950'
                       : 'opacity-50 hover:opacity-75'
@@ -106,13 +106,15 @@ export function InputBar({
                         }
                       : {
                           color: modelConfig.color,
+                          border: `1px solid ${modelConfig.color}40`,
                         }
                   }
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   title={modelConfig.label}
                 >
-                  {modelConfig.shortLabel}
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: isActive ? '#000' : modelConfig.color }} />
+                  {modelConfig.label}
                 </motion.button>
               );
             })}
@@ -139,10 +141,10 @@ export function InputBar({
             <AnimatePresence>
               {showModeDropdown && (
                 <motion.div
-                  className="absolute top-full right-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-50"
-                  initial={{ opacity: 0, y: -8 }}
+                  className="absolute bottom-full right-0 mb-2 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-50"
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
+                  exit={{ opacity: 0, y: 8 }}
                   transition={{ duration: 0.15 }}
                 >
                   {Object.entries(MODE_LABELS).map(([modeKey, { label, description }]) => (
@@ -223,10 +225,10 @@ export function InputBar({
             <AnimatePresence>
               {showTemplateDropdown && templates.length > 0 && (
                 <motion.div
-                  className="absolute left-0 top-full mt-2 w-56 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-50"
-                  initial={{ opacity: 0, y: -8 }}
+                  className="absolute left-0 bottom-full mb-2 w-56 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-50"
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
+                  exit={{ opacity: 0, y: 8 }}
                   transition={{ duration: 0.15 }}
                 >
                   {templates.map((template) => (

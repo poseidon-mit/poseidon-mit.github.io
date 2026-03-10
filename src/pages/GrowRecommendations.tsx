@@ -142,40 +142,41 @@ export function GrowRecommendations() {
       {/* Spotlight recommendation */}
       {spotlightRec && (
         <motion.div variants={fadeUp}>
-          <PrioritySpotlight engine="grow">
-            <div className="flex flex-col gap-3">
-              <span className="text-[10px] font-semibold uppercase tracking-widest text-white/40">
-                Top Priority
-              </span>
-              <p className="text-base md:text-lg font-semibold text-white/90 leading-snug">{spotlightRec.title}</p>
-              <p className="text-sm text-white/55 line-clamp-2">{spotlightRec.description}</p>
-              <div className="flex items-center gap-3 mt-1">
-                <span className="text-2xl font-mono font-bold" style={{ color: 'var(--engine-grow)' }}>
-                  ${spotlightRec.annualSavings.toLocaleString()}/yr
+          <Link to={`/grow/recommendation?id=${spotlightRec.id}`} className="block">
+            <PrioritySpotlight engine="grow">
+              <div className="flex flex-col gap-3">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-white/40">
+                  Top Priority
                 </span>
+                <p className="text-base md:text-lg font-semibold text-white/90 leading-snug">{spotlightRec.title}</p>
+                <p className="text-sm text-white/55 line-clamp-2">{spotlightRec.description}</p>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="text-2xl font-mono font-bold" style={{ color: 'var(--engine-grow)' }}>
+                    ${spotlightRec.annualSavings.toLocaleString()}/yr
+                  </span>
+                  <span
+                    className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border border-transparent"
+                    style={{
+                      background: DIFFICULTY_STYLE[spotlightRec.difficulty]?.bg,
+                      color: DIFFICULTY_STYLE[spotlightRec.difficulty]?.color,
+                    }}
+                  >
+                    {spotlightRec.difficulty}
+                  </span>
+                </div>
                 <span
-                  className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border border-transparent"
-                  style={{
-                    background: DIFFICULTY_STYLE[spotlightRec.difficulty]?.bg,
-                    color: DIFFICULTY_STYLE[spotlightRec.difficulty]?.color,
-                  }}
+                  className={cn(
+                    'self-start hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors',
+                    'bg-gradient-to-r from-violet-500 to-purple-500 text-white',
+                    'hover:from-violet-400 hover:to-purple-400',
+                  )}
                 >
-                  {spotlightRec.difficulty}
+                  See opportunity
+                  <ArrowRight size={14} />
                 </span>
               </div>
-              <Link
-                to={`/grow/recommendation?id=${spotlightRec.id}`}
-                className={cn(
-                  'self-start hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors',
-                  'bg-gradient-to-r from-violet-500 to-purple-500 text-white',
-                  'hover:from-violet-400 hover:to-purple-400',
-                )}
-              >
-                See opportunity
-                <ArrowRight size={14} />
-              </Link>
-            </div>
-          </PrioritySpotlight>
+            </PrioritySpotlight>
+          </Link>
         </motion.div>
       )}
 

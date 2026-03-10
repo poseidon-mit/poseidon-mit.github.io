@@ -28,11 +28,17 @@ export interface AuditDecision {
 export const DEFAULT_DECISION_ID = 'GV-2026-0309-048'
 
 export const ROUTE_TO_DECISION: Record<string, string> = {
-  '/dashboard': 'GV-2026-0309-048',
-  '/protect':   'GV-2026-0309-048',
-  '/grow':      'GV-2026-0309-047',
-  '/execute':   'GV-2026-0307-043',
-  '/govern':    'GV-2026-0305-041',
+  '/dashboard':          'GV-2026-0309-048',
+  '/protect':            'GV-2026-0309-048',
+  '/protect/threats':    'GV-2026-0309-048',
+  '/protect/alert-detail': 'GV-2026-0309-048',
+  '/grow':               'GV-2026-0309-047',
+  '/grow/recommendations': 'GV-2026-0309-047',
+  '/grow/recommendation': 'GV-2026-0309-047',
+  '/execute':            'GV-2026-0307-043',
+  '/execute/queue':      'GV-2026-0307-043',
+  '/execute/approval':   'GV-2026-0307-043',
+  '/govern':             'GV-2026-0305-041',
 }
 
 const sharedFraudFactors = [

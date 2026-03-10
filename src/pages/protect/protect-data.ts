@@ -29,6 +29,10 @@ export interface ThreatRow {
   time: string
   sortTime: number
   description: string
+  /** Detail-screen fields — only render if present */
+  account?: string
+  location?: string
+  flaggedIp?: string
 }
 
 /** @deprecated Use ThreatFactor from @/domain/poseidon-universe */
@@ -53,6 +57,9 @@ export const THREATS: ThreatRow[] = selectProtectThreats().map(t => ({
   time: t.relativeTime,
   sortTime: t.sortOrder,
   description: t.description,
+  account: t.account,
+  location: t.location,
+  flaggedIp: t.flaggedIp,
 }))
 
 export const severityConfig: Record<ThreatSeverity, { color: string; bg: string; border: string; shadow: string; order: number }> = {

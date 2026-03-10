@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell, ResponsiveContainer, LabelList } from 'recharts'
 import { useRouter, Link } from '@/router'
@@ -147,8 +147,14 @@ export default function ProtectAlertDetailPage() {
 
   const alert = useMemo(() => {
     const alertId = new URLSearchParams(search).get('alertId')
-    return THREATS.find(t => t.id === alertId) || THREATS[0]
+    return THREATS.find(t => t.id === alertId) ?? null
   }, [search])
+
+  useEffect(() => {
+    if (!alert) navigate('/protect/threats')
+  }, [alert, navigate])
+
+  if (!alert) return null
 
   const severityTheme = severityConfig[alert.severity]
 
@@ -180,7 +186,7 @@ export default function ProtectAlertDetailPage() {
       '',
       `Transaction    ${alert.amount} · ${alert.counterparty}`,
       `Date           ${dateStr}`,
-      `Account        Visa ****4821`,
+      ...(alert.account ? [`Account        ${alert.account}`] : []),
       `AI Confidence  ${formatConfidence(alert.confidence)} (${alert.severity})`,
       '',
       'Key Findings',
@@ -198,17 +204,16 @@ export default function ProtectAlertDetailPage() {
     })
   }
 
-  const DEFAULT_TIMING = { detected: '2026-03-19T14:28:00-04:00', updated: '2026-03-19T14:30:00-04:00', times: ['14:28', '14:29', '14:30', '14:31'] }
-  const timing = selectThreatTiming(alert.id) || DEFAULT_TIMING
-  const detectedAt = formatDemoTimestamp(timing.detected)
-  const updatedAt = formatDemoTimestamp(timing.updated)
-  const timelineSteps: TimelineStep[] = [
+  const timing = selectThreatTiming(alert.id)
+  const detectedAt = timing ? formatDemoTimestamp(timing.detected) : null
+  const updatedAt = timing ? formatDemoTimestamp(timing.updated) : null
+  const timelineSteps: TimelineStep[] | null = timing ? [
     { label: "Threat detected", time: timing.times[0], status: "complete" },
     { label: "Analysis complete", time: timing.times[1], status: "complete" },
     { label: "Alert raised", time: timing.times[2], status: "complete" },
     { label: "User notified", time: timing.times[3], status: "complete" },
     { label: "Resolution pending", time: "Now", status: "active" },
-  ]
+  ] : null
 
   return (
     <>
@@ -230,10 +235,12 @@ export default function ProtectAlertDetailPage() {
           <motion.div variants={fadeUpVariant} className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="flex flex-col gap-2">
               <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>{`Alert #${alert.id}`}</h1>
-              <span className="text-sm tracking-wide text-white/40 font-mono mt-1">{`Detected: ${detectedAt} • Updated: ${updatedAt}`}</span>
+              {detectedAt && updatedAt && (
+                <span className="text-sm tracking-wide text-white/40 font-mono mt-1">{`Detected: ${detectedAt} • Updated: ${updatedAt}`}</span>
+              )}
             </div>
             <span className="relative inline-flex items-center gap-1.5 md:gap-2 rounded-full px-3 py-1.5 text-xs md:px-4 md:py-2 md:text-sm font-bold uppercase tracking-widest" style={{ background: severityTheme.bg, border: `1px solid ${severityTheme.border}`, color: severityTheme.color }} aria-label={`Alert status: ${alert.severity}`}>
-              {alert.severity === 'critical' && !prefersReducedMotion && (
+              {alert.severity === 'Critical' && !prefersReducedMotion && (
                 <motion.div
                   className="absolute inset-0 rounded-full pointer-events-none"
                   style={{ background: `radial-gradient(circle, ${severityTheme.color}33, transparent 70%)` }}
@@ -256,8 +263,12 @@ export default function ProtectAlertDetailPage() {
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Amount</span><span className="text-2xl md:text-3xl font-bold font-mono tabular-nums" style={{ color: severityTheme.color, textShadow: `0 0 20px ${severityTheme.color}40` }}>{alert.amount}</span></div>
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Confidence</span><ConfidenceIndicator value={alert.confidence} colorOverride={severityTheme.color} size="lg" glow /></div>
               <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Alert type</span><span className="text-sm md:text-base text-white/70 tracking-wide break-words">{alert.description}</span></div>
-              <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Account</span><div className="flex items-center gap-2"><CreditCard size={16} className="text-white/30" /><span className="text-base font-mono font-medium text-white/80">{`Visa ****4821`}</span></div></div>
-              <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Location</span><div className="flex items-center gap-2"><MapPin size={16} className="text-white/30" /><span className="text-base text-white/80 tracking-wide">{"Online"}</span></div><span className="text-xs font-semibold tracking-wide" style={{ color: severityTheme.color }}>Flagged IP: 47.186.93.118</span></div>
+              {alert.account && (
+                <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Account</span><div className="flex items-center gap-2"><CreditCard size={16} className="text-white/30" /><span className="text-base font-mono font-medium text-white/80">{alert.account}</span></div></div>
+              )}
+              {alert.location && (
+                <div className="flex flex-col gap-2 min-w-0"><span className="text-xs uppercase tracking-widest text-white/40 font-semibold">Location</span><div className="flex items-center gap-2"><MapPin size={16} className="text-white/30" /><span className="text-base text-white/80 tracking-wide">{alert.location}</span></div>{alert.flaggedIp && <span className="text-xs font-semibold tracking-wide" style={{ color: severityTheme.color }}>Flagged IP: {alert.flaggedIp}</span>}</div>
+              )}
             </div>
           </div>
         </motion.div>
@@ -294,8 +305,8 @@ export default function ProtectAlertDetailPage() {
                       <span><span className="text-red-400 font-bold">{alert.amount}</span>{' · '}<span className="text-white/90 font-bold">{alert.counterparty}</span></span>
                       <span className="text-white/40">Date</span>
                       <span className="text-white/70">{caseBrief.dateStr}</span>
-                      <span className="text-white/40">Account</span>
-                      <span className="text-white/70">Visa ****4821</span>
+                      {alert.account && <><span className="text-white/40">Account</span>
+                      <span className="text-white/70">{alert.account}</span></>}
                       <span className="text-white/40">AI Confidence</span>
                       <span className="font-bold" style={{ color: severityTheme.color }}>{formatConfidence(alert.confidence)} ({alert.severity})</span>
                     </div>
@@ -387,7 +398,8 @@ export default function ProtectAlertDetailPage() {
             <span className="text-xs text-white/30 group-open:rotate-180 transition-transform">▾</span>
           </summary>
 
-        {/* ── Timeline ── */}
+        {/* ── Timeline (only if timing data available) ── */}
+        {timelineSteps && (
         <div className="mt-4 mb-6">
           <div className="glass-card rounded-2xl p-6 lg:p-8 flex flex-col gap-4 transition-all">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--engine-protect)]/5 to-transparent pointer-events-none" />
@@ -422,6 +434,7 @@ export default function ProtectAlertDetailPage() {
             </div>
           </div>
         </div>
+        )}
 
         {/* ── Decision Drivers + Evidence ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">

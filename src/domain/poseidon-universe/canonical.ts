@@ -171,6 +171,9 @@ const PROTECT_THREATS: ProtectThreatEntity[] = [
     compositePriority: 95,
     timing: THREAT_TIMING['THR-001'] ?? DEFAULT_THREAT_TIMING,
     factors: THREAT_FACTORS['THR-001'],
+    account: 'Visa ****4821',
+    location: 'Online',
+    flaggedIp: '47.186.93.118',
   },
   {
     id: 'THR-002',
@@ -184,6 +187,7 @@ const PROTECT_THREATS: ProtectThreatEntity[] = [
     compositePriority: 72,
     timing: THREAT_TIMING['THR-002'] ?? DEFAULT_THREAT_TIMING,
     factors: THREAT_FACTORS['THR-002'],
+    account: 'Visa ****4821',
   },
   {
     id: 'THR-003',
@@ -919,6 +923,7 @@ export const CANONICAL_RECOMMENDATION_DETAILS: RecommendationDetail[] = [
       { name: 'Chase Savings (current)', cost: 0, usage: 'low', note: '$23,000 balance · 0.01% APY · earning $2.30/year' },
     ],
     currentTotal: 0,
+    comparison: { kind: 'yield', currentApy: 0.01, newApy: 4.5, annualGain: 840 },
     insights: [
       'Your $23,000 in Chase savings earns just $2.30/year at 0.01% APY',
       'High-yield savings accounts currently offer 4.5% APY — 450× your current rate',
@@ -1074,6 +1079,7 @@ export const CANONICAL_RECOMMENDATION_DETAILS: RecommendationDetail[] = [
       { name: 'International Equity', cost: 0, usage: 'low', note: '10% of $87,000 ($8,700) — target is 20%' },
     ],
     currentTotal: 0,
+    comparison: { kind: 'allocation', currentMix: 'Tech 45% / S&P 30% / Bond 15% / Intl 10%', newMix: 'Tech 30% / S&P 30% / Bond 20% / Intl 20%' },
     insights: [
       'Your 401(k) is 45% concentrated in technology — 15 percentage points above your target allocation of 30%',
       'This concentration increases your portfolio volatility by an estimated 23% compared to your target allocation',
@@ -1113,6 +1119,7 @@ export const CANONICAL_RECOMMENDATION_DETAILS: RecommendationDetail[] = [
       { name: 'Gap to target', cost: 0, usage: 'none', note: '$26,520 remaining — approximately 53 months at current savings rate' },
     ],
     currentTotal: 0,
+    comparison: { kind: 'coverage', currentMonths: 2.1, targetMonths: 6 },
     insights: [
       'Your emergency fund covers only 2.1 months of expenses — financial advisors recommend 3-6 months',
       'At $500/month contributions, you\'ll reach the 6-month target ($40,800) in approximately 53 months',
@@ -1227,6 +1234,7 @@ export const CANONICAL_RECOMMENDATION_DETAILS: RecommendationDetail[] = [
       { name: 'Uncaptured match', cost: 0, usage: 'none', note: '2% uncaptured ($242/mo) — $2,900/year in free money left on the table' },
     ],
     currentTotal: 0,
+    comparison: { kind: 'contribution', currentPct: 4, newPct: 6, matchCapture: 3600 },
     insights: [
       'You\'re contributing 4% to your 401(k) but your employer matches up to 6% — you\'re leaving $2,900/year in free money on the table',
       'Increasing your contribution by 2% ($242/month) captures the full employer match — effectively a 100% return on that $242',

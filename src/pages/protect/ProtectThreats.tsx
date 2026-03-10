@@ -119,9 +119,11 @@ export default function ProtectThreatsPage() {
       {/* Spotlight threat */}
       {spotlightThreat && (
         <motion.div variants={fadeUp}>
-          <PrioritySpotlight engine="protect">
-            <SpotlightCard threat={spotlightThreat} />
-          </PrioritySpotlight>
+          <Link to={`/protect/alert-detail?alertId=${spotlightThreat.id}`} className="block">
+            <PrioritySpotlight engine="protect">
+              <SpotlightCard threat={spotlightThreat} />
+            </PrioritySpotlight>
+          </Link>
         </motion.div>
       )}
 
@@ -201,8 +203,7 @@ function SpotlightCard({ threat }: { threat: ThreatRow }) {
       <p className="text-sm text-white/55 leading-relaxed">{threat.description}</p>
 
       {/* Full-width CTA — hidden on mobile (card is tappable) */}
-      <Link
-        to={`/protect/alert-detail?alertId=${threat.id}`}
+      <span
         className={cn(
           'hidden sm:inline-flex w-full items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-colors',
           'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950',
@@ -211,7 +212,7 @@ function SpotlightCard({ threat }: { threat: ThreatRow }) {
       >
         Investigate
         <ArrowRight size={14} />
-      </Link>
+      </span>
     </div>
   )
 }

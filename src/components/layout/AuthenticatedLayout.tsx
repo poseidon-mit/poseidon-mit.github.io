@@ -101,7 +101,7 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
 
                     {/* Layer 2: Final Verification (GovernFooter) */}
                     {meta?.showFooter && (() => {
-                        const isDetailRoute = /\/(detail|approval|audit-detail)/.test(path) || path.includes('/alert/');
+                        const isDetailRoute = /\/(detail|approval|audit-detail|recommendation|alert-detail)/.test(path) || path.includes('/alert/');
                         return (
                             <div className={`mt-4 pt-3${isDetailRoute ? '' : ' lg:sticky lg:bottom-0 lg:z-10'}`}>
                                 <GovernFooter
