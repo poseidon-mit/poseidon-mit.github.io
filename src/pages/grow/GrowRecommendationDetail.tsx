@@ -198,7 +198,7 @@ export default function GrowRecommendationDetailPage() {
                 </p>
                 <p className="text-xs text-white/40 font-mono">${rec.annualSavings.toLocaleString()}/year</p>
                 {/* Projection calculator */}
-                <div className="flex items-center gap-3 mt-2">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2">
                   <span className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">Projected</span>
                   {([3, 5, 10] as const).map((y) => (
                     <button
