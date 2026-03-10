@@ -79,7 +79,8 @@ export function GovernAuditDetail() {
   const [rawExpanded, setRawExpanded] = useState(false)
 
   const { search } = useRouter()
-  const decisionId = new URLSearchParams(search).get('decision')
+  const params = new URLSearchParams(search)
+  const decisionId = params.get('auditId') ?? params.get('decision')
   const auditEntry = (decisionId && AUDIT_DECISIONS[decisionId]) || AUDIT_DECISIONS[DEFAULT_DECISION_ID]
   const resolvedTimestamp = formatDemoTimestamp(auditEntry.timestamp)
   const engineInfo = ENGINE_MAP[auditEntry.engine] ?? ENGINE_MAP.Govern

@@ -131,11 +131,9 @@ export default function ExecutePage() {
                   </div>
                 </div>
               </div>
-              <Link to="/execute/queue">
-                <Button className="bg-amber-600 text-white hover:bg-amber-700 shrink-0">
-                  Review All Pending
-                </Button>
-              </Link>
+              <Button asChild className="bg-amber-600 text-white hover:bg-amber-700 shrink-0">
+                <Link to="/execute/queue">Review All Pending</Link>
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -180,16 +178,12 @@ export default function ExecutePage() {
                 >
                   Reject
                 </Button>
-                <Link to={`/execute/approval?actionId=${action.id}`}>
-                  <Button variant="outline" size="sm">
-                    View Details
-                  </Button>
-                </Link>
-                <Link to={`/execute/approval?actionId=${action.id}`}>
-                  <Button size="sm" className="bg-emerald-600 text-white hover:bg-emerald-700">
-                    Approve
-                  </Button>
-                </Link>
+                <Button asChild variant="outline" size="sm">
+                  <Link to={`/execute/approval?actionId=${action.id}`}>View Details</Link>
+                </Button>
+                <Button asChild size="sm" className="bg-emerald-600 text-white hover:bg-emerald-700">
+                  <Link to={`/execute/approval?actionId=${action.id}`}>Approve</Link>
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -288,11 +282,9 @@ export default function ExecutePage() {
                 <History className="h-5 w-5 text-gray-500" />
                 Recent Execution History
               </CardTitle>
-              <Link to="/govern">
-                <Button variant="ghost" size="sm" className="text-sm text-muted-foreground">
-                  View Full Log <ArrowRight className="ml-1 h-3.5 w-3.5" />
-                </Button>
-              </Link>
+              <Button asChild variant="ghost" size="sm" className="text-sm text-muted-foreground">
+                <Link to="/govern">View Full Log <ArrowRight className="ml-1 h-3.5 w-3.5" /></Link>
+              </Button>
             </div>
           </CardHeader>
           <CardContent>

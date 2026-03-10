@@ -350,9 +350,9 @@ export function ExecuteApproval() {
                 <p className="text-sm text-gray-700 text-center">
                   This action has been <span className="font-semibold text-gray-900">{actionStatus}</span>.
                 </p>
-                <Link to="/execute">
-                  <Button variant="outline">Back to Queue</Button>
-                </Link>
+                <Button asChild variant="outline">
+                  <Link to="/execute">Back to Queue</Link>
+                </Button>
               </div>
             ) : (
               <div className="space-y-4">

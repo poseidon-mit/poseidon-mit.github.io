@@ -172,9 +172,9 @@ export default function GovernPage() {
                   <Download className="mr-1.5 h-4 w-4" />
                   Export Report
                 </Button>
-                <Link to="/govern/audit">
-                  <Button variant="outline" className="text-foreground">View Full Ledger</Button>
-                </Link>
+                <Button asChild variant="outline" className="text-foreground">
+                  <Link to="/govern/audit">View Full Ledger</Link>
+                </Button>
               </div>
             </div>
           </CardContent>
@@ -219,11 +219,9 @@ export default function GovernPage() {
                 <Scale className="h-5 w-5 text-blue-600" />
                 Audit Log
               </CardTitle>
-              <Link to="/govern/audit">
-                <Button variant="ghost" size="sm" className="text-sm text-muted-foreground">
-                  View All <ChevronRight className="ml-1 h-3.5 w-3.5" />
-                </Button>
-              </Link>
+              <Button asChild variant="ghost" size="sm" className="text-sm text-muted-foreground">
+                <Link to="/govern/audit">View All <ChevronRight className="ml-1 h-3.5 w-3.5" /></Link>
+              </Button>
             </div>
           </CardHeader>
           <CardContent>
@@ -257,11 +255,11 @@ export default function GovernPage() {
                           {entry.status}
                         </Badge>
                       </div>
-                      <Link to={`/govern/audit-detail?auditId=${entry.id}`}>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground">
+                      <Button asChild variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground" aria-label="View audit detail">
+                        <Link to={`/govern/audit-detail?auditId=${entry.id}`}>
                           <ChevronRight className="h-4 w-4" />
-                        </Button>
-                      </Link>
+                        </Link>
+                      </Button>
                     </div>
                   </div>
                 )

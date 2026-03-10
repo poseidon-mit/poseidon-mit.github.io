@@ -132,12 +132,12 @@ export default function GrowPage() {
                   <p className="text-xl font-bold text-emerald-700">+{formatUsd(optimizationPotential)}/mo</p>
                 </div>
                 <div className="flex gap-2">
-                  <Link to="/grow/scenarios">
-                    <Button variant="outline" className="text-foreground">Scenarios</Button>
-                  </Link>
-                  <Link to="/grow/recommendations">
-                    <Button className="bg-violet-600 text-white hover:bg-violet-700">Recommendations</Button>
-                  </Link>
+                  <Button asChild variant="outline" className="text-foreground">
+                    <Link to="/grow/scenarios">Scenarios</Link>
+                  </Button>
+                  <Button asChild className="bg-violet-600 text-white hover:bg-violet-700">
+                    <Link to="/grow/recommendations">Recommendations</Link>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -214,11 +214,11 @@ export default function GrowPage() {
                               <p className="font-bold text-foreground">{formatUsd(goal.currentUsd)}</p>
                               <p className="text-sm text-muted-foreground">of {formatUsd(goal.targetUsd)}</p>
                             </div>
-                            <Link to={`/grow/goal?id=${goal.id}`}>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground">
+                            <Button asChild variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground" aria-label="View goal details">
+                              <Link to={`/grow/goal?id=${goal.id}`}>
                                 <ChevronRight className="h-4 w-4" />
-                              </Button>
-                            </Link>
+                              </Link>
+                            </Button>
                           </div>
                         </div>
                         <div className="space-y-1">
@@ -248,9 +248,9 @@ export default function GrowPage() {
                     <Lightbulb className="h-5 w-5 text-amber-500" />
                     Top Recommendations
                   </CardTitle>
-                  <Link to="/grow/recommendations">
-                    <Button variant="ghost" size="sm" className="text-sm text-muted-foreground">View All</Button>
-                  </Link>
+                  <Button asChild variant="ghost" size="sm" className="text-sm text-muted-foreground">
+                    <Link to="/grow/recommendations">View All</Link>
+                  </Button>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">

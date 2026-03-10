@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useMemo, useState } from 'react';
+import React, { Component, Suspense, useEffect, useMemo, useState } from 'react';
 import { AppNavShell } from './AppNavShell';
 import { AuroraPulse, GovernFooter } from '@/components/poseidon';
 import { PageSkeleton } from '@/components/poseidon/page-skeleton';
@@ -8,6 +8,50 @@ import { selectPriorityQueue } from '@/domain/poseidon-universe/selectors';
 import type { ProtectThreatEntity } from '@/domain/poseidon-universe/types';
 import { ROUTE_TO_DECISION, AUDIT_DECISIONS } from '@/lib/govern-audit-data';
 import type { GovernTraceBinding } from '@/lib/govern-trace';
+
+/* ── Error Boundary ── */
+class PageErrorBoundary extends Component<
+    { children: React.ReactNode; path: string },
+    { hasError: boolean; error: Error | null }
+> {
+    constructor(props: { children: React.ReactNode; path: string }) {
+        super(props);
+        this.state = { hasError: false, error: null };
+    }
+    static getDerivedStateFromError(error: Error) {
+        return { hasError: true, error };
+    }
+    componentDidUpdate(prevProps: { path: string }) {
+        if (prevProps.path !== this.props.path && this.state.hasError) {
+            this.setState({ hasError: false, error: null });
+        }
+    }
+    render() {
+        if (this.state.hasError) {
+            return (
+                <div className="flex flex-col items-center justify-center gap-4 py-24 px-6 text-center">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50">
+                        <svg className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h2 className="text-lg font-semibold text-foreground">Something went wrong</h2>
+                    <p className="text-sm text-muted-foreground max-w-md">
+                        {this.state.error?.message ?? 'An unexpected error occurred while rendering this page.'}
+                    </p>
+                    <button
+                        type="button"
+                        onClick={() => this.setState({ hasError: false, error: null })}
+                        className="mt-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+                    >
+                        Try Again
+                    </button>
+                </div>
+            );
+        }
+        return this.props.children;
+    }
+}
 
 interface AuthenticatedLayoutProps {
     children: React.ReactNode;
@@ -95,9 +139,11 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
 
                 {/* Layer 1: Page Content */}
                 <div className="relative z-10 flex-1 flex flex-col pt-10 px-6 lg:px-10 max-w-[1920px] mx-auto w-full pb-20">
-                    <Suspense fallback={<PageSkeleton />}>
-                    {children}
-                    </Suspense>
+                    <PageErrorBoundary path={path}>
+                        <Suspense fallback={<PageSkeleton />}>
+                            {children}
+                        </Suspense>
+                    </PageErrorBoundary>
 
                     {/* Layer 2: Final Verification (GovernFooter) */}
                     {meta?.showFooter && (() => {
