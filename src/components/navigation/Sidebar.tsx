@@ -135,10 +135,7 @@ export function Sidebar({ path }: { path: string }) {
                                 'group relative flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-300',
                                 isActive
                                     ? tone.activeLink
-                                    : cn(
-                                        'text-slate-400 hover:bg-white/[0.06] hover:text-white border border-transparent hover:border-white/5',
-                                        isProtectAlert && 'bg-emerald-500/[0.04] border-emerald-500/10 engine-bg-protect engine-border-protect'
-                                    )
+                                    : 'text-slate-400 hover:bg-white/[0.06] hover:text-white border border-transparent hover:border-white/5'
                             )}
                             aria-current={isActive ? 'page' : undefined}
                         >

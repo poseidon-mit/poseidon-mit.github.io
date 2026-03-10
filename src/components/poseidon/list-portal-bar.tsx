@@ -56,10 +56,10 @@ export function ListPortalBar({ engine, label, count, destination, className }: 
   )
 
   if (destination.type === 'hash') {
-    return <a href={href}>{content}</a>
+    return <a href={href} className="block">{content}</a>
   }
 
-  return <Link to={href}>{content}</Link>
+  return <Link to={href} className="block">{content}</Link>
 }
 
 ListPortalBar.displayName = 'ListPortalBar'

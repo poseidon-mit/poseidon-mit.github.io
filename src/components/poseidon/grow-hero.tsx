@@ -372,19 +372,6 @@ export function GrowGrowthAdvantage({
         />
 
       </HeroBento.Proof>
-
-      {/* Zone C: Portal — count-only, no duplicate navigation (CTA above is the link) */}
-      <HeroBento.Portal>
-        <span className="flex items-center gap-3 w-full min-h-[44px] text-sm font-medium text-white/50">
-          <span
-            className="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-bold tabular-nums"
-            style={{ backgroundColor: 'color-mix(in srgb, var(--engine-grow) 20%, transparent)', color: 'var(--engine-grow)' }}
-          >
-            {recommendationCount}
-          </span>
-          <span className="flex-1 truncate">{recommendationCount} AI recommendations</span>
-        </span>
-      </HeroBento.Portal>
     </HeroBento>
   )
 }
