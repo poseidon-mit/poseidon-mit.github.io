@@ -259,7 +259,7 @@ export function DashboardCoordinationProof({
 
       {/* ── Zone B: Proof — EnginePulseStrip ── */}
       <HeroBento.Proof>
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-6">
+        <div className="flex flex-col xl:flex-row gap-2 xl:gap-3">
           <EnginePulseBadge
             icon={Shield}
             color="var(--engine-protect)"
