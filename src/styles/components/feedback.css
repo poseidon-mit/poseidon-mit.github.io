@@ -119,16 +119,16 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, rgba(21, 225, 194, 0.4), rgba(21, 225, 194, 0.8));
+  background: linear-gradient(90deg, rgba(21, 225, 194, 0.25), rgba(21, 225, 194, 0.55));
   border-radius: inherit;
   animation: progress-fill-grow 1s var(--motion-easing-standard) forwards;
 }
 
-.progress.accent-red .progress-fill { background: linear-gradient(90deg, rgba(239,68,68,0.4), rgba(239,68,68,0.8)); }
-.progress.accent-amber .progress-fill { background: linear-gradient(90deg, rgba(245,158,11,0.4), rgba(245,158,11,0.8)); }
-.progress.accent-violet .progress-fill { background: linear-gradient(90deg, rgba(139,92,246,0.4), rgba(139,92,246,0.8)); }
-.progress.accent-blue .progress-fill { background: linear-gradient(90deg, rgba(59,130,246,0.4), rgba(59,130,246,0.8)); }
-.progress.accent-cyan .progress-fill { background: linear-gradient(90deg, rgba(0,240,255,0.4), rgba(0,240,255,0.8)); }
+.progress.accent-red .progress-fill { background: linear-gradient(90deg, rgba(239,68,68,0.25), rgba(239,68,68,0.55)); }
+.progress.accent-amber .progress-fill { background: linear-gradient(90deg, rgba(245,158,11,0.25), rgba(245,158,11,0.55)); }
+.progress.accent-violet .progress-fill { background: linear-gradient(90deg, rgba(139,92,246,0.25), rgba(139,92,246,0.55)); }
+.progress.accent-blue .progress-fill { background: linear-gradient(90deg, rgba(59,130,246,0.25), rgba(59,130,246,0.55)); }
+.progress.accent-cyan .progress-fill { background: linear-gradient(90deg, rgba(0,240,255,0.25), rgba(0,240,255,0.55)); }
 
 /* ── SKELETON ── */
 .skeleton {

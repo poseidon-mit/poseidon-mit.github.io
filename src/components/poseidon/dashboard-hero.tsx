@@ -244,9 +244,9 @@ export function DashboardCoordinationProof({
             className={cn(
               buttonVariants({ variant: 'default', size: 'sm' }),
               'h-auto w-fit rounded-xl px-5 py-2.5 min-h-[44px] mt-2',
-              'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950',
+              'bg-gradient-to-r from-emerald-600 to-cyan-600 text-slate-950',
               'font-semibold tracking-wide text-xs',
-              'hover:from-emerald-400 hover:to-cyan-400 transition-all',
+              'hover:from-emerald-500 hover:to-cyan-500 transition-all',
               'flex items-center gap-2',
             )}
           >

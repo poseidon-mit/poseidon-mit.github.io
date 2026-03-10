@@ -99,23 +99,23 @@
 
 /* ── Neon text glow (for headings) ── */
 .neon-text-cyan {
-  text-shadow: 0 0 8px rgba(0, 240, 255, 0.6), 0 0 20px rgba(0, 240, 255, 0.3);
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.3), 0 0 20px rgba(0, 240, 255, 0.15);
 }
 
 .neon-text-teal {
-  text-shadow: 0 0 8px rgba(20, 184, 166, 0.6), 0 0 20px rgba(20, 184, 166, 0.3);
+  text-shadow: 0 0 8px rgba(20, 184, 166, 0.3), 0 0 20px rgba(20, 184, 166, 0.15);
 }
 
 .neon-text-violet {
-  text-shadow: 0 0 8px rgba(139, 92, 246, 0.6), 0 0 20px rgba(139, 92, 246, 0.3);
+  text-shadow: 0 0 8px rgba(139, 92, 246, 0.3), 0 0 20px rgba(139, 92, 246, 0.15);
 }
 
 .neon-text-amber {
-  text-shadow: 0 0 8px rgba(245, 158, 11, 0.6), 0 0 20px rgba(245, 158, 11, 0.3);
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.3), 0 0 20px rgba(245, 158, 11, 0.15);
 }
 
 .neon-text-blue {
-  text-shadow: 0 0 8px rgba(59, 130, 246, 0.6), 0 0 20px rgba(59, 130, 246, 0.3);
+  text-shadow: 0 0 8px rgba(59, 130, 246, 0.3), 0 0 20px rgba(59, 130, 246, 0.15);
 }
 
 /* ── Precision Mode — Engine Glow Suppression ──

@@ -10,8 +10,8 @@
 .app-shell--v3 {
   padding-bottom: 24px;
   background:
-    radial-gradient(120% 90% at 10% -10%, rgba(98, 174, 255, 0.26), transparent 56%),
-    radial-gradient(120% 100% at 90% 0%, rgba(84, 224, 198, 0.22), transparent 58%),
+    radial-gradient(120% 90% at 10% -10%, rgba(98, 174, 255, 0.14), transparent 56%),
+    radial-gradient(120% 100% at 90% 0%, rgba(84, 224, 198, 0.12), transparent 58%),
     linear-gradient(180deg, rgba(20, 34, 61, 0.9), rgba(12, 20, 37, 0.92));
 }
 
@@ -23,12 +23,12 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(1px 1px at 12% 22%, rgba(88, 166, 255, 0.6), transparent 35%),
-    radial-gradient(1.5px 1.5px at 35% 18%, rgba(21, 225, 194, 0.55), transparent 35%),
-    radial-gradient(1px 1px at 68% 28%, rgba(143, 107, 255, 0.6), transparent 35%),
-    radial-gradient(1px 1px at 82% 36%, rgba(21, 225, 194, 0.4), transparent 40%),
-    radial-gradient(1px 1px at 25% 60%, rgba(88, 166, 255, 0.45), transparent 40%),
-    radial-gradient(1px 1px at 70% 70%, rgba(143, 107, 255, 0.45), transparent 45%);
+  background-image: radial-gradient(1px 1px at 12% 22%, rgba(88, 166, 255, 0.3), transparent 35%),
+    radial-gradient(1.5px 1.5px at 35% 18%, rgba(21, 225, 194, 0.28), transparent 35%),
+    radial-gradient(1px 1px at 68% 28%, rgba(143, 107, 255, 0.3), transparent 35%),
+    radial-gradient(1px 1px at 82% 36%, rgba(21, 225, 194, 0.2), transparent 40%),
+    radial-gradient(1px 1px at 25% 60%, rgba(88, 166, 255, 0.22), transparent 40%),
+    radial-gradient(1px 1px at 70% 70%, rgba(143, 107, 255, 0.22), transparent 45%);
   opacity: 0;
   pointer-events: none;
   z-index: -1;

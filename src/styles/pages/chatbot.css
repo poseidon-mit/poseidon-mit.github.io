@@ -12,7 +12,7 @@
   color: #04141a;
   background: var(--state-active);
   border: 1px solid rgba(var(--state-active-rgb), 0.45);
-  box-shadow: 0 4px 24px rgba(var(--state-active-rgb), 0.4);
+  box-shadow: 0 4px 24px rgba(var(--state-active-rgb), 0.2);
   z-index: var(--z-toast);
 }
 

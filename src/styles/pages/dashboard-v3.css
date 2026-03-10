@@ -21,7 +21,7 @@
   border-radius: 18px;
   border: 1px solid rgba(163, 203, 244, 0.26);
   background:
-    radial-gradient(120% 180% at 100% 0%, rgba(var(--accent-soft-rgb), 0.24), transparent 62%),
+    radial-gradient(120% 180% at 100% 0%, rgba(var(--accent-soft-rgb), 0.14), transparent 62%),
     linear-gradient(180deg, rgba(10, 23, 45, 0.9), rgba(8, 17, 33, 0.96));
   padding: var(--space-5-5);
   display: grid;

@@ -80,11 +80,11 @@
   background: linear-gradient(135deg, #1ae3c7, #00c6ff);
   color: #04141a;
   font-weight: 600;
-  box-shadow: 0 12px 32px rgba(0, 198, 255, 0.2);
+  box-shadow: 0 12px 32px rgba(0, 198, 255, 0.10);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 16px 40px rgba(0, 198, 255, 0.35), 0 0 20px rgba(21, 225, 194, 0.25);
+  box-shadow: 0 16px 40px rgba(0, 198, 255, 0.18), 0 0 20px rgba(21, 225, 194, 0.12);
   transform: translateY(-1px);
 }
 
@@ -96,7 +96,7 @@
 
 .btn-soft:hover {
   background: rgba(21, 225, 194, 0.18);
-  box-shadow: 0 0 16px rgba(21, 225, 194, 0.12);
+  box-shadow: 0 0 16px rgba(21, 225, 194, 0.06);
 }
 
 .btn-large {

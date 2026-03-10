@@ -29,7 +29,7 @@
   border-radius: var(--radius-card);
   border: 1px solid var(--glass-border-page-strong);
   background:
-    radial-gradient(120% 180% at 100% 0%, rgba(var(--accent-soft-rgb), 0.24), transparent 62%),
+    radial-gradient(120% 180% at 100% 0%, rgba(var(--accent-soft-rgb), 0.14), transparent 62%),
     linear-gradient(180deg, rgba(10, 23, 45, 0.9), rgba(8, 17, 33, 0.96));
   padding: var(--space-5-5);
   display: grid;
@@ -165,7 +165,7 @@
   border-radius: var(--radius-card);
   border: 1px solid var(--glass-border-page);
   background:
-    radial-gradient(120% 170% at 100% 0%, rgba(var(--accent-soft-rgb), 0.2), transparent 66%),
+    radial-gradient(120% 170% at 100% 0%, rgba(var(--accent-soft-rgb), 0.12), transparent 66%),
     linear-gradient(180deg, rgba(10, 22, 43, 0.91), rgba(8, 16, 31, 0.97));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
