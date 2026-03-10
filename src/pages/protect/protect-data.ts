@@ -26,9 +26,11 @@ export interface ThreatRow {
   numericAmount: number
   confidence: number
   severity: ThreatSeverity
+  status: 'pending' | 'resolved'
   time: string
   sortTime: number
   description: string
+  resolvedAt?: string
   /** Detail-screen fields — only render if present */
   account?: string
   location?: string
@@ -54,9 +56,11 @@ export const THREATS: ThreatRow[] = selectProtectThreats().map(t => ({
   numericAmount: t.amountUsd,
   confidence: t.confidence,
   severity: t.severity,
+  status: t.status,
   time: t.relativeTime,
   sortTime: t.sortOrder,
   description: t.description,
+  resolvedAt: t.resolvedAt,
   account: t.account,
   location: t.location,
   flaggedIp: t.flaggedIp,

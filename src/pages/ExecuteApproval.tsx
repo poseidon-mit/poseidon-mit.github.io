@@ -3,21 +3,26 @@ import { motion } from 'framer-motion'
 import {
   Zap,
   CheckCircle2,
-  ShieldCheck,
   AlertTriangle,
   ExternalLink,
   Timer,
+  ArrowLeft,
   ArrowRight,
   Loader2,
+  ShieldCheck,
+  Clock,
 } from 'lucide-react'
 import { Link, useRouter } from '@/router'
-import { ShapWaterfall, EmptyState, EngineBadge, ConfidenceIndicator, SubPageNav, ProofChips } from '@/components/poseidon'
+import { ShapWaterfall, EmptyState, ConfidenceIndicator, ProofChips } from '@/components/poseidon'
 import { SlideToApprove } from '@/components/poseidon/slide-to-approve'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { useToast } from '@/hooks/useToast'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
@@ -25,13 +30,24 @@ import { selectExecuteActionById, selectDeliberationTrace } from '@/domain/posei
 import type { ExecuteActionEntity } from '@/domain/poseidon-universe'
 import { getRiskTier } from '@/lib/execute-risk-tier'
 import { useExecuteApprovalFlow } from './useExecuteApprovalFlow'
-import { ENGINE_BADGE_CLASS } from '@/lib/engine-color-map'
-import { EXECUTION_TYPE_BADGE } from '@/lib/execution-type-config'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE, PAGE_HEADING_CLASS, PAGE_HEADING_STYLE } from '@/lib/page-layout'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
+
+const ENGINE_BADGE: Record<string, string> = {
+  Protect: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+  Grow: 'border-violet-200 bg-violet-50 text-violet-700',
+  Execute: 'border-amber-200 bg-amber-50 text-amber-700',
+}
+
+const EXEC_TYPE_BADGE: Record<string, { label: string; cls: string }> = {
+  auto: { label: 'Auto', cls: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
+  'semi-auto': { label: 'Semi-auto', cls: 'border-blue-200 bg-blue-50 text-blue-700' },
+  manual: { label: 'Manual', cls: 'border-amber-200 bg-amber-50 text-amber-700' },
+  hybrid: { label: 'Hybrid', cls: 'border-violet-200 bg-violet-50 text-violet-700' },
+}
 
 export function ExecuteApproval() {
   const prefersReducedMotion = useReducedMotionSafe()
-  const { fadeUp: fadeUpVariant, staggerContainer: stagger } = getMotionPreset(prefersReducedMotion)
+  const { fadeUp, staggerContainer } = getMotionPreset(prefersReducedMotion)
   const { state, setExecuteDecision } = useDemoState()
   const { search, navigate } = useRouter()
   const { showToast } = useToast()
@@ -70,21 +86,19 @@ export function ExecuteApproval() {
 
   if (!action) {
     return (
-      <div className="relative min-h-screen w-full">
-        <div className="mx-auto flex flex-col items-center justify-center gap-8 pt-24 pb-12 px-5" style={{ maxWidth: '1440px' }}>
-          <EmptyState
-            icon={AlertTriangle}
-            title="Action not found"
-            description={actionId ? `No action with ID "${actionId}" exists in the queue.` : 'No action ID was provided in the URL.'}
-            accentColor="var(--engine-execute)"
-            action={{ label: 'Back to Execute queue', onClick: () => navigate('/execute') }}
-          />
-        </div>
+      <div className="mx-auto flex flex-col items-center justify-center gap-8 pt-24 pb-12 px-5" style={{ maxWidth: '1440px' }}>
+        <EmptyState
+          icon={AlertTriangle}
+          title="Action not found"
+          description={actionId ? `No action with ID "${actionId}" exists in the queue.` : 'No action ID was provided in the URL.'}
+          accentColor="var(--engine-execute)"
+          action={{ label: 'Back to Execute queue', onClick: () => navigate('/execute') }}
+        />
       </div>
     )
   }
 
-  const typeBadge = EXECUTION_TYPE_BADGE[action.executionType]
+  const typeBadge = EXEC_TYPE_BADGE[action.executionType] ?? EXEC_TYPE_BADGE.manual
   const sourceLink = action.sourceEngine === 'Protect' && action.sourceEntityId
     ? { label: `From Protect alert ${action.sourceEntityId}`, to: `/protect/alert-detail?alertId=${action.sourceEntityId}` }
     : action.sourceEngine === 'Grow' && action.sourceEntityId
@@ -92,109 +106,279 @@ export function ExecuteApproval() {
     : null
 
   return (
-    <div className="relative min-h-screen w-full">
+    <motion.div
+      id="main-content"
+      role="main"
+      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12`}
+      style={PAGE_CONTENT_STYLE}
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Back link */}
+      <motion.div variants={fadeUp}>
+        <Link
+          to="/execute"
+          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Execute
+        </Link>
+      </motion.div>
 
-      <SubPageNav engine="execute" parentPath="/execute" parentLabel="Execute" currentLabel={`Approve: ${action.title}`} />
+      {/* Header Card */}
+      <motion.div variants={fadeUp}>
+        <Card className="border border-border bg-card shadow-sm">
+          <CardContent className="p-6">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-start gap-4">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 shrink-0">
+                  <Zap className="h-7 w-7 text-amber-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-500">Approval Required</p>
+                  <h1 className="text-2xl font-bold text-gray-900">{action.title}</h1>
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
+                    <Badge variant="outline" className={ENGINE_BADGE[action.engine] ?? 'bg-gray-50 text-gray-600'}>
+                      {action.engine}
+                    </Badge>
+                    <Badge variant="outline" className={typeBadge.cls}>
+                      {typeBadge.label}
+                    </Badge>
+                    {action.expiresIn && (
+                      <span className="inline-flex items-center gap-1 text-xs text-amber-600">
+                        <Timer size={12} />
+                        Expires in {action.expiresIn}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <span className="text-2xl font-bold text-gray-900 shrink-0">{action.amountLabel}</span>
+              </div>
 
-      <motion.div
-        id="main-content"
-        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 pb-12 pt-8 lg:pt-12`}
-        style={PAGE_CONTENT_STYLE}
-        variants={stagger}
-        initial="hidden"
-        animate="visible"
-        role="main"
-      >
-        {/* ═══════════════════════════════════════════
-            ZONE 1: SUMMARY CARD (Hero + Impact)
-            ═══════════════════════════════════════════ */}
-        <motion.div variants={fadeUpVariant} className="glass-card glass-card-overlay rounded-3xl p-6 md:p-8 flex flex-col gap-5">
-          <div className="flex items-center gap-2 flex-wrap">
-            <EngineBadge engine="execute" icon={Zap} label="Execute · Approval" />
-            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest border border-white/[0.05] ${ENGINE_BADGE_CLASS[action.engine]}`}>
-              {action.engine}
-            </span>
-            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest border ${typeBadge.cls}`}>
-              {typeBadge.label}
-            </span>
-            {action.expiresIn && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-semibold tracking-widest uppercase" style={{ color: 'var(--engine-execute)', opacity: 0.7 }}>
-                <Timer size={10} />
-                Expires in {action.expiresIn}
-              </span>
+              <p className="text-sm text-gray-500 leading-relaxed">{action.description}</p>
+
+              {sourceLink && (
+                <Link to={sourceLink.to} className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 hover:text-amber-700 transition-colors">
+                  <ExternalLink size={12} />
+                  {sourceLink.label}
+                </Link>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Impact Assessment */}
+      <motion.div variants={fadeUp} className="grid gap-4 sm:grid-cols-2">
+        <Card className="border-emerald-200 bg-emerald-50">
+          <CardContent className="p-5">
+            <p className="text-xs font-semibold text-emerald-600 uppercase tracking-widest mb-2">If approved</p>
+            <p className="text-sm text-emerald-800 leading-relaxed">{action.impact.approved}</p>
+          </CardContent>
+        </Card>
+        <Card className="border-amber-200 bg-amber-50">
+          <CardContent className="p-5">
+            <p className="text-xs font-semibold text-amber-600 uppercase tracking-widest mb-2">If deferred</p>
+            <p className="text-sm text-amber-800 leading-relaxed">{action.impact.deferred}</p>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Execution Plan */}
+      <motion.div variants={fadeUp}>
+        <Card className="border border-border bg-card shadow-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+              <Zap className="h-5 w-5 text-amber-600" />
+              Execution Plan
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {action.steps.map((step, i) => (
+                <div key={step.id} className="flex items-center gap-3">
+                  <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold bg-amber-100 text-amber-700 shrink-0">
+                    {i + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm text-gray-700">{step.label}</span>
+                    {step.requiresConsent && (
+                      <ShieldCheck size={12} className="inline ml-1.5 text-amber-500" />
+                    )}
+                  </div>
+                  {step.estimatedDuration && (
+                    <span className="text-xs font-mono text-gray-400 shrink-0">{step.estimatedDuration}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-400 font-mono mt-4">
+              {action.steps.length} steps · {action.steps.filter(s => s.estimatedDuration).map(s => s.estimatedDuration).join(' + ')}
+            </p>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Confidence + SHAP Decision Drivers */}
+      <motion.div variants={fadeUp} className="grid gap-6 lg:grid-cols-2">
+        {/* Confidence & Source */}
+        <Card className="border border-border bg-card shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-gray-900">Why This Action?</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-500">Confidence</span>
+              <div className="flex-1">
+                <Progress value={action.confidence * 100} />
+              </div>
+              <span className="text-sm font-bold text-gray-900">{Math.round(action.confidence * 100)}%</span>
+            </div>
+            {sourceLink && (
+              <Link to={sourceLink.to} className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors">
+                <ExternalLink size={14} />
+                View Original {action.sourceEngine === 'Grow' ? 'Recommendation' : 'Alert'}
+              </Link>
             )}
-          </div>
+            <p className="text-sm text-gray-500 leading-relaxed">{action.description}</p>
+          </CardContent>
+        </Card>
 
-          <h1 className={PAGE_HEADING_CLASS} style={PAGE_HEADING_STYLE}>
-            {action.title}
-          </h1>
-
-          <div className="flex flex-wrap items-center gap-6">
-            <span className="text-2xl font-mono font-light tracking-wide tabular-nums" style={{ color: 'var(--engine-execute)', opacity: 0.8 }}>{action.amountLabel}</span>
-            <div className="w-px h-6 bg-white/[0.06]" />
-            <div className="flex items-center gap-3">
-              <span className="text-xs uppercase tracking-widest text-white/40">Confidence</span>
-              <ConfidenceIndicator value={action.confidence} format="percent" size="lg" />
+        {/* Financial Impact */}
+        <Card className="border border-border bg-card shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-gray-900">Financial Impact</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex items-center justify-between py-2 border-b border-gray-100">
+              <span className="text-sm text-gray-500">Transaction Amount</span>
+              <span className="text-sm font-semibold text-gray-900">{action.amountLabel}</span>
             </div>
+            <div className="flex items-center justify-between py-2 border-b border-gray-100">
+              <span className="text-sm text-gray-500">Expected Benefit</span>
+              <span className="text-sm font-semibold text-emerald-600">{action.impact.approved.match(/\$[\d,]+/)?.[0] ?? 'See details'}</span>
+            </div>
+            <div className="flex items-center justify-between py-2">
+              <span className="text-sm font-medium text-gray-700">Net Benefit</span>
+              <span className="text-sm font-bold text-emerald-600">Positive</span>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Decision Drivers (SHAP) — dark card like ProtectAlertDetail */}
+      <motion.div variants={fadeUp}>
+        <div className="bg-gray-900 rounded-2xl p-6 lg:p-8 border border-gray-800">
+          <div className="border-b border-white/[0.06] pb-4 mb-4">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-white/50">Decision Drivers</h3>
+            <p className="text-xs text-white/30 mt-1">
+              Key factors driving this AI decision.
+            </p>
           </div>
-
-          <p className="text-sm text-white/50 max-w-3xl font-light leading-relaxed">
-            {action.description}
-          </p>
-
-          {sourceLink && (
-            <Link to={sourceLink.to} className="inline-flex items-center gap-1.5 text-xs font-medium tracking-wide hover:opacity-80 transition-opacity" style={{ color: 'var(--engine-execute)' }}>
-              <ExternalLink size={12} />
-              {sourceLink.label}
-            </Link>
+          <ShapWaterfall
+            factors={action.factors.map((f) => ({ name: f.label, value: f.value }))}
+            baseValue={50}
+            className="mt-1"
+          />
+          {action.factors.length > 1 && (
+            <ProofChips
+              total={action.amountLabel}
+              parts={action.factors.slice(0, 3).map((f) => ({ label: f.label, value: Math.round(f.value * 100) }))}
+              formatValue={(v) => `${v}%`}
+            />
           )}
+        </div>
+      </motion.div>
 
-          {/* Impact Assessment — integrated into summary */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-white/[0.06]">
-            <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/15 p-4">
-              <p className="text-[10px] font-semibold text-emerald-400/80 uppercase tracking-widest mb-2">If approved</p>
-              <p className="text-sm text-white/70 font-light leading-relaxed">{action.impact.approved}</p>
-            </div>
-            <div className="rounded-2xl bg-amber-500/5 border border-amber-500/15 p-4">
-              <p className="text-[10px] font-semibold text-amber-400/80 uppercase tracking-widest mb-2">If deferred</p>
-              <p className="text-sm text-white/70 font-light leading-relaxed">{action.impact.deferred}</p>
-            </div>
-          </div>
+      {/* Deliberation Trace */}
+      {deliberationTrace && (
+        <motion.div variants={fadeUp}>
+          <Card className="border border-border bg-card shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold text-gray-900">Deliberation Trace</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {deliberationTrace.rounds.map((round, i) => (
+                  <div key={i} className="flex items-start gap-3 text-sm">
+                    <div className={cn(
+                      'w-2.5 h-2.5 rounded-full mt-1.5 shrink-0',
+                      round.position === 'support' && 'bg-emerald-500',
+                      round.position === 'oppose' && 'bg-red-500',
+                      round.position === 'modify' && 'bg-amber-500',
+                    )} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-semibold text-gray-800">{round.roleId}</span>
+                        <Badge variant="outline" className={cn(
+                          'text-[10px] uppercase',
+                          round.position === 'support' && 'border-emerald-200 bg-emerald-50 text-emerald-700',
+                          round.position === 'oppose' && 'border-red-200 bg-red-50 text-red-700',
+                          round.position === 'modify' && 'border-amber-200 bg-amber-50 text-amber-700',
+                        )}>
+                          {round.position}
+                        </Badge>
+                        <span className="text-xs font-mono text-gray-400">{Math.round(round.confidence * 100)}%</span>
+                      </div>
+                      <p className="text-xs text-gray-500 leading-relaxed">{round.argument}</p>
+                    </div>
+                  </div>
+                ))}
+                {deliberationTrace.consensus && (
+                  <div className="rounded-xl bg-blue-50 border border-blue-200 p-3 mt-1">
+                    <p className="text-[10px] font-semibold text-blue-600 uppercase tracking-widest mb-1">Consensus</p>
+                    <p className="text-xs text-blue-800">{deliberationTrace.consensus.rationale}</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         </motion.div>
+      )}
 
-        {/* ═══════════════════════════════════════════
-            ZONE 2: ACTION BLOCK (Consent + Approve)
-            ═══════════════════════════════════════════ */}
-        <motion.div variants={fadeUpVariant}>
-          <div className="glass-card glass-card-overlay rounded-2xl p-5 md:p-6 flex flex-col gap-4" style={{ borderTopWidth: 2, borderTopColor: 'var(--engine-execute)' }}>
+      {/* Confirmation Section */}
+      <motion.div variants={fadeUp}>
+        <Card className={cn(
+          'shadow-sm',
+          isAlreadyDecided ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-amber-50',
+        )}>
+          <CardContent className="p-6">
             {isAlreadyDecided ? (
               <div className="flex flex-col items-center gap-3 py-4">
-                <CheckCircle2 className="w-10 h-10" style={{ color: 'var(--state-healthy)' }} />
-                <p className="text-sm text-white/70 text-center">
-                  This action has been <span className="font-semibold text-white/90">{actionStatus}</span>.
+                <CheckCircle2 className="w-10 h-10 text-emerald-600" />
+                <p className="text-sm text-gray-700 text-center">
+                  This action has been <span className="font-semibold text-gray-900">{actionStatus}</span>.
                 </p>
-                <Link
-                  to="/execute"
-                  className={cn(buttonVariants({ variant: 'glass' }), 'rounded-xl px-6 py-2 text-sm border border-white/10')}
-                >
-                  Back to Queue
+                <Link to="/execute">
+                  <Button variant="outline">Back to Queue</Button>
                 </Link>
               </div>
             ) : (
-              <>
-                <label className="flex items-start gap-3 cursor-pointer group" data-slot="consent_scope">
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="text-sm font-semibold text-amber-800">Confirmation Required</h3>
+                    <p className="text-sm text-amber-700 mt-1">
+                      You are about to authorize the AI agent to execute this transaction on your behalf.
+                      This action cannot be undone once market orders are placed.
+                    </p>
+                  </div>
+                </div>
+
+                <label className="flex items-start gap-3 cursor-pointer group">
                   <input
                     type="checkbox"
                     checked={consentReviewed}
                     onChange={(e) => setConsentReviewed(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded border-white/20 bg-transparent accent-amber-500 cursor-pointer"
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-amber-600 cursor-pointer"
                   />
-                  <span className="text-sm text-white/70 leading-relaxed group-hover:text-white/90 transition-colors">
-                    I've reviewed the details and understand what this action will do.
+                  <span className="text-sm text-gray-700 leading-relaxed group-hover:text-gray-900 transition-colors">
+                    I understand and approve this transaction
                   </span>
                 </label>
 
-                {/* Tier 2: Slide-to-Authorize · Tier 1: Button */}
                 {isTier2 ? (
                   <div className="flex flex-col gap-3">
                     <SlideToApprove
@@ -207,18 +391,16 @@ export function ExecuteApproval() {
                       }}
                     />
                     <div className="flex items-center gap-3">
-                      <button
-                        className={cn(
-                          buttonVariants({ variant: 'glass', size: 'lg' }),
-                          'flex-1 rounded-2xl text-sm px-6 py-3 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer font-semibold',
-                        )}
+                      <Button
+                        variant="outline"
+                        className="flex-1"
                         onClick={() => setConfirmAction({ type: 'defer' })}
                       >
                         Defer
-                      </button>
+                      </Button>
                       <button
                         type="button"
-                        className="text-xs text-red-400/60 hover:text-red-400 transition-colors cursor-pointer py-1"
+                        className="text-xs text-red-500 hover:text-red-700 transition-colors cursor-pointer py-1"
                         onClick={() => {
                           setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'rejected' })
                           showToast({ message: `${action.id} rejected`, variant: 'info' })
@@ -231,36 +413,28 @@ export function ExecuteApproval() {
                   </div>
                 ) : (
                   <div className="flex flex-col sm:flex-row gap-3">
-                    <button
+                    <Button
                       disabled={!consentReviewed}
                       className={cn(
-                        buttonVariants({ variant: 'glass', size: 'lg' }),
-                        'flex-1 rounded-2xl text-sm px-6 py-3 font-semibold cursor-pointer transition-all',
+                        'flex-1',
                         consentReviewed
-                          ? 'border-transparent'
-                          : 'bg-white/5 text-white/30 border-white/5 cursor-not-allowed',
+                          ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                          : 'bg-gray-200 text-gray-400 cursor-not-allowed',
                       )}
-                      style={consentReviewed ? {
-                        background: 'color-mix(in srgb, var(--engine-execute) 20%, transparent)',
-                        color: 'var(--engine-execute)',
-                        borderColor: 'color-mix(in srgb, var(--engine-execute) 30%, transparent)',
-                      } : undefined}
                       onClick={() => setConfirmAction({ type: 'approve' })}
                     >
-                      Approve Action
-                    </button>
-                    <button
-                      className={cn(
-                        buttonVariants({ variant: 'glass', size: 'lg' }),
-                        'flex-1 rounded-2xl text-sm px-6 py-3 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer font-semibold',
-                      )}
+                      Approve & Execute
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="flex-1"
                       onClick={() => setConfirmAction({ type: 'defer' })}
                     >
                       Defer
-                    </button>
+                    </Button>
                     <button
                       type="button"
-                      className="text-xs text-red-400/60 hover:text-red-400 transition-colors cursor-pointer py-1 sm:w-auto"
+                      className="text-xs text-red-500 hover:text-red-700 transition-colors cursor-pointer py-1 sm:w-auto"
                       onClick={() => {
                         setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'rejected' })
                         showToast({ message: `${action.id} rejected`, variant: 'info' })
@@ -273,199 +447,78 @@ export function ExecuteApproval() {
                 )}
 
                 {!consentReviewed && (
-                  <p className="text-[10px] text-amber-400/50 text-center">
+                  <p className="text-xs text-amber-600 text-center">
                     Review the execution plan and check the consent box to enable approval.
                   </p>
                 )}
-              </>
-            )}
-          </div>
-        </motion.div>
-
-        {/* ═══════════════════════════════════════════
-            ZONE 3: DETAILS ACCORDION
-            ═══════════════════════════════════════════ */}
-        <details className="group">
-          <summary className="flex items-center gap-2 cursor-pointer list-none text-white/40 hover:text-white/60 transition-colors py-2">
-            <span className="text-xs font-semibold uppercase tracking-widest">Full Analysis</span>
-            <span className="text-xs text-white/30 group-open:rotate-180 transition-transform">▾</span>
-          </summary>
-          <div className="flex flex-col gap-4 md:gap-6 mt-4">
-            {/* Execution Plan */}
-            <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 flex items-center gap-2">
-                <Zap size={12} className="text-amber-500/70" />
-                Execution Plan
-              </h2>
-              <div className="flex flex-col gap-3">
-                {action.steps.map((step, i) => (
-                  <div key={step.id} className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-mono font-bold border border-white/10 text-white/40 shrink-0">
-                      {i + 1}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <span className="text-sm text-white/70">{step.label}</span>
-                      {step.requiresConsent && (
-                        <ShieldCheck size={10} className="inline ml-1.5 text-amber-400/60" />
-                      )}
-                    </div>
-                    {step.estimatedDuration && (
-                      <span className="text-[10px] font-mono text-white/30 shrink-0">{step.estimatedDuration}</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-white/40 font-mono">
-                {action.steps.length} steps · {action.steps.filter(s => s.estimatedDuration).map(s => s.estimatedDuration).join(' + ')}
-              </p>
-            </div>
-
-            {/* The Catalyst */}
-            <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50 flex items-center gap-2">
-                <Zap size={12} className="text-amber-500/70" />
-                The Catalyst
-              </h2>
-              <div className="flex items-center gap-2">
-                <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest border border-white/[0.05] ${ENGINE_BADGE_CLASS[action.sourceEngine]}`}>
-                  {action.sourceEngine}
-                </span>
-                <ArrowRight size={12} className="text-white/20" />
-                <span className="text-xs text-white/50">Execute</span>
-              </div>
-              <p className="text-sm text-white/70 leading-relaxed">{action.description}</p>
-            </div>
-
-            {/* Decision Drivers (SHAP) + ProofChips */}
-            <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">Decision Drivers</h2>
-              <p className="text-sm text-white/60 leading-relaxed">
-                Primary signal: <span className="text-white/80 font-medium">{action.factors[0]?.label}</span> at {action.factors[0]?.value.toFixed(2)}, supported by {action.factors.length - 1} additional factors.
-              </p>
-              <ShapWaterfall
-                factors={action.factors.map((f) => ({ name: f.label, value: f.value }))}
-                baseValue={50}
-                className="mt-1"
-              />
-              {action.factors.length > 1 && (
-                <ProofChips
-                  total={action.amountLabel}
-                  parts={action.factors.slice(0, 3).map((f) => ({ label: f.label, value: Math.round(f.value * 100) }))}
-                  formatValue={(v) => `${v}%`}
-                />
-              )}
-            </div>
-
-            {/* Deliberation Trace (if available) */}
-            {deliberationTrace && (
-              <div className="glass-card glass-card-overlay p-5 md:p-6 flex flex-col gap-4">
-                <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">Deliberation Trace</h2>
-                <div className="flex flex-col gap-3">
-                  {deliberationTrace.rounds.map((round, i) => (
-                    <div key={i} className="flex items-start gap-3 text-sm">
-                      <div className={cn(
-                        'w-2 h-2 rounded-full mt-1.5 shrink-0',
-                        round.position === 'support' && 'bg-emerald-400',
-                        round.position === 'oppose' && 'bg-red-400',
-                        round.position === 'modify' && 'bg-amber-400',
-                      )} />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-semibold text-white/80">{round.roleId}</span>
-                          <span className={cn(
-                            'text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-full border',
-                            round.position === 'support' && 'text-emerald-400/80 border-emerald-500/20 bg-emerald-500/5',
-                            round.position === 'oppose' && 'text-red-400/80 border-red-500/20 bg-red-500/5',
-                            round.position === 'modify' && 'text-amber-400/80 border-amber-500/20 bg-amber-500/5',
-                          )}>
-                            {round.position}
-                          </span>
-                          <span className="text-[10px] font-mono text-white/30">{Math.round(round.confidence * 100)}%</span>
-                        </div>
-                        <p className="text-xs text-white/50 leading-relaxed">{round.argument}</p>
-                      </div>
-                    </div>
-                  ))}
-                  {deliberationTrace.consensus && (
-                    <div className="rounded-xl bg-blue-500/5 border border-blue-500/15 p-3 mt-1">
-                      <p className="text-[10px] font-semibold text-blue-400/80 uppercase tracking-widest mb-1">Consensus</p>
-                      <p className="text-xs text-white/60">{deliberationTrace.consensus.rationale}</p>
-                    </div>
-                  )}
-                </div>
               </div>
             )}
-          </div>
-        </details>
-
+          </CardContent>
+        </Card>
       </motion.div>
 
       {/* Confirmation Dialog */}
       {confirmAction && (
         <Dialog open={true} onOpenChange={(open) => !open && setConfirmAction(null)}>
-          <DialogContent
-            className="max-w-md"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="execute-approval-confirm-title"
-            style={{ background: 'var(--bg, #080C14)', border: '1px solid rgba(255,255,255,0.12)' }}
-          >
+          <DialogContent className="max-w-md bg-white border border-gray-200" role="dialog" aria-modal="true">
             <div className="flex flex-col gap-4 p-2">
               <div>
-                <p
-                  className="text-xs font-semibold uppercase tracking-widest mb-1"
-                  style={{ color: confirmAction.type === 'approve' ? 'var(--engine-execute)' : 'var(--state-warning)' }}
-                >
+                <p className={cn(
+                  'text-xs font-semibold uppercase tracking-widest mb-1',
+                  confirmAction.type === 'approve' ? 'text-emerald-600' : 'text-amber-600',
+                )}>
                   {confirmAction.type === 'approve' ? 'Confirm Approval' : 'Confirm Deferral'}
                 </p>
-                <h3 id="execute-approval-confirm-title" className="text-base font-semibold text-white">{action.title}</h3>
-                <p className="text-xs text-white/50 mt-1">{action.description}</p>
+                <h3 className="text-base font-semibold text-gray-900">{action.title}</h3>
+                <p className="text-xs text-gray-500 mt-1">{action.description}</p>
               </div>
 
-              <div className="rounded-xl p-3 bg-white/[0.02] border border-white/[0.06]">
-                <p className="text-[10px] uppercase tracking-wider mb-2 text-white/40">Execution plan ({action.steps.length} steps)</p>
+              <div className="rounded-xl p-3 bg-gray-50 border border-gray-200">
+                <p className="text-[10px] uppercase tracking-wider mb-2 text-gray-400">Execution plan ({action.steps.length} steps)</p>
                 <div className="space-y-1.5">
                   {action.steps.map((s, i) => (
                     <div key={s.id} className="flex items-center gap-2 text-xs">
-                      <span className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-mono border border-white/10 text-white/40">{i + 1}</span>
-                      <span className="text-white/60">{s.label}</span>
-                      {s.requiresConsent && <ShieldCheck size={10} className="text-amber-400/60 shrink-0" />}
+                      <span className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-mono border border-gray-200 text-gray-500 bg-white">{i + 1}</span>
+                      <span className="text-gray-600">{s.label}</span>
+                      {s.requiresConsent && <ShieldCheck size={10} className="text-amber-500 shrink-0" />}
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div
-                className="rounded-xl p-3"
-                style={{
-                  background: confirmAction.type === 'approve' ? 'rgba(34,197,94,0.05)' : 'rgba(251,191,36,0.08)',
-                  border: `1px solid ${confirmAction.type === 'approve' ? 'rgba(34,197,94,0.2)' : 'rgba(251,191,36,0.22)'}`,
-                }}
-              >
-                <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: confirmAction.type === 'approve' ? 'var(--engine-protect)' : 'var(--engine-execute)' }}>
+              <div className={cn(
+                'rounded-xl p-3',
+                confirmAction.type === 'approve' ? 'bg-emerald-50 border border-emerald-200' : 'bg-amber-50 border border-amber-200',
+              )}>
+                <p className={cn(
+                  'text-[10px] uppercase tracking-wider mb-1',
+                  confirmAction.type === 'approve' ? 'text-emerald-600' : 'text-amber-600',
+                )}>
                   {confirmAction.type === 'approve' ? 'Expected outcome' : 'If deferred'}
                 </p>
-                <p className="text-xs text-white/70">
+                <p className="text-xs text-gray-700">
                   {confirmAction.type === 'approve' ? action.impact.approved : action.impact.deferred}
                 </p>
               </div>
 
               <div className="flex items-center gap-2 pt-1">
-                <button
-                  className={cn(buttonVariants({ variant: confirmAction.type === 'approve' ? 'glass' : 'secondary' }), 'w-full rounded-xl text-sm cursor-pointer')}
+                <Button
+                  className={cn(
+                    'w-full',
+                    confirmAction.type === 'approve'
+                      ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                      : 'bg-amber-600 text-white hover:bg-amber-700',
+                  )}
                   onClick={handleConfirm}
                 >
                   {confirmAction.type === 'approve' ? 'Approve' : 'Defer'}
-                </button>
-                <button
-                  className={cn(buttonVariants({ variant: 'secondary' }), 'w-full rounded-xl text-sm cursor-pointer')}
-                  onClick={() => setConfirmAction(null)}
-                >
+                </Button>
+                <Button variant="outline" className="w-full" onClick={() => setConfirmAction(null)}>
                   Cancel
-                </button>
+                </Button>
               </div>
 
-              <p className="text-[10px] text-white/25 text-center">
+              <p className="text-[10px] text-gray-400 text-center">
                 Confidence {Math.round(action.confidence * 100)}% · {action.steps.length} steps
               </p>
             </div>
@@ -478,57 +531,58 @@ export function ExecuteApproval() {
         <motion.div
           initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          style={{ background: 'rgba(10, 20, 35, 0.95)' }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-white/95 backdrop-blur-sm"
         >
-          <div className="glass-card glass-card-overlay rounded-3xl p-8 md:p-10 max-w-md w-full mx-4 flex flex-col gap-6">
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-white/50">
-              Execution Stream
-            </h2>
-            <div className="flex flex-col gap-4">
-              {EXECUTION_STEPS.map((step, i) => {
-                const status = getStepStatus(step.phase, executionPhase)
-                return (
-                  <div key={step.phase} className="flex items-center gap-3">
-                    <div className={cn(
-                      'w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-500',
-                      status === 'completed' && 'border-emerald-500/40 bg-emerald-500/10',
-                      status === 'active' && 'border-amber-400/40 bg-amber-400/10',
-                      status === 'pending' && 'border-white/10 bg-white/[0.02]',
-                      status === 'active' && !prefersReducedMotion && 'animate-pulse',
-                    )}>
-                      {status === 'completed' ? (
-                        <CheckCircle2 size={14} style={{ color: 'var(--state-healthy)' }} />
-                      ) : status === 'active' ? (
-                        <Loader2 size={14} className={prefersReducedMotion ? '' : 'animate-spin'} style={{ color: 'var(--engine-execute)' }} />
-                      ) : (
-                        <span className="text-[10px] font-mono text-white/30">{i + 1}</span>
-                      )}
-                    </div>
-                    <div className="flex flex-col">
-                      <span className={cn(
-                        'text-sm',
-                        status === 'active' ? 'text-white/90' : status === 'completed' ? 'text-white/60' : 'text-white/30',
+          <Card className="border border-border bg-card shadow-lg max-w-md w-full mx-4">
+            <CardContent className="p-8">
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-gray-400 mb-6">
+                Execution Stream
+              </h2>
+              <div className="flex flex-col gap-4">
+                {EXECUTION_STEPS.map((step, i) => {
+                  const status = getStepStatus(step.phase, executionPhase)
+                  return (
+                    <div key={step.phase} className="flex items-center gap-3">
+                      <div className={cn(
+                        'w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-500',
+                        status === 'completed' && 'border-emerald-300 bg-emerald-50',
+                        status === 'active' && 'border-amber-300 bg-amber-50',
+                        status === 'pending' && 'border-gray-200 bg-gray-50',
+                        status === 'active' && !prefersReducedMotion && 'animate-pulse',
                       )}>
-                        {step.label}
-                      </span>
-                      {status === 'active' && (
-                        <span className="text-[10px] text-white/30 font-mono">{step.detail}</span>
-                      )}
+                        {status === 'completed' ? (
+                          <CheckCircle2 size={14} className="text-emerald-600" />
+                        ) : status === 'active' ? (
+                          <Loader2 size={14} className={cn('text-amber-600', !prefersReducedMotion && 'animate-spin')} />
+                        ) : (
+                          <span className="text-[10px] font-mono text-gray-400">{i + 1}</span>
+                        )}
+                      </div>
+                      <div className="flex flex-col">
+                        <span className={cn(
+                          'text-sm',
+                          status === 'active' ? 'text-gray-900' : status === 'completed' ? 'text-gray-500' : 'text-gray-300',
+                        )}>
+                          {step.label}
+                        </span>
+                        {status === 'active' && (
+                          <span className="text-[10px] text-gray-400 font-mono">{step.detail}</span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
-            </div>
-            {executionPhase === 'confirmed' && (
-              <p className="text-xs text-center font-mono" style={{ color: 'var(--state-healthy)' }}>
-                Action confirmed. Redirecting...
-              </p>
-            )}
-          </div>
+                  )
+                })}
+              </div>
+              {executionPhase === 'confirmed' && (
+                <p className="text-xs text-center font-mono text-emerald-600 mt-6">
+                  Action confirmed. Redirecting...
+                </p>
+              )}
+            </CardContent>
+          </Card>
         </motion.div>
       )}
-    </div>
+    </motion.div>
   )
 }
 

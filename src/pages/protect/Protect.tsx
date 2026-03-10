@@ -149,9 +149,7 @@ export default function ProtectPage() {
                 <Link to="/protect/threats">
                   <Button variant="outline" className="text-foreground">View All Threats</Button>
                 </Link>
-                <Link to="/govern/audit">
-                  <Button className="bg-emerald-600 text-white hover:bg-emerald-700">Audit Trail</Button>
-                </Link>
+                <Button className="bg-emerald-600 text-white hover:bg-emerald-700">Run Full Scan</Button>
               </div>
             </div>
           </CardContent>

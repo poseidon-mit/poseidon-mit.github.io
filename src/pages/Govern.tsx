@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   Scale,
@@ -10,6 +10,10 @@ import {
   Eye,
   ShieldCheck,
   Flag,
+  Search,
+  Download,
+  Database,
+  Shield,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -20,6 +24,7 @@ import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 import { Link } from '@/router'
+import { cn } from '@/lib/utils'
 import {
   selectGovernAuditSummaryView,
   selectGovernAuditEntries,
@@ -42,18 +47,42 @@ const ENGINE_BADGE: Record<string, string> = {
   Govern: 'bg-blue-50 text-blue-700',
 }
 
+type EngineFilter = 'All' | 'Protect' | 'Grow' | 'Execute'
+
 /* ── Page Component ── */
 export default function GovernPage() {
   usePageTitle('Govern')
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp, staggerContainer } = getMotionPreset(prefersReducedMotion)
+  const [engineFilter, setEngineFilter] = useState<EngineFilter>('All')
+  const [searchQuery, setSearchQuery] = useState('')
 
   const summary = useMemo(() => selectGovernAuditSummaryView(), [])
   const auditEntries = useMemo(() => selectGovernAuditEntries(), [])
   const engineBreakdown = useMemo(() => selectGovernEngineBreakdown(), [])
   const council = useMemo(() => selectCouncilMetrics(), [])
 
-  const recentEntries = auditEntries.slice(0, 6)
+  const filteredEntries = useMemo(() => {
+    let entries = auditEntries
+    if (engineFilter !== 'All') {
+      entries = entries.filter(e => e.type === engineFilter)
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase()
+      entries = entries.filter(e =>
+        e.action.toLowerCase().includes(q) || e.id.toLowerCase().includes(q)
+      )
+    }
+    return entries.slice(0, 8)
+  }, [auditEntries, engineFilter, searchQuery])
+
+  const engineCounts = useMemo(() => {
+    const counts: Record<string, number> = { Protect: 0, Grow: 0, Execute: 0 }
+    for (const e of auditEntries) {
+      if (counts[e.type] !== undefined) counts[e.type]++
+    }
+    return counts
+  }, [auditEntries])
 
   return (
     <motion.div
@@ -70,7 +99,7 @@ export default function GovernPage() {
         <div>
           <h1 className="text-2xl font-bold text-foreground">Govern</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Compliance monitoring and audit trail
+            Full auditability and compliance
           </p>
         </div>
         <Badge variant="outline" className={
@@ -92,9 +121,9 @@ export default function GovernPage() {
         </Badge>
       </motion.div>
 
-      {/* Hero: Compliance Score */}
+      {/* Hero: Compliance Score + Actions Logged */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border-blue-200 bg-blue-50/50 shadow-sm">
           <CardContent className="p-6">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-6">
@@ -114,9 +143,9 @@ export default function GovernPage() {
                   <span className="absolute text-2xl font-bold text-foreground">{summary.complianceScore}</span>
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-foreground">Compliance Score</h2>
+                  <h2 className="text-lg font-semibold text-foreground">{summary.total} AI actions logged</h2>
                   <p className="text-sm text-muted-foreground">
-                    {summary.complianceScore >= 90 ? 'Strong compliance posture' : 'Needs attention'}
+                    Complete transparency into all automated decisions
                   </p>
                   <div className="mt-2 flex flex-wrap items-center gap-4 text-sm">
                     <span className="flex items-center gap-1 text-emerald-600">
@@ -139,8 +168,12 @@ export default function GovernPage() {
                 </div>
               </div>
               <div className="flex gap-3">
+                <Button className="bg-blue-600 text-white hover:bg-blue-700">
+                  <Download className="mr-1.5 h-4 w-4" />
+                  Export Report
+                </Button>
                 <Link to="/govern/audit">
-                  <Button className="bg-blue-600 text-white hover:bg-blue-700">View Full Ledger</Button>
+                  <Button variant="outline" className="text-foreground">View Full Ledger</Button>
                 </Link>
               </div>
             </div>
@@ -148,170 +181,178 @@ export default function GovernPage() {
         </Card>
       </motion.div>
 
-      {/* Summary Cards */}
-      <motion.div variants={fadeUp} className="grid gap-4 sm:grid-cols-3">
-        <Card className="border border-border bg-card shadow-sm">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
-                <FileText className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Decisions Audited</p>
-                <p className="text-xl font-bold text-foreground">{summary.total}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Engine Filter Tabs */}
+      <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2">
+        {(['All', 'Protect', 'Grow', 'Execute'] as EngineFilter[]).map(engine => (
+          <button
+            key={engine}
+            onClick={() => setEngineFilter(engine)}
+            className={cn(
+              'px-4 py-2 rounded-lg text-sm font-semibold border transition-colors',
+              engineFilter === engine
+                ? 'bg-blue-100 text-blue-700 border-blue-200'
+                : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-700',
+            )}
+          >
+            {engine} {engine === 'All' ? `(${auditEntries.length})` : `(${engineCounts[engine] ?? 0})`}
+          </button>
+        ))}
+        <div className="flex-1" />
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search logs..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9 pr-3 py-2 rounded-lg border border-gray-200 bg-white text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-300 focus:ring-1 focus:ring-blue-200 w-48"
+          />
+        </div>
+      </motion.div>
 
+      {/* Audit Log */}
+      <motion.div variants={fadeUp}>
         <Card className="border border-border bg-card shadow-sm">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50">
-                <Clock className="h-5 w-5 text-amber-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Pending Review</p>
-                <p className="text-xl font-bold text-foreground">{summary.pending}</p>
-              </div>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                <Scale className="h-5 w-5 text-blue-600" />
+                Audit Log
+              </CardTitle>
+              <Link to="/govern/audit">
+                <Button variant="ghost" size="sm" className="text-sm text-muted-foreground">
+                  View All <ChevronRight className="ml-1 h-3.5 w-3.5" />
+                </Button>
+              </Link>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-border bg-card shadow-sm">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50">
-                <Flag className="h-5 w-5 text-red-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Flagged</p>
-                <p className="text-xl font-bold text-red-600">{summary.flagged}</p>
-              </div>
+          </CardHeader>
+          <CardContent>
+            <div className="divide-y divide-border">
+              {filteredEntries.map((entry) => {
+                const statusCfg = STATUS_ICON[entry.status] ?? STATUS_ICON['Verified']
+                const StatusIcon = statusCfg.icon
+                return (
+                  <div key={entry.id} className="flex items-center justify-between py-4 first:pt-0 last:pb-0">
+                    <div className="flex items-center gap-4">
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-full ${statusCfg.color}`}>
+                        <StatusIcon className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">{entry.action}</p>
+                        <div className="mt-1 flex items-center gap-2">
+                          <Badge variant="outline" className={ENGINE_BADGE[entry.type] ?? 'bg-muted text-muted-foreground'}>
+                            {entry.type}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">{entry.id}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="hidden text-right sm:block">
+                        <Badge variant="outline" className={
+                          entry.status === 'Verified' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' :
+                          entry.status === 'Flagged' ? 'border-red-200 bg-red-50 text-red-700' :
+                          'border-amber-200 bg-amber-50 text-amber-700'
+                        }>
+                          {entry.status}
+                        </Badge>
+                      </div>
+                      <Link to={`/govern/audit-detail?auditId=${entry.id}`}>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground">
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </CardContent>
         </Card>
       </motion.div>
 
-      {/* 2-Column Layout */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Left Column (2/3) */}
-        <div className="space-y-6 lg:col-span-2">
-          {/* Recent Audit Log */}
-          <motion.div variants={fadeUp}>
-            <Card className="border border-border bg-card shadow-sm">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
-                    <Scale className="h-5 w-5 text-blue-600" />
-                    Recent Audit Log
-                  </CardTitle>
-                  <Link to="/govern/audit">
-                    <Button variant="ghost" size="sm" className="text-sm text-muted-foreground">
-                      View All <ChevronRight className="ml-1 h-3.5 w-3.5" />
-                    </Button>
-                  </Link>
+      {/* 2-Column: Compliance + Data Retention */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Compliance Status */}
+        <motion.div variants={fadeUp}>
+          <Card className="border border-border bg-card shadow-sm h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                <Shield className="h-5 w-5 text-blue-600" />
+                Compliance Status
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {[
+                { label: 'All actions logged', ok: true },
+                { label: 'Human approval on sensitive actions', ok: true },
+                { label: 'Audit trail complete', ok: true },
+                { label: 'No anomalies detected', ok: summary.flagged === 0 },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center gap-3">
+                  <CheckCircle2 className={cn('h-5 w-5', item.ok ? 'text-emerald-500' : 'text-gray-300')} />
+                  <span className={cn('text-sm', item.ok ? 'text-gray-700' : 'text-gray-400')}>{item.label}</span>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="divide-y divide-border">
-                  {recentEntries.map((entry) => {
-                    const statusCfg = STATUS_ICON[entry.status] ?? STATUS_ICON['Verified']
-                    const StatusIcon = statusCfg.icon
-                    return (
-                      <div key={entry.id} className="flex items-center justify-between py-4 first:pt-0 last:pb-0">
-                        <div className="flex items-center gap-4">
-                          <div className={`flex h-10 w-10 items-center justify-center rounded-full ${statusCfg.color}`}>
-                            <StatusIcon className="h-5 w-5" />
-                          </div>
-                          <div>
-                            <p className="font-medium text-foreground">{entry.action}</p>
-                            <div className="mt-1 flex items-center gap-2">
-                              <Badge variant="outline" className={ENGINE_BADGE[entry.type] ?? 'bg-muted text-muted-foreground'}>
-                                {entry.type}
-                              </Badge>
-                              <span className="text-xs text-muted-foreground">{entry.id}</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="hidden text-right sm:block">
-                            <Badge variant="outline" className={
-                              entry.status === 'Verified' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' :
-                              entry.status === 'Flagged' ? 'border-red-200 bg-red-50 text-red-700' :
-                              'border-amber-200 bg-amber-50 text-amber-700'
-                            }>
-                              {entry.status}
-                            </Badge>
-                          </div>
-                          <Link to={`/govern/audit-detail?auditId=${entry.id}`}>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground">
-                              <ChevronRight className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
+              ))}
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        {/* Right Column (1/3) */}
-        <div className="space-y-6">
-          {/* Engine Breakdown */}
-          <motion.div variants={fadeUp}>
-            <Card className="border border-border bg-card shadow-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
-                  <ShieldCheck className="h-5 w-5 text-blue-600" />
-                  Engine Breakdown
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-5">
-                {engineBreakdown.map((item) => (
-                  <div key={item.engine} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-foreground">{item.engine}</span>
-                      <span className="text-sm text-muted-foreground">{item.count} decisions ({item.percent}%)</span>
-                    </div>
-                    <Progress value={item.percent} />
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Council Metrics */}
-          <motion.div variants={fadeUp}>
-            <Card className="border border-border bg-card shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-foreground">Council Metrics</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3">
-                  <span className="text-sm text-muted-foreground">False Positive Reduction</span>
-                  <span className="font-semibold text-foreground">{formatPercent(council.falsePositiveReductionPercent / 100)}</span>
+        {/* Data Retention */}
+        <motion.div variants={fadeUp}>
+          <Card className="border border-border bg-card shadow-sm h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                <Database className="h-5 w-5 text-blue-600" />
+                Data Retention
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-500">Logs retained</span>
+                <span className="font-semibold text-gray-900">7 years</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-500">Last export</span>
+                <span className="font-semibold text-gray-900">Mar 1, 2026</span>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500">Storage</span>
+                  <span className="font-semibold text-gray-900">2.4 MB / 1 GB</span>
                 </div>
-                <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3">
-                  <span className="text-sm text-muted-foreground">Human Override Rate</span>
-                  <span className="font-semibold text-foreground">{formatPercent(council.humanOverrideRate / 100)}</span>
-                </div>
-                <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3">
-                  <span className="text-sm text-muted-foreground">Avg Decision Time</span>
-                  <span className="font-semibold text-foreground">{council.avgTimeToDecisionMinutes} min</span>
-                </div>
-                <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3">
-                  <span className="text-sm text-muted-foreground">Model Disagreement</span>
-                  <span className="font-semibold text-foreground">{formatPercent(council.modelDisagreementRate / 100)}</span>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
+                <Progress value={0.24} />
+              </div>
+              <Button variant="outline" size="sm" className="w-full text-gray-700">
+                Configure Retention
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
+
+      {/* Engine Breakdown */}
+      <motion.div variants={fadeUp}>
+        <Card className="border border-border bg-card shadow-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
+              <ShieldCheck className="h-5 w-5 text-blue-600" />
+              Engine Breakdown
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            {engineBreakdown.map((item) => (
+              <div key={item.engine} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-foreground">{item.engine}</span>
+                  <span className="text-sm text-muted-foreground">{item.count} decisions ({item.percent}%)</span>
+                </div>
+                <Progress value={item.percent} />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </motion.div>
     </motion.div>
   )
 }

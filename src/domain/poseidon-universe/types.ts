@@ -91,6 +91,7 @@ export interface ProtectThreatEntity {
   amountUsd: number
   confidence: number
   severity: 'Critical' | 'High' | 'Medium' | 'Low'
+  status: 'pending' | 'resolved'
   description: string
   relativeTime: string
   sortOrder: number
@@ -99,6 +100,7 @@ export interface ProtectThreatEntity {
   regulatoryFlag?: string
   timing?: ThreatTiming
   factors?: ThreatFactor[]
+  resolvedAt?: string
   /** Detail-screen fields — only render if present */
   account?: string
   location?: string

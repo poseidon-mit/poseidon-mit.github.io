@@ -1,309 +1,362 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Shield, AlertTriangle, ArrowRight, ArrowLeft } from 'lucide-react'
+import { Shield, AlertTriangle, CheckCircle2, ChevronRight, ArrowLeft, Filter, Clock } from 'lucide-react'
 import { Link } from '@/router'
-import { EmptyState, EngineBadge, PrioritySpotlight } from '@/components/poseidon'
-import { selectSpotlightThreat } from '@/domain/poseidon-universe'
+import { selectAccounts } from '@/domain/poseidon-universe'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
-import { cn } from '@/lib/utils'
-import { CARD_TIER_STYLES, focusGlowStyle, type CardTier } from '@/lib/card-variants'
-import { THREATS, severityConfig } from './protect-data'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
+import { THREATS } from './protect-data'
 import type { ThreatRow, ThreatSeverity } from './protect-data'
 import { useDismissedAlerts } from './useDismissedAlerts'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 
-type SortMode = 'critical' | 'confidence' | 'recent'
+/* ── Severity display config ── */
 
-const SORT_LABELS: Record<SortMode, string> = {
-  critical: 'Critical first',
-  confidence: 'Highest confidence',
-  recent: 'Most recent',
+const severityBadgeConfig: Record<ThreatSeverity, { bg: string; text: string; border: string }> = {
+  Critical: { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-200' },
+  High: { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-200' },
+  Medium: { bg: 'bg-amber-100', text: 'text-amber-700', border: 'border-amber-200' },
+  Low: { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-200' },
 }
 
-function getThreatTier(severity: ThreatSeverity): CardTier {
-  if (severity === 'Critical') return 'focus'
-  if (severity === 'High') return 'standard'
-  return 'compact'
+const severityIconColor: Record<ThreatSeverity, string> = {
+  Critical: 'text-red-600',
+  High: 'text-red-600',
+  Medium: 'text-amber-600',
+  Low: 'text-blue-600',
 }
+
+const severityIconBg: Record<ThreatSeverity, string> = {
+  Critical: 'bg-red-100',
+  High: 'bg-red-100',
+  Medium: 'bg-amber-100',
+  Low: 'bg-blue-100',
+}
+
+/* ── Main Page ── */
 
 export default function ProtectThreatsPage() {
-  usePageTitle('All Threats')
+  usePageTitle('Security Threats')
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp, staggerContainer } = getMotionPreset(prefersReducedMotion)
-  const [sort, setSort] = useState<SortMode>('critical')
   const { dismissed } = useDismissedAlerts()
 
+  const [accountFilter, setAccountFilter] = useState('all')
+  const [severityFilter, setSeverityFilter] = useState('all')
+  const [dateFilter, setDateFilter] = useState('7days')
+
   const activeThreats = useMemo(() => THREATS.filter(t => !dismissed.has(t.id)), [dismissed])
+  const accounts = useMemo(() => selectAccounts(), [])
 
-  // Spotlight: highest compositePriority threat always at top
-  const spotlightEntity = selectSpotlightThreat()
-  const spotlightId = spotlightEntity?.id ?? null
+  // Unique accounts from threats for filter dropdown
+  const threatAccounts = useMemo(() => {
+    const accts = new Set(activeThreats.map(t => t.account).filter(Boolean))
+    return Array.from(accts) as string[]
+  }, [activeThreats])
 
-  const spotlightThreat = useMemo(
-    () => (spotlightId ? activeThreats.find(t => t.id === spotlightId) ?? null : null),
-    [activeThreats, spotlightId],
-  )
-
-  const sorted = useMemo(() => {
-    const remaining = spotlightId
-      ? activeThreats.filter(t => t.id !== spotlightId)
-      : activeThreats
-    return [...remaining].sort((a, b) => {
-      if (sort === 'critical') {
-        const scoreA = severityConfig[a.severity].order * 100 + a.confidence * 100
-        const scoreB = severityConfig[b.severity].order * 100 + b.confidence * 100
-        return scoreB - scoreA
-      }
-      if (sort === 'confidence') return b.confidence - a.confidence
-      return b.sortTime - a.sortTime
+  // Apply filters
+  const filtered = useMemo(() => {
+    return activeThreats.filter(t => {
+      if (accountFilter !== 'all' && t.account !== accountFilter) return false
+      if (severityFilter !== 'all' && t.severity !== severityFilter) return false
+      return true
     })
-  }, [activeThreats, sort, spotlightId])
+  }, [activeThreats, accountFilter, severityFilter])
 
-  const criticalCount = activeThreats.filter(t => t.severity === 'Critical').length
+  const pendingThreats = useMemo(() => filtered.filter(t => t.status === 'pending'), [filtered])
+  const resolvedThreats = useMemo(() => filtered.filter(t => t.status === 'resolved'), [filtered])
+
+  const clearFilters = () => {
+    setAccountFilter('all')
+    setSeverityFilter('all')
+    setDateFilter('7days')
+  }
+
+  const hasActiveFilters = accountFilter !== 'all' || severityFilter !== 'all' || dateFilter !== '7days'
 
   return (
     <motion.main
       id="main-content"
       role="main"
-      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 pb-12`}
+      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#F8F7F4] min-h-screen`}
       style={PAGE_CONTENT_STYLE}
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
     >
+      {/* Back link */}
+      <motion.div variants={fadeUp}>
+        <Link
+          to="/protect"
+          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Protect
+        </Link>
+      </motion.div>
+
       {/* Header */}
-      <motion.section variants={staggerContainer} className="flex flex-col gap-5">
+      <motion.div variants={fadeUp} className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100">
+          <Shield className="h-5 w-5 text-red-600" />
+        </div>
         <div>
-          <Link
-            to="/protect"
-            className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors text-sm"
-          >
-            <ArrowLeft size={16} />
-            Back to Protect
-          </Link>
+          <h1 className="text-2xl font-bold text-gray-900">Security Threats</h1>
+          <p className="text-gray-500">Review and manage security alerts across all accounts</p>
+        </div>
+      </motion.div>
+
+      {/* Summary cards */}
+      <motion.div variants={fadeUp}>
+        <SummaryCards
+          pendingCount={pendingThreats.length}
+          resolvedCount={resolvedThreats.length}
+          accountsCount={accounts.length}
+        />
+      </motion.div>
+
+      {/* Filters */}
+      <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3">
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Filter className="h-4 w-4" />
+          <span>Filter:</span>
         </div>
 
-        <motion.div variants={fadeUp} className="flex flex-col gap-3">
-          <EngineBadge engine="protect" icon={Shield} label="Protect · All Threats" className="self-start" />
-          <h1 className="text-2xl md:text-3xl font-light tracking-tight text-white">
-            All Threats
-          </h1>
-          <p className="text-white/50 text-base">
-            {activeThreats.length === 0
-              ? 'No active threats.'
-              : `${activeThreats.length} threat${activeThreats.length !== 1 ? 's' : ''}${criticalCount > 0 ? ` · ${criticalCount} critical` : ''}`}
-          </p>
-        </motion.div>
+        <Select value={accountFilter} onValueChange={setAccountFilter}>
+          <SelectTrigger className="w-[180px] bg-white border-gray-200 text-gray-700">
+            <SelectValue placeholder="All Accounts" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Accounts</SelectItem>
+            {threatAccounts.map(acct => (
+              <SelectItem key={acct} value={acct}>{acct}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-        {/* Sort bar */}
-        <motion.div variants={fadeUp} className="flex items-center gap-2 flex-wrap">
-          {(Object.keys(SORT_LABELS) as SortMode[]).map(mode => (
-            <button
-              key={mode}
-              onClick={() => setSort(mode)}
-              className={cn(
-                'px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors',
-                sort === mode
-                  ? 'bg-[var(--engine-protect)]/15 text-[var(--engine-protect)] border-[var(--engine-protect)]/30'
-                  : 'bg-white/[0.04] text-white/40 border-white/10 hover:border-white/20 hover:text-white/60',
-              )}
-            >
-              {SORT_LABELS[mode]}
-            </button>
-          ))}
-        </motion.div>
-      </motion.section>
+        <Select value={severityFilter} onValueChange={setSeverityFilter}>
+          <SelectTrigger className="w-[140px] bg-white border-gray-200 text-gray-700">
+            <SelectValue placeholder="Severity" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Severity</SelectItem>
+            <SelectItem value="Critical">Critical</SelectItem>
+            <SelectItem value="High">High</SelectItem>
+            <SelectItem value="Medium">Medium</SelectItem>
+            <SelectItem value="Low">Low</SelectItem>
+          </SelectContent>
+        </Select>
 
-      {/* Spotlight threat */}
-      {spotlightThreat && (
-        <motion.div variants={fadeUp}>
-          <Link to={`/protect/alert-detail?alertId=${spotlightThreat.id}`} className="block">
-            <PrioritySpotlight engine="protect">
-              <SpotlightCard threat={spotlightThreat} />
-            </PrioritySpotlight>
-          </Link>
-        </motion.div>
-      )}
+        <Select value={dateFilter} onValueChange={setDateFilter}>
+          <SelectTrigger className="w-[140px] bg-white border-gray-200 text-gray-700">
+            <SelectValue placeholder="Date Range" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="today">Today</SelectItem>
+            <SelectItem value="7days">Last 7 Days</SelectItem>
+            <SelectItem value="30days">Last 30 Days</SelectItem>
+            <SelectItem value="all">All Time</SelectItem>
+          </SelectContent>
+        </Select>
 
-      {/* More threats separator */}
-      {spotlightThreat && sorted.length > 0 && (
-        <motion.div variants={fadeUp} className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-white/[0.08]" />
-          <span className="text-xs font-mono text-white/30 uppercase tracking-widest shrink-0">
-            {sorted.length} more threat{sorted.length !== 1 ? 's' : ''}
-          </span>
-          <div className="flex-1 h-px bg-white/[0.08]" />
-        </motion.div>
-      )}
+        {hasActiveFilters && (
+          <Button variant="ghost" size="sm" className="text-gray-500" onClick={clearFilters}>
+            Clear
+          </Button>
+        )}
+      </motion.div>
 
-      {/* Threat list */}
-      {activeThreats.length === 0 ? (
-        <motion.div variants={fadeUp}>
-          <div className="glass-card glass-card-overlay rounded-xl p-12 flex items-center justify-center">
-            <EmptyState
-              icon={Shield}
-              title="No active threats"
-              description="Threat feed is clear right now."
-              accentColor="var(--engine-protect)"
-            />
-          </div>
-        </motion.div>
-      ) : sorted.length > 0 ? (
-        <motion.div variants={fadeUp} className="flex flex-col gap-3">
-          {sorted.map(threat => (
-            <ThreatCard key={threat.id} threat={threat} />
-          ))}
-        </motion.div>
-      ) : null}
+      {/* Tabs: Pending / Resolved */}
+      <motion.div variants={fadeUp}>
+        <Tabs defaultValue="pending" className="w-full">
+          <TabsList className="bg-gray-100">
+            <TabsTrigger value="pending" className="gap-2">
+              <Clock className="h-4 w-4" />
+              Pending ({pendingThreats.length})
+            </TabsTrigger>
+            <TabsTrigger value="resolved" className="gap-2">
+              <CheckCircle2 className="h-4 w-4" />
+              Resolved ({resolvedThreats.length})
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="pending" className="mt-4 space-y-3">
+            {pendingThreats.length === 0 ? (
+              <InlineEmptyState
+                icon={<CheckCircle2 className="h-12 w-12 text-green-500" />}
+                title="All clear!"
+                description="No pending threats to review"
+              />
+            ) : (
+              pendingThreats.map(threat => (
+                <ThreatCard key={threat.id} threat={threat} />
+              ))
+            )}
+          </TabsContent>
+
+          <TabsContent value="resolved" className="mt-4 space-y-3">
+            {resolvedThreats.length === 0 ? (
+              <InlineEmptyState
+                icon={<Clock className="h-12 w-12 text-gray-400" />}
+                title="No history yet"
+                description="Resolved threats will appear here"
+              />
+            ) : (
+              resolvedThreats.map(threat => (
+                <ThreatCard key={threat.id} threat={threat} />
+              ))
+            )}
+          </TabsContent>
+        </Tabs>
+      </motion.div>
     </motion.main>
   )
 }
 
-function SpotlightCard({ threat }: { threat: ThreatRow }) {
-  const config = severityConfig[threat.severity]
+/* ── Summary Cards ── */
 
+function SummaryCards({
+  pendingCount,
+  resolvedCount,
+  accountsCount,
+}: {
+  pendingCount: number
+  resolvedCount: number
+  accountsCount: number
+}) {
   return (
-    <div className="flex flex-col gap-4">
-      {/* Header row */}
-      <div className="flex items-center gap-3 flex-wrap">
-        <div
-          className="w-12 h-12 rounded-2xl flex items-center justify-center border shrink-0"
-          style={{
-            borderColor: `color-mix(in srgb, ${config.color} 30%, transparent)`,
-            background: `color-mix(in srgb, ${config.color} 10%, transparent)`,
-          }}
-        >
-          <AlertTriangle size={20} style={{ color: config.color }} />
-        </div>
-        <span className="text-base md:text-lg font-semibold text-white/90">{threat.counterparty}</span>
-        <span
-          className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border"
-          style={{
-            background: config.bg,
-            color: config.color,
-            borderColor: `color-mix(in srgb, ${config.color} 30%, transparent)`,
-          }}
-        >
-          {threat.severity}
-        </span>
-      </div>
+    <div className="grid gap-4 sm:grid-cols-3">
+      <Card className="border-red-200 bg-red-50">
+        <CardContent className="flex items-center gap-4 p-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+            <AlertTriangle className="h-6 w-6 text-red-600" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-red-700">{pendingCount}</p>
+            <p className="text-sm text-red-600">Pending Review</p>
+          </div>
+        </CardContent>
+      </Card>
 
-      {/* Structured data row */}
-      <div className="flex items-center gap-4 flex-wrap">
-        <span className="text-lg font-mono font-bold text-white/90">{threat.amount}</span>
-        <span className="text-sm text-white/55">{threat.time}</span>
-        <span className="text-sm font-semibold" style={{ color: config.color }}>
-          {Math.round(threat.confidence * 100)}% confidence
-        </span>
-      </div>
+      <Card className="border-green-200 bg-green-50">
+        <CardContent className="flex items-center gap-4 p-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+            <CheckCircle2 className="h-6 w-6 text-green-600" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-green-700">{resolvedCount}</p>
+            <p className="text-sm text-green-600">Resolved</p>
+          </div>
+        </CardContent>
+      </Card>
 
-      {/* Description */}
-      <p className="text-sm text-white/55 leading-relaxed">{threat.description}</p>
-
-      {/* Full-width CTA — hidden on mobile (card is tappable) */}
-      <span
-        className={cn(
-          'hidden sm:inline-flex w-full items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-colors',
-          'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950',
-          'hover:from-emerald-400 hover:to-cyan-400',
-        )}
-      >
-        Investigate
-        <ArrowRight size={14} />
-      </span>
+      <Card className="border-blue-200 bg-blue-50">
+        <CardContent className="flex items-center gap-4 p-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
+            <Shield className="h-6 w-6 text-blue-600" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-blue-700">{accountsCount}</p>
+            <p className="text-sm text-blue-600">Accounts Monitored</p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
 
+/* ── Threat Card ── */
+
 function ThreatCard({ threat }: { threat: ThreatRow }) {
-  const config = severityConfig[threat.severity]
-  const tier = getThreatTier(threat.severity)
-  const styles = CARD_TIER_STYLES[tier]
+  const config = severityBadgeConfig[threat.severity]
+  const isResolved = threat.status === 'resolved'
 
   return (
-    <Link
-      to={`/protect/alert-detail?alertId=${threat.id}`}
-      className={cn(
-        'glass-card glass-card-overlay rounded-[20px] flex items-center hover:border-white/[0.12] transition-colors border-l-2 group block',
-        styles.padding,
-        styles.gap,
-      )}
-      style={{
-        borderLeftColor: config.color,
-        ...(tier === 'focus' ? focusGlowStyle(config.color) : {}),
-      }}
-    >
-      {/* Severity icon */}
-      <div
-        className={cn(styles.iconBoxSize, 'flex items-center justify-center border shrink-0')}
-        style={{
-          borderColor: `color-mix(in srgb, ${config.color} 30%, transparent)`,
-          background: `color-mix(in srgb, ${config.color} 10%, transparent)`,
-        }}
-      >
-        <AlertTriangle size={styles.iconSize} style={{ color: config.color }} />
-      </div>
+    <Card className="bg-white border-gray-200 transition-shadow hover:shadow-md">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between gap-4">
+          {/* Left: icon + info */}
+          <div className="flex items-start gap-4">
+            <div
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${severityIconBg[threat.severity]}`}
+            >
+              {isResolved ? (
+                <CheckCircle2 className="h-5 w-5 text-green-600" />
+              ) : (
+                <AlertTriangle className={`h-5 w-5 ${severityIconColor[threat.severity]}`} />
+              )}
+            </div>
 
-      {/* Info */}
-      <div className="flex-1 min-w-0">
-        {/* Primary row: counterparty + amount */}
-        <div className="flex items-center gap-3 flex-wrap mb-1">
-          <span className={cn('text-white/90 truncate', styles.titleSize)}>{threat.counterparty}</span>
-          <span className={cn(styles.amountSize, 'text-white/80')}>{threat.amount}</span>
-          <span
-            className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest border"
-            style={{
-              background: config.bg,
-              color: config.color,
-              borderColor: `color-mix(in srgb, ${config.color} 30%, transparent)`,
-            }}
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="font-semibold text-gray-900">{threat.counterparty}</p>
+                <Badge variant="outline" className={`${config.bg} ${config.text} ${config.border}`}>
+                  {threat.severity}
+                </Badge>
+                {isResolved && (
+                  <Badge variant="outline" className="border-green-200 bg-green-100 text-green-700">
+                    Resolved
+                  </Badge>
+                )}
+              </div>
+              <p className="mt-1 text-sm text-gray-500">{threat.description}</p>
+              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
+                {threat.account && <span>{threat.account}</span>}
+                <span className="font-mono">{threat.amount}</span>
+                <span>Detected: {threat.time}</span>
+                {threat.resolvedAt && <span>Resolved: {threat.resolvedAt}</span>}
+              </div>
+            </div>
+          </div>
+
+          {/* Right: action button */}
+          <Button
+            asChild
+            variant={isResolved ? 'outline' : 'default'}
+            size="sm"
+            className="shrink-0"
           >
-            {threat.severity}
-          </span>
+            <Link to={`/protect/alert-detail?alertId=${threat.id}`}>
+              {isResolved ? 'View' : 'Review'}
+              <ChevronRight className="ml-1 h-4 w-4" />
+            </Link>
+          </Button>
         </div>
+      </CardContent>
+    </Card>
+  )
+}
 
-        {/* Focus tier: show description */}
-        {tier === 'focus' && (
-          <p className="text-sm text-white/55 leading-relaxed mb-1.5 line-clamp-2">{threat.description}</p>
-        )}
+/* ── Empty State (light theme) ── */
 
-        {/* Secondary meta */}
-        <div className={cn('flex items-center gap-3 flex-wrap', styles.metaSize)}>
-          <span className="text-white/55">{threat.time}</span>
-          <span className="text-white/40">·</span>
-          <span style={{ color: config.color }}>{Math.round(threat.confidence * 100)}% confidence</span>
-          <span className="text-white/40">·</span>
-          <span className="font-mono text-white/40">{threat.id}</span>
-        </div>
-      </div>
-
-      {/* CTA — hidden on mobile, card itself is the touch target */}
-      {tier === 'focus' ? (
-        <span
-          className={cn(
-            'shrink-0 hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors',
-            'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950',
-            'group-hover:from-emerald-400 group-hover:to-cyan-400',
-          )}
-        >
-          Investigate
-          <ArrowRight size={14} />
-        </span>
-      ) : (
-        <span
-          className="shrink-0 hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition-colors"
-          style={{
-            borderColor: 'color-mix(in srgb, var(--engine-protect) 30%, transparent)',
-            color: 'var(--engine-protect)',
-            background: 'color-mix(in srgb, var(--engine-protect) 10%, transparent)',
-          }}
-        >
-          Investigate
-          <ArrowRight size={12} />
-        </span>
-      )}
-    </Link>
+function InlineEmptyState({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode
+  title: string
+  description: string
+}) {
+  return (
+    <Card className="bg-white border-gray-200">
+      <CardContent className="flex flex-col items-center justify-center py-12">
+        {icon}
+        <p className="mt-4 text-lg font-medium text-gray-900">{title}</p>
+        <p className="text-gray-500">{description}</p>
+      </CardContent>
+    </Card>
   )
 }
