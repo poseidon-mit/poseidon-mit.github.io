@@ -28,7 +28,7 @@ export function TopBar({
     const { navigate } = useRouter();
 
     return (
-        <header className="sticky top-0 z-30 hidden h-20 items-center justify-between px-8 lg:px-10 bg-transparent border-b border-white/[0.04] backdrop-blur-xl lg:flex">
+        <header className="sticky top-0 z-30 hidden h-20 items-center justify-between px-8 lg:px-10 bg-transparent border-b border-white/[0.04] backdrop-blur-md lg:flex">
             {/* Breadcrumb / Title */}
             {breadcrumbs.length > 1 ? (
                 <nav className="flex items-center gap-1.5" aria-label="Breadcrumb">
@@ -71,13 +71,13 @@ export function TopBar({
             {/* Utilities */}
             <div className="flex items-center gap-3">
                 {isOffline && (
-                    <span className="flex items-center gap-1.5 rounded-full border border-red-400/40 bg-red-500/20 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-red-300 state-border-critical state-bg-critical state-text-critical" aria-label="Offline">
+                    <span className="flex items-center gap-1.5 rounded-full border border-red-400/20 bg-red-500/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-red-300/80 state-border-critical state-bg-critical state-text-critical" aria-label="Offline">
                         <WifiOff className="h-3 w-3" aria-hidden="true" />
                         Offline
                     </span>
                 )}
                 {isPresentation && (
-                    <span className="flex items-center gap-1.5 rounded-full border border-cyan-400/30 bg-cyan-500/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-200 state-border-active state-bg-active state-text-active" aria-label="Presentation mode active">
+                    <span className="flex items-center gap-1.5 rounded-full border border-cyan-400/15 bg-cyan-500/8 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-200/80 state-border-active state-bg-active state-text-active" aria-label="Presentation mode active">
                         <Radio className="h-3 w-3" aria-hidden="true" />
                         Presenting
                     </span>

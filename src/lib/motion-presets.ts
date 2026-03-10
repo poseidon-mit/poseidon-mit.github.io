@@ -80,7 +80,7 @@ export const staggerContainer: Variants = {
   visible: {
     transition: {
       delayChildren: 0.02,
-      staggerChildren: 0.025,
+      staggerChildren: 0.04,
     },
   },
 }
@@ -90,7 +90,7 @@ export const creatorStudioStaggerContainer: Variants = {
   visible: {
     transition: {
       delayChildren: 0.02,
-      staggerChildren: 0.025,
+      staggerChildren: 0.04,
     },
   },
 }

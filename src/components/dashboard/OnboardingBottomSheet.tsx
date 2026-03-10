@@ -11,7 +11,7 @@ import { useDemoState } from '@/lib/demo-state/provider'
 import { fadeUp } from '@/lib/motion-presets'
 
 const ONBOARDING_KEY = 'poseidon-onboarding-sheet-seen'
-const SHOW_DELAY_MS = 600
+const SHOW_DELAY_MS = typeof window !== 'undefined' && window.innerWidth < 1024 ? 2000 : 600
 const TOTAL_STEPS = 3
 
 /* ── Step 1: Connectors ── */

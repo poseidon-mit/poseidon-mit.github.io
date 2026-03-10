@@ -34,9 +34,9 @@ export interface GovernImmutableLedgerProps {
 /* ── Status badge ── */
 
 const STATUS_STYLE: Record<DecisionStatus, string> = {
-  Verified: 'bg-emerald-500/15 text-emerald-400 state-bg-healthy state-text-healthy',
-  'Pending review': 'bg-amber-500/15 text-amber-400 state-bg-warning state-text-warning',
-  Flagged: 'bg-red-500/15 text-red-400 state-bg-critical state-text-critical',
+  Verified: 'bg-emerald-500/10 text-emerald-400/80 state-bg-healthy state-text-healthy',
+  'Pending review': 'bg-amber-500/10 text-amber-400/80 state-bg-warning state-text-warning',
+  Flagged: 'bg-red-500/10 text-red-400/80 state-bg-critical state-text-critical',
 }
 
 /* ═══════════════════════════════════════════════════════

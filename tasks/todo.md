@@ -302,3 +302,161 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - Live browser reproduction was done on `http://127.0.0.1:5173` at 390x844.
 - Relevant existing tests all passed despite the live regressions, so the implementation must include test additions rather than only code fixes.
 - No implementation was performed in this task. This section is a handoff artifact for a separate implementation AI.
+
+---
+
+## Integrated Implementation Handoff Plan (2026-03-10)
+
+**Goal:** Produce one implementation brief that combines:
+1. App-route correctness fixes for Grow / Protect / Execute mobile and detail screens
+2. Landing page bottom-half redesign in [`src/pages/Landing.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/Landing.tsx#L335) from dark-luxe into Apple-like light transition
+
+- [x] Confirm Landing scope boundary in `Landing.tsx` (`Dark-Luxe Spatial Dynamics wrapper` through footer)
+- [x] Merge prior mobile/detail findings with the new Landing redesign requirements
+- [x] Define implementation sequencing so the app-route fixes and Landing redesign do not conflict
+- [x] Prepare long-form copy/paste prompt for another AI
+
+**Review notes:**
+- Landing redesign scope is currently concentrated in [`src/pages/Landing.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/Landing.tsx#L335) through [`src/pages/Landing.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/Landing.tsx#L624).
+- Existing dark-theme-specific mechanics in Landing include `orbY1..orbY4`, `landingNoise`, vertical data-flow glow, and desktop-only spotlight gradients on the 4-engine bento cards. All of those are explicit refactor targets under the new light-transition brief.
+- This section is planning-only; no code implementation was performed.
+
+---
+
+## Web Audit Plan: Performance + Apple-Calm Visual Refinement (2026-03-10)
+
+**Goal:** Audit the public landing and authenticated app with a mobile-first lens, including iPad widths, and produce a handoff plan that reduces performance cost and over-bright / over-flashy presentation while preserving Poseidon’s product character.
+
+- [x] Inspect shared routing, layout, motion, and styling layers that affect most routes
+- [x] Run production build to identify heavy chunks and CSS payload hotspots
+- [x] Verify actual screens on landing and app routes at mobile (`390x844`) and iPad-like (`820x1180`) sizes
+- [x] Identify sources of visual excess, interaction overload, and unnecessary rendering cost
+- [x] Draft implementation plan for a separate AI with mobile-first and iPad-specific guidance
+
+**Runtime checks performed:**
+- Landing (`/`) at `390x844` and `820x1180`
+- Dashboard (`/dashboard`) at `390x844` and `820x1180`
+- Grow (`/grow`) at `390x844` and `820x1180`
+- Protect Threats (`/protect/threats`) at `390x844`
+- Production build via `npm run build`
+
+**Observed issues: performance and visual quality**
+- Landing hero is still visually overloaded on small screens because it stacks a background video, grid overlay, blurred black vignette, bright gradient headline, glass buttons, proof cards, and trust-strip microcopy in the same first viewport. In live mobile capture this reads as “high-energy promo” rather than “Apple-grade precision”.
+- The public landing top bar remains a dark glass bar with a glow-treated logo in [`src/components/landing/PublicTopBar.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/landing/PublicTopBar.tsx). The logo drop-shadow and translucent black header contribute to the “sci-fi” tone that conflicts with an Apple-calmer direction.
+- Landing lower-half effects are structurally expensive and visually theatrical:
+  ambient engine orbs driven by `useScroll` / `useTransform` in [`src/pages/Landing.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/Landing.tsx#L53)
+  noise overlay SVG in [`src/pages/Landing.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/Landing.tsx#L313)
+  animated connector beam in [`src/pages/Landing.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/Landing.tsx#L325)
+  hover spotlight and glow stacks on the 4-engine bento cards in [`src/pages/Landing.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/Landing.tsx#L379)
+- The authenticated app keeps a persistent dark-glass / neon vocabulary even in “precision” mode:
+  `AppNavShell` uses translucent black headers and bottom nav surfaces in [`src/components/layout/AppNavShell.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/layout/AppNavShell.tsx#L88) and [`src/components/layout/AppNavShell.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/layout/AppNavShell.tsx#L122)
+  desktop sidebar uses glow-treated logo plus glass blur in [`src/components/navigation/Sidebar.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/navigation/Sidebar.tsx#L107)
+  top bar uses `backdrop-blur-xl` plus colored state pills in [`src/components/navigation/TopBar.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/navigation/TopBar.tsx#L25)
+- The app’s main hero surfaces are still effect-heavy. `HeroBento` always injects an `AuroraPulse` background in [`src/components/poseidon/hero-bento.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/hero-bento.tsx#L24), and `DashboardCoordinationProof` layers a live audit stream, gradient CTA, proof strip, and portal bar in the same card in [`src/components/poseidon/dashboard-hero.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/dashboard-hero.tsx#L202). On mobile, the Dashboard screenshot showed a dense hero immediately competing with the onboarding bottom sheet.
+- The onboarding bottom sheet on Dashboard is a strong cognitive interruption on mobile. In the live `390x844` capture, it covered most of the primary coordination hero. Even if functionally correct, it suppresses first-impression clarity and makes the page feel busy.
+- Engine-specific accent saturation is too high for an Apple-calm target. The Protect list in live mobile capture still uses bright green active chips, saturated red confidence text, and multiple colored status badges at once. The same pattern exists across Grow violet / Execute amber surfaces.
+- Motion density is moderate-to-high across the product. Framer Motion is attached to many route sections and cards, and Landing adds pointer-tracking spotlight plus scroll-driven parallax orbs. Even where motion is subtle, the cumulative effect is non-trivial on mobile and iPad.
+- `Grow` still emits a runtime chart warning from Recharts at mobile load: `The width(-1) and height(-1) of chart should be greater than 0`. This indicates unstable initial measurement and should be treated as a quality/perf defect, not just a console nuisance.
+
+**Observed issues: bundle and CSS**
+- Production build output is currently dominated by a few large assets:
+  `dist/assets/vendor-runtime-*.js` `617.72 kB` minified / `181.17 kB` gzip
+  `dist/assets/vendor-charts-*.js` `297.47 kB` minified / `78.75 kB` gzip
+  `dist/assets/index-*.css` `324.58 kB` / `43.93 kB` gzip
+  `dist/assets/Landing-*.js` `30.03 kB` / `6.31 kB` gzip
+- `pdf.worker.min-*.mjs` is `1,078.61 kB`. It is chunked, which is better than inlining, but it still means the app ships a very large specialist asset that must stay isolated from general navigation paths.
+- Routing already uses manual chunks in [`vite.config.ts`](/Users/shinjifujiwara/code/poseidon-mit.github.io/vite.config.ts#L33), but the residual `vendor-runtime` bucket is still too broad. This suggests there are many “everything else” dependencies that should be split by concern instead of falling through to a catch-all chunk.
+- The style stack is fragmented:
+  `src/main.tsx` imports [`src/styles/tailwind.css`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/styles/tailwind.css) and [`src/styles/app.css`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/styles/app.css)
+  `app.css` then imports effect presets, dashboard page styles, engine semantics, colorblind palettes, system tokens, glass, and neon
+  the result is a broad CSS payload even though many routes do not need all effect variants
+- `app.css` still imports [`src/styles/colorblind-palettes.css`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/styles/colorblind-palettes.css) and global neon/glass layers for every route. Even if some tokens are neutralized by `theme-precision`, the payload and maintenance complexity remain.
+
+**Root causes**
+- Tone inconsistency: the product currently mixes “precision mode” language with a visual system inherited from neon / cyber / creator-studio aesthetics. The result is not one bad component; it is a global mismatch between brand promise and effect vocabulary.
+- Effect duplication: the same page often combines translucent glass, colored border accents, gradients, glow shadows, animated rails, animated counters, and animated overlays instead of selecting one dominant depth cue.
+- Shared-surface coupling: global layout pieces such as top bar, bottom nav, hero bento, aurora, footer, and CTA utilities all reinforce the same dark-glow style, so individual page cleanup will not be enough.
+- Mobile-first gap: many surfaces are visually composed for desktop drama, then merely scaled down. On mobile and iPad portrait, that creates glare, crowding, and a “demo reel” feel.
+- Payload sprawl: CSS and vendor buckets include route-agnostic effect systems and chart libraries that are too broad for a product aiming at snappy mobile behavior.
+
+**Implementation plan for another AI**
+1. Establish a global “Apple Calm” presentation system before changing individual screens.
+   Define a small set of shared visual principles:
+   one primary surface style
+   one secondary inset style
+   one restrained accent strategy per engine
+   one motion standard for page entry and card response
+   one typography hierarchy for dark surfaces
+   The intent is not to make everything white; it is to make dark UI feel expensive, quiet, and exact instead of neon and loud.
+2. Reduce the effect vocabulary at the shared-layer level.
+   Rework [`src/components/layout/AppNavShell.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/layout/AppNavShell.tsx), [`src/components/navigation/Sidebar.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/navigation/Sidebar.tsx), [`src/components/navigation/TopBar.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/navigation/TopBar.tsx), [`src/components/poseidon/hero-bento.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/hero-bento.tsx), and [`src/components/poseidon/govern-footer.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/govern-footer.tsx) so they no longer rely on heavy blur + glow + colored ring combinations by default.
+   Keep engine identity through restrained border tint, icon color, or a thin top rule, not full neon presence.
+3. Make mobile and iPad the primary layout targets.
+   Design for `390px` first, then `768–834px` portrait iPad, then desktop.
+   Specific rules:
+   reduce blur radii on mobile and iPad
+   remove decorative hover-only glow logic below `lg`
+   avoid stacked microcopy strips in the first viewport
+   keep max two strong accent elements visible above the fold
+   simplify bottom navigation badges and header chrome so content wins
+4. Redesign Landing around “calm authority” instead of “cinematic spectacle”.
+   In [`src/pages/Landing.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/Landing.tsx):
+   replace background-video dominance with a more restrained hero treatment, or at minimum reduce opacity, contrast, and competing overlays on mobile
+   remove or drastically soften the grid overlay in the first viewport
+   remove logo glow, CTA glow, and stacked proof-card glow
+   keep the lower-half light transition, but make it feel like a quiet material transition, not a special effect
+   reduce the number of simultaneous decorative systems to at most one per section
+5. Simplify app heroes and first-view content.
+   For Dashboard, Grow, Protect, Execute, and Govern hero surfaces:
+   keep one primary CTA
+   reduce portal/link density
+   remove background live-stream overlays unless they are essential to comprehension
+   make KPI chips quieter and less saturated
+   ensure onboarding or setup layers do not visually overpower the hero on mobile
+6. Audit and trim motion.
+   Keep route-entry motion, but reduce per-card cascades and layered independent animations.
+   Landing pointer spotlights, orbit-like parallax, and perpetually animated decorative beams should be disabled on mobile and iPad, and likely removed entirely if they do not materially aid comprehension.
+   Normalize motion to short, low-distance, opacity/translate transitions with strong reduced-motion behavior.
+7. Fix route-level rendering quality issues that hurt perceived performance.
+   Resolve the Recharts width/height initialization warning on Grow.
+   Ensure charts render only after container size is stable or use a safer responsive wrapper strategy.
+   Audit onboarding sheet timing so the dashboard does not appear to “fight itself” on first load.
+8. Rationalize CSS and chunking.
+   Split effect systems so routes that do not need neon/glass variants do not pay for all of them.
+   Review whether `colorblind-palettes.css` must be globally loaded or can be conditionally loaded behind settings or theme selection.
+   Reduce `vendor-runtime` by creating more intentional buckets for Radix, command palette, PDF/deck tooling, and any non-core subsystems now falling into the catch-all.
+   Keep charts isolated so landing and simple routes do not regress from chart dependencies.
+9. Add audit coverage so the visual language does not drift back.
+   Add a lightweight visual QA checklist or snapshot coverage for:
+   landing hero at `390x844`
+   landing section transition around section 3/4 at mobile
+   dashboard first viewport at `390x844`
+   Grow hero at `390x844` and `820x1180`
+   Protect list at `390x844`
+   The tests do not need pixel-perfect goldens, but they should catch reintroduction of overloaded first-view states, overflowing hero controls, or multi-CTA clutter.
+
+**Prioritized execution order**
+- Phase 1: shared visual system cleanup
+  common surfaces, nav, footer, hero shell, aurora usage
+- Phase 2: landing simplification and calm-first restyling
+  hero first viewport, section transitions, 4-engine bento, footer
+- Phase 3: app first-view cleanup
+  dashboard onboarding conflict, engine heroes, list chrome, badge saturation
+- Phase 4: performance work
+  chart measurement fix, CSS pruning, chunking refinement
+- Phase 5: regression coverage
+  route screenshots/smoke checks and bundle/build verification
+
+**Definition of done**
+- Mobile and iPad first view on Landing feels calm, legible, and premium rather than promotional or game-like.
+- App routes preserve engine identity without relying on neon/glow saturation.
+- No first viewport on mobile contains more than one dominant animated visual system at a time.
+- Dashboard onboarding no longer overwhelms the hero on first load.
+- Grow no longer logs the chart measurement warning at route load.
+- Build output shows reduced CSS and/or more intentional chunk composition, with a smaller catch-all runtime bucket.
+- Visual QA at `390px` and `820px` confirms the product reads as “Apple-grade precise dark UI” rather than “dark neon dashboard”.
+
+**Review notes:**
+- Runtime verification was performed against `http://127.0.0.1:5173` using real browser snapshots and screenshots, not source inspection alone.
+- The most important design conclusion is that this is primarily a shared-system problem, not a single-page problem.
+- No implementation was performed in this task. This section is a handoff artifact for a separate implementation AI.

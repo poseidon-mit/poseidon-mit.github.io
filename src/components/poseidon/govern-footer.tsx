@@ -73,13 +73,13 @@ export function GovernFooter({
       className={cn(
         'mt-8 rounded-2xl border bg-white/[0.03] overflow-hidden',
         isActive
-          ? 'border-[var(--engine-govern)]/30 laser-scan-animated animate-[laser-scan_2s_ease-out] bg-[length:200%_100%]'
+          ? 'border-[var(--engine-govern)]/20'
           : 'border-white/[0.06]',
         className,
       )}
       role="contentinfo"
       aria-label="Governance verification footer"
-      style={isActive ? { backgroundImage: 'linear-gradient(90deg, transparent 30%, rgba(59,130,246,0.12) 50%, transparent 70%)' } : undefined}
+      style={isActive ? { backgroundImage: 'linear-gradient(90deg, transparent 30%, rgba(59,130,246,0.06) 50%, transparent 70%)' } : undefined}
     >
       {/* Immutable Event Stream — only scroll when active */}
       <div className="overflow-hidden border-b border-white/[0.04] py-1.5 px-4 md:px-6">
@@ -87,7 +87,7 @@ export function GovernFooter({
           key={streamText}
           className={cn(
             'whitespace-nowrap text-[10px] font-mono',
-            isActive ? 'animate-[scroll-left_20s_linear_infinite]' : '',
+            '',
             latestExecuteEvent
               ? 'text-amber-400/30 engine-text-execute'
               : isActive ? 'text-white/30' : 'text-white/20',

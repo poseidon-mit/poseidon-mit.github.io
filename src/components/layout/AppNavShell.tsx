@@ -75,7 +75,7 @@ export function AppNavShell({
   );
 
   return (
-    <div className="app-bg-oled flex min-h-screen selection:bg-cyan-500/30 theme-precision">
+    <div className="app-bg-oled flex min-h-screen selection:bg-white/20 theme-precision">
       <CommandPalette isOpen={isPaletteOpen} onClose={closePalette} />
 
       {/* ── Desktop Sidebar ── */}

@@ -53,6 +53,16 @@ export default defineConfig({
           if (id.includes('/framer-motion/') || id.includes('/motion-dom/')) return 'vendor-motion';
           if (id.includes('/lucide-react/')) return 'vendor-icons';
 
+          // Radix UI primitives
+          const radixLibs = ['/@radix-ui/', '/radix-ui/'];
+          if (radixLibs.some((segment) => id.includes(segment))) return 'vendor-radix';
+
+          // Command palette (cmdk)
+          if (id.includes('/cmdk/')) return 'vendor-cmdk';
+
+          // PDF tooling
+          if (id.includes('/pdfjs-dist/') || id.includes('/pdf.worker')) return 'vendor-pdf';
+
           return 'vendor-runtime';
         },
       },

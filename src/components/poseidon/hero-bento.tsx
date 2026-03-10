@@ -30,7 +30,7 @@ export function HeroBento({ engine, accentColor, className, children, ...rest }:
         'grid grid-cols-1 md:grid-cols-[1fr_380px]',
         className,
       )}
-      style={{ borderColor: `color-mix(in srgb, ${borderColor} 12%, transparent)`, borderWidth: 1 }}
+      style={{ borderColor: `color-mix(in srgb, ${borderColor} 8%, transparent)`, borderWidth: 1 }}
       {...rest}
     >
       {accentColor
