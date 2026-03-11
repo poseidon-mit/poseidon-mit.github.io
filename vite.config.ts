@@ -41,6 +41,18 @@ export default defineConfig({
             '/react-dom/',
             '/scheduler/',
             '/use-sync-external-store/',
+            // These packages access React at top-level module scope (not inside
+            // a function), so they must evaluate in the same chunk as React to
+            // avoid "Cannot read properties of undefined (reading 'useLayoutEffect')"
+            // when SES/Lockdown (e.g. MetaMask) freezes module bindings early.
+            '/react-remove-scroll/',
+            '/react-remove-scroll-bar/',
+            '/react-style-singleton/',
+            '/use-callback-ref/',
+            '/use-sidecar/',
+            '/get-nonce/',
+            '/aria-hidden/',
+            '/react-focus-lock/',
           ];
           if (reactCore.some((segment) => id.includes(segment))) return 'vendor-react';
 
