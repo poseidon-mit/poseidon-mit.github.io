@@ -1,238 +1,70 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import {
-  Zap,
-  CheckCircle2,
-  ChevronDown,
-  Clock,
-  ArrowRight,
-  CalendarClock,
-  DollarSign,
-  ListChecks,
-} from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
-import { getMotionPreset, accordionVariants, accordionTransition } from '@/lib/motion-presets'
+import { useMemo } from 'react'
+import { ExecuteApprovalCommandDeck } from '@/components/poseidon/execute-hero'
 import { usePageTitle } from '@/hooks/use-page-title'
-import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
-import { Link } from '@/router'
-import { CountUp } from '@/components/poseidon'
-import { formatCurrency } from '@/lib/formatters'
-import { actions, executeStats } from '@/data/actions'
-import { useDemoState } from '@/lib/demo-state/provider'
+import { useRouter } from '@/router'
+import {
+  selectExecuteActionsView,
+  selectExecuteQueueStats,
+} from '@/domain/poseidon-universe'
+import { ENGINE_COLOR_MAP } from '@/lib/engine-color-map'
+import type { ExecuteEngineName } from '@/domain/poseidon-universe'
 
-/* ── Page Component ── */
 export default function ExecutePage() {
   usePageTitle('Execute')
-  const prefersReducedMotion = useReducedMotionSafe()
-  const { fadeUp, staggerContainer } = getMotionPreset(prefersReducedMotion)
-  const [completedOpen, setCompletedOpen] = useState(false)
-  const { state } = useDemoState()
+  const router = useRouter()
 
-  const pendingActions = actions.filter((a) => {
-    const demoStatus = state.execute.actionStates[a.id]?.status
-    if (demoStatus && demoStatus !== 'pending') return false
-    return a.status === 'pending'
-  })
-  const completedActions = actions.filter((a) => {
-    const demoStatus = state.execute.actionStates[a.id]?.status
-    return a.status === 'completed' || (demoStatus && demoStatus !== 'pending')
-  })
+  const actions = useMemo(() => selectExecuteActionsView(), [])
+  const stats = useMemo(() => selectExecuteQueueStats(), [])
+  const featured = actions[0] ?? null
 
-  const pendingCount = pendingActions.length
+  // Compute engine source counts
+  const engineSources = useMemo(() => {
+    const counts: Record<string, number> = {}
+    for (const a of actions) {
+      const engine = a.sourceEngine || a.engine
+      counts[engine] = (counts[engine] || 0) + 1
+    }
+    return Object.entries(counts).map(([engine, count]) => ({
+      engine: engine as ExecuteEngineName,
+      count,
+      color: ENGINE_COLOR_MAP[engine as keyof typeof ENGINE_COLOR_MAP] ?? 'var(--engine-execute)',
+    }))
+  }, [actions])
+
+  // Compute agent steps from featured action
+  const agentStepsCompleted = featured
+    ? featured.steps.filter((s) => s.status === 'completed').length
+    : 0
+  const agentStepsTotal = featured ? featured.steps.length : 0
 
   return (
-    <motion.div
-      id="main-content"
-      role="main"
-      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12`}
-      style={PAGE_CONTENT_STYLE}
-      initial="hidden"
-      animate="visible"
-      variants={staggerContainer}
-    >
-      {/* Hero — Amber CountUp */}
-      <motion.div variants={fadeUp} className="text-center py-8">
-        <CountUp
-          value={pendingCount}
-          duration={800}
-          className="text-8xl md:text-9xl font-bold font-mono tabular-nums text-amber-600"
-        />
-        <h1 className="text-xl md:text-2xl font-semibold text-foreground mt-3">
-          Actions Await Your Decision
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          AI agents are ready to execute once you confirm
-        </p>
-      </motion.div>
-
-      {/* Summary Cards 2x2 */}
-      <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
-        <Card className="border border-border bg-card">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/15">
-                <ListChecks className="h-4.5 w-4.5 text-amber-400" />
-              </div>
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Pending</span>
-            </div>
-            <p className="text-3xl font-bold font-mono tabular-nums text-foreground">{pendingCount}</p>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-border bg-card">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/15">
-                <CheckCircle2 className="h-4.5 w-4.5 text-emerald-400" />
-              </div>
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Completed This Month</span>
-            </div>
-            <p className="text-3xl font-bold font-mono tabular-nums text-foreground">{executeStats.completedThisMonth}</p>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-border bg-card">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/15">
-                <DollarSign className="h-4.5 w-4.5 text-blue-400" />
-              </div>
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Executed</span>
-            </div>
-            <p className="text-3xl font-bold font-mono tabular-nums text-foreground">{executeStats.totalExecuted}</p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-amber-500/20 bg-amber-500/10">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/20">
-                <Zap className="h-4.5 w-4.5 text-amber-400" />
-              </div>
-              <span className="text-xs font-medium text-amber-400 uppercase tracking-wider">Tax Savings</span>
-            </div>
-            <p className="text-2xl font-bold font-mono tabular-nums text-amber-400">
-              {formatCurrency(executeStats.pendingTaxSavings)}
-            </p>
-            <p className="text-xs text-amber-500 mt-1">if you approve</p>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Pending Actions List */}
-      <motion.div variants={fadeUp} className="space-y-3">
-        <h2 className="text-lg font-semibold text-foreground">Pending Actions</h2>
-        {pendingActions.map((action) => (
-          <Link
-            key={action.id}
-            to={`/execute/approval?actionId=${action.id}`}
-            className="block"
-          >
-            <Card className="border border-border bg-card hover:border-amber-500/40 transition-all cursor-pointer group">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-4 min-w-0 flex-1">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15 shrink-0">
-                      <Zap className="h-5 w-5 text-amber-400" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-mono text-xs text-muted-foreground">{action.id}</span>
-                        {action.deadline && (
-                          <Badge variant="outline" className="border-red-500/30 bg-red-500/10 text-red-400 text-[10px]">
-                            <CalendarClock className="mr-1 h-3 w-3" />
-                            Due {action.deadline}
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="font-semibold text-foreground mt-0.5 truncate">{action.title}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{action.description}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 shrink-0">
-                    {action.taxSavings && (
-                      <span className="text-sm font-semibold font-mono tabular-nums text-amber-400">
-                        +{formatCurrency(action.taxSavings)}
-                      </span>
-                    )}
-                    {action.amount && (
-                      <span className="text-sm font-semibold font-mono tabular-nums text-foreground">
-                        {formatCurrency(action.amount)}
-                      </span>
-                    )}
-                    <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-amber-600 transition-colors" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-
-        {pendingActions.length === 0 && (
-          <Card className="border border-border bg-card">
-            <CardContent className="p-8 text-center">
-              <CheckCircle2 className="h-10 w-10 text-emerald-500 mx-auto mb-3" />
-              <p className="text-sm font-medium text-foreground">All caught up</p>
-              <p className="text-xs text-muted-foreground mt-1">No pending actions require your attention.</p>
-            </CardContent>
-          </Card>
-        )}
-      </motion.div>
-
-      {/* Completed Section (Collapsible, default closed) */}
-      {completedActions.length > 0 && (
-        <motion.div variants={fadeUp}>
-          <Card className="border border-border bg-card">
-            <div
-              className="flex items-center justify-between p-5 cursor-pointer hover:bg-muted/30 transition-colors"
-              onClick={() => setCompletedOpen(!completedOpen)}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCompletedOpen(!completedOpen) } }}
-              tabIndex={0}
-              role="button"
-              aria-expanded={completedOpen}
-            >
-              <h3 className="flex items-center gap-2 text-base font-semibold text-foreground">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                Completed ({completedActions.length})
-              </h3>
-              <ChevronDown className={cn('h-5 w-5 text-muted-foreground transition-transform', completedOpen && 'rotate-180')} />
-            </div>
-            <AnimatePresence initial={false}>
-              {completedOpen && (
-                <motion.div
-                  variants={accordionVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  transition={accordionTransition}
-                  className="overflow-hidden"
-                >
-                  <CardContent className="pt-0 pb-5 px-5 space-y-3">
-                    {completedActions.map((action) => (
-                      <div key={action.id} className="flex items-center gap-4 py-2 border-b border-border last:border-0">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <span className="font-mono text-xs text-muted-foreground mr-2">{action.id}</span>
-                          <span className="text-sm text-foreground">{action.title}</span>
-                        </div>
-                        {action.amount && (
-                          <span className="text-sm font-mono tabular-nums text-muted-foreground shrink-0">
-                            {formatCurrency(action.amount)}
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                  </CardContent>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </Card>
-        </motion.div>
-      )}
-    </motion.div>
+    <div className="hero-viewport">
+      <ExecuteApprovalCommandDeck
+        queueTotal={actions.length}
+        urgentCount={stats.byUrgency.high}
+        agentStepsCompleted={agentStepsCompleted}
+        agentStepsTotal={agentStepsTotal}
+        featuredAction={
+          featured
+            ? {
+                id: featured.id,
+                title: featured.title,
+                amountLabel: featured.amountLabel,
+                confidence: featured.confidence,
+                engine: featured.engine,
+                sourceEngine: featured.sourceEngine,
+                expiresIn: featured.expiresIn,
+                rollbackHours: featured.rollbackWindowHours ?? null,
+              }
+            : null
+        }
+        engineSources={engineSources}
+        onReviewApproval={
+          featured
+            ? () => router.navigate(`/execute/approval?actionId=${featured.id}`)
+            : null
+        }
+      />
+    </div>
   )
 }

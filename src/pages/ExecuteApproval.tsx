@@ -20,7 +20,6 @@ import { cn } from '@/lib/utils'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { useToast } from '@/hooks/useToast'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 import { formatCurrency } from '@/lib/formatters'
 import { actions } from '@/data/actions'
 import type { Action } from '@/data/actions'
@@ -104,11 +103,11 @@ export function ExecuteApproval() {
   const displayTitle = isEXE001 ? 'Tax Savings Opportunity' : action.title
 
   return (
+    <div className="hero-viewport">
     <motion.div
       id="main-content"
       role="main"
-      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12`}
-      style={PAGE_CONTENT_STYLE}
+      className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-6 pb-12"
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
@@ -371,6 +370,7 @@ export function ExecuteApproval() {
         </motion.div>
       )}
     </motion.div>
+    </div>
   )
 }
 

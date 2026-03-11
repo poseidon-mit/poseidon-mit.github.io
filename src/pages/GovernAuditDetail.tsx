@@ -14,7 +14,6 @@ import { getMotionPreset } from '@/lib/motion-presets'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { formatDemoTimestamp } from '@/lib/demo-date'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 import { AUDIT_DECISIONS, DEFAULT_DECISION_ID } from '@/lib/govern-audit-data'
 import { auditRecords } from '@/data/audit'
 import { cn } from '@/lib/utils'
@@ -93,11 +92,11 @@ export function GovernAuditDetail() {
   const statusStyle = STATUS_BADGE[status] ?? STATUS_BADGE.completed
 
   return (
+    <div className="hero-viewport">
     <motion.div
       id="main-content"
       role="main"
-      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12`}
-      style={PAGE_CONTENT_STYLE}
+      className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-6 pb-12"
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
@@ -242,6 +241,7 @@ export function GovernAuditDetail() {
         </span>
       </motion.div>
     </motion.div>
+    </div>
   )
 }
 

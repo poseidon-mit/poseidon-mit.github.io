@@ -13,6 +13,9 @@
 @import './effects/glass.css';
 @import './effects/neon.css';
 
+/* ── Layout utilities ── */
+@import './layouts/hero-viewport.css';
+
 /* ── Aurora keyframes (used by .command-center) ── */
 
 @keyframes aurora {

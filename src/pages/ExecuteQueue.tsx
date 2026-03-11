@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, ArrowRight, Zap, CheckCircle2, Timer } from 'lucide-react'
+import { ArrowRight, Zap, CheckCircle2, Timer } from 'lucide-react'
 import { Link, useRouter } from '@/router'
-import { EmptyState, EngineBadge, PrioritySpotlight } from '@/components/poseidon'
-import { Card, CardContent } from '@/components/ui/card'
+import { EmptyState, PrioritySpotlight } from '@/components/poseidon'
+import { ListHeroBanner } from '@/components/poseidon/list-hero-banner'
+import { Card } from '@/components/ui/card'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
@@ -12,7 +13,6 @@ import { selectExecuteActionsView, selectSpotlightAction } from '@/domain/poseid
 import type { ExecuteActionEntity, UrgencyLevel } from '@/domain/poseidon-universe'
 import { getEngineToken, fromDomainEngine } from '@/lib/engine-tokens'
 import { cn } from '@/lib/utils'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 
 const URGENCY_ORDER: Record<UrgencyLevel, number> = { high: 0, medium: 1, low: 2 }
 
@@ -42,7 +42,6 @@ export default function ExecuteQueuePage() {
     [allActions, state.execute.actionStates],
   )
 
-  // Separate spotlight from remaining queue items
   const spotlightPending = spotlightAction
     ? pendingActions.find((a) => a.id === spotlightAction.id) ?? null
     : null
@@ -50,96 +49,92 @@ export default function ExecuteQueuePage() {
     ? pendingActions.filter((a) => a.id !== spotlightPending.id)
     : pendingActions
 
-  return (
-    <motion.main
-      id="main-content"
-      role="main"
-      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 pb-12`}
-      style={PAGE_CONTENT_STYLE}
-      variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
-    >
-      {/* Header */}
-      <motion.section variants={staggerContainer} className="flex flex-col gap-5">
-        <div>
-          <Link
-            to="/execute"
-            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
-          >
-            <ArrowLeft size={16} />
-            Back to Execute
-          </Link>
-        </div>
+  const highCount = pendingActions.filter(a => a.urgency === 'high').length
+  const medCount = pendingActions.filter(a => a.urgency === 'medium').length
+  const lowCount = pendingActions.filter(a => a.urgency === 'low').length
 
-        <motion.div variants={fadeUp} className="flex flex-col gap-3">
-          <EngineBadge engine="execute" icon={Zap} label="Execute · Approval Queue" className="self-start" />
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-            Approval Queue
-          </h1>
-          <p className="text-muted-foreground text-base">
-            {pendingActions.length === 0
+  return (
+    <div className="hero-viewport">
+      <motion.div
+        className="flex flex-col gap-5 h-full"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Hero Banner */}
+        <motion.div variants={fadeUp}>
+          <ListHeroBanner
+            engine="execute"
+            icon={Zap}
+            engineLabel="Execute · Approval Queue"
+            title="Approval Queue"
+            subtitle={pendingActions.length === 0
               ? 'All actions have been reviewed.'
               : `${pendingActions.length} action${pendingActions.length !== 1 ? 's' : ''} awaiting your approval.`}
-          </p>
+            backTo="/execute"
+            backLabel="Back to Execute"
+            stats={[
+              { label: 'High', value: highCount, color: 'var(--state-critical)' },
+              { label: 'Medium', value: medCount, color: 'var(--state-warning)' },
+              { label: 'Low', value: lowCount },
+            ]}
+          />
         </motion.div>
-      </motion.section>
 
-      {/* Action list */}
-      {pendingActions.length === 0 ? (
-        <motion.div variants={fadeUp}>
-          <div className="rounded-xl border border-border bg-card p-12 flex items-center justify-center">
-            <EmptyState
-              icon={CheckCircle2}
-              title="Queue clear"
-              description="All pending actions have been reviewed. Check execution history for past decisions."
-              accentColor="var(--state-healthy)"
-              action={{ label: 'View execution history', onClick: () => navigate('/execute/history') }}
-            />
-          </div>
-        </motion.div>
-      ) : (
-        <motion.div variants={fadeUp} className="flex flex-col gap-3">
-          {/* Priority Spotlight — highest compositePriority action */}
-          {spotlightPending && (
-            <Link to={`/execute/approval?actionId=${spotlightPending.id}`} className="block">
-              <PrioritySpotlight engine="execute">
-                <SpotlightCard action={spotlightPending} />
-              </PrioritySpotlight>
-            </Link>
-          )}
+        {/* Scrollable list area */}
+        <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-3">
+          {pendingActions.length === 0 ? (
+            <motion.div variants={fadeUp}>
+              <Card className="rounded-xl border border-border bg-card p-12 flex items-center justify-center">
+                <EmptyState
+                  icon={CheckCircle2}
+                  title="Queue clear"
+                  description="All pending actions have been reviewed. Check execution history for past decisions."
+                  accentColor="var(--state-healthy)"
+                  action={{ label: 'View execution history', onClick: () => navigate('/execute/history') }}
+                />
+              </Card>
+            </motion.div>
+          ) : (
+            <motion.div variants={fadeUp} className="flex flex-col gap-3">
+              {spotlightPending && (
+                <Link to={`/execute/approval?actionId=${spotlightPending.id}`} className="block">
+                  <PrioritySpotlight engine="execute">
+                    <SpotlightCard action={spotlightPending} />
+                  </PrioritySpotlight>
+                </Link>
+              )}
 
-          {/* Separator after spotlight */}
-          {spotlightPending && remainingActions.length > 0 && (
-            <div className="flex items-center gap-3">
-              <div className="flex-1 h-px bg-border" />
-              <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest shrink-0">
-                {remainingActions.length} more action{remainingActions.length !== 1 ? 's' : ''}
-              </span>
-              <div className="flex-1 h-px bg-border" />
-            </div>
-          )}
+              {spotlightPending && remainingActions.length > 0 && (
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-border" />
+                  <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest shrink-0">
+                    {remainingActions.length} more action{remainingActions.length !== 1 ? 's' : ''}
+                  </span>
+                  <div className="flex-1 h-px bg-border" />
+                </div>
+              )}
 
-          {/* High/medium urgency — full width stack */}
-          {remainingActions.filter(a => a.urgency !== 'low').map((action) => (
-            <QueueCard key={action.id} action={action} />
-          ))}
-
-          {/* Low urgency — 2-col compact grid */}
-          {remainingActions.some(a => a.urgency === 'low') && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {remainingActions.filter(a => a.urgency === 'low').map((action) => (
-                <CompactQueueCard key={action.id} action={action} />
+              {remainingActions.filter(a => a.urgency !== 'low').map((action) => (
+                <QueueCard key={action.id} action={action} />
               ))}
-            </div>
+
+              {remainingActions.some(a => a.urgency === 'low') && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {remainingActions.filter(a => a.urgency === 'low').map((action) => (
+                    <CompactQueueCard key={action.id} action={action} />
+                  ))}
+                </div>
+              )}
+            </motion.div>
           )}
-        </motion.div>
-      )}
-    </motion.main>
+        </div>
+      </motion.div>
+    </div>
   )
 }
 
-/* ── Spotlight Card (expanded detail for top-priority action) ── */
+/* ── Spotlight Card ── */
 
 function SpotlightCard({ action }: { action: ExecuteActionEntity }) {
   const token = getEngineToken(fromDomainEngine(action.engine))
@@ -164,7 +159,6 @@ function SpotlightCard({ action }: { action: ExecuteActionEntity }) {
 
       <h3 className="text-lg md:text-xl font-semibold text-foreground">{action.title}</h3>
 
-      {/* Prominent amount */}
       <span className="text-xl font-mono font-bold" style={{ color: `var(${token.cssVar})` }}>
         {action.amountLabel}
       </span>
@@ -190,7 +184,7 @@ function SpotlightCard({ action }: { action: ExecuteActionEntity }) {
   )
 }
 
-/* ── Compact Queue Card for low-urgency items ── */
+/* ── Compact Queue Card ── */
 
 function CompactQueueCard({ action }: { action: ExecuteActionEntity }) {
   const token = getEngineToken(fromDomainEngine(action.engine))
@@ -215,7 +209,7 @@ function CompactQueueCard({ action }: { action: ExecuteActionEntity }) {
   )
 }
 
-/* ── Queue Card with urgency-based tiers ── */
+/* ── Queue Card ── */
 
 function QueueCard({ action }: { action: ExecuteActionEntity }) {
   const token = getEngineToken(fromDomainEngine(action.engine))
@@ -229,11 +223,8 @@ function QueueCard({ action }: { action: ExecuteActionEntity }) {
         'rounded-[20px] border border-border bg-card flex items-center hover:bg-muted/50 transition-colors border-l-2 group block',
         isFocus ? 'p-5 gap-4' : 'p-4 gap-3',
       )}
-      style={{
-        borderLeftColor: `var(${token.cssVar})`,
-      }}
+      style={{ borderLeftColor: `var(${token.cssVar})` }}
     >
-      {/* Engine dot */}
       <div
         className={cn(
           'flex items-center justify-center border shrink-0',
@@ -244,9 +235,7 @@ function QueueCard({ action }: { action: ExecuteActionEntity }) {
         <Zap size={isFocus ? 20 : 16} style={{ color: `var(${token.cssVar})` }} />
       </div>
 
-      {/* Info */}
       <div className="flex-1 min-w-0">
-        {/* Primary row: title + amount + urgency */}
         <div className="flex items-center gap-3 flex-wrap mb-1">
           <span className={cn('text-foreground truncate', isFocus ? 'text-base font-semibold' : 'text-sm font-semibold')}>{action.title}</span>
           <span className={cn(isFocus ? 'text-lg font-mono font-bold' : 'text-base font-mono font-bold')} style={{ color: `var(${token.cssVar})` }}>
@@ -263,7 +252,6 @@ function QueueCard({ action }: { action: ExecuteActionEntity }) {
           )}
         </div>
 
-        {/* Secondary meta */}
         <div className={cn('flex items-center gap-3 flex-wrap text-xs')}>
           <span className="font-mono text-muted-foreground">{action.id}</span>
           <span className="text-muted-foreground">·</span>
@@ -273,7 +261,6 @@ function QueueCard({ action }: { action: ExecuteActionEntity }) {
         </div>
       </div>
 
-      {/* CTA — hidden on mobile, card itself is the touch target */}
       {isFocus ? (
         <span
           className={cn(

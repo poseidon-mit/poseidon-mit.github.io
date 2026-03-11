@@ -30,7 +30,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useToastContext } from '@/components/providers/ToastProvider'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
+
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { selectThreatFactors, selectThreatTiming } from '@/domain/poseidon-universe'
 import {
@@ -149,14 +149,13 @@ export default function ProtectAlertDetailPage() {
   ] : null
 
   return (
-    <>
+    <div className="hero-viewport">
       <SubPageNav engine="protect" parentPath="/protect/threats" parentLabel="Threats" currentLabel={`Alert #${alert.id}`} />
 
       <motion.main
         id="main-content"
         role="main"
-        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#0A0A0F] min-h-screen pt-6`}
-        style={PAGE_CONTENT_STYLE}
+        className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-6 pb-12 pt-6"
         variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
@@ -657,7 +656,7 @@ export default function ProtectAlertDetailPage() {
         )}
 
       </motion.main>
-    </>
+    </div>
   )
 }
 

@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button'
 import { getMotionPreset, accordionVariants, accordionTransition } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
+
 import { cn } from '@/lib/utils'
 import { recommendations } from '@/data/recommendations'
 import { recommendationDetails } from './recommendation-detail-data'
@@ -204,11 +204,11 @@ export default function GrowRecommendationDetailPage() {
       : null
 
   return (
+    <div className="hero-viewport">
     <motion.div
       id="main-content"
       role="main"
-      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12`}
-      style={PAGE_CONTENT_STYLE}
+      className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-6 pb-12"
       initial="hidden"
       animate="visible"
       variants={staggerContainer}
@@ -414,5 +414,6 @@ export default function GrowRecommendationDetailPage() {
         </Card>
       </motion.div>
     </motion.div>
+    </div>
   )
 }

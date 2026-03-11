@@ -364,7 +364,7 @@ export default function Chat() {
   const isEmpty = messages.length === 0 && !isStreaming
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px-64px)] lg:h-[calc(100vh-64px)] bg-[#0A0A0F]">
+    <div className="hero-viewport flex flex-col bg-[#0A0A0F]">
       {/* Messages or Empty State */}
       <div className="flex-1 overflow-y-auto">
         {isEmpty ? (

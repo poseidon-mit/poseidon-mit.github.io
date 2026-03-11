@@ -282,8 +282,16 @@ export function ProtectThreatPosture({
         )}
       </HeroBento.Action>
 
-      {/* ── Zone B: Proof (minimal for all-clear state) ── */}
-      <HeroBento.Proof>{null}</HeroBento.Proof>
+      {/* ── Zone B: Proof (posture metrics) ── */}
+      <HeroBento.Proof>
+        <span className="typo-label text-white/30">Posture Metrics</span>
+        <div className="flex flex-col gap-3 mt-2">
+          <PostureStat label="Transactions monitored" value="1,347" />
+          <PostureStat label="Accounts protected" value={String(activeCount)} />
+          <PostureStat label="False positive rate" value={fpRate} />
+          <PostureStat label="Last scan" value="2 min ago" />
+        </div>
+      </HeroBento.Proof>
 
       {/* ── Zone C: Portal ── */}
       <HeroBento.Portal>

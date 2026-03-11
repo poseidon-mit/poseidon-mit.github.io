@@ -1,237 +1,48 @@
-import { useMemo, useState } from 'react'
-import { motion } from 'framer-motion'
-import {
-  Scale,
-  CheckCircle2,
-  Clock,
-  ChevronRight,
-  FileText,
-  Users,
-} from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { CountUp } from '@/components/poseidon'
-import { getMotionPreset } from '@/lib/motion-presets'
+import { useMemo } from 'react'
+import { GovernImmutableLedger } from '@/components/poseidon/govern-hero'
 import { usePageTitle } from '@/hooks/use-page-title'
-import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
-import { Link } from '@/router'
-import { cn } from '@/lib/utils'
-import { auditRecords, governStats } from '@/data/audit'
+import { useRouter } from '@/router'
+import {
+  selectGovernSummaryView,
+  selectGovernEngineBreakdown,
+  selectGovernAuditEntries,
+} from '@/domain/poseidon-universe'
+import { ENGINE_COLOR_MAP } from '@/lib/engine-color-map'
 import { formatDemoTimestamp } from '@/lib/demo-date'
 
-/* ── Engine color config ── */
-const ENGINE_BADGE: Record<string, { bg: string; text: string; dot: string }> = {
-  Protect: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', dot: 'bg-emerald-500' },
-  Grow:    { bg: 'bg-violet-500/10',  text: 'text-violet-400',  dot: 'bg-violet-500' },
-  Execute: { bg: 'bg-amber-500/10',   text: 'text-amber-400',   dot: 'bg-amber-500' },
-  Govern:  { bg: 'bg-blue-500/10',    text: 'text-blue-400',    dot: 'bg-blue-500' },
-}
-
-const STATUS_BADGE: Record<string, { label: string; className: string }> = {
-  pending:   { label: 'Pending',   className: 'border-amber-500/30 bg-amber-500/10 text-amber-400' },
-  completed: { label: 'Completed', className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' },
-  rejected:  { label: 'Rejected',  className: 'border-red-500/30 bg-red-500/10 text-red-400' },
-}
-
-const FILTER_PILL_ACTIVE: Record<string, string> = {
-  All:     'bg-blue-500/15 text-blue-400 border-blue-500/30',
-  Protect: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
-  Grow:    'bg-violet-500/15 text-violet-400 border-violet-500/30',
-  Execute: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
-}
-
-type EngineFilter = 'All' | 'Protect' | 'Grow' | 'Execute'
-
-/* ── Page Component ── */
 export default function GovernPage() {
   usePageTitle('Govern')
-  const prefersReducedMotion = useReducedMotionSafe()
-  const { fadeUp, staggerContainer } = getMotionPreset(prefersReducedMotion)
-  const [engineFilter, setEngineFilter] = useState<EngineFilter>('All')
+  const router = useRouter()
 
-  const filteredRecords = useMemo(() => {
-    if (engineFilter === 'All') return auditRecords.slice(0, 6)
-    return auditRecords.filter(r => r.engine === engineFilter).slice(0, 6)
-  }, [engineFilter])
+  const summary = useMemo(() => selectGovernSummaryView(), [])
+  const breakdown = useMemo(() => selectGovernEngineBreakdown(), [])
+  const rawEntries = useMemo(() => selectGovernAuditEntries(), [])
 
-  const engineCounts = useMemo(() => {
-    const counts: Record<string, number> = { Protect: 0, Grow: 0, Execute: 0 }
-    for (const r of auditRecords) {
-      if (counts[r.engine] !== undefined) counts[r.engine]++
-    }
-    return counts
-  }, [])
-
-  return (
-    <motion.div
-      id="main-content"
-      role="main"
-      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-8`}
-      style={PAGE_CONTENT_STYLE}
-      initial="hidden"
-      animate="visible"
-      variants={staggerContainer}
-    >
-      {/* ── Hero: 100% ── */}
-      <motion.div variants={fadeUp} className="text-center pt-4 pb-2">
-        <CountUp
-          value={100}
-          suffix="%"
-          duration={1600}
-          className="text-[5rem] sm:text-[6.5rem] font-bold leading-none tracking-tight text-blue-600 font-mono tabular-nums"
-        />
-        <p className="mt-3 text-lg text-muted-foreground max-w-md mx-auto leading-relaxed">
-          Every AI decision is recorded, traceable, and explainable.
-        </p>
-      </motion.div>
-
-      {/* ── Summary cards (2x2) ── */}
-      <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
-        <SummaryCard
-          label="Total Records"
-          value={governStats.totalRecords}
-          locale
-          icon={<FileText className="h-4 w-4 text-blue-500" />}
-        />
-        <SummaryCard
-          label="This Month"
-          value={governStats.thisMonth}
-          locale
-          icon={<Clock className="h-4 w-4 text-blue-500" />}
-        />
-        <SummaryCard
-          label="Auditable"
-          value={100}
-          suffix="%"
-          icon={<CheckCircle2 className="h-4 w-4 text-emerald-500" />}
-        />
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5 flex flex-col gap-1">
-          <div className="flex items-center gap-2 mb-1">
-            <Users className="h-4 w-4 text-blue-500" />
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">User Overrides</span>
-          </div>
-          <span className="text-2xl font-bold text-foreground font-mono tabular-nums">
-            {governStats.userOverrides}
-          </span>
-        </div>
-      </motion.div>
-
-      {/* ── Engine filter pills ── */}
-      <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2">
-        {(['All', 'Protect', 'Grow', 'Execute'] as EngineFilter[]).map(engine => (
-          <button
-            key={engine}
-            onClick={() => setEngineFilter(engine)}
-            className={cn(
-              'min-h-[44px] px-4 py-2 rounded-full text-sm font-semibold border transition-colors',
-              engineFilter === engine
-                ? FILTER_PILL_ACTIVE[engine]
-                : 'bg-white/[0.03] text-muted-foreground border-white/[0.06] hover:border-white/10 hover:text-foreground',
-            )}
-          >
-            {engine}
-            <span className="ml-1.5 font-mono tabular-nums text-xs opacity-70">
-              {engine === 'All' ? auditRecords.length : (engineCounts[engine] ?? 0)}
-            </span>
-          </button>
-        ))}
-      </motion.div>
-
-      {/* ── Activity Log ── */}
-      <motion.div variants={fadeUp}>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
-            <Scale className="h-5 w-5 text-blue-600" />
-            Activity Log
-          </h2>
-          <Link
-            to="/govern/audit"
-            className="text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center gap-1"
-          >
-            View All <ChevronRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
-
-        <div className="relative">
-          {/* Timeline line */}
-          <div className="absolute left-[7px] top-3 bottom-3 w-px bg-white/[0.06]" />
-
-          <div className="flex flex-col gap-0">
-            {filteredRecords.map((record) => {
-              const engineStyle = ENGINE_BADGE[record.engine] ?? ENGINE_BADGE.Govern
-              const statusStyle = STATUS_BADGE[record.status] ?? STATUS_BADGE.pending
-              return (
-                <Link
-                  key={record.id}
-                  to={`/govern/audit-detail?auditId=${record.id}`}
-                  className="group relative flex items-start gap-4 py-4 pl-0 hover:bg-white/[0.04] rounded-lg transition-colors -mx-2 px-2"
-                >
-                  {/* Timeline dot */}
-                  <div className={cn(
-                    'relative z-10 mt-1.5 h-[15px] w-[15px] rounded-full border-2 border-[#0A0A0F] shrink-0',
-                    engineStyle.dot,
-                  )} />
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate group-hover:text-blue-400 transition-colors">
-                          {record.action}
-                        </p>
-                        <div className="flex items-center gap-2 mt-1.5">
-                          <Badge variant="outline" className={cn('text-[11px] px-2 py-0.5', engineStyle.bg, engineStyle.text)}>
-                            {record.engine}
-                          </Badge>
-                          <span className="text-xs text-white/40 font-mono tabular-nums">
-                            {formatDemoTimestamp(record.timestamp)}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <Badge variant="outline" className={cn('text-[11px] px-2 py-0.5', statusStyle.className)}>
-                          {statusStyle.label}
-                        </Badge>
-                        <ChevronRight className="h-4 w-4 text-white/30 group-hover:text-blue-400 transition-colors" />
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
+  // Map canonical entries to hero's expected shape (top 5)
+  const auditEntries = useMemo(
+    () =>
+      rawEntries.slice(0, 5).map((e) => ({
+        id: e.id,
+        engine: e.type,
+        engineColor:
+          ENGINE_COLOR_MAP[e.type as keyof typeof ENGINE_COLOR_MAP] ??
+          'var(--engine-govern)',
+        action: e.action,
+        confidence: e.confidence,
+        time: formatDemoTimestamp(e.timestampIso),
+        status: e.status,
+        modelVersion: 'GPT-4o + Sonnet 3.5',
+        topFactor: `${Math.round(e.confidence * 100)}% confidence`,
+      })),
+    [rawEntries],
   )
-}
 
-/* ── Summary Card sub-component ── */
-function SummaryCard({
-  label,
-  value,
-  suffix,
-  locale,
-  icon,
-}: {
-  label: string
-  value: number
-  suffix?: string
-  locale?: boolean
-  icon: React.ReactNode
-}) {
   return (
-    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5 flex flex-col gap-1">
-      <div className="flex items-center gap-2 mb-1">
-        {icon}
-        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
-      </div>
-      <CountUp
-        value={value}
-        suffix={suffix}
-        locale={locale}
-        duration={1000}
-        className="text-2xl font-bold text-foreground font-mono tabular-nums"
+    <div className="hero-viewport">
+      <GovernImmutableLedger
+        decisionsAudited={summary.decisionsAuditedTotal}
+        engineBreakdown={breakdown}
+        auditEntries={auditEntries}
       />
     </div>
   )

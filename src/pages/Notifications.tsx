@@ -1,15 +1,15 @@
 import { useState, type KeyboardEvent } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Bell, Settings2 } from 'lucide-react';
+import { Bell, Settings2 } from 'lucide-react';
 import { Link } from '@/router';
 import { EmptyState } from '@/components/poseidon';
+import { ListHeroBanner } from '@/components/poseidon/list-hero-banner';
 import { getMotionPreset } from '@/lib/motion-presets';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { DEMO_THREAD } from '@/lib/demo-thread';
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout';
 import { ENGINE_BADGE_CLASS } from '@/lib/engine-color-map';
 
 /* ═══════════════════════════════════════════
@@ -80,48 +80,35 @@ export function Notifications() {
   };
 
   return (
-    <>
-
-      <nav
-        className="sticky top-0 z-50 backdrop-blur-xl bg-[#0A0A0F]/80 border-b border-border"
-        aria-label="Breadcrumb">
-
-        <div className={`${PAGE_CONTENT_CLASS} h-14 flex items-center gap-2`} style={PAGE_CONTENT_STYLE}>
-          <Link
-            to="/dashboard"
-            className="flex items-center gap-1.5 text-sm font-medium hover:opacity-80 transition-opacity"
-            style={{ color: 'var(--engine-dashboard)' }}>
-
-            <ArrowLeft className="h-4 w-4" />
-            Dashboard
-          </Link>
-          <span className="text-muted-foreground/40">/</span>
-          <span className="text-sm text-muted-foreground">Notifications</span>
-        </div>
-      </nav>
-
+    <div className="hero-viewport">
       <motion.div
         id="main-content"
-        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 md:gap-8 py-6 md:py-8`}
-        style={PAGE_CONTENT_STYLE}
+        className="flex flex-col gap-5 h-full"
         variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
         role="main">
 
-        {/* Hero */}
-        <motion.div variants={fadeUpVariant} className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 mb-1">
-            <Bell className="h-5 w-5" style={{ color: 'var(--engine-dashboard)' }} />
-            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--engine-dashboard)' }}>
-              Dashboard · Notifications
-            </span>
-          </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Notifications</h1>
-          <p className="text-sm text-muted-foreground">
-            {unreadCount} unread notifications across all engines
-          </p>
+        {/* Hero Banner */}
+        <motion.div variants={fadeUpVariant}>
+          <ListHeroBanner
+            engine="dashboard"
+            icon={Bell}
+            engineLabel="Dashboard · Notifications"
+            title="Notifications"
+            subtitle={`${unreadCount} unread notifications across all engines`}
+            backTo="/dashboard"
+            backLabel="Back to Dashboard"
+            stats={[
+              { label: 'Total', value: notifications.length },
+              { label: 'Unread', value: unreadCount, color: 'var(--state-warning)' },
+              { label: 'Security', value: categoryCounts.security },
+            ]}
+          />
         </motion.div>
+
+        {/* Scrollable content */}
+        <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4">
 
         {/* Main feed — full width */}
         <motion.div variants={fadeUpVariant} className="flex flex-col gap-4">
@@ -250,8 +237,10 @@ export function Notifications() {
           </div>
         </motion.details>
 
+        </div>
       </motion.div>
-    </>);
+    </div>
+  );
 
 }
 

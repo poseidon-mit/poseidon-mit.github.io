@@ -50,6 +50,7 @@ export { CohortFraudTrend, type CohortFraudTrendProps } from './cohort-fraud-tre
 /* ── Hero Bento Layout ── */
 export { HeroBento, type HeroBentoProps } from './hero-bento'
 export { ListPortalBar, type ListPortalBarProps, type PortalDestination } from './list-portal-bar'
+export { ListHeroBanner, type ListHeroBannerProps, type ListHeroBannerStat } from './list-hero-banner'
 export { CostOfInaction, type CostOfInactionProps } from './cost-of-inaction'
 
 /* ── Priority Spotlight ── */
@@ -69,6 +70,9 @@ export { ExecuteApprovalCommandDeck, type ExecuteApprovalCommandDeckProps } from
 
 /* ── Govern Hero ── */
 export { GovernImmutableLedger, type GovernImmutableLedgerProps } from './govern-hero'
+
+/* ── Settings Hero ── */
+export { SettingsControlCenter, type SettingsControlCenterProps } from './settings-hero'
 
 /* ── Cross-Engine Traceability ── */
 export { CrossEngineTrail, type CrossEngineTrailProps } from './cross-engine-trail'

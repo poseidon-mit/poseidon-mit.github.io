@@ -5,7 +5,6 @@ import { ForecastBand } from "@/components/poseidon/forecast-band";
 import type { ForecastPoint } from "@/components/poseidon/forecast-band";
 import { getMotionPreset } from '@/lib/motion-presets';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -45,12 +44,11 @@ export default function GrowGoalPage() {
   const strokeDashoffset = circumference - RESERVE_PROGRESS / 100 * circumference;
 
   return (
-    <>
+    <div className="hero-viewport">
 
       <motion.main
         id="main-content"
-        className={`${PAGE_CONTENT_CLASS} command-center__main`}
-        style={PAGE_CONTENT_STYLE}
+        className="flex-1 min-h-0 overflow-y-auto flex flex-col"
         initial="hidden"
         animate="visible"
         variants={staggerContainerVariant}>
@@ -198,6 +196,7 @@ export default function GrowGoalPage() {
 
 
       </motion.main>
-    </>);
+    </div>
+  );
 
 }

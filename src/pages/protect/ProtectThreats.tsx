@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Shield, AlertTriangle, CheckCircle2, ChevronRight, ArrowLeft, Filter, Clock } from 'lucide-react'
+import { Shield, AlertTriangle, CheckCircle2, ChevronRight, Clock, Filter } from 'lucide-react'
 import { Link } from '@/router'
 import { selectAccounts } from '@/domain/poseidon-universe'
 import { getMotionPreset } from '@/lib/motion-presets'
@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
+import { ListHeroBanner } from '@/components/poseidon/list-hero-banner'
 import { THREATS } from './protect-data'
 import type { ThreatRow, ThreatSeverity } from './protect-data'
 import { useDismissedAlerts } from './useDismissedAlerts'
@@ -61,13 +61,11 @@ export default function ProtectThreatsPage() {
   const activeThreats = useMemo(() => THREATS.filter(t => !dismissed.has(t.id)), [dismissed])
   const accounts = useMemo(() => selectAccounts(), [])
 
-  // Unique accounts from threats for filter dropdown
   const threatAccounts = useMemo(() => {
     const accts = new Set(activeThreats.map(t => t.account).filter(Boolean))
     return Array.from(accts) as string[]
   }, [activeThreats])
 
-  // Apply filters
   const filtered = useMemo(() => {
     return activeThreats.filter(t => {
       if (accountFilter !== 'all' && t.account !== accountFilter) return false
@@ -78,6 +76,7 @@ export default function ProtectThreatsPage() {
 
   const pendingThreats = useMemo(() => filtered.filter(t => t.status === 'pending'), [filtered])
   const resolvedThreats = useMemo(() => filtered.filter(t => t.status === 'resolved'), [filtered])
+  const allResolved = THREATS.filter(t => t.status === 'resolved').length
 
   const clearFilters = () => {
     setAccountFilter('all')
@@ -88,192 +87,129 @@ export default function ProtectThreatsPage() {
   const hasActiveFilters = accountFilter !== 'all' || severityFilter !== 'all' || dateFilter !== '7days'
 
   return (
-    <motion.main
-      id="main-content"
-      role="main"
-      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#0A0A0F] min-h-screen`}
-      style={PAGE_CONTENT_STYLE}
-      variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
-    >
-      {/* Back link */}
-      <motion.div variants={fadeUp}>
-        <Link
-          to="/protect"
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Protect
-        </Link>
-      </motion.div>
+    <div className="hero-viewport">
+      <motion.div
+        className="flex flex-col gap-5 h-full"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Hero Banner */}
+        <motion.div variants={fadeUp}>
+          <ListHeroBanner
+            engine="protect"
+            icon={Shield}
+            engineLabel="Protect · Threats"
+            title="Security Threats"
+            subtitle="Review and manage security alerts across all accounts"
+            backTo="/protect"
+            backLabel="Back to Protect"
+            stats={[
+              { label: 'Pending', value: pendingThreats.length, color: 'var(--state-critical)' },
+              { label: 'Resolved', value: allResolved, color: 'var(--state-healthy)' },
+              { label: 'Monitored', value: accounts.length },
+            ]}
+          />
+        </motion.div>
 
-      {/* Header */}
-      <motion.div variants={fadeUp} className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10">
-          <Shield className="h-5 w-5 text-red-400" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Security Threats</h1>
-          <p className="text-muted-foreground">Review and manage security alerts across all accounts</p>
-        </div>
-      </motion.div>
+        {/* Scrollable list area */}
+        <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4">
+          {/* Filters */}
+          <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Filter className="h-4 w-4" />
+              <span>Filter:</span>
+            </div>
 
-      {/* Summary cards */}
-      <motion.div variants={fadeUp}>
-        <SummaryCards
-          pendingCount={pendingThreats.length}
-          resolvedCount={resolvedThreats.length}
-          accountsCount={accounts.length}
-        />
-      </motion.div>
+            <Select value={accountFilter} onValueChange={setAccountFilter}>
+              <SelectTrigger className="w-[180px] bg-white/[0.03] border-white/[0.06] text-foreground">
+                <SelectValue placeholder="All Accounts" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Accounts</SelectItem>
+                {threatAccounts.map(acct => (
+                  <SelectItem key={acct} value={acct}>{acct}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-      {/* Filters */}
-      <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Filter className="h-4 w-4" />
-          <span>Filter:</span>
-        </div>
+            <Select value={severityFilter} onValueChange={setSeverityFilter}>
+              <SelectTrigger className="w-[140px] bg-white/[0.03] border-white/[0.06] text-foreground">
+                <SelectValue placeholder="Severity" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Severity</SelectItem>
+                <SelectItem value="Critical">Critical</SelectItem>
+                <SelectItem value="High">High</SelectItem>
+                <SelectItem value="Medium">Medium</SelectItem>
+                <SelectItem value="Low">Low</SelectItem>
+              </SelectContent>
+            </Select>
 
-        <Select value={accountFilter} onValueChange={setAccountFilter}>
-          <SelectTrigger className="w-[180px] bg-white/[0.03] border-white/[0.06] text-foreground">
-            <SelectValue placeholder="All Accounts" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Accounts</SelectItem>
-            {threatAccounts.map(acct => (
-              <SelectItem key={acct} value={acct}>{acct}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+            <Select value={dateFilter} onValueChange={setDateFilter}>
+              <SelectTrigger className="w-[140px] bg-white/[0.03] border-white/[0.06] text-foreground">
+                <SelectValue placeholder="Date Range" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="today">Today</SelectItem>
+                <SelectItem value="7days">Last 7 Days</SelectItem>
+                <SelectItem value="30days">Last 30 Days</SelectItem>
+                <SelectItem value="all">All Time</SelectItem>
+              </SelectContent>
+            </Select>
 
-        <Select value={severityFilter} onValueChange={setSeverityFilter}>
-          <SelectTrigger className="w-[140px] bg-white/[0.03] border-white/[0.06] text-foreground">
-            <SelectValue placeholder="Severity" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Severity</SelectItem>
-            <SelectItem value="Critical">Critical</SelectItem>
-            <SelectItem value="High">High</SelectItem>
-            <SelectItem value="Medium">Medium</SelectItem>
-            <SelectItem value="Low">Low</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select value={dateFilter} onValueChange={setDateFilter}>
-          <SelectTrigger className="w-[140px] bg-white/[0.03] border-white/[0.06] text-foreground">
-            <SelectValue placeholder="Date Range" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="today">Today</SelectItem>
-            <SelectItem value="7days">Last 7 Days</SelectItem>
-            <SelectItem value="30days">Last 30 Days</SelectItem>
-            <SelectItem value="all">All Time</SelectItem>
-          </SelectContent>
-        </Select>
-
-        {hasActiveFilters && (
-          <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={clearFilters}>
-            Clear
-          </Button>
-        )}
-      </motion.div>
-
-      {/* Tabs: Pending / Resolved */}
-      <motion.div variants={fadeUp}>
-        <Tabs defaultValue="pending" className="w-full">
-          <TabsList className="bg-white/[0.04]">
-            <TabsTrigger value="pending" className="gap-2">
-              <Clock className="h-4 w-4" />
-              Pending ({pendingThreats.length})
-            </TabsTrigger>
-            <TabsTrigger value="resolved" className="gap-2">
-              <CheckCircle2 className="h-4 w-4" />
-              Resolved ({resolvedThreats.length})
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="pending" className="mt-4 space-y-3">
-            {pendingThreats.length === 0 ? (
-              <InlineEmptyState
-                icon={<CheckCircle2 className="h-12 w-12 text-emerald-400" />}
-                title="All clear!"
-                description="No pending threats to review"
-              />
-            ) : (
-              pendingThreats.map(threat => (
-                <ThreatCard key={threat.id} threat={threat} />
-              ))
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={clearFilters}>
+                Clear
+              </Button>
             )}
-          </TabsContent>
+          </motion.div>
 
-          <TabsContent value="resolved" className="mt-4 space-y-3">
-            {resolvedThreats.length === 0 ? (
-              <InlineEmptyState
-                icon={<Clock className="h-12 w-12 text-white/40" />}
-                title="No history yet"
-                description="Resolved threats will appear here"
-              />
-            ) : (
-              resolvedThreats.map(threat => (
-                <ThreatCard key={threat.id} threat={threat} />
-              ))
-            )}
-          </TabsContent>
-        </Tabs>
+          {/* Tabs: Pending / Resolved */}
+          <motion.div variants={fadeUp}>
+            <Tabs defaultValue="pending" className="w-full">
+              <TabsList className="bg-white/[0.04]">
+                <TabsTrigger value="pending" className="gap-2">
+                  <Clock className="h-4 w-4" />
+                  Pending ({pendingThreats.length})
+                </TabsTrigger>
+                <TabsTrigger value="resolved" className="gap-2">
+                  <CheckCircle2 className="h-4 w-4" />
+                  Resolved ({resolvedThreats.length})
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="pending" className="mt-4 space-y-3">
+                {pendingThreats.length === 0 ? (
+                  <InlineEmptyState
+                    icon={<CheckCircle2 className="h-12 w-12 text-emerald-400" />}
+                    title="All clear!"
+                    description="No pending threats to review"
+                  />
+                ) : (
+                  pendingThreats.map(threat => (
+                    <ThreatCard key={threat.id} threat={threat} />
+                  ))
+                )}
+              </TabsContent>
+
+              <TabsContent value="resolved" className="mt-4 space-y-3">
+                {resolvedThreats.length === 0 ? (
+                  <InlineEmptyState
+                    icon={<Clock className="h-12 w-12 text-white/40" />}
+                    title="No history yet"
+                    description="Resolved threats will appear here"
+                  />
+                ) : (
+                  resolvedThreats.map(threat => (
+                    <ThreatCard key={threat.id} threat={threat} />
+                  ))
+                )}
+              </TabsContent>
+            </Tabs>
+          </motion.div>
+        </div>
       </motion.div>
-    </motion.main>
-  )
-}
-
-/* ── Summary Cards ── */
-
-function SummaryCards({
-  pendingCount,
-  resolvedCount,
-  accountsCount,
-}: {
-  pendingCount: number
-  resolvedCount: number
-  accountsCount: number
-}) {
-  return (
-    <div className="grid gap-4 sm:grid-cols-3">
-      <Card className="border-2 border-red-500/20 bg-red-500/10">
-        <CardContent className="flex items-center gap-4 p-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10">
-            <AlertTriangle className="h-6 w-6 text-red-400" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-red-400">{pendingCount}</p>
-            <p className="text-sm text-red-400/80">Pending Review</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="border-2 border-emerald-500/20 bg-emerald-500/10">
-        <CardContent className="flex items-center gap-4 p-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10">
-            <CheckCircle2 className="h-6 w-6 text-emerald-400" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-emerald-400">{resolvedCount}</p>
-            <p className="text-sm text-emerald-400/80">Resolved</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="border-2 border-blue-500/20 bg-blue-500/10">
-        <CardContent className="flex items-center gap-4 p-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10">
-            <Shield className="h-6 w-6 text-blue-400" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-blue-400">{accountsCount}</p>
-            <p className="text-sm text-blue-400/80">Accounts Monitored</p>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }
@@ -288,7 +224,6 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
     <Card className="bg-card border-white/[0.06] transition-shadow hover:bg-white/[0.04]">
       <CardContent className="p-4">
         <div className="flex items-center justify-between gap-4">
-          {/* Left: icon + info */}
           <div className="flex items-start gap-4">
             <div
               className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${severityIconBg[threat.severity]}`}
@@ -322,7 +257,6 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
             </div>
           </div>
 
-          {/* Right: action button */}
           <Link
             to={`/protect/alert-detail?alertId=${threat.id}`}
             className={cn(

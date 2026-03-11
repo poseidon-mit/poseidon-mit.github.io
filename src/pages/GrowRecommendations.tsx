@@ -1,23 +1,21 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
-  ArrowLeft,
   TrendingUp,
   Lightbulb,
   ChevronRight,
   PiggyBank,
   Shield,
-  CheckCircle2,
 } from 'lucide-react'
 import { Link } from '@/router'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { cn } from '@/lib/utils'
-import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { ListHeroBanner } from '@/components/poseidon/list-hero-banner'
 import { selectSpotlightRecommendation } from '@/domain/poseidon-universe'
 import { RECOMMENDATIONS_FOR_LIST } from './grow/recommendation-detail-data'
 import type { RecommendationListItem } from './grow/recommendation-detail-data'
@@ -71,179 +69,136 @@ export function GrowRecommendations() {
   const hasActiveFilters = sort !== 'benefit' || category !== 'All'
 
   return (
-    <motion.main
-      id="main-content"
-      role="main"
-      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12`}
-      style={PAGE_CONTENT_STYLE}
-      variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
-    >
-      {/* Back link */}
-      <motion.div variants={fadeUp}>
-        <Link
-          to="/grow"
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Grow
-        </Link>
-      </motion.div>
-
-      {/* Header */}
-      <motion.div variants={fadeUp} className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/10">
-          <Lightbulb className="h-5 w-5 text-violet-400" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">AI Recommendations</h1>
-          <p className="text-muted-foreground">Personalized suggestions to optimize your finances</p>
-        </div>
-      </motion.div>
-
-      {/* Summary cards */}
-      <motion.div variants={fadeUp}>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Card className="border-violet-500/20 bg-violet-500/10">
-            <CardContent className="flex items-center gap-4 p-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/10">
-                <Lightbulb className="h-6 w-6 text-violet-400" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-violet-400">{activeCount}</p>
-                <p className="text-sm text-violet-400/80">Active</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-emerald-500/20 bg-emerald-500/10">
-            <CardContent className="flex items-center gap-4 p-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10">
-                <TrendingUp className="h-6 w-6 text-emerald-400" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-emerald-400">${totalAnnual.toLocaleString()}</p>
-                <p className="text-sm text-emerald-400/80">Potential Savings/yr</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-blue-500/20 bg-blue-500/10">
-            <CardContent className="flex items-center gap-4 p-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10">
-                <CheckCircle2 className="h-6 w-6 text-blue-400" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-blue-400">12</p>
-                <p className="text-sm text-blue-400/80">Completed (30d)</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </motion.div>
-
-      {/* Filter bar */}
-      <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2">
-        {(Object.keys(SORT_LABELS) as SortMode[]).map(mode => (
-          <button
-            key={mode}
-            onClick={() => setSort(mode)}
-            className={cn(
-              'px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors',
-              sort === mode
-                ? 'bg-violet-500/10 text-violet-400 border-violet-500/20'
-                : 'bg-white/[0.03] text-muted-foreground border-white/[0.06] hover:border-white/10 hover:text-foreground',
-            )}
-          >
-            {SORT_LABELS[mode]}
-          </button>
-        ))}
-        <div className="w-px h-5 bg-white/[0.06] mx-1" />
-        {CATEGORY_OPTIONS.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setCategory(cat)}
-            className={cn(
-              'px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors',
-              category === cat
-                ? 'bg-violet-500/10 text-violet-400 border-violet-500/20'
-                : 'bg-white/[0.03] text-muted-foreground border-white/[0.06] hover:border-white/10 hover:text-foreground',
-            )}
-            data-category={cat}
-          >
-            {cat}
-          </button>
-        ))}
-        {hasActiveFilters && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground"
-            onClick={() => { setSort('benefit'); setCategory('All') }}
-          >
-            Clear
-          </Button>
-        )}
-      </motion.div>
-
-      {/* Filtered count */}
-      {filtered.length < RECOMMENDATIONS_FOR_LIST.length && (
-        <p className="text-xs text-white/40">
-          Showing {filtered.length} of {RECOMMENDATIONS_FOR_LIST.length}
-        </p>
-      )}
-
-      {/* Spotlight recommendation */}
-      {spotlightRec && (
+    <div className="hero-viewport">
+      <motion.div
+        className="flex flex-col gap-5 h-full"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Hero Banner */}
         <motion.div variants={fadeUp}>
-          <Link to={`/grow/recommendation?id=${spotlightRec.id}`} className="block">
-            <Card className="border-violet-500/20 bg-gradient-to-r from-violet-500/10 to-purple-500/10 transition-shadow hover:from-violet-500/15 hover:to-purple-500/15">
-              <CardContent className="p-6">
-                <div className="flex flex-col gap-3">
-                  <Badge variant="outline" className="self-start border-violet-500/20 bg-violet-500/10 text-violet-400 text-[10px] uppercase tracking-widest">
-                    Top Priority
-                  </Badge>
-                  <p className="text-lg font-semibold text-foreground leading-snug">{spotlightRec.title}</p>
-                  <p className="text-sm text-muted-foreground line-clamp-2">{spotlightRec.description}</p>
-                  <div className="flex items-center gap-3 mt-1">
-                    <span className="text-2xl font-mono font-bold text-violet-400">
-                      ${spotlightRec.annualSavings.toLocaleString()}/yr
-                    </span>
-                    <DifficultyBadge difficulty={spotlightRec.difficulty} />
-                  </div>
-                  <span className="self-start hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors bg-violet-600 text-white hover:bg-violet-700">
-                    See opportunity
-                    <ChevronRight size={14} />
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
+          <ListHeroBanner
+            engine="grow"
+            icon={Lightbulb}
+            engineLabel="Grow · Recommendations"
+            title="AI Recommendations"
+            subtitle="Personalized suggestions to optimize your finances"
+            backTo="/grow"
+            backLabel="Back to Grow"
+            stats={[
+              { label: 'Active', value: activeCount },
+              { label: 'Savings/yr', value: `$${totalAnnual.toLocaleString()}`, color: 'var(--state-healthy)' },
+              { label: 'Completed', value: 12 },
+            ]}
+          />
         </motion.div>
-      )}
 
-      {/* Recommendation list */}
-      {filtered.length === 0 ? (
-        <motion.div variants={fadeUp}>
-          <Card className="bg-card border-white/[0.06]">
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <Lightbulb className="h-12 w-12 text-white/40" />
-              <p className="mt-4 text-lg font-medium text-foreground">No recommendations</p>
-              <p className="text-muted-foreground">No recommendations match this filter.</p>
-            </CardContent>
-          </Card>
-        </motion.div>
-      ) : (
-        <motion.div variants={fadeUp} className="space-y-3">
-          {filtered
-            .filter(rec => !spotlightRec || rec.id !== spotlightRec.id)
-            .map(rec => (
-              <RecommendationCard key={rec.id} rec={rec} />
+        {/* Scrollable list area */}
+        <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4">
+          {/* Filter bar */}
+          <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2">
+            {(Object.keys(SORT_LABELS) as SortMode[]).map(mode => (
+              <button
+                key={mode}
+                onClick={() => setSort(mode)}
+                className={cn(
+                  'px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors',
+                  sort === mode
+                    ? 'bg-violet-500/10 text-violet-400 border-violet-500/20'
+                    : 'bg-white/[0.03] text-muted-foreground border-white/[0.06] hover:border-white/10 hover:text-foreground',
+                )}
+              >
+                {SORT_LABELS[mode]}
+              </button>
             ))}
-        </motion.div>
-      )}
-    </motion.main>
+            <div className="w-px h-5 bg-white/[0.06] mx-1" />
+            {CATEGORY_OPTIONS.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setCategory(cat)}
+                className={cn(
+                  'px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors',
+                  category === cat
+                    ? 'bg-violet-500/10 text-violet-400 border-violet-500/20'
+                    : 'bg-white/[0.03] text-muted-foreground border-white/[0.06] hover:border-white/10 hover:text-foreground',
+                )}
+                data-category={cat}
+              >
+                {cat}
+              </button>
+            ))}
+            {hasActiveFilters && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground"
+                onClick={() => { setSort('benefit'); setCategory('All') }}
+              >
+                Clear
+              </Button>
+            )}
+          </motion.div>
+
+          {/* Filtered count */}
+          {filtered.length < RECOMMENDATIONS_FOR_LIST.length && (
+            <p className="text-xs text-white/40">
+              Showing {filtered.length} of {RECOMMENDATIONS_FOR_LIST.length}
+            </p>
+          )}
+
+          {/* Spotlight recommendation */}
+          {spotlightRec && (
+            <motion.div variants={fadeUp}>
+              <Link to={`/grow/recommendation?id=${spotlightRec.id}`} className="block">
+                <Card className="border-violet-500/20 bg-gradient-to-r from-violet-500/10 to-purple-500/10 transition-shadow hover:from-violet-500/15 hover:to-purple-500/15">
+                  <CardContent className="p-6">
+                    <div className="flex flex-col gap-3">
+                      <Badge variant="outline" className="self-start border-violet-500/20 bg-violet-500/10 text-violet-400 text-[10px] uppercase tracking-widest">
+                        Top Priority
+                      </Badge>
+                      <p className="text-lg font-semibold text-foreground leading-snug">{spotlightRec.title}</p>
+                      <p className="text-sm text-muted-foreground line-clamp-2">{spotlightRec.description}</p>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-2xl font-mono font-bold text-violet-400">
+                          ${spotlightRec.annualSavings.toLocaleString()}/yr
+                        </span>
+                        <DifficultyBadge difficulty={spotlightRec.difficulty} />
+                      </div>
+                      <span className="self-start hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors bg-violet-600 text-white hover:bg-violet-700">
+                        See opportunity
+                        <ChevronRight size={14} />
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            </motion.div>
+          )}
+
+          {/* Recommendation list */}
+          {filtered.length === 0 ? (
+            <motion.div variants={fadeUp}>
+              <Card className="bg-card border-white/[0.06]">
+                <CardContent className="flex flex-col items-center justify-center py-12">
+                  <Lightbulb className="h-12 w-12 text-white/40" />
+                  <p className="mt-4 text-lg font-medium text-foreground">No recommendations</p>
+                  <p className="text-muted-foreground">No recommendations match this filter.</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ) : (
+            <motion.div variants={fadeUp} className="space-y-3">
+              {filtered
+                .filter(rec => !spotlightRec || rec.id !== spotlightRec.id)
+                .map(rec => (
+                  <RecommendationCard key={rec.id} rec={rec} />
+                ))}
+            </motion.div>
+          )}
+        </div>
+      </motion.div>
+    </div>
   )
 }
 

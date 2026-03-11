@@ -16,11 +16,12 @@ import { AuroraPulse } from './aurora-pulse'
 export interface HeroBentoProps extends React.HTMLAttributes<HTMLDivElement> {
   engine: EngineName
   accentColor?: string
+  fullscreen?: boolean
   className?: string
   children: React.ReactNode
 }
 
-export function HeroBento({ engine, accentColor, className, children, ...rest }: HeroBentoProps) {
+export function HeroBento({ engine, accentColor, fullscreen, className, children, ...rest }: HeroBentoProps) {
   const borderColor = accentColor ?? `var(${engineTokens[engine].cssVar})`
 
   return (
@@ -28,6 +29,7 @@ export function HeroBento({ engine, accentColor, className, children, ...rest }:
       className={cn(
         'glass-card relative overflow-hidden rounded-2xl',
         'grid grid-cols-1 md:grid-cols-[1fr_380px]',
+        fullscreen && 'flex-1 h-full',
         className,
       )}
       style={{ borderColor: `color-mix(in srgb, ${borderColor} 8%, transparent)`, borderWidth: 1 }}

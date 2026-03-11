@@ -4,6 +4,7 @@
   --font-sans: 'Geist', 'Inter', 'Noto Sans JP', system-ui, sans-serif;
   --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
   --font-display: 'Geist', 'Inter', system-ui, sans-serif;
+  --font-display-serif: 'Instrument Serif', Georgia, serif;
 
   /* Engine accent colors (v7.0 HSL) */
   --color-engine-dashboard: hsl(189, 94%, 43%);
@@ -147,6 +148,18 @@
     --neon-violet: none;
     --neon-amber: none;
     --neon-blue: none;
+
+    /* Hero viewport nav heights */
+    --nav-top-height: 56px;
+    --nav-bottom-height: 72px;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --nav-top-height: 64px;
+      --nav-bottom-height: 0px;
+    }
   }
 
   * {

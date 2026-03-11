@@ -27,10 +27,13 @@
     --gradient-amber: linear-gradient(90deg, hsl(38, 92%, 50%), hsl(38, 80%, 65%));
     --gradient-blue: linear-gradient(90deg, hsl(217, 91%, 60%), hsl(217, 70%, 75%));
 
-    /* ── Additional tracking utilities ── */
+    /* ── Tracking utilities ── */
     --tracking-display: -0.04em;
+    --tracking-heading: -0.03em;
     --tracking-h1: -0.03em;
     --tracking-h2: -0.02em;
+    --tracking-label: 0.08em;
+    --tracking-caption: 0.02em;
 
     /* ── Additional motion aliases ── */
     --motion-fast: 120ms;
@@ -41,6 +44,54 @@
     --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
     --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
   }
+}
+
+/* ── Typography Compositions ── */
+
+.typo-hero-number {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums lining-nums;
+  line-height: 1;
+}
+
+.typo-display {
+  font-family: var(--font-display-serif);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.15;
+}
+
+.typo-heading {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: var(--tracking-heading);
+  line-height: 1.25;
+}
+
+.typo-label {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.typo-mono {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.typo-caption {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: var(--tracking-caption);
+  color: rgba(255, 255, 255, 0.3);
 }
 
 /* ── Audit Stream Animation ── */
