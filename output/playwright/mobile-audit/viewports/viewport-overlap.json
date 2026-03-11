@@ -1,0 +1,242 @@
+[
+  {
+    "route": "/dashboard",
+    "topMetrics": {
+      "navTop": 826,
+      "navHeight": 64,
+      "overlaps": [
+        {
+          "selector": "a.block.bg-white.border",
+          "text": "GrowOptimizing+8.4% YTD returnBeating benchmark by 2.1%",
+          "top": 741,
+          "bottom": 931,
+          "height": 190
+        }
+      ],
+      "rightCuts": [
+        {
+          "selector": "a.flex.items-center.gap-2",
+          "text": "Ask Poseidon",
+          "left": 337.4,
+          "right": 484.6,
+          "width": 147.2
+        },
+        {
+          "selector": "a.flex.items-center.gap-2",
+          "text": "View Reports",
+          "left": 496.6,
+          "right": 641.5,
+          "width": 144.9
+        }
+      ]
+    },
+    "bottomMetrics": {
+      "navTop": 826,
+      "navHeight": 64,
+      "overlaps": []
+    }
+  },
+  {
+    "route": "/dashboard/notifications",
+    "topMetrics": {
+      "navTop": 748,
+      "navHeight": 64,
+      "overlaps": [
+        {
+          "selector": "div.rounded-2xl.border.border-white/[0.08]",
+          "text": "GNew savings opportunity foundSwitching to a high-yield savings account could ea",
+          "top": 752,
+          "bottom": 863,
+          "height": 111
+        },
+        {
+          "selector": "button.inline-flex.items-center.justify-center",
+          "text": "⋯",
+          "top": 769,
+          "bottom": 801,
+          "height": 32
+        }
+      ],
+      "rightCuts": [
+        {
+          "selector": "button.inline-flex.items-center.justify-center",
+          "text": "actions (2)",
+          "left": 315.1,
+          "right": 404.8,
+          "width": 89.8
+        },
+        {
+          "selector": "button.inline-flex.items-center.justify-center",
+          "text": "system (2)",
+          "left": 412.8,
+          "right": 502,
+          "width": 89.2
+        }
+      ]
+    },
+    "bottomMetrics": {
+      "navTop": 748,
+      "navHeight": 64,
+      "overlaps": [
+        {
+          "selector": "select.w-full.rounded-lg.bg-white/5",
+          "text": "DailyWeeklyMonthly",
+          "top": 733,
+          "bottom": 764,
+          "height": 31
+        }
+      ]
+    }
+  },
+  {
+    "route": "/grow",
+    "topMetrics": {
+      "navTop": 995,
+      "navHeight": 64,
+      "overlaps": [],
+      "rightCuts": []
+    },
+    "bottomMetrics": {
+      "navTop": 995,
+      "navHeight": 64,
+      "overlaps": []
+    }
+  },
+  {
+    "route": "/grow/recommendations",
+    "topMetrics": {
+      "navTop": 748,
+      "navHeight": 64,
+      "overlaps": [
+        {
+          "selector": "a.block",
+          "text": "Top PrioritySwitch to High-Yield SavingsBased on 14 months of checking and savin",
+          "top": 700,
+          "bottom": 932.5,
+          "height": 232.5
+        }
+      ],
+      "rightCuts": []
+    },
+    "bottomMetrics": {
+      "navTop": 748,
+      "navHeight": 64,
+      "overlaps": []
+    }
+  },
+  {
+    "route": "/execute/queue",
+    "topMetrics": {
+      "navTop": 748,
+      "navHeight": 64,
+      "overlaps": [
+        {
+          "selector": "a.glass-card.glass-card-overlay.rounded-[20px]",
+          "text": "Apply for 0% APR balance transfer$4,800mediumEXE-003·Grow·88% confidenceReview &",
+          "top": 735.5,
+          "bottom": 901.5,
+          "height": 166
+        }
+      ],
+      "rightCuts": []
+    },
+    "bottomMetrics": {
+      "navTop": 748,
+      "navHeight": 64,
+      "overlaps": []
+    }
+  },
+  {
+    "route": "/govern",
+    "topMetrics": {
+      "navTop": 751,
+      "navHeight": 64,
+      "overlaps": [
+        {
+          "selector": "button.inline-flex.items-center.justify-center",
+          "text": "View All",
+          "top": 753,
+          "bottom": 785,
+          "height": 32
+        },
+        {
+          "selector": "a",
+          "text": "View All",
+          "top": 751,
+          "bottom": 787,
+          "height": 36
+        }
+      ],
+      "rightCuts": []
+    },
+    "bottomMetrics": {
+      "navTop": 751,
+      "navHeight": 64,
+      "overlaps": []
+    }
+  },
+  {
+    "route": "/settings",
+    "topMetrics": {
+      "navTop": 748,
+      "navHeight": 64,
+      "overlaps": [],
+      "rightCuts": []
+    },
+    "bottomMetrics": {
+      "navTop": 748,
+      "navHeight": 64,
+      "overlaps": []
+    }
+  },
+  {
+    "route": "/grow/goal",
+    "topMetrics": {
+      "navTop": 748,
+      "navHeight": 64,
+      "overlaps": [],
+      "rightCuts": []
+    },
+    "bottomMetrics": {
+      "navTop": 748,
+      "navHeight": 64,
+      "overlaps": []
+    }
+  },
+  {
+    "route": "/grow/scenarios",
+    "topMetrics": {
+      "navTop": 748,
+      "navHeight": 64,
+      "overlaps": [
+        {
+          "selector": "div.glass-card.glass-card-overlay.rounded-2xl",
+          "text": "ConservativeMaintain current contributions. Lower risk, longer timeline.Monthly$",
+          "top": 533.8,
+          "bottom": 810.3,
+          "height": 276.5
+        }
+      ],
+      "rightCuts": []
+    },
+    "bottomMetrics": {
+      "navTop": 748,
+      "navHeight": 64,
+      "overlaps": []
+    }
+  },
+  {
+    "route": "/govern/audit-detail",
+    "topMetrics": {
+      "navTop": 748,
+      "navHeight": 64,
+      "overlaps": [],
+      "rightCuts": []
+    },
+    "bottomMetrics": {
+      "navTop": 748,
+      "navHeight": 64,
+      "overlaps": []
+    }
+  }
+]

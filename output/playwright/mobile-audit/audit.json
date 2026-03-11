@@ -1,0 +1,1794 @@
+[
+  {
+    "route": "/dashboard",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/dashboard.png",
+    "title": "Dashboard | Poseidon",
+    "viewportWidth": 411,
+    "scrollWidth": 411,
+    "overflow": 0,
+    "overflowing": [
+      {
+        "selector": "a.flex.items-center.gap-2.px-4",
+        "text": "View Reports",
+        "rightOverflow": 230.45,
+        "leftOverflow": -496.59,
+        "width": 144.86,
+        "left": 496.59,
+        "right": 641.45,
+        "position": "static",
+        "whiteSpace": "nowrap",
+        "overflowX": "visible"
+      },
+      {
+        "selector": "svg.lucide.lucide-chart-column.w-4.h-4",
+        "text": "",
+        "rightOverflow": 117.59,
+        "leftOverflow": -512.59,
+        "width": 16,
+        "left": 512.59,
+        "right": 528.59,
+        "position": "static",
+        "whiteSpace": "nowrap",
+        "overflowX": "hidden"
+      },
+      {
+        "selector": "path",
+        "text": "",
+        "rightOverflow": 115.59,
+        "leftOverflow": -514.59,
+        "width": 12,
+        "left": 514.59,
+        "right": 526.59,
+        "position": "static",
+        "whiteSpace": "nowrap",
+        "overflowX": "visible"
+      },
+      {
+        "selector": "a.flex.items-center.gap-2.px-4",
+        "text": "Ask Poseidon",
+        "rightOverflow": 73.59,
+        "leftOverflow": -337.41,
+        "width": 147.19,
+        "left": 337.41,
+        "right": 484.59,
+        "position": "static",
+        "whiteSpace": "nowrap",
+        "overflowX": "visible"
+      }
+    ],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "a.text-sm.text-[#2563EB].hover:underline",
+        "text": "View All",
+        "width": 52.63,
+        "height": 20
+      },
+      {
+        "selector": "a.text-xs.font-medium.text-[#2563EB].hover:underline",
+        "text": "Review",
+        "width": 41.16,
+        "height": 16
+      },
+      {
+        "selector": "a.text-xs.font-medium.text-[#2563EB].hover:underline",
+        "text": "View",
+        "width": 28.33,
+        "height": 16
+      }
+    ]
+  },
+  {
+    "route": "/dashboard/notifications",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/dashboard_notifications.png",
+    "title": "Notifications | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "system (2)",
+        "rightOverflow": 127.02,
+        "leftOverflow": -412.84,
+        "width": 89.17,
+        "left": 412.84,
+        "right": 502.02,
+        "position": "static",
+        "whiteSpace": "nowrap",
+        "overflowX": "visible"
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "actions (2)",
+        "rightOverflow": 29.84,
+        "leftOverflow": -315.09,
+        "width": 89.75,
+        "left": 315.09,
+        "right": 404.84,
+        "position": "static",
+        "whiteSpace": "nowrap",
+        "overflowX": "visible"
+      }
+    ],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "a.flex.items-center.gap-1.5.text-sm",
+        "text": "Dashboard",
+        "width": 95.03,
+        "height": 20
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Mark all read",
+        "width": 90.42,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "All (11)",
+        "width": 68.7,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "security (4)",
+        "width": 94.31,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "growth (3)",
+        "width": 88.08,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "actions (2)",
+        "width": 89.75,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "system (2)",
+        "width": 89.17,
+        "height": 32
+      },
+      {
+        "selector": "a.text-xs.font-medium.text-cyan-400.state-text-active",
+        "text": "View →",
+        "width": 42.58,
+        "height": 16
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "⋯",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "selector": "a.text-xs.font-medium.text-cyan-400.state-text-active",
+        "text": "View →",
+        "width": 42.58,
+        "height": 16
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "⋯",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "⋯",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "⋯",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "selector": "a.text-xs.font-medium.text-cyan-400.state-text-active",
+        "text": "View →",
+        "width": 42.58,
+        "height": 16
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "⋯",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "selector": "a.text-xs.font-medium.text-cyan-400.state-text-active",
+        "text": "View →",
+        "width": 42.58,
+        "height": 16
+      }
+    ]
+  },
+  {
+    "route": "/protect",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/protect.png",
+    "title": "Protect | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View All Threats",
+        "width": 142.73,
+        "height": 36
+      },
+      {
+        "selector": "a",
+        "text": "View All Threats",
+        "width": 108.73,
+        "height": 20
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Run Full Scan",
+        "width": 122.33,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View all",
+        "width": 75.81,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "View all",
+        "width": 51.81,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Review",
+        "width": 211,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Review",
+        "width": 41.16,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Review",
+        "width": 211,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Review",
+        "width": 41.16,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Review",
+        "width": 211,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Review",
+        "width": 41.16,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Manage",
+        "width": 78,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Manage",
+        "width": 54,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.gap-2.whitespace-nowrap",
+        "text": "View All Threats",
+        "width": 245,
+        "height": 36
+      },
+      {
+        "selector": "a",
+        "text": "View All Threats",
+        "width": 108.73,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.gap-2.whitespace-nowrap",
+        "text": "Audit Trail",
+        "width": 245,
+        "height": 36
+      }
+    ]
+  },
+  {
+    "route": "/protect/threats",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/protect_threats.png",
+    "title": "Security Threats | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "a.inline-flex.items-center.gap-2.text-sm",
+        "text": "Back to Protect",
+        "width": 125.94,
+        "height": 20
+      },
+      {
+        "selector": "button.flex.h-10.items-center.justify-between",
+        "text": "All Accounts",
+        "width": 180,
+        "height": 40
+      },
+      {
+        "selector": "button.flex.h-10.items-center.justify-between",
+        "text": "All Severity",
+        "width": 140,
+        "height": 40
+      },
+      {
+        "selector": "button.flex.h-10.items-center.justify-between",
+        "text": "Last 7 Days",
+        "width": 140,
+        "height": 40
+      },
+      {
+        "selector": "button#radix-_r_6_-trigger-pending.inline-flex.items-center.justify-center.whitespace-nowrap",
+        "text": "Pending (5)",
+        "width": 126.59,
+        "height": 32
+      },
+      {
+        "selector": "button#radix-_r_6_-trigger-resolved.inline-flex.items-center.justify-center.whitespace-nowrap",
+        "text": "Resolved (2)",
+        "width": 133.16,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Review",
+        "width": 65.16,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Review",
+        "width": 41.16,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Review",
+        "width": 65.16,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Review",
+        "width": 41.16,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Review",
+        "width": 65.16,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Review",
+        "width": 41.16,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Review",
+        "width": 65.16,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Review",
+        "width": 41.16,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Review",
+        "width": 65.16,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Review",
+        "width": 41.16,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "route": "/protect/alert-detail",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/protect_alert-detail.png",
+    "title": "Security Threats | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "a.inline-flex.items-center.gap-2.text-sm",
+        "text": "Back to Protect",
+        "width": 125.94,
+        "height": 20
+      },
+      {
+        "selector": "button.flex.h-10.items-center.justify-between",
+        "text": "All Accounts",
+        "width": 180,
+        "height": 40
+      },
+      {
+        "selector": "button.flex.h-10.items-center.justify-between",
+        "text": "All Severity",
+        "width": 140,
+        "height": 40
+      },
+      {
+        "selector": "button.flex.h-10.items-center.justify-between",
+        "text": "Last 7 Days",
+        "width": 140,
+        "height": 40
+      },
+      {
+        "selector": "button#radix-_r_6_-trigger-pending.inline-flex.items-center.justify-center.whitespace-nowrap",
+        "text": "Pending (5)",
+        "width": 126.59,
+        "height": 32
+      },
+      {
+        "selector": "button#radix-_r_6_-trigger-resolved.inline-flex.items-center.justify-center.whitespace-nowrap",
+        "text": "Resolved (2)",
+        "width": 133.16,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Review",
+        "width": 65.16,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Review",
+        "width": 41.16,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Review",
+        "width": 65.16,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Review",
+        "width": 41.16,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Review",
+        "width": 65.16,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Review",
+        "width": 41.16,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Review",
+        "width": 65.16,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Review",
+        "width": 41.16,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Review",
+        "width": 65.16,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Review",
+        "width": 41.16,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "route": "/grow",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/grow.png",
+    "title": "Grow | Poseidon",
+    "viewportWidth": 489,
+    "scrollWidth": 489,
+    "overflow": 0,
+    "overflowing": [],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Scenarios",
+        "width": 100.77,
+        "height": 36
+      },
+      {
+        "selector": "a",
+        "text": "Scenarios",
+        "width": 66.77,
+        "height": 20
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Recommendations",
+        "width": 156.47,
+        "height": 36
+      },
+      {
+        "selector": "a",
+        "text": "Recommendations",
+        "width": 124.47,
+        "height": 20
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View goal details",
+        "width": 31.53,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "",
+        "width": 16,
+        "height": 16
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View goal details",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "",
+        "width": 16,
+        "height": 16
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View goal details",
+        "width": 29.38,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "",
+        "width": 16,
+        "height": 16
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View All",
+        "width": 77.78,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "View All",
+        "width": 53.78,
+        "height": 20
+      }
+    ]
+  },
+  {
+    "route": "/grow/recommendations",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/grow_recommendations.png",
+    "title": "Recommendations | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "a.inline-flex.items-center.gap-2.text-sm",
+        "text": "Back to Grow",
+        "width": 113.11,
+        "height": 20
+      },
+      {
+        "selector": "button.px-3.py-1.5.rounded-full.text-xs",
+        "text": "Highest benefit",
+        "width": 115.23,
+        "height": 30
+      },
+      {
+        "selector": "button.px-3.py-1.5.rounded-full.text-xs",
+        "text": "Easiest first",
+        "width": 94.52,
+        "height": 30
+      },
+      {
+        "selector": "button.px-3.py-1.5.rounded-full.text-xs",
+        "text": "All",
+        "width": 41.02,
+        "height": 30
+      },
+      {
+        "selector": "button.px-3.py-1.5.rounded-full.text-xs",
+        "text": "Efficiency",
+        "width": 83.72,
+        "height": 30
+      },
+      {
+        "selector": "button.px-3.py-1.5.rounded-full.text-xs",
+        "text": "Risk Mitigation",
+        "width": 111.63,
+        "height": 30
+      },
+      {
+        "selector": "button.px-3.py-1.5.rounded-full.text-xs",
+        "text": "Revenue Growth",
+        "width": 121.78,
+        "height": 30
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View Details",
+        "width": 124.72,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View Details",
+        "width": 124.72,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View Details",
+        "width": 124.72,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View Details",
+        "width": 124.72,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View Details",
+        "width": 124.72,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View Details",
+        "width": 124.72,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View Details",
+        "width": 124.72,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View Details",
+        "width": 124.72,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View Details",
+        "width": 124.72,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "route": "/grow/recommendation?id=1",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/grow_recommendation_id_1.png",
+    "title": "Recommendation Detail | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "a.inline-flex.items-center.gap-2.text-sm",
+        "text": "Back to Recommendations",
+        "width": 202.13,
+        "height": 20
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Dismiss",
+        "width": 86.22,
+        "height": 36
+      },
+      {
+        "selector": "button.px-3.py-1.5.rounded-lg.text-xs",
+        "text": "3Y",
+        "width": 42.33,
+        "height": 30
+      },
+      {
+        "selector": "button.px-3.py-1.5.rounded-lg.text-xs",
+        "text": "5Y",
+        "width": 42.33,
+        "height": 30
+      },
+      {
+        "selector": "button.px-3.py-1.5.rounded-lg.text-xs",
+        "text": "10Y",
+        "width": 50.09,
+        "height": 30
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Manual execution",
+        "width": 152.13,
+        "height": 36
+      },
+      {
+        "selector": "a.text-xs.font-mono.text-muted-foreground.hover:text-foreground",
+        "text": "GV-2026-0309-047",
+        "width": 132.59,
+        "height": 16
+      }
+    ]
+  },
+  {
+    "route": "/grow/goal",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/grow_goal.png",
+    "title": "Goal Detail | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [
+      {
+        "selector": "path",
+        "text": "",
+        "rightOverflow": 290,
+        "leftOverflow": -65,
+        "width": 600,
+        "left": 65,
+        "right": 665,
+        "position": "static",
+        "whiteSpace": "normal",
+        "overflowX": "visible"
+      },
+      {
+        "selector": "path",
+        "text": "",
+        "rightOverflow": 290,
+        "leftOverflow": -65,
+        "width": 600,
+        "left": 65,
+        "right": 665,
+        "position": "static",
+        "whiteSpace": "normal",
+        "overflowX": "visible"
+      }
+    ],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "a.inline-flex.items-center.gap-2.rounded-[16px]",
+        "text": "Back to Grow",
+        "width": 147.11,
+        "height": 38
+      },
+      {
+        "selector": "a.inline-flex.items-center.justify-center.gap-2",
+        "text": "Back to grow",
+        "width": 145.05,
+        "height": 40
+      },
+      {
+        "selector": "a.justify-center.whitespace-nowrap.text-sm.focus-visible:outline-none",
+        "text": "Modify allocation",
+        "width": 214.72,
+        "height": 40
+      },
+      {
+        "selector": "a.text-xs.font-mono.text-muted-foreground.hover:text-foreground",
+        "text": "GV-2026-0216-GROW-GL",
+        "width": 144.5,
+        "height": 16
+      }
+    ]
+  },
+  {
+    "route": "/grow/scenarios",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/grow_scenarios.png",
+    "title": "Scenario Comparison | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [
+      {
+        "selector": "path",
+        "text": "",
+        "rightOverflow": 490,
+        "leftOverflow": -65,
+        "width": 800,
+        "left": 65,
+        "right": 865,
+        "position": "static",
+        "whiteSpace": "normal",
+        "overflowX": "visible"
+      },
+      {
+        "selector": "path",
+        "text": "",
+        "rightOverflow": 490,
+        "leftOverflow": -65,
+        "width": 800,
+        "left": 65,
+        "right": 865,
+        "position": "static",
+        "whiteSpace": "normal",
+        "overflowX": "visible"
+      }
+    ],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "a.inline-flex.items-center.gap-2.rounded-[16px]",
+        "text": "Back to Grow",
+        "width": 147.11,
+        "height": 38
+      },
+      {
+        "selector": "a.inline-flex.items-center.justify-center.gap-2",
+        "text": "Cancel",
+        "width": 100.39,
+        "height": 40
+      },
+      {
+        "selector": "a.justify-center.whitespace-nowrap.text-sm.focus-visible:outline-none",
+        "text": "Send to Execute",
+        "width": 207.52,
+        "height": 40
+      },
+      {
+        "selector": "a.text-xs.font-mono.text-muted-foreground.hover:text-foreground",
+        "text": "GV-2026-0216-GROW-SC",
+        "width": 144.5,
+        "height": 16
+      }
+    ]
+  },
+  {
+    "route": "/execute",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/execute.png",
+    "title": "Execute | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Review All Pending",
+        "width": 245,
+        "height": 36
+      },
+      {
+        "selector": "a",
+        "text": "Review All Pending",
+        "width": 127.31,
+        "height": 20
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Reject",
+        "width": 61.73,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View Details",
+        "width": 96.72,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "View Details",
+        "width": 70.72,
+        "height": 16
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Approve",
+        "width": 72.5,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Approve",
+        "width": 48.5,
+        "height": 16
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Reject",
+        "width": 61.73,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View Details",
+        "width": 96.72,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "View Details",
+        "width": 70.72,
+        "height": 16
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Approve",
+        "width": 72.5,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "Approve",
+        "width": 48.5,
+        "height": 16
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Reject",
+        "width": 61.73,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View Details",
+        "width": 96.72,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "View Details",
+        "width": 70.72,
+        "height": 16
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Approve",
+        "width": 72.5,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "route": "/execute/queue",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/execute_queue.png",
+    "title": "Action Queue | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "a.inline-flex.items-center.gap-2.text-white/40",
+        "text": "Back to Execute",
+        "width": 129.86,
+        "height": 20
+      }
+    ]
+  },
+  {
+    "route": "/execute/approval",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/execute_approval.png",
+    "title": "Action Approval | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "button.mt-4.text-xs.font-medium.transition-colors",
+        "text": "Back to Execute queue",
+        "width": 131.05,
+        "height": 16
+      },
+      {
+        "selector": "a.text-xs.font-mono.text-muted-foreground.hover:text-foreground",
+        "text": "GV-2026-0307-043",
+        "width": 132.59,
+        "height": 16
+      }
+    ]
+  },
+  {
+    "route": "/execute/history",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/execute_history.png",
+    "title": "Execution History | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "a.flex.items-center.gap-2.text-white/40",
+        "text": "Back to Queue",
+        "width": 120.66,
+        "height": 20
+      },
+      {
+        "selector": "button.flex.items-center.gap-2.text-[11px]",
+        "text": "Decision Autopsy View",
+        "width": 139.16,
+        "height": 16.5
+      },
+      {
+        "selector": "button.px-3.py-1.rounded-lg.text-[10px]",
+        "text": "all (0)",
+        "width": 67.38,
+        "height": 25
+      },
+      {
+        "selector": "button.px-3.py-1.rounded-lg.text-[10px]",
+        "text": "approved (0)",
+        "width": 107.66,
+        "height": 25
+      },
+      {
+        "selector": "button.px-3.py-1.rounded-lg.text-[10px]",
+        "text": "deferred (0)",
+        "width": 104.27,
+        "height": 25
+      },
+      {
+        "selector": "button.px-3.py-1.rounded-lg.text-[10px]",
+        "text": "rejected (0)",
+        "width": 104.52,
+        "height": 25
+      },
+      {
+        "selector": "button.mt-4.text-xs.font-medium.transition-colors",
+        "text": "Go to Execute queue",
+        "width": 118.94,
+        "height": 16
+      },
+      {
+        "selector": "a.text-xs.font-mono.text-muted-foreground.hover:text-foreground",
+        "text": "GV-2026-0216-EXEC-HIST",
+        "width": 158.95,
+        "height": 16
+      }
+    ]
+  },
+  {
+    "route": "/govern",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/govern.png",
+    "title": "Govern | Poseidon",
+    "viewportWidth": 376,
+    "scrollWidth": 376,
+    "overflow": 0,
+    "overflowing": [],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Export Report",
+        "width": 154.17,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View Full Ledger",
+        "width": 144.92,
+        "height": 36
+      },
+      {
+        "selector": "a",
+        "text": "View Full Ledger",
+        "width": 110.92,
+        "height": 20
+      },
+      {
+        "selector": "button.px-4.py-2.rounded-lg.text-sm",
+        "text": "All (16)",
+        "width": 84.34,
+        "height": 38
+      },
+      {
+        "selector": "button.px-4.py-2.rounded-lg.text-sm",
+        "text": "Protect (7)",
+        "width": 106.77,
+        "height": 38
+      },
+      {
+        "selector": "button.px-4.py-2.rounded-lg.text-sm",
+        "text": "Grow (6)",
+        "width": 93.58,
+        "height": 38
+      },
+      {
+        "selector": "button.px-4.py-2.rounded-lg.text-sm",
+        "text": "Execute (3)",
+        "width": 112.02,
+        "height": 38
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View All",
+        "width": 77.78,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "View All",
+        "width": 53.78,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View audit detail",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "",
+        "width": 16,
+        "height": 16
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View audit detail",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "",
+        "width": 16,
+        "height": 16
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View audit detail",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "selector": "a",
+        "text": "",
+        "width": 16,
+        "height": 16
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "View audit detail",
+        "width": 32,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "route": "/govern/audit",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/govern_audit.png",
+    "title": "Audit Ledger | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "a.inline-flex.items-center.gap-2.text-white/40",
+        "text": "Back to Govern",
+        "width": 125.16,
+        "height": 20
+      },
+      {
+        "selector": "button.px-3.py-1.5.rounded-full.text-xs",
+        "text": "All",
+        "width": 41.02,
+        "height": 30
+      },
+      {
+        "selector": "button.px-3.py-1.5.rounded-full.text-xs",
+        "text": "Verified",
+        "width": 71.58,
+        "height": 30
+      },
+      {
+        "selector": "button.px-3.py-1.5.rounded-full.text-xs",
+        "text": "Pending review",
+        "width": 115.36,
+        "height": 30
+      },
+      {
+        "selector": "button.px-3.py-1.5.rounded-full.text-xs",
+        "text": "Flagged",
+        "width": 72.69,
+        "height": 30
+      }
+    ]
+  },
+  {
+    "route": "/govern/audit-detail",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/govern_audit-detail.png",
+    "title": "Audit Detail | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "a.inline-flex.items-center.gap-2.text-sm",
+        "text": "Back to Audit Log",
+        "width": 141.77,
+        "height": 20
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Copy",
+        "width": 82.16,
+        "height": 32
+      },
+      {
+        "selector": "a.text-xs.font-mono.text-muted-foreground.hover:text-foreground",
+        "text": "GV-2026-0216-GOV-ADT",
+        "width": 161.5,
+        "height": 16
+      }
+    ]
+  },
+  {
+    "route": "/settings",
+    "screenshot": "/Users/shinjifujiwara/code/poseidon-mit.github.io/output/playwright/mobile-audit/settings.png",
+    "title": "Settings | Poseidon",
+    "viewportWidth": 375,
+    "scrollWidth": 375,
+    "overflow": 0,
+    "overflowing": [],
+    "smallTargets": [
+      {
+        "selector": "a.flex.items-center.gap-1.5",
+        "text": "Poseidon",
+        "width": 126.84,
+        "height": 40
+      },
+      {
+        "selector": "a.relative.flex.h-9.w-9",
+        "text": "Settings",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Notifications",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "selector": "a.sr-only.focus:not-sr-only.focus:fixed.focus:top-3",
+        "text": "Skip to main content",
+        "width": 1,
+        "height": 1
+      },
+      {
+        "selector": "button.shrink-0.px-4.py-2.5.text-sm",
+        "text": "General",
+        "width": 84.16,
+        "height": 42
+      },
+      {
+        "selector": "button.shrink-0.px-4.py-2.5.text-sm",
+        "text": "AI",
+        "width": 45.75,
+        "height": 42
+      },
+      {
+        "selector": "button.shrink-0.px-4.py-2.5.text-sm",
+        "text": "Integrations",
+        "width": 111.77,
+        "height": 42
+      },
+      {
+        "selector": "button.shrink-0.px-4.py-2.5.text-sm",
+        "text": "Rights",
+        "width": 73.88,
+        "height": 42
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Save Changes",
+        "width": 128.05,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Manage",
+        "width": 70.28,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Manage",
+        "width": 70.28,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Manage",
+        "width": 70.28,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Manage",
+        "width": 70.28,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Connect New Account",
+        "width": 245,
+        "height": 36
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Sign out all",
+        "width": 115.28,
+        "height": 32
+      },
+      {
+        "selector": "button.inline-flex.items-center.justify-center.gap-2",
+        "text": "Manage",
+        "width": 98.28,
+        "height": 32
+      }
+    ]
+  }
+]
