@@ -91,7 +91,7 @@ export default function ProtectThreatsPage() {
     <motion.main
       id="main-content"
       role="main"
-      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#EDEBE8] min-h-screen`}
+      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#F8F7F4] min-h-screen`}
       style={PAGE_CONTENT_STYLE}
       variants={staggerContainer}
       initial="hidden"

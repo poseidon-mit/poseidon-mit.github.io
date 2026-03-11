@@ -28,11 +28,11 @@ export const actions: Action[] = [
   {
     id: "EXE-001",
     title: "Tax-Loss Harvest VTI — Sell 120 Shares",
-    taxSavings: 1443.2,
+    taxSavings: 399.60,
     deadline: "Mar 31, 2026",
     confidence: 0.87,
-    account: "Brokerage",
-    description: "Sell 120 shares of VTI at current loss to harvest $4,810.67 in losses",
+    account: "Individual Brokerage",
+    description: "Sell 120 shares of VTI at current loss to harvest $1,200 in losses. Tax benefit: $399.60 (Federal $288.00 + State CA $111.60).",
     drivers: [
       { label: "Tax Savings Impact", value: 0.35 },
       { label: "Market Timing", value: 0.25 },
@@ -43,17 +43,17 @@ export const actions: Action[] = [
   },
   {
     id: "EXE-002",
-    title: "Monthly Transfer $2,000 to Marcus HYSA",
-    amount: 2000,
-    description: "Automated monthly transfer from Chase Checking to Marcus HYSA",
+    title: "Monthly Transfer $500 to Savings",
+    amount: 500,
+    description: "Automated monthly transfer from Chase Checking to Chase Savings",
     status: "pending",
     recurring: true,
   },
   {
     id: "EXE-003",
-    title: "529 Contribution $1,666.67",
-    amount: 1666.67,
-    description: "Monthly 529 contribution split between Sakura and Hana accounts",
+    title: "Dividend Reinvestment $847.32",
+    amount: 847.32,
+    description: "Reinvest dividends from Individual Brokerage into VXUS",
     status: "completed",
   },
   {
@@ -68,6 +68,6 @@ export const actions: Action[] = [
 export const executeStats: ExecuteStats = {
   pending: 3,
   completedThisMonth: 7,
-  totalExecuted: "$42,847.32",
+  totalExecuted: "$12,847.32",
   automationRate: "45%",
 };

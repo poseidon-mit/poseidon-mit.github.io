@@ -10,7 +10,7 @@
 @layer base {
   :root {
     /* ── Color Slots (Light Theme) ── */
-    --background: 40 4% 92%;
+    --background: 40 20% 96%;
     --foreground: 0 0% 10%;
 
     --card: 0 0% 100%;

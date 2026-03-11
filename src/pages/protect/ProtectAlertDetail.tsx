@@ -155,7 +155,7 @@ export default function ProtectAlertDetailPage() {
       <motion.main
         id="main-content"
         role="main"
-        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#EDEBE8] min-h-screen pt-6`}
+        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#F8F7F4] min-h-screen pt-6`}
         style={PAGE_CONTENT_STYLE}
         variants={staggerContainerVariant}
         initial="hidden"
@@ -269,7 +269,7 @@ export default function ProtectAlertDetailPage() {
                         </div>
                         <div>
                           <p className="text-xs text-gray-400">AI Confidence</p>
-                          <Badge variant="destructive">Critical</Badge>
+                          <Badge variant="outline" className={`${sevConfig.bg} ${sevConfig.text} ${sevConfig.border}`}>{formatConfidence(alert.confidence)}</Badge>
                         </div>
                       </div>
                     </CardContent>
@@ -450,7 +450,7 @@ export default function ProtectAlertDetailPage() {
                       <span className="text-gray-700">{caseBrief.dateStr}</span>
                       {alert.account && <><span className="text-gray-500">Account</span><span className="text-gray-700">{alert.account}</span></>}
                       <span className="text-gray-500">AI Confidence</span>
-                      <Badge variant="destructive">Critical</Badge>
+                      <Badge variant="outline" className={`${sevConfig.bg} ${sevConfig.text} ${sevConfig.border}`}>{formatConfidence(alert.confidence)}</Badge>
                     </div>
                     <div className="mt-4 pt-3 border-t border-gray-200">
                       <p className="text-[10px] uppercase tracking-widest text-amber-600 font-semibold mb-2">Key Findings</p>

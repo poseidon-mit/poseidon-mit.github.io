@@ -43,7 +43,7 @@ export const ROUTE_TO_DECISION: Record<string, string> = {
 
 const sharedOsloFactors = [
   { label: 'Geographic anomaly', contribution: 0.96, note: 'Login from Oslo, Norway — 5,800 km from your last known location (San Francisco)' },
-  { label: 'Amount deviation', contribution: 0.92, note: '$734.50 charge at Oslo Electronics — unfamiliar merchant, first transaction in this country' },
+  { label: 'Amount deviation', contribution: 0.92, note: '$234.50 charge at Oslo Electronics — unfamiliar merchant, first transaction in this country' },
   { label: 'Timing pattern', contribution: 0.88, note: 'Transaction posted 5 minutes after anomalous login — consistent with compromised credential use' },
   { label: 'Velocity pattern', contribution: 0.72, note: 'No travel history or VPN pattern matching Norway in last 12 months' },
 ]
@@ -76,7 +76,7 @@ export const AUDIT_DECISIONS: Record<string, AuditDecision> = {
     id: 'GV-2026-0310-002',
     engine: 'Protect',
     type: 'fraud_flag',
-    action: 'Suspicious transaction flagged — Oslo Electronics $734.50',
+    action: 'Suspicious transaction flagged — Oslo Electronics $234.50',
     timestamp: '2026-03-10T03:47:00-07:00',
     model: { name: 'FraudDetectionV3', version: '3.2.1', accuracy: 99.7 },
     explanation: {

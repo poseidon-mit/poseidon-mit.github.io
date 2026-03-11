@@ -17,19 +17,19 @@ const SUGGESTED_PROMPTS = [
 function getAIResponse(input: string): string {
   const lower = input.toLowerCase();
   if (lower.includes("net worth")) {
-    return "Your current net worth is $902,753.52, spread across 11 accounts. Your total assets are $909,802.27 with $7,048.75 in liabilities (credit cards). Your portfolio is up 7.8% YTD.";
+    return "Your current net worth is $94,040.77, spread across 7 accounts. Your total assets are $97,272.09 with $3,231.32 in liabilities (credit cards). Your portfolio is up 7.8% YTD.";
   }
   if (lower.includes("threat")) {
-    return "I've detected 2 high-severity threats from Oslo, Norway. An unusual login at 3:42 AM and a $734.50 purchase at Oslo Electronics. I recommend reviewing these immediately in the Protect engine.";
+    return "I've detected 2 high-severity threats from Oslo, Norway. An unusual login at 3:42 AM and a $234.50 purchase at Oslo Electronics. I recommend reviewing these immediately in the Protect engine.";
   }
   if (lower.includes("dining") || lower.includes("food") || lower.includes("spend")) {
     return "You spent $2,890.45 on Food & Dining in February, which is 14.5% of your monthly spending. This is slightly above your 3-month average of $2,650.";
   }
   if (lower.includes("saving")) {
-    return "I've identified $3,601/year in potential savings: $831 from moving idle cash to HYSA, $1,320 from reviewing your Equinox membership, $600 from maximizing 529 contributions, and $850/year recurring from tax-loss harvesting (plus $1,065.60 already realized this year).";
+    return "I've identified $2,437/year in potential savings: $269.40 from moving idle cash to high-yield savings, $468 from canceling duplicate subscriptions, $96-192 from optimizing credit card rewards, and $399.60 from tax-loss harvesting.";
   }
   if (lower.includes("pending") || lower.includes("action")) {
-    return "You have 3 pending actions requiring approval: 1) Tax-Loss Harvest VTI (save $1,443), 2) Monthly $2,000 transfer to Marcus HYSA, 3) Adobe duplicate refund dispute ($59.99).";
+    return "You have 3 pending actions requiring approval: 1) Tax-Loss Harvest VTI (save $399.60), 2) Monthly $500 transfer to savings, 3) Adobe duplicate refund dispute ($59.99).";
   }
   return "I can help with your accounts, threats, savings, and pending actions. Try asking about one of these topics.";
 }

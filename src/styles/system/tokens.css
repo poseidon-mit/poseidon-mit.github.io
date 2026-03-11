@@ -1,17 +1,17 @@
 /* ── Poseidon v2 — Mobile-First Design Tokens ── */
 :root {
   /* ── Fonts ── */
-  --font-display: 'Inter', system-ui, sans-serif;
-  --font-body: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Noto Sans JP', ui-monospace, monospace;
+  --font-display: 'Geist', 'Inter', system-ui, sans-serif;
+  --font-body: 'Geist', 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', 'Noto Sans JP', ui-monospace, monospace;
 
   /* ── Colors — Background (Light Theme) ── */
-  --bg: #EDEBE8;
-  --bg-deep: #F0EFEB;
-  --bg-oled: #EDEBE8;
-  --bg-vantablack: #EDEBE8;
+  --bg: #F8F7F4;
+  --bg-deep: #F5F4F0;
+  --bg-oled: #F8F7F4;
+  --bg-vantablack: #F8F7F4;
   --bg-surface: #FFFFFF;
-  --surface-primary: #EDEBE8;
+  --surface-primary: #F8F7F4;
 
   /* ── Colors — Glass (Light: subtle shadows instead) ── */
   --glass-bg: rgba(255, 255, 255, 0.8);

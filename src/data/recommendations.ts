@@ -18,45 +18,45 @@ export interface GrowStats {
 export const recommendations: Recommendation[] = [
   {
     id: "GRW-001",
-    title: "Move $18,500 to High-Yield Savings",
-    benefit: "$831/year in interest",
+    title: "Move $8,200 to High-Yield Savings",
+    benefit: "$269.40/year in interest",
     description:
-      "Your Chase Savings earns 0.01% APY. Moving to Marcus HYSA at 4.5% APY would earn significantly more.",
+      "Your Chase Savings earns 0.01% APY. Moving $8,200 to a high-yield savings account at 3.30% APY would earn $269.40/year more in interest.",
     status: "pending",
     engine: "Grow",
   },
   {
     id: "GRW-002",
-    title: "Maximize 529 Contributions +$500/child/mo",
-    benefit: "$600/year in tax deductions",
+    title: "Portfolio Rebalancing",
+    benefit: "+2.3% projected return",
     description:
-      "Increasing 529 contributions by $500/month per child maximizes state tax deduction.",
+      "Your current allocation is overweight in large-cap equities. Rebalancing could improve risk-adjusted returns by an estimated 2.3%.",
     status: "pending",
     engine: "Grow",
   },
   {
     id: "GRW-003",
-    title: "Review Equinox Membership $285/mo",
-    savings: "$1,320/year",
+    title: "Cancel Unused Subscriptions",
+    savings: "$468/year",
     description:
-      "You've visited Equinox only 2 times in the last 3 months. Consider downgrading or canceling.",
+      "You have an Adobe Creative duplicate charge ($59.99 x 2) and NYTimes price increased without notification ($12.00 → $17.00). Canceling duplicates and reviewing increases saves $468/year.",
     status: "pending",
     engine: "Grow",
   },
   {
     id: "GRW-004",
-    title: "Tax-Loss Harvest VTI Position",
-    savings: "$850/year in recurring tax savings",
+    title: "Maximize Credit Card Points",
+    savings: "$96-192/year",
     description:
-      "Your VTI position shows unrealized losses. Annual tax-loss harvesting could offset capital gains. One-time immediate savings: $1,065.60.",
+      "You're earning 1x on $3,200/mo in eligible spending. Optimizing card usage across Amex Gold and Chase Sapphire could earn $96-192/year more in rewards.",
     status: "approved",
     engine: "Grow",
   },
 ];
 
 export const growStats: GrowStats = {
-  totalIdentified: "$3,601/year",
-  realized: "$1,065.60",
-  pending: "$2,536/year",
-  acceptanceRate: "67%",
+  totalIdentified: "$2,437/year",
+  realized: "$192.00",
+  pending: "$2,245/year",
+  acceptanceRate: "8 of 12 Accepted",
 };

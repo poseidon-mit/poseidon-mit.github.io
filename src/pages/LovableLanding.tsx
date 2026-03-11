@@ -12,7 +12,7 @@ const engines = [
 const trustSignals = [
   { value: '1,247', label: 'Transactions Protected' },
   { value: '100%', label: 'Auditable' },
-  { value: '$3,601', label: 'Savings Identified' },
+  { value: '$2,437', label: 'Savings Identified' },
 ] as const
 
 const container = {

@@ -146,7 +146,7 @@ export default function LovableApproval() {
                 <tr>
                   <td className="py-2 text-white font-bold">Total</td>
                   <td className="py-2 text-right font-bold text-green-400 drop-shadow-[0_0_6px_rgba(34,197,94,0.3)]">
-                    $1,443.20
+                    $399.60
                   </td>
                 </tr>
               </tbody>

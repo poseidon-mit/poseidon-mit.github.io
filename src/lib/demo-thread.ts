@@ -33,7 +33,7 @@ function readLiquidityReserve(value: unknown): LiquidityReserveThread {
 function readCriticalAlert(value: unknown): CriticalAlertThread {
   const fallback: CriticalAlertThread = {
     id: 'THR-002',
-    amount: 734.50,
+    amount: 234.50,
     counterparty: 'OSLO ELECTRONICS',
     confidence: 0.91,
     cardLast4: '4821',

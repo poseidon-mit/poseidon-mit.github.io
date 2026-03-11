@@ -31,7 +31,7 @@ export default function DashboardPreview() {
   const isInView = useInView(sectionRef, { once: true, margin: '-10%' })
 
   return (
-    <section className="bg-[#EDEBE8] py-24 px-4">
+    <section className="bg-[#F8F7F4] py-24 px-4">
       <div className="max-w-5xl mx-auto" ref={sectionRef}>
         <motion.h2
           className="text-3xl sm:text-4xl font-bold text-center text-[#1A1A1A]"

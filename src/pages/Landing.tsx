@@ -8,7 +8,7 @@ export default function Landing() {
     <div className="min-h-screen">
       <LandingHeader />
       <HeroSection />
-      <div className="h-16 bg-gradient-to-b from-slate-950 to-[#EDEBE8]" />
+      <div className="h-16 bg-gradient-to-b from-slate-950 to-[#F8F7F4]" />
       <DashboardPreview />
       <LandingFooter />
     </div>

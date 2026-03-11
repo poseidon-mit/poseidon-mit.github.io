@@ -26,9 +26,9 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
             minHeight: '100vh',
             display: 'grid',
             placeItems: 'center',
-            background: '#EDEBE8',
+            background: '#F8F7F4',
             color: '#44403C',
-            fontFamily: 'Inter, system-ui, sans-serif',
+            fontFamily: 'Geist, Inter, system-ui, sans-serif',
             textAlign: 'center',
             gap: '16px',
           }}
@@ -73,7 +73,7 @@ function RouteLoadingFallback() {
 
   return (
     <div
-      className="fixed inset-0 z-[100] grid place-items-center bg-[#EDEBE8]"
+      className="fixed inset-0 z-[100] grid place-items-center bg-[#F8F7F4]"
       role="status"
       aria-live="polite"
       aria-label="Loading page"

@@ -33,7 +33,7 @@ function useCountUp(target: number, duration = 600) {
 
 const pendingActions = actions.filter((a) => a.status === 'pending')
 const highThreats = threats.filter((t) => t.severity === 'high')
-const monthlyIncome = 29167 // $350,000/year ÷ 12
+const monthlyIncome = 15000 // $180,000/year ÷ 12
 const savingsRate = Math.round(
   ((monthlyIncome - accountsSummary.monthlySpending) / monthlyIncome) * 100
 )
@@ -163,7 +163,7 @@ export default function LovableDashboard() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Zap className="w-5 h-5 text-amber-400 animate-pulse drop-shadow-[0_0_6px_rgba(234,179,8,0.5)]" />
-            <span className="text-white font-medium">Tax-Loss Harvest: Save $1,443</span>
+            <span className="text-white font-medium">Tax-Loss Harvest: Save $399.60</span>
           </div>
           <Link
             to="/lovable/execute/approval/EXE-001"

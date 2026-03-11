@@ -101,19 +101,19 @@ export default function Dashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="rounded-xl bg-cyan-50 border border-cyan-200 p-4">
+              <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4">
                 <p className="text-sm text-gray-700 leading-relaxed">
-                  "Based on your spending patterns, I recommend increasing your 401(k) contribution by 2% to capture the full employer match. This would add an estimated <span className="font-semibold text-emerald-700">$3,600/yr</span> in free money."
+                  "Your Chase Savings earns 0.01% APY. Moving $8,200 to a high-yield savings account at 3.30% APY would earn an additional <span className="font-semibold text-emerald-700">$269.40/year</span> in interest."
                 </p>
               </div>
               <div className="rounded-xl bg-violet-50 border border-violet-200 p-4">
                 <p className="text-sm text-gray-700 leading-relaxed">
-                  "Your emergency fund is 90% funded. Consider redirecting the remaining $3,000 from your savings surplus over the next 2 months to complete it."
+                  "I've identified <span className="font-semibold text-violet-700">$2,437/year</span> in total savings across 4 recommendations — including subscription optimization, portfolio rebalancing, and credit card reward maximization."
                 </p>
               </div>
               <div className="rounded-xl bg-amber-50 border border-amber-200 p-4">
                 <p className="text-sm text-gray-700 leading-relaxed">
-                  "I detected a potential tax-loss harvesting opportunity in your international fund holdings that could save approximately <span className="font-semibold text-emerald-700">$450</span> in taxes this year."
+                  "A tax-loss harvesting opportunity in your VTI position could save <span className="font-semibold text-amber-700">$399.60</span> in taxes. Deadline: March 31, 2026. Awaiting your approval."
                 </p>
               </div>
             </CardContent>

@@ -123,7 +123,7 @@ export default function ProtectPage() {
                     <circle cx="48" cy="48" r="40" stroke="hsl(var(--muted))" strokeWidth="8" fill="none" />
                     <circle
                       cx="48" cy="48" r="40"
-                      stroke="#22C55E"
+                      stroke="var(--engine-protect)"
                       strokeWidth="8"
                       fill="none"
                       strokeLinecap="round"

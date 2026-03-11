@@ -1,9 +1,9 @@
 @import 'tailwindcss';
 
 @theme inline {
-  --font-sans: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --font-display: 'Inter', system-ui, sans-serif;
+  --font-sans: 'Geist', 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
+  --font-display: 'Geist', 'Inter', system-ui, sans-serif;
 
   /* Engine accent colors (used sparingly) */
   --color-engine-dashboard: #00B8C4;
@@ -13,7 +13,7 @@
   --color-engine-govern: #2563EB;
 
   /* Surface colors (light) */
-  --color-surface-base: #EDEBE8;
+  --color-surface-base: #F8F7F4;
   --color-surface-card: #FFFFFF;
   --color-surface-elevated: #FFFFFF;
 
@@ -30,6 +30,54 @@
 }
 
 @layer base {
+  @font-face {
+    font-family: 'Geist';
+    src: url('/fonts/Geist-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Geist';
+    src: url('/fonts/Geist-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Geist';
+    src: url('/fonts/Geist-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Geist';
+    src: url('/fonts/Geist-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Geist Mono';
+    src: url('/fonts/GeistMono-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Geist Mono';
+    src: url('/fonts/GeistMono-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
   @font-face {
     font-family: 'Space Grotesk';
     src: local('Space Grotesk'), local('SpaceGrotesk');

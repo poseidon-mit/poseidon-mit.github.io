@@ -5,23 +5,23 @@ export const MOCK_USER = {
 }
 
 export const MOCK_NET_WORTH = {
-  total: 902753.52,
-  change: 18247,
-  changePercent: 2.1,
-  assets: 909802.27,
-  liabilities: 7048.75,
+  total: 94040.77,
+  change: 1247,
+  changePercent: 1.3,
+  assets: 97272.09,
+  liabilities: 3231.32,
   monthlyCashFlow: 8500,
 }
 
 export const MOCK_SPARKLINE_DATA = [
-  868200, 875500, 882800, 890400, 895700, 902753,
+  88200, 89500, 90800, 91400, 92700, 94041,
 ]
 
 export const MOCK_ENGINE_STATUS = [
   {
     engine: 'protect' as const,
     label: 'Protect',
-    status: '2 Critical',
+    status: '2 High',
     statusColor: '#16A34A',
     metric: '5 threats detected',
     metricValue: 5,
@@ -33,8 +33,8 @@ export const MOCK_ENGINE_STATUS = [
     label: 'Grow',
     status: 'Optimizing',
     statusColor: '#7C3AED',
-    metric: '$3,601/yr savings found',
-    metricValue: 3601,
+    metric: '$2,437/yr savings found',
+    metricValue: 2437,
     metricFormat: (n: number) => `$${Math.round(n).toLocaleString()}/yr savings found`,
     subtext: '4 recommendations · 1 approved',
   },
@@ -43,9 +43,9 @@ export const MOCK_ENGINE_STATUS = [
     label: 'Execute',
     status: '3 pending',
     statusColor: '#CA8A04',
-    metric: '$1,443 tax savings',
-    metricValue: 1443,
-    metricFormat: (n: number) => `$${Math.round(n).toLocaleString()} tax savings`,
+    metric: '$399.60 tax savings',
+    metricValue: 399.60,
+    metricFormat: (n: number) => `$${n.toFixed(2)} tax savings`,
     subtext: 'Tax-loss harvest deadline: Mar 31',
   },
   {
@@ -73,7 +73,7 @@ export const MOCK_RECENT_ACTIVITY = [
     id: '2',
     type: 'protect' as const,
     title: 'Suspicious transaction flagged',
-    description: 'Oslo Electronics — $734.50',
+    description: 'Oslo Electronics — $234.50',
     time: '7 min ago',
     action: 'Review',
   },
@@ -81,9 +81,9 @@ export const MOCK_RECENT_ACTIVITY = [
     id: '3',
     type: 'grow' as const,
     title: 'High-yield savings opportunity',
-    description: '$831/yr additional interest',
+    description: '$269.40/yr additional interest',
     time: '1 hour ago',
-    note: 'Move $18,500 to Marcus',
+    note: 'Move $8,200 to high-yield savings',
   },
   {
     id: '4',

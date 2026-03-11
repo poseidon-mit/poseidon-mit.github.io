@@ -205,7 +205,7 @@ const PROTECT_THREATS: ProtectThreatEntity[] = [
     counterparty: 'Oslo, Norway — New Device',
     amountUsd: 0,
     confidence: 0.94,
-    severity: 'Critical',
+    severity: 'High',
     status: 'pending',
     description: 'Login detected from Oslo, Norway using Chrome on Windows at 3:42 AM PST',
     relativeTime: '5h ago',
@@ -360,7 +360,7 @@ const RECOMMENDATIONS: RecommendationEntity[] = [
     id: 'REC-001',
     title: 'Move Idle Cash to High-Yield Savings',
     projectedBenefitUsd: 22,
-    annualBenefitUsd: 269,
+    annualBenefitUsd: 269.40,
     confidence: 0.92,
     alternativeType: 'savings',
     compositePriority: Math.round(269 * 0.92 / 10),  // 25

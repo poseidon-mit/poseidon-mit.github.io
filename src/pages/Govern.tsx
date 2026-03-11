@@ -134,7 +134,7 @@ export default function GovernPage() {
                     <circle cx="48" cy="48" r="40" stroke="hsl(var(--muted))" strokeWidth="8" fill="none" />
                     <circle
                       cx="48" cy="48" r="40"
-                      stroke="#3B82F6"
+                      stroke="var(--engine-govern)"
                       strokeWidth="8"
                       fill="none"
                       strokeLinecap="round"
