@@ -63,7 +63,7 @@ export function SideDrawer({ open, onDismiss, children, className = '' }: SideDr
             dragConstraints={{ right: 0 }}
             dragElastic={0.2}
             onDragEnd={handleDragEnd}
-            className={`fixed top-0 left-0 bottom-0 z-[210] w-[280px] bg-white shadow-2xl overflow-y-auto ${className}`}
+            className={`fixed top-0 left-0 bottom-0 z-[210] w-[280px] bg-[#0E0E14] border-r border-white/[0.06] shadow-2xl overflow-y-auto ${className}`}
           >
             <button
               onClick={onDismiss}

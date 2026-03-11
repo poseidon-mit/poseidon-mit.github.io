@@ -28,40 +28,40 @@ interface ToneClasses {
 
 export const TONE_CLASSES: Record<AccentTone, ToneClasses> = {
     dashboard: {
-        activeLink: 'text-cyan-700 bg-cyan-50 ring-1 ring-cyan-200 engine-text-dashboard engine-bg-dashboard engine-ring-dashboard',
-        activeIcon: 'text-cyan-600 engine-text-dashboard',
+        activeLink: 'text-cyan-400 bg-cyan-500/10 ring-1 ring-cyan-500/20 engine-text-dashboard engine-bg-dashboard engine-ring-dashboard',
+        activeIcon: 'text-cyan-400 engine-text-dashboard',
         indicator: 'bg-cyan-500 engine-indicator-dashboard',
-        activeSubNav: 'text-cyan-700 bg-cyan-50 border-cyan-200 engine-text-dashboard engine-bg-dashboard engine-border-dashboard',
+        activeSubNav: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20 engine-text-dashboard engine-bg-dashboard engine-border-dashboard',
     },
     protect: {
-        activeLink: 'text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200 engine-text-protect engine-bg-protect engine-ring-protect',
-        activeIcon: 'text-emerald-600 engine-text-protect',
+        activeLink: 'text-emerald-400 bg-emerald-500/10 ring-1 ring-emerald-500/20 engine-text-protect engine-bg-protect engine-ring-protect',
+        activeIcon: 'text-emerald-400 engine-text-protect',
         indicator: 'bg-emerald-500 engine-indicator-protect',
-        activeSubNav: 'text-emerald-700 bg-emerald-50 border-emerald-200 engine-text-protect engine-bg-protect engine-border-protect',
+        activeSubNav: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20 engine-text-protect engine-bg-protect engine-border-protect',
     },
     grow: {
-        activeLink: 'text-violet-700 bg-violet-50 ring-1 ring-violet-200 engine-text-grow engine-bg-grow engine-ring-grow',
-        activeIcon: 'text-violet-600 engine-text-grow',
+        activeLink: 'text-violet-400 bg-violet-500/10 ring-1 ring-violet-500/20 engine-text-grow engine-bg-grow engine-ring-grow',
+        activeIcon: 'text-violet-400 engine-text-grow',
         indicator: 'bg-violet-500 engine-indicator-grow',
-        activeSubNav: 'text-violet-700 bg-violet-50 border-violet-200 engine-text-grow engine-bg-grow engine-border-grow',
+        activeSubNav: 'text-violet-400 bg-violet-500/10 border-violet-500/20 engine-text-grow engine-bg-grow engine-border-grow',
     },
     execute: {
-        activeLink: 'text-amber-700 bg-amber-50 ring-1 ring-amber-200 engine-text-execute engine-bg-execute engine-ring-execute',
-        activeIcon: 'text-amber-600 engine-text-execute',
+        activeLink: 'text-amber-400 bg-amber-500/10 ring-1 ring-amber-500/20 engine-text-execute engine-bg-execute engine-ring-execute',
+        activeIcon: 'text-amber-400 engine-text-execute',
         indicator: 'bg-amber-500 engine-indicator-execute',
-        activeSubNav: 'text-amber-700 bg-amber-50 border-amber-200 engine-text-execute engine-bg-execute engine-border-execute',
+        activeSubNav: 'text-amber-400 bg-amber-500/10 border-amber-500/20 engine-text-execute engine-bg-execute engine-border-execute',
     },
     govern: {
-        activeLink: 'text-blue-700 bg-blue-50 ring-1 ring-blue-200 engine-text-govern engine-bg-govern engine-ring-govern',
-        activeIcon: 'text-blue-600 engine-text-govern',
+        activeLink: 'text-blue-400 bg-blue-500/10 ring-1 ring-blue-500/20 engine-text-govern engine-bg-govern engine-ring-govern',
+        activeIcon: 'text-blue-400 engine-text-govern',
         indicator: 'bg-blue-500 engine-indicator-govern',
-        activeSubNav: 'text-blue-700 bg-blue-50 border-blue-200 engine-text-govern engine-bg-govern engine-border-govern',
+        activeSubNav: 'text-blue-400 bg-blue-500/10 border-blue-500/20 engine-text-govern engine-bg-govern engine-border-govern',
     },
     system: {
-        activeLink: 'text-foreground bg-muted ring-1 ring-border',
+        activeLink: 'text-foreground bg-white/5 ring-1 ring-white/10',
         activeIcon: 'text-foreground',
         indicator: 'bg-muted-foreground',
-        activeSubNav: 'text-foreground bg-muted border-border',
+        activeSubNav: 'text-foreground bg-white/5 border-white/10',
     },
 };
 
@@ -80,7 +80,7 @@ export const NAV_ITEMS: NavItem[] = [
     { label: 'Grow', path: '/grow', icon: TrendingUp, engine: 'grow', group: 'engine', tone: 'grow' },
     { label: 'Execute', path: '/execute', icon: Zap, engine: 'execute', group: 'engine', tone: 'execute' },
     { label: 'Govern', path: '/govern', icon: Scale, engine: 'govern', group: 'engine', tone: 'govern' },
-    { label: 'Talk your money', path: '/chat', icon: MessageCircle, group: 'system', tone: 'system' },
+    { label: 'Talk', path: '/chat', icon: MessageCircle, group: 'system', tone: 'system' },
     { label: 'Settings', path: '/settings', icon: Settings, group: 'system', tone: 'system' },
 ];
 
@@ -107,7 +107,7 @@ export function Sidebar({ path }: { path: string }) {
     const navBadges = useMemo(() => buildNavBadges(pendingExecuteCount, activeProtectCount), [pendingExecuteCount, activeProtectCount]);
 
     return (
-        <aside className="fixed top-0 left-0 z-40 hidden h-screen w-[280px] flex-col bg-white border-r border-border lg:flex">
+        <aside className="fixed top-0 left-0 z-40 hidden h-screen w-[280px] flex-col bg-[#08080D] border-r border-white/5 lg:flex">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 px-8 py-8" aria-label="Poseidon home">
                 <img
@@ -137,7 +137,7 @@ export function Sidebar({ path }: { path: string }) {
                                 'group relative flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-300',
                                 isActive
                                     ? tone.activeLink
-                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground border border-transparent hover:border-border'
+                                    : 'text-white/30 hover:bg-white/[0.03] hover:text-white/60 border border-transparent'
                             )}
                             aria-current={isActive ? 'page' : undefined}
                         >
@@ -145,7 +145,7 @@ export function Sidebar({ path }: { path: string }) {
                             <span className="flex-1 text-sm font-medium tracking-wide">
                                 {item.label}
                                 {isProtectAlert && (
-                                    <span className="block text-[9px] font-semibold text-emerald-600 engine-text-protect tracking-widest uppercase leading-none mt-0.5">
+                                    <span className="block text-[9px] font-semibold text-emerald-400 engine-text-protect tracking-widest uppercase leading-none mt-0.5">
                                         Action Required
                                     </span>
                                 )}
@@ -170,7 +170,7 @@ export function Sidebar({ path }: { path: string }) {
                             to={item.path}
                             className={cn(
                                 'group flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-300',
-                                isActive ? tone.activeLink : 'text-muted-foreground hover:bg-muted hover:text-foreground border border-transparent hover:border-border'
+                                isActive ? tone.activeLink : 'text-white/30 hover:bg-white/[0.03] hover:text-white/60 border border-transparent'
                             )}
                             aria-current={isActive ? 'page' : undefined}
                         >
@@ -181,8 +181,8 @@ export function Sidebar({ path }: { path: string }) {
                 })}
             </nav>
 
-            <div className="flex items-center gap-4 border-t border-border px-8 py-6 transition-colors duration-300 hover:bg-muted/30 cursor-pointer">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-sm font-bold text-foreground shadow-inner border border-border" aria-hidden="true">
+            <div className="flex items-center gap-4 border-t border-white/5 px-8 py-6 transition-colors duration-300 hover:bg-white/[0.03] cursor-pointer">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-sm font-bold text-white/60 border border-white/10" aria-hidden="true">
                     {state.user.initials}
                 </div>
                 <span className="text-sm font-medium tracking-wide text-foreground">{state.user.name}</span>

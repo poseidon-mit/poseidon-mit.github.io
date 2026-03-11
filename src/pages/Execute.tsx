@@ -71,11 +71,11 @@ export default function ExecutePage() {
 
       {/* Summary Cards 2x2 */}
       <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border border-border bg-card">
           <CardContent className="p-5">
             <div className="flex items-center gap-3 mb-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100">
-                <ListChecks className="h-4.5 w-4.5 text-amber-600" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/15">
+                <ListChecks className="h-4.5 w-4.5 text-amber-400" />
               </div>
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Pending</span>
             </div>
@@ -83,11 +83,11 @@ export default function ExecutePage() {
           </CardContent>
         </Card>
 
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border border-border bg-card">
           <CardContent className="p-5">
             <div className="flex items-center gap-3 mb-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100">
-                <CheckCircle2 className="h-4.5 w-4.5 text-emerald-600" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/15">
+                <CheckCircle2 className="h-4.5 w-4.5 text-emerald-400" />
               </div>
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Completed This Month</span>
             </div>
@@ -95,11 +95,11 @@ export default function ExecutePage() {
           </CardContent>
         </Card>
 
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border border-border bg-card">
           <CardContent className="p-5">
             <div className="flex items-center gap-3 mb-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100">
-                <DollarSign className="h-4.5 w-4.5 text-blue-600" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/15">
+                <DollarSign className="h-4.5 w-4.5 text-blue-400" />
               </div>
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Executed</span>
             </div>
@@ -107,18 +107,18 @@ export default function ExecutePage() {
           </CardContent>
         </Card>
 
-        <Card className="border-amber-200 bg-amber-50/60 shadow-sm">
+        <Card className="border-amber-500/20 bg-amber-500/10">
           <CardContent className="p-5">
             <div className="flex items-center gap-3 mb-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-200">
-                <Zap className="h-4.5 w-4.5 text-amber-700" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/20">
+                <Zap className="h-4.5 w-4.5 text-amber-400" />
               </div>
-              <span className="text-xs font-medium text-amber-700 uppercase tracking-wider">Tax Savings</span>
+              <span className="text-xs font-medium text-amber-400 uppercase tracking-wider">Tax Savings</span>
             </div>
-            <p className="text-2xl font-bold font-mono tabular-nums text-amber-700">
+            <p className="text-2xl font-bold font-mono tabular-nums text-amber-400">
               {formatCurrency(executeStats.pendingTaxSavings)}
             </p>
-            <p className="text-xs text-amber-600 mt-1">if you approve</p>
+            <p className="text-xs text-amber-500 mt-1">if you approve</p>
           </CardContent>
         </Card>
       </motion.div>
@@ -132,18 +132,18 @@ export default function ExecutePage() {
             to={`/execute/approval?actionId=${action.id}`}
             className="block"
           >
-            <Card className="border border-border bg-card shadow-sm hover:shadow-md hover:border-amber-300 transition-all cursor-pointer group">
+            <Card className="border border-border bg-card hover:border-amber-500/40 transition-all cursor-pointer group">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-4 min-w-0 flex-1">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 shrink-0">
-                      <Zap className="h-5 w-5 text-amber-600" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15 shrink-0">
+                      <Zap className="h-5 w-5 text-amber-400" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-mono text-xs text-muted-foreground">{action.id}</span>
                         {action.deadline && (
-                          <Badge variant="outline" className="border-red-200 bg-red-50 text-red-700 text-[10px]">
+                          <Badge variant="outline" className="border-red-500/30 bg-red-500/10 text-red-400 text-[10px]">
                             <CalendarClock className="mr-1 h-3 w-3" />
                             Due {action.deadline}
                           </Badge>
@@ -155,7 +155,7 @@ export default function ExecutePage() {
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
                     {action.taxSavings && (
-                      <span className="text-sm font-semibold font-mono tabular-nums text-amber-700">
+                      <span className="text-sm font-semibold font-mono tabular-nums text-amber-400">
                         +{formatCurrency(action.taxSavings)}
                       </span>
                     )}
@@ -173,7 +173,7 @@ export default function ExecutePage() {
         ))}
 
         {pendingActions.length === 0 && (
-          <Card className="border border-border bg-card shadow-sm">
+          <Card className="border border-border bg-card">
             <CardContent className="p-8 text-center">
               <CheckCircle2 className="h-10 w-10 text-emerald-500 mx-auto mb-3" />
               <p className="text-sm font-medium text-foreground">All caught up</p>
@@ -186,7 +186,7 @@ export default function ExecutePage() {
       {/* Completed Section (Collapsible, default closed) */}
       {completedActions.length > 0 && (
         <motion.div variants={fadeUp}>
-          <Card className="border border-border bg-card shadow-sm">
+          <Card className="border border-border bg-card">
             <div
               className="flex items-center justify-between p-5 cursor-pointer hover:bg-muted/30 transition-colors"
               onClick={() => setCompletedOpen(!completedOpen)}

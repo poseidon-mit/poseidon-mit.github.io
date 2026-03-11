@@ -26,7 +26,7 @@ export function RecentActivityFeed() {
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-[#1A1A1A]">
+        <h2 className="text-lg font-semibold text-foreground">
           Recent Activity
         </h2>
         <Link
@@ -37,7 +37,7 @@ export function RecentActivityFeed() {
         </Link>
       </div>
 
-      <div className="bg-white border border-stone-200 rounded-xl divide-y divide-stone-100">
+      <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl divide-y divide-white/[0.06]">
         {MOCK_RECENT_ACTIVITY.map((item) => {
           const Icon = typeIcons[item.type]
           const color = typeColors[item.type]
@@ -45,26 +45,26 @@ export function RecentActivityFeed() {
           return (
             <div key={item.id} className="flex items-center gap-4 p-4">
               <div
-                className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center shrink-0"
+                className="w-10 h-10 rounded-full bg-white/[0.04] flex items-center justify-center shrink-0"
               >
                 <Icon className="w-5 h-5" style={{ color }} />
               </div>
 
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm text-[#1A1A1A]">
+                <p className="font-medium text-sm text-foreground">
                   {item.title}
                 </p>
-                <p className="text-sm text-stone-500 truncate">
+                <p className="text-sm text-muted-foreground truncate">
                   {item.description}
                 </p>
               </div>
 
               <div className="shrink-0 text-right flex flex-col items-end gap-1">
-                <span className="text-xs text-stone-400">{item.time}</span>
+                <span className="text-xs text-white/40">{item.time}</span>
                 {'amount' in item && item.amount != null && (
                   <span
                     className={`font-semibold text-sm ${
-                      item.amount < 0 ? 'text-red-600' : 'text-green-600'
+                      item.amount < 0 ? 'text-red-500' : 'text-emerald-500'
                     }`}
                   >
                     {amountFmt.format(item.amount)}

@@ -92,8 +92,8 @@ export default function ProtectPage() {
           variant="outline"
           className={
             hasThreats
-              ? 'border-orange-200 bg-orange-50 text-orange-700'
-              : 'border-emerald-200 bg-emerald-50 text-emerald-700'
+              ? 'border-orange-500/30 bg-orange-500/10 text-orange-400'
+              : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
           }
         >
           {hasThreats ? (
@@ -103,7 +103,7 @@ export default function ProtectPage() {
             </>
           ) : (
             <>
-              <span className="inline-block h-2 w-2 rounded-full bg-green-500 animate-pulse mr-2" />
+              <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse mr-2" />
               <ShieldCheck className="mr-1.5 h-3.5 w-3.5" />
               All Secure
             </>
@@ -113,7 +113,7 @@ export default function ProtectPage() {
 
       {/* Hero: Protection Status */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm border-t-4 border-t-[var(--engine-protect)]">
+        <Card className="border border-border bg-card border-t-4 border-t-[var(--engine-protect)]">
           <CardContent className="p-6">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-6">
@@ -137,7 +137,7 @@ export default function ProtectPage() {
                   <p className="text-sm text-muted-foreground">
                     All accounts monitored 24/7
                   </p>
-                  <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700 mt-1 gap-1">
+                  <Badge variant="outline" className="border-emerald-500/30 bg-emerald-500/10 text-emerald-400 mt-1 gap-1">
                     <CheckCircle2 className="h-3 w-3" />
                     100% Monitored
                   </Badge>
@@ -170,10 +170,10 @@ export default function ProtectPage() {
       {/* Action Required */}
       {topThreats.length > 0 && (
         <motion.div variants={fadeUp}>
-          <Card className="border-orange-200 bg-orange-50/50 shadow-sm">
+          <Card className="border-orange-500/20 bg-orange-500/5">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2 text-lg text-orange-800">
+                <CardTitle className="flex items-center gap-2 text-lg text-orange-400">
                   <AlertTriangle className="h-5 w-5" />
                   Action Required ({activeThreats.length})
                 </CardTitle>
@@ -184,11 +184,11 @@ export default function ProtectPage() {
               {topThreats.map((threat) => (
                 <div
                   key={threat.id}
-                  className="flex flex-col gap-4 rounded-xl border border-orange-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-4 rounded-xl border border-orange-500/20 bg-white/[0.03] p-4 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="flex items-start gap-4">
                     <div className={`mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full ${
-                      threat.severity === 'Critical' ? 'bg-red-100 text-red-600' : threat.severity === 'High' ? 'bg-orange-100 text-orange-600' : 'bg-amber-100 text-amber-600'
+                      threat.severity === 'Critical' ? 'bg-red-500/15 text-red-400' : threat.severity === 'High' ? 'bg-orange-500/15 text-orange-400' : 'bg-amber-500/15 text-amber-400'
                     }`}>
                       <ShieldAlert className="h-5 w-5" />
                     </div>
@@ -197,7 +197,7 @@ export default function ProtectPage() {
                       <p className="text-sm text-muted-foreground">{threat.description}</p>
                       <div className="mt-1.5 flex items-center gap-3 text-xs text-muted-foreground">
                         <Badge variant="outline" className={`text-xs ${
-                          threat.severity === 'Critical' ? 'border-red-200 bg-red-50 text-red-700' : 'border-orange-200 bg-orange-50 text-orange-700'
+                          threat.severity === 'Critical' ? 'border-red-500/30 bg-red-500/10 text-red-400' : 'border-orange-500/30 bg-orange-500/10 text-orange-400'
                         }`}>
                           {threat.severity}
                         </Badge>
@@ -206,7 +206,7 @@ export default function ProtectPage() {
                       </div>
                     </div>
                   </div>
-                  <Link to={`/protect/alert-detail?alertId=${threat.id}`} className={cn(buttonVariants({ size: "sm" }), "min-h-[44px] bg-orange-600 text-white hover:bg-orange-700")}>
+                  <Link to={`/protect/alert-detail?alertId=${threat.id}`} className={cn(buttonVariants({ size: "sm" }), "min-h-[44px] bg-orange-600 text-white hover:bg-orange-500")}>
                     Review
                     <ChevronRight className="ml-1 h-4 w-4" />
                   </Link>
@@ -219,7 +219,7 @@ export default function ProtectPage() {
 
       {/* Connected Accounts */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border border-border bg-card">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg font-semibold text-foreground">Connected Accounts</CardTitle>
@@ -231,7 +231,7 @@ export default function ProtectPage() {
               {visibleAccounts.map((account) => (
                 <div key={account.id} className="flex items-center justify-between py-4 first:pt-0 last:pb-0">
                   <div className="flex items-center gap-4">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10">
                       <CheckCircle2 className="h-5 w-5 text-emerald-600" />
                     </div>
                     <div>
@@ -244,7 +244,7 @@ export default function ProtectPage() {
                       <p className="font-semibold text-foreground">{formatUsd(account.balanceUsd)}</p>
                       <p className="text-xs text-muted-foreground capitalize">{account.type.replace('-', ' ')}</p>
                     </div>
-                    <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700">
+                    <Badge variant="outline" className="border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
                       Secure
                     </Badge>
                   </div>

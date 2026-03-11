@@ -120,7 +120,7 @@ export default function GrowGoalPage() {
                 <div className="flex flex-col gap-5 flex-1">
                   {ALLOCATIONS.map((c, i) =>
                     <div key={c.month} className={`flex items-center justify-between pt-2 pb-3 ${i !== 0 ? 'border-t border-border' : ''}`}>
-                      <span className="text-sm font-semibold text-foreground flex-shrink-0 w-24 tracking-wide uppercase">{c.month} <span className="text-gray-400 text-xs ml-1 font-mono">2026</span></span>
+                      <span className="text-sm font-semibold text-foreground flex-shrink-0 w-24 tracking-wide uppercase">{c.month} <span className="text-white/40 text-xs ml-1 font-mono">2026</span></span>
                       <div className="flex items-center gap-4 flex-1 justify-end">
                         <div className="w-full max-w-[120px] h-2 rounded-full overflow-hidden bg-muted">
                           <div
@@ -176,7 +176,7 @@ export default function GrowGoalPage() {
                   </p>
                 </div>
                 <p className="text-base text-muted-foreground leading-relaxed tracking-wide mt-2">
-                  Increasing the monthly allocation by <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-violet-50/50 rounded-md border border-violet-200">$60</span> would accelerate reserve target by <strong className="text-foreground font-medium">3 weeks</strong>.
+                  Increasing the monthly allocation by <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-violet-500/10 rounded-md border border-violet-500/20">$60</span> would accelerate reserve target by <strong className="text-foreground font-medium">3 weeks</strong>.
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-4 md:ml-auto">

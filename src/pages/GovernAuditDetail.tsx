@@ -28,16 +28,16 @@ const ENGINE_CONFIG: Record<string, {
   route: string
   label: string
 }> = {
-  Protect: { icon: Shield,     color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200', route: '/protect',  label: 'Protect Engine' },
-  Grow:    { icon: TrendingUp, color: 'text-violet-700',  bg: 'bg-violet-50',  border: 'border-violet-200',  route: '/grow',     label: 'Grow Engine' },
-  Execute: { icon: Zap,        color: 'text-amber-700',   bg: 'bg-amber-50',   border: 'border-amber-200',   route: '/execute',  label: 'Execute Engine' },
-  Govern:  { icon: Scale,      color: 'text-blue-700',    bg: 'bg-blue-50',    border: 'border-blue-200',    route: '/govern',   label: 'Govern Engine' },
+  Protect: { icon: Shield,     color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', route: '/protect',  label: 'Protect Engine' },
+  Grow:    { icon: TrendingUp, color: 'text-violet-400',  bg: 'bg-violet-500/10',  border: 'border-violet-500/20',  route: '/grow',     label: 'Grow Engine' },
+  Execute: { icon: Zap,        color: 'text-amber-400',   bg: 'bg-amber-500/10',   border: 'border-amber-500/20',   route: '/execute',  label: 'Execute Engine' },
+  Govern:  { icon: Scale,      color: 'text-blue-400',    bg: 'bg-blue-500/10',    border: 'border-blue-500/20',    route: '/govern',   label: 'Govern Engine' },
 }
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
-  pending:   { label: 'Pending Review', className: 'border-amber-200 bg-amber-50 text-amber-700' },
-  completed: { label: 'Completed',      className: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
-  rejected:  { label: 'Rejected',       className: 'border-red-200 bg-red-50 text-red-700' },
+  pending:   { label: 'Pending Review', className: 'border-amber-500/20 bg-amber-500/10 text-amber-400' },
+  completed: { label: 'Completed',      className: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400' },
+  rejected:  { label: 'Rejected',       className: 'border-red-500/20 bg-red-500/10 text-red-400' },
 }
 
 /* ── Map AUD IDs to GV decision IDs ── */
@@ -67,9 +67,9 @@ function resolveAuditRecord(id: string | null) {
 
 /* ── Confidence label ── */
 function getConfidenceLabel(confidence: number): { label: string; className: string } {
-  if (confidence >= 0.85) return { label: 'High Confidence', className: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
-  if (confidence >= 0.6)  return { label: 'Moderate Confidence', className: 'bg-amber-50 text-amber-700 border-amber-200' }
-  return { label: 'Low Confidence', className: 'bg-gray-50 text-gray-600 border-gray-200' }
+  if (confidence >= 0.85) return { label: 'High Confidence', className: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' }
+  if (confidence >= 0.6)  return { label: 'Moderate Confidence', className: 'bg-amber-500/10 text-amber-400 border-amber-500/20' }
+  return { label: 'Low Confidence', className: 'bg-white/[0.02] text-muted-foreground border-white/[0.06]' }
 }
 
 /* ── Page Component ── */
@@ -106,7 +106,7 @@ export function GovernAuditDetail() {
       <motion.div variants={fadeUp}>
         <Link
           to="/govern"
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Activity Log
@@ -115,18 +115,18 @@ export function GovernAuditDetail() {
 
       {/* ── Record Header ── */}
       <motion.div variants={fadeUp}>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6">
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6">
           <div className="flex items-start gap-4">
             <div className={cn('flex h-12 w-12 items-center justify-center rounded-xl shrink-0', engineInfo.bg)}>
               <EngineIcon className={cn('h-6 w-6', engineInfo.color)} />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 text-sm text-gray-400 font-mono tabular-nums">
+              <div className="flex items-center gap-2 text-sm text-white/40 font-mono tabular-nums">
                 <span>{decision.id}</span>
-                <span className="text-gray-300">|</span>
+                <span className="text-white/30">|</span>
                 <span>{formatDemoTimestamp(decision.timestamp)}</span>
               </div>
-              <h1 className="text-xl font-bold text-gray-900 mt-1">{decision.action}</h1>
+              <h1 className="text-xl font-bold text-foreground mt-1">{decision.action}</h1>
               <div className="flex flex-wrap items-center gap-2 mt-3">
                 <Badge variant="outline" className={cn('text-xs', engineInfo.bg, engineInfo.color, engineInfo.border)}>
                   {decision.engine}
@@ -142,26 +142,26 @@ export function GovernAuditDetail() {
 
       {/* ── Decision Flow: INPUT -> MODEL -> OUTPUT ── */}
       <motion.div variants={fadeUp}>
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-gray-400 mb-4">Decision Flow</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-widest text-white/40 mb-4">Decision Flow</h2>
 
         <div className="flex flex-col items-center gap-0">
           {/* INPUT card */}
-          <div className="w-full rounded-2xl border border-gray-200 bg-white p-5">
+          <div className="w-full rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5">
             <div className="flex items-center gap-2 mb-3">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-[11px] font-bold text-gray-500">1</span>
-              <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">Input</span>
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/[0.04] text-[11px] font-bold text-muted-foreground">1</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-white/40">Input</span>
             </div>
-            <p className="text-sm text-gray-700 leading-relaxed mb-3">
+            <p className="text-sm text-foreground leading-relaxed mb-3">
               {narrateInput(decision.baseReality)}
             </p>
             <div className="flex flex-wrap gap-2">
               {decision.baseReality.map((row) => (
                 <span
                   key={row.label}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 border border-gray-100 text-xs"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.02] border border-white/[0.06] text-xs"
                 >
-                  <span className="text-gray-400 font-mono uppercase tracking-wider text-[10px]">{row.label}</span>
-                  <span className="text-gray-700 font-medium">{row.value}</span>
+                  <span className="text-white/40 font-mono uppercase tracking-wider text-[10px]">{row.label}</span>
+                  <span className="text-foreground font-medium">{row.value}</span>
                 </span>
               ))}
             </div>
@@ -169,37 +169,37 @@ export function GovernAuditDetail() {
 
           {/* Down arrow */}
           <div className="flex items-center justify-center h-10">
-            <ArrowDown className="h-5 w-5 text-gray-300" />
+            <ArrowDown className="h-5 w-5 text-white/30" />
           </div>
 
           {/* MODEL card */}
-          <div className={cn('w-full rounded-2xl border bg-white p-5', engineInfo.border)}>
+          <div className={cn('w-full rounded-2xl border bg-white/[0.03] p-5', engineInfo.border)}>
             <div className="flex items-center gap-2 mb-3">
               <span className={cn('flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold', engineInfo.bg, engineInfo.color)}>2</span>
-              <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">Model Analysis</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-white/40">Model Analysis</span>
             </div>
             <div className="flex items-center gap-3 mb-2">
               <Badge variant="outline" className={cn('text-xs font-semibold', confidenceInfo.className)}>
                 {confidenceInfo.label}
               </Badge>
             </div>
-            <p className="text-xs text-gray-400 font-mono">
+            <p className="text-xs text-white/40 font-mono">
               {decision.model.name} v{decision.model.version}
             </p>
           </div>
 
           {/* Down arrow */}
           <div className="flex items-center justify-center h-10">
-            <ArrowDown className="h-5 w-5 text-gray-300" />
+            <ArrowDown className="h-5 w-5 text-white/30" />
           </div>
 
           {/* OUTPUT card */}
-          <div className="w-full rounded-2xl border border-gray-200 bg-white p-5">
+          <div className="w-full rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5">
             <div className="flex items-center gap-2 mb-3">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-50 text-[11px] font-bold text-blue-600">3</span>
-              <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">Output</span>
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500/10 text-[11px] font-bold text-blue-400">3</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-white/40">Output</span>
             </div>
-            <p className="text-sm text-gray-700 leading-relaxed">
+            <p className="text-sm text-foreground leading-relaxed">
               {decision.explanation.summary}
             </p>
           </div>
@@ -211,33 +211,33 @@ export function GovernAuditDetail() {
         <motion.div variants={fadeUp}>
           <Link
             to={engineInfo.route}
-            className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-5 hover:bg-gray-50 transition-colors group"
+            className="flex items-center justify-between rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5 hover:bg-white/[0.04] transition-colors group"
           >
             <div className="flex items-center gap-3">
               <div className={cn('flex h-10 w-10 items-center justify-center rounded-xl', engineInfo.bg)}>
                 <EngineIcon className={cn('h-5 w-5', engineInfo.color)} />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">View in {engineInfo.label}</p>
-                <p className="text-xs text-gray-400">See the original context for this decision</p>
+                <p className="text-sm font-medium text-foreground">View in {engineInfo.label}</p>
+                <p className="text-xs text-white/40">See the original context for this decision</p>
               </div>
             </div>
-            <ExternalLink className="h-4 w-4 text-gray-300 group-hover:text-blue-500 transition-colors" />
+            <ExternalLink className="h-4 w-4 text-white/30 group-hover:text-blue-500 transition-colors" />
           </Link>
         </motion.div>
       )}
 
       {/* ── Processing metadata (small/muted) ── */}
-      <motion.div variants={fadeUp} className="flex items-center justify-center gap-4 py-6 border-t border-gray-100">
-        <span className="text-[11px] text-gray-400 font-mono tabular-nums">
+      <motion.div variants={fadeUp} className="flex items-center justify-center gap-4 py-6 border-t border-white/[0.06]">
+        <span className="text-[11px] text-white/40 font-mono tabular-nums">
           {auditRecord ? `${auditRecord.processingMs}ms` : `${decision.model.accuracy}% accuracy`}
         </span>
-        <span className="text-gray-200">|</span>
-        <span className="text-[11px] text-gray-400 font-mono">
+        <span className="text-white/20">|</span>
+        <span className="text-[11px] text-white/40 font-mono">
           {decision.model.name} v{decision.model.version}
         </span>
-        <span className="text-gray-200">|</span>
-        <span className="text-[11px] text-gray-400 font-mono">
+        <span className="text-white/20">|</span>
+        <span className="text-[11px] text-white/40 font-mono">
           {decision.id}
         </span>
       </motion.div>

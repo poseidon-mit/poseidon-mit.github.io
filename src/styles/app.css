@@ -53,7 +53,7 @@
 }
 
 :focus-visible {
-  outline: 2px solid #0A1628;
+  outline: 2px solid hsl(189 94% 43% / 0.6);
   outline-offset: 2px;
 }
 
@@ -76,7 +76,7 @@
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  background: #F8F7F4;
+  background: #0A0A0F;
 }
 
 .command-center__main {

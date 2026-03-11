@@ -25,9 +25,9 @@ import { useDemoState } from '@/lib/demo-state'
 /* ── Flag display helpers ── */
 
 const FLAG_CONFIG: Record<string, { label: string; icon: typeof AlertTriangle; bg: string; text: string }> = {
-  PRICE_INCREASE: { label: 'Price Increase', icon: AlertTriangle, bg: 'bg-amber-50', text: 'text-amber-700' },
-  DUPLICATE: { label: 'Duplicate', icon: Copy, bg: 'bg-red-50', text: 'text-red-700' },
-  LOW_USAGE: { label: 'Low Usage', icon: BarChart3, bg: 'bg-orange-50', text: 'text-orange-700' },
+  PRICE_INCREASE: { label: 'Price Increase', icon: AlertTriangle, bg: 'bg-amber-500/10', text: 'text-amber-400' },
+  DUPLICATE: { label: 'Duplicate', icon: Copy, bg: 'bg-red-500/10', text: 'text-red-400' },
+  LOW_USAGE: { label: 'Low Usage', icon: BarChart3, bg: 'bg-orange-500/10', text: 'text-orange-400' },
 }
 
 /* ── Page Component ── */
@@ -75,7 +75,7 @@ export default function GrowPage() {
     >
       {/* Hero: Annual Savings */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm border-t-4 border-t-violet-600">
+        <Card className="border border-border bg-card border-t-4 border-t-violet-600">
           <CardContent className="p-8 text-center">
             <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
               Savings Opportunities Identified
@@ -96,7 +96,7 @@ export default function GrowPage() {
 
       {/* Summary Cards 2x2 */}
       <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border border-border bg-card">
           <CardContent className="p-5">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Annual Savings</p>
             <p className="mt-1 font-mono tabular-nums text-2xl font-bold text-foreground">
@@ -104,7 +104,7 @@ export default function GrowPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border border-border bg-card">
           <CardContent className="p-5">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Already Realized</p>
             <p className="mt-1 font-mono tabular-nums text-2xl font-bold text-emerald-600">
@@ -112,7 +112,7 @@ export default function GrowPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border border-border bg-card">
           <CardContent className="p-5">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Recommendations</p>
             <p className="mt-1 font-mono tabular-nums text-2xl font-bold text-foreground">
@@ -120,7 +120,7 @@ export default function GrowPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border border-border bg-card">
           <CardContent className="p-5">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Accepted</p>
             <p className="mt-1 font-mono tabular-nums text-2xl font-bold text-foreground">
@@ -132,7 +132,7 @@ export default function GrowPage() {
 
       {/* Subscription Insights */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border border-border bg-card">
           <CardContent className="p-6">
             <h2 className="text-lg font-semibold text-foreground mb-4">Subscription Insights</h2>
             <div className="divide-y divide-border">
@@ -169,11 +169,11 @@ export default function GrowPage() {
 
       {/* Recommendation List */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border border-border bg-card">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-foreground">Recommendations</h2>
-              <Badge variant="outline" className="border-violet-200 bg-violet-50 text-violet-700">
+              <Badge variant="outline" className="border-violet-500/30 bg-violet-500/10 text-violet-400">
                 <TrendingUp className="mr-1.5 h-3.5 w-3.5" />
                 {growStats.totalRecommendations} items
               </Badge>
@@ -200,7 +200,7 @@ export default function GrowPage() {
                             {effectiveStatus === 'approved' && (
                               <Badge
                                 variant="outline"
-                                className="border-emerald-200 bg-emerald-50 text-emerald-700 text-[10px]"
+                                className="border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-[10px]"
                               >
                                 <CheckCircle2 className="mr-1 h-3 w-3" />
                                 Approved

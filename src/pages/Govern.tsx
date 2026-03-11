@@ -21,23 +21,23 @@ import { formatDemoTimestamp } from '@/lib/demo-date'
 
 /* ── Engine color config ── */
 const ENGINE_BADGE: Record<string, { bg: string; text: string; dot: string }> = {
-  Protect: { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
-  Grow:    { bg: 'bg-violet-50',  text: 'text-violet-700',  dot: 'bg-violet-500' },
-  Execute: { bg: 'bg-amber-50',   text: 'text-amber-700',   dot: 'bg-amber-500' },
-  Govern:  { bg: 'bg-blue-50',    text: 'text-blue-700',    dot: 'bg-blue-500' },
+  Protect: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', dot: 'bg-emerald-500' },
+  Grow:    { bg: 'bg-violet-500/10',  text: 'text-violet-400',  dot: 'bg-violet-500' },
+  Execute: { bg: 'bg-amber-500/10',   text: 'text-amber-400',   dot: 'bg-amber-500' },
+  Govern:  { bg: 'bg-blue-500/10',    text: 'text-blue-400',    dot: 'bg-blue-500' },
 }
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
-  pending:   { label: 'Pending',   className: 'border-amber-200 bg-amber-50 text-amber-700' },
-  completed: { label: 'Completed', className: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
-  rejected:  { label: 'Rejected',  className: 'border-red-200 bg-red-50 text-red-700' },
+  pending:   { label: 'Pending',   className: 'border-amber-500/30 bg-amber-500/10 text-amber-400' },
+  completed: { label: 'Completed', className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' },
+  rejected:  { label: 'Rejected',  className: 'border-red-500/30 bg-red-500/10 text-red-400' },
 }
 
 const FILTER_PILL_ACTIVE: Record<string, string> = {
-  All:     'bg-blue-100 text-blue-700 border-blue-200',
-  Protect: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-  Grow:    'bg-violet-100 text-violet-700 border-violet-200',
-  Execute: 'bg-amber-100 text-amber-700 border-amber-200',
+  All:     'bg-blue-500/15 text-blue-400 border-blue-500/30',
+  Protect: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+  Grow:    'bg-violet-500/15 text-violet-400 border-violet-500/30',
+  Execute: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
 }
 
 type EngineFilter = 'All' | 'Protect' | 'Grow' | 'Execute'
@@ -80,7 +80,7 @@ export default function GovernPage() {
           duration={1600}
           className="text-[5rem] sm:text-[6.5rem] font-bold leading-none tracking-tight text-blue-600 font-mono tabular-nums"
         />
-        <p className="mt-3 text-lg text-gray-600 max-w-md mx-auto leading-relaxed">
+        <p className="mt-3 text-lg text-muted-foreground max-w-md mx-auto leading-relaxed">
           Every AI decision is recorded, traceable, and explainable.
         </p>
       </motion.div>
@@ -105,12 +105,12 @@ export default function GovernPage() {
           suffix="%"
           icon={<CheckCircle2 className="h-4 w-4 text-emerald-500" />}
         />
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 flex flex-col gap-1">
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5 flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
             <Users className="h-4 w-4 text-blue-500" />
-            <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">User Overrides</span>
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">User Overrides</span>
           </div>
-          <span className="text-2xl font-bold text-gray-900 font-mono tabular-nums">
+          <span className="text-2xl font-bold text-foreground font-mono tabular-nums">
             {governStats.userOverrides}
           </span>
         </div>
@@ -126,7 +126,7 @@ export default function GovernPage() {
               'min-h-[44px] px-4 py-2 rounded-full text-sm font-semibold border transition-colors',
               engineFilter === engine
                 ? FILTER_PILL_ACTIVE[engine]
-                : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-700',
+                : 'bg-white/[0.03] text-muted-foreground border-white/[0.06] hover:border-white/10 hover:text-foreground',
             )}
           >
             {engine}
@@ -140,13 +140,13 @@ export default function GovernPage() {
       {/* ── Activity Log ── */}
       <motion.div variants={fadeUp}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
             <Scale className="h-5 w-5 text-blue-600" />
             Activity Log
           </h2>
           <Link
             to="/govern/audit"
-            className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors inline-flex items-center gap-1"
+            className="text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center gap-1"
           >
             View All <ChevronRight className="h-3.5 w-3.5" />
           </Link>
@@ -154,7 +154,7 @@ export default function GovernPage() {
 
         <div className="relative">
           {/* Timeline line */}
-          <div className="absolute left-[7px] top-3 bottom-3 w-px bg-gray-200" />
+          <div className="absolute left-[7px] top-3 bottom-3 w-px bg-white/[0.06]" />
 
           <div className="flex flex-col gap-0">
             {filteredRecords.map((record) => {
@@ -164,11 +164,11 @@ export default function GovernPage() {
                 <Link
                   key={record.id}
                   to={`/govern/audit-detail?auditId=${record.id}`}
-                  className="group relative flex items-start gap-4 py-4 pl-0 hover:bg-gray-50/50 rounded-lg transition-colors -mx-2 px-2"
+                  className="group relative flex items-start gap-4 py-4 pl-0 hover:bg-white/[0.04] rounded-lg transition-colors -mx-2 px-2"
                 >
                   {/* Timeline dot */}
                   <div className={cn(
-                    'relative z-10 mt-1.5 h-[15px] w-[15px] rounded-full border-2 border-white shrink-0',
+                    'relative z-10 mt-1.5 h-[15px] w-[15px] rounded-full border-2 border-[#0A0A0F] shrink-0',
                     engineStyle.dot,
                   )} />
 
@@ -176,14 +176,14 @@ export default function GovernPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate group-hover:text-blue-700 transition-colors">
+                        <p className="text-sm font-medium text-foreground truncate group-hover:text-blue-400 transition-colors">
                           {record.action}
                         </p>
                         <div className="flex items-center gap-2 mt-1.5">
                           <Badge variant="outline" className={cn('text-[11px] px-2 py-0.5', engineStyle.bg, engineStyle.text)}>
                             {record.engine}
                           </Badge>
-                          <span className="text-xs text-gray-400 font-mono tabular-nums">
+                          <span className="text-xs text-white/40 font-mono tabular-nums">
                             {formatDemoTimestamp(record.timestamp)}
                           </span>
                         </div>
@@ -192,7 +192,7 @@ export default function GovernPage() {
                         <Badge variant="outline" className={cn('text-[11px] px-2 py-0.5', statusStyle.className)}>
                           {statusStyle.label}
                         </Badge>
-                        <ChevronRight className="h-4 w-4 text-gray-300 group-hover:text-blue-500 transition-colors" />
+                        <ChevronRight className="h-4 w-4 text-white/30 group-hover:text-blue-400 transition-colors" />
                       </div>
                     </div>
                   </div>
@@ -221,17 +221,17 @@ function SummaryCard({
   icon: React.ReactNode
 }) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 flex flex-col gap-1">
+    <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5 flex flex-col gap-1">
       <div className="flex items-center gap-2 mb-1">
         {icon}
-        <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">{label}</span>
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
       </div>
       <CountUp
         value={value}
         suffix={suffix}
         locale={locale}
         duration={1000}
-        className="text-2xl font-bold text-gray-900 font-mono tabular-nums"
+        className="text-2xl font-bold text-foreground font-mono tabular-nums"
       />
     </div>
   )

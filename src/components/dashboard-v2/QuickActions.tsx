@@ -15,7 +15,7 @@ export function QuickActions() {
         <Link
           key={action.label}
           to={action.path}
-          className="flex items-center gap-2 px-4 py-3 bg-stone-100 rounded-lg font-medium text-sm text-[#1A1A1A] hover:bg-stone-200 transition-colors"
+          className="flex items-center gap-2 px-4 py-3 bg-white/[0.04] rounded-lg font-medium text-sm text-foreground hover:bg-white/[0.08] transition-colors"
         >
           <action.icon className="w-4 h-4" />
           {action.label}

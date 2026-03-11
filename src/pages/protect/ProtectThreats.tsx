@@ -26,24 +26,24 @@ import { useDismissedAlerts } from './useDismissedAlerts'
 /* ── Severity display config ── */
 
 const severityBadgeConfig: Record<ThreatSeverity, { bg: string; text: string; border: string }> = {
-  Critical: { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-200' },
-  High: { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-200' },
-  Medium: { bg: 'bg-amber-100', text: 'text-amber-700', border: 'border-amber-200' },
-  Low: { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-200' },
+  Critical: { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/20' },
+  High: { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/20' },
+  Medium: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/20' },
+  Low: { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/20' },
 }
 
 const severityIconColor: Record<ThreatSeverity, string> = {
-  Critical: 'text-red-600',
-  High: 'text-red-600',
-  Medium: 'text-amber-600',
-  Low: 'text-blue-600',
+  Critical: 'text-red-400',
+  High: 'text-red-400',
+  Medium: 'text-amber-400',
+  Low: 'text-blue-400',
 }
 
 const severityIconBg: Record<ThreatSeverity, string> = {
-  Critical: 'bg-red-100',
-  High: 'bg-red-100',
-  Medium: 'bg-amber-100',
-  Low: 'bg-blue-100',
+  Critical: 'bg-red-500/10',
+  High: 'bg-red-500/10',
+  Medium: 'bg-amber-500/10',
+  Low: 'bg-blue-500/10',
 }
 
 /* ── Main Page ── */
@@ -91,7 +91,7 @@ export default function ProtectThreatsPage() {
     <motion.main
       id="main-content"
       role="main"
-      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#F8F7F4] min-h-screen`}
+      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#0A0A0F] min-h-screen`}
       style={PAGE_CONTENT_STYLE}
       variants={staggerContainer}
       initial="hidden"
@@ -101,7 +101,7 @@ export default function ProtectThreatsPage() {
       <motion.div variants={fadeUp}>
         <Link
           to="/protect"
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Protect
@@ -110,12 +110,12 @@ export default function ProtectThreatsPage() {
 
       {/* Header */}
       <motion.div variants={fadeUp} className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100">
-          <Shield className="h-5 w-5 text-red-600" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10">
+          <Shield className="h-5 w-5 text-red-400" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Security Threats</h1>
-          <p className="text-gray-500">Review and manage security alerts across all accounts</p>
+          <h1 className="text-2xl font-bold text-foreground">Security Threats</h1>
+          <p className="text-muted-foreground">Review and manage security alerts across all accounts</p>
         </div>
       </motion.div>
 
@@ -130,13 +130,13 @@ export default function ProtectThreatsPage() {
 
       {/* Filters */}
       <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2 text-sm text-gray-500">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Filter className="h-4 w-4" />
           <span>Filter:</span>
         </div>
 
         <Select value={accountFilter} onValueChange={setAccountFilter}>
-          <SelectTrigger className="w-[180px] bg-white border-gray-200 text-gray-700">
+          <SelectTrigger className="w-[180px] bg-white/[0.03] border-white/[0.06] text-foreground">
             <SelectValue placeholder="All Accounts" />
           </SelectTrigger>
           <SelectContent>
@@ -148,7 +148,7 @@ export default function ProtectThreatsPage() {
         </Select>
 
         <Select value={severityFilter} onValueChange={setSeverityFilter}>
-          <SelectTrigger className="w-[140px] bg-white border-gray-200 text-gray-700">
+          <SelectTrigger className="w-[140px] bg-white/[0.03] border-white/[0.06] text-foreground">
             <SelectValue placeholder="Severity" />
           </SelectTrigger>
           <SelectContent>
@@ -161,7 +161,7 @@ export default function ProtectThreatsPage() {
         </Select>
 
         <Select value={dateFilter} onValueChange={setDateFilter}>
-          <SelectTrigger className="w-[140px] bg-white border-gray-200 text-gray-700">
+          <SelectTrigger className="w-[140px] bg-white/[0.03] border-white/[0.06] text-foreground">
             <SelectValue placeholder="Date Range" />
           </SelectTrigger>
           <SelectContent>
@@ -173,7 +173,7 @@ export default function ProtectThreatsPage() {
         </Select>
 
         {hasActiveFilters && (
-          <Button variant="ghost" size="sm" className="text-gray-500" onClick={clearFilters}>
+          <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={clearFilters}>
             Clear
           </Button>
         )}
@@ -182,7 +182,7 @@ export default function ProtectThreatsPage() {
       {/* Tabs: Pending / Resolved */}
       <motion.div variants={fadeUp}>
         <Tabs defaultValue="pending" className="w-full">
-          <TabsList className="bg-gray-100">
+          <TabsList className="bg-white/[0.04]">
             <TabsTrigger value="pending" className="gap-2">
               <Clock className="h-4 w-4" />
               Pending ({pendingThreats.length})
@@ -196,7 +196,7 @@ export default function ProtectThreatsPage() {
           <TabsContent value="pending" className="mt-4 space-y-3">
             {pendingThreats.length === 0 ? (
               <InlineEmptyState
-                icon={<CheckCircle2 className="h-12 w-12 text-green-500" />}
+                icon={<CheckCircle2 className="h-12 w-12 text-emerald-400" />}
                 title="All clear!"
                 description="No pending threats to review"
               />
@@ -210,7 +210,7 @@ export default function ProtectThreatsPage() {
           <TabsContent value="resolved" className="mt-4 space-y-3">
             {resolvedThreats.length === 0 ? (
               <InlineEmptyState
-                icon={<Clock className="h-12 w-12 text-gray-400" />}
+                icon={<Clock className="h-12 w-12 text-white/40" />}
                 title="No history yet"
                 description="Resolved threats will appear here"
               />
@@ -239,38 +239,38 @@ function SummaryCards({
 }) {
   return (
     <div className="grid gap-4 sm:grid-cols-3">
-      <Card className="border-2 border-red-200 bg-red-50">
+      <Card className="border-2 border-red-500/20 bg-red-500/10">
         <CardContent className="flex items-center gap-4 p-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
-            <AlertTriangle className="h-6 w-6 text-red-600" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10">
+            <AlertTriangle className="h-6 w-6 text-red-400" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-red-700">{pendingCount}</p>
-            <p className="text-sm text-red-600">Pending Review</p>
+            <p className="text-2xl font-bold text-red-400">{pendingCount}</p>
+            <p className="text-sm text-red-400/80">Pending Review</p>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border-2 border-green-200 bg-green-50">
+      <Card className="border-2 border-emerald-500/20 bg-emerald-500/10">
         <CardContent className="flex items-center gap-4 p-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-            <CheckCircle2 className="h-6 w-6 text-green-600" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10">
+            <CheckCircle2 className="h-6 w-6 text-emerald-400" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-green-700">{resolvedCount}</p>
-            <p className="text-sm text-green-600">Resolved</p>
+            <p className="text-2xl font-bold text-emerald-400">{resolvedCount}</p>
+            <p className="text-sm text-emerald-400/80">Resolved</p>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border-2 border-blue-200 bg-blue-50">
+      <Card className="border-2 border-blue-500/20 bg-blue-500/10">
         <CardContent className="flex items-center gap-4 p-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-            <Shield className="h-6 w-6 text-blue-600" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10">
+            <Shield className="h-6 w-6 text-blue-400" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-blue-700">{accountsCount}</p>
-            <p className="text-sm text-blue-600">Accounts Monitored</p>
+            <p className="text-2xl font-bold text-blue-400">{accountsCount}</p>
+            <p className="text-sm text-blue-400/80">Accounts Monitored</p>
           </div>
         </CardContent>
       </Card>
@@ -285,7 +285,7 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
   const isResolved = threat.status === 'resolved'
 
   return (
-    <Card className="bg-white border-gray-200 transition-shadow hover:shadow-md">
+    <Card className="bg-card border-white/[0.06] transition-shadow hover:bg-white/[0.04]">
       <CardContent className="p-4">
         <div className="flex items-center justify-between gap-4">
           {/* Left: icon + info */}
@@ -294,7 +294,7 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
               className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${severityIconBg[threat.severity]}`}
             >
               {isResolved ? (
-                <CheckCircle2 className="h-5 w-5 text-green-600" />
+                <CheckCircle2 className="h-5 w-5 text-emerald-400" />
               ) : (
                 <AlertTriangle className={`h-5 w-5 ${severityIconColor[threat.severity]}`} />
               )}
@@ -302,18 +302,18 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
 
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <p className="font-semibold text-gray-900">{threat.counterparty}</p>
+                <p className="font-semibold text-foreground">{threat.counterparty}</p>
                 <Badge variant="outline" className={`${config.bg} ${config.text} ${config.border}`}>
                   {threat.severity}
                 </Badge>
                 {isResolved && (
-                  <Badge variant="outline" className="border-green-200 bg-green-100 text-green-700">
+                  <Badge variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
                     Resolved
                   </Badge>
                 )}
               </div>
-              <p className="mt-1 text-sm text-gray-500">{threat.description}</p>
-              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
+              <p className="mt-1 text-sm text-muted-foreground">{threat.description}</p>
+              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/40">
                 {threat.account && <span>{threat.account}</span>}
                 <span className="font-mono">{threat.amount}</span>
                 <span>Detected: {threat.time}</span>
@@ -339,7 +339,7 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
   )
 }
 
-/* ── Empty State (light theme) ── */
+/* ── Empty State ── */
 
 function InlineEmptyState({
   icon,
@@ -351,11 +351,11 @@ function InlineEmptyState({
   description: string
 }) {
   return (
-    <Card className="bg-white border-gray-200">
+    <Card className="bg-card border-white/[0.06]">
       <CardContent className="flex flex-col items-center justify-center py-12">
         {icon}
-        <p className="mt-4 text-lg font-medium text-gray-900">{title}</p>
-        <p className="text-gray-500">{description}</p>
+        <p className="mt-4 text-lg font-medium text-foreground">{title}</p>
+        <p className="text-muted-foreground">{description}</p>
       </CardContent>
     </Card>
   )

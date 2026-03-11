@@ -143,15 +143,15 @@ export default function GrowScenariosPage() {
                 <p className="text-sm text-muted-foreground leading-relaxed tracking-wide mb-6 flex-1">{s.desc}</p>
                 <div className="flex flex-col gap-4 border-t border-border pt-5 mt-auto">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-400 tracking-widest uppercase text-xs font-semibold">Monthly</span>
+                    <span className="text-white/40 tracking-widest uppercase text-xs font-semibold">Monthly</span>
                     <span className="font-mono font-bold text-foreground text-lg">${s.monthlySave}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-400 tracking-widest uppercase text-xs font-semibold">Time to goal</span>
+                    <span className="text-white/40 tracking-widest uppercase text-xs font-semibold">Time to goal</span>
                     <span className="font-mono font-medium text-foreground">{s.monthsToGoal} months</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-400 tracking-widest uppercase text-xs font-semibold">Confidence</span>
+                    <span className="text-white/40 tracking-widest uppercase text-xs font-semibold">Confidence</span>
                     <span className="font-mono font-bold" style={{ color: s.confidence >= 0.9 ? "var(--state-healthy)" : s.confidence >= 0.85 ? "var(--state-warning)" : undefined }}>
                       {(s.confidence * 100).toFixed(0)}%
                     </span>
@@ -167,7 +167,7 @@ export default function GrowScenariosPage() {
           <Card className="border border-border bg-card shadow-sm">
             <CardContent className="p-6 lg:p-10 flex flex-col transition-colors">
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-border pb-6 mb-8">
-                <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-500">
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                   {activeScenario.name} forecast
                 </h3>
                 <span className="text-xs font-mono font-medium text-[var(--engine-grow)] mt-2 md:mt-0 bg-[var(--engine-grow)]/10 px-3 py-1.5 rounded-full border border-[var(--engine-grow)]/20">
@@ -201,7 +201,7 @@ export default function GrowScenariosPage() {
                   </p>
                 </div>
                 <p className="text-base text-muted-foreground leading-relaxed tracking-wide mt-2">
-                  This will queue a monthly contribution of <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-violet-50/50 rounded-md border border-violet-200">${activeScenario.monthlySave.toLocaleString()}</span> for approval in Execute.
+                  This will queue a monthly contribution of <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-violet-500/10 rounded-md border border-violet-500/20">${activeScenario.monthlySave.toLocaleString()}</span> for approval in Execute.
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-4 md:ml-auto">

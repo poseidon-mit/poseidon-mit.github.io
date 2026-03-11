@@ -130,8 +130,9 @@ export const routeLoaders = {
   '/onboarding/complete': () => import('../pages/OnboardingRedirect'),
   '/onboarding-v2': () => import('../pages/OnboardingRedirect'),
 
-  // ─── Chat ───────────────────────────────────────────────────────────────────
+  // ─── Chat / Talk ────────────────────────────────────────────────────────────
   '/chat': () => import('../pages/Chat'),
+  '/talk': () => import('../pages/Chat'),
 
   // ─── Core ───────────────────────────────────────────────────────────────────
   '/dashboard': () => import('../pages/Dashboard'),

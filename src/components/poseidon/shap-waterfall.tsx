@@ -80,7 +80,7 @@ export function ShapWaterfall({
     return (
       <div className={cn('space-y-3', className)}>
         {/* Legend */}
-        <div className="flex items-center justify-center gap-5 text-[11px] text-gray-500">
+        <div className="flex items-center justify-center gap-5 text-[11px] text-white/40">
           <span className="flex items-center gap-1.5">
             <span className="inline-block h-2.5 w-2.5 rounded-sm bg-rose-400" />
             Risk increase
@@ -96,16 +96,16 @@ export function ShapWaterfall({
             data={mobileData}
             margin={{ top: 4, right: 48, bottom: 4, left: 8 }}
           >
-            <XAxis type="number" tick={{ fontSize: 10, fill: '#9CA3AF' }} tickLine={false} axisLine={false} />
+            <XAxis type="number" tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.35)' }} tickLine={false} axisLine={false} />
             <YAxis
               type="category"
               dataKey="name"
               width={90}
-              tick={{ fontSize: 10, fill: '#6B7280' }}
+              tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.4)' }}
               tickLine={false}
               axisLine={false}
             />
-            <Bar dataKey="value" radius={4} label={{ position: 'right', fontSize: 9, fill: '#374151', formatter: (v: number) => v > 0 ? `+${v.toFixed(2)}` : v.toFixed(2) }}>
+            <Bar dataKey="value" radius={4} label={{ position: 'right', fontSize: 9, fill: 'rgba(255,255,255,0.5)', formatter: (v: number) => v > 0 ? `+${v.toFixed(2)}` : v.toFixed(2) }}>
               {mobileData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.value >= 0 ? '#22C55E' : '#EF4444'} />
               ))}
@@ -119,7 +119,7 @@ export function ShapWaterfall({
   return (
     <div className={cn('space-y-3', className)}>
       {/* Legend */}
-      <div className="flex items-center justify-center gap-5 text-[11px] text-gray-500">
+      <div className="flex items-center justify-center gap-5 text-[11px] text-white/40">
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2.5 w-2.5 rounded-sm bg-rose-400" />
           Risk increase

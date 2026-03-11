@@ -39,9 +39,9 @@ function getConfidenceLabel(c: number): string {
 }
 
 function getConfidenceBadgeClass(c: number): string {
-  if (c >= 0.85) return 'border-emerald-200 bg-emerald-50 text-emerald-700'
-  if (c >= 0.7) return 'border-amber-200 bg-amber-50 text-amber-700'
-  return 'border-red-200 bg-red-50 text-red-700'
+  if (c >= 0.85) return 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400'
+  if (c >= 0.7) return 'border-amber-500/20 bg-amber-500/10 text-amber-400'
+  return 'border-red-500/20 bg-red-500/10 text-red-400'
 }
 
 function getRiskLabel(c: number): string {
@@ -60,18 +60,18 @@ function BeforeAfterPanel({ rec }: { rec: RecommendationDetail }) {
     return (
       <div className="grid gap-4 sm:grid-cols-2">
         {/* Before */}
-        <div className="rounded-xl border border-gray-200 bg-gray-50 p-5">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Before</p>
-          <p className="text-sm font-medium text-gray-700">Chase Savings</p>
-          <p className="mt-1 font-mono tabular-nums text-2xl font-bold text-gray-400 line-through">
+        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40 mb-2">Before</p>
+          <p className="text-sm font-medium text-muted-foreground">Chase Savings</p>
+          <p className="mt-1 font-mono tabular-nums text-2xl font-bold text-white/40 line-through">
             {c.currentApy}% APY
           </p>
-          <p className="mt-1 font-mono tabular-nums text-sm text-gray-400">$0.82/yr in interest</p>
+          <p className="mt-1 font-mono tabular-nums text-sm text-white/40">$0.82/yr in interest</p>
         </div>
         {/* After */}
-        <div className="rounded-xl border border-violet-200 bg-violet-50 p-5">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-500 mb-2">After</p>
-          <p className="text-sm font-medium text-violet-700">High-Yield Savings</p>
+        <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-5">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-400 mb-2">After</p>
+          <p className="text-sm font-medium text-violet-400">High-Yield Savings</p>
           <p className="mt-1 font-mono tabular-nums text-2xl font-bold text-violet-600">
             {c.newApy}% APY
           </p>
@@ -84,13 +84,13 @@ function BeforeAfterPanel({ rec }: { rec: RecommendationDetail }) {
   if (c.kind === 'allocation') {
     return (
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-gray-200 bg-gray-50 p-5">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Current Allocation</p>
-          <p className="font-mono text-sm text-gray-600">{c.currentMix}</p>
+        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40 mb-2">Current Allocation</p>
+          <p className="font-mono text-sm text-muted-foreground">{c.currentMix}</p>
         </div>
-        <div className="rounded-xl border border-violet-200 bg-violet-50 p-5">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-500 mb-2">Recommended</p>
-          <p className="font-mono text-sm font-semibold text-violet-600">{c.newMix}</p>
+        <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-5">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-400 mb-2">Recommended</p>
+          <p className="font-mono text-sm font-semibold text-violet-400">{c.newMix}</p>
         </div>
       </div>
     )
@@ -98,19 +98,19 @@ function BeforeAfterPanel({ rec }: { rec: RecommendationDetail }) {
 
   if (c.kind === 'contribution') {
     return (
-      <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-5 py-4">
+      <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] px-5 py-4">
         <div className="flex flex-col gap-1">
-          <span className="text-[10px] uppercase tracking-wider text-gray-400">Current</span>
-          <span className="font-mono tabular-nums text-lg text-gray-400">{c.currentPct}%</span>
+          <span className="text-[10px] uppercase tracking-wider text-white/40">Current</span>
+          <span className="font-mono tabular-nums text-lg text-white/40">{c.currentPct}%</span>
         </div>
-        <ArrowRight size={16} className="text-gray-300" />
+        <ArrowRight size={16} className="text-white/30" />
         <div className="flex flex-col gap-1 items-end">
-          <span className="text-[10px] uppercase tracking-wider text-gray-400">Target</span>
-          <span className="font-mono tabular-nums text-lg font-semibold text-violet-600">{c.newPct}%</span>
+          <span className="text-[10px] uppercase tracking-wider text-white/40">Target</span>
+          <span className="font-mono tabular-nums text-lg font-semibold text-violet-400">{c.newPct}%</span>
         </div>
         {c.matchCapture != null && (
-          <div className="flex flex-col gap-1 items-end pl-4 border-l border-gray-200">
-            <span className="text-[10px] uppercase tracking-wider text-gray-400">Match captured</span>
+          <div className="flex flex-col gap-1 items-end pl-4 border-l border-white/[0.06]">
+            <span className="text-[10px] uppercase tracking-wider text-white/40">Match captured</span>
             <span className="font-mono tabular-nums text-lg font-bold text-emerald-600">+${c.matchCapture.toLocaleString()}/yr</span>
           </div>
         )}
@@ -123,15 +123,15 @@ function BeforeAfterPanel({ rec }: { rec: RecommendationDetail }) {
 
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-5">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Before</p>
-        <p className="font-mono tabular-nums text-2xl font-bold text-gray-400 line-through">
+      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40 mb-2">Before</p>
+        <p className="font-mono tabular-nums text-2xl font-bold text-white/40 line-through">
           ${rec.currentTotal.toFixed(2)}/mo
         </p>
       </div>
-      <div className="rounded-xl border border-violet-200 bg-violet-50 p-5">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-500 mb-2">After</p>
-        <p className="font-mono tabular-nums text-2xl font-bold text-violet-600">
+      <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-5">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-400 mb-2">After</p>
+        <p className="font-mono tabular-nums text-2xl font-bold text-violet-400">
           ${rec.newTotal.toFixed(2)}/mo
         </p>
       </div>
@@ -217,7 +217,7 @@ export default function GrowRecommendationDetailPage() {
       <motion.div variants={fadeUp}>
         <Link
           to="/grow"
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Grow
@@ -226,7 +226,7 @@ export default function GrowRecommendationDetailPage() {
 
       {/* Header: Badge, Title, Description */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm border-t-4 border-t-violet-600">
+        <Card className="border border-border bg-card border-t-4 border-t-violet-500">
           <CardContent className="p-6">
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <Badge variant="outline" className={confBadgeClass}>
@@ -234,26 +234,26 @@ export default function GrowRecommendationDetailPage() {
                 {confLabel}
               </Badge>
               {effectiveStatus === 'approved' && (
-                <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700">
+                <Badge variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
                   <CheckCircle2 className="mr-1 h-3 w-3" />
                   Approved
                 </Badge>
               )}
               {effectiveStatus === 'dismissed' && (
-                <Badge variant="outline" className="border-gray-200 bg-gray-50 text-gray-500">
+                <Badge variant="outline" className="border-white/[0.06] bg-white/[0.02] text-muted-foreground">
                   <XCircle className="mr-1 h-3 w-3" />
                   Declined
                 </Badge>
               )}
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">{recSummary.title}</h1>
-            <p className="mt-2 text-sm text-gray-600 leading-relaxed">{recSummary.description}</p>
+            <h1 className="text-2xl font-bold text-foreground">{recSummary.title}</h1>
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{recSummary.description}</p>
 
             {/* Annual Benefit */}
             {benefitText && (
-              <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-violet-50 border border-violet-200 px-4 py-2">
-                <span className="text-sm font-medium text-violet-700">Annual Benefit:</span>
-                <span className="font-mono tabular-nums text-lg font-bold text-violet-600">
+              <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-violet-500/10 border border-violet-500/20 px-4 py-2">
+                <span className="text-sm font-medium text-violet-400">Annual Benefit:</span>
+                <span className="font-mono tabular-nums text-lg font-bold text-violet-400">
                   {benefitText}
                 </span>
               </div>
@@ -270,9 +270,9 @@ export default function GrowRecommendationDetailPage() {
       {/* Action Buttons — above the fold */}
       {!isDecided && (
         <motion.div variants={fadeUp}>
-          <Card className="border border-violet-200 bg-violet-50/40 shadow-sm">
+          <Card className="border border-violet-500/20 bg-violet-500/10">
             <CardContent className="p-6">
-              <p className="text-base font-semibold text-gray-900 mb-4">
+              <p className="text-base font-semibold text-foreground mb-4">
                 Do you want to proceed?
               </p>
               <div className="flex flex-wrap gap-3">
@@ -285,7 +285,7 @@ export default function GrowRecommendationDetailPage() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="min-h-[44px] px-6 text-gray-700"
+                  className="min-h-[44px] px-6 text-muted-foreground"
                   onClick={handleDecline}
                 >
                   Decline
@@ -299,24 +299,24 @@ export default function GrowRecommendationDetailPage() {
       {isDecided && (
         <motion.div variants={fadeUp}>
           <Card className={cn(
-            'border shadow-sm',
+            'border',
             effectiveStatus === 'approved'
-              ? 'border-emerald-200 bg-emerald-50/40'
-              : 'border-gray-200 bg-gray-50/40',
+              ? 'border-emerald-500/20 bg-emerald-500/10'
+              : 'border-white/[0.06] bg-white/[0.02]',
           )}>
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
                 {effectiveStatus === 'approved' ? (
                   <>
-                    <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-                    <p className="text-sm font-medium text-emerald-700">
+                    <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+                    <p className="text-sm font-medium text-emerald-400">
                       You accepted this recommendation
                     </p>
                   </>
                 ) : (
                   <>
-                    <XCircle className="h-5 w-5 text-gray-500" />
-                    <p className="text-sm font-medium text-gray-600">
+                    <XCircle className="h-5 w-5 text-muted-foreground" />
+                    <p className="text-sm font-medium text-muted-foreground">
                       You declined this recommendation
                     </p>
                   </>
@@ -329,16 +329,16 @@ export default function GrowRecommendationDetailPage() {
 
       {/* Collapsible "Why this was recommended" — default CLOSED */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm overflow-hidden">
+        <Card className="border border-border bg-card overflow-hidden">
           <button
             type="button"
             onClick={() => setWhyOpen(prev => !prev)}
-            className="w-full flex items-center justify-between p-5 text-left transition-colors hover:bg-gray-50"
+            className="w-full flex items-center justify-between p-5 text-left transition-colors hover:bg-white/[0.04]"
           >
-            <span className="text-sm font-semibold text-gray-700">Why this was recommended</span>
+            <span className="text-sm font-semibold text-foreground">Why this was recommended</span>
             <ChevronDown
               size={16}
-              className={cn('text-gray-400 transition-transform', whyOpen && 'rotate-180')}
+              className={cn('text-white/40 transition-transform', whyOpen && 'rotate-180')}
             />
           </button>
           <AnimatePresence>
@@ -351,10 +351,10 @@ export default function GrowRecommendationDetailPage() {
                 transition={accordionTransition}
                 className="overflow-hidden"
               >
-                <div className="px-5 pb-5 border-t border-gray-100 space-y-5">
+                <div className="px-5 pb-5 border-t border-white/[0.06] space-y-5">
                   {/* Decision driver bars */}
                   <div className="pt-4">
-                    <h4 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
+                    <h4 className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-3">
                       Key Factors
                     </h4>
                     <div className="space-y-3">
@@ -363,8 +363,8 @@ export default function GrowRecommendationDetailPage() {
                         const weight = Math.max(90 - i * 20, 30)
                         return (
                           <div key={i} className="space-y-1">
-                            <p className="text-sm text-gray-600">{factor}</p>
-                            <div className="h-2 w-full rounded-full bg-gray-100">
+                            <p className="text-sm text-muted-foreground">{factor}</p>
+                            <div className="h-2 w-full rounded-full bg-white/[0.04]">
                               <div
                                 className="h-2 rounded-full bg-violet-500"
                                 style={{ width: `${weight}%` }}
@@ -377,22 +377,22 @@ export default function GrowRecommendationDetailPage() {
                   </div>
 
                   {/* AI Reasoning Quote */}
-                  <div className="border-l-4 border-violet-500 bg-violet-50 rounded-r-xl p-4">
-                    <p className="text-sm text-gray-700 leading-relaxed italic">
+                  <div className="border-l-4 border-violet-500 bg-violet-500/10 rounded-r-xl p-4">
+                    <p className="text-sm text-muted-foreground leading-relaxed italic">
                       &ldquo;{rec.cohortProof}&rdquo;
                     </p>
                   </div>
 
                   {/* Risk Level */}
-                  <div className="flex items-center justify-between text-sm py-2 border-t border-gray-100">
-                    <span className="text-gray-500">Risk Level</span>
+                  <div className="flex items-center justify-between text-sm py-2 border-t border-white/[0.06]">
+                    <span className="text-muted-foreground">Risk Level</span>
                     <Badge variant="outline" className={confBadgeClass}>
                       {getRiskLabel(rec.confidence)}
                     </Badge>
                   </div>
 
                   {/* Model Info */}
-                  <div className="flex flex-wrap gap-4 text-xs text-gray-400 pt-2 border-t border-gray-100">
+                  <div className="flex flex-wrap gap-4 text-xs text-white/40 pt-2 border-t border-white/[0.06]">
                     <span>Model: {rec.modelInfo.name} v{rec.modelInfo.version}</span>
                     <span>Accuracy: {(rec.modelInfo.accuracy * 100).toFixed(1)}%</span>
                   </div>

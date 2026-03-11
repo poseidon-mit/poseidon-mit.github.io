@@ -37,7 +37,7 @@ export default function NotFound() {
     <main
       id="main-content"
       role="main"
-      className="relative flex min-h-screen items-center justify-center bg-[#F8F7F4]"
+      className="relative flex min-h-screen items-center justify-center bg-[#0A0A0F]"
     >
       <div className="relative z-10 max-w-md px-6 text-center">
         <motion.div

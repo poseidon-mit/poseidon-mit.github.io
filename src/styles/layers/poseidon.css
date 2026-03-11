@@ -3,30 +3,29 @@
  * Poseidon-specific design vocabulary that goes beyond shadcn/ui.
  * Engine semantics, glass morphism, neon effects, typography, motion.
  *
- * These variables are consumed by components/poseidon/* facades
- * and the existing design-system/ internals.
+ * v7.0: Dark-only theme with active glass and neon.
  */
 
 @layer base {
   :root {
-    /* ── Light surfaces ── */
-    --glass-border: rgba(0, 0, 0, 0.08);
+    /* ── Dark glass surfaces ── */
+    --glass-border: rgba(255, 255, 255, 0.08);
 
-    /* ── Surface Depth (light) ── */
-    --glass-depth-surface: rgba(255, 255, 255, 0.9);
-    --glass-depth-elevated: rgba(255, 255, 255, 0.95);
-    --glass-depth-floating: rgba(255, 255, 255, 1);
-    --glass-depth-floating-shadow: 0 8px 32px rgba(0,0,0,0.08),
-                                   0 2px 8px rgba(0,0,0,0.04);
-    --glass-blur: 8px;
-    --glass-blur-mobile: 0;
+    /* ── Surface Depth (dark) ── */
+    --glass-depth-surface: rgba(255, 255, 255, 0.04);
+    --glass-depth-elevated: rgba(255, 255, 255, 0.06);
+    --glass-depth-floating: rgba(255, 255, 255, 0.08);
+    --glass-depth-floating-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                                   0 2px 8px rgba(0, 0, 0, 0.2);
+    --glass-blur: 16px;
+    --glass-blur-mobile: 8px;
 
-    /* ── Text Gradients (solid for light theme) ── */
-    --gradient-cyan: linear-gradient(90deg, #1A1A1A, #1A1A1A);
-    --gradient-teal: linear-gradient(90deg, #1A1A1A, #1A1A1A);
-    --gradient-violet: linear-gradient(90deg, #1A1A1A, #1A1A1A);
-    --gradient-amber: linear-gradient(90deg, #1A1A1A, #1A1A1A);
-    --gradient-blue: linear-gradient(90deg, #1A1A1A, #1A1A1A);
+    /* ── Text Gradients (active for dark) ── */
+    --gradient-cyan: linear-gradient(90deg, hsl(189, 94%, 43%), hsl(189, 80%, 60%));
+    --gradient-teal: linear-gradient(90deg, hsl(160, 84%, 39%), hsl(160, 70%, 55%));
+    --gradient-violet: linear-gradient(90deg, hsl(258, 90%, 66%), hsl(258, 70%, 80%));
+    --gradient-amber: linear-gradient(90deg, hsl(38, 92%, 50%), hsl(38, 80%, 65%));
+    --gradient-blue: linear-gradient(90deg, hsl(217, 91%, 60%), hsl(217, 70%, 75%));
 
     /* ── Additional tracking utilities ── */
     --tracking-display: -0.04em;
@@ -70,14 +69,12 @@
   }
 }
 
-/* Agent glow classes (suppressed in light theme) */
-.neon-glow-agent-gpt4o,
-.neon-glow-agent-gpt4o-mini,
-.neon-glow-agent-sonnet,
-.neon-glow-agent-opus,
-.neon-glow-agent-unknown {
-  box-shadow: none;
-}
+/* Agent glow classes (active in dark mode) */
+.neon-glow-agent-gpt4o { box-shadow: 0 0 6px rgba(255, 107, 53, 0.3); }
+.neon-glow-agent-gpt4o-mini { box-shadow: 0 0 6px rgba(20, 184, 166, 0.3); }
+.neon-glow-agent-sonnet { box-shadow: 0 0 6px rgba(99, 102, 241, 0.3); }
+.neon-glow-agent-opus { box-shadow: 0 0 6px rgba(236, 72, 153, 0.3); }
+.neon-glow-agent-unknown { box-shadow: none; }
 
 /* Agent badge background classes */
 .badge-agent-gpt4o { background: rgba(255, 107, 53, 0.15); color: #FF6B35; }
@@ -86,24 +83,8 @@
 .badge-agent-opus { background: rgba(236, 72, 153, 0.15); color: #EC4899; }
 .badge-agent-unknown { background: rgba(148, 163, 184, 0.12); color: #94A3B8; }
 
-/* Agent text (no glow in light theme) */
-.neon-text-agent-gpt4o { color: #FF6B35; text-shadow: none; }
-.neon-text-agent-sonnet { color: #6366F1; text-shadow: none; }
-.neon-text-agent-opus { color: #EC4899; text-shadow: none; }
-.neon-text-agent-gpt4o-mini { color: #14B8A6; text-shadow: none; }
-
-/* ── Precision Mode — Agent Glow Suppression ── */
-.theme-precision .neon-glow-agent-gpt4o,
-.theme-precision .neon-glow-agent-gpt4o-mini,
-.theme-precision .neon-glow-agent-sonnet,
-.theme-precision .neon-glow-agent-opus,
-.theme-precision .neon-glow-agent-unknown {
-  box-shadow: none;
-}
-
-.theme-precision .neon-text-agent-gpt4o,
-.theme-precision .neon-text-agent-sonnet,
-.theme-precision .neon-text-agent-opus,
-.theme-precision .neon-text-agent-gpt4o-mini {
-  text-shadow: none;
-}
+/* Agent text (with glow in dark mode) */
+.neon-text-agent-gpt4o { color: #FF6B35; text-shadow: 0 0 6px rgba(255, 107, 53, 0.3); }
+.neon-text-agent-sonnet { color: #6366F1; text-shadow: 0 0 6px rgba(99, 102, 241, 0.3); }
+.neon-text-agent-opus { color: #EC4899; text-shadow: 0 0 6px rgba(236, 72, 153, 0.3); }
+.neon-text-agent-gpt4o-mini { color: #14B8A6; text-shadow: 0 0 6px rgba(20, 184, 166, 0.3); }

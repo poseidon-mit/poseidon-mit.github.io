@@ -59,7 +59,11 @@ export function EngineStatusGrid() {
           <Link
             key={e.key}
             to={e.path}
-            className="block bg-white border border-stone-200 rounded-xl p-5 hover:shadow-md transition-shadow group"
+            className="block bg-white/[0.03] border border-white/[0.06] border-t-2 rounded-xl p-5 hover:bg-white/[0.05] transition-all group"
+            style={{
+              borderTopColor: `${e.color}33`,
+              boxShadow: `0 0 40px ${e.color}14`,
+            }}
           >
             <div className="flex items-center justify-between">
               <div
@@ -68,17 +72,17 @@ export function EngineStatusGrid() {
               >
                 <Icon className="w-5 h-5" style={{ color: e.color }} />
               </div>
-              <span className="text-xs font-medium text-stone-400 group-hover:text-stone-600 transition-colors">
+              <span className="text-xs font-medium text-white/40 group-hover:text-white/60 transition-colors">
                 View &rarr;
               </span>
             </div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-stone-500 mt-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mt-3">
               {e.label}
             </p>
-            <p className="text-xl font-bold text-[#1A1A1A] font-mono tabular-nums mt-1">
+            <p className="text-xl font-bold text-foreground font-mono tabular-nums mt-1">
               {e.prefix}<CountUp value={e.metric} duration={1200} locale />
             </p>
-            <p className="text-sm text-stone-500">{e.context}</p>
+            <p className="text-sm text-muted-foreground">{e.context}</p>
           </Link>
         )
       })}

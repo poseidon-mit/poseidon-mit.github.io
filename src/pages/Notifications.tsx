@@ -83,7 +83,7 @@ export function Notifications() {
     <>
 
       <nav
-        className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-border"
+        className="sticky top-0 z-50 backdrop-blur-xl bg-[#0A0A0F]/80 border-b border-border"
         aria-label="Breadcrumb">
 
         <div className={`${PAGE_CONTENT_CLASS} h-14 flex items-center gap-2`} style={PAGE_CONTENT_STYLE}>

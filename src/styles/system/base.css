@@ -1,4 +1,4 @@
-/* ── Poseidon v2 — Light Theme Base ── */
+/* ── Poseidon v7 — Dark Theme Base ── */
 * {
   box-sizing: border-box;
 }
@@ -14,8 +14,8 @@ body {
   font-family: var(--font-body, 'Inter', system-ui, sans-serif);
   font-size: 16px;
   line-height: 1.5;
-  color: var(--color-text-primary, #1A1A1A);
-  background: #F8F7F4;
+  color: var(--color-text-primary, #F0F0F5);
+  background: #0A0A0F;
   min-height: 100dvh;
   overflow-x: hidden;
   overscroll-behavior-y: contain;

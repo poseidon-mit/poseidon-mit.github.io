@@ -21,6 +21,7 @@ export const BREADCRUMB_MAP: Record<string, string[]> = {
   '/govern/audit': ['Govern', 'Audit Ledger'],
   '/govern/audit-detail': ['Govern', 'Audit Detail'],
   '/chat': ['Chat'],
+  '/talk': ['Talk'],
   '/settings': ['Settings'],
   '/settings/ai': ['Settings', 'AI Preferences'],
   '/settings/integrations': ['Settings', 'Integrations'],

@@ -1,59 +1,59 @@
-/* ── Layer 1: shadcn/ui Standard Variables — v0 Compatibility ──
+/* ── Layer 1: shadcn/ui Standard Variables — Dark Mode ──
  *
  * These variables map Poseidon's design tokens onto shadcn/ui's
  * standard CSS variable slots. Any v0-generated output that references
  * `hsl(var(--primary))` etc. will "just work" against this layer.
  *
- * Naming convention follows shadcn/ui exactly (HSL channel triplets).
+ * v7.0: Dark-only theme. "Calm Authority" aesthetic.
  */
 
 @layer base {
   :root {
-    /* ── Color Slots (Light Theme) ── */
-    --background: 40 20% 96%;
-    --foreground: 0 0% 10%;
+    /* ── Color Slots (Dark Theme) ── */
+    --background: 240 10% 4%;
+    --foreground: 0 0% 95%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card: 240 6% 8%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover: 240 6% 8%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 217 63% 10%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 189 94% 43%;
+    --primary-foreground: 240 10% 4%;
 
-    --secondary: 40 6% 94%;
-    --secondary-foreground: 0 0% 10%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 40 6% 94%;
-    --muted-foreground: 30 4% 45%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 55%;
 
-    --accent: 40 6% 94%;
-    --accent-foreground: 0 0% 10%;
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 95%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 95%;
 
-    --border: 40 6% 85%;
-    --input: 40 5% 90%;
-    --ring: 217 63% 10%;
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 189 94% 43%;
     --radius: 0.75rem;
 
     /* ── Sidebar (shadcn/ui sidebar component) ── */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 0 0% 10%;
-    --sidebar-primary: 217 63% 10%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 40 6% 94%;
-    --sidebar-accent-foreground: 0 0% 10%;
-    --sidebar-border: 40 5% 90%;
-    --sidebar-ring: 217 63% 10%;
+    --sidebar-background: 240 10% 5%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 189 94% 43%;
+    --sidebar-primary-foreground: 240 10% 4%;
+    --sidebar-accent: 240 4% 16%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 240 4% 16%;
+    --sidebar-ring: 189 94% 43%;
 
     /* ── Chart Colors (shadcn/ui charts) ── */
-    --chart-1: 142 71% 37%;
-    --chart-2: 258 90% 55%;
-    --chart-3: 38 92% 40%;
+    --chart-1: 160 84% 39%;
+    --chart-2: 258 90% 66%;
+    --chart-3: 38 92% 50%;
     --chart-4: 217 91% 60%;
-    --chart-5: 186 80% 39%;
+    --chart-5: 189 94% 43%;
   }
 }

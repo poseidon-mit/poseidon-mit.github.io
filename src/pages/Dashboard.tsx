@@ -32,18 +32,18 @@ function CollapsibleSection({
 }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div className="border border-stone-200 rounded-xl bg-white overflow-hidden">
+    <div className="border border-white/[0.06] rounded-xl bg-white/[0.03] overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen(!open)}
         className="flex items-center justify-between w-full px-5 py-4 text-left cursor-pointer"
       >
-        <span className="text-sm font-semibold text-[#1A1A1A]">{title}</span>
+        <span className="text-sm font-semibold text-foreground">{title}</span>
         <ChevronDown
-          className={`w-4 h-4 text-stone-400 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 text-white/40 transition-transform ${open ? 'rotate-180' : ''}`}
         />
       </button>
-      {open && <div className="border-t border-stone-100">{children}</div>}
+      {open && <div className="border-t border-white/[0.06]">{children}</div>}
     </div>
   )
 }
@@ -85,18 +85,18 @@ export default function Dashboard() {
 
       {/* 3. Needs Your Attention Feed */}
       <motion.div variants={fadeUp}>
-        <h2 className="text-lg font-semibold text-[#1A1A1A] mb-3">Needs Your Attention</h2>
+        <h2 className="text-lg font-semibold text-foreground mb-3">Needs Your Attention</h2>
         <div className="space-y-3">
           <Link
             to="/protect/alert-detail?alertId=THR-001"
-            className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 transition-colors hover:bg-red-100"
+            className="flex items-center gap-3 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 transition-colors hover:bg-red-500/15"
           >
             <span className="relative flex h-3 w-3 shrink-0">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
               <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
             </span>
-            <Shield className="h-4 w-4 shrink-0 text-red-600" />
-            <span className="flex-1 text-sm font-medium text-red-800">
+            <Shield className="h-4 w-4 shrink-0 text-red-400" />
+            <span className="flex-1 text-sm font-medium text-red-300">
               Suspicious login from Oslo, Norway
             </span>
             <span className="shrink-0 rounded-lg bg-red-600 px-3 py-1 text-xs font-semibold text-white">
@@ -106,10 +106,10 @@ export default function Dashboard() {
 
           <Link
             to="/execute/approval?actionId=EXE-001"
-            className="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 transition-colors hover:bg-amber-100"
+            className="flex items-center gap-3 rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 transition-colors hover:bg-amber-500/15"
           >
-            <Zap className="h-4 w-4 shrink-0 text-amber-600" />
-            <span className="flex-1 text-sm font-medium text-amber-800">
+            <Zap className="h-4 w-4 shrink-0 text-amber-400" />
+            <span className="flex-1 text-sm font-medium text-amber-300">
               $399.60 tax savings if you approve
             </span>
             <span className="shrink-0 rounded-lg bg-amber-600 px-3 py-1 text-xs font-semibold text-white">
@@ -119,10 +119,10 @@ export default function Dashboard() {
 
           <Link
             to="/grow/recommendation?id=GRW-001"
-            className="flex items-center gap-3 rounded-xl border border-violet-200 bg-violet-50 px-4 py-3 transition-colors hover:bg-violet-100"
+            className="flex items-center gap-3 rounded-xl border border-violet-500/20 bg-violet-500/10 px-4 py-3 transition-colors hover:bg-violet-500/15"
           >
-            <TrendingUp className="h-4 w-4 shrink-0 text-violet-600" />
-            <span className="flex-1 text-sm font-medium text-violet-800">
+            <TrendingUp className="h-4 w-4 shrink-0 text-violet-400" />
+            <span className="flex-1 text-sm font-medium text-violet-300">
               +$269.40/year in interest — move to high-yield savings
             </span>
             <span className="shrink-0 rounded-lg bg-violet-600 px-3 py-1 text-xs font-semibold text-white">
@@ -134,7 +134,7 @@ export default function Dashboard() {
 
       {/* 4. Monthly Spending */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border border-border bg-card">
           <CardHeader>
             <CardTitle className="text-lg font-semibold text-foreground">
               Monthly Spending
@@ -144,14 +144,14 @@ export default function Dashboard() {
             <div className="space-y-3">
               {monthlyCategories.map((cat) => (
                 <div key={cat.name} className="flex items-center gap-3">
-                  <span className="w-28 text-sm text-stone-600 shrink-0">{cat.name}</span>
-                  <div className="flex-1 h-5 bg-stone-100 rounded-full overflow-hidden">
+                  <span className="w-28 text-sm text-muted-foreground shrink-0">{cat.name}</span>
+                  <div className="flex-1 h-5 bg-white/[0.04] rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-stone-700 rounded-full transition-all"
+                      className="h-full bg-white/20 rounded-full transition-all"
                       style={{ width: `${cat.percentage}%` }}
                     />
                   </div>
-                  <span className="text-sm font-mono tabular-nums text-stone-700 w-20 text-right shrink-0">
+                  <span className="text-sm font-mono tabular-nums text-foreground w-20 text-right shrink-0">
                     {formatCurrency(cat.amount)}
                   </span>
                 </div>
@@ -164,14 +164,14 @@ export default function Dashboard() {
       {/* 5. Linked Accounts (collapsible, default closed) */}
       <motion.div variants={fadeUp}>
         <CollapsibleSection title={`Linked Accounts (${accounts.length})`}>
-          <div className="divide-y divide-stone-100">
+          <div className="divide-y divide-white/[0.06]">
             {accounts.map((acc) => (
               <div key={acc.id} className="flex items-center justify-between px-5 py-3">
                 <div>
-                  <p className="text-sm font-medium text-[#1A1A1A]">{acc.name}</p>
-                  <p className="text-xs text-stone-500">{acc.institution}</p>
+                  <p className="text-sm font-medium text-foreground">{acc.name}</p>
+                  <p className="text-xs text-muted-foreground">{acc.institution}</p>
                 </div>
-                <p className={`text-sm font-mono tabular-nums font-semibold ${acc.balance < 0 ? 'text-red-600' : 'text-[#1A1A1A]'}`}>
+                <p className={`text-sm font-mono tabular-nums font-semibold ${acc.balance < 0 ? 'text-red-600' : 'text-foreground'}`}>
                   {formatCurrency(acc.balance)}
                 </p>
               </div>
@@ -183,19 +183,19 @@ export default function Dashboard() {
       {/* 6. Recent Transactions (collapsible, default closed) */}
       <motion.div variants={fadeUp}>
         <CollapsibleSection title="Recent Transactions">
-          <div className="divide-y divide-stone-100">
+          <div className="divide-y divide-white/[0.06]">
             {recentTransactions.map((txn) => {
               const Icon = txnIcons[txn.icon] ?? ShoppingCart
               return (
                 <div key={txn.id} className="flex items-center gap-3 px-5 py-3">
-                  <div className="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 text-stone-500" />
+                  <div className="w-8 h-8 rounded-full bg-white/[0.04] flex items-center justify-center shrink-0">
+                    <Icon className="w-4 h-4 text-muted-foreground" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[#1A1A1A]">{txn.merchant}</p>
-                    <p className="text-xs text-stone-500">{txn.date}</p>
+                    <p className="text-sm font-medium text-foreground">{txn.merchant}</p>
+                    <p className="text-xs text-muted-foreground">{txn.date}</p>
                   </div>
-                  <p className={`text-sm font-mono tabular-nums font-semibold ${txn.amount < 0 ? 'text-[#1A1A1A]' : 'text-emerald-600'}`}>
+                  <p className={`text-sm font-mono tabular-nums font-semibold ${txn.amount < 0 ? 'text-foreground' : 'text-emerald-600'}`}>
                     {formatCurrency(txn.amount, { showSign: txn.amount > 0 })}
                   </p>
                 </div>

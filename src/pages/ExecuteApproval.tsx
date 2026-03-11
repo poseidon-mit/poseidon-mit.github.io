@@ -126,24 +126,24 @@ export function ExecuteApproval() {
 
       {/* Header Card */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border border-border bg-card">
           <CardContent className="p-6">
             <div className="flex flex-col gap-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-4 flex-1 min-w-0">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 shrink-0">
-                    <Zap className="h-7 w-7 text-amber-600" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/15 shrink-0">
+                    <Zap className="h-7 w-7 text-amber-400" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-1">
                       {action.confidence && action.confidence >= 0.8 && (
-                        <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-xs">
+                        <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/20 text-xs">
                           <ShieldCheck className="mr-1 h-3 w-3" />
                           High Confidence
                         </Badge>
                       )}
                       {action.deadline && (
-                        <Badge variant="outline" className="border-red-200 bg-red-50 text-red-700 text-xs">
+                        <Badge variant="outline" className="border-red-500/20 bg-red-500/10 text-red-400 text-xs">
                           <CalendarClock className="mr-1 h-3 w-3" />
                           Due {action.deadline}
                         </Badge>
@@ -162,31 +162,31 @@ export function ExecuteApproval() {
       {/* Tax Calculation Panel (EXE-001 only) */}
       {isEXE001 && (
         <motion.div variants={fadeUp}>
-          <Card className="border-amber-200 bg-amber-50/50 shadow-sm">
+          <Card className="border-amber-500/20 bg-amber-500/10">
             <CardContent className="p-6">
-              <h3 className="text-xs font-semibold text-amber-700 uppercase tracking-widest mb-4">Tax Calculation</h3>
+              <h3 className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-4">Tax Calculation</h3>
               <div className="space-y-3">
-                <div className="flex items-center justify-between py-2 border-b border-amber-200/50">
-                  <span className="text-sm text-amber-800">Unrealized Loss</span>
-                  <span className="text-sm font-semibold font-mono tabular-nums text-amber-900">
+                <div className="flex items-center justify-between py-2 border-b border-amber-500/15">
+                  <span className="text-sm text-muted-foreground">Unrealized Loss</span>
+                  <span className="text-sm font-semibold font-mono tabular-nums text-foreground">
                     {formatCurrency(TAX_CALC.unrealizedLoss)}
                   </span>
                 </div>
-                <div className="flex items-center justify-between py-2 border-b border-amber-200/50">
-                  <span className="text-sm text-amber-800">Federal Tax Savings (24%)</span>
-                  <span className="text-sm font-mono tabular-nums text-amber-900">
+                <div className="flex items-center justify-between py-2 border-b border-amber-500/15">
+                  <span className="text-sm text-muted-foreground">Federal Tax Savings (24%)</span>
+                  <span className="text-sm font-mono tabular-nums text-foreground">
                     {formatCurrency(TAX_CALC.federal)}
                   </span>
                 </div>
-                <div className="flex items-center justify-between py-2 border-b border-amber-200/50">
-                  <span className="text-sm text-amber-800">CA State Tax Savings (9.3%)</span>
-                  <span className="text-sm font-mono tabular-nums text-amber-900">
+                <div className="flex items-center justify-between py-2 border-b border-amber-500/15">
+                  <span className="text-sm text-muted-foreground">CA State Tax Savings (9.3%)</span>
+                  <span className="text-sm font-mono tabular-nums text-foreground">
                     {formatCurrency(TAX_CALC.state)}
                   </span>
                 </div>
-                <div className="flex items-center justify-between py-3 rounded-lg bg-amber-100/80 px-3 -mx-1">
-                  <span className="text-base font-semibold text-amber-900">Total Tax Savings</span>
-                  <span className="text-2xl font-bold font-mono tabular-nums text-amber-700">
+                <div className="flex items-center justify-between py-3 rounded-lg bg-amber-500/15 px-3 -mx-1">
+                  <span className="text-base font-semibold text-foreground">Total Tax Savings</span>
+                  <span className="text-2xl font-bold font-mono tabular-nums text-amber-400">
                     {formatCurrency(TAX_CALC.total)}
                   </span>
                 </div>
@@ -199,7 +199,7 @@ export function ExecuteApproval() {
       {/* Execution Steps Timeline */}
       {isEXE001 && (
         <motion.div variants={fadeUp}>
-          <Card className="border border-border bg-card shadow-sm">
+          <Card className="border border-border bg-card">
             <CardContent className="p-6">
               <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-5">Execution Steps</h3>
               <div className="relative ml-4">
@@ -238,7 +238,7 @@ export function ExecuteApproval() {
                       </motion.div>
                       <span className={cn(
                         'text-sm pt-0.5 transition-colors duration-300',
-                        stepsAnimated ? 'text-emerald-700 font-medium' : 'text-foreground',
+                        stepsAnimated ? 'text-emerald-400 font-medium' : 'text-foreground',
                       )}>
                         {step.label}
                       </span>
@@ -254,8 +254,8 @@ export function ExecuteApproval() {
       {/* Action Buttons — Above fold */}
       <motion.div variants={fadeUp}>
         <Card className={cn(
-          'shadow-sm',
-          isAlreadyDecided ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-amber-50',
+          '',
+          isAlreadyDecided ? 'border-emerald-500/20 bg-emerald-500/10' : 'border-amber-500/20 bg-amber-500/10',
         )}>
           <CardContent className="p-6">
             {isAlreadyDecided ? (
@@ -273,7 +273,7 @@ export function ExecuteApproval() {
               </div>
             ) : (
               <div className="space-y-4">
-                <h3 className="text-base font-semibold text-amber-900 text-center">
+                <h3 className="text-base font-semibold text-foreground text-center">
                   Do you approve this action?
                 </h3>
                 <div className="flex flex-col sm:flex-row gap-3">
@@ -302,7 +302,7 @@ export function ExecuteApproval() {
       {/* "Why this was recommended" — Collapsible, default CLOSED */}
       {isEXE001 && action.drivers && action.drivers.length > 0 && (
         <motion.div variants={fadeUp}>
-          <Card className="border border-border bg-card shadow-sm">
+          <Card className="border border-border bg-card">
             <div
               className="flex items-center justify-between p-5 cursor-pointer hover:bg-muted/30 transition-colors"
               onClick={() => setWhyOpen(!whyOpen)}
@@ -348,8 +348,8 @@ export function ExecuteApproval() {
                     </div>
 
                     {/* Wash Sale Rule note */}
-                    <div className="rounded-lg bg-amber-50 border border-amber-200 p-3">
-                      <p className="text-xs text-amber-800">
+                    <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3">
+                      <p className="text-xs text-amber-400">
                         <span className="font-semibold">Wash Sale Rule:</span>{' '}
                         Replacement ETF (ITOT) is substantially different from VTI to comply with IRS 30-day wash sale rule.
                       </p>

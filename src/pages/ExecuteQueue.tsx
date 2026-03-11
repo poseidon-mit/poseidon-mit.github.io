@@ -17,9 +17,9 @@ import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 const URGENCY_ORDER: Record<UrgencyLevel, number> = { high: 0, medium: 1, low: 2 }
 
 const URGENCY_BADGE: Record<UrgencyLevel, string> = {
-  high: 'bg-red-50 text-red-700 border border-red-200',
-  medium: 'bg-amber-50 text-amber-700 border border-amber-200',
-  low: 'bg-gray-100 text-gray-600 border border-gray-200',
+  high: 'bg-red-500/10 text-red-400 border border-red-500/20',
+  medium: 'bg-amber-500/10 text-amber-400 border border-amber-500/20',
+  low: 'bg-white/[0.04] text-muted-foreground border border-white/[0.06]',
 }
 
 export default function ExecuteQueuePage() {
@@ -88,7 +88,7 @@ export default function ExecuteQueuePage() {
       {/* Action list */}
       {pendingActions.length === 0 ? (
         <motion.div variants={fadeUp}>
-          <div className="rounded-xl border border-border bg-card shadow-sm p-12 flex items-center justify-center">
+          <div className="rounded-xl border border-border bg-card p-12 flex items-center justify-center">
             <EmptyState
               icon={CheckCircle2}
               title="Queue clear"
@@ -148,7 +148,7 @@ function SpotlightCard({ action }: { action: ExecuteActionEntity }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-amber-700">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-amber-400">
           Highest Priority
         </span>
         <span className={cn('inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest', URGENCY_BADGE[action.urgency])}>
@@ -198,7 +198,7 @@ function CompactQueueCard({ action }: { action: ExecuteActionEntity }) {
   return (
     <Link
       to={`/execute/approval?actionId=${action.id}`}
-      className="rounded-[16px] border border-border bg-card shadow-sm p-4 flex items-center gap-3 hover:bg-muted/50 transition-colors border-l-2 group"
+      className="rounded-[16px] border border-border bg-card p-4 flex items-center gap-3 hover:bg-muted/50 transition-colors border-l-2 group"
       style={{ borderLeftColor: `var(${token.cssVar})` }}
     >
       <div className="flex-1 min-w-0">
@@ -210,7 +210,7 @@ function CompactQueueCard({ action }: { action: ExecuteActionEntity }) {
           <span className="text-[10px] text-muted-foreground font-mono">{action.engine}</span>
         </div>
       </div>
-      <ArrowRight size={14} className="shrink-0 text-gray-400 group-hover:text-[var(--engine-execute)] transition-colors" />
+      <ArrowRight size={14} className="shrink-0 text-white/40 group-hover:text-[var(--engine-execute)] transition-colors" />
     </Link>
   )
 }
@@ -226,7 +226,7 @@ function QueueCard({ action }: { action: ExecuteActionEntity }) {
     <Link
       to={`/execute/approval?actionId=${action.id}`}
       className={cn(
-        'rounded-[20px] border border-border bg-card shadow-sm flex items-center hover:bg-muted/50 transition-colors border-l-2 group block',
+        'rounded-[20px] border border-border bg-card flex items-center hover:bg-muted/50 transition-colors border-l-2 group block',
         isFocus ? 'p-5 gap-4' : 'p-4 gap-3',
       )}
       style={{

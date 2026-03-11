@@ -29,7 +29,7 @@ export interface EngineToken {
 
 export const engineTokens: Record<EngineName, EngineToken> = {
   dashboard: {
-    color: '#00F0FF',
+    color: 'hsl(189, 94%, 43%)',
     cssVar: '--engine-dashboard',
     neonVar: '--neon-cyan',
     neonClass: 'neon-glow-dashboard',
@@ -40,18 +40,18 @@ export const engineTokens: Record<EngineName, EngineToken> = {
     labelJa: 'ダッシュボード',
   },
   protect: {
-    color: '#22C55E',
+    color: 'hsl(160, 84%, 39%)',
     cssVar: '--engine-protect',
     neonVar: '--neon-teal',
     neonClass: 'neon-glow-protect',
-    textClass: 'text-green-400 engine-text-protect',
-    bgClass: 'bg-green-500/10 engine-bg-protect',
-    borderClass: 'border-green-500/20 engine-border-protect',
+    textClass: 'text-emerald-400 engine-text-protect',
+    bgClass: 'bg-emerald-500/10 engine-bg-protect',
+    borderClass: 'border-emerald-500/20 engine-border-protect',
     label: 'Protect',
     labelJa: '保護',
   },
   grow: {
-    color: '#8B5CF6',
+    color: 'hsl(258, 90%, 66%)',
     cssVar: '--engine-grow',
     neonVar: '--neon-violet',
     neonClass: 'neon-glow-grow',
@@ -62,7 +62,7 @@ export const engineTokens: Record<EngineName, EngineToken> = {
     labelJa: '成長',
   },
   execute: {
-    color: '#EAB308',
+    color: 'hsl(38, 92%, 50%)',
     cssVar: '--engine-execute',
     neonVar: '--neon-amber',
     neonClass: 'neon-glow-execute',
@@ -73,7 +73,7 @@ export const engineTokens: Record<EngineName, EngineToken> = {
     labelJa: '実行',
   },
   govern: {
-    color: '#3B82F6',
+    color: 'hsl(217, 91%, 60%)',
     cssVar: '--engine-govern',
     neonVar: '--neon-blue',
     neonClass: 'neon-glow-govern',

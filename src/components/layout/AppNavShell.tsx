@@ -81,7 +81,7 @@ export function AppNavShell({
   );
 
   return (
-    <div className="app-bg-oled flex min-h-screen selection:bg-blue-100 theme-precision">
+    <div className="app-bg-oled flex min-h-screen selection:bg-cyan-500/20 theme-precision">
       <CommandPalette isOpen={isPaletteOpen} onClose={closePalette} />
 
       {/* ── Mobile Drawer ── */}
@@ -104,7 +104,7 @@ export function AppNavShell({
                 to={item.path}
                 className={cn(
                   'flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-200',
-                  isActive ? tone.activeLink : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  isActive ? tone.activeLink : 'text-white/30 hover:bg-white/[0.03] hover:text-white/60'
                 )}
                 aria-current={isActive ? 'page' : undefined}
               >
@@ -136,7 +136,7 @@ export function AppNavShell({
         />
 
         {/* ── Mobile top header ── */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between px-3 bg-white/90 border-b border-border backdrop-blur-md lg:hidden">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between px-3 bg-[#08080D]/90 border-b border-white/5 backdrop-blur-xl lg:hidden">
           <div className="flex items-center gap-1">
             <button
               onClick={() => setDrawerOpen(true)}
@@ -193,7 +193,7 @@ export function AppNavShell({
 
       {/* ── Mobile bottom navigation ── */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex h-16 items-center justify-around border-t border-border bg-white/90 backdrop-blur-md pb-[env(safe-area-inset-bottom,0px)] lg:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 flex h-16 items-center justify-around border-t border-white/5 bg-[#08080D]/90 backdrop-blur-xl pb-[env(safe-area-inset-bottom,0px)] lg:hidden"
         aria-label="Mobile navigation"
       >
         {ENGINE_ITEMS.map((item) => {
@@ -206,7 +206,7 @@ export function AppNavShell({
               to={item.path}
               className={cn(
                 'flex min-h-12 flex-1 flex-col items-center justify-center gap-1 py-2 transition-colors duration-150',
-                isActive ? tone.activeIcon : 'text-muted-foreground'
+                isActive ? 'text-white' : 'text-white/25'
               )}
               onClick={() => handleBottomNavTap(item.path)}
               aria-current={isActive ? 'page' : undefined}

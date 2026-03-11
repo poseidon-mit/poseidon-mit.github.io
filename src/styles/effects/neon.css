@@ -118,56 +118,55 @@
   text-shadow: 0 0 8px rgba(59, 130, 246, 0.3), 0 0 20px rgba(59, 130, 246, 0.15);
 }
 
-/* ── Precision Mode — Engine Glow Suppression ──
- * Within .theme-precision scope (AppNavShell), replace 6-layer neon
- * with subtle 2-layer glow for engine identity signaling.
- * Base classes remain untouched for Workbench/Orchestrator surfaces.
+/* ── Precision Mode — Refined glow for dark theme ──
+ * Within .theme-precision scope (AppNavShell), use refined
+ * engine glow that's visible but not overwhelming.
  */
 .theme-precision .neon-glow-cyan,
 .theme-precision .neon-glow-dashboard {
-  box-shadow: 0 0 1px rgba(0, 184, 196, 0.3), 0 0 3px rgba(0, 184, 196, 0.1);
+  box-shadow: 0 0 4px hsl(189 94% 43% / 0.3), 0 0 12px hsl(189 94% 43% / 0.1);
 }
 
 .theme-precision .neon-glow-teal,
 .theme-precision .neon-glow-protect {
-  box-shadow: 0 0 1px rgba(15, 157, 138, 0.3), 0 0 3px rgba(15, 157, 138, 0.1);
+  box-shadow: 0 0 4px hsl(160 84% 39% / 0.3), 0 0 12px hsl(160 84% 39% / 0.1);
 }
 
 .theme-precision .neon-glow-violet,
 .theme-precision .neon-glow-grow {
-  box-shadow: 0 0 1px rgba(124, 58, 237, 0.3), 0 0 3px rgba(124, 58, 237, 0.1);
+  box-shadow: 0 0 4px hsl(258 90% 66% / 0.3), 0 0 12px hsl(258 90% 66% / 0.1);
 }
 
 .theme-precision .neon-glow-amber,
 .theme-precision .neon-glow-execute {
-  box-shadow: 0 0 1px rgba(217, 140, 0, 0.3), 0 0 3px rgba(217, 140, 0, 0.1);
+  box-shadow: 0 0 4px hsl(38 92% 50% / 0.3), 0 0 12px hsl(38 92% 50% / 0.1);
 }
 
 .theme-precision .neon-glow-blue,
 .theme-precision .neon-glow-govern {
-  box-shadow: 0 0 1px rgba(37, 99, 235, 0.3), 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 4px hsl(217 91% 60% / 0.3), 0 0 12px hsl(217 91% 60% / 0.1);
 }
 
 .theme-precision .neon-glow-red {
-  box-shadow: 0 0 1px rgba(217, 48, 37, 0.3), 0 0 3px rgba(217, 48, 37, 0.1);
+  box-shadow: 0 0 4px hsl(0 84% 60% / 0.3), 0 0 12px hsl(0 84% 60% / 0.1);
 }
 
 .theme-precision .neon-text-cyan {
-  text-shadow: 0 0 4px rgba(0, 184, 196, 0.2);
+  text-shadow: 0 0 6px hsl(189 94% 43% / 0.3);
 }
 
 .theme-precision .neon-text-teal {
-  text-shadow: 0 0 4px rgba(15, 157, 138, 0.2);
+  text-shadow: 0 0 6px hsl(160 84% 39% / 0.3);
 }
 
 .theme-precision .neon-text-violet {
-  text-shadow: 0 0 4px rgba(124, 58, 237, 0.2);
+  text-shadow: 0 0 6px hsl(258 90% 66% / 0.3);
 }
 
 .theme-precision .neon-text-amber {
-  text-shadow: 0 0 4px rgba(217, 140, 0, 0.2);
+  text-shadow: 0 0 6px hsl(38 92% 50% / 0.3);
 }
 
 .theme-precision .neon-text-blue {
-  text-shadow: 0 0 4px rgba(37, 99, 235, 0.2);
+  text-shadow: 0 0 6px hsl(217 91% 60% / 0.3);
 }

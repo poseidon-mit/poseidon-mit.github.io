@@ -36,9 +36,9 @@ const CATEGORY_OPTIONS: Category[] = ['All', 'Efficiency', 'Risk Mitigation', 'R
 const DIFFICULTY_ORDER: Record<Difficulty, number> = { Easy: 0, Medium: 1, Hard: 2 }
 
 const DIFFICULTY_BADGE: Record<Difficulty, { bg: string; text: string; border: string }> = {
-  Easy: { bg: 'bg-green-100', text: 'text-green-700', border: 'border-green-200' },
-  Medium: { bg: 'bg-amber-100', text: 'text-amber-700', border: 'border-amber-200' },
-  Hard: { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-200' },
+  Easy: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20' },
+  Medium: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/20' },
+  Hard: { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/20' },
 }
 
 const CATEGORY_ICON: Record<string, typeof Lightbulb> = {
@@ -84,7 +84,7 @@ export function GrowRecommendations() {
       <motion.div variants={fadeUp}>
         <Link
           to="/grow"
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Grow
@@ -93,50 +93,50 @@ export function GrowRecommendations() {
 
       {/* Header */}
       <motion.div variants={fadeUp} className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-100">
-          <Lightbulb className="h-5 w-5 text-violet-600" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/10">
+          <Lightbulb className="h-5 w-5 text-violet-400" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">AI Recommendations</h1>
-          <p className="text-gray-500">Personalized suggestions to optimize your finances</p>
+          <h1 className="text-2xl font-bold text-foreground">AI Recommendations</h1>
+          <p className="text-muted-foreground">Personalized suggestions to optimize your finances</p>
         </div>
       </motion.div>
 
       {/* Summary cards */}
       <motion.div variants={fadeUp}>
         <div className="grid gap-4 sm:grid-cols-3">
-          <Card className="border-violet-200 bg-violet-50">
+          <Card className="border-violet-500/20 bg-violet-500/10">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-violet-100">
-                <Lightbulb className="h-6 w-6 text-violet-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/10">
+                <Lightbulb className="h-6 w-6 text-violet-400" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-violet-700">{activeCount}</p>
-                <p className="text-sm text-violet-600">Active</p>
+                <p className="text-2xl font-bold text-violet-400">{activeCount}</p>
+                <p className="text-sm text-violet-400/80">Active</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-green-200 bg-green-50">
+          <Card className="border-emerald-500/20 bg-emerald-500/10">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                <TrendingUp className="h-6 w-6 text-green-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10">
+                <TrendingUp className="h-6 w-6 text-emerald-400" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-700">${totalAnnual.toLocaleString()}</p>
-                <p className="text-sm text-green-600">Potential Savings/yr</p>
+                <p className="text-2xl font-bold text-emerald-400">${totalAnnual.toLocaleString()}</p>
+                <p className="text-sm text-emerald-400/80">Potential Savings/yr</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-blue-200 bg-blue-50">
+          <Card className="border-blue-500/20 bg-blue-500/10">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-                <CheckCircle2 className="h-6 w-6 text-blue-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10">
+                <CheckCircle2 className="h-6 w-6 text-blue-400" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-blue-700">12</p>
-                <p className="text-sm text-blue-600">Completed (30d)</p>
+                <p className="text-2xl font-bold text-blue-400">12</p>
+                <p className="text-sm text-blue-400/80">Completed (30d)</p>
               </div>
             </CardContent>
           </Card>
@@ -152,14 +152,14 @@ export function GrowRecommendations() {
             className={cn(
               'px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors',
               sort === mode
-                ? 'bg-violet-100 text-violet-700 border-violet-200'
-                : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-700',
+                ? 'bg-violet-500/10 text-violet-400 border-violet-500/20'
+                : 'bg-white/[0.03] text-muted-foreground border-white/[0.06] hover:border-white/10 hover:text-foreground',
             )}
           >
             {SORT_LABELS[mode]}
           </button>
         ))}
-        <div className="w-px h-5 bg-gray-200 mx-1" />
+        <div className="w-px h-5 bg-white/[0.06] mx-1" />
         {CATEGORY_OPTIONS.map(cat => (
           <button
             key={cat}
@@ -167,8 +167,8 @@ export function GrowRecommendations() {
             className={cn(
               'px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors',
               category === cat
-                ? 'bg-violet-100 text-violet-700 border-violet-200'
-                : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-700',
+                ? 'bg-violet-500/10 text-violet-400 border-violet-500/20'
+                : 'bg-white/[0.03] text-muted-foreground border-white/[0.06] hover:border-white/10 hover:text-foreground',
             )}
             data-category={cat}
           >
@@ -179,7 +179,7 @@ export function GrowRecommendations() {
           <Button
             variant="ghost"
             size="sm"
-            className="text-gray-500"
+            className="text-muted-foreground"
             onClick={() => { setSort('benefit'); setCategory('All') }}
           >
             Clear
@@ -189,7 +189,7 @@ export function GrowRecommendations() {
 
       {/* Filtered count */}
       {filtered.length < RECOMMENDATIONS_FOR_LIST.length && (
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-white/40">
           Showing {filtered.length} of {RECOMMENDATIONS_FOR_LIST.length}
         </p>
       )}
@@ -198,16 +198,16 @@ export function GrowRecommendations() {
       {spotlightRec && (
         <motion.div variants={fadeUp}>
           <Link to={`/grow/recommendation?id=${spotlightRec.id}`} className="block">
-            <Card className="border-violet-200 bg-gradient-to-r from-violet-50 to-purple-50 shadow-sm transition-shadow hover:shadow-md">
+            <Card className="border-violet-500/20 bg-gradient-to-r from-violet-500/10 to-purple-500/10 transition-shadow hover:from-violet-500/15 hover:to-purple-500/15">
               <CardContent className="p-6">
                 <div className="flex flex-col gap-3">
-                  <Badge variant="outline" className="self-start border-violet-200 bg-violet-100 text-violet-700 text-[10px] uppercase tracking-widest">
+                  <Badge variant="outline" className="self-start border-violet-500/20 bg-violet-500/10 text-violet-400 text-[10px] uppercase tracking-widest">
                     Top Priority
                   </Badge>
-                  <p className="text-lg font-semibold text-gray-900 leading-snug">{spotlightRec.title}</p>
-                  <p className="text-sm text-gray-500 line-clamp-2">{spotlightRec.description}</p>
+                  <p className="text-lg font-semibold text-foreground leading-snug">{spotlightRec.title}</p>
+                  <p className="text-sm text-muted-foreground line-clamp-2">{spotlightRec.description}</p>
                   <div className="flex items-center gap-3 mt-1">
-                    <span className="text-2xl font-mono font-bold text-violet-700">
+                    <span className="text-2xl font-mono font-bold text-violet-400">
                       ${spotlightRec.annualSavings.toLocaleString()}/yr
                     </span>
                     <DifficultyBadge difficulty={spotlightRec.difficulty} />
@@ -226,11 +226,11 @@ export function GrowRecommendations() {
       {/* Recommendation list */}
       {filtered.length === 0 ? (
         <motion.div variants={fadeUp}>
-          <Card className="bg-white border-gray-200">
+          <Card className="bg-card border-white/[0.06]">
             <CardContent className="flex flex-col items-center justify-center py-12">
-              <Lightbulb className="h-12 w-12 text-gray-400" />
-              <p className="mt-4 text-lg font-medium text-gray-900">No recommendations</p>
-              <p className="text-gray-500">No recommendations match this filter.</p>
+              <Lightbulb className="h-12 w-12 text-white/40" />
+              <p className="mt-4 text-lg font-medium text-foreground">No recommendations</p>
+              <p className="text-muted-foreground">No recommendations match this filter.</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -260,20 +260,20 @@ function RecommendationCard({ rec }: { rec: RecommendationListItem }) {
   const CategoryIcon = CATEGORY_ICON[rec.category] ?? Lightbulb
 
   return (
-    <Card className="bg-white border-gray-200 transition-shadow hover:shadow-md">
+    <Card className="bg-card border-white/[0.06] transition-shadow hover:bg-white/[0.04]">
       <CardContent className="p-5">
         <Link to={`/grow/recommendation?id=${rec.id}`} className="block">
           <div className="flex items-start gap-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-100">
-              <CategoryIcon className="h-5 w-5 text-violet-600" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-500/10">
+              <CategoryIcon className="h-5 w-5 text-violet-400" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <p className="font-semibold text-gray-900">{rec.title}</p>
+                <p className="font-semibold text-foreground">{rec.title}</p>
                 <DifficultyBadge difficulty={rec.difficulty} />
               </div>
-              <p className="text-xs text-gray-400 mt-0.5">{rec.category}</p>
-              <p className="mt-2 text-sm text-gray-500 line-clamp-2">{rec.description}</p>
+              <p className="text-xs text-white/40 mt-0.5">{rec.category}</p>
+              <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{rec.description}</p>
               <div className="mt-3 flex items-center justify-between">
                 <span className="text-sm font-bold text-emerald-600">
                   Impact: ${rec.annualSavings.toLocaleString()}/yr

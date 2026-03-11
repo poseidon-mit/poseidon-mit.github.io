@@ -5,28 +5,28 @@
   --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
   --font-display: 'Geist', 'Inter', system-ui, sans-serif;
 
-  /* Engine accent colors (used sparingly) */
-  --color-engine-dashboard: #00B8C4;
-  --color-engine-protect: #16A34A;
-  --color-engine-grow: #7C3AED;
-  --color-engine-execute: #CA8A04;
-  --color-engine-govern: #2563EB;
+  /* Engine accent colors (v7.0 HSL) */
+  --color-engine-dashboard: hsl(189, 94%, 43%);
+  --color-engine-protect: hsl(160, 84%, 39%);
+  --color-engine-grow: hsl(258, 90%, 66%);
+  --color-engine-execute: hsl(38, 92%, 50%);
+  --color-engine-govern: hsl(217, 91%, 60%);
 
-  /* Surface colors (light) */
-  --color-surface-base: #F8F7F4;
-  --color-surface-card: #FFFFFF;
-  --color-surface-elevated: #FFFFFF;
+  /* Surface colors (dark) */
+  --color-surface-base: #0A0A0F;
+  --color-surface-card: rgba(255, 255, 255, 0.04);
+  --color-surface-elevated: rgba(255, 255, 255, 0.06);
 
-  /* Text colors */
-  --color-text-primary: #1A1A1A;
-  --color-text-secondary: #44403C;
-  --color-text-muted: #78716C;
+  /* Text colors (dark) */
+  --color-text-primary: #F2F2F2;
+  --color-text-secondary: #A0A0B0;
+  --color-text-muted: #6B6B80;
 
   /* Status colors */
-  --color-status-success: #16A34A;
-  --color-status-warning: #CA8A04;
-  --color-status-error: #DC2626;
-  --color-status-info: #2563EB;
+  --color-status-success: hsl(160, 84%, 39%);
+  --color-status-warning: hsl(38, 92%, 50%);
+  --color-status-error: hsl(0, 84%, 60%);
+  --color-status-info: hsl(217, 91%, 60%);
 }
 
 @layer base {
@@ -135,7 +135,7 @@
   }
 
   :root {
-    color-scheme: light;
+    color-scheme: dark;
     --engine-dashboard: var(--color-engine-dashboard);
     --engine-protect: var(--color-engine-protect);
     --engine-grow: var(--color-engine-grow);

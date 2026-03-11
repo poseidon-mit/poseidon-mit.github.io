@@ -48,10 +48,10 @@ const DECISION_COLOR: Record<string, string> = {
 }
 
 const DECISION_BADGE_CLS: Record<string, string> = {
-  approved: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  deferred: 'bg-amber-50 text-amber-700 border-amber-200',
-  rejected: 'bg-red-50 text-red-700 border-red-200',
-  undo: 'bg-amber-50 text-amber-700 border-amber-200',
+  approved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+  deferred: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+  rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
+  undo: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
 }
 
 /* ═══════════════════════════════════════════
@@ -212,7 +212,7 @@ export default function ExecuteHistoryPage() {
               onClick={() => setDecisionFilter(f)}
               className={cn(
                 'px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border cursor-pointer transition-colors',
-                decisionFilter === f ? 'bg-blue-100 text-blue-700 border-blue-200' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-700',
+                decisionFilter === f ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-white/[0.03] text-muted-foreground border-white/[0.06] hover:border-white/10 hover:text-foreground',
               )}
             >
               {f} {f === 'approved' ? `(${approvedCount})` : f === 'deferred' ? `(${deferredCount})` : f === 'rejected' ? `(${rejectedCount})` : `(${totalDecisions})`}

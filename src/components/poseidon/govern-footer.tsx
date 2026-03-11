@@ -32,16 +32,16 @@ const ENGINE_ICONS: Record<string, typeof Shield> = {
 }
 
 const ENGINE_COLORS: Record<string, string> = {
-  Protect: 'text-emerald-600 bg-emerald-50',
-  Grow: 'text-violet-600 bg-violet-50',
-  Execute: 'text-amber-600 bg-amber-50',
-  Govern: 'text-blue-600 bg-blue-50',
+  Protect: 'text-emerald-400 bg-emerald-500/10',
+  Grow: 'text-violet-400 bg-violet-500/10',
+  Execute: 'text-amber-400 bg-amber-500/10',
+  Govern: 'text-blue-400 bg-blue-500/10',
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  Verified: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  'Pending review': 'bg-amber-50 text-amber-700 border-amber-200',
-  Flagged: 'bg-red-50 text-red-700 border-red-200',
+  Verified: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+  'Pending review': 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+  Flagged: 'bg-red-500/10 text-red-400 border-red-500/20',
 }
 
 function relativeTime(iso: string): string {
@@ -131,7 +131,7 @@ function FullFooter({
   return (
     <footer
       className={cn(
-        'rounded-2xl border border-blue-100 bg-blue-50/60 overflow-hidden',
+        'rounded-2xl border border-blue-500/20 bg-blue-500/5 overflow-hidden',
         className,
       )}
       role="contentinfo"
@@ -141,12 +141,12 @@ function FullFooter({
       <button
         type="button"
         onClick={() => setExpanded(!expanded)}
-        className="flex w-full items-center justify-between gap-3 px-4 py-3 md:px-6 min-h-[44px] text-left hover:bg-blue-50/80 transition-colors"
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 md:px-6 min-h-[44px] text-left hover:bg-blue-500/10 transition-colors"
         aria-expanded={expanded}
         aria-controls="govern-footer-preview"
       >
         <div className="flex items-center gap-2 flex-wrap min-w-0">
-          <FileText size={16} className="text-blue-600 shrink-0" />
+          <FileText size={16} className="text-blue-400 shrink-0" />
           <span className="text-sm font-semibold text-blue-700">100% Auditable</span>
           <span className="text-sm text-blue-500" aria-label={`${footerData.total} records`}>
             · {footerData.total.toLocaleString()} records
@@ -159,7 +159,7 @@ function FullFooter({
           <a
             href="/govern/audit"
             onClick={(e) => e.stopPropagation()}
-            className="text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors hidden sm:inline"
+            className="text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors hidden sm:inline"
           >
             View Audit
           </a>
@@ -185,19 +185,19 @@ function FullFooter({
             transition={accordionTransition}
             className="overflow-hidden"
           >
-            <div className="border-t border-blue-100 bg-white px-4 py-3 md:px-6">
-              <p className="text-xs font-medium text-gray-500 mb-2.5">Latest AI Decisions</p>
+            <div className="border-t border-blue-500/20 bg-white/[0.02] px-4 py-3 md:px-6">
+              <p className="text-xs font-medium text-white/40 mb-2.5">Latest AI Decisions</p>
               <div className="space-y-2">
                 {footerData.latestEntries.map((entry) => (
                   <EntryRow key={entry.id} entry={entry} />
                 ))}
                 {footerData.latestEntries.length === 0 && (
-                  <p className="text-xs text-gray-400 py-2">No decisions recorded yet</p>
+                  <p className="text-xs text-white/30 py-2">No decisions recorded yet</p>
                 )}
               </div>
               <a
                 href="/govern/audit"
-                className="mt-3 flex items-center justify-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors min-h-[44px]"
+                className="mt-3 flex items-center justify-center gap-1 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors min-h-[44px]"
               >
                 View Full Audit Trail
                 <ChevronUp size={14} className="rotate-90" />
@@ -212,20 +212,20 @@ function FullFooter({
 
 function EntryRow({ entry }: { entry: GovernAuditEntryEntity }) {
   const Icon = ENGINE_ICONS[entry.type] ?? Scale
-  const colors = ENGINE_COLORS[entry.type] ?? 'text-blue-600 bg-blue-50'
+  const colors = ENGINE_COLORS[entry.type] ?? 'text-blue-400 bg-blue-500/10'
   const [iconColor, iconBg] = colors.split(' ')
   const statusStyle = STATUS_STYLES[entry.status] ?? STATUS_STYLES.Verified
   const time = relativeTime(entry.timestampIso)
 
   return (
-    <div className="flex items-center justify-between gap-3 py-2 px-3 rounded-lg bg-gray-50">
+    <div className="flex items-center justify-between gap-3 py-2 px-3 rounded-lg bg-white/[0.03]">
       <div className="flex items-center gap-3 min-w-0">
         <div className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-full', iconBg)}>
           <Icon size={14} className={iconColor} />
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-medium text-gray-900 truncate">{entry.action}</p>
-          <p className="text-xs text-gray-500">{entry.id} · {time}</p>
+          <p className="text-sm font-medium text-foreground truncate">{entry.action}</p>
+          <p className="text-xs text-white/40">{entry.id} · {time}</p>
         </div>
       </div>
       <span className={cn('shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold', statusStyle)}>

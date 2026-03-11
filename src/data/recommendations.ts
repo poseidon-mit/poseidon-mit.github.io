@@ -53,12 +53,84 @@ export const recommendations: Recommendation[] = [
     status: "approved",
     engine: "Grow",
   },
+  {
+    id: "GRW-005",
+    title: "Refinance Auto Loan",
+    savings: "$840/year",
+    description:
+      "Your current auto loan at 6.9% APR has 36 months remaining. Refinancing at today's rate of 4.5% APR would save approximately $840/year while reducing your monthly payment by $70.",
+    status: "pending",
+    engine: "Grow",
+  },
+  {
+    id: "GRW-006",
+    title: "Consolidate Streaming Services",
+    savings: "$216/year",
+    description:
+      "You're subscribed to 5 streaming services totaling $78/mo. Consolidating to a bundle plan (Netflix + Hulu + Disney+) saves $18/mo ($216/year) while retaining 90% of your watched content.",
+    status: "pending",
+    engine: "Grow",
+  },
+  {
+    id: "GRW-007",
+    title: "Increase 401(k) Contribution",
+    benefit: "$3,033/year in tax savings",
+    description:
+      "You're contributing 6% to your Fidelity 401(k) but your employer matches up to 10%. Increasing to 10% adds $3,033/year in combined tax savings and employer match — effectively free money.",
+    status: "pending",
+    engine: "Grow",
+  },
+  {
+    id: "GRW-008",
+    title: "Switch to No-Fee Checking",
+    savings: "$300/year",
+    description:
+      "Your Chase Premier Checking charges $25/mo in maintenance fees. Switching to a no-fee online checking account with equivalent features eliminates $300/year in fees.",
+    status: "pending",
+    engine: "Grow",
+  },
+  {
+    id: "GRW-009",
+    title: "Negotiate Cell Phone Bill",
+    savings: "$600/year",
+    description:
+      "Your Verizon Unlimited plan at $130/mo is $50 above the market average for comparable plans. Negotiating or switching carriers could save $600/year with identical coverage.",
+    status: "pending",
+    engine: "Grow",
+  },
+  {
+    id: "GRW-010",
+    title: "Open Backdoor Roth IRA",
+    benefit: "$1,400/year in tax-free growth",
+    description:
+      "Your income exceeds direct Roth IRA limits. A backdoor Roth IRA contribution of $7,000 could generate approximately $1,400/year in tax-free investment growth based on historical returns.",
+    status: "pending",
+    engine: "Grow",
+  },
+  {
+    id: "GRW-011",
+    title: "Enable Round-Up Savings",
+    savings: "$540/year",
+    description:
+      "Enabling round-up savings on your Chase debit card would automatically invest spare change from ~900 monthly transactions, averaging $45/mo ($540/year) in additional savings.",
+    status: "pending",
+    engine: "Grow",
+  },
+  {
+    id: "GRW-012",
+    title: "Home Insurance Bundle",
+    savings: "$320/year",
+    description:
+      "Bundling your home and auto insurance with a single provider qualifies for a multi-policy discount, saving approximately $320/year compared to your current separate policies.",
+    status: "pending",
+    engine: "Grow",
+  },
 ];
 
 export const growStats: GrowStats = {
-  totalIdentified: "$2,437/year",
+  totalIdentified: "$8,130/year",
   realized: "$192.00",
-  pending: "$2,245/year",
+  pending: "$7,938/year",
   acceptedCount: 1,
-  totalRecommendations: 4,
+  totalRecommendations: 12,
 };

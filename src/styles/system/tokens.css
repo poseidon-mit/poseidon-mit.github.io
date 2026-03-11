@@ -5,44 +5,44 @@
   --font-body: 'Geist', 'Inter', 'Noto Sans JP', system-ui, sans-serif;
   --font-mono: 'Geist Mono', 'JetBrains Mono', 'Noto Sans JP', ui-monospace, monospace;
 
-  /* ── Colors — Background (Light Theme) ── */
-  --bg: #F8F7F4;
-  --bg-deep: #F5F4F0;
-  --bg-oled: #F8F7F4;
-  --bg-vantablack: #F8F7F4;
-  --bg-surface: #FFFFFF;
-  --surface-primary: #F8F7F4;
+  /* ── Colors — Background (Dark Theme v7.0) ── */
+  --bg: #0A0A0F;
+  --bg-deep: #06060A;
+  --bg-oled: #000000;
+  --bg-vantablack: #000000;
+  --bg-surface: rgba(255, 255, 255, 0.04);
+  --surface-primary: #0A0A0F;
 
-  /* ── Colors — Glass (Light: subtle shadows instead) ── */
-  --glass-bg: rgba(255, 255, 255, 0.8);
-  --glass-bg-apple: rgba(255, 255, 255, 0.9);
-  --glass-bg-strong: rgba(255, 255, 255, 0.95);
-  --glass-bg-soft: rgba(255, 255, 255, 0.7);
-  --glass-bg-subtle: rgba(0, 0, 0, 0.02);
-  --glass-border: rgba(0, 0, 0, 0.08);
-  --glass-border-apple: rgba(0, 0, 0, 0.06);
-  --glass-border-strong: rgba(0, 0, 0, 0.12);
+  /* ── Colors — Glass (Dark: frosted glass with blur) ── */
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-bg-apple: rgba(255, 255, 255, 0.05);
+  --glass-bg-strong: rgba(255, 255, 255, 0.08);
+  --glass-bg-soft: rgba(255, 255, 255, 0.03);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.02);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-apple: rgba(255, 255, 255, 0.06);
+  --glass-border-strong: rgba(255, 255, 255, 0.12);
 
-  /* ── Glass — Page-level (light cards) ── */
-  --glass-border-page: rgba(0, 0, 0, 0.08);
-  --glass-border-page-strong: rgba(0, 0, 0, 0.12);
-  --glass-bg-card-inner: rgba(255, 255, 255, 0.9);
-  --glass-bg-card-section: rgba(255, 255, 255, 0.8);
+  /* ── Glass — Page-level (dark cards) ── */
+  --glass-border-page: rgba(255, 255, 255, 0.06);
+  --glass-border-page-strong: rgba(255, 255, 255, 0.1);
+  --glass-bg-card-inner: rgba(255, 255, 255, 0.04);
+  --glass-bg-card-section: rgba(255, 255, 255, 0.03);
 
-  --glass-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  --glass-shadow-apple-base: 0 1px 3px rgba(0, 0, 0, 0.06);
-  --glass-shadow-apple-elevated: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --glass-inner-highlight: none;
-  --glass-inset: none;
-  --glass-edge: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
-  --glass-backdrop: none;
-  --glass-backdrop-mobile: none;
+  --glass-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --glass-shadow-apple-base: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --glass-shadow-apple-elevated: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --glass-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --glass-inset: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --glass-edge: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --glass-backdrop: blur(16px);
+  --glass-backdrop-mobile: blur(8px);
 
-  /* ── Colors — Text ── */
-  --text: #1A1A1A;
-  --muted: rgba(0, 0, 0, 0.55);
-  --muted-2: rgba(0, 0, 0, 0.45);
-  --text-on-accent: #FFFFFF;
+  /* ── Colors — Text (Dark) ── */
+  --text: #F0F0F5;
+  --muted: rgba(255, 255, 255, 0.55);
+  --muted-2: rgba(255, 255, 255, 0.35);
+  --text-on-accent: #0A0A0F;
 
   /* ── Colors — Accents (Precision-calibrated) ── */
   --accent-cyan: #00B8C4;
@@ -67,66 +67,66 @@
   --state-warning-rgb: 217, 140, 0;
   --state-critical-rgb: 217, 48, 37;
 
-  /* ── Colors — Engine Themes (Light-adjusted) ── */
-  --engine-dashboard: #00B8C4;
-  --engine-protect: #16A34A;
-  --engine-grow: #7C3AED;
-  --engine-execute: #CA8A04;
-  --engine-govern: #2563EB;
+  /* ── Colors — Engine Themes (v7.0 Dark HSL) ── */
+  --engine-dashboard: hsl(189, 94%, 43%);
+  --engine-protect: hsl(160, 84%, 39%);
+  --engine-grow: hsl(258, 90%, 66%);
+  --engine-execute: hsl(38, 92%, 50%);
+  --engine-govern: hsl(217, 91%, 60%);
 
-  /* ── Neon — All disabled (Precision default) ── */
-  --neon-cyan-mobile: none;
-  --neon-teal-mobile: none;
-  --neon-violet-mobile: none;
-  --neon-amber-mobile: none;
-  --neon-blue-mobile: none;
-  --neon-red-mobile: none;
-  --neon-cyan: none;
-  --neon-teal: none;
-  --neon-violet: none;
-  --neon-amber: none;
-  --neon-blue: none;
-  --neon-red: none;
-  --neon-cyan-deep: none;
-  --neon-teal-deep: none;
-  --neon-violet-deep: none;
-  --neon-amber-deep: none;
-  --neon-blue-deep: none;
-  --neon-red-deep: none;
-  --neon-cyan-sharper: none;
-  --neon-teal-sharper: none;
-  --neon-violet-sharper: none;
-  --neon-amber-sharper: none;
-  --neon-blue-sharper: none;
-  --neon-red-sharper: none;
+  /* ── Neon — Active (Dark v7.0) ── */
+  --neon-cyan-mobile: 0 0 4px hsl(189 94% 43% / 0.3), 0 0 12px hsl(189 94% 43% / 0.1);
+  --neon-teal-mobile: 0 0 4px hsl(160 84% 39% / 0.3), 0 0 12px hsl(160 84% 39% / 0.1);
+  --neon-violet-mobile: 0 0 4px hsl(258 90% 66% / 0.3), 0 0 12px hsl(258 90% 66% / 0.1);
+  --neon-amber-mobile: 0 0 4px hsl(38 92% 50% / 0.3), 0 0 12px hsl(38 92% 50% / 0.1);
+  --neon-blue-mobile: 0 0 4px hsl(217 91% 60% / 0.3), 0 0 12px hsl(217 91% 60% / 0.1);
+  --neon-red-mobile: 0 0 4px hsl(0 84% 60% / 0.3), 0 0 12px hsl(0 84% 60% / 0.1);
+  --neon-cyan: 0 0 6px hsl(189 94% 43% / 0.4), 0 0 20px hsl(189 94% 43% / 0.15);
+  --neon-teal: 0 0 6px hsl(160 84% 39% / 0.4), 0 0 20px hsl(160 84% 39% / 0.15);
+  --neon-violet: 0 0 6px hsl(258 90% 66% / 0.4), 0 0 20px hsl(258 90% 66% / 0.15);
+  --neon-amber: 0 0 6px hsl(38 92% 50% / 0.4), 0 0 20px hsl(38 92% 50% / 0.15);
+  --neon-blue: 0 0 6px hsl(217 91% 60% / 0.4), 0 0 20px hsl(217 91% 60% / 0.15);
+  --neon-red: 0 0 6px hsl(0 84% 60% / 0.4), 0 0 20px hsl(0 84% 60% / 0.15);
+  --neon-cyan-deep: 0 0 12px hsl(189 94% 43% / 0.5), 0 0 40px hsl(189 94% 43% / 0.2);
+  --neon-teal-deep: 0 0 12px hsl(160 84% 39% / 0.5), 0 0 40px hsl(160 84% 39% / 0.2);
+  --neon-violet-deep: 0 0 12px hsl(258 90% 66% / 0.5), 0 0 40px hsl(258 90% 66% / 0.2);
+  --neon-amber-deep: 0 0 12px hsl(38 92% 50% / 0.5), 0 0 40px hsl(38 92% 50% / 0.2);
+  --neon-blue-deep: 0 0 12px hsl(217 91% 60% / 0.5), 0 0 40px hsl(217 91% 60% / 0.2);
+  --neon-red-deep: 0 0 12px hsl(0 84% 60% / 0.5), 0 0 40px hsl(0 84% 60% / 0.2);
+  --neon-cyan-sharper: 0 0 2px hsl(189 94% 43% / 0.6), 0 0 8px hsl(189 94% 43% / 0.25);
+  --neon-teal-sharper: 0 0 2px hsl(160 84% 39% / 0.6), 0 0 8px hsl(160 84% 39% / 0.25);
+  --neon-violet-sharper: 0 0 2px hsl(258 90% 66% / 0.6), 0 0 8px hsl(258 90% 66% / 0.25);
+  --neon-amber-sharper: 0 0 2px hsl(38 92% 50% / 0.6), 0 0 8px hsl(38 92% 50% / 0.25);
+  --neon-blue-sharper: 0 0 2px hsl(217 91% 60% / 0.6), 0 0 8px hsl(217 91% 60% / 0.25);
+  --neon-red-sharper: 0 0 2px hsl(0 84% 60% / 0.6), 0 0 8px hsl(0 84% 60% / 0.25);
 
-  /* ── Icon Glow — disabled (Precision default) ── */
-  --icon-glow-default: none;
-  --icon-glow-teal: none;
-  --icon-glow-amber: none;
-  --icon-glow-violet: none;
-  --icon-glow-blue: none;
-  --icon-glow-red: none;
+  /* ── Icon Glow — Active (Dark v7.0) ── */
+  --icon-glow-default: drop-shadow(0 0 6px hsl(189 94% 43% / 0.4));
+  --icon-glow-teal: drop-shadow(0 0 6px hsl(160 84% 39% / 0.4));
+  --icon-glow-amber: drop-shadow(0 0 6px hsl(38 92% 50% / 0.4));
+  --icon-glow-violet: drop-shadow(0 0 6px hsl(258 90% 66% / 0.4));
+  --icon-glow-blue: drop-shadow(0 0 6px hsl(217 91% 60% / 0.4));
+  --icon-glow-red: drop-shadow(0 0 6px hsl(0 84% 60% / 0.4));
 
-  /* ── Text Gradients (solid for light theme) ── */
-  --text-gradient-cyan: linear-gradient(90deg, #1A1A1A, #1A1A1A);
-  --text-gradient-teal: linear-gradient(90deg, #1A1A1A, #1A1A1A);
-  --text-gradient-violet: linear-gradient(90deg, #1A1A1A, #1A1A1A);
-  --text-gradient-amber: linear-gradient(90deg, #1A1A1A, #1A1A1A);
-  --text-gradient-blue: linear-gradient(90deg, #1A1A1A, #1A1A1A);
-  --text-shadow-neon: none;
+  /* ── Text Gradients (active for dark theme) ── */
+  --text-gradient-cyan: linear-gradient(90deg, hsl(189, 94%, 43%), hsl(189, 80%, 60%));
+  --text-gradient-teal: linear-gradient(90deg, hsl(160, 84%, 39%), hsl(160, 70%, 55%));
+  --text-gradient-violet: linear-gradient(90deg, hsl(258, 90%, 66%), hsl(258, 70%, 80%));
+  --text-gradient-amber: linear-gradient(90deg, hsl(38, 92%, 50%), hsl(38, 80%, 65%));
+  --text-gradient-blue: linear-gradient(90deg, hsl(217, 91%, 60%), hsl(217, 70%, 75%));
+  --text-shadow-neon: 0 0 8px hsl(189 94% 43% / 0.3);
 
-  /* ── Badge & Warning (Light theme) ── */
-  --badge-bg: rgba(37, 99, 235, 0.08);
-  --badge-border: 1px solid rgba(37, 99, 235, 0.25);
-  --badge-text: #2563EB;
-  --badge-shadow: none;
-  --badge-box: none;
-  --warning-bg: rgba(220, 38, 38, 0.08);
-  --warning-border: 1px solid rgba(220, 38, 38, 0.25);
-  --warning-text: #DC2626;
-  --warning-shadow: none;
-  --warning-box: none;
+  /* ── Badge & Warning (Dark theme) ── */
+  --badge-bg: rgba(37, 99, 235, 0.15);
+  --badge-border: 1px solid rgba(37, 99, 235, 0.3);
+  --badge-text: hsl(217, 91%, 70%);
+  --badge-shadow: 0 0 8px rgba(37, 99, 235, 0.1);
+  --badge-box: 0 0 4px rgba(37, 99, 235, 0.15);
+  --warning-bg: rgba(220, 38, 38, 0.15);
+  --warning-border: 1px solid rgba(220, 38, 38, 0.3);
+  --warning-text: hsl(0, 84%, 70%);
+  --warning-shadow: 0 0 8px rgba(220, 38, 38, 0.1);
+  --warning-box: 0 0 4px rgba(220, 38, 38, 0.15);
 
   /* ── Border Radius ── */
   --radius-lg: 24px;
@@ -135,14 +135,14 @@
   --radius-card: 18px;
   --radius-inner: 10px;
 
-  /* ── Interactive States (Light) ── */
-  --state-hover-bg: rgba(0, 0, 0, 0.04);
-  --state-active-bg: rgba(0, 0, 0, 0.08);
-  --state-focus-ring: 0 0 0 2px rgba(10, 22, 40, 0.3);
-  --state-disabled-text: rgba(0, 0, 0, 0.3);
-  --state-error-border: rgba(220, 38, 38, 0.4);
-  --state-success-border: rgba(22, 163, 74, 0.4);
-  --state-loading-bg: rgba(0, 0, 0, 0.03);
+  /* ── Interactive States (Dark) ── */
+  --state-hover-bg: rgba(255, 255, 255, 0.04);
+  --state-active-bg: rgba(255, 255, 255, 0.08);
+  --state-focus-ring: 0 0 0 2px rgba(255, 255, 255, 0.2);
+  --state-disabled-text: rgba(255, 255, 255, 0.2);
+  --state-error-border: rgba(220, 38, 38, 0.5);
+  --state-success-border: rgba(22, 163, 74, 0.5);
+  --state-loading-bg: rgba(255, 255, 255, 0.03);
 
   /* ── Motion ── */
   --motion-duration-fast: 120ms;
@@ -225,13 +225,13 @@
   --font-size-ui-22-4: 22px;
   --font-size-ui-25-6: 26px;
 
-  /* ── Surface Elevation (Light: 3 levels) ── */
+  /* ── Surface Elevation (Dark: 3 levels) ── */
   --surface-canvas: transparent;
   --surface-canvas-border: transparent;
-  --surface-task: rgba(255, 255, 255, 0.9);
-  --surface-task-border: rgba(0, 0, 0, 0.08);
-  --surface-evidence: rgba(255, 255, 255, 0.95);
-  --surface-evidence-border: rgba(0, 0, 0, 0.1);
+  --surface-task: rgba(255, 255, 255, 0.04);
+  --surface-task-border: rgba(255, 255, 255, 0.08);
+  --surface-evidence: rgba(255, 255, 255, 0.06);
+  --surface-evidence-border: rgba(255, 255, 255, 0.1);
   --line-height-tight: 1.1;
   --line-height-body: 1.5;
   --line-height-relaxed: 1.65;
@@ -299,7 +299,7 @@
 
 /* ── Focus Visible ── */
 :focus-visible {
-  outline: 2px solid #0A1628;
+  outline: 2px solid hsl(189 94% 43% / 0.6);
   outline-offset: 2px;
 }
 
@@ -309,7 +309,7 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid #0A1628;
+  outline: 2px solid hsl(189 94% 43% / 0.6);
   outline-offset: 2px;
 }
 

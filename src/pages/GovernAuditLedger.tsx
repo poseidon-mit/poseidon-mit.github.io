@@ -132,14 +132,14 @@ export default function GovernAuditPage() {
 
         {/* Search + filter bar */}
         <motion.div variants={fadeUp} className="flex flex-col gap-3">
-          <div className="flex items-center gap-3 rounded-2xl border border-gray-200 px-4 py-3 bg-white focus-within:border-blue-300 focus-within:ring-1 focus-within:ring-blue-200 transition-all">
-            <Search size={16} className="text-gray-400 shrink-0" />
+          <div className="flex items-center gap-3 rounded-2xl border border-white/[0.06] px-4 py-3 bg-white/[0.03] focus-within:border-blue-500/30 focus-within:ring-1 focus-within:ring-blue-500/20 transition-all">
+            <Search size={16} className="text-white/40 shrink-0" />
             <input
               type="search"
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search ID, type, or action…"
-              className="flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400 text-gray-900"
+              className="flex-1 bg-transparent text-sm outline-none placeholder:text-white/40 text-foreground"
               aria-label="Search audit ledger"
             />
           </div>
@@ -152,8 +152,8 @@ export default function GovernAuditPage() {
                 className={cn(
                   'px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors',
                   activeFilter === tab
-                    ? 'bg-blue-100 text-blue-700 border-blue-200'
-                    : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-700',
+                    ? 'bg-blue-500/15 text-blue-400 border-blue-500/20'
+                    : 'bg-white/[0.03] text-muted-foreground border-white/[0.06] hover:border-white/10 hover:text-foreground',
                 )}
               >
                 {tab}
@@ -275,7 +275,7 @@ function CompactAuditCard({ entry }: { entry: AuditEntryRow }) {
   return (
     <Link
       to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
-      className="rounded-xl border border-border bg-card shadow-sm p-4 flex items-center gap-3 hover:shadow-md transition-colors border-l-2 group"
+      className="rounded-xl border border-border bg-card p-4 flex items-center gap-3 hover:bg-white/[0.02] transition-colors border-l-2 group"
       style={{ borderLeftColor: typeColor[entry.type] }}
     >
       <div className="flex-1 min-w-0">
@@ -308,7 +308,7 @@ function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
   return (
     <Link
       to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
-      className="rounded-xl border border-border bg-card shadow-sm p-5 lg:p-6 flex items-center gap-4 transition-colors border-l-2 group block hover:shadow-md"
+      className="rounded-xl border border-border bg-card p-5 lg:p-6 flex items-center gap-4 transition-colors border-l-2 group block hover:bg-white/[0.02]"
       style={{
         borderLeftColor: borderColor,
       }}

@@ -11,7 +11,7 @@ const tabs = [
 
 export function MobileBottomNav() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-stone-200 md:hidden z-20 pb-[env(safe-area-inset-bottom)]">
+    <nav className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t border-white/[0.06] md:hidden z-20 pb-[env(safe-area-inset-bottom)]">
       <div className="flex items-center justify-around">
         {tabs.map((tab) => (
           <Link
@@ -19,8 +19,8 @@ export function MobileBottomNav() {
             to={tab.to}
             className={`flex flex-col items-center gap-1 p-2 ${
               tab.active
-                ? 'text-[#1A1A1A] font-medium'
-                : 'text-stone-400'
+                ? 'text-foreground font-medium'
+                : 'text-white/40'
             }`}
           >
             <tab.icon className="w-5 h-5" />

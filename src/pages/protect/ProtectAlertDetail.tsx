@@ -40,23 +40,23 @@ import {
 import type { DerivedFactor, ThreatSeverity } from './protect-data'
 import { useDismissedAlerts } from './useDismissedAlerts'
 
-/* ── Severity config for light theme ── */
+/* ── Severity config for dark theme ── */
 
 const severityBadgeConfig: Record<ThreatSeverity, { bg: string; text: string; border: string; iconBg: string; iconColor: string }> = {
-  Critical: { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-200', iconBg: 'bg-red-100', iconColor: 'text-red-600' },
-  High: { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-200', iconBg: 'bg-red-100', iconColor: 'text-red-600' },
-  Medium: { bg: 'bg-amber-100', text: 'text-amber-700', border: 'border-amber-200', iconBg: 'bg-amber-100', iconColor: 'text-amber-600' },
-  Low: { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-200', iconBg: 'bg-blue-100', iconColor: 'text-blue-600' },
+  Critical: { bg: 'bg-red-500/15', text: 'text-red-400', border: 'border-red-500/20', iconBg: 'bg-red-500/15', iconColor: 'text-red-400' },
+  High: { bg: 'bg-red-500/15', text: 'text-red-400', border: 'border-red-500/20', iconBg: 'bg-red-500/15', iconColor: 'text-red-400' },
+  Medium: { bg: 'bg-amber-500/15', text: 'text-amber-400', border: 'border-amber-500/20', iconBg: 'bg-amber-500/15', iconColor: 'text-amber-400' },
+  Low: { bg: 'bg-blue-500/15', text: 'text-blue-400', border: 'border-blue-500/20', iconBg: 'bg-blue-500/15', iconColor: 'text-blue-400' },
 }
 
 function getRiskLevel(confidence: number): { label: string; color: string; bg: string; ring: string } {
-  if (confidence >= 0.7) return { label: 'High Risk', color: 'text-red-600', bg: 'bg-red-100', ring: 'border-red-300' }
-  if (confidence >= 0.4) return { label: 'Medium Risk', color: 'text-amber-600', bg: 'bg-amber-100', ring: 'border-amber-300' }
-  return { label: 'Low Risk', color: 'text-green-600', bg: 'bg-green-100', ring: 'border-green-300' }
+  if (confidence >= 0.7) return { label: 'High Risk', color: 'text-red-400', bg: 'bg-red-500/15', ring: 'border-red-500/30' }
+  if (confidence >= 0.4) return { label: 'Medium Risk', color: 'text-amber-400', bg: 'bg-amber-500/15', ring: 'border-amber-500/30' }
+  return { label: 'Low Risk', color: 'text-emerald-400', bg: 'bg-emerald-500/15', ring: 'border-emerald-500/30' }
 }
 
 /* ═══════════════════════════════════════════════════════
-   PROTECT ALERT DETAIL PAGE — Light Theme
+   PROTECT ALERT DETAIL PAGE — Dark Theme
    ═══════════════════════════════════════════════════════ */
 
 export default function ProtectAlertDetailPage() {
@@ -155,7 +155,7 @@ export default function ProtectAlertDetailPage() {
       <motion.main
         id="main-content"
         role="main"
-        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#F8F7F4] min-h-screen pt-6`}
+        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#0A0A0F] min-h-screen pt-6`}
         style={PAGE_CONTENT_STYLE}
         variants={staggerContainerVariant}
         initial="hidden"
@@ -164,7 +164,7 @@ export default function ProtectAlertDetailPage() {
 
         {/* ── Alert Header ── */}
         <motion.div variants={fadeUpVariant}>
-          <Card className="bg-white border-gray-200 shadow-sm">
+          <Card className="bg-card border-white/[0.06]">
             <CardContent className="p-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex items-start gap-4">
@@ -173,23 +173,23 @@ export default function ProtectAlertDetailPage() {
                   </div>
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <h1 className="text-xl font-bold text-gray-900">{alert.counterparty}</h1>
+                      <h1 className="text-xl font-bold text-foreground">{alert.counterparty}</h1>
                       <Badge variant="outline" className={`${sevConfig.bg} ${sevConfig.text} ${sevConfig.border}`}>
                         {alert.severity} Risk
                       </Badge>
                     </div>
-                    <p className="mt-1 text-sm text-gray-500">{alert.description}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{alert.description}</p>
                     {detectedAt && (
-                      <p className="mt-1 text-xs text-gray-400">Detected: {detectedAt}</p>
+                      <p className="mt-1 text-xs text-white/40">Detected: {detectedAt}</p>
                     )}
-                    <p className="mt-1 text-lg font-bold font-mono text-gray-900">{alert.amount}</p>
+                    <p className="mt-1 text-lg font-bold font-mono text-foreground">{alert.amount}</p>
                   </div>
                 </div>
 
                 {/* Action buttons — only in idle state */}
                 {disputeState === 'idle' && (
                   <>
-                    <div className="flex flex-col sm:flex-row gap-2 shrink-0 sticky bottom-0 z-50 bg-white/95 backdrop-blur-sm border-t border-border p-4 -mx-4 lg:static lg:bg-transparent lg:backdrop-blur-none lg:border-0 lg:p-0 lg:mx-0">
+                    <div className="flex flex-col sm:flex-row gap-2 shrink-0 sticky bottom-0 z-50 bg-card/95 backdrop-blur-sm border-t border-border p-4 -mx-4 lg:static lg:bg-transparent lg:backdrop-blur-none lg:border-0 lg:p-0 lg:mx-0">
                       <Button
                         variant="outline"
                         disabled={actionTaken !== null}
@@ -229,7 +229,7 @@ export default function ProtectAlertDetailPage() {
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Alert Details Card */}
           <motion.div variants={fadeUpVariant}>
-            <Card className="bg-white border-gray-200 shadow-sm h-full">
+            <Card className="bg-card border-white/[0.06] h-full">
               <div
                 className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/30 transition-colors"
                 onClick={() => toggleCard('details')}
@@ -237,8 +237,8 @@ export default function ProtectAlertDetailPage() {
                 tabIndex={0}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('details') } }}
               >
-                <h3 className="text-lg font-semibold text-gray-900">Alert Details</h3>
-                <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('details') && 'rotate-180')} />
+                <h3 className="text-lg font-semibold text-foreground">Alert Details</h3>
+                <ChevronDown className={cn('h-5 w-5 text-white/40 transition-transform', expandedCards.has('details') && 'rotate-180')} />
               </div>
               <AnimatePresence initial={false}>
                 {expandedCards.has('details') && (
@@ -253,22 +253,22 @@ export default function ProtectAlertDetailPage() {
                   >
                     <CardContent className="space-y-4">
                       {alert.account && (
-                        <DetailRow icon={<CreditCard className="h-4 w-4 text-gray-400" />} label="Account" value={alert.account} />
+                        <DetailRow icon={<CreditCard className="h-4 w-4 text-white/40" />} label="Account" value={alert.account} />
                       )}
-                      <DetailRow icon={<AlertTriangle className="h-4 w-4 text-gray-400" />} label="Alert Type" value={alert.description} />
-                      <DetailRow icon={<Shield className="h-4 w-4 text-gray-400" />} label="Amount" value={alert.amount} />
+                      <DetailRow icon={<AlertTriangle className="h-4 w-4 text-white/40" />} label="Alert Type" value={alert.description} />
+                      <DetailRow icon={<Shield className="h-4 w-4 text-white/40" />} label="Amount" value={alert.amount} />
                       {alert.location && (
-                        <DetailRow icon={<MapPin className="h-4 w-4 text-gray-400" />} label="Location" value={alert.location} />
+                        <DetailRow icon={<MapPin className="h-4 w-4 text-white/40" />} label="Location" value={alert.location} />
                       )}
                       {alert.flaggedIp && (
-                        <DetailRow icon={<Globe className="h-4 w-4 text-gray-400" />} label="IP Address" value={alert.flaggedIp} />
+                        <DetailRow icon={<Globe className="h-4 w-4 text-white/40" />} label="IP Address" value={alert.flaggedIp} />
                       )}
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100">
-                          <Clock className="h-4 w-4 text-gray-400" />
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.04]">
+                          <Clock className="h-4 w-4 text-white/40" />
                         </div>
                         <div>
-                          <p className="text-xs text-gray-400">AI Confidence</p>
+                          <p className="text-xs text-white/40">AI Confidence</p>
                           <Badge variant="outline" className={`${sevConfig.bg} ${sevConfig.text} ${sevConfig.border}`}>{formatConfidence(alert.confidence)}</Badge>
                         </div>
                       </div>
@@ -281,7 +281,7 @@ export default function ProtectAlertDetailPage() {
 
           {/* Risk Assessment Card */}
           <motion.div variants={fadeUpVariant}>
-            <Card className="bg-white border-gray-200 shadow-sm h-full">
+            <Card className="bg-card border-white/[0.06] h-full">
               <div
                 className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/30 transition-colors"
                 onClick={() => toggleCard('risk')}
@@ -289,8 +289,8 @@ export default function ProtectAlertDetailPage() {
                 tabIndex={0}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('risk') } }}
               >
-                <h3 className="text-lg font-semibold text-gray-900">Risk Assessment</h3>
-                <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('risk') && 'rotate-180')} />
+                <h3 className="text-lg font-semibold text-foreground">Risk Assessment</h3>
+                <ChevronDown className={cn('h-5 w-5 text-white/40 transition-transform', expandedCards.has('risk') && 'rotate-180')} />
               </div>
               <AnimatePresence initial={false}>
                 {expandedCards.has('risk') && (
@@ -308,7 +308,7 @@ export default function ProtectAlertDetailPage() {
                         <AlertTriangle className={`h-10 w-10 ${riskLevel.color}`} />
                       </div>
                       <p className={`mt-4 text-2xl font-bold ${riskLevel.color}`}>{riskLevel.label}</p>
-                      <p className="mt-1 text-sm text-gray-500 text-center max-w-xs">
+                      <p className="mt-1 text-sm text-muted-foreground text-center max-w-xs">
                         7 risk factors detected
                       </p>
                     </CardContent>
@@ -321,7 +321,7 @@ export default function ProtectAlertDetailPage() {
 
         {/* ── SHAP Waterfall Chart (dark card) ── */}
         <motion.div variants={fadeUpVariant}>
-          <Card className="bg-white border-gray-200 shadow-sm">
+          <Card className="bg-card border-white/[0.06]">
             <div
               className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/30 transition-colors"
               onClick={() => toggleCard('drivers')}
@@ -330,12 +330,12 @@ export default function ProtectAlertDetailPage() {
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('drivers') } }}
             >
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-700">Why Poseidon Flagged This</h3>
-                <p className="text-xs text-gray-500 tracking-wide mt-1">
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-foreground">Why Poseidon Flagged This</h3>
+                <p className="text-xs text-muted-foreground tracking-wide mt-1">
                   Key factors behind this alert
                 </p>
               </div>
-              <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform shrink-0', expandedCards.has('drivers') && 'rotate-180')} />
+              <ChevronDown className={cn('h-5 w-5 text-white/40 transition-transform shrink-0', expandedCards.has('drivers') && 'rotate-180')} />
             </div>
             <AnimatePresence initial={false}>
               {expandedCards.has('drivers') && (
@@ -363,7 +363,7 @@ export default function ProtectAlertDetailPage() {
         {/* ── Recommended Actions / Dispute Workflow ── */}
         <motion.div variants={fadeUpVariant}>
           {disputeState === 'idle' && (
-            <Card className="bg-white border-gray-200 shadow-sm">
+            <Card className="bg-card border-white/[0.06]">
               <div
                 className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/30 transition-colors"
                 onClick={() => toggleCard('actions')}
@@ -371,8 +371,8 @@ export default function ProtectAlertDetailPage() {
                 tabIndex={0}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('actions') } }}
               >
-                <h3 className="text-lg font-semibold text-gray-900">Recommended Actions</h3>
-                <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('actions') && 'rotate-180')} />
+                <h3 className="text-lg font-semibold text-foreground">Recommended Actions</h3>
+                <ChevronDown className={cn('h-5 w-5 text-white/40 transition-transform', expandedCards.has('actions') && 'rotate-180')} />
               </div>
               <AnimatePresence initial={false}>
                 {expandedCards.has('actions') && (
@@ -387,20 +387,20 @@ export default function ProtectAlertDetailPage() {
                   >
                     <CardContent className="space-y-3">
                       {/* If this was you */}
-                      <div className="flex items-center justify-between gap-4 rounded-xl border border-green-200 bg-green-50 p-4">
+                      <div className="flex items-center justify-between gap-4 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4">
                         <div className="flex items-start gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-100">
-                            <CheckCircle2 className="h-5 w-5 text-green-600" />
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
+                            <CheckCircle2 className="h-5 w-5 text-emerald-400" />
                           </div>
                           <div>
-                            <p className="font-semibold text-gray-900">If this was you</p>
-                            <p className="text-sm text-gray-500">Mark as recognized to improve AI accuracy</p>
+                            <p className="font-semibold text-foreground">If this was you</p>
+                            <p className="text-sm text-muted-foreground">Mark as recognized to improve AI accuracy</p>
                           </div>
                         </div>
                         <Button
                           variant="outline"
                           size="sm"
-                          className="shrink-0 border-green-600 text-green-600 hover:bg-green-50"
+                          className="shrink-0 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
                           onClick={() => { dismiss(alert.id); navigate('/protect') }}
                         >
                           This was me
@@ -408,14 +408,14 @@ export default function ProtectAlertDetailPage() {
                       </div>
 
                       {/* If this was NOT you */}
-                      <div className="flex items-center justify-between gap-4 rounded-xl border border-red-200 bg-red-50 p-4">
+                      <div className="flex items-center justify-between gap-4 rounded-xl border border-red-500/20 bg-red-500/10 p-4">
                         <div className="flex items-start gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100">
-                            <XCircle className="h-5 w-5 text-red-600" />
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/15">
+                            <XCircle className="h-5 w-5 text-red-400" />
                           </div>
                           <div>
-                            <p className="font-semibold text-gray-900">If this was NOT you</p>
-                            <p className="text-sm text-gray-500">Secure your account immediately</p>
+                            <p className="font-semibold text-foreground">If this was NOT you</p>
+                            <p className="text-sm text-muted-foreground">Secure your account immediately</p>
                           </div>
                         </div>
                         <Button
@@ -436,46 +436,46 @@ export default function ProtectAlertDetailPage() {
 
           {/* Drafting state — dark card for case brief */}
           {disputeState === 'drafting' && (
-            <Card className="bg-white border-amber-200 shadow-sm">
+            <Card className="bg-card border-amber-500/20">
               <CardContent className="p-6 lg:p-8">
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-700 border-b border-gray-200 pb-4">Case Brief</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-foreground border-b border-white/[0.06] pb-4">Case Brief</h3>
               <div className="flex flex-col lg:flex-row gap-6 mt-4">
                 <div className="flex-1 flex flex-col gap-4">
-                  <div className="rounded-xl bg-gray-50 border border-gray-200 p-5 font-mono text-xs leading-relaxed">
-                    <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-gray-700">
-                      <span className="text-gray-500">Transaction</span>
-                      <span><span className="text-red-600 font-bold">{alert.amount}</span>{' · '}<span className="text-gray-900 font-bold">{alert.counterparty}</span></span>
-                      <span className="text-gray-500">Date</span>
-                      <span className="text-gray-700">{caseBrief.dateStr}</span>
-                      {alert.account && <><span className="text-gray-500">Account</span><span className="text-gray-700">{alert.account}</span></>}
-                      <span className="text-gray-500">AI Confidence</span>
+                  <div className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-5 font-mono text-xs leading-relaxed">
+                    <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-muted-foreground">
+                      <span className="text-muted-foreground">Transaction</span>
+                      <span><span className="text-red-400 font-bold">{alert.amount}</span>{' · '}<span className="text-foreground font-bold">{alert.counterparty}</span></span>
+                      <span className="text-muted-foreground">Date</span>
+                      <span className="text-muted-foreground">{caseBrief.dateStr}</span>
+                      {alert.account && <><span className="text-muted-foreground">Account</span><span className="text-muted-foreground">{alert.account}</span></>}
+                      <span className="text-muted-foreground">AI Confidence</span>
                       <Badge variant="outline" className={`${sevConfig.bg} ${sevConfig.text} ${sevConfig.border}`}>{formatConfidence(alert.confidence)}</Badge>
                     </div>
-                    <div className="mt-4 pt-3 border-t border-gray-200">
-                      <p className="text-[10px] uppercase tracking-widest text-amber-600 font-semibold mb-2">Key Findings</p>
+                    <div className="mt-4 pt-3 border-t border-white/[0.06]">
+                      <p className="text-[10px] uppercase tracking-widest text-amber-400 font-semibold mb-2">Key Findings</p>
                       <ul className="flex flex-col gap-1.5">
                         {caseBrief.findings.map((f, i) => (
-                          <li key={i} className="text-gray-700 flex gap-2">
+                          <li key={i} className="text-muted-foreground flex gap-2">
                             <span className="text-amber-600 shrink-0">·</span>
                             <span>{f}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
-                    <div className="mt-4 pt-3 border-t border-gray-200 flex items-center justify-between">
-                      <span className="text-gray-500">Reference <span className="text-gray-900 font-bold">{caseBrief.caseId}</span></span>
+                    <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
+                      <span className="text-muted-foreground">Reference <span className="text-foreground font-bold">{caseBrief.caseId}</span></span>
                       <button
                         onClick={handleCopyBrief}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-semibold uppercase tracking-widest transition-all border border-gray-300 hover:border-amber-400 hover:bg-amber-50 text-gray-500 hover:text-gray-700"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-semibold uppercase tracking-widest transition-all border border-white/10 hover:border-amber-400 hover:bg-amber-500/10 text-muted-foreground hover:text-foreground"
                       >
                         {copied ? <><Check size={12} className="text-emerald-400" />Copied</> : <><Copy size={12} />Copy to clipboard</>}
                       </button>
                     </div>
                   </div>
-                  <div className="rounded-xl border border-dashed border-amber-300 hover:border-amber-400 cursor-pointer p-4 text-center bg-amber-50 hover:bg-amber-100 transition-colors group">
-                    <Upload className="w-6 h-6 text-gray-400 group-hover:text-gray-600 mx-auto mb-2 transition-colors" />
-                    <p className="text-xs font-medium tracking-wide text-gray-700">Attach Supporting Documents</p>
-                    <p className="text-[10px] text-gray-500 mt-1">Receipts, invoices, or correspondence</p>
+                  <div className="rounded-xl border border-dashed border-amber-500/30 hover:border-amber-400 cursor-pointer p-4 text-center bg-amber-500/10 hover:bg-amber-500/15 transition-colors group">
+                    <Upload className="w-6 h-6 text-white/40 group-hover:text-white/60 mx-auto mb-2 transition-colors" />
+                    <p className="text-xs font-medium tracking-wide text-foreground">Attach Supporting Documents</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">Receipts, invoices, or correspondence</p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-3 lg:justify-end lg:w-48 shrink-0">
@@ -495,7 +495,7 @@ export default function ProtectAlertDetailPage() {
                   </button>
                   <button
                     onClick={() => setDisputeState('idle')}
-                    className={cn(buttonVariants({ variant: "ghost" }), "w-full rounded-xl py-3 border border-gray-300 hover:bg-gray-100 text-gray-600 font-medium")}
+                    className={cn(buttonVariants({ variant: "ghost" }), "w-full rounded-xl py-3 border border-white/10 hover:bg-white/[0.04] text-muted-foreground font-medium")}
                   >
                     Cancel
                   </button>
@@ -507,22 +507,22 @@ export default function ProtectAlertDetailPage() {
 
           {/* Submitted state */}
           {disputeState === 'submitted' && (
-            <Card className="border-emerald-200 bg-emerald-50 shadow-sm">
+            <Card className="border-emerald-500/20 bg-emerald-500/10">
               <CardContent className="flex flex-col sm:flex-row sm:items-center gap-6 p-6 text-center sm:text-left">
                 <div className="flex items-center gap-4 shrink-0">
-                  <div className="w-14 h-14 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center">
-                    <CheckCircle2 className="h-7 w-7 text-emerald-600" />
+                  <div className="w-14 h-14 rounded-full bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center">
+                    <CheckCircle2 className="h-7 w-7 text-emerald-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900">Dispute Filed</h3>
-                    <p className="text-sm text-gray-600">
-                      Case <span className="font-mono text-emerald-700 font-bold bg-emerald-100 px-1 rounded border border-emerald-200">{caseBrief.caseId}</span> sent to your bank.
+                    <h3 className="text-lg font-bold text-foreground">Dispute Filed</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Case <span className="font-mono text-emerald-400 font-bold bg-emerald-500/15 px-1 rounded border border-emerald-500/20">{caseBrief.caseId}</span> sent to your bank.
                     </p>
                   </div>
                 </div>
-                <div className="bg-white border border-emerald-200 rounded-xl p-3 flex-1 text-left">
-                  <p className="text-xs text-gray-500 uppercase tracking-widest font-semibold mb-1">Next Step</p>
-                  <p className="text-sm font-medium text-emerald-700">Your bank will review within 10 business days (Reg E). Provisional credit may apply within 48h.</p>
+                <div className="bg-white/[0.03] border border-emerald-500/20 rounded-xl p-3 flex-1 text-left">
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Next Step</p>
+                  <p className="text-sm font-medium text-emerald-400">Your bank will review within 10 business days (Reg E). Provisional credit may apply within 48h.</p>
                 </div>
               </CardContent>
             </Card>
@@ -535,22 +535,22 @@ export default function ProtectAlertDetailPage() {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 200, damping: 20 }}
             >
-              <Card className="border-emerald-200 bg-emerald-50 shadow-sm">
+              <Card className="border-emerald-500/20 bg-emerald-500/10">
                 <CardContent className="flex flex-col items-center gap-4 text-center py-8">
                   <motion.div
                     initial={prefersReducedMotion ? {} : { scale: 0, rotate: -20 }}
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.2 }}
-                    className="w-20 h-20 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center"
+                    className="w-20 h-20 rounded-full bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center"
                   >
-                    <ShieldCheck className="w-10 h-10 text-emerald-600" />
+                    <ShieldCheck className="w-10 h-10 text-emerald-400" />
                   </motion.div>
-                  <h3 className="text-xl font-bold text-gray-900">Threat Neutralized</h3>
-                  <p className="text-sm text-gray-500 max-w-md">
+                  <h3 className="text-xl font-bold text-foreground">Threat Neutralized</h3>
+                  <p className="text-sm text-muted-foreground max-w-md">
                     Your account has been secured. Dispute filed as case{' '}
                     <Link
                       to={`/govern/audit-detail?decision=${caseBrief.caseId}`}
-                      className="font-mono text-emerald-700 font-bold underline underline-offset-2 hover:text-emerald-600 transition-colors"
+                      className="font-mono text-emerald-400 font-bold underline underline-offset-2 hover:text-emerald-300 transition-colors"
                     >
                       {caseBrief.caseId}
                     </Link>.
@@ -564,10 +564,10 @@ export default function ProtectAlertDetailPage() {
 
         {/* ── Evidence Analysis ── */}
         <motion.div variants={fadeUpVariant}>
-          <Card className="bg-white border-gray-200 shadow-sm">
+          <Card className="bg-card border-white/[0.06]">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-900">Evidence Analysis</CardTitle>
-              <p className="text-sm text-gray-500">Why our AI flagged this transaction</p>
+              <CardTitle className="text-lg font-semibold text-foreground">Evidence Analysis</CardTitle>
+              <p className="text-sm text-muted-foreground">Why our AI flagged this transaction</p>
             </CardHeader>
             <CardContent className="space-y-2">
               {sortedFactors.map(item => {
@@ -577,7 +577,7 @@ export default function ProtectAlertDetailPage() {
                 return (
                   <div
                     key={item.id}
-                    className="rounded-xl border border-gray-200 bg-gray-50 transition-all hover:bg-gray-100 cursor-pointer"
+                    className="rounded-xl border border-white/[0.06] bg-white/[0.02] transition-all hover:bg-white/[0.04] cursor-pointer"
                     onClick={() => setExpandedId(expanded ? null : item.id)}
                   >
                     <div className="flex items-center justify-between px-4 py-3" aria-expanded={expanded}>
@@ -585,23 +585,23 @@ export default function ProtectAlertDetailPage() {
                         <span
                           className={cn(
                             'inline-flex items-center justify-center rounded-lg text-xs font-bold font-mono tabular-nums px-2 py-1',
-                            isRisk ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
+                            isRisk ? 'bg-red-500/15 text-red-400' : 'bg-blue-500/15 text-blue-400'
                           )}
                         >
                           {displayValue}
                         </span>
-                        <span className="text-sm font-medium text-gray-900">{item.title}</span>
+                        <span className="text-sm font-medium text-foreground">{item.title}</span>
                       </div>
-                      <div className="w-7 h-7 rounded-full flex items-center justify-center border border-gray-200 bg-white">
-                        {expanded ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center border border-white/[0.06] bg-white/[0.03]">
+                        {expanded ? <ChevronUp size={14} className="text-white/40" /> : <ChevronDown size={14} className="text-white/40" />}
                       </div>
                     </div>
                     <AnimatePresence>
                       {expanded && (
                         <motion.div variants={accordionVariants} initial="hidden" animate="visible" exit="exit" transition={accordionTransition} className="overflow-hidden">
-                          <div className="px-4 pb-3 mx-4 pt-2 border-t border-gray-200">
-                            <p className="text-sm leading-relaxed text-gray-600">{item.details}</p>
-                            {item.model && <span className="text-xs font-mono text-gray-400 uppercase tracking-widest mt-1 block">Model: {item.model}</span>}
+                          <div className="px-4 pb-3 mx-4 pt-2 border-t border-white/[0.06]">
+                            <p className="text-sm leading-relaxed text-muted-foreground">{item.details}</p>
+                            {item.model && <span className="text-xs font-mono text-white/40 uppercase tracking-widest mt-1 block">Model: {item.model}</span>}
                           </div>
                         </motion.div>
                       )}
@@ -616,9 +616,9 @@ export default function ProtectAlertDetailPage() {
         {/* ── Timeline ── */}
         {timelineSteps && (
           <motion.div variants={fadeUpVariant}>
-            <Card className="bg-white border-gray-200 shadow-sm">
+            <Card className="bg-card border-white/[0.06]">
               <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-900">Timeline</CardTitle>
+                <CardTitle className="text-lg font-semibold text-foreground">Timeline</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col gap-0" role="list" aria-label="Alert timeline">
@@ -629,24 +629,24 @@ export default function ProtectAlertDetailPage() {
                           className={cn(
                             'flex items-center justify-center rounded-full shrink-0 border',
                             step.status === 'complete'
-                              ? 'bg-emerald-100 border-emerald-200'
-                              : 'bg-amber-100 border-amber-200',
+                              ? 'bg-emerald-500/15 border-emerald-500/20'
+                              : 'bg-amber-500/15 border-amber-500/20',
                             step.status === 'active' && 'animate-pulse'
                           )}
                           style={{ width: 28, height: 28 }}
                         >
                           {step.status === 'complete'
-                            ? <CheckCircle2 size={14} className="text-emerald-600" />
-                            : <CircleDot size={14} className="text-amber-600" />
+                            ? <CheckCircle2 size={14} className="text-emerald-400" />
+                            : <CircleDot size={14} className="text-amber-400" />
                           }
                         </div>
                         {i < timelineSteps.length - 1 && (
-                          <div className="w-px h-8 bg-gray-200" aria-hidden="true" />
+                          <div className="w-px h-8 bg-white/[0.06]" aria-hidden="true" />
                         )}
                       </div>
                       <div className="flex items-center gap-3 pb-6 mt-1">
-                        <span className="text-sm font-medium text-gray-900">{step.label}</span>
-                        <span className="text-xs font-mono text-gray-400">{step.time}</span>
+                        <span className="text-sm font-medium text-foreground">{step.label}</span>
+                        <span className="text-xs font-mono text-white/40">{step.time}</span>
                       </div>
                     </div>
                   ))}
@@ -666,12 +666,12 @@ export default function ProtectAlertDetailPage() {
 function DetailRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.04]">
         {icon}
       </div>
       <div>
-        <p className="text-xs text-gray-400">{label}</p>
-        <p className="text-sm font-medium text-gray-900">{value}</p>
+        <p className="text-xs text-white/40">{label}</p>
+        <p className="text-sm font-medium text-foreground">{value}</p>
       </div>
     </div>
   )
