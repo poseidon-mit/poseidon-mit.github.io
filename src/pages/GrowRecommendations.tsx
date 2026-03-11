@@ -160,7 +160,7 @@ export function GrowRecommendations() {
                       <p className="text-lg font-semibold text-foreground leading-snug">{spotlightRec.title}</p>
                       <p className="text-sm text-muted-foreground line-clamp-2">{spotlightRec.description}</p>
                       <div className="flex items-center gap-3 mt-1">
-                        <span className="text-2xl font-mono font-bold text-violet-400">
+                        <span className="typo-hero-number text-3xl text-violet-400">
                           ${spotlightRec.annualSavings.toLocaleString()}/yr
                         </span>
                         <DifficultyBadge difficulty={spotlightRec.difficulty} />
@@ -230,7 +230,7 @@ function RecommendationCard({ rec }: { rec: RecommendationListItem }) {
               <p className="text-xs text-white/40 mt-0.5">{rec.category}</p>
               <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{rec.description}</p>
               <div className="mt-3 flex items-center justify-between">
-                <span className="text-sm font-bold text-emerald-600">
+                <span className="text-sm font-bold" style={{ color: 'var(--engine-grow)' }}>
                   Impact: ${rec.annualSavings.toLocaleString()}/yr
                 </span>
                 <Button variant="outline" size="sm" className="shrink-0">

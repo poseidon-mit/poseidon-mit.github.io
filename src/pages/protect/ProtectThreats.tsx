@@ -46,6 +46,13 @@ const severityIconBg: Record<ThreatSeverity, string> = {
   Low: 'bg-blue-500/10',
 }
 
+const severityBorderColor: Record<ThreatSeverity, string> = {
+  Critical: '#ef4444',
+  High: '#f97316',
+  Medium: '#eab308',
+  Low: '#3b82f6',
+}
+
 /* ── Main Page ── */
 
 export default function ProtectThreatsPage() {
@@ -109,7 +116,21 @@ export default function ProtectThreatsPage() {
               { label: 'Resolved', value: allResolved, color: 'var(--state-healthy)' },
               { label: 'Monitored', value: accounts.length },
             ]}
-          />
+          >
+            <div className="flex flex-wrap gap-1.5">
+              {[
+                { label: 'Critical', count: activeThreats.filter(t => t.severity === 'Critical').length, color: '#ef4444' },
+                { label: 'High', count: activeThreats.filter(t => t.severity === 'High').length, color: '#f97316' },
+                { label: 'Medium', count: activeThreats.filter(t => t.severity === 'Medium').length, color: '#eab308' },
+                { label: 'Low', count: activeThreats.filter(t => t.severity === 'Low').length, color: '#3b82f6' },
+              ].filter(s => s.count > 0).map(s => (
+                <span key={s.label} className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/[0.06] bg-white/[0.03]">
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: s.color }} />
+                  {s.count} {s.label}
+                </span>
+              ))}
+            </div>
+          </ListHeroBanner>
         </motion.div>
 
         {/* Scrollable list area */}
@@ -221,7 +242,7 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
   const isResolved = threat.status === 'resolved'
 
   return (
-    <Card className="bg-card border-white/[0.06] transition-shadow hover:bg-white/[0.04]">
+    <Card className="bg-card border-white/[0.06] transition-all hover:bg-white/[0.04] border-l-[3px]" style={{ borderLeftColor: severityBorderColor[threat.severity] }}>
       <CardContent className="p-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-start gap-4">

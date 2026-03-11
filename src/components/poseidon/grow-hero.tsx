@@ -84,13 +84,12 @@ function HeroHeadline({
     <div className="flex items-start justify-between gap-4">
       <div className="flex flex-col gap-2">
         <span
-          className="text-4xl md:text-5xl font-mono font-bold tabular-nums"
+          className="typo-hero-number text-4xl md:text-5xl"
           style={{ color: 'var(--engine-grow)' }}
         >
           +${projectedGain.toLocaleString()}
         </span>
-        <h2 className="text-xl md:text-2xl lg:text-3xl font-light tracking-tight text-white"
-            style={{ fontFamily: 'var(--font-display)' }}>
+        <h2 className="typo-display text-xl md:text-2xl lg:text-3xl text-white">
           Your 3-year advantage.
         </h2>
         <span className="text-xs font-medium uppercase tracking-widest text-white/40">

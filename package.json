@@ -9,6 +9,7 @@
     "deploy:trigger": "gh workflow run deploy.yml --repo poseidon-mit/poseidon-mit.github.io --ref main",
     "dev": "vite",
     "build": "vite build",
+    "build:dev": "vite build --mode development",
     "dev:vite": "vite",
     "build:vite": "vite build",
     "typecheck": "tsc --noEmit",

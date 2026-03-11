@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from '@/router';
 import { Target, ArrowRight, ArrowLeft, Scale, TrendingUp } from "lucide-react";
 import { ForecastBand } from "@/components/poseidon/forecast-band";
+import { CountUp } from '@/components/poseidon';
 import type { ForecastPoint } from "@/components/poseidon/forecast-band";
 import { getMotionPreset } from '@/lib/motion-presets';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
@@ -66,7 +67,7 @@ export default function GrowGoalPage() {
             <Card className="border border-border bg-card shadow-sm">
               <CardContent className="p-8 lg:p-12 flex flex-col md:flex-row items-center gap-10 lg:gap-16">
 
-                <div className="relative w-40 h-40 lg:w-48 lg:h-48 flex-shrink-0">
+                <div className="relative w-48 h-48 lg:w-56 lg:h-56 flex-shrink-0">
                   <svg className="w-full h-full -rotate-90" viewBox="0 0 160 160">
                     <circle cx="80" cy="80" r="70" className="stroke-[hsl(var(--muted))] fill-none" strokeWidth="8" />
                     <circle
@@ -81,7 +82,7 @@ export default function GrowGoalPage() {
                       className="fill-none transition-all duration-1000 ease-out" />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-4xl font-light font-mono text-foreground tracking-tighter">{RESERVE_PROGRESS}%</span>
+                    <span className="typo-hero-number text-4xl text-foreground"><CountUp value={RESERVE_PROGRESS} />%</span>
                   </div>
                 </div>
 
@@ -186,7 +187,7 @@ export default function GrowGoalPage() {
                 {/* CTA: Primary -> /execute */}
                 <Link
                   to="/execute"
-                  className={cn(buttonVariants({ variant: "default", size: "lg" }), "rounded-2xl px-8 transition-all font-semibold tracking-wide border-none bg-violet-600 text-white hover:bg-violet-700 flex items-center gap-2")}>
+                  className={cn(buttonVariants({ variant: "default", size: "lg" }), "rounded-2xl px-8 transition-all font-semibold tracking-wide border-none bg-violet-600 text-white hover:bg-violet-700 hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] flex items-center gap-2")}>
                   Modify allocation <ArrowRight size={18} />
                 </Link>
               </div>

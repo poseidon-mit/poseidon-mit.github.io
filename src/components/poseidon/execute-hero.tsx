@@ -9,6 +9,7 @@
  */
 import { ArrowRight, CheckCircle, RotateCcw, Timer, Zap } from 'lucide-react'
 import { HeroBento } from './hero-bento'
+import { CountUp } from './count-up'
 import { ListPortalBar } from './list-portal-bar'
 import { ConfidenceIndicator } from './confidence-indicator'
 import { cn } from '@/lib/utils'
@@ -105,16 +106,15 @@ export function ExecuteApprovalCommandDeck({
     <HeroBento engine="execute" role="region" aria-labelledby="execute-hero-title">
       <HeroBento.Action>
         {/* Hero Number */}
-        <span className="text-4xl md:text-5xl font-mono tabular-nums font-bold"
+        <span className="typo-hero-number text-4xl md:text-5xl"
               style={{ color: 'var(--engine-execute)' }}>
-          {queueTotal}
+          <CountUp value={queueTotal} />
         </span>
 
         {/* Editorial Headline */}
         <h2
           id="execute-hero-title"
-          className="text-xl md:text-2xl lg:text-3xl font-light tracking-tight text-white"
-          style={{ fontFamily: 'var(--font-display)' }}
+          className="typo-display text-xl md:text-2xl lg:text-3xl text-white"
         >
           Nothing moves without your yes.
         </h2>
@@ -138,7 +138,7 @@ export function ExecuteApprovalCommandDeck({
             {featuredAction.expiresIn && (
               <span className={cn(
                 'inline-flex items-center gap-1 text-[10px] font-semibold tracking-widest uppercase',
-                isExpiringSoon ? 'text-red-400' : 'text-white/40',
+                isExpiringSoon ? 'text-red-400 drop-shadow-[0_0_6px_rgba(248,113,113,0.5)]' : 'text-white/40',
               )}>
                 <Timer size={10} className={isExpiringSoon ? 'animate-pulse' : ''} />
                 Expires {featuredAction.expiresIn}

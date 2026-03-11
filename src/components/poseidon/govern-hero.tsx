@@ -54,7 +54,7 @@ export function GovernImmutableLedger({
       <HeroBento.Action>
         {/* Giant count */}
         <div
-          className="text-4xl md:text-5xl font-mono tabular-nums font-bold"
+          className="typo-hero-number text-4xl md:text-5xl"
           style={{ color: 'var(--engine-govern)' }}
         >
           <CountUp value={decisionsAudited} locale duration={1800} />
@@ -62,10 +62,9 @@ export function GovernImmutableLedger({
 
         {/* Headline */}
         <h2
-          className="text-xl md:text-2xl lg:text-3xl font-light tracking-tight text-white"
-          style={{ fontFamily: 'var(--font-display)' }}
+          className="typo-display text-xl md:text-2xl lg:text-3xl text-white"
         >
-          Decisions Audited &amp; Secured
+          Every decision, accounted for.
         </h2>
 
         {/* Subheadline */}

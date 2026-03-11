@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils'
 const URGENCY_ORDER: Record<UrgencyLevel, number> = { high: 0, medium: 1, low: 2 }
 
 const URGENCY_BADGE: Record<UrgencyLevel, string> = {
-  high: 'bg-red-500/10 text-red-400 border border-red-500/20',
+  high: 'bg-red-500/10 text-red-400 border border-red-500/20 shadow-[0_0_8px_rgba(239,68,68,0.2)]',
   medium: 'bg-amber-500/10 text-amber-400 border border-amber-500/20',
   low: 'bg-white/[0.04] text-muted-foreground border border-white/[0.06]',
 }
@@ -150,7 +150,7 @@ function SpotlightCard({ action }: { action: ExecuteActionEntity }) {
           {action.urgency}
         </span>
         {action.expiresIn && (
-          <span className={cn('inline-flex items-center gap-1 text-[10px] font-semibold tracking-widest uppercase', isExpiringSoon ? 'text-red-400' : 'text-muted-foreground')}>
+          <span className={cn('inline-flex items-center gap-1 text-[10px] font-semibold tracking-widest uppercase', isExpiringSoon ? 'text-red-400 drop-shadow-[0_0_6px_rgba(248,113,113,0.5)]' : 'text-muted-foreground')}>
             <Timer size={10} className={isExpiringSoon ? 'animate-pulse' : ''} />
             {action.expiresIn}
           </span>

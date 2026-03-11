@@ -69,7 +69,7 @@ function BeforeAfterPanel({ rec }: { rec: RecommendationDetail }) {
           <p className="mt-1 font-mono tabular-nums text-sm text-white/40">$0.82/yr in interest</p>
         </div>
         {/* After */}
-        <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-5">
+        <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-5 shadow-[0_0_15px_rgba(139,92,246,0.1)]">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-400 mb-2">After</p>
           <p className="text-sm font-medium text-violet-400">High-Yield Savings</p>
           <p className="mt-1 font-mono tabular-nums text-2xl font-bold text-violet-600">
@@ -88,7 +88,7 @@ function BeforeAfterPanel({ rec }: { rec: RecommendationDetail }) {
           <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40 mb-2">Current Allocation</p>
           <p className="font-mono text-sm text-muted-foreground">{c.currentMix}</p>
         </div>
-        <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-5">
+        <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-5 shadow-[0_0_15px_rgba(139,92,246,0.1)]">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-400 mb-2">Recommended</p>
           <p className="font-mono text-sm font-semibold text-violet-400">{c.newMix}</p>
         </div>
@@ -129,7 +129,7 @@ function BeforeAfterPanel({ rec }: { rec: RecommendationDetail }) {
           ${rec.currentTotal.toFixed(2)}/mo
         </p>
       </div>
-      <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-5">
+      <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-5 shadow-[0_0_15px_rgba(139,92,246,0.1)]">
         <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-400 mb-2">After</p>
         <p className="font-mono tabular-nums text-2xl font-bold text-violet-400">
           ${rec.newTotal.toFixed(2)}/mo
@@ -253,7 +253,7 @@ export default function GrowRecommendationDetailPage() {
             {benefitText && (
               <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-violet-500/10 border border-violet-500/20 px-4 py-2">
                 <span className="text-sm font-medium text-violet-400">Annual Benefit:</span>
-                <span className="font-mono tabular-nums text-lg font-bold text-violet-400">
+                <span className="typo-hero-number text-2xl text-violet-400">
                   {benefitText}
                 </span>
               </div>
@@ -277,7 +277,7 @@ export default function GrowRecommendationDetailPage() {
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button
-                  className="bg-violet-600 text-white hover:bg-violet-700 min-h-[44px] px-6"
+                  className="w-full sm:w-auto bg-violet-600 text-white hover:bg-violet-700 hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] min-h-[48px] px-8 text-base font-semibold transition-all"
                   onClick={handleAccept}
                 >
                   <CheckCircle2 className="mr-2 h-4 w-4" />
@@ -336,6 +336,9 @@ export default function GrowRecommendationDetailPage() {
             className="w-full flex items-center justify-between p-5 text-left transition-colors hover:bg-white/[0.04]"
           >
             <span className="text-sm font-semibold text-foreground">Why this was recommended</span>
+            {!whyOpen && rec.factors[0] && (
+              <span className="text-xs text-white/30 ml-2 hidden sm:inline">— {rec.factors[0]}</span>
+            )}
             <ChevronDown
               size={16}
               className={cn('text-white/40 transition-transform', whyOpen && 'rotate-180')}

@@ -127,7 +127,7 @@ export function Notifications() {
                 <button
                   key={t}
                   onClick={() => setFilter(t)}
-                  className={cn(buttonVariants({ variant: "outline", size: "sm" }), `!min-h-[44px] rounded-full px-3 py-1.5 text-xs font-medium capitalize transition-colors ${filter === t ? 'text-foreground border-foreground bg-muted' : 'text-muted-foreground border-border hover:bg-muted'}`)}>
+                  className={cn(buttonVariants({ variant: "outline", size: "sm" }), `!min-h-[44px] rounded-full px-3 py-1.5 text-xs font-medium capitalize transition-colors ${filter === t ? (t === 'security' ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' : t === 'growth' ? 'text-violet-400 border-violet-500/30 bg-violet-500/10' : t === 'actions' ? 'text-amber-400 border-amber-500/30 bg-amber-500/10' : t === 'system' ? 'text-blue-400 border-blue-500/30 bg-blue-500/10' : 'text-foreground border-foreground bg-muted') : 'text-muted-foreground border-border hover:bg-muted'}`)}>
                   {t === 'all' ? `All (${notifications.length})` : `${t} (${notifications.filter((n) => n.category === t).length})`}
                 </button>
               )}
@@ -146,7 +146,7 @@ export function Notifications() {
               {sorted.map((notif) =>
                 <div
                   key={notif.id}
-                  className={`rounded-2xl border border-border p-4 flex items-start gap-3 cursor-pointer transition-colors hover:bg-muted/50 ${!readState[notif.id] ? 'bg-muted/30' : 'bg-card'}`}
+                  className={`rounded-2xl border border-border p-4 flex items-start gap-3 cursor-pointer transition-colors hover:bg-muted/50 ${!readState[notif.id] ? 'bg-muted/30 border-l-[3px] border-l-cyan-400' : 'bg-card'}`}
                   onClick={() => markRead(notif.id)}
                   onKeyDown={(event) => markReadByKeyboard(event, notif.id)}
                   tabIndex={0}

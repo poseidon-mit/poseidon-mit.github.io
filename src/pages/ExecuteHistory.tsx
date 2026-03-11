@@ -114,7 +114,7 @@ export default function ExecuteHistoryPage() {
             backLabel="Back to Queue"
             stats={[
               { label: 'Total', value: totalDecisions },
-              { label: 'Approval', value: totalDecisions > 0 ? `${approvalRate}%` : '-', color: 'var(--state-healthy)' },
+              { label: 'Approval', value: totalDecisions > 0 ? `${approvalRate}%` : '-', color: approvalRate >= 80 ? 'var(--state-healthy)' : approvalRate >= 50 ? 'var(--state-warning)' : 'var(--state-critical)' },
               { label: 'Savings/mo', value: formatUsd(savings.currentMonthlySavingsUsd) },
             ]}
           />
@@ -135,7 +135,7 @@ export default function ExecuteHistoryPage() {
               'overflow-hidden transition-all duration-300',
               showAutopsy ? 'max-h-[200px] opacity-100 mt-3' : 'max-h-0 opacity-0',
             )}>
-              <Card className="border border-border bg-card shadow-sm">
+              <Card className="border border-white/[0.08] bg-white/[0.04] backdrop-blur-md shadow-sm">
                 <CardContent className="p-5">
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <div className="flex flex-col gap-1">
@@ -233,7 +233,7 @@ function HistoryRow({ event }: { event: EnrichedEvent }) {
 
   return (
     <div className="rounded-xl border border-border bg-card shadow-sm p-5 lg:p-6 flex items-center gap-4 hover:shadow-md transition-shadow group">
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center border shadow-inner shrink-0" style={{ borderColor: `${color}30`, background: `${color}10` }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center border shrink-0" style={{ borderColor: `${color}30`, background: `${color}10`, boxShadow: `0 0 12px ${color}20` }}>
         <Icon size={18} style={{ color }} />
       </div>
 

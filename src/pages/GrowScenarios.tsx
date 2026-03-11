@@ -119,7 +119,7 @@ export default function GrowScenariosPage() {
                   }
                 }}
                 className={`rounded-2xl border bg-card shadow-sm p-6 lg:p-8 flex flex-col gap-4 text-left transition-all will-change-transform cursor-pointer ${
-                  selected === s.id ? 'border-2 border-violet-400 shadow-md' : 'border-border hover:shadow-md'
+                  selected === s.id ? 'border-2 border-violet-400 shadow-[0_0_20px_rgba(139,92,246,0.15)]' : 'border-border hover:shadow-md'
                 }`}
                 role="button"
                 tabIndex={0}
@@ -206,7 +206,7 @@ export default function GrowScenariosPage() {
                   </Link>
                   <Link
                     to="/execute"
-                    className={cn(buttonVariants({ variant: "default", size: "lg" }), "rounded-2xl px-8 transition-all bg-amber-600 text-white hover:bg-amber-700 font-bold tracking-wide border-none flex items-center gap-2")}>
+                    className={cn(buttonVariants({ variant: "default", size: "lg" }), "rounded-2xl px-8 transition-all bg-amber-600 text-white hover:bg-amber-700 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] font-bold tracking-wide border-none flex items-center gap-2")}>
                     Send to Execute <Zap size={18} />
                   </Link>
                 </div>

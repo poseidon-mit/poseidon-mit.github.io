@@ -84,14 +84,13 @@ export function ProtectAnomalyRadar({
         {/* ── Zone A: Action ── */}
         <HeroBento.Action className="gap-5">
           {/* Hero Number */}
-          <span className="text-4xl md:text-5xl font-mono tabular-nums font-bold"
+          <span className="typo-hero-number text-4xl md:text-5xl"
                 style={{ color: 'var(--state-critical)' }}>
             ${totalExposure.toLocaleString()}
           </span>
 
           {/* Editorial Headline */}
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-light tracking-tight text-white"
-              style={{ fontFamily: 'var(--font-display)' }}>
+          <h2 className="typo-display text-xl md:text-2xl lg:text-3xl text-white">
             1 critical threat detected.
           </h2>
 
@@ -245,8 +244,7 @@ export function ProtectThreatPosture({
     <HeroBento engine="protect">
       {/* ── Zone A: Action ── */}
       <HeroBento.Action>
-        <h2 className="text-xl md:text-2xl lg:text-3xl font-light tracking-tight text-white"
-            style={{ fontFamily: 'var(--font-display)' }}>
+        <h2 className="typo-display text-xl md:text-2xl lg:text-3xl text-white">
           {heading}
         </h2>
 

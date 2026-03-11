@@ -123,10 +123,11 @@ function EnginePulseBadge({
   return (
     <Link
       to={to}
-      className="flex-1 min-h-[48px] flex items-center gap-2.5 md:gap-3 rounded-xl bg-white/[0.03] border border-white/[0.06] px-3 md:px-4 py-3 border-t-2 transition-colors hover:bg-white/[0.06]"
+      className="relative flex-1 min-h-[48px] flex items-center gap-2.5 md:gap-3 rounded-xl bg-white/[0.03] border border-white/[0.06] px-3 md:px-4 py-3 border-t-2 transition-colors hover:bg-white/[0.06]"
       style={{ borderTopColor: color }}
     >
       <Icon size={16} style={{ color }} className="shrink-0 opacity-60" />
+      <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: color }} />
       <div className="flex flex-col gap-0.5 min-w-0">
         <span className="text-base md:text-lg font-mono font-semibold tabular-nums truncate text-white/80">
           {value}
@@ -229,8 +230,7 @@ export function DashboardCoordinationProof({
       {/* ── Zone A: Action ── */}
       <HeroBento.Action>
         <h1
-          className="text-2xl md:text-3xl lg:text-4xl font-light tracking-tight leading-tight text-white mb-4 drop-shadow-sm"
-          style={{ fontFamily: 'var(--font-display)' }}
+          className="typo-display text-2xl md:text-3xl lg:text-4xl tracking-tight leading-tight text-white mb-4 drop-shadow-sm"
         >
           Your money, finally coordinated.
         </h1>

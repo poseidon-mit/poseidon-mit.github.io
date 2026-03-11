@@ -33,6 +33,13 @@ const ENGINE_CONFIG: Record<string, {
   Govern:  { icon: Scale,      color: 'text-blue-400',    bg: 'bg-blue-500/10',    border: 'border-blue-500/20',    route: '/govern',   label: 'Govern Engine' },
 }
 
+const ENGINE_BORDER_COLOR: Record<string, string> = {
+  Protect: 'var(--engine-protect)',
+  Grow: 'var(--engine-grow)',
+  Execute: 'var(--engine-execute)',
+  Govern: 'var(--engine-govern)',
+}
+
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   pending:   { label: 'Pending Review', className: 'border-amber-500/20 bg-amber-500/10 text-amber-400' },
   completed: { label: 'Completed',      className: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400' },
@@ -114,7 +121,7 @@ export function GovernAuditDetail() {
 
       {/* ── Record Header ── */}
       <motion.div variants={fadeUp}>
-        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6">
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6 border-t-4" style={{ borderTopColor: ENGINE_BORDER_COLOR[decision.engine] ?? 'var(--engine-govern)' }}>
           <div className="flex items-start gap-4">
             <div className={cn('flex h-12 w-12 items-center justify-center rounded-xl shrink-0', engineInfo.bg)}>
               <EngineIcon className={cn('h-6 w-6', engineInfo.color)} />
@@ -178,7 +185,7 @@ export function GovernAuditDetail() {
               <span className="text-xs font-semibold uppercase tracking-wider text-white/40">Model Analysis</span>
             </div>
             <div className="flex items-center gap-3 mb-2">
-              <Badge variant="outline" className={cn('text-xs font-semibold', confidenceInfo.className)}>
+              <Badge variant="outline" className={cn('text-xs font-semibold', confidenceInfo.className)} style={{ boxShadow: decision.explanation.confidence >= 0.85 ? '0 0 10px rgba(16,185,129,0.15)' : undefined }}>
                 {confidenceInfo.label}
               </Badge>
             </div>
@@ -210,7 +217,7 @@ export function GovernAuditDetail() {
         <motion.div variants={fadeUp}>
           <Link
             to={engineInfo.route}
-            className="flex items-center justify-between rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5 hover:bg-white/[0.04] transition-colors group"
+            className="flex items-center justify-between rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5 hover:bg-white/[0.04] hover:shadow-lg transition-all group"
           >
             <div className="flex items-center gap-3">
               <div className={cn('flex h-10 w-10 items-center justify-center rounded-xl', engineInfo.bg)}>

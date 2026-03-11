@@ -277,6 +277,9 @@ function CompactAuditCard({ entry }: { entry: AuditEntryRow }) {
         </div>
         <span className="text-sm text-foreground truncate block">{entry.action}</span>
         <span className="text-[10px] text-muted-foreground mt-1 block">{entry.timestamp}</span>
+        <span className="inline-flex items-center gap-1 text-[10px] mt-1" style={{ color: 'var(--engine-govern)' }}>
+          <CheckCircle2 size={10} /> Verified
+        </span>
       </div>
       <ArrowRight size={14} className="shrink-0 text-muted-foreground group-hover:text-blue-600 transition-colors" />
     </Link>
@@ -299,6 +302,7 @@ function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
         style={{
           borderColor: `color-mix(in srgb, ${typeColor[entry.type]} 30%, transparent)`,
           background: typeBg[entry.type],
+          boxShadow: `0 0 10px color-mix(in srgb, ${typeColor[entry.type]} 15%, transparent)`,
         }}
       >
         <CircleDot size={16} style={{ color: typeColor[entry.type] }} />

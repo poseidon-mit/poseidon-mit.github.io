@@ -163,7 +163,7 @@ export default function ProtectAlertDetailPage() {
 
         {/* ── Alert Header ── */}
         <motion.div variants={fadeUpVariant}>
-          <Card className="bg-card border-white/[0.06]">
+          <Card className="bg-card border-white/[0.06] border-t-4" style={{ borderTopColor: alert.severity === 'Critical' ? '#ef4444' : alert.severity === 'High' ? '#f97316' : alert.severity === 'Medium' ? '#eab308' : '#3b82f6' }}>
             <CardContent className="p-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex items-start gap-4">
@@ -181,7 +181,11 @@ export default function ProtectAlertDetailPage() {
                     {detectedAt && (
                       <p className="mt-1 text-xs text-white/40">Detected: {detectedAt}</p>
                     )}
-                    <p className="mt-1 text-lg font-bold font-mono text-foreground">{alert.amount}</p>
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className={cn('w-3 h-3 rounded-full', riskLevel.bg, riskLevel.ring, 'border-2')} />
+                      <span className={cn('text-xs font-semibold uppercase tracking-widest', riskLevel.color)}>{riskLevel.label}</span>
+                    </div>
+                    <p className="typo-hero-number mt-2 text-3xl text-foreground">{alert.amount}</p>
                   </div>
                 </div>
 

@@ -57,7 +57,7 @@ export function SettingsControlCenter({
         <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-3 border border-white/[0.04]">
           <span className="typo-label text-white/30">Profile</span>
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-white/[0.04] flex items-center justify-center border border-white/[0.06]">
+            <div className="w-14 h-14 rounded-full bg-white/[0.04] flex items-center justify-center border border-white/[0.06] shadow-[0_0_12px_rgba(59,130,246,0.15)]">
               <span className="text-lg font-semibold text-white/60">{userInitials}</span>
             </div>
             <div>
@@ -72,7 +72,7 @@ export function SettingsControlCenter({
         <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-2 border border-white/[0.04]">
           <span className="typo-label text-white/30">Security</span>
           <div className="flex flex-col gap-1.5 text-xs text-white/60">
-            <span>2FA: <span className={twoFactorEnabled ? 'text-emerald-400 font-medium' : 'text-red-400 font-medium'}>{twoFactorEnabled ? 'Enabled' : 'Disabled'}</span></span>
+            <span className="flex items-center gap-1.5">2FA: <span className={twoFactorEnabled ? 'text-emerald-400 font-medium' : 'text-red-400 font-medium'}>{twoFactorEnabled ? '✓ Enabled' : '✗ Disabled'}</span></span>
             <span>Active sessions: {activeSessions}</span>
             <span>API access: Managed</span>
           </div>

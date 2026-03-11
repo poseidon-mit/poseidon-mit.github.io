@@ -21,6 +21,7 @@ import { useDemoState } from '@/lib/demo-state/provider'
 import { useToast } from '@/hooks/useToast'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { formatCurrency } from '@/lib/formatters'
+import { CountUp } from '@/components/poseidon'
 import { actions } from '@/data/actions'
 import type { Action } from '@/data/actions'
 
@@ -85,7 +86,7 @@ export function ExecuteApproval() {
 
   if (!action) {
     return (
-      <div className={`${PAGE_CONTENT_CLASS} flex flex-col items-center justify-center gap-6 pt-24 pb-12`} style={PAGE_CONTENT_STYLE}>
+      <div className="hero-viewport flex flex-col items-center justify-center gap-6 pt-24 pb-12">
         <Zap className="h-12 w-12 text-amber-300" />
         <h1 className="text-xl font-semibold text-foreground">Action not found</h1>
         <p className="text-sm text-muted-foreground">
@@ -125,12 +126,12 @@ export function ExecuteApproval() {
 
       {/* Header Card */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card">
+        <Card className="border border-border bg-card border-t-4 border-t-amber-500">
           <CardContent className="p-6">
             <div className="flex flex-col gap-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-4 flex-1 min-w-0">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/15 shrink-0">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/15 shadow-[0_0_12px_rgba(245,158,11,0.15)] shrink-0">
                     <Zap className="h-7 w-7 text-amber-400" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -142,7 +143,7 @@ export function ExecuteApproval() {
                         </Badge>
                       )}
                       {action.deadline && (
-                        <Badge variant="outline" className="border-red-500/20 bg-red-500/10 text-red-400 text-xs">
+                        <Badge variant="outline" className="border-red-500/20 bg-red-500/10 text-red-400 text-xs animate-pulse">
                           <CalendarClock className="mr-1 h-3 w-3" />
                           Due {action.deadline}
                         </Badge>
@@ -185,8 +186,8 @@ export function ExecuteApproval() {
                 </div>
                 <div className="flex items-center justify-between py-3 rounded-lg bg-amber-500/15 px-3 -mx-1">
                   <span className="text-base font-semibold text-foreground">Total Tax Savings</span>
-                  <span className="text-2xl font-bold font-mono tabular-nums text-amber-400">
-                    {formatCurrency(TAX_CALC.total)}
+                  <span className="typo-hero-number text-3xl text-amber-400">
+                    <CountUp value={TAX_CALC.total} prefix="$" decimals={2} />
                   </span>
                 </div>
               </div>
@@ -271,7 +272,7 @@ export function ExecuteApproval() {
                 </Link>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-4 sticky bottom-0 z-40">
                 <h3 className="text-base font-semibold text-foreground text-center">
                   Do you approve this action?
                 </h3>

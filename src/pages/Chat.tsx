@@ -369,10 +369,10 @@ export default function Chat() {
       <div className="flex-1 overflow-y-auto">
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center h-full px-4 py-12">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-violet-500/20 to-cyan-500/20 border border-white/[0.06]">
-              <MessageCircle className="h-8 w-8 text-violet-400" />
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-violet-500/20 to-cyan-500/20 border border-white/[0.06] shadow-[0_0_30px_rgba(139,92,246,0.2)]">
+              <MessageCircle className="h-10 w-10 text-violet-400" />
             </div>
-            <h2 className="mt-6 text-xl font-semibold text-foreground">Talk Your Money</h2>
+            <h2 className="typo-display mt-6 text-2xl md:text-3xl text-foreground">Talk Your Money</h2>
             <p className="mt-2 max-w-md text-center text-muted-foreground text-sm">
               Your AI financial companion is ready to help you understand,
               manage, and optimize your money.
@@ -418,7 +418,7 @@ export default function Chat() {
                   <div className="flex flex-col gap-2 max-w-[85%]">
                     {toolCallLabel && (
                       <div className="flex items-center gap-2 rounded-xl bg-white/[0.04] px-3 py-2 text-sm text-muted-foreground">
-                        <Loader2 className="h-4 w-4 animate-spin text-blue-400" />
+                        <Loader2 className="h-4 w-4 animate-spin text-cyan-400 drop-shadow-[0_0_4px_rgba(0,240,255,0.4)]" />
                         {toolCallLabel}...
                       </div>
                     )}
@@ -471,7 +471,7 @@ export default function Chat() {
       <div className="border-t border-white/[0.06] bg-[#0A0A0F] px-4 py-3">
         <form onSubmit={handleSubmit} className="mx-auto max-w-3xl">
           <div className={cn(
-            'flex items-end gap-2 rounded-2xl border border-white/[0.06] bg-white/[0.03] p-2',
+            'flex items-end gap-2 rounded-2xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-md p-2',
             'transition-colors focus-within:border-blue-500/30 focus-within:bg-white/[0.04]',
           )}>
             <textarea
@@ -496,7 +496,7 @@ export default function Chat() {
                 disabled={!input.trim()}
                 className={cn(
                   'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-colors cursor-pointer',
-                  input.trim() ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-white/[0.06] text-white/40',
+                  input.trim() ? 'bg-cyan-500 text-white hover:bg-cyan-600 shadow-[0_0_12px_rgba(0,240,255,0.3)]' : 'bg-white/[0.06] text-white/40',
                 )}
               >
                 <Send className="h-4 w-4" />
@@ -531,7 +531,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
       <div className={cn('flex flex-col gap-2', isUser ? 'items-end' : 'items-start', 'max-w-[85%]')}>
         <div className={cn(
           'rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap',
-          isUser ? 'bg-blue-500 text-white' : 'bg-white/[0.06] text-foreground',
+          isUser ? 'bg-blue-500 text-white' : 'bg-white/[0.04] backdrop-blur-sm border border-white/[0.06] text-foreground',
         )}>
           {message.content}
         </div>
