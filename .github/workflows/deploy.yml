@@ -58,7 +58,7 @@ jobs:
           pkill -f "vite preview --host 127.0.0.1 --port 4173" || true
       - name: Runtime smoke test (Playwright — React mount + console errors)
         run: |
-          npx playwright install chromium --with-deps --quiet
+          npx playwright install chromium --with-deps
           npm run test:smoke
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
