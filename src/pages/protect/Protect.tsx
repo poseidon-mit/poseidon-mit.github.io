@@ -40,7 +40,8 @@ export default function ProtectPage() {
   )
 
   const spotlight = useMemo(() => selectSpotlightThreat(), [])
-  const hasCritical = spotlight !== null && spotlight.severity === 'Critical'
+  const hasCritical = spotlight !== null &&
+    (spotlight.severity === 'Critical' || spotlight.severity === 'High')
 
   // Build radar axes from threat factors
   const radarAxes = useMemo(() => {

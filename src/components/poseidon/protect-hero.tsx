@@ -80,18 +80,20 @@ export function ProtectAnomalyRadar({
   const [showAiLogic, setShowAiLogic] = useState(false)
   return (
     <div className="flex flex-col gap-3">
-      <HeroBento engine="protect" accentColor="var(--state-critical)" className="xl:grid-cols-[2fr_1fr]">
+      <HeroBento engine="protect" accentColor={alert.severity === 'Critical' ? 'var(--state-critical)' : 'var(--state-warning)'} className="xl:grid-cols-[2fr_1fr]">
         {/* ── Zone A: Action ── */}
         <HeroBento.Action className="gap-5">
           {/* Hero Number */}
           <span className="typo-hero-number text-4xl md:text-5xl"
-                style={{ color: 'var(--state-critical)' }}>
+                style={{ color: alert.severity === 'Critical' ? 'var(--state-critical)' : 'var(--state-warning)' }}>
             ${totalExposure.toLocaleString()}
           </span>
 
           {/* Editorial Headline */}
           <h2 className="typo-display text-xl md:text-2xl lg:text-3xl text-white">
-            1 critical threat detected.
+            {alert.severity === 'Critical'
+              ? '1 critical threat detected.'
+              : '1 high-severity threat requires attention.'}
           </h2>
 
           {/* Subtitle */}
@@ -182,9 +184,9 @@ export function ProtectAnomalyRadar({
                 rings={4}
                 showLabels
                 showValues={false}
-                fillColor="rgba(239,68,68,0.12)"
+                fillColor={alert.severity === 'Critical' ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)'}
                 fillOpacity={0.15}
-                strokeColor="var(--state-critical)"
+                strokeColor={alert.severity === 'Critical' ? 'var(--state-critical)' : 'var(--state-warning)'}
               />
             </div>
           )}
