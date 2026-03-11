@@ -55,6 +55,22 @@ export const subscriptions: Subscription[] = [
   { name: "Notion", amount: 18.00 },
 ];
 
+export interface RecentTransaction {
+  id: string;
+  merchant: string;
+  amount: number;
+  date: string;
+  icon: string;
+}
+
+export const recentTransactions: RecentTransaction[] = [
+  { id: "txn-001", merchant: "Whole Foods Market", amount: -87.32, date: "2026-03-10", icon: "shopping-cart" },
+  { id: "txn-002", merchant: "Blue Bottle Coffee", amount: -6.50, date: "2026-03-10", icon: "coffee" },
+  { id: "txn-003", merchant: "Equinox", amount: -189.00, date: "2026-03-09", icon: "dumbbell" },
+  { id: "txn-004", merchant: "Payroll Deposit", amount: 6923.08, date: "2026-03-07", icon: "banknote" },
+  { id: "txn-005", merchant: "Netflix", amount: -22.99, date: "2026-03-05", icon: "film" },
+];
+
 export const monthlyCategories: MonthlyCategory[] = [
   { name: "Housing", amount: 2400, percentage: 36.9 },
   { name: "Food & Dining", amount: 1200, percentage: 18.5 },

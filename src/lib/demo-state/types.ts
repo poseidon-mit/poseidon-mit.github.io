@@ -76,12 +76,25 @@ export interface DemoSupportState {
   lastTicketId: string | null
 }
 
+export type DemoThreatResolution = 'legitimate' | 'blocked'
+export type DemoRecommendationDecision = 'accepted' | 'declined'
+
+export interface DemoThreatState {
+  resolvedThreats: Record<string, { resolution: DemoThreatResolution; resolvedAt: string }>
+}
+
+export interface DemoRecommendationState {
+  decisions: Record<string, { decision: DemoRecommendationDecision; decidedAt: string }>
+}
+
 export interface DemoState {
   version: number
   user: DemoUser
   auth: DemoAuthState
   onboarding: DemoOnboardingState
   execute: DemoExecuteState
+  threats: DemoThreatState
+  recommendations: DemoRecommendationState
   settings: DemoSettingsState
   support: DemoSupportState
 }
@@ -122,6 +135,12 @@ export function createDefaultDemoState(): DemoState {
       autoApprovedCount: 8,
       rollbackCount24h: 2,
       events: [],
+    },
+    threats: {
+      resolvedThreats: {},
+    },
+    recommendations: {
+      decisions: {},
     },
     settings: {
       notifications: {

@@ -7,6 +7,11 @@ import {
   DialogContent,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { CountUp } from '@/components/poseidon'
+import { protectStats } from '@/data/threats'
+import { growStats } from '@/data/recommendations'
+import { executeStats } from '@/data/actions'
+import { persona } from '@/data/persona'
 
 const engines = [
   { icon: Shield, label: 'Protect', color: '#16A34A' },
@@ -153,6 +158,35 @@ export default function HeroSection() {
             <Lock className="w-3 h-3" /> Bank-grade Encryption
           </span>
         </motion.div>
+
+        {/* Live Stats */}
+        <motion.div
+          variants={fadeUp}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mt-10 w-full max-w-2xl"
+        >
+          {[
+            { label: 'Transactions Monitored', value: protectStats.transactionsMonitored, prefix: '' },
+            { label: 'Annual Savings', value: 2437, prefix: '$' },
+            { label: 'Credit Score', value: persona.creditScore, prefix: '' },
+            { label: 'Pending Actions', value: executeStats.pending, prefix: '' },
+          ].map((stat) => (
+            <div key={stat.label} className="text-center">
+              <p className="text-2xl sm:text-3xl font-bold font-mono tabular-nums text-white">
+                {stat.prefix}
+                <CountUp value={stat.value} duration={2000} locale />
+              </p>
+              <p className="text-xs text-white/50 mt-1">{stat.label}</p>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Philosophy */}
+        <motion.p
+          variants={fadeUp}
+          className="mt-8 text-xs text-white/30 text-center max-w-md"
+        >
+          Deterministic models compute. GenAI explains. Humans approve.
+        </motion.p>
       </motion.div>
 
       {/* ── Video Modal ── */}

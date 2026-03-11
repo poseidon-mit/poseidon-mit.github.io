@@ -21,7 +21,7 @@ export interface ExecuteStats {
   pending: number;
   completedThisMonth: number;
   totalExecuted: string;
-  automationRate: string;
+  pendingTaxSavings: number;
 }
 
 export const actions: Action[] = [
@@ -67,7 +67,7 @@ export const actions: Action[] = [
 
 export const executeStats: ExecuteStats = {
   pending: 3,
-  completedThisMonth: 7,
-  totalExecuted: "$12,847.32",
-  automationRate: "45%",
+  completedThisMonth: 1,
+  totalExecuted: "$342.18",
+  pendingTaxSavings: 399.60,
 };

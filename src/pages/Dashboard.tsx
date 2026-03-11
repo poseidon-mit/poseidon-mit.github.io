@@ -1,32 +1,51 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Sparkles, AlertTriangle } from 'lucide-react'
+import { ChevronDown, ShoppingCart, Coffee, Dumbbell, Banknote, Film, Shield, Zap, TrendingUp } from 'lucide-react'
 import { Link } from '@/router'
 import { NetWorthCard } from '@/components/dashboard-v2/NetWorthCard'
 import { EngineStatusGrid } from '@/components/dashboard-v2/EngineStatusGrid'
-import { RecentActivityFeed } from '@/components/dashboard-v2/RecentActivityFeed'
-import { QuickActions } from '@/components/dashboard-v2/QuickActions'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
+import { persona } from '@/data/persona'
+import { accounts, recentTransactions, monthlyCategories } from '@/data/accounts'
+import { formatCurrency, getGreeting, getDemoDateStr } from '@/lib/formatters'
 
-const MOCK_USER_NAME = 'Shinji'
-
-function getGreeting() {
-  const hour = new Date().getHours()
-  if (hour < 12) return 'Good morning'
-  if (hour < 18) return 'Good afternoon'
-  return 'Good evening'
+const txnIcons: Record<string, typeof ShoppingCart> = {
+  'shopping-cart': ShoppingCart,
+  'coffee': Coffee,
+  'dumbbell': Dumbbell,
+  'banknote': Banknote,
+  'film': Film,
 }
 
-function getDateStr() {
-  return new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  })
+function CollapsibleSection({
+  title,
+  children,
+  defaultOpen = false,
+}: {
+  title: string
+  children: React.ReactNode
+  defaultOpen?: boolean
+}) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <div className="border border-stone-200 rounded-xl bg-white overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="flex items-center justify-between w-full px-5 py-4 text-left cursor-pointer"
+      >
+        <span className="text-sm font-semibold text-[#1A1A1A]">{title}</span>
+        <ChevronDown
+          className={`w-4 h-4 text-stone-400 transition-transform ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+      {open && <div className="border-t border-stone-100">{children}</div>}
+    </div>
+  )
 }
 
 export default function Dashboard() {
@@ -44,82 +63,147 @@ export default function Dashboard() {
       initial="hidden"
       animate="visible"
     >
-      {/* Greeting */}
+      {/* 1. Greeting */}
       <motion.div variants={fadeUp} className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground">
-            {getGreeting()}, {MOCK_USER_NAME}
+            {getGreeting()}, {persona.name.split(' ')[0]}
           </h1>
         </div>
-        <p className="text-sm text-muted-foreground hidden sm:block">{getDateStr()}</p>
+        <p className="text-sm text-muted-foreground hidden sm:block">{getDemoDateStr()}</p>
       </motion.div>
 
-      {/* Oslo Alert Banner */}
-      <motion.div variants={fadeUp}>
-        <Link
-          href="/protect/alert-detail?alertId=THR-001"
-          className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 transition-colors hover:bg-red-100"
-        >
-          <span className="relative flex h-3 w-3 shrink-0">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
-            <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
-          </span>
-          <AlertTriangle className="h-4 w-4 shrink-0 text-red-600" />
-          <span className="flex-1 text-sm font-medium text-red-800">
-            Suspicious activity from Oslo, Norway
-          </span>
-          <span className="shrink-0 rounded-lg bg-red-600 px-3 py-1 text-xs font-semibold text-white">
-            Review Now
-          </span>
-        </Link>
-      </motion.div>
-
+      {/* Net Worth Hero (One Message: largest element) */}
       <motion.div variants={fadeUp}>
         <NetWorthCard />
       </motion.div>
 
+      {/* 2. Engine Summary Cards (2x2) */}
       <motion.div variants={fadeUp}>
         <EngineStatusGrid />
       </motion.div>
 
+      {/* 3. Needs Your Attention Feed */}
       <motion.div variants={fadeUp}>
-        <QuickActions />
+        <h2 className="text-lg font-semibold text-[#1A1A1A] mb-3">Needs Your Attention</h2>
+        <div className="space-y-3">
+          <Link
+            to="/protect/alert-detail?alertId=THR-001"
+            className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 transition-colors hover:bg-red-100"
+          >
+            <span className="relative flex h-3 w-3 shrink-0">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
+            </span>
+            <Shield className="h-4 w-4 shrink-0 text-red-600" />
+            <span className="flex-1 text-sm font-medium text-red-800">
+              Suspicious login from Oslo, Norway
+            </span>
+            <span className="shrink-0 rounded-lg bg-red-600 px-3 py-1 text-xs font-semibold text-white">
+              Review
+            </span>
+          </Link>
+
+          <Link
+            to="/execute/approval?actionId=EXE-001"
+            className="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 transition-colors hover:bg-amber-100"
+          >
+            <Zap className="h-4 w-4 shrink-0 text-amber-600" />
+            <span className="flex-1 text-sm font-medium text-amber-800">
+              $399.60 tax savings if you approve
+            </span>
+            <span className="shrink-0 rounded-lg bg-amber-600 px-3 py-1 text-xs font-semibold text-white">
+              Approve
+            </span>
+          </Link>
+
+          <Link
+            to="/grow/recommendation?id=GRW-001"
+            className="flex items-center gap-3 rounded-xl border border-violet-200 bg-violet-50 px-4 py-3 transition-colors hover:bg-violet-100"
+          >
+            <TrendingUp className="h-4 w-4 shrink-0 text-violet-600" />
+            <span className="flex-1 text-sm font-medium text-violet-800">
+              +$269.40/year in interest — move to high-yield savings
+            </span>
+            <span className="shrink-0 rounded-lg bg-violet-600 px-3 py-1 text-xs font-semibold text-white">
+              View
+            </span>
+          </Link>
+        </div>
       </motion.div>
 
-      {/* 2-Column: Recent Activity + AI Insights */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <motion.div variants={fadeUp}>
-          <RecentActivityFeed />
-        </motion.div>
+      {/* 4. Monthly Spending */}
+      <motion.div variants={fadeUp}>
+        <Card className="border border-border bg-card shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-foreground">
+              Monthly Spending
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {monthlyCategories.map((cat) => (
+                <div key={cat.name} className="flex items-center gap-3">
+                  <span className="w-28 text-sm text-stone-600 shrink-0">{cat.name}</span>
+                  <div className="flex-1 h-5 bg-stone-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-stone-700 rounded-full transition-all"
+                      style={{ width: `${cat.percentage}%` }}
+                    />
+                  </div>
+                  <span className="text-sm font-mono tabular-nums text-stone-700 w-20 text-right shrink-0">
+                    {formatCurrency(cat.amount)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
 
-        <motion.div variants={fadeUp}>
-          <Card className="border border-border bg-card shadow-sm h-full">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
-                <Sparkles className="h-5 w-5 text-cyan-500" />
-                AI Insights
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4">
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  "Your Chase Savings earns 0.01% APY. Moving $8,200 to a high-yield savings account at 3.30% APY would earn an additional <span className="font-semibold text-emerald-700">$269.40/year</span> in interest."
+      {/* 5. Linked Accounts (collapsible, default closed) */}
+      <motion.div variants={fadeUp}>
+        <CollapsibleSection title={`Linked Accounts (${accounts.length})`}>
+          <div className="divide-y divide-stone-100">
+            {accounts.map((acc) => (
+              <div key={acc.id} className="flex items-center justify-between px-5 py-3">
+                <div>
+                  <p className="text-sm font-medium text-[#1A1A1A]">{acc.name}</p>
+                  <p className="text-xs text-stone-500">{acc.institution}</p>
+                </div>
+                <p className={`text-sm font-mono tabular-nums font-semibold ${acc.balance < 0 ? 'text-red-600' : 'text-[#1A1A1A]'}`}>
+                  {formatCurrency(acc.balance)}
                 </p>
               </div>
-              <div className="rounded-xl bg-violet-50 border border-violet-200 p-4">
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  "I've identified <span className="font-semibold text-violet-700">$2,437/year</span> in total savings across 4 recommendations — including subscription optimization, portfolio rebalancing, and credit card reward maximization."
-                </p>
-              </div>
-              <div className="rounded-xl bg-amber-50 border border-amber-200 p-4">
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  "A tax-loss harvesting opportunity in your VTI position could save <span className="font-semibold text-amber-700">$399.60</span> in taxes. Deadline: March 31, 2026. Awaiting your approval."
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
+            ))}
+          </div>
+        </CollapsibleSection>
+      </motion.div>
+
+      {/* 6. Recent Transactions (collapsible, default closed) */}
+      <motion.div variants={fadeUp}>
+        <CollapsibleSection title="Recent Transactions">
+          <div className="divide-y divide-stone-100">
+            {recentTransactions.map((txn) => {
+              const Icon = txnIcons[txn.icon] ?? ShoppingCart
+              return (
+                <div key={txn.id} className="flex items-center gap-3 px-5 py-3">
+                  <div className="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center shrink-0">
+                    <Icon className="w-4 h-4 text-stone-500" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-[#1A1A1A]">{txn.merchant}</p>
+                    <p className="text-xs text-stone-500">{txn.date}</p>
+                  </div>
+                  <p className={`text-sm font-mono tabular-nums font-semibold ${txn.amount < 0 ? 'text-[#1A1A1A]' : 'text-emerald-600'}`}>
+                    {formatCurrency(txn.amount, { showSign: txn.amount > 0 })}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+        </CollapsibleSection>
+      </motion.div>
     </motion.div>
   )
 }

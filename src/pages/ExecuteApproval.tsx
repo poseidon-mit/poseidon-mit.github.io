@@ -3,48 +3,45 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Zap,
   CheckCircle2,
-  AlertTriangle,
-  ExternalLink,
-  Timer,
   ArrowLeft,
-  ArrowRight,
-  Loader2,
-  ShieldCheck,
-  Clock,
   ChevronDown,
+  ShieldCheck,
+  CalendarClock,
+  XCircle,
+  ExternalLink,
 } from 'lucide-react'
 import { Link, useRouter } from '@/router'
-import { ShapWaterfall, EmptyState, ConfidenceIndicator, ProofChips } from '@/components/poseidon'
-import { SlideToApprove } from '@/components/poseidon/slide-to-approve'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
+import { Button } from '@/components/ui/button'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { getMotionPreset, accordionVariants, accordionTransition } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
 import { useDemoState } from '@/lib/demo-state/provider'
 import { useToast } from '@/hooks/useToast'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
-import { selectExecuteActionById, selectDeliberationTrace } from '@/domain/poseidon-universe'
-import type { ExecuteActionEntity } from '@/domain/poseidon-universe'
-import { getRiskTier } from '@/lib/execute-risk-tier'
-import { useExecuteApprovalFlow } from './useExecuteApprovalFlow'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
+import { formatCurrency } from '@/lib/formatters'
+import { actions } from '@/data/actions'
+import type { Action } from '@/data/actions'
 
-const ENGINE_BADGE: Record<string, string> = {
-  Protect: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-  Grow: 'border-violet-200 bg-violet-50 text-violet-700',
-  Execute: 'border-amber-200 bg-amber-50 text-amber-700',
+/* ── Tax calculation for EXE-001 ── */
+const TAX_CALC = {
+  unrealizedLoss: 1200,
+  federalRate: 0.24,
+  stateRate: 0.093,
+  get federal() { return this.unrealizedLoss * this.federalRate },
+  get state() { return this.unrealizedLoss * this.stateRate },
+  get total() { return this.federal + this.state },
 }
 
-const EXEC_TYPE_BADGE: Record<string, { label: string; cls: string }> = {
-  auto: { label: 'Auto', cls: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
-  'semi-auto': { label: 'Semi-auto', cls: 'border-blue-200 bg-blue-50 text-blue-700' },
-  manual: { label: 'Manual', cls: 'border-amber-200 bg-amber-50 text-amber-700' },
-  hybrid: { label: 'Hybrid', cls: 'border-violet-200 bg-violet-50 text-violet-700' },
-}
+/* ── Execution steps for EXE-001 ── */
+const EXECUTION_STEPS = [
+  { id: 1, label: 'Sell VTI shares at current market price' },
+  { id: 2, label: 'Realize tax loss of $1,200' },
+  { id: 3, label: 'Purchase replacement ETF (ITOT)' },
+  { id: 4, label: 'Apply tax offset to 2026 filing' },
+]
 
 export function ExecuteApproval() {
   const prefersReducedMotion = useReducedMotionSafe()
@@ -53,65 +50,58 @@ export function ExecuteApproval() {
   const { search, navigate } = useRouter()
   const { showToast } = useToast()
 
-  const actionId = useMemo(() => new URLSearchParams(search).get('actionId'), [search])
-  const action = useMemo(() => (actionId ? selectExecuteActionById(actionId) : undefined), [actionId])
+  const actionId = useMemo(() => new URLSearchParams(search).get('actionId') ?? new URLSearchParams(search).get('id'), [search])
+  const action = useMemo(() => actions.find((a) => a.id === actionId), [actionId])
 
   usePageTitle(action ? `Approve: ${action.title}` : 'Action Approval')
 
-  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set(['plan', 'drivers']))
-  const toggleCard = (id: string) => setExpandedCards(prev => {
-    const next = new Set(prev)
-    next.has(id) ? next.delete(id) : next.add(id)
-    return next
-  })
+  const [whyOpen, setWhyOpen] = useState(false)
+  const [stepsAnimated, setStepsAnimated] = useState(false)
 
   const actionStatus = actionId ? state.execute.actionStates[actionId]?.status ?? 'pending' : 'pending'
   const isAlreadyDecided = actionStatus !== 'pending'
 
-  const {
-    consentReviewed,
-    setConsentReviewed,
-    slideAuthorized,
-    setSlideAuthorized,
-    confirmAction,
-    setConfirmAction,
-    handleConfirm,
-    executionPhase,
-  } = useExecuteApprovalFlow(action, (decision) => {
-    if (decision === 'approved') {
-      navigate(`/execute?undo=${action!.id}`)
-    } else {
-      navigate('/execute')
-    }
-  })
+  const handleApprove = () => {
+    if (!action) return
+    setExecuteDecision({
+      actionId: action.id,
+      actionTitle: action.title,
+      decision: 'approved',
+    })
+    setStepsAnimated(true)
+    showToast({ message: `${action.id} approved. Execution in progress.`, variant: 'success' })
+    setTimeout(() => navigate('/execute'), 2000)
+  }
 
-  const riskTier = action ? getRiskTier(action) : 1
-  const isTier2 = riskTier === 2
-  const deliberationTrace = useMemo(() => {
-    if (!action) return null
-    return selectDeliberationTrace(action.sourceEntityId ?? '')
-  }, [action])
+  const handleReject = () => {
+    if (!action) return
+    setExecuteDecision({
+      actionId: action.id,
+      actionTitle: action.title,
+      decision: 'rejected',
+    })
+    showToast({ message: `${action.id} rejected.`, variant: 'info' })
+    navigate('/execute')
+  }
 
   if (!action) {
     return (
-      <div className="mx-auto flex flex-col items-center justify-center gap-8 pt-24 pb-12 px-5" style={{ maxWidth: '1440px' }}>
-        <EmptyState
-          icon={AlertTriangle}
-          title="Action not found"
-          description={actionId ? `No action with ID "${actionId}" exists in the queue.` : 'No action ID was provided in the URL.'}
-          accentColor="var(--engine-execute)"
-          action={{ label: 'Back to Execute queue', onClick: () => navigate('/execute') }}
-        />
+      <div className={`${PAGE_CONTENT_CLASS} flex flex-col items-center justify-center gap-6 pt-24 pb-12`} style={PAGE_CONTENT_STYLE}>
+        <Zap className="h-12 w-12 text-amber-300" />
+        <h1 className="text-xl font-semibold text-foreground">Action not found</h1>
+        <p className="text-sm text-muted-foreground">
+          {actionId ? `No action with ID "${actionId}" exists.` : 'No action ID provided.'}
+        </p>
+        <Link to="/execute" className="text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors">
+          <ArrowLeft className="inline h-4 w-4 mr-1" />
+          Back to Execute
+        </Link>
       </div>
     )
   }
 
-  const typeBadge = EXEC_TYPE_BADGE[action.executionType] ?? EXEC_TYPE_BADGE.manual
-  const sourceLink = action.sourceEngine === 'Protect' && action.sourceEntityId
-    ? { label: `From Protect alert ${action.sourceEntityId}`, to: `/protect/alert-detail?alertId=${action.sourceEntityId}` }
-    : action.sourceEngine === 'Grow' && action.sourceEntityId
-    ? { label: `From Grow recommendation ${action.sourceEntityId}`, to: '/grow/recommendations' }
-    : null
+  const isEXE001 = action.id === 'EXE-001'
+  const displayTitle = isEXE001 ? 'Tax Savings Opportunity' : action.title
 
   return (
     <motion.div
@@ -127,7 +117,7 @@ export function ExecuteApproval() {
       <motion.div variants={fadeUp}>
         <Link
           to="/execute"
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Execute
@@ -139,302 +129,129 @@ export function ExecuteApproval() {
         <Card className="border border-border bg-card shadow-sm">
           <CardContent className="p-6">
             <div className="flex flex-col gap-4">
-              <div className="flex items-start gap-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 shrink-0">
-                  <Zap className="h-7 w-7 text-amber-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-500">Approval Required</p>
-                  <h1 className="text-2xl font-bold text-gray-900">{action.title}</h1>
-                  <div className="flex flex-wrap items-center gap-2 mt-2">
-                    <Badge variant="outline" className={ENGINE_BADGE[action.engine] ?? 'bg-gray-50 text-gray-600'}>
-                      {action.engine}
-                    </Badge>
-                    <Badge variant="outline" className={typeBadge.cls}>
-                      {typeBadge.label}
-                    </Badge>
-                    {action.expiresIn && (
-                      <span className="inline-flex items-center gap-1 text-xs text-amber-600">
-                        <Timer size={12} />
-                        Expires in {action.expiresIn}
-                      </span>
-                    )}
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-4 flex-1 min-w-0">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 shrink-0">
+                    <Zap className="h-7 w-7 text-amber-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      {action.confidence && action.confidence >= 0.8 && (
+                        <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-xs">
+                          <ShieldCheck className="mr-1 h-3 w-3" />
+                          High Confidence
+                        </Badge>
+                      )}
+                      {action.deadline && (
+                        <Badge variant="outline" className="border-red-200 bg-red-50 text-red-700 text-xs">
+                          <CalendarClock className="mr-1 h-3 w-3" />
+                          Due {action.deadline}
+                        </Badge>
+                      )}
+                    </div>
+                    <h1 className="text-2xl font-bold text-foreground">{displayTitle}</h1>
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{action.description}</p>
                   </div>
                 </div>
-                <span className="text-2xl font-bold text-gray-900 shrink-0">{action.amountLabel}</span>
               </div>
-
-              <p className="text-sm text-gray-500 leading-relaxed">{action.description}</p>
-
-              {sourceLink && (
-                <Link to={sourceLink.to} className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 hover:text-amber-700 transition-colors">
-                  <ExternalLink size={12} />
-                  {sourceLink.label}
-                </Link>
-              )}
             </div>
           </CardContent>
         </Card>
       </motion.div>
 
-      {/* Impact Assessment */}
-      <motion.div variants={fadeUp} className="grid gap-4 sm:grid-cols-2">
-        <Card className="border-emerald-200 bg-emerald-50">
-          <CardContent className="p-5">
-            <p className="text-xs font-semibold text-emerald-600 uppercase tracking-widest mb-2">If approved</p>
-            <p className="text-sm text-emerald-800 leading-relaxed">{action.impact.approved}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-amber-200 bg-amber-50">
-          <CardContent className="p-5">
-            <p className="text-xs font-semibold text-amber-600 uppercase tracking-widest mb-2">If deferred</p>
-            <p className="text-sm text-amber-800 leading-relaxed">{action.impact.deferred}</p>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Execution Plan */}
-      <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
-          <div
-            className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/30 transition-colors"
-            onClick={() => toggleCard('plan')}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('plan') } }}
-          >
-            <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-              <Zap className="h-5 w-5 text-amber-600" />
-              Execution Plan
-            </h3>
-            <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('plan') && 'rotate-180')} />
-          </div>
-          <AnimatePresence initial={false}>
-            {expandedCards.has('plan') && (
-              <motion.div
-                key="plan-content"
-                variants={accordionVariants}
-                initial="collapsed"
-                animate="expanded"
-                exit="collapsed"
-                transition={accordionTransition}
-                style={{ overflow: 'hidden' }}
-              >
-                <CardContent>
-                  <div className="space-y-3">
-                    {action.steps.map((step, i) => (
-                      <div key={step.id} className="flex items-center gap-3">
-                        <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold bg-amber-100 text-amber-700 shrink-0">
-                          {i + 1}
-                        </span>
-                        <div className="flex-1 min-w-0">
-                          <span className="text-sm text-gray-700">{step.label}</span>
-                          {step.requiresConsent && (
-                            <ShieldCheck size={12} className="inline ml-1.5 text-amber-500" />
-                          )}
-                        </div>
-                        {step.estimatedDuration && (
-                          <span className="text-xs font-mono text-gray-400 shrink-0">{step.estimatedDuration}</span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-xs text-gray-400 font-mono mt-4">
-                    {action.steps.length} steps · {action.steps.filter(s => s.estimatedDuration).map(s => s.estimatedDuration).join(' + ')}
-                  </p>
-                </CardContent>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </Card>
-      </motion.div>
-
-      {/* Confidence + SHAP Decision Drivers */}
-      <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
-          <div
-            className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/30 transition-colors"
-            onClick={() => toggleCard('impact')}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('impact') } }}
-          >
-            <h3 className="text-lg font-semibold text-gray-900">Impact Analysis</h3>
-            <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('impact') && 'rotate-180')} />
-          </div>
-          <AnimatePresence initial={false}>
-            {expandedCards.has('impact') && (
-              <motion.div
-                key="impact-content"
-                variants={accordionVariants}
-                initial="collapsed"
-                animate="expanded"
-                exit="collapsed"
-                transition={accordionTransition}
-                style={{ overflow: 'hidden' }}
-              >
-                <CardContent className="pt-0">
-                  <div className="grid gap-6 lg:grid-cols-2">
-                    {/* Confidence & Source */}
-                    <div className="space-y-4">
-                      <h4 className="text-base font-semibold text-gray-900">Why This Action?</h4>
-                      <div className="flex items-center gap-4">
-                        <span className="text-sm text-gray-500">Confidence</span>
-                        <div className="flex-1">
-                          <Progress value={action.confidence * 100} />
-                        </div>
-                        <span className="text-sm font-bold text-gray-900">{Math.round(action.confidence * 100)}%</span>
-                      </div>
-                      {sourceLink && (
-                        <Link to={sourceLink.to} className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors">
-                          <ExternalLink size={14} />
-                          View Original {action.sourceEngine === 'Grow' ? 'Recommendation' : 'Alert'}
-                        </Link>
-                      )}
-                      <p className="text-sm text-gray-500 leading-relaxed">{action.description}</p>
-                    </div>
-
-                    {/* Financial Impact */}
-                    <div className="space-y-3">
-                      <h4 className="text-base font-semibold text-gray-900">Financial Impact</h4>
-                      <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                        <span className="text-sm text-gray-500">Transaction Amount</span>
-                        <span className="text-sm font-semibold text-gray-900">{action.amountLabel}</span>
-                      </div>
-                      <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                        <span className="text-sm text-gray-500">Expected Benefit</span>
-                        <span className="text-sm font-semibold text-emerald-600">{action.impact.approved.match(/\$[\d,]+/)?.[0] ?? 'See details'}</span>
-                      </div>
-                      <div className="flex items-center justify-between py-2">
-                        <span className="text-sm font-medium text-gray-700">Net Benefit</span>
-                        <span className="text-sm font-bold text-emerald-600">Positive</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </Card>
-      </motion.div>
-
-      {/* Decision Drivers (SHAP) */}
-      <motion.div variants={fadeUp}>
-        <Card className="bg-white border-gray-200 shadow-sm">
-          <div
-            className="flex items-center justify-between p-6 lg:px-8 cursor-pointer hover:bg-muted/30 transition-colors"
-            onClick={() => toggleCard('drivers')}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('drivers') } }}
-          >
-            <div>
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-700">Decision Drivers</h3>
-              <p className="text-xs text-gray-500 mt-1">
-                Key factors driving this AI decision.
-              </p>
-            </div>
-            <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('drivers') && 'rotate-180')} />
-          </div>
-          <AnimatePresence initial={false}>
-            {expandedCards.has('drivers') && (
-              <motion.div
-                key="drivers-content"
-                variants={accordionVariants}
-                initial="collapsed"
-                animate="expanded"
-                exit="collapsed"
-                transition={accordionTransition}
-                style={{ overflow: 'hidden' }}
-              >
-                <CardContent className="p-6 pt-0 lg:px-8">
-                  <ShapWaterfall
-                    factors={action.factors.map((f) => ({ name: f.label, value: f.value }))}
-                    baseValue={0}
-                    className="mt-1"
-                  />
-                  {action.factors.length > 1 && (
-                    <ProofChips
-                      total={action.amountLabel}
-                      parts={action.factors.slice(0, 3).map((f) => ({ label: f.label, value: Math.round(f.value * 100) }))}
-                      formatValue={(v) => `${v}%`}
-                    />
-                  )}
-                </CardContent>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </Card>
-      </motion.div>
-
-      {/* Deliberation Trace */}
-      {deliberationTrace && (
+      {/* Tax Calculation Panel (EXE-001 only) */}
+      {isEXE001 && (
         <motion.div variants={fadeUp}>
-          <Card className="border border-border bg-card shadow-sm">
-            <div
-              className="flex items-center justify-between p-6 cursor-pointer hover:bg-muted/30 transition-colors"
-              onClick={() => toggleCard('trace')}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('trace') } }}
-            >
-              <h3 className="text-lg font-semibold text-gray-900">Deliberation Trace</h3>
-              <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('trace') && 'rotate-180')} />
-            </div>
-            <AnimatePresence initial={false}>
-              {expandedCards.has('trace') && (
-                <motion.div
-                  key="trace-content"
-                  variants={accordionVariants}
-                  initial="collapsed"
-                  animate="expanded"
-                  exit="collapsed"
-                  transition={accordionTransition}
-                  style={{ overflow: 'hidden' }}
-                >
-                  <CardContent>
-                    <div className="space-y-3">
-                      {deliberationTrace.rounds.map((round, i) => (
-                        <div key={i} className="flex items-start gap-3 text-sm">
-                          <div className={cn(
-                            'w-2.5 h-2.5 rounded-full mt-1.5 shrink-0',
-                            round.position === 'support' && 'bg-emerald-500',
-                            round.position === 'oppose' && 'bg-red-500',
-                            round.position === 'modify' && 'bg-amber-500',
-                          )} />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="text-xs font-semibold text-gray-800">{round.roleId}</span>
-                              <Badge variant="outline" className={cn(
-                                'text-[10px] uppercase',
-                                round.position === 'support' && 'border-emerald-200 bg-emerald-50 text-emerald-700',
-                                round.position === 'oppose' && 'border-red-200 bg-red-50 text-red-700',
-                                round.position === 'modify' && 'border-amber-200 bg-amber-50 text-amber-700',
-                              )}>
-                                {round.position}
-                              </Badge>
-                              <span className="text-xs font-mono text-gray-400">{Math.round(round.confidence * 100)}%</span>
-                            </div>
-                            <p className="text-xs text-gray-500 leading-relaxed">{round.argument}</p>
-                          </div>
-                        </div>
-                      ))}
-                      {deliberationTrace.consensus && (
-                        <div className="rounded-xl bg-blue-50 border border-blue-200 p-3 mt-1">
-                          <p className="text-[10px] font-semibold text-blue-600 uppercase tracking-widest mb-1">Consensus</p>
-                          <p className="text-xs text-blue-800">{deliberationTrace.consensus.rationale}</p>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </motion.div>
-              )}
-            </AnimatePresence>
+          <Card className="border-amber-200 bg-amber-50/50 shadow-sm">
+            <CardContent className="p-6">
+              <h3 className="text-xs font-semibold text-amber-700 uppercase tracking-widest mb-4">Tax Calculation</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between py-2 border-b border-amber-200/50">
+                  <span className="text-sm text-amber-800">Unrealized Loss</span>
+                  <span className="text-sm font-semibold font-mono tabular-nums text-amber-900">
+                    {formatCurrency(TAX_CALC.unrealizedLoss)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-amber-200/50">
+                  <span className="text-sm text-amber-800">Federal Tax Savings (24%)</span>
+                  <span className="text-sm font-mono tabular-nums text-amber-900">
+                    {formatCurrency(TAX_CALC.federal)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-amber-200/50">
+                  <span className="text-sm text-amber-800">CA State Tax Savings (9.3%)</span>
+                  <span className="text-sm font-mono tabular-nums text-amber-900">
+                    {formatCurrency(TAX_CALC.state)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-3 rounded-lg bg-amber-100/80 px-3 -mx-1">
+                  <span className="text-base font-semibold text-amber-900">Total Tax Savings</span>
+                  <span className="text-2xl font-bold font-mono tabular-nums text-amber-700">
+                    {formatCurrency(TAX_CALC.total)}
+                  </span>
+                </div>
+              </div>
+            </CardContent>
           </Card>
         </motion.div>
       )}
 
-      {/* Confirmation Section */}
+      {/* Execution Steps Timeline */}
+      {isEXE001 && (
+        <motion.div variants={fadeUp}>
+          <Card className="border border-border bg-card shadow-sm">
+            <CardContent className="p-6">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-5">Execution Steps</h3>
+              <div className="relative ml-4">
+                {/* Timeline line */}
+                <div className="absolute left-[11px] top-2 bottom-2 w-px bg-border" />
+                <div className="space-y-5">
+                  {EXECUTION_STEPS.map((step, i) => (
+                    <motion.div
+                      key={step.id}
+                      className="flex items-start gap-4 relative"
+                      initial={false}
+                      animate={stepsAnimated ? { opacity: 1 } : { opacity: 1 }}
+                    >
+                      <motion.div
+                        className={cn(
+                          'w-6 h-6 rounded-full flex items-center justify-center shrink-0 z-10 transition-all duration-500',
+                          stepsAnimated
+                            ? 'bg-emerald-500 border-2 border-emerald-500'
+                            : 'bg-card border-2 border-amber-300',
+                        )}
+                        initial={false}
+                        animate={stepsAnimated ? { scale: [1, 1.2, 1] } : {}}
+                        transition={{ delay: i * 0.3, duration: 0.4 }}
+                      >
+                        {stepsAnimated ? (
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: i * 0.3 + 0.15, duration: 0.3 }}
+                          >
+                            <CheckCircle2 className="h-3.5 w-3.5 text-white" />
+                          </motion.div>
+                        ) : (
+                          <span className="text-[10px] font-bold font-mono text-amber-600">{step.id}</span>
+                        )}
+                      </motion.div>
+                      <span className={cn(
+                        'text-sm pt-0.5 transition-colors duration-300',
+                        stepsAnimated ? 'text-emerald-700 font-medium' : 'text-foreground',
+                      )}>
+                        {step.label}
+                      </span>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* Action Buttons — Above fold */}
       <motion.div variants={fadeUp}>
         <Card className={cn(
           'shadow-sm',
@@ -444,257 +261,117 @@ export function ExecuteApproval() {
             {isAlreadyDecided ? (
               <div className="flex flex-col items-center gap-3 py-4">
                 <CheckCircle2 className="w-10 h-10 text-emerald-600" />
-                <p className="text-sm text-gray-700 text-center">
-                  This action has been <span className="font-semibold text-gray-900">{actionStatus}</span>.
+                <p className="text-sm text-foreground text-center">
+                  This action has been <span className="font-semibold">{actionStatus}</span>.
                 </p>
-                <Link to="/execute" className={cn(buttonVariants({ variant: "outline" }))}>Back to Queue</Link>
+                <Link
+                  to="/execute"
+                  className="text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors"
+                >
+                  Back to Execute
+                </Link>
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
-                  <div>
-                    <h3 className="text-sm font-semibold text-amber-800">Confirmation Required</h3>
-                    <p className="text-sm text-amber-700 mt-1">
-                      You are about to authorize the AI agent to execute this transaction on your behalf.
-                      This action cannot be undone once market orders are placed.
-                    </p>
-                  </div>
+                <h3 className="text-base font-semibold text-amber-900 text-center">
+                  Do you approve this action?
+                </h3>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button
+                    className="flex-1 bg-emerald-600 text-white hover:bg-emerald-700 min-h-[48px] text-base font-semibold"
+                    onClick={handleApprove}
+                  >
+                    <CheckCircle2 className="mr-2 h-5 w-5" />
+                    Approve
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    className="flex-1 min-h-[48px] text-base font-semibold"
+                    onClick={handleReject}
+                  >
+                    <XCircle className="mr-2 h-5 w-5" />
+                    Reject
+                  </Button>
                 </div>
-
-                <label className="flex items-start gap-3 cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={consentReviewed}
-                    onChange={(e) => setConsentReviewed(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-amber-600 cursor-pointer"
-                  />
-                  <span className="text-sm text-gray-700 leading-relaxed group-hover:text-gray-900 transition-colors">
-                    I understand and approve this transaction
-                  </span>
-                </label>
-
-                {isTier2 ? (
-                  <div className="flex flex-col gap-3">
-                    <SlideToApprove
-                      label="Slide to Approve"
-                      completedLabel="Approved"
-                      disabled={!consentReviewed}
-                      onAuthorize={() => {
-                        setSlideAuthorized(true)
-                        setConfirmAction({ type: 'approve' })
-                      }}
-                    />
-                    <div className="flex items-center gap-3">
-                      <Button
-                        variant="outline"
-                        className="flex-1"
-                        onClick={() => setConfirmAction({ type: 'defer' })}
-                      >
-                        Defer
-                      </Button>
-                      <button
-                        type="button"
-                        className="text-xs text-red-500 hover:text-red-700 transition-colors cursor-pointer py-1"
-                        onClick={() => {
-                          setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'rejected' })
-                          showToast({ message: `${action.id} rejected`, variant: 'info' })
-                          navigate('/execute')
-                        }}
-                      >
-                        Reject
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <Button
-                      disabled={!consentReviewed}
-                      className={cn(
-                        'flex-1',
-                        consentReviewed
-                          ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                          : 'bg-gray-200 text-gray-400 cursor-not-allowed',
-                      )}
-                      onClick={() => setConfirmAction({ type: 'approve' })}
-                    >
-                      Approve & Execute
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="flex-1"
-                      onClick={() => setConfirmAction({ type: 'defer' })}
-                    >
-                      Defer
-                    </Button>
-                    <button
-                      type="button"
-                      className="text-xs text-red-500 hover:text-red-700 transition-colors cursor-pointer py-1 sm:w-auto"
-                      onClick={() => {
-                        setExecuteDecision({ actionId: action.id, actionTitle: action.title, decision: 'rejected' })
-                        showToast({ message: `${action.id} rejected`, variant: 'info' })
-                        navigate('/execute')
-                      }}
-                    >
-                      Reject
-                    </button>
-                  </div>
-                )}
-
-                {!consentReviewed && (
-                  <p className="text-xs text-amber-600 text-center">
-                    Review the execution plan and check the consent box to enable approval.
-                  </p>
-                )}
               </div>
             )}
           </CardContent>
         </Card>
       </motion.div>
 
-      {/* Confirmation Dialog */}
-      {confirmAction && (
-        <Dialog open={true} onOpenChange={(open) => !open && setConfirmAction(null)}>
-          <DialogContent className="max-w-md bg-white border border-gray-200" role="dialog" aria-modal="true">
-            <div className="flex flex-col gap-4 p-2">
-              <div>
-                <p className={cn(
-                  'text-xs font-semibold uppercase tracking-widest mb-1',
-                  confirmAction.type === 'approve' ? 'text-emerald-600' : 'text-amber-600',
-                )}>
-                  {confirmAction.type === 'approve' ? 'Confirm Approval' : 'Confirm Deferral'}
-                </p>
-                <h3 className="text-base font-semibold text-gray-900">{action.title}</h3>
-                <p className="text-xs text-gray-500 mt-1">{action.description}</p>
-              </div>
-
-              <div className="rounded-xl p-3 bg-gray-50 border border-gray-200">
-                <p className="text-[10px] uppercase tracking-wider mb-2 text-gray-400">Execution plan ({action.steps.length} steps)</p>
-                <div className="space-y-1.5">
-                  {action.steps.map((s, i) => (
-                    <div key={s.id} className="flex items-center gap-2 text-xs">
-                      <span className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-mono border border-gray-200 text-gray-500 bg-white">{i + 1}</span>
-                      <span className="text-gray-600">{s.label}</span>
-                      {s.requiresConsent && <ShieldCheck size={10} className="text-amber-500 shrink-0" />}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className={cn(
-                'rounded-xl p-3',
-                confirmAction.type === 'approve' ? 'bg-emerald-50 border border-emerald-200' : 'bg-amber-50 border border-amber-200',
-              )}>
-                <p className={cn(
-                  'text-[10px] uppercase tracking-wider mb-1',
-                  confirmAction.type === 'approve' ? 'text-emerald-600' : 'text-amber-600',
-                )}>
-                  {confirmAction.type === 'approve' ? 'Expected outcome' : 'If deferred'}
-                </p>
-                <p className="text-xs text-gray-700">
-                  {confirmAction.type === 'approve' ? action.impact.approved : action.impact.deferred}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2 pt-1">
-                <Button
-                  className={cn(
-                    'w-full',
-                    confirmAction.type === 'approve'
-                      ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                      : 'bg-amber-600 text-white hover:bg-amber-700',
-                  )}
-                  onClick={handleConfirm}
-                >
-                  {confirmAction.type === 'approve' ? 'Approve' : 'Defer'}
-                </Button>
-                <Button variant="outline" className="w-full" onClick={() => setConfirmAction(null)}>
-                  Cancel
-                </Button>
-              </div>
-
-              <p className="text-[10px] text-gray-400 text-center">
-                Confidence {Math.round(action.confidence * 100)}% · {action.steps.length} steps
-              </p>
+      {/* "Why this was recommended" — Collapsible, default CLOSED */}
+      {isEXE001 && action.drivers && action.drivers.length > 0 && (
+        <motion.div variants={fadeUp}>
+          <Card className="border border-border bg-card shadow-sm">
+            <div
+              className="flex items-center justify-between p-5 cursor-pointer hover:bg-muted/30 transition-colors"
+              onClick={() => setWhyOpen(!whyOpen)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setWhyOpen(!whyOpen) } }}
+              tabIndex={0}
+              role="button"
+              aria-expanded={whyOpen}
+            >
+              <h3 className="text-sm font-semibold text-foreground">Why this was recommended</h3>
+              <ChevronDown className={cn('h-5 w-5 text-muted-foreground transition-transform', whyOpen && 'rotate-180')} />
             </div>
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* Execution Stream overlay */}
-      {executionPhase !== 'idle' && (
-        <motion.div
-          initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-white/95 backdrop-blur-sm"
-        >
-          <Card className="border border-border bg-card shadow-lg max-w-md w-full mx-4">
-            <CardContent className="p-8">
-              <h2 className="text-sm font-semibold uppercase tracking-widest text-gray-400 mb-6">
-                Execution Stream
-              </h2>
-              <div className="flex flex-col gap-4">
-                {EXECUTION_STEPS.map((step, i) => {
-                  const status = getStepStatus(step.phase, executionPhase)
-                  return (
-                    <div key={step.phase} className="flex items-center gap-3">
-                      <div className={cn(
-                        'w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-500',
-                        status === 'completed' && 'border-emerald-300 bg-emerald-50',
-                        status === 'active' && 'border-amber-300 bg-amber-50',
-                        status === 'pending' && 'border-gray-200 bg-gray-50',
-                        status === 'active' && !prefersReducedMotion && 'animate-pulse',
-                      )}>
-                        {status === 'completed' ? (
-                          <CheckCircle2 size={14} className="text-emerald-600" />
-                        ) : status === 'active' ? (
-                          <Loader2 size={14} className={cn('text-amber-600', !prefersReducedMotion && 'animate-spin')} />
-                        ) : (
-                          <span className="text-[10px] font-mono text-gray-400">{i + 1}</span>
-                        )}
-                      </div>
-                      <div className="flex flex-col">
-                        <span className={cn(
-                          'text-sm',
-                          status === 'active' ? 'text-gray-900' : status === 'completed' ? 'text-gray-500' : 'text-gray-300',
-                        )}>
-                          {step.label}
-                        </span>
-                        {status === 'active' && (
-                          <span className="text-[10px] text-gray-400 font-mono">{step.detail}</span>
-                        )}
-                      </div>
+            <AnimatePresence initial={false}>
+              {whyOpen && (
+                <motion.div
+                  variants={accordionVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  transition={accordionTransition}
+                  className="overflow-hidden"
+                >
+                  <CardContent className="pt-0 pb-5 px-5 space-y-4">
+                    {/* Decision driver bars */}
+                    <div className="space-y-3">
+                      {action.drivers!.map((driver) => (
+                        <div key={driver.label}>
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm text-foreground">{driver.label}</span>
+                            <span className="text-xs font-mono tabular-nums text-muted-foreground">
+                              {Math.round(driver.value * 100)}%
+                            </span>
+                          </div>
+                          <div className="h-2 bg-muted rounded-full overflow-hidden">
+                            <motion.div
+                              className="h-full bg-amber-500 rounded-full"
+                              initial={{ width: 0 }}
+                              animate={{ width: `${driver.value * 100}%` }}
+                              transition={{ duration: 0.6, ease: 'easeOut' }}
+                            />
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  )
-                })}
-              </div>
-              {executionPhase === 'confirmed' && (
-                <p className="text-xs text-center font-mono text-emerald-600 mt-6">
-                  Action confirmed. Redirecting...
-                </p>
+
+                    {/* Wash Sale Rule note */}
+                    <div className="rounded-lg bg-amber-50 border border-amber-200 p-3">
+                      <p className="text-xs text-amber-800">
+                        <span className="font-semibold">Wash Sale Rule:</span>{' '}
+                        Replacement ETF (ITOT) is substantially different from VTI to comply with IRS 30-day wash sale rule.
+                      </p>
+                    </div>
+
+                    {/* Audit link */}
+                    <Link
+                      to="/govern/audit-detail?id=AUD-2026-0310-004"
+                      className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 hover:text-amber-700 transition-colors"
+                    >
+                      <ExternalLink className="h-3 w-3" />
+                      View audit trail
+                    </Link>
+                  </CardContent>
+                </motion.div>
               )}
-            </CardContent>
+            </AnimatePresence>
           </Card>
         </motion.div>
       )}
     </motion.div>
   )
-}
-
-const EXECUTION_STEPS = [
-  { phase: 'reviewing', label: 'Reviewing', detail: 'Verifying your request...' },
-  { phase: 'signing', label: 'Signing', detail: 'Securing your approval...' },
-  { phase: 'submitting', label: 'Submitting', detail: 'Processing your action...' },
-  { phase: 'confirmed', label: 'Confirmed', detail: 'Action completed.' },
-] as const
-
-function getStepStatus(stepPhase: string, currentPhase: string): 'pending' | 'active' | 'completed' {
-  const order = ['reviewing', 'signing', 'submitting', 'confirmed']
-  const stepIdx = order.indexOf(stepPhase)
-  const currentIdx = order.indexOf(currentPhase)
-  if (stepIdx < currentIdx) return 'completed'
-  if (stepIdx === currentIdx) return 'active'
-  return 'pending'
 }
 
 export default ExecuteApproval

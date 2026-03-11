@@ -1,73 +1,95 @@
 import { motion } from 'framer-motion'
 import { Link } from '@/router'
-import { Waves, ArrowRight, HelpCircle } from 'lucide-react'
-import {
-  creatorStudioFadeUp,
-  creatorStudioStaggerContainer,
-} from '@/lib/motion-presets'
+import { getMotionPreset } from '@/lib/motion-presets'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
-/**
- * Vite SPA catch-all not-found page.
- * Renders the same UI as /404 explicit route for consistency.
- */
+function TridentIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 64 96"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-hidden="true"
+    >
+      {/* Center prong */}
+      <path d="M32 0 L32 60" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      <path d="M32 0 L28 12 L36 12 Z" fill="currentColor" />
+      {/* Left prong */}
+      <path d="M32 24 L14 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M14 4 L12 16 L20 12 Z" fill="currentColor" />
+      {/* Right prong */}
+      <path d="M32 24 L50 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M50 4 L44 12 L52 16 Z" fill="currentColor" />
+      {/* Handle */}
+      <path d="M32 60 L32 92" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
+      {/* Crossbar */}
+      <path d="M24 64 L40 64" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 export default function NotFound() {
+  const prefersReducedMotion = useReducedMotionSafe()
+  const { fadeUp, staggerContainer } = getMotionPreset(prefersReducedMotion)
+
   return (
     <main
       id="main-content"
       role="main"
-      className="relative flex min-h-screen items-center justify-center bg-[var(--bg-oled)]"
+      className="relative flex min-h-screen items-center justify-center bg-[#F8F7F4]"
     >
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:bg-[var(--engine-dashboard)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-slate-950"
-      >
-        Skip to main content
-      </a>
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(40%_30%_at_50%_40%,rgba(0,240,255,0.04),transparent)]"
-        aria-hidden="true"
-      />
-
       <div className="relative z-10 max-w-md px-6 text-center">
         <motion.div
           initial="hidden"
           animate="visible"
-          variants={creatorStudioStaggerContainer}
+          variants={staggerContainer}
         >
-          <motion.div variants={creatorStudioFadeUp} className="mb-6 flex justify-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-500/10">
-              <Waves size={28} className="text-[var(--engine-dashboard)]" />
-            </div>
+          {/* Floating Trident */}
+          <motion.div
+            variants={fadeUp}
+            className="mb-6 flex justify-center"
+          >
+            <motion.div
+              animate={prefersReducedMotion ? {} : { y: [0, -8, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <TridentIcon className="h-20 w-auto text-muted-foreground/40" />
+            </motion.div>
           </motion.div>
 
-          <motion.p variants={creatorStudioFadeUp} className="mb-4 font-mono text-6xl font-bold text-white/10">
+          {/* 404 */}
+          <motion.p
+            variants={fadeUp}
+            className="mb-4 text-8xl font-mono font-bold tabular-nums text-muted-foreground/20 select-none"
+          >
             404
           </motion.p>
+
+          {/* Title */}
           <motion.h1
-            variants={creatorStudioFadeUp}
-            className="mb-3 text-balance text-2xl font-bold tracking-tight text-slate-100 md:text-3xl"
+            variants={fadeUp}
+            className="mb-3 text-2xl font-bold tracking-tight text-foreground"
           >
-            Page not found
+            Lost at Sea
           </motion.h1>
-          <motion.p variants={creatorStudioFadeUp} className="mb-8 text-sm text-slate-400">
-            This route does not exist. Return safely to the command center where your engines are waiting.
+
+          {/* Description */}
+          <motion.p
+            variants={fadeUp}
+            className="mb-8 text-sm text-muted-foreground"
+          >
+            The page you're looking for has drifted beyond our waters.
           </motion.p>
 
-          <motion.div variants={creatorStudioFadeUp}>
+          {/* Return button */}
+          <motion.div variants={fadeUp}>
             <Link
-              to="/dashboard"
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-300 px-6 py-3 text-sm font-semibold text-slate-950 transition-all hover:brightness-110"
+              href="/"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#0A1628] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0A1628]/90"
             >
-              Back to dashboard
-              <ArrowRight size={16} />
+              Return to Shore
             </Link>
-          </motion.div>
-
-          <motion.div variants={creatorStudioFadeUp} className="mt-8">
-            <p className="flex items-center justify-center gap-1.5 text-xs text-slate-500">
-              <HelpCircle size={12} />
-              If you expected this page to exist, contact support.
-            </p>
           </motion.div>
         </motion.div>
       </div>

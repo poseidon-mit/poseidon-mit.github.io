@@ -14,7 +14,7 @@ export interface GovernStats {
   thisMonth: number;
   avgProcessing: string;
   modelAccuracy: string;
-  overrideRate: string;
+  userOverrides: string;
 }
 
 export const auditRecords: AuditRecord[] = [
@@ -85,5 +85,5 @@ export const governStats: GovernStats = {
   thisMonth: 342,
   avgProcessing: "456ms",
   modelAccuracy: "97.2%",
-  overrideRate: "8.3%",
+  userOverrides: "8 of 100",
 };

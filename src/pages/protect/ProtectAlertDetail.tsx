@@ -330,10 +330,9 @@ export default function ProtectAlertDetailPage() {
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('drivers') } }}
             >
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-700">Decision Drivers</h3>
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-700">Why Poseidon Flagged This</h3>
                 <p className="text-xs text-gray-500 tracking-wide mt-1">
-                  Key factors driving this AI decision.{' '}
-                  <span className="font-mono uppercase tracking-widest text-gray-400">Model: Poseidon-ThreatDetect v1.0</span>
+                  Key factors behind this alert
                 </p>
               </div>
               <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform shrink-0', expandedCards.has('drivers') && 'rotate-180')} />

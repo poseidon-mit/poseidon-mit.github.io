@@ -1,89 +1,96 @@
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   ArrowLeft,
-  MessageCircle,
-  Download,
-  RotateCcw,
+  ArrowDown,
   Shield,
   TrendingUp,
   Zap,
   Scale,
-  Eye,
-  Copy,
-  ChevronDown,
   ExternalLink,
 } from 'lucide-react'
 import { Link, useRouter } from '@/router'
-import { ConfidenceIndicator } from '@/components/poseidon'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
-import { formatConfidence, formatDemoTimestamp } from '@/lib/demo-date'
+import { formatDemoTimestamp } from '@/lib/demo-date'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 import { AUDIT_DECISIONS, DEFAULT_DECISION_ID } from '@/lib/govern-audit-data'
-import { useToast } from '@/hooks/useToast'
+import { auditRecords } from '@/data/audit'
 import { cn } from '@/lib/utils'
 
-const ENGINE_MAP: Record<string, { icon: typeof Shield; color: string; bg: string }> = {
-  Protect: { icon: Shield,     color: 'text-emerald-700', bg: 'bg-emerald-50' },
-  Grow:    { icon: TrendingUp, color: 'text-violet-700',  bg: 'bg-violet-50' },
-  Execute: { icon: Zap,        color: 'text-amber-700',   bg: 'bg-amber-50' },
-  Govern:  { icon: Scale,      color: 'text-blue-700',    bg: 'bg-blue-50' },
+/* ── Engine visual config ── */
+const ENGINE_CONFIG: Record<string, {
+  icon: typeof Shield
+  color: string
+  bg: string
+  border: string
+  route: string
+  label: string
+}> = {
+  Protect: { icon: Shield,     color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200', route: '/protect',  label: 'Protect Engine' },
+  Grow:    { icon: TrendingUp, color: 'text-violet-700',  bg: 'bg-violet-50',  border: 'border-violet-200',  route: '/grow',     label: 'Grow Engine' },
+  Execute: { icon: Zap,        color: 'text-amber-700',   bg: 'bg-amber-50',   border: 'border-amber-200',   route: '/execute',  label: 'Execute Engine' },
+  Govern:  { icon: Scale,      color: 'text-blue-700',    bg: 'bg-blue-50',    border: 'border-blue-200',    route: '/govern',   label: 'Govern Engine' },
 }
 
-const STEP_COLORS: Record<string, string> = {
-  Trigger: 'border-gray-300 bg-gray-50 text-gray-600',
-  Analysis: 'border-violet-300 bg-violet-50 text-violet-700',
-  'Generate Recommendation': 'border-violet-300 bg-violet-50 text-violet-700',
-  'User Action': 'border-blue-300 bg-blue-50 text-blue-700',
-  'Approval Required': 'border-amber-300 bg-amber-50 text-amber-700',
-  Completed: 'border-emerald-300 bg-emerald-50 text-emerald-700',
-  Rejected: 'border-red-300 bg-red-50 text-red-700',
+const STATUS_BADGE: Record<string, { label: string; className: string }> = {
+  pending:   { label: 'Pending Review', className: 'border-amber-200 bg-amber-50 text-amber-700' },
+  completed: { label: 'Completed',      className: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
+  rejected:  { label: 'Rejected',       className: 'border-red-200 bg-red-50 text-red-700' },
 }
 
-const COMPLIANCE_INFO: Array<{ key: 'gdpr' | 'ecoa' | 'ccpa'; label: string; description: string }> = [
-  { key: 'gdpr', label: 'GDPR', description: 'Your data rights under European privacy law' },
-  { key: 'ecoa', label: 'ECOA', description: 'Equal treatment in financial decisions' },
-  { key: 'ccpa', label: 'CCPA', description: 'Your California privacy protections' },
-]
-
-function narrateBaseReality(baseReality: Array<{ label: string; value: string }>): string {
-  const map = new Map(baseReality.map(r => [r.label.toLowerCase(), r.value]))
-  const parts: string[] = []
-  const amount = map.get('amount') || map.get('charge amount') || map.get('transaction amount')
-  if (amount) parts.push(`a transaction of ${amount}`)
-  const merchant = map.get('merchant') || map.get('counterparty') || map.get('vendor')
-  if (merchant) parts.push(`from ${merchant}`)
-  const service = map.get('service') || map.get('product') || map.get('category')
-  if (service) parts.push(`for ${service}`)
-  const account = map.get('account') || map.get('card')
-  if (account) parts.push(`on account ${account}`)
-  const risk = map.get('risk level') || map.get('severity')
-  if (risk) parts.push(`assessed at ${risk.toLowerCase()} risk`)
-  if (parts.length > 0) {
-    return parts[0].charAt(0).toUpperCase() + parts.join(', ').slice(1) + '.'
-  }
-  return baseReality.map(r => `${r.label}: ${r.value}`).join(' · ')
+/* ── Map AUD IDs to GV decision IDs ── */
+const AUD_TO_GV: Record<string, string> = {
+  'AUD-2026-0310-001': 'GV-2026-0310-001',
+  'AUD-2026-0310-002': 'GV-2026-0310-002',
+  'AUD-2026-0311-003': 'GV-2026-0310-003',
+  'AUD-2026-0310-004': 'GV-2026-0307-006',
+  'AUD-2026-0309-005': 'GV-2026-0309-004',
+  'AUD-2026-0308-006': 'GV-2026-0307-006',
 }
 
+function resolveDecision(id: string | null) {
+  if (!id) return AUDIT_DECISIONS[DEFAULT_DECISION_ID]
+  // Direct lookup (GV-* IDs)
+  if (AUDIT_DECISIONS[id]) return AUDIT_DECISIONS[id]
+  // Map from AUD-* IDs
+  const mapped = AUD_TO_GV[id]
+  if (mapped && AUDIT_DECISIONS[mapped]) return AUDIT_DECISIONS[mapped]
+  return AUDIT_DECISIONS[DEFAULT_DECISION_ID]
+}
+
+function resolveAuditRecord(id: string | null) {
+  if (!id) return undefined
+  return auditRecords.find(r => r.id === id)
+}
+
+/* ── Confidence label ── */
+function getConfidenceLabel(confidence: number): { label: string; className: string } {
+  if (confidence >= 0.85) return { label: 'High Confidence', className: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
+  if (confidence >= 0.6)  return { label: 'Moderate Confidence', className: 'bg-amber-50 text-amber-700 border-amber-200' }
+  return { label: 'Low Confidence', className: 'bg-gray-50 text-gray-600 border-gray-200' }
+}
+
+/* ── Page Component ── */
 export function GovernAuditDetail() {
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp, staggerContainer } = getMotionPreset(prefersReducedMotion)
-  usePageTitle('Audit Detail')
-  const { showToast } = useToast()
-  const [rawExpanded, setRawExpanded] = useState(false)
+  usePageTitle('Decision Record')
 
   const { search } = useRouter()
   const params = new URLSearchParams(search)
-  const decisionId = params.get('auditId') ?? params.get('decision')
-  const auditEntry = (decisionId && AUDIT_DECISIONS[decisionId]) || AUDIT_DECISIONS[DEFAULT_DECISION_ID]
-  const resolvedTimestamp = formatDemoTimestamp(auditEntry.timestamp)
-  const engineInfo = ENGINE_MAP[auditEntry.engine] ?? ENGINE_MAP.Govern
+  const rawId = params.get('auditId') ?? params.get('decision') ?? params.get('id')
+
+  const decision = resolveDecision(rawId)
+  const auditRecord = resolveAuditRecord(rawId)
+  const engineInfo = ENGINE_CONFIG[decision.engine] ?? ENGINE_CONFIG.Govern
+  const EngineIcon = engineInfo.icon
+  const confidenceInfo = getConfidenceLabel(decision.explanation.confidence)
+
+  // Determine the status — prefer auditRecord status if available, otherwise infer
+  const status = auditRecord?.status ?? 'completed'
+  const statusStyle = STATUS_BADGE[status] ?? STATUS_BADGE.completed
 
   return (
     <motion.div
@@ -102,255 +109,164 @@ export function GovernAuditDetail() {
           className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Audit Log
+          Back to Activity Log
         </Link>
       </motion.div>
 
-      {/* Header Card */}
+      {/* ── Record Header ── */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-4">
-              <div className={cn('flex h-14 w-14 items-center justify-center rounded-2xl shrink-0', engineInfo.bg)}>
-                <Eye className={cn('h-7 w-7', engineInfo.color)} />
+        <div className="rounded-2xl border border-gray-200 bg-white p-6">
+          <div className="flex items-start gap-4">
+            <div className={cn('flex h-12 w-12 items-center justify-center rounded-xl shrink-0', engineInfo.bg)}>
+              <EngineIcon className={cn('h-6 w-6', engineInfo.color)} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 text-sm text-gray-400 font-mono tabular-nums">
+                <span>{decision.id}</span>
+                <span className="text-gray-300">|</span>
+                <span>{formatDemoTimestamp(decision.timestamp)}</span>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-500">Audit Record #{auditEntry.id}</p>
-                <h1 className="text-2xl font-bold text-gray-900">{auditEntry.engine}: {auditEntry.action}</h1>
-                <p className="text-sm text-gray-400 mt-1">{resolvedTimestamp}</p>
-                <div className="flex flex-wrap items-center gap-2 mt-3">
-                  <Badge variant="outline" className={cn(engineInfo.bg, engineInfo.color)}>
-                    {auditEntry.engine}
-                  </Badge>
-                  <Badge variant="outline" className="border-blue-200 bg-blue-50 text-blue-700">
-                    Audit Record
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Decision Chain */}
-      <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-900">Decision Chain</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-0 relative">
-              <div className="absolute left-[15px] top-4 bottom-4 w-px bg-gray-200" />
-              {auditEntry.topFactors.map((factor, i) => {
-                const stepColor = STEP_COLORS[factor.label] ?? 'border-blue-300 bg-blue-50 text-blue-700'
-                return (
-                  <div key={factor.label} className="flex gap-4 relative py-4">
-                    <div className={cn(
-                      'flex-shrink-0 w-8 h-8 rounded-full border flex items-center justify-center text-xs font-bold z-10',
-                      stepColor,
-                    )}>
-                      {i + 1}
-                    </div>
-                    <div className="flex-1 min-w-0 flex flex-col gap-2">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-sm font-medium text-gray-900">{factor.label}</span>
-                        <span className="text-xs font-mono font-bold text-blue-600 tabular-nums">
-                          {formatConfidence(factor.contribution)}
-                        </span>
-                      </div>
-                      <Progress value={factor.contribution * 100} />
-                      <p className="text-xs text-gray-500 leading-relaxed">{factor.note}</p>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Input Data + Model Details (2-column) */}
-      <motion.div variants={fadeUp} className="grid gap-6 lg:grid-cols-2">
-        {/* Input Data */}
-        <Card className="border border-border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-900">Input Data</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-gray-600 leading-relaxed mb-4">
-              {narrateBaseReality(auditEntry.baseReality)}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {auditEntry.baseReality.map((row) => (
-                <span
-                  key={row.label}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-xs"
-                >
-                  <span className="text-gray-400 font-mono uppercase tracking-wider text-[10px]">{row.label}</span>
-                  <span className="text-gray-700">{row.value}</span>
-                </span>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Model Details */}
-        <Card className="border border-border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-900">Model Details</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between py-2 border-b border-gray-100">
-              <span className="text-sm text-gray-500">Model</span>
-              <span className="text-sm font-mono font-medium text-gray-900">{auditEntry.model.name} v{auditEntry.model.version}</span>
-            </div>
-            <div className="flex items-center justify-between py-2 border-b border-gray-100">
-              <span className="text-sm text-gray-500">Accuracy</span>
-              <span className="text-sm font-semibold text-gray-900">{auditEntry.model.accuracy}%</span>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">Confidence</span>
-                <span className="text-sm font-bold text-gray-900">{formatConfidence(auditEntry.explanation.confidence)}</span>
-              </div>
-              <Progress value={auditEntry.explanation.confidence * 100} />
-            </div>
-            <div>
-              <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Data sources</span>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {auditEntry.dataSources.map((src) => (
-                  <span key={src} className="inline-flex px-2.5 py-1 rounded-lg text-xs text-gray-600 border border-gray-200 bg-gray-50 font-mono">
-                    {src}
-                  </span>
-                ))}
+              <h1 className="text-xl font-bold text-gray-900 mt-1">{decision.action}</h1>
+              <div className="flex flex-wrap items-center gap-2 mt-3">
+                <Badge variant="outline" className={cn('text-xs', engineInfo.bg, engineInfo.color, engineInfo.border)}>
+                  {decision.engine}
+                </Badge>
+                <Badge variant="outline" className={cn('text-xs', statusStyle.className)}>
+                  {statusStyle.label}
+                </Badge>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* The Outcome */}
-      <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-900">The Outcome</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            <p className="text-base text-gray-700 leading-relaxed">
-              {auditEntry.explanation.summary}
-            </p>
-
-            {/* Compliance */}
-            <div className="pt-4 border-t border-gray-100">
-              <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Your Regulatory Protections</span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
-                {COMPLIANCE_INFO.map((reg) => (
-                  <div key={reg.key} className="flex flex-col gap-1.5 px-4 py-3 rounded-xl bg-gray-50 border border-gray-200">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-gray-900">{reg.label}</span>
-                      {auditEntry.compliance[reg.key] && (
-                        <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Active</span>
-                      )}
-                    </div>
-                    <span className="text-xs text-gray-500 leading-relaxed">{reg.description}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Your Voice — Actions */}
-      <motion.div variants={fadeUp}>
-        <h3 className="text-sm font-semibold uppercase tracking-widest text-gray-400 mb-3">Your Voice</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button
-            type="button"
-            onClick={() => {
-              const fab = document.querySelector<HTMLButtonElement>('[aria-label*="Talk your money"]')
-              if (fab) fab.click()
-            }}
-            className="rounded-2xl border border-gray-200 bg-card p-5 flex flex-col gap-3 hover:bg-gray-50 transition-colors cursor-pointer text-left shadow-sm"
-          >
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-violet-50 border border-violet-200">
-              <MessageCircle size={18} className="text-violet-600" />
-            </div>
-            <h3 className="text-sm font-semibold text-gray-900">I disagree with this</h3>
-            <p className="text-xs text-gray-500 leading-relaxed">Talk to our AI about this decision and share your perspective.</p>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => showToast({ message: 'Review request submitted', variant: 'success' })}
-            className="rounded-2xl border border-gray-200 bg-card p-5 flex flex-col gap-3 hover:bg-gray-50 transition-colors cursor-pointer text-left shadow-sm"
-          >
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-50 border border-blue-200">
-              <RotateCcw size={18} className="text-blue-600" />
-            </div>
-            <h3 className="text-sm font-semibold text-gray-900">Request review</h3>
-            <p className="text-xs text-gray-500 leading-relaxed">Ask for a human review of this automated decision.</p>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => showToast({ message: 'Preparing download...', variant: 'info' })}
-            className="rounded-2xl border border-gray-200 bg-card p-5 flex flex-col gap-3 hover:bg-gray-50 transition-colors cursor-pointer text-left shadow-sm"
-          >
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200">
-              <Download size={18} className="text-emerald-600" />
-            </div>
-            <h3 className="text-sm font-semibold text-gray-900">Download record</h3>
-            <p className="text-xs text-gray-500 leading-relaxed">Get a copy of this decision record for your files.</p>
-          </button>
+          </div>
         </div>
       </motion.div>
 
-      {/* Raw Data (JSON) */}
+      {/* ── Decision Flow: INPUT -> MODEL -> OUTPUT ── */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm overflow-hidden">
-          <button
-            type="button"
-            onClick={() => setRawExpanded(!rawExpanded)}
-            className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors"
-          >
-            <span className="text-sm font-semibold text-gray-700">Raw Data (JSON)</span>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs text-gray-500"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  navigator.clipboard.writeText(JSON.stringify(auditEntry, null, 2))
-                  showToast({ message: 'Copied to clipboard', variant: 'success' })
-                }}
-              >
-                <Copy className="h-3.5 w-3.5 mr-1" />
-                Copy
-              </Button>
-              <ChevronDown size={16} className={cn('text-gray-400 transition-transform', rawExpanded && 'rotate-180')} />
+        <h2 className="text-sm font-semibold uppercase tracking-widest text-gray-400 mb-4">Decision Flow</h2>
+
+        <div className="flex flex-col items-center gap-0">
+          {/* INPUT card */}
+          <div className="w-full rounded-2xl border border-gray-200 bg-white p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-[11px] font-bold text-gray-500">1</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">Input</span>
             </div>
-          </button>
-          {rawExpanded && (
-            <div className="border-t border-gray-200">
-              <pre className="bg-gray-900 text-gray-300 p-6 text-xs font-mono overflow-x-auto max-h-96">
-                {JSON.stringify(auditEntry, null, 2)}
-              </pre>
+            <p className="text-sm text-gray-700 leading-relaxed mb-3">
+              {narrateInput(decision.baseReality)}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {decision.baseReality.map((row) => (
+                <span
+                  key={row.label}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 border border-gray-100 text-xs"
+                >
+                  <span className="text-gray-400 font-mono uppercase tracking-wider text-[10px]">{row.label}</span>
+                  <span className="text-gray-700 font-medium">{row.value}</span>
+                </span>
+              ))}
             </div>
-          )}
-        </Card>
+          </div>
+
+          {/* Down arrow */}
+          <div className="flex items-center justify-center h-10">
+            <ArrowDown className="h-5 w-5 text-gray-300" />
+          </div>
+
+          {/* MODEL card */}
+          <div className={cn('w-full rounded-2xl border bg-white p-5', engineInfo.border)}>
+            <div className="flex items-center gap-2 mb-3">
+              <span className={cn('flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold', engineInfo.bg, engineInfo.color)}>2</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">Model Analysis</span>
+            </div>
+            <div className="flex items-center gap-3 mb-2">
+              <Badge variant="outline" className={cn('text-xs font-semibold', confidenceInfo.className)}>
+                {confidenceInfo.label}
+              </Badge>
+            </div>
+            <p className="text-xs text-gray-400 font-mono">
+              {decision.model.name} v{decision.model.version}
+            </p>
+          </div>
+
+          {/* Down arrow */}
+          <div className="flex items-center justify-center h-10">
+            <ArrowDown className="h-5 w-5 text-gray-300" />
+          </div>
+
+          {/* OUTPUT card */}
+          <div className="w-full rounded-2xl border border-gray-200 bg-white p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-50 text-[11px] font-bold text-blue-600">3</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">Output</span>
+            </div>
+            <p className="text-sm text-gray-700 leading-relaxed">
+              {decision.explanation.summary}
+            </p>
+          </div>
+        </div>
       </motion.div>
 
-      {/* Sealed footer */}
-      <motion.div variants={fadeUp} className="flex items-center justify-center gap-3 py-6 border-t border-gray-200">
-        <Scale size={12} className="text-gray-300" />
-        <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-mono">
-          Permanently sealed on Poseidon immutable ledger · {auditEntry.id}
-        </p>
+      {/* ── Related Item link ── */}
+      {decision.engine !== 'Govern' && (
+        <motion.div variants={fadeUp}>
+          <Link
+            to={engineInfo.route}
+            className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-5 hover:bg-gray-50 transition-colors group"
+          >
+            <div className="flex items-center gap-3">
+              <div className={cn('flex h-10 w-10 items-center justify-center rounded-xl', engineInfo.bg)}>
+                <EngineIcon className={cn('h-5 w-5', engineInfo.color)} />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900">View in {engineInfo.label}</p>
+                <p className="text-xs text-gray-400">See the original context for this decision</p>
+              </div>
+            </div>
+            <ExternalLink className="h-4 w-4 text-gray-300 group-hover:text-blue-500 transition-colors" />
+          </Link>
+        </motion.div>
+      )}
+
+      {/* ── Processing metadata (small/muted) ── */}
+      <motion.div variants={fadeUp} className="flex items-center justify-center gap-4 py-6 border-t border-gray-100">
+        <span className="text-[11px] text-gray-400 font-mono tabular-nums">
+          {auditRecord ? `${auditRecord.processingMs}ms` : `${decision.model.accuracy}% accuracy`}
+        </span>
+        <span className="text-gray-200">|</span>
+        <span className="text-[11px] text-gray-400 font-mono">
+          {decision.model.name} v{decision.model.version}
+        </span>
+        <span className="text-gray-200">|</span>
+        <span className="text-[11px] text-gray-400 font-mono">
+          {decision.id}
+        </span>
       </motion.div>
     </motion.div>
   )
+}
+
+/* ── Helper: narrate the base reality into a sentence ── */
+function narrateInput(baseReality: Array<{ label: string; value: string }>): string {
+  const map = new Map(baseReality.map(r => [r.label.toLowerCase(), r.value]))
+  const parts: string[] = []
+
+  const amount = map.get('amount') || map.get('charge amount') || map.get('transaction amount')
+  if (amount) parts.push(`a transaction of ${amount}`)
+  const merchant = map.get('merchant') || map.get('counterparty') || map.get('vendor')
+  if (merchant) parts.push(`from ${merchant}`)
+  const location = map.get('location')
+  if (location) parts.push(`originating from ${location}`)
+  const account = map.get('account') || map.get('card')
+  if (account) parts.push(`on ${account}`)
+  const assessment = map.get('assessment') || map.get('status')
+  if (assessment) parts.push(`(${assessment})`)
+
+  if (parts.length > 0) {
+    const sentence = parts.join(' ')
+    return sentence.charAt(0).toUpperCase() + sentence.slice(1) + '.'
+  }
+
+  return baseReality.map(r => `${r.label}: ${r.value}`).join(' · ')
 }
 
 export default GovernAuditDetail

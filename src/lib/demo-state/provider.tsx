@@ -12,9 +12,11 @@ import {
   type DemoAuthMethod,
   type DemoExecuteDecision,
   type DemoGovernEngine,
+  type DemoRecommendationDecision,
   type DemoSettingsState,
   type DemoState,
   type DemoSupportTicket,
+  type DemoThreatResolution,
   type EntryIntent,
 } from './types'
 import { loadDemoState, resetDemoStateStorage, saveDemoState } from './storage'
@@ -44,6 +46,8 @@ interface DemoStateContextValue {
     decision: Exclude<DemoExecuteDecision, 'pending'>
   }) => void
   resetExecuteDecision: (actionId: string, actionTitle: string) => void
+  resolveThreat: (threatId: string, resolution: DemoThreatResolution) => void
+  decideRecommendation: (recommendationId: string, decision: DemoRecommendationDecision) => void
   updateSettings: (patch: Partial<DemoSettingsState>) => void
   updateGovernTrust: (
     engine: DemoGovernEngine,
@@ -63,6 +67,8 @@ const DemoStateContext = createContext<DemoStateContextValue>({
   markOnboardingCompleted: () => {},
   setExecuteDecision: () => {},
   resetExecuteDecision: () => {},
+  resolveThreat: () => {},
+  decideRecommendation: () => {},
   updateSettings: () => {},
   updateGovernTrust: () => {},
   createSupportTicket: (input) => ({
@@ -173,6 +179,32 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
+  const resolveThreat = useCallback((threatId: string, resolution: DemoThreatResolution) => {
+    setState((prev) => ({
+      ...prev,
+      threats: {
+        ...prev.threats,
+        resolvedThreats: {
+          ...prev.threats.resolvedThreats,
+          [threatId]: { resolution, resolvedAt: new Date().toISOString() },
+        },
+      },
+    }))
+  }, [])
+
+  const decideRecommendation = useCallback((recommendationId: string, decision: DemoRecommendationDecision) => {
+    setState((prev) => ({
+      ...prev,
+      recommendations: {
+        ...prev.recommendations,
+        decisions: {
+          ...prev.recommendations.decisions,
+          [recommendationId]: { decision, decidedAt: new Date().toISOString() },
+        },
+      },
+    }))
+  }, [])
+
   const resetExecuteDecision = useCallback((actionId: string, actionTitle: string) => {
     setState((prev) => {
       const nextStates = { ...prev.execute.actionStates }
@@ -261,6 +293,8 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
       markOnboardingCompleted,
       setExecuteDecision,
       resetExecuteDecision,
+      resolveThreat,
+      decideRecommendation,
       updateSettings,
       updateGovernTrust,
       createSupportTicket,
@@ -274,6 +308,8 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
       markOnboardingCompleted,
       setExecuteDecision,
       resetExecuteDecision,
+      resolveThreat,
+      decideRecommendation,
       updateSettings,
       updateGovernTrust,
       createSupportTicket,

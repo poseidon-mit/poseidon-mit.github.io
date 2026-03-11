@@ -12,7 +12,8 @@ export interface GrowStats {
   totalIdentified: string;
   realized: string;
   pending: string;
-  acceptanceRate: string;
+  acceptedCount: number;
+  totalRecommendations: number;
 }
 
 export const recommendations: Recommendation[] = [
@@ -58,5 +59,6 @@ export const growStats: GrowStats = {
   totalIdentified: "$2,437/year",
   realized: "$192.00",
   pending: "$2,245/year",
-  acceptanceRate: "8 of 12 Accepted",
+  acceptedCount: 1,
+  totalRecommendations: 4,
 };
