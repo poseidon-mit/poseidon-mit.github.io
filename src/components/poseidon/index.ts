@@ -60,16 +60,16 @@ export { PrioritySpotlight, type PrioritySpotlightProps } from './priority-spotl
 export { ProtectAnomalyRadar, type ProtectAnomalyRadarProps, ProtectThreatPosture, type ProtectThreatPostureProps } from './protect-hero'
 
 /* ── Grow Hero ── */
-export { GrowGrowthAdvantage, type GrowGrowthAdvantageProps } from './grow-hero'
+export { GrowHero, GrowGrowthAdvantage, type GrowHeroProps, type GrowGrowthAdvantageProps } from './grow-hero'
 
 /* ── Dashboard Hero ── */
 export { DashboardHero, type DashboardHeroProps } from './dashboard-hero'
 
 /* ── Execute Hero ── */
-export { ExecuteApprovalCommandDeck, type ExecuteApprovalCommandDeckProps } from './execute-hero'
+export { ExecuteHero, ExecuteApprovalCommandDeck, type ExecuteHeroProps, type ExecuteApprovalCommandDeckProps } from './execute-hero'
 
 /* ── Govern Hero ── */
-export { GovernImmutableLedger, type GovernImmutableLedgerProps } from './govern-hero'
+export { GovernHero, GovernImmutableLedger, type GovernHeroProps, type GovernImmutableLedgerProps } from './govern-hero'
 
 /* ── Settings Hero ── */
 export { SettingsControlCenter, type SettingsControlCenterProps } from './settings-hero'

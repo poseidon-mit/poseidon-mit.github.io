@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, within } from '@testing-library/react'
-import { ExecuteApprovalCommandDeck } from '../components/poseidon/execute-hero'
+import { ExecuteHero, ExecuteApprovalCommandDeck } from '../components/poseidon/execute-hero'
 import { RouterProvider } from '../router'
 import { DemoStateProvider } from '../lib/demo-state/provider'
 import { useDemoState } from '../lib/demo-state/provider'
@@ -34,7 +34,7 @@ const DEFAULT_PROPS = {
 
 function renderHero(overrides: Partial<typeof DEFAULT_PROPS> = {}) {
   const props = { ...DEFAULT_PROPS, ...overrides }
-  const result = render(<ExecuteApprovalCommandDeck {...props} />)
+  const result = render(<ExecuteHero {...props} />)
   const hero = result.container.querySelector('[role="region"]') as HTMLElement
   return { ...result, props, hero }
 }
@@ -58,7 +58,7 @@ describe('ExecuteApprovalCommandDeck', () => {
 
   it('renders agent step count in pipeline', () => {
     const { hero } = renderHero()
-    expect(within(hero).getByText('2/3 steps')).toBeInTheDocument()
+    expect(within(hero).getByText('2/3 steps completed')).toBeInTheDocument()
   })
 
   it('renders featured action title and amount', () => {
@@ -79,22 +79,21 @@ describe('ExecuteApprovalCommandDeck', () => {
 
   it('renders rollback info from rollbackHours', () => {
     const { hero } = renderHero()
-    expect(within(hero).getByText('48h reversible')).toBeInTheDocument()
+    expect(within(hero).getAllByText('48h reversible').length).toBeGreaterThanOrEqual(1)
   })
 
   it('displays queue total as hero number', () => {
     const { hero } = renderHero({ queueTotal: 5 })
-    const heroNumber = hero.querySelector('.text-4xl')
+    const heroNumber = hero.querySelector('.text-5xl')
     expect(heroNumber?.textContent).toBe('5')
-    expect(within(hero).getByText(/5 actions pending/)).toBeInTheDocument()
+    expect(within(hero).getByText(/actions pending approval/)).toBeInTheDocument()
   })
 
   it('uses singular "action" when queueTotal is 1', () => {
     const { hero } = renderHero({ queueTotal: 1 })
-    // Hero number renders as "1" in the large text span
-    const heroNumber = hero.querySelector('.text-4xl')
+    const heroNumber = hero.querySelector('.text-5xl')
     expect(heroNumber?.textContent).toBe('1')
-    expect(within(hero).getByText(/1 action pending/)).toBeInTheDocument()
+    expect(within(hero).getByText(/action pending approval/)).toBeInTheDocument()
   })
 
   it('fires onReviewApproval on CTA click', () => {
@@ -106,7 +105,7 @@ describe('ExecuteApprovalCommandDeck', () => {
 
   it('renders empty state when featuredAction is null', () => {
     const { hero } = renderHero({ featuredAction: null, onReviewApproval: null })
-    expect(within(hero).getByText('Queue clear')).toBeInTheDocument()
+    expect(within(hero).getByText('Queue Clear')).toBeInTheDocument()
     expect(within(hero).queryByText('Dispute unrecognized charge')).not.toBeInTheDocument()
     expect(within(hero).queryByText('Agent Prepared')).not.toBeInTheDocument()
     expect(within(hero).queryByText('Cross-Engine Sources')).not.toBeInTheDocument()
@@ -210,15 +209,15 @@ describe('ExecutePage hero state mutation', () => {
     const hero = container.querySelector('[role="region"]') as HTMLElement
 
     // Before: hero number = 7
-    const heroNumber = hero.querySelector('.text-4xl')
+    const heroNumber = hero.querySelector('.text-5xl')
     expect(heroNumber?.textContent).toBe('7')
-    expect(hero.textContent).toContain('7 actions pending')
+    expect(hero.textContent).toContain('actions pending approval')
 
     fireEvent.click(screen.getByTestId('approve-exe001'))
 
     // After: hero number = 6
     expect(heroNumber?.textContent).toBe('6')
-    expect(hero.textContent).toContain('6 actions pending')
+    expect(hero.textContent).toContain('actions pending approval')
   })
 })
 
@@ -330,7 +329,7 @@ describe('ExecutePage empty queue state', () => {
     }
 
     // Empty state reached via page-level state derivation
-    expect(within(hero).getByText('Queue clear')).toBeInTheDocument()
+    expect(within(hero).getByText('Queue Clear')).toBeInTheDocument()
     expect(within(hero).queryByText(/actions pending/)).not.toBeInTheDocument()
   })
 })
@@ -361,5 +360,15 @@ describe('Execute single queue layout', () => {
     expect(screen.getByTestId('system-status-row')).toBeInTheDocument()
     // No action list or batch controls on the page
     expect(screen.queryByText(/select all/i)).not.toBeInTheDocument()
+  })
+})
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 7: BACKWARD COMPATIBILITY
+   ═══════════════════════════════════════════════════════ */
+
+describe('ExecuteApprovalCommandDeck (backward compat)', () => {
+  it('is the same component as ExecuteHero', () => {
+    expect(ExecuteApprovalCommandDeck).toBe(ExecuteHero)
   })
 })

@@ -1,11 +1,14 @@
 import { useMemo } from 'react'
-import { GrowGrowthAdvantage } from '@/components/poseidon/grow-hero'
+import { GrowHero } from '@/components/poseidon/grow-hero'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useRouter } from '@/router'
 import {
   selectGrowSimulationData,
   selectProjected3yAdvantage,
   selectRecommendationsSummary,
+  selectSpotlightRecommendation,
+  selectGoals,
+  selectCohortHeadlines,
 } from '@/domain/poseidon-universe'
 
 export default function GrowPage() {
@@ -28,26 +31,41 @@ export default function GrowPage() {
     [recs],
   )
 
-  // Map canonical GrowthSimulationPoint to hero's expected shape
+  const spotlightRec = useMemo(() => {
+    const r = selectSpotlightRecommendation()
+    return r ? { title: r.title, monthlySavings: r.monthlySavings, confidence: r.confidence } : null
+  }, [])
+  const goals = useMemo(() =>
+    selectGoals().map(g => ({ id: g.id, title: g.title, currentUsd: g.currentUsd, targetUsd: g.targetUsd })),
+    [],
+  )
+  const cohortHeadline = useMemo(() => selectCohortHeadlines().grow, [])
+
+  // Include low/high for confidence band
   const heroSimData = useMemo(
     () =>
       simulationData.map((d) => ({
         year: d.year,
         baseline: d.baseline,
         aiOptimized: d.aiOptimized,
+        low: d.low,
+        high: d.high,
       })),
     [simulationData],
   )
 
   return (
     <div className="hero-viewport">
-      <GrowGrowthAdvantage
+      <GrowHero
         projectedGain={projectedGain}
         totalMonthlySavings={totalMonthlySavings}
         avgConfidence={avgConfidence}
         recommendationCount={recs.length}
         simulationData={heroSimData}
         onViewRecommendations={() => router.navigate('/grow/recommendations')}
+        spotlightRec={spotlightRec}
+        goals={goals}
+        cohortHeadline={cohortHeadline}
       />
     </div>
   )

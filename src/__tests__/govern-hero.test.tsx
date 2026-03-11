@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { GovernImmutableLedger } from '../components/poseidon/govern-hero'
+import { GovernHero, GovernImmutableLedger } from '../components/poseidon/govern-hero'
 import { RouterProvider } from '../router'
 import GovernPage from '../pages/Govern'
 
@@ -51,24 +51,28 @@ const DEFAULT_PROPS = {
   ],
 }
 
-function renderHero(overrides: Partial<typeof DEFAULT_PROPS> = {}) {
+function renderHero(overrides: Record<string, unknown> = {}) {
   const props = { ...DEFAULT_PROPS, ...overrides }
-  return { ...render(<GovernImmutableLedger {...props} />), props }
+  return { ...render(<GovernHero {...props} />), props }
 }
 
 /* ═══════════════════════════════════════════════════════
    FACADE-LEVEL TESTS
    ═══════════════════════════════════════════════════════ */
 
-describe('GovernImmutableLedger', () => {
-  it('renders CountUp aria-label with locale-formatted total', () => {
+describe('GovernHero', () => {
+  it('renders "errors in N AI decisions" headline', () => {
     renderHero()
-    expect(screen.getByLabelText('47')).toBeInTheDocument()
+    expect(screen.getByText(/errors in/)).toBeInTheDocument()
+    // 47 appears in both headline and portal badge — use getAllByText
+    expect(screen.getAllByText('47').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText(/AI decisions/)).toBeInTheDocument()
   })
 
-  it('renders the headline', () => {
+  it('renders CountUp with errorCount (defaults to 0)', () => {
     renderHero()
-    expect(screen.getByText('Decisions Audited & Secured')).toBeInTheDocument()
+    // CountUp renders aria-label with the target value
+    expect(screen.getByLabelText('0')).toBeInTheDocument()
   })
 
   it('renders engine breakdown labels', () => {
@@ -79,11 +83,114 @@ describe('GovernImmutableLedger', () => {
     expect(screen.getByText(/Govern 11%/)).toBeInTheDocument()
   })
 
-  it('renders audit entries', () => {
+  it('renders "What Poseidon checked" section label', () => {
+    renderHero()
+    expect(screen.getByText('What Poseidon checked')).toBeInTheDocument()
+  })
+
+  it('renders audit entries in Zone B', () => {
     renderHero()
     expect(screen.getByText('Suspicious charge flagged — AMZN $347.89')).toBeInTheDocument()
     expect(screen.getByText('High-yield savings opportunity identified — $840/yr potential')).toBeInTheDocument()
     expect(screen.getByText('Subscription price increase detected — Spotify $10.99 → $11.99')).toBeInTheDocument()
+  })
+
+  it('renders "Activity Log" label in Zone B', () => {
+    renderHero()
+    expect(screen.getByText('Activity Log')).toBeInTheDocument()
+  })
+
+  it('renders status breakdown when provided', () => {
+    renderHero({ statusBreakdown: { verified: 44, pending: 2, flagged: 1 } })
+    // Numbers may appear in multiple places — use getAllByText
+    expect(screen.getAllByText('44').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText('Reviewing')).toBeInTheDocument()
+    // "Verified" also appears in audit entry statuses — use getAllByText
+    expect(screen.getAllByText('Verified').length).toBeGreaterThanOrEqual(1)
+    // "Flagged" label in breakdown
+    expect(screen.getAllByText(/Flagged/).length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('renders trust guarantees when provided', () => {
+    renderHero({
+      trustGuarantees: {
+        autoExecutionsWithoutConsent: 0,
+        auditCoveragePercent: 100,
+        llmTrainingOptOut: true,
+      },
+    })
+    expect(screen.getByText(/actions taken without your approval/)).toBeInTheDocument()
+    expect(screen.getByText(/of decisions have a paper trail/)).toBeInTheDocument()
+    expect(screen.getByText('Your data is never used to train AI')).toBeInTheDocument()
+  })
+
+  it('renders spotlight alert for non-Verified entries', () => {
+    renderHero({
+      spotlightEntry: {
+        id: 'GV-SPOT-001',
+        action: 'Unusual API access pattern detected',
+        status: 'Flagged' as const,
+        confidence: 0.72,
+      },
+    })
+    expect(screen.getByText('Unusual API access pattern detected')).toBeInTheDocument()
+    expect(screen.getByText('72% confidence')).toBeInTheDocument()
+  })
+
+  it('does not render spotlight alert for Verified entries', () => {
+    renderHero({
+      spotlightEntry: {
+        id: 'GV-SPOT-002',
+        action: 'This should not appear',
+        status: 'Verified' as const,
+        confidence: 0.99,
+      },
+    })
+    expect(screen.queryByText('This should not appear')).not.toBeInTheDocument()
+  })
+
+  it('expands audit entry on click to reveal top factor', () => {
+    renderHero()
+    const entry = screen.getByText('Suspicious charge flagged — AMZN $347.89')
+    const button = entry.closest('button')!
+    fireEvent.click(button)
+    // Top factor "Amount deviation" is unique to this entry
+    const factorText = screen.getByText(/Amount deviation/)
+    expect(factorText).toBeInTheDocument()
+    // The expanded container should now have opacity-100 class
+    const expandDiv = factorText.closest('[class*="transition-all"]')!
+    expect(expandDiv.className).toContain('opacity-100')
+  })
+
+  it('renders "Every action Poseidon took was verified safe." subtitle', () => {
+    renderHero()
+    expect(screen.getByText('Every action Poseidon took was verified safe.')).toBeInTheDocument()
+  })
+
+  it('renders "Your safety guarantees" section label when trustGuarantees provided', () => {
+    renderHero({
+      trustGuarantees: {
+        autoExecutionsWithoutConsent: 0,
+        auditCoveragePercent: 100,
+        llmTrainingOptOut: false,
+      },
+    })
+    expect(screen.getByText('Your safety guarantees')).toBeInTheDocument()
+  })
+})
+
+/* ═══════════════════════════════════════════════════════
+   BACKWARD COMPATIBILITY
+   ═══════════════════════════════════════════════════════ */
+
+describe('GovernImmutableLedger backward compat', () => {
+  it('GovernImmutableLedger is the same component as GovernHero', () => {
+    expect(GovernImmutableLedger).toBe(GovernHero)
+  })
+
+  it('renders when used as GovernImmutableLedger', () => {
+    render(<GovernImmutableLedger {...DEFAULT_PROPS} />)
+    expect(screen.getByText(/errors in/)).toBeInTheDocument()
   })
 })
 
@@ -101,34 +208,28 @@ describe('GovernPage integration', () => {
     )
   }
 
-  it('renders the hero with audit total', () => {
+  it('renders the hero with "errors in" headline', () => {
     renderGovern()
-    expect(screen.getByText('Decisions Audited & Secured')).toBeInTheDocument()
+    expect(screen.getByText(/errors in/)).toBeInTheDocument()
+    expect(screen.getByText(/AI decisions/)).toBeInTheDocument()
   })
 
-  it('portal bar navigates to /govern/audit on click', () => {
+  it('renders status breakdown from canonical data', () => {
     renderGovern()
-    const link = screen.getByRole('link', { name: /view full audit ledger/i })
-    fireEvent.click(link)
-    expect(window.location.pathname).toBe('/govern/audit')
+    // "Verified" appears in both breakdown label and audit entry statuses
+    expect(screen.getAllByText('Verified').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText('Reviewing')).toBeInTheDocument()
   })
 
-  it('renders status badge above hero', () => {
+  it('renders trust guarantees section', () => {
     renderGovern()
-    expect(screen.getByText('Audit Active')).toBeInTheDocument()
+    expect(screen.getByText('Your safety guarantees')).toBeInTheDocument()
+    expect(screen.getByText(/actions taken without your approval/)).toBeInTheDocument()
   })
 
-  it('renders prelude in correct order: badge → h1 → hero card', () => {
+  it('portal bar links to /govern/audit', () => {
     renderGovern()
-    const badge = screen.getByText('Audit Active')
-    const h1 = screen.getByRole('heading', { level: 1 })
-    const heroCard = screen.getByText('Decisions Audited & Secured').closest('[class*="glass-card"]')!
-
-    expect(badge).toBeInTheDocument()
-    expect(h1).toHaveClass('sr-only')
-
-    // DOM order
-    expect(badge.compareDocumentPosition(h1) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
-    expect(h1.compareDocumentPosition(heroCard) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    const link = screen.getByRole('link', { name: /activity log/i })
+    expect(link).toHaveAttribute('href', '/govern/audit')
   })
 })

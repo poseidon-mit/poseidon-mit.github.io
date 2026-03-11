@@ -1,25 +1,27 @@
 /**
- * Execute Hero — "Approval Command Deck" bento for the /execute page.
+ * Execute Hero — "Execution Command Deck" bento for the /execute page.
  *
- * Asymmetric 2-column layout:
- * - Left primary pane: headline + featured action spotlight + CTA + queue summary
- * - Right column: execution pipeline (top) + cross-engine sources (bottom)
+ * Full 3-zone HeroBento layout:
+ * - Zone A (Action): headline, hero number, urgency bar, spotlight action, CTA
+ * - Zone B (Proof): execution pipeline, savings potential, cross-engine sources
+ * - Zone C (Portal): navigation links to queue, savings, audit
  *
- * Empty state (no pending): single-column "Queue clear" message, no right column.
+ * Empty state: celebratory queue-clear with savings stat.
  */
-import { ArrowRight, CheckCircle, RotateCcw, Timer, Zap } from 'lucide-react'
+import { ArrowRight, CheckCircle, RotateCcw, Timer, Zap, ShieldCheck } from 'lucide-react'
 import { HeroBento } from './hero-bento'
 import { CountUp } from './count-up'
 import { ListPortalBar } from './list-portal-bar'
 import { ConfidenceIndicator } from './confidence-indicator'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
-import { ENGINE_BADGE_CLASS } from '@/lib/engine-color-map'
-import type { ExecuteEngineName } from '@/domain/poseidon-universe/types'
+import { ENGINE_BADGE_CLASS, ENGINE_COLOR_MAP } from '@/lib/engine-color-map'
+import { EXECUTION_TYPE_BADGE } from '@/lib/execution-type-config'
+import type { ExecuteEngineName, ExecutionType } from '@/domain/poseidon-universe/types'
 
 /* ── Types ── */
 
-export interface ExecuteApprovalCommandDeckProps {
+export interface ExecuteHeroProps {
   queueTotal: number
   urgentCount: number
   agentStepsCompleted: number
@@ -34,6 +36,8 @@ export interface ExecuteApprovalCommandDeckProps {
     sourceEngine: ExecuteEngineName
     expiresIn: string | null
     rollbackHours: number | null
+    executionType?: ExecutionType
+    riskTier?: 1 | 2
   } | null
 
   engineSources: {
@@ -43,17 +47,26 @@ export interface ExecuteApprovalCommandDeckProps {
   }[]
 
   onReviewApproval: (() => void) | null
+
+  // New optional props
+  urgencyBreakdown?: { high: number; medium: number; low: number }
+  currentSavingsUsd?: number
+  potentialSavingsUsd?: number
 }
 
-/* ── Pipeline Node (local, not exported) ── */
+/** @deprecated Use ExecuteHeroProps */
+export type ExecuteApprovalCommandDeckProps = ExecuteHeroProps
+
+/* ── Pipeline Node (local) ── */
 
 type PipelineState = 'completed' | 'current' | 'future'
 
-function PipelineNode({ label, detail, state, icon }: {
+function PipelineNode({ label, detail, state, icon, tag }: {
   label: string
   detail?: string
   state: PipelineState
   icon: React.ReactNode
+  tag?: string
 }) {
   const stateStyles: Record<PipelineState, string> = {
     completed: 'border-[var(--state-healthy)]/30 bg-[var(--state-healthy)]/10 text-[var(--state-healthy)]',
@@ -71,6 +84,11 @@ function PipelineNode({ label, detail, state, icon }: {
         <span className="text-xs font-medium truncate">{label}</span>
         {detail && <span className="text-[10px] opacity-60">{detail}</span>}
       </div>
+      {tag && (
+        <span className="ml-auto text-[9px] uppercase font-bold tracking-widest text-[var(--engine-execute)]">
+          {tag}
+        </span>
+      )}
     </div>
   )
 }
@@ -86,10 +104,10 @@ function PipelineConnector({ from, to }: { from: string; to: string }) {
 }
 
 /* ═══════════════════════════════════════════════════════
-   APPROVAL COMMAND DECK HERO
+   EXECUTE HERO
    ═══════════════════════════════════════════════════════ */
 
-export function ExecuteApprovalCommandDeck({
+export function ExecuteHero({
   queueTotal,
   urgentCount,
   agentStepsCompleted,
@@ -97,20 +115,62 @@ export function ExecuteApprovalCommandDeck({
   featuredAction,
   engineSources,
   onReviewApproval,
-}: ExecuteApprovalCommandDeckProps) {
+  urgencyBreakdown,
+  currentSavingsUsd,
+  potentialSavingsUsd,
+}: ExecuteHeroProps) {
   const isExpiringSoon = featuredAction?.expiresIn
     && featuredAction.expiresIn.includes('h')
     && parseInt(featuredAction.expiresIn) <= 4
 
-  return featuredAction ? (
-    <HeroBento engine="execute" role="region" aria-labelledby="execute-hero-title">
-      <HeroBento.Action>
-        {/* Hero Number */}
-        <span className="typo-hero-number text-4xl md:text-5xl"
-              style={{ color: 'var(--engine-execute)' }}>
-          <CountUp value={queueTotal} />
-        </span>
+  const realizationPct = potentialSavingsUsd && currentSavingsUsd != null
+    ? Math.round((currentSavingsUsd / potentialSavingsUsd) * 100)
+    : 0
 
+  if (!featuredAction) {
+    /* ── Empty State ── */
+    return (
+      <HeroBento engine="execute" role="region" aria-labelledby="execute-hero-title">
+        <HeroBento.Action className="md:col-span-2">
+          <div className="flex flex-col items-center justify-center gap-4 py-8 text-center">
+            <h2 id="execute-hero-title" className="sr-only">Execute Hero</h2>
+            <div className="relative">
+              <CheckCircle size={56} className="text-[var(--state-healthy)]" style={{ filter: 'drop-shadow(0 0 12px rgba(34,197,94,0.5))' }} />
+              <div className="absolute inset-0 animate-ping opacity-20">
+                <CheckCircle size={56} className="text-[var(--state-healthy)]" />
+              </div>
+            </div>
+            <p className="text-3xl font-light text-white/90">Queue Clear</p>
+            <p className="text-sm text-white/50">All actions approved. Your AI is standing by.</p>
+            {currentSavingsUsd != null && currentSavingsUsd > 0 && (
+              <p className="text-lg font-mono" style={{ color: 'var(--state-healthy)' }}>
+                $<CountUp value={currentSavingsUsd} locale />/mo saved this month
+              </p>
+            )}
+            <a
+              href="/execute/history"
+              className={cn(
+                buttonVariants({ variant: 'outline', size: 'default' }),
+                'rounded-2xl px-6 py-3 min-h-[44px] text-sm',
+                'border-white/10 text-white/60 hover:text-white hover:border-white/20',
+              )}
+            >
+              View savings history <ArrowRight size={14} />
+            </a>
+          </div>
+        </HeroBento.Action>
+      </HeroBento>
+    )
+  }
+
+  const execTypeBadge = featuredAction.executionType
+    ? EXECUTION_TYPE_BADGE[featuredAction.executionType]
+    : null
+
+  return (
+    <HeroBento engine="execute" role="region" aria-labelledby="execute-hero-title">
+      {/* ── Zone A: Action ── */}
+      <HeroBento.Action>
         {/* Editorial Headline */}
         <h2
           id="execute-hero-title"
@@ -119,22 +179,90 @@ export function ExecuteApprovalCommandDeck({
           Nothing moves without your yes.
         </h2>
 
-        {/* Subtitle */}
-        <p className="text-sm text-white/50">
-          {queueTotal === 1 ? '1 action' : `${queueTotal} actions`} pending your approval
-        </p>
+        {/* Hero Number */}
+        <div className="flex flex-col gap-1">
+          <span className="typo-hero-number text-5xl md:text-6xl"
+                style={{ color: 'var(--engine-execute)' }}>
+            <CountUp value={queueTotal} duration={800} />
+          </span>
+          <span className="text-xs font-medium uppercase tracking-widest text-white/40">
+            {queueTotal === 1 ? 'action' : 'actions'} pending approval
+          </span>
+        </div>
 
-        {/* Featured Action detail */}
-        <div className="flex flex-col gap-3 mt-1">
-          {/* Badge row */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className={cn(
-              'inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest shadow-inner border border-white/[0.05]',
-              ENGINE_BADGE_CLASS[featuredAction.engine],
-            )}>
-              {featuredAction.engine}
+        {/* Urgency Distribution Bar */}
+        {urgencyBreakdown && queueTotal > 0 && (
+          <div className="flex flex-col gap-1.5">
+            <div className="flex h-2 rounded-full overflow-hidden bg-white/[0.06]">
+              {urgencyBreakdown.high > 0 && (
+                <div
+                  className="bg-red-500 transition-all duration-600"
+                  style={{ width: `${(urgencyBreakdown.high / queueTotal) * 100}%` }}
+                />
+              )}
+              {urgencyBreakdown.medium > 0 && (
+                <div
+                  className="bg-amber-500 transition-all duration-600"
+                  style={{ width: `${(urgencyBreakdown.medium / queueTotal) * 100}%` }}
+                />
+              )}
+              {urgencyBreakdown.low > 0 && (
+                <div
+                  className="bg-slate-400 transition-all duration-600"
+                  style={{ width: `${(urgencyBreakdown.low / queueTotal) * 100}%` }}
+                />
+              )}
+            </div>
+            <span className="text-[10px] text-white/40">
+              {urgencyBreakdown.high > 0 && `${urgencyBreakdown.high} urgent`}
+              {urgencyBreakdown.high > 0 && urgencyBreakdown.medium > 0 && ' · '}
+              {urgencyBreakdown.medium > 0 && `${urgencyBreakdown.medium} medium`}
+              {(urgencyBreakdown.high > 0 || urgencyBreakdown.medium > 0) && urgencyBreakdown.low > 0 && ' · '}
+              {urgencyBreakdown.low > 0 && `${urgencyBreakdown.low} low`}
             </span>
-            <span className="text-xs font-mono text-white/40">{featuredAction.id}</span>
+          </div>
+        )}
+
+        {/* Spotlight Action Card */}
+        <div className="bg-white/[0.04] border-l-2 rounded-xl p-4 flex flex-col gap-2.5"
+             style={{ borderLeftColor: ENGINE_COLOR_MAP[featuredAction.sourceEngine] ?? 'var(--engine-execute)' }}>
+          {/* Row 1: Title + ExecutionType Badge */}
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-base font-medium text-white/90">{featuredAction.title}</p>
+            {execTypeBadge && (
+              <span className={cn(
+                'shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase border',
+                execTypeBadge.cls,
+              )}>
+                {execTypeBadge.label}
+              </span>
+            )}
+          </div>
+
+          {/* Row 2: Amount + Confidence */}
+          <div className="flex items-center gap-4">
+            <span
+              className="text-lg font-mono tabular-nums font-bold"
+              style={{ color: 'var(--engine-execute)' }}
+            >
+              {featuredAction.amountLabel}
+            </span>
+            <ConfidenceIndicator value={featuredAction.confidence} format="percent" />
+          </div>
+
+          {/* Row 3: Expiry + Rollback + Risk Tier */}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            {/* Badge row */}
+            <div className="flex items-center gap-2">
+              <span className={cn(
+                'inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest shadow-inner border border-white/[0.05]',
+                ENGINE_BADGE_CLASS[featuredAction.engine],
+              )}>
+                {featuredAction.engine}
+              </span>
+              <span className="text-xs font-mono text-white/40">{featuredAction.id}</span>
+            </div>
+
             {featuredAction.expiresIn && (
               <span className={cn(
                 'inline-flex items-center gap-1 text-[10px] font-semibold tracking-widest uppercase',
@@ -144,43 +272,47 @@ export function ExecuteApprovalCommandDeck({
                 Expires {featuredAction.expiresIn}
               </span>
             )}
+
+            {featuredAction.rollbackHours != null && (
+              <span className="inline-flex items-center gap-1 text-[10px] text-white/40">
+                <RotateCcw size={10} />
+                {featuredAction.rollbackHours}h reversible
+              </span>
+            )}
+
+            {featuredAction.riskTier != null && (
+              <span className={cn(
+                'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase border',
+                featuredAction.riskTier === 1
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                  : 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+              )}>
+                <ShieldCheck size={10} />
+                {featuredAction.riskTier === 1 ? 'Low-risk' : 'Elevated'}
+              </span>
+            )}
           </div>
-
-          {/* Title */}
-          <p className="text-lg md:text-xl font-medium text-white/90">
-            {featuredAction.title}
-          </p>
-
-          {/* Amount + Confidence */}
-          <div className="flex items-center gap-4">
-            <span
-              className="text-2xl font-mono tabular-nums font-bold"
-              style={{ color: 'var(--engine-execute)' }}
-            >
-              {featuredAction.amountLabel}
-            </span>
-            <ConfidenceIndicator value={featuredAction.confidence} format="percent" />
-          </div>
-
-          {/* CTA */}
-          {onReviewApproval && (
-            <button
-              onClick={onReviewApproval}
-              className={cn(
-                buttonVariants({ variant: 'default', size: 'lg' }),
-                'h-auto w-full md:w-auto self-start rounded-2xl px-8 py-4 min-h-[44px] mt-2',
-                'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950',
-                'font-semibold tracking-wide text-sm',
-                'hover:from-amber-400 hover:to-yellow-400 transition-all',
-                'flex items-center justify-center gap-2',
-              )}
-            >
-              Review &amp; Approve <ArrowRight size={16} />
-            </button>
-          )}
         </div>
+
+        {/* CTA */}
+        {onReviewApproval && (
+          <button
+            onClick={onReviewApproval}
+            className={cn(
+              buttonVariants({ variant: 'default', size: 'lg' }),
+              'h-auto w-full md:w-auto self-start rounded-2xl px-8 py-4 min-h-[48px] mt-1',
+              'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950',
+              'font-semibold tracking-wide text-sm',
+              'hover:from-amber-400 hover:to-yellow-400 transition-all',
+              'flex items-center justify-center gap-2',
+            )}
+          >
+            Review &amp; Approve <ArrowRight size={16} />
+          </button>
+        )}
       </HeroBento.Action>
 
+      {/* ── Zone B: Proof ── */}
       <HeroBento.Proof>
         {/* Execution Pipeline */}
         <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-1">
@@ -190,7 +322,7 @@ export function ExecuteApprovalCommandDeck({
 
           <PipelineNode
             label="Agent Prepared"
-            detail={`${agentStepsCompleted}/${agentStepsTotal} steps`}
+            detail={`${agentStepsCompleted}/${agentStepsTotal} steps completed`}
             state={agentStepsCompleted > 0 ? 'completed' : 'future'}
             icon={<CheckCircle size={14} />}
           />
@@ -202,6 +334,7 @@ export function ExecuteApprovalCommandDeck({
             label="Your Approval"
             state="current"
             icon={<Zap size={14} className="animate-pulse" />}
+            tag="← YOU ARE HERE"
           />
           <PipelineConnector
             from="var(--engine-execute)"
@@ -213,6 +346,42 @@ export function ExecuteApprovalCommandDeck({
             icon={<CheckCircle size={14} />}
           />
         </div>
+
+        {/* Savings Potential */}
+        {potentialSavingsUsd != null && potentialSavingsUsd > 0 && (
+          <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-3">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
+              Savings Potential
+            </span>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-baseline justify-between">
+                <span className="text-sm font-mono tabular-nums" style={{ color: 'var(--engine-execute)' }}>
+                  $<CountUp value={potentialSavingsUsd} duration={1200} locale />/mo
+                </span>
+                <span className="text-[10px] text-white/40">potential</span>
+              </div>
+              {currentSavingsUsd != null && (
+                <div className="flex items-baseline justify-between">
+                  <span className="text-sm font-mono tabular-nums" style={{ color: 'var(--state-healthy)' }}>
+                    $<CountUp value={currentSavingsUsd} duration={1200} locale />/mo
+                  </span>
+                  <span className="text-[10px] text-white/40">saved</span>
+                </div>
+              )}
+            </div>
+            {currentSavingsUsd != null && (
+              <div className="flex flex-col gap-1">
+                <div className="h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-amber-500"
+                    style={{ width: `${Math.min(100, realizationPct)}%`, transition: 'width 1s ease 0.3s' }}
+                  />
+                </div>
+                <span className="text-[10px] text-white/40">{realizationPct}% realized</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Cross-Engine Sources */}
         <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-3">
@@ -237,33 +406,28 @@ export function ExecuteApprovalCommandDeck({
         </div>
       </HeroBento.Proof>
 
+      {/* ── Zone C: Portal ── */}
       <HeroBento.Portal>
-        <ListPortalBar
-          engine="execute"
-          label={`${queueTotal} pending action${queueTotal !== 1 ? 's' : ''}`}
-          count={queueTotal}
-          destination={{ type: 'route', to: '/execute/queue' }}
-        />
-      </HeroBento.Portal>
-    </HeroBento>
-  ) : (
-    /* ── Empty State ── */
-    <HeroBento engine="execute" role="region" aria-labelledby="execute-hero-title">
-      <HeroBento.Action className="md:col-span-2">
-        <div className="flex flex-col items-center justify-center gap-3 py-6 text-center">
-          <h2
-            id="execute-hero-title"
-            className="sr-only"
-          >
-            Execute Hero
-          </h2>
-          <CheckCircle size={40} className="text-[var(--state-healthy)]" />
-          <p className="text-xl font-light text-white/90">Queue clear</p>
-          <p className="text-sm text-white/50">Your financial AI is standing by.</p>
+        <div className="flex items-center gap-4">
+          <ListPortalBar
+            engine="execute"
+            label={`${queueTotal} pending action${queueTotal !== 1 ? 's' : ''}`}
+            count={queueTotal}
+            destination={{ type: 'route', to: '/execute/queue' }}
+          />
+          <ListPortalBar
+            engine="execute"
+            label="Savings"
+            count={0}
+            destination={{ type: 'route', to: '/execute/history' }}
+          />
         </div>
-      </HeroBento.Action>
+      </HeroBento.Portal>
     </HeroBento>
   )
 }
 
-ExecuteApprovalCommandDeck.displayName = 'ExecuteApprovalCommandDeck'
+ExecuteHero.displayName = 'ExecuteHero'
+
+/** @deprecated Use ExecuteHero */
+export const ExecuteApprovalCommandDeck = ExecuteHero

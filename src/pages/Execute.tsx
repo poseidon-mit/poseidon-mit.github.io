@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
-import { ExecuteApprovalCommandDeck } from '@/components/poseidon/execute-hero'
+import { ExecuteHero } from '@/components/poseidon/execute-hero'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useRouter } from '@/router'
 import {
   selectExecuteActionsView,
   selectExecuteQueueStats,
+  selectExecuteSavingsView,
 } from '@/domain/poseidon-universe'
 import { ENGINE_COLOR_MAP } from '@/lib/engine-color-map'
 import type { ExecuteEngineName } from '@/domain/poseidon-universe'
@@ -15,6 +16,7 @@ export default function ExecutePage() {
 
   const actions = useMemo(() => selectExecuteActionsView(), [])
   const stats = useMemo(() => selectExecuteQueueStats(), [])
+  const savings = useMemo(() => selectExecuteSavingsView(), [])
   const featured = actions[0] ?? null
 
   // Compute engine source counts
@@ -39,7 +41,7 @@ export default function ExecutePage() {
 
   return (
     <div className="hero-viewport">
-      <ExecuteApprovalCommandDeck
+      <ExecuteHero
         queueTotal={actions.length}
         urgentCount={stats.byUrgency.high}
         agentStepsCompleted={agentStepsCompleted}
@@ -55,6 +57,8 @@ export default function ExecutePage() {
                 sourceEngine: featured.sourceEngine,
                 expiresIn: featured.expiresIn,
                 rollbackHours: featured.rollbackWindowHours ?? null,
+                executionType: featured.executionType,
+                riskTier: featured.riskTier,
               }
             : null
         }
@@ -64,6 +68,9 @@ export default function ExecutePage() {
             ? () => router.navigate(`/execute/approval?actionId=${featured.id}`)
             : null
         }
+        urgencyBreakdown={stats.byUrgency}
+        currentSavingsUsd={savings.currentMonthlySavingsUsd}
+        potentialSavingsUsd={savings.potentialMonthlySavingsUsd}
       />
     </div>
   )
