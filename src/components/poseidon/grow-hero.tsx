@@ -113,7 +113,7 @@ function HeroChart({
 
   return (
     <div
-      className="w-full flex-1 min-h-[200px]"
+      className="w-full flex-1 min-h-[180px] max-h-[300px] md:max-h-none"
       role="img"
       aria-label={`3-year growth: baseline $${finalBaseline.toLocaleString()}, AI optimized $${finalAiOptimized.toLocaleString()}, advantage +$${(finalAiOptimized - finalBaseline).toLocaleString()}`}
     >
@@ -366,7 +366,7 @@ export function GrowHero({
 
         {/* Spotlight Recommendation */}
         {spotlightRec && (
-          <div className="bg-white/[0.04] border-l-2 border-[var(--engine-grow)] rounded-lg p-3 animate-fadeUp" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
+          <div className="bg-white/[0.04] border-l-2 border-[var(--engine-grow)] rounded-lg p-2 animate-fadeUp" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
             <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Top Recommendation</span>
             <p className="text-sm text-white/90 mt-1">{spotlightRec.title}</p>
             <p className="text-xs font-mono mt-0.5" style={{ color: 'var(--engine-grow)' }}>
@@ -377,7 +377,7 @@ export function GrowHero({
 
         {/* Goal Progress */}
         {goalsWithProgress && goalsWithProgress.length > 0 && (
-          <div className="flex flex-col gap-2.5 animate-fadeUp" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+          <div className="hidden md:flex flex-col gap-2.5 animate-fadeUp" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
             <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Goal Progress</span>
             {goalsWithProgress.map(g => (
               <div key={g.id} className="flex flex-col gap-1">

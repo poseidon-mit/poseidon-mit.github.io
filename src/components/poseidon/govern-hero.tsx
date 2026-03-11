@@ -81,7 +81,7 @@ export function GovernHero({
         <div className="flex flex-col gap-2">
           <div className="flex items-baseline gap-3 flex-wrap">
             <span
-              className="typo-hero-number text-6xl md:text-7xl font-mono"
+              className="typo-hero-number text-5xl md:text-6xl font-mono"
               style={{ color: 'var(--engine-govern)' }}
             >
               <CountUp value={errorCount} locale duration={800} />
@@ -144,7 +144,7 @@ export function GovernHero({
           <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
             What Poseidon checked
           </span>
-          <div className="flex h-5 rounded-full overflow-hidden" role="img" aria-label="Engine breakdown">
+          <div className="flex h-4 rounded-full overflow-hidden" role="img" aria-label="Engine breakdown">
             {engineBreakdown.map((seg) => (
               <div
                 key={seg.engine}
@@ -175,7 +175,7 @@ export function GovernHero({
 
         {/* Trust Guarantees — "Your safety guarantees" */}
         {trustGuarantees && (
-          <div className="flex flex-col gap-2 pt-3 border-t border-white/[0.06]">
+          <div className="hidden md:flex flex-col gap-2 pt-3 border-t border-white/[0.06]">
             <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
               Your safety guarantees
             </span>

@@ -149,13 +149,13 @@ export default function ProtectAlertDetailPage() {
   ] : null
 
   return (
-    <div className="hero-viewport">
+    <div className="flex flex-col gap-0">
       <SubPageNav engine="protect" parentPath="/protect/threats" parentLabel="Threats" currentLabel={`Alert #${alert.id}`} />
 
       <motion.main
         id="main-content"
         role="main"
-        className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-6 pb-12 pt-6"
+        className="flex flex-col gap-6 pb-6 pt-4"
         variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"

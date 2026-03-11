@@ -222,7 +222,7 @@ function HealthScoreBar({
   breakdown: FinancialHealthBreakdown[]
 }) {
   return (
-    <div className="flex flex-col gap-2 mt-2">
+    <div className="flex flex-col gap-2 mt-1">
       <div className="flex items-center gap-3">
         {/* Segmented bar */}
         <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] flex overflow-hidden">
@@ -273,7 +273,7 @@ function NetWorthSparkline({ data }: { data: number[] }) {
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
-      className="w-full max-w-[280px] h-10 mt-1"
+      className="w-full max-w-[200px] h-10 mt-1"
       preserveAspectRatio="none"
       aria-hidden="true"
     >

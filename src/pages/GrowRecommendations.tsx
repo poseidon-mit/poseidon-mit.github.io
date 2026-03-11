@@ -150,7 +150,7 @@ export function GrowRecommendations() {
           {/* Spotlight recommendation */}
           {spotlightRec && (
             <motion.div variants={fadeUp}>
-              <Link to={`/grow/recommendation?id=${spotlightRec.id}`} className="block">
+              <Link to={`/grow/recommendation?id=GRW-${String(spotlightRec.id).padStart(3, '0')}`} className="block">
                 <Card className="border-violet-500/20 bg-gradient-to-r from-violet-500/10 to-purple-500/10 transition-shadow hover:from-violet-500/15 hover:to-purple-500/15">
                   <CardContent className="p-6">
                     <div className="flex flex-col gap-3">
@@ -217,7 +217,7 @@ function RecommendationCard({ rec }: { rec: RecommendationListItem }) {
   return (
     <Card className="bg-card border-white/[0.06] transition-shadow hover:bg-white/[0.04]">
       <CardContent className="p-5">
-        <Link to={`/grow/recommendation?id=${rec.id}`} className="block">
+        <Link to={`/grow/recommendation?id=GRW-${String(rec.id).padStart(3, '0')}`} className="block">
           <div className="flex items-start gap-4">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-500/10">
               <CategoryIcon className="h-5 w-5 text-violet-400" />

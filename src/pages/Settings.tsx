@@ -42,6 +42,12 @@ export default function SettingsPage() {
           aiMode="Assisted"
           notificationCategories={4}
           activeSessions={1}
+          linkedDataSources={['Chase', 'Amex', 'Fidelity']}
+          decisionsAnalyzed={847}
+          lastLogin="2h ago"
+          plan="Premium"
+          lastPasswordChange="45 days ago"
+          recoveryEmail="s***@gmail.com"
         />
       </div>
     )

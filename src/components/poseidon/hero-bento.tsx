@@ -55,7 +55,7 @@ export interface HeroBentoActionProps {
 
 function Action({ children, className }: HeroBentoActionProps) {
   return (
-    <div className={cn('relative z-10 flex flex-col justify-center gap-4 p-6 md:p-8', className)}>
+    <div className={cn('relative z-10 flex flex-col justify-start gap-3 p-5 md:p-6 overflow-y-auto', className)}>
       {children}
     </div>
   )
@@ -73,7 +73,7 @@ export interface HeroBentoProofProps {
 
 function Proof({ children, className }: HeroBentoProofProps) {
   return (
-    <div className={cn('relative z-10 flex flex-col gap-3 p-6 md:p-8 md:border-l md:border-white/5', className)}>
+    <div className={cn('relative z-10 flex flex-col gap-2 p-5 md:p-6 md:border-l md:border-white/5 overflow-y-auto', className)}>
       {children}
     </div>
   )

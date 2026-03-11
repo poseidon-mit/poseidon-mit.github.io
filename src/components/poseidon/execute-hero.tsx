@@ -315,7 +315,7 @@ export function ExecuteHero({
       {/* ── Zone B: Proof ── */}
       <HeroBento.Proof>
         {/* Execution Pipeline */}
-        <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-1">
+        <div className="bg-white/[0.02] rounded-2xl p-3 flex flex-col gap-1">
           <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-2">
             Execution Pipeline
           </span>
@@ -349,7 +349,7 @@ export function ExecuteHero({
 
         {/* Savings Potential */}
         {potentialSavingsUsd != null && potentialSavingsUsd > 0 && (
-          <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-3">
+          <div className="bg-white/[0.02] rounded-2xl p-3 flex flex-col gap-3">
             <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
               Savings Potential
             </span>
@@ -384,7 +384,7 @@ export function ExecuteHero({
         )}
 
         {/* Cross-Engine Sources */}
-        <div className="bg-white/[0.02] rounded-2xl p-5 flex flex-col gap-3">
+        <div className="hidden md:flex bg-white/[0.02] rounded-2xl p-3 flex-col gap-3">
           <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
             Cross-Engine Sources
           </span>
