@@ -13,11 +13,11 @@ import {
 import { DemoBanner } from "@/components/shared/DemoBanner";
 
 const navItems = [
-  { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard, color: "cyan" },
-  { path: "/protect", label: "Protect", icon: Shield, color: "green" },
-  { path: "/grow", label: "Grow", icon: TrendingUp, color: "purple" },
-  { path: "/execute", label: "Execute", icon: Zap, color: "yellow" },
-  { path: "/govern", label: "Govern", icon: FileText, color: "blue" },
+  { path: "/lovable/dashboard", label: "Dashboard", icon: LayoutDashboard, color: "cyan" },
+  { path: "/lovable/protect", label: "Protect", icon: Shield, color: "green" },
+  { path: "/lovable/grow", label: "Grow", icon: TrendingUp, color: "purple" },
+  { path: "/lovable/execute", label: "Execute", icon: Zap, color: "yellow" },
+  { path: "/lovable/govern", label: "Govern", icon: FileText, color: "blue" },
 ] as const;
 
 type NavColor = (typeof navItems)[number]["color"];
@@ -84,9 +84,9 @@ export function LovableAppLayout() {
 
           {/* Chat link */}
           <Link
-            to="/chat"
+            to="/lovable/chat"
             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-              isActive("/chat")
+              isActive("/lovable/chat")
                 ? "bg-cyan-50 text-cyan-700 font-semibold"
                 : "text-gray-600 hover:bg-gray-50"
             }`}
@@ -104,7 +104,7 @@ export function LovableAppLayout() {
             </div>
             <div className="min-w-0">
               <p className="text-sm font-medium text-gray-900 truncate">Shinji Fujiwara</p>
-              <p className="text-xs text-gray-500 truncate">Family Principal</p>
+              <p className="text-xs text-gray-500 truncate">VP Engineering</p>
             </div>
           </div>
         </div>
@@ -171,10 +171,10 @@ export function LovableAppLayout() {
               })}
               <div className="border-t border-gray-200 my-3" />
               <Link
-                to="/chat"
+                to="/lovable/chat"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                  isActive("/chat")
+                  isActive("/lovable/chat")
                     ? "bg-cyan-50 text-cyan-700 font-semibold"
                     : "text-gray-600 hover:bg-gray-50"
                 }`}
@@ -190,7 +190,7 @@ export function LovableAppLayout() {
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">Shinji Fujiwara</p>
-                  <p className="text-xs text-gray-500 truncate">Family Principal</p>
+                  <p className="text-xs text-gray-500 truncate">VP Engineering</p>
                 </div>
               </div>
             </div>

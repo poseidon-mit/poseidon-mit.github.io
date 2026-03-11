@@ -39,7 +39,7 @@ export default function LovableRecommendation() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-6">
         <Link
-          to="/grow"
+          to="/lovable/grow"
           className="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
         >
           &larr; Back to Grow
@@ -57,7 +57,7 @@ export default function LovableRecommendation() {
       <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
 
       <Link
-        to="/grow"
+        to="/lovable/grow"
         className="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
       >
         &larr; Back to Grow
@@ -122,7 +122,7 @@ export default function LovableRecommendation() {
       <LovableGovernanceFooter
         model="POSEIDON-OPTIMIZER V2.1"
         processingMs={456}
-        auditId="AUD-2026-0312-003"
+        auditId="AUD-2026-0311-003"
       />
     </div>
   );

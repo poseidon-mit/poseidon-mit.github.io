@@ -33,7 +33,7 @@ function readLiquidityReserve(value: unknown): LiquidityReserveThread {
 function readCriticalAlert(value: unknown): CriticalAlertThread {
   const fallback: CriticalAlertThread = {
     id: 'THR-002',
-    amount: 234.50,
+    amount: 734.50,
     counterparty: 'OSLO ELECTRONICS',
     confidence: 0.91,
     cardLast4: '4821',
@@ -64,9 +64,9 @@ const _criticalAlert = readCriticalAlert(CROSS_SCREEN_DATA_THREAD.critical_alert
 
 export const DEMO_THREAD = {
   systemConfidence: readNumber(CROSS_SCREEN_DATA_THREAD.system_confidence.value, 0.92),
-  decisionsAudited: readNumber(CROSS_SCREEN_DATA_THREAD.decisions_audited.value, 67),
+  decisionsAudited: readNumber(CROSS_SCREEN_DATA_THREAD.decisions_audited.value, 342),
   complianceScore: readNumber(CROSS_SCREEN_DATA_THREAD.compliance_score.value, 96),
-  pendingActions: readNumber(CROSS_SCREEN_DATA_THREAD.pending_actions.value, 9),
+  pendingActions: readNumber(CROSS_SCREEN_DATA_THREAD.pending_actions.value, 3),
 
   // B2B primary fields
   monthlyOptimization: _monthlyOptimization,

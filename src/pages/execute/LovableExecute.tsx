@@ -78,7 +78,7 @@ export default function LovableExecute() {
                 )}
               </div>
               <Link
-                to={`/execute/approval/${action.id}`}
+                to={`/lovable/execute/approval/${action.id}`}
                 className="text-sm font-medium text-yellow-600 hover:text-yellow-700 whitespace-nowrap"
               >
                 Review &rarr;

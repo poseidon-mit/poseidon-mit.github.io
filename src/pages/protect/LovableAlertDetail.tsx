@@ -41,7 +41,7 @@ export default function LovableAlertDetail() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-6">
         <Link
-          to="/protect"
+          to="/lovable/protect"
           className="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
         >
           &larr; Back to Protect
@@ -59,7 +59,7 @@ export default function LovableAlertDetail() {
       <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
 
       <Link
-        to="/protect"
+        to="/lovable/protect"
         className="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
       >
         &larr; Back to Protect
@@ -179,7 +179,7 @@ export default function LovableAlertDetail() {
       <LovableGovernanceFooter
         model="POSEIDON-THREATDETECT V1.0"
         processingMs={234}
-        auditId="AUD-2026-0312-001"
+        auditId="AUD-2026-0310-001"
       />
     </div>
   );

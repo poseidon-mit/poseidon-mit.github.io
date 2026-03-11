@@ -46,9 +46,9 @@ export const recommendations: Recommendation[] = [
   {
     id: "GRW-004",
     title: "Tax-Loss Harvest VTI Position",
-    savings: "$1,065.60 in tax savings",
+    savings: "$850/year in recurring tax savings",
     description:
-      "Your VTI position shows unrealized losses. Harvesting could offset capital gains.",
+      "Your VTI position shows unrealized losses. Annual tax-loss harvesting could offset capital gains. One-time immediate savings: $1,065.60.",
     status: "approved",
     engine: "Grow",
   },
@@ -57,6 +57,6 @@ export const recommendations: Recommendation[] = [
 export const growStats: GrowStats = {
   totalIdentified: "$3,601/year",
   realized: "$1,065.60",
-  pending: "$2,536.08",
+  pending: "$2,536/year",
   acceptanceRate: "67%",
 };

@@ -31,10 +31,9 @@ function useCountUp(target: number, duration = 500) {
 
 const pendingActions = actions.filter((a) => a.status === 'pending')
 const highThreats = threats.filter((t) => t.severity === 'high')
+const monthlyIncome = 29167 // $350,000/year ÷ 12
 const savingsRate = Math.round(
-  (accountsSummary.monthlySpending > 0
-    ? ((accountsSummary.netWorth * 0.002) / accountsSummary.monthlySpending) * 100
-    : 0)
+  ((monthlyIncome - accountsSummary.monthlySpending) / monthlyIncome) * 100
 )
 
 export default function LovableDashboard() {
@@ -109,7 +108,7 @@ export default function LovableDashboard() {
               </div>
             </div>
             <Link
-              to="/protect/alert-detail/THR-001?demo=true"
+              to="/lovable/protect/alert-detail/THR-001?demo=true"
               className="text-red-600 font-medium text-sm whitespace-nowrap hover:underline"
             >
               Review Now &rarr;
@@ -125,7 +124,7 @@ export default function LovableDashboard() {
             <TrendingUp className="w-5 h-5 text-purple-500" />
             <span className="text-gray-900 font-medium">$831/year in idle cash savings</span>
           </div>
-          <Link to="/grow" className="text-purple-600 font-medium text-sm hover:underline">
+          <Link to="/lovable/grow" className="text-purple-600 font-medium text-sm hover:underline">
             View &rarr;
           </Link>
         </div>
@@ -139,7 +138,7 @@ export default function LovableDashboard() {
             <span className="text-gray-900 font-medium">Tax-Loss Harvest: Save $1,443</span>
           </div>
           <Link
-            to="/execute/approval/EXE-001"
+            to="/lovable/execute/approval/EXE-001"
             className="text-yellow-600 font-medium text-sm hover:underline"
           >
             Review &rarr;

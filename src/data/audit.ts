@@ -19,8 +19,8 @@ export interface GovernStats {
 
 export const auditRecords: AuditRecord[] = [
   {
-    id: "AUD-2026-0312-001",
-    timestamp: "2026-03-12T03:42:00Z",
+    id: "AUD-2026-0310-001",
+    timestamp: "2026-03-10T03:42:00Z",
     engine: "Protect",
     action: "Threat Detection — Oslo Login Anomaly",
     model: "POSEIDON-THREATDETECT V1.0",
@@ -29,8 +29,8 @@ export const auditRecords: AuditRecord[] = [
     status: "pending",
   },
   {
-    id: "AUD-2026-0312-002",
-    timestamp: "2026-03-12T03:47:00Z",
+    id: "AUD-2026-0310-002",
+    timestamp: "2026-03-10T03:47:00Z",
     engine: "Protect",
     action: "Threat Detection — Oslo Electronics Purchase",
     model: "POSEIDON-THREATDETECT V1.0",
@@ -39,7 +39,7 @@ export const auditRecords: AuditRecord[] = [
     status: "pending",
   },
   {
-    id: "AUD-2026-0312-003",
+    id: "AUD-2026-0311-003",
     timestamp: "2026-03-11T14:30:00Z",
     engine: "Grow",
     action: "Recommendation — HYSA Transfer",
@@ -49,7 +49,7 @@ export const auditRecords: AuditRecord[] = [
     status: "pending",
   },
   {
-    id: "AUD-2026-0312-004",
+    id: "AUD-2026-0310-004",
     timestamp: "2026-03-10T09:15:00Z",
     engine: "Execute",
     action: "Tax-Loss Harvest Approval Request",
@@ -59,7 +59,7 @@ export const auditRecords: AuditRecord[] = [
     status: "pending",
   },
   {
-    id: "AUD-2026-0312-005",
+    id: "AUD-2026-0309-005",
     timestamp: "2026-03-09T16:45:00Z",
     engine: "Grow",
     action: "Subscription Optimization — Equinox",
@@ -69,7 +69,7 @@ export const auditRecords: AuditRecord[] = [
     status: "pending",
   },
   {
-    id: "AUD-2026-0312-006",
+    id: "AUD-2026-0308-006",
     timestamp: "2026-03-08T11:20:00Z",
     engine: "Execute",
     action: "529 Contribution Executed",

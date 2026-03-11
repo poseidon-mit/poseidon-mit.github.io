@@ -92,7 +92,7 @@ export default function LovableProtect() {
             <div className="flex items-center justify-between mt-2">
               <span className="text-xs text-gray-500">{threat.timestamp}</span>
               <Link
-                to={`/protect/alert-detail/${threat.id}?demo=true`}
+                to={`/lovable/protect/alert-detail/${threat.id}?demo=true`}
                 className="text-sm text-green-600 hover:text-green-800 font-medium transition-colors"
               >
                 Review &rarr;

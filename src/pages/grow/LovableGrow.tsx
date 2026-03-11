@@ -97,7 +97,7 @@ export default function LovableGrow() {
                 {rec.benefit ?? rec.savings ?? ""}
               </span>
               <Link
-                to={`/grow/recommendation/${rec.id}`}
+                to={`/lovable/grow/recommendation/${rec.id}`}
                 className="text-sm text-purple-600 hover:text-purple-800 font-medium transition-colors"
               >
                 View &rarr;

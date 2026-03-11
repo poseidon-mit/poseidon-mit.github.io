@@ -43,7 +43,7 @@ export default function LovableApproval() {
           <p className="text-lg font-medium text-gray-900 mb-2">
             Action not found
           </p>
-          <Link to="/execute" className="text-yellow-600 hover:text-yellow-700">
+          <Link to="/lovable/execute" className="text-yellow-600 hover:text-yellow-700">
             &larr; Back to Execute
           </Link>
         </div>
@@ -59,7 +59,7 @@ export default function LovableApproval() {
     <div className="min-h-screen bg-[#ECEAE5] p-4 pb-24 animate-fade-in">
       {/* Back Link */}
       <Link
-        to="/execute"
+        to="/lovable/execute"
         className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 mb-4"
       >
         <ArrowLeft className="h-4 w-4" />
@@ -152,7 +152,7 @@ export default function LovableApproval() {
       <LovableGovernanceFooter
         model="POSEIDON-EXECUTOR V1.3"
         processingMs={312}
-        auditId="AUD-2026-0312-004"
+        auditId="AUD-2026-0310-004"
       />
     </div>
   );

@@ -9,14 +9,16 @@ import { MOCK_NET_WORTH } from '@/lib/mock-data'
 import type { SimulatedResponse, SpendingCategory } from './types'
 
 const MOCK_SPENDING: SpendingCategory[] = [
-  { name: 'Housing', amount: 2100, percentage: 32.3, trend: '0%' },
-  { name: 'Dining', amount: 892, percentage: 13.7, trend: '+12%' },
-  { name: 'Groceries', amount: 756, percentage: 11.6, trend: '-3%' },
-  { name: 'Transportation', amount: 445, percentage: 6.8, trend: '+5%' },
-  { name: 'Entertainment', amount: 390, percentage: 6.0, trend: '+18%' },
-  { name: 'Education', amount: 708, percentage: 10.9, trend: '0%' },
-  { name: 'Pet Care', amount: 269, percentage: 4.1, trend: '0%' },
-  { name: 'Other', amount: 940, percentage: 14.5, trend: '-8%' },
+  { name: 'Housing', amount: 8500, percentage: 42.5, trend: '0%' },
+  { name: 'Food & Dining', amount: 2890, percentage: 14.5, trend: '+4%' },
+  { name: 'Shopping', amount: 1850, percentage: 9.3, trend: '+8%' },
+  { name: 'Savings & Investments', amount: 2000, percentage: 10.0, trend: '0%' },
+  { name: 'Education', amount: 1667, percentage: 8.3, trend: '0%' },
+  { name: 'Transportation', amount: 1200, percentage: 6.0, trend: '+5%' },
+  { name: 'Entertainment', amount: 680, percentage: 3.4, trend: '+18%' },
+  { name: 'Subscriptions', amount: 450, percentage: 2.2, trend: '+3%' },
+  { name: 'Healthcare', amount: 450, percentage: 2.3, trend: '0%' },
+  { name: 'Other', amount: 313, percentage: 1.6, trend: '-8%' },
 ]
 
 interface IntentRule {
@@ -74,7 +76,7 @@ const rules: IntentRule[] = [
     respond: () => {
       const total = MOCK_SPENDING.reduce((s, c) => s + c.amount, 0)
       return {
-        text: `Last month you spent **$${total.toLocaleString()}** across ${MOCK_SPENDING.length} categories.\n\nDining is up 12% and entertainment up 18% — those are the fastest-growing categories. Housing remains your largest expense at $2,100/mo.`,
+        text: `Last month you spent **$${total.toLocaleString()}** across ${MOCK_SPENDING.length} categories.\n\nEntertainment is up 18% and shopping up 8% — those are the fastest-growing categories. Housing remains your largest expense at $8,500/mo.`,
         cards: [{
           type: 'spending',
           totalSpent: total,
@@ -111,13 +113,13 @@ const rules: IntentRule[] = [
   {
     keywords: /transfer|move.*money|振込|送金|high.yield/i,
     respond: () => ({
-      text: "Here's a preview of the transfer. Moving $5,000 from Chase Checking to Marcus High-Yield Savings would earn an additional **$212/year** in interest at 4.25% APY.\n\nWould you like me to proceed?",
+      text: "Here's a preview of the transfer. Moving $5,000 from Chase Checking to Marcus High-Yield Savings would earn an additional **$225/year** in interest at 4.5% APY.\n\nWould you like me to proceed?",
       cards: [{
         type: 'transfer-preview',
-        from: 'Chase Total Checking (•4892)',
-        to: 'Marcus High-Yield Savings (•7234)',
+        from: 'Chase Checking',
+        to: 'Marcus High-Yield Savings',
         amount: 5000,
-        benefit: '+$212/year at 4.25% APY',
+        benefit: '+$225/year at 4.5% APY',
       }],
       toolCallLabel: 'Preparing transfer preview',
     }),

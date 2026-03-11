@@ -25,7 +25,7 @@ function getAIResponse(input: string): string {
     return "You spent $2,890.45 on Food & Dining in February, which is 14.5% of your monthly spending. This is slightly above your 3-month average of $2,650.";
   }
   if (lower.includes("saving")) {
-    return "I've identified $3,601/year in potential savings: $831 from moving idle cash to HYSA, $1,320 from reviewing your Equinox membership, $600 from maximizing 529 contributions, and $1,065 already realized from tax-loss harvesting.";
+    return "I've identified $3,601/year in potential savings: $831 from moving idle cash to HYSA, $1,320 from reviewing your Equinox membership, $600 from maximizing 529 contributions, and $850/year recurring from tax-loss harvesting (plus $1,065.60 already realized this year).";
   }
   if (lower.includes("pending") || lower.includes("action")) {
     return "You have 3 pending actions requiring approval: 1) Tax-Loss Harvest VTI (save $1,443), 2) Monthly $2,000 transfer to Marcus HYSA, 3) Adobe duplicate refund dispute ($59.99).";

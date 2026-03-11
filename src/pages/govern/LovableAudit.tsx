@@ -21,7 +21,7 @@ export default function LovableAudit() {
     <div className="min-h-screen bg-[#ECEAE5] p-4 pb-24 animate-fade-in">
       {/* Back Link */}
       <Link
-        to="/govern"
+        to="/lovable/govern"
         className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 mb-4"
       >
         <ArrowLeft className="h-4 w-4" />

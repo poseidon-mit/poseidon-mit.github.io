@@ -89,7 +89,7 @@ export default function LovableGovern() {
       {/* CTA */}
       <div className="text-center">
         <Link
-          to="/govern/audit"
+          to="/lovable/govern/audit"
           className="inline-block bg-blue-500 hover:bg-blue-600 text-white rounded-xl px-6 py-3 min-h-[44px] font-medium transition-colors"
         >
           View Full Audit Trail &rarr;
