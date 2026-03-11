@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: pfis_dev
+      POSTGRES_USER: pfis
+      POSTGRES_PASSWORD: pfis_secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "pfis"]
+      interval: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://pfis:pfis_secret@db:5432/pfis_dev
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      PFIS_ENV: development
+      ADMIN_SEED_ENABLED: "true"
+      CORS_ORIGINS: '["https://poseidon-mit.com","https://www.poseidon-mit.com","https://talk.poseidon-mit.com","http://104.168.145.20","http://localhost:5173","http://localhost:3000"]'
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    volumes:
+      - ./backend:/app
+
+  ui:
+    build: ./ui
+    environment:
+      VITE_API_BASE_URL: ""
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/poseidon:/var/www/poseidon:ro
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
