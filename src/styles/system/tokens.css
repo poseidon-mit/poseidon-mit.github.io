@@ -6,12 +6,12 @@
   --font-mono: 'JetBrains Mono', 'Noto Sans JP', ui-monospace, monospace;
 
   /* ── Colors — Background (Light Theme) ── */
-  --bg: #F8F7F4;
+  --bg: #EDEBE8;
   --bg-deep: #F0EFEB;
-  --bg-oled: #F8F7F4;
-  --bg-vantablack: #F8F7F4;
+  --bg-oled: #EDEBE8;
+  --bg-vantablack: #EDEBE8;
   --bg-surface: #FFFFFF;
-  --surface-primary: #F8F7F4;
+  --surface-primary: #EDEBE8;
 
   /* ── Colors — Glass (Light: subtle shadows instead) ── */
   --glass-bg: rgba(255, 255, 255, 0.8);

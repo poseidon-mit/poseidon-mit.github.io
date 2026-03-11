@@ -1,6 +1,7 @@
 import { Shield, TrendingUp, Zap, Eye } from 'lucide-react'
 import { Link } from '@/router'
 import { MOCK_ENGINE_STATUS } from '@/lib/mock-data'
+import { AnimatedNumber } from '@/components/ui/animated-number'
 
 const engineIcons = {
   protect: Shield,
@@ -48,7 +49,7 @@ export function EngineStatusGrid() {
               </span>
             </div>
             <p className="text-xl font-bold text-[#1A1A1A] mt-2">
-              {item.metric}
+              <AnimatedNumber value={item.metricValue} format={item.metricFormat} />
             </p>
             <p className="text-sm text-stone-500">{item.subtext}</p>
           </Link>

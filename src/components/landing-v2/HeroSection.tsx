@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { ArrowRight, Play, Presentation, Video } from 'lucide-react'
+import { Check, Lock, Play, Shield, TrendingUp, Zap, Eye } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { Link } from '@/router'
 import {
   Dialog,
@@ -7,15 +8,28 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
-interface HeroSectionProps {
-  onGetStarted?: () => void
+const engines = [
+  { icon: Shield, label: 'Protect', color: '#16A34A' },
+  { icon: TrendingUp, label: 'Grow', color: '#7C3AED' },
+  { icon: Zap, label: 'Execute', color: '#CA8A04' },
+  { icon: Eye, label: 'Govern', color: '#2563EB' },
+]
+
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
 }
 
-export default function HeroSection({ onGetStarted }: HeroSectionProps) {
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] } },
+}
+
+export default function HeroSection() {
   const [videoOpen, setVideoOpen] = useState(false)
 
   return (
-    <section className="relative min-h-screen flex flex-col overflow-hidden">
+    <section className="relative min-h-screen flex flex-col overflow-hidden bg-slate-950">
       {/* ── Background video ── */}
       <div className="absolute inset-0 z-0">
         <video
@@ -26,7 +40,6 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
           className="h-full w-full object-cover"
           poster="/videos/hero-theme-poster-v2.jpg"
         >
-          {/* Mobile-optimised source first */}
           <source
             src="/videos/hero-theme-mobile-v2.mp4"
             type="video/mp4"
@@ -37,8 +50,6 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
             type="video/mp4"
           />
         </video>
-
-        {/* Dark overlay for text readability */}
         <div
           className="absolute inset-0"
           style={{
@@ -48,93 +59,101 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
         />
       </div>
 
-      {/* ── Nav ── */}
-      <nav className="relative z-10 flex items-center justify-between px-6 md:px-12 py-5">
-        <div className="flex items-center gap-2">
-          <img src="/favicon.svg" alt="" className="h-7 w-7" />
-          <span className="text-xl font-bold text-white tracking-tight">Poseidon</span>
-        </div>
-        <Link
-          to="/dashboard"
-          className="bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-white/20 transition-colors"
-        >
-          Launch App
-        </Link>
-      </nav>
+      {/* ── Floating gradient orbs ── */}
+      <motion.div
+        className="absolute -top-20 right-1/4 w-[400px] h-[400px] rounded-full bg-blue-500/8 blur-[100px] pointer-events-none z-[1]"
+        animate={{ y: [0, -30, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute bottom-1/4 -left-20 w-[300px] h-[300px] rounded-full bg-cyan-400/6 blur-[100px] pointer-events-none z-[1]"
+        animate={{ y: [0, 30, 0] }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
       {/* ── Hero content ── */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 pb-16">
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-1.5">
+      <motion.div
+        className="relative z-20 flex-1 flex flex-col items-center justify-center px-4 pb-16 pt-24"
+        variants={stagger}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Badge */}
+        <motion.div
+          variants={fadeUp}
+          className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-1.5"
+        >
           <span className="text-sm text-white/80 font-medium">MIT CTO Program · Group 7</span>
-        </div>
+        </motion.div>
 
-        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white text-center leading-tight mt-6 whitespace-pre-line">
+        {/* Headline */}
+        <motion.h1
+          variants={fadeUp}
+          className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white text-center leading-tight mt-6 whitespace-pre-line"
+        >
           {'Your Money,\n'}
           <span className="text-blue-400">Orchestrated by AI</span>
-        </h1>
+        </motion.h1>
 
-        <p className="text-lg md:text-xl text-white/80 max-w-2xl text-center mt-6">
-          Poseidon unifies protection, growth, execution, and governance into
-          one intelligent platform that coordinates your entire financial life.
-        </p>
+        {/* Subtext */}
+        <motion.p
+          variants={fadeUp}
+          className="text-base sm:text-lg md:text-xl text-white/70 max-w-xl text-center mt-5"
+        >
+          Protection · Growth · Execution · Governance — one AI platform.
+        </motion.p>
 
-        {/* ── Row 1: Primary actions ── */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
+        {/* Engine icons */}
+        <motion.div variants={fadeUp} className="flex items-center justify-center gap-6 sm:gap-8 mt-8">
+          {engines.map((e) => {
+            const Icon = e.icon
+            return (
+              <div key={e.label} className="flex flex-col items-center gap-1.5">
+                <Icon className="w-5 h-5" style={{ color: e.color }} />
+                <span className="text-xs text-white/50 font-medium">{e.label}</span>
+              </div>
+            )
+          })}
+        </motion.div>
+
+        {/* Primary CTA */}
+        <motion.div variants={fadeUp} className="mt-10 w-full flex justify-center">
           <Link
             to="/dashboard"
-            className="bg-blue-500 text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-blue-600 transition-colors min-w-[160px]"
+            className="bg-blue-500 text-white text-lg font-semibold px-8 py-4 min-h-[56px] rounded-lg flex items-center justify-center gap-2 hover:bg-blue-600 transition-all shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:shadow-[0_0_40px_rgba(59,130,246,0.6)] w-full sm:w-auto"
           >
-            <Play className="w-4 h-4" />
+            <Play className="w-5 h-5" />
             Explore Demo
           </Link>
-          <button
-            type="button"
-            onClick={onGetStarted}
-            className="border border-white/30 bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-white/20 transition-colors min-w-[160px] cursor-pointer"
-          >
-            Get Started
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
+        </motion.div>
 
-        {/* ── Row 2: Secondary actions (ghost) ── */}
-        <div className="flex items-center justify-center gap-4 mt-4">
+        {/* Secondary links */}
+        <motion.div variants={fadeUp} className="flex items-center justify-center gap-6 mt-5">
           <Link
             to="/deck"
-            className="inline-flex items-center gap-2 border border-white/30 bg-white/5 backdrop-blur-sm text-white/80 hover:text-white hover:bg-white/10 text-sm font-medium px-5 py-2.5 rounded-lg transition-colors"
+            className="text-white/50 text-sm font-medium hover:text-white/70 transition-colors underline underline-offset-4 min-h-[44px] flex items-center px-2"
           >
-            <Presentation className="w-4 h-4" />
             Presentation
           </Link>
           <button
             type="button"
             onClick={() => setVideoOpen(true)}
-            className="inline-flex items-center gap-2 border border-white/30 bg-white/5 backdrop-blur-sm text-white/80 hover:text-white hover:bg-white/10 text-sm font-medium px-5 py-2.5 rounded-lg transition-colors cursor-pointer"
+            className="text-white/50 text-sm font-medium hover:text-white/70 transition-colors underline underline-offset-4 min-h-[44px] flex items-center px-2 cursor-pointer"
           >
-            <Video className="w-4 h-4" />
             Video
           </button>
-        </div>
+        </motion.div>
 
-        {/* ── MIT Professional Education ── */}
-        <div className="mt-12 flex flex-col items-center gap-3">
-          <p className="text-[10px] text-white/40 uppercase tracking-widest">
-            Built as part of
-          </p>
-          <a
-            href="https://online.professionalprogramsmit.com/blended-professional-certificate-chief-technology-officer"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-opacity hover:opacity-80"
-          >
-            <img
-              src="/mit-logo.png"
-              alt="MIT Professional Education"
-              className="h-12 w-auto opacity-70"
-            />
-          </a>
-        </div>
-      </div>
+        {/* Trust badges */}
+        <motion.div variants={fadeUp} className="flex items-center justify-center gap-6 mt-8 text-white/40 text-xs">
+          <span className="flex items-center gap-1.5">
+            <Check className="w-3 h-3" /> SOC 2
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Lock className="w-3 h-3" /> Bank-grade Encryption
+          </span>
+        </motion.div>
+      </motion.div>
 
       {/* ── Video Modal ── */}
       <Dialog open={videoOpen} onOpenChange={setVideoOpen}>

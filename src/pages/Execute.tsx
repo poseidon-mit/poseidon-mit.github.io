@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Zap,
   AlertTriangle,
   CheckCircle2,
   ChevronRight,
+  ChevronDown,
   PiggyBank,
   ListTodo,
   History,
@@ -20,7 +21,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Progress } from '@/components/ui/progress'
-import { getMotionPreset } from '@/lib/motion-presets'
+import { getMotionPreset, accordionVariants, accordionTransition } from '@/lib/motion-presets'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
@@ -76,6 +77,12 @@ export default function ExecutePage() {
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp, staggerContainer } = getMotionPreset(prefersReducedMotion)
   const [showAll, setShowAll] = useState(false)
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set())
+  const toggleCard = (key: string) => setExpandedCards(prev => {
+    const next = new Set(prev)
+    next.has(key) ? next.delete(key) : next.add(key)
+    return next
+  })
 
   const actions = useMemo(() => selectExecuteActionsView(), [])
   const stats = useMemo(() => selectExecuteQueueStats(), [])
@@ -103,9 +110,6 @@ export default function ExecutePage() {
       <motion.div variants={fadeUp} className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Execute</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Human-in-the-loop AI automation
-          </p>
         </div>
         <Badge variant="outline" className="border-amber-200 bg-amber-50 text-amber-700">
           <Zap className="mr-1.5 h-3.5 w-3.5" />
@@ -115,7 +119,7 @@ export default function ExecutePage() {
 
       {/* Hero Card */}
       <motion.div variants={fadeUp}>
-        <Card className="border-amber-200 bg-amber-50/50 shadow-sm">
+        <Card className="border-amber-200 bg-amber-50/50 shadow-sm border-t-4 border-t-[var(--engine-execute)]">
           <CardContent className="p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-4">
@@ -123,7 +127,7 @@ export default function ExecutePage() {
                   <Zap className="h-8 w-8 text-amber-600" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">{stats.total} actions awaiting your approval</h2>
+                  <h2 className="text-2xl font-bold text-gray-900"><span className="inline-block h-2 w-2 rounded-full bg-amber-500 animate-pulse mr-2" />{stats.total} actions awaiting your approval</h2>
                   <p className="text-sm text-gray-500 mt-1">AI agents are ready to execute once you confirm</p>
                   <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-600">
                     {billCount > 0 && <span>● {billCount} bill payments</span>}
@@ -174,14 +178,13 @@ export default function ExecutePage() {
               <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-gray-100">
                 <Button
                   variant="outline"
-                  size="sm"
-                  className="text-red-600 border-red-200 hover:bg-red-50"
+                  className="text-red-600 border-red-200 hover:bg-red-50 min-h-[44px] px-6"
                 >
                   Reject
                 </Button>
                 <Link
                   to={`/execute/approval?actionId=${action.id}`}
-                  className={cn(buttonVariants({ size: "sm" }), "bg-emerald-600 text-white hover:bg-emerald-700")}
+                  className={cn(buttonVariants(), "bg-emerald-600 text-white hover:bg-emerald-700 min-h-[44px] px-6")}
                 >
                   Review &amp; Approve
                 </Link>
@@ -206,70 +209,116 @@ export default function ExecutePage() {
         {/* Automation Settings */}
         <motion.div variants={fadeUp}>
           <Card className="border border-border bg-card shadow-sm h-full">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
-                <Settings2 className="h-5 w-5 text-gray-500" />
-                Automation Settings
+            <CardHeader
+              className="cursor-pointer"
+              onClick={() => toggleCard('automation')}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('automation') } }}
+              tabIndex={0}
+              role="button"
+              aria-expanded={expandedCards.has('automation')}
+            >
+              <CardTitle className="flex items-center justify-between gap-2 text-lg font-semibold text-foreground">
+                <span className="flex items-center gap-2">
+                  <Settings2 className="h-5 w-5 text-gray-500" />
+                  Automation Settings
+                </span>
+                <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('automation') && 'rotate-180')} />
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="text-sm text-gray-500 block mb-1.5">Auto-approve threshold</label>
-                <select className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 focus:border-amber-300 focus:ring-1 focus:ring-amber-200">
-                  <option>Under $50</option>
-                  <option>Under $100</option>
-                  <option>Under $200</option>
-                  <option>Never auto-approve</option>
-                </select>
-              </div>
-              <div className="space-y-3">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input type="checkbox" defaultChecked className="h-4 w-4 rounded border-gray-300 accent-amber-600" />
-                  <span className="text-sm text-gray-700">Recurring bills</span>
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input type="checkbox" className="h-4 w-4 rounded border-gray-300 accent-amber-600" />
-                  <span className="text-sm text-gray-700">Investment trades</span>
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input type="checkbox" className="h-4 w-4 rounded border-gray-300 accent-amber-600" />
-                  <span className="text-sm text-gray-700">Account transfers</span>
-                </label>
-              </div>
-            </CardContent>
+            <AnimatePresence initial={false}>
+              {expandedCards.has('automation') && (
+                <motion.div
+                  variants={accordionVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  transition={accordionTransition}
+                  className="overflow-hidden"
+                >
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="text-sm text-gray-500 block mb-1.5">Auto-approve threshold</label>
+                      <select className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 focus:border-amber-300 focus:ring-1 focus:ring-amber-200">
+                        <option>Under $50</option>
+                        <option>Under $100</option>
+                        <option>Under $200</option>
+                        <option>Never auto-approve</option>
+                      </select>
+                    </div>
+                    <div className="space-y-3">
+                      <label className="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" defaultChecked className="h-4 w-4 rounded border-gray-300 accent-amber-600" />
+                        <span className="text-sm text-gray-700">Recurring bills</span>
+                      </label>
+                      <label className="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" className="h-4 w-4 rounded border-gray-300 accent-amber-600" />
+                        <span className="text-sm text-gray-700">Investment trades</span>
+                      </label>
+                      <label className="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" className="h-4 w-4 rounded border-gray-300 accent-amber-600" />
+                        <span className="text-sm text-gray-700">Account transfers</span>
+                      </label>
+                    </div>
+                  </CardContent>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Card>
         </motion.div>
 
         {/* Execution Stats */}
         <motion.div variants={fadeUp}>
           <Card className="border border-border bg-card shadow-sm h-full">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
-                <History className="h-5 w-5 text-gray-500" />
-                Execution Stats (30d)
+            <CardHeader
+              className="cursor-pointer"
+              onClick={() => toggleCard('stats')}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard('stats') } }}
+              tabIndex={0}
+              role="button"
+              aria-expanded={expandedCards.has('stats')}
+            >
+              <CardTitle className="flex items-center justify-between gap-2 text-lg font-semibold text-foreground">
+                <span className="flex items-center gap-2">
+                  <History className="h-5 w-5 text-gray-500" />
+                  Execution Stats (30d)
+                </span>
+                <ChevronDown className={cn('h-5 w-5 text-gray-400 transition-transform', expandedCards.has('stats') && 'rotate-180')} />
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-center py-2">
-                <p className="text-3xl font-bold text-foreground">156</p>
-                <p className="text-sm text-muted-foreground">total executions</p>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-emerald-600 font-medium">149 approved (95.5%)</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-red-600 font-medium">4 rejected</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-amber-600 font-medium">3 modified</span>
-                </div>
-              </div>
-              <div className="pt-3 border-t border-gray-100 text-center">
-                <p className="text-lg font-bold text-foreground">$12,450</p>
-                <p className="text-sm text-muted-foreground">total processed</p>
-              </div>
-            </CardContent>
+            <AnimatePresence initial={false}>
+              {expandedCards.has('stats') && (
+                <motion.div
+                  variants={accordionVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  transition={accordionTransition}
+                  className="overflow-hidden"
+                >
+                  <CardContent className="space-y-4">
+                    <div className="text-center py-2">
+                      <p className="text-3xl font-bold text-foreground">156</p>
+                      <p className="text-sm text-muted-foreground">total executions</p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-emerald-600 font-medium">149 approved (95.5%)</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-red-600 font-medium">4 rejected</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-amber-600 font-medium">3 modified</span>
+                      </div>
+                    </div>
+                    <div className="pt-3 border-t border-gray-100 text-center">
+                      <p className="text-lg font-bold text-foreground">$12,450</p>
+                      <p className="text-sm text-muted-foreground">total processed</p>
+                    </div>
+                  </CardContent>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Card>
         </motion.div>
       </div>
@@ -283,7 +332,7 @@ export default function ExecutePage() {
                 <History className="h-5 w-5 text-gray-500" />
                 Recent Execution History
               </CardTitle>
-              <Link to="/govern" className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "text-sm text-muted-foreground")}>
+              <Link to="/govern" className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "min-h-[44px] text-sm text-muted-foreground")}>
                 View Full Log <ArrowRight className="ml-1 h-3.5 w-3.5" />
               </Link>
             </div>

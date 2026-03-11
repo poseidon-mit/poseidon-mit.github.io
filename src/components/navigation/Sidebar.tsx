@@ -115,7 +115,7 @@ export function Sidebar({ path }: { path: string }) {
                     alt=""
                     width="64"
                     height="64"
-                    className="h-16 w-16 object-contain"
+                    className="h-16 w-16 object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
                     aria-hidden="true"
                 />
                 <span className="text-2xl font-semibold tracking-widest text-foreground">Poseidon</span>

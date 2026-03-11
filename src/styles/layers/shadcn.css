@@ -10,7 +10,7 @@
 @layer base {
   :root {
     /* ── Color Slots (Light Theme) ── */
-    --background: 40 7% 96%;
+    --background: 40 4% 92%;
     --foreground: 0 0% 10%;
 
     --card: 0 0% 100%;
@@ -34,7 +34,7 @@
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 40 5% 90%;
+    --border: 40 6% 85%;
     --input: 40 5% 90%;
     --ring: 217 63% 10%;
     --radius: 0.75rem;

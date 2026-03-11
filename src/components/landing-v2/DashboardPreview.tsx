@@ -1,4 +1,7 @@
-import { Check, Shield, TrendingUp, Zap, Eye } from 'lucide-react'
+import { useRef } from 'react'
+import { Shield, TrendingUp, Zap, Eye } from 'lucide-react'
+import { motion, useInView } from 'framer-motion'
+import { AnimatedNumber } from '@/components/ui/animated-number'
 
 const miniEngines = [
   { label: 'Protect', value: 'Active', color: '#16A34A', icon: Shield },
@@ -7,37 +10,71 @@ const miniEngines = [
   { label: 'Govern', value: 'All clear', color: '#2563EB', icon: Eye },
 ]
 
-const callouts = [
-  'Real-time portfolio tracking across all accounts',
-  'AI-powered insights delivered daily',
-  'One-click actions on every recommendation',
+const auditEntries = [
+  { time: '2 min ago', action: 'Portfolio rebalance recommended', engine: 'Grow', color: '#7C3AED' },
+  { time: '15 min ago', action: 'Suspicious transaction flagged', engine: 'Protect', color: '#16A34A' },
+  { time: '1 hr ago', action: 'Bill payment scheduled', engine: 'Execute', color: '#CA8A04' },
 ]
 
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.15 } },
+}
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] } },
+}
+
 export default function DashboardPreview() {
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const isInView = useInView(sectionRef, { once: true, margin: '-10%' })
+
   return (
-    <section className="bg-white py-24 px-4">
-      <div className="max-w-5xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-[#1A1A1A]">
+    <section className="bg-[#EDEBE8] py-24 px-4">
+      <div className="max-w-5xl mx-auto" ref={sectionRef}>
+        <motion.h2
+          className="text-3xl sm:text-4xl font-bold text-center text-[#1A1A1A]"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+        >
           Your Command Center
-        </h2>
-        <p className="text-stone-500 text-center mt-4 max-w-2xl mx-auto">
-          A unified view of your entire financial life, powered by AI.
-        </p>
+        </motion.h2>
 
         {/* Mock dashboard */}
-        <div className="bg-[#0A1628] rounded-2xl p-2 shadow-2xl max-w-4xl mx-auto mt-12">
+        <motion.div
+          className="bg-[#0A1628] rounded-2xl p-2 shadow-2xl max-w-4xl mx-auto mt-12"
+          initial={{ opacity: 0, y: 40, scale: 0.95 }}
+          animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+          transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1], delay: 0.15 }}
+        >
           <div className="bg-white rounded-xl p-6 md:p-8">
             {/* Net worth */}
             <div>
-              <p className="text-sm text-stone-500 font-medium">
-                Total Net Worth
-              </p>
+              <p className="text-sm text-stone-500 font-medium">Total Net Worth</p>
               <div className="flex items-baseline gap-3 mt-1">
                 <span className="text-3xl font-bold text-[#1A1A1A]">
-                  $847,392
+                  {isInView ? (
+                    <AnimatedNumber
+                      value={847392}
+                      duration={1.4}
+                      format={(n) => '$' + Math.round(n).toLocaleString()}
+                    />
+                  ) : (
+                    '$0'
+                  )}
                 </span>
                 <span className="text-sm font-semibold text-[#16A34A]">
-                  +$12,847 (1.5%)
+                  {isInView ? (
+                    <AnimatedNumber
+                      value={12847}
+                      duration={1.4}
+                      format={(n) => '+$' + Math.round(n).toLocaleString() + ' (1.5%)'}
+                    />
+                  ) : (
+                    '+$0'
+                  )}
                 </span>
               </div>
             </div>
@@ -47,23 +84,12 @@ export default function DashboardPreview() {
               {miniEngines.map((engine) => {
                 const Icon = engine.icon
                 return (
-                  <div
-                    key={engine.label}
-                    className="border border-stone-200 rounded-lg p-3"
-                  >
+                  <div key={engine.label} className="border border-stone-200 rounded-lg p-3">
                     <div className="flex items-center gap-1.5">
-                      <Icon
-                        className="w-3.5 h-3.5"
-                        style={{ color: engine.color }}
-                      />
-                      <span className="text-xs text-stone-500 font-medium">
-                        {engine.label}
-                      </span>
+                      <Icon className="w-3.5 h-3.5" style={{ color: engine.color }} />
+                      <span className="text-xs text-stone-500 font-medium">{engine.label}</span>
                     </div>
-                    <p
-                      className="text-sm font-semibold mt-1"
-                      style={{ color: engine.color }}
-                    >
+                    <p className="text-sm font-semibold mt-1" style={{ color: engine.color }}>
                       {engine.value}
                     </p>
                   </div>
@@ -71,17 +97,42 @@ export default function DashboardPreview() {
               })}
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Callouts */}
-        <div className="flex flex-col md:flex-row justify-center gap-6 md:gap-12 mt-10">
-          {callouts.map((text) => (
-            <div key={text} className="flex items-center gap-2">
-              <Check className="w-5 h-5 text-[#16A34A] flex-shrink-0" />
-              <span className="text-sm text-stone-600">{text}</span>
-            </div>
-          ))}
-        </div>
+        {/* Live Audit Trail */}
+        <motion.div
+          className="bg-white border border-stone-200 rounded-2xl p-6 shadow-sm max-w-4xl mx-auto mt-6"
+          variants={stagger}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+        >
+          <p className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-4">
+            Live Audit Trail
+          </p>
+          <div className="space-y-4">
+            {auditEntries.map((entry) => (
+              <motion.div
+                key={entry.action}
+                variants={fadeUp}
+                className="flex items-start gap-3 pb-4 border-b border-stone-100 last:border-0 last:pb-0"
+              >
+                <div
+                  className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 animate-pulse"
+                  style={{ backgroundColor: entry.color }}
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-[#1A1A1A]">{entry.action}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-xs font-medium" style={{ color: entry.color }}>
+                      {entry.engine}
+                    </span>
+                    <span className="text-xs text-stone-400">{entry.time}</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   )

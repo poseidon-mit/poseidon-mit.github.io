@@ -29,6 +29,7 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { usePageTitle } from '@/hooks/use-page-title'
+import { useToastContext } from '@/components/providers/ToastProvider'
 import { PAGE_CONTENT_CLASS, PAGE_CONTENT_STYLE } from '@/lib/page-layout'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { selectThreatFactors, selectThreatTiming } from '@/domain/poseidon-universe'
@@ -65,13 +66,16 @@ export default function ProtectAlertDetailPage() {
   const { search, navigate } = useRouter()
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [disputeState, setDisputeState] = useState<'idle' | 'drafting' | 'submitted' | 'neutralized'>('idle')
-  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set(['details', 'risk']))
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set())
   const toggleCard = (id: string) => setExpandedCards(prev => {
     const next = new Set(prev)
     next.has(id) ? next.delete(id) : next.add(id)
     return next
   })
   const [copied, setCopied] = useState(false)
+
+  const { showToast } = useToastContext()
+  const [actionTaken, setActionTaken] = useState<'blocked' | 'confirmed' | null>(null)
 
   const { dismiss } = useDismissedAlerts()
 
@@ -151,22 +155,12 @@ export default function ProtectAlertDetailPage() {
       <motion.main
         id="main-content"
         role="main"
-        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#F8F7F4] min-h-screen pt-6`}
+        className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#EDEBE8] min-h-screen pt-6`}
         style={PAGE_CONTENT_STYLE}
         variants={staggerContainerVariant}
         initial="hidden"
         animate="visible"
       >
-        {/* Back link */}
-        <motion.div variants={fadeUpVariant}>
-          <Link
-            to="/protect/threats"
-            className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Threats
-          </Link>
-        </motion.div>
 
         {/* ── Alert Header ── */}
         <motion.div variants={fadeUpVariant}>
@@ -195,22 +189,32 @@ export default function ProtectAlertDetailPage() {
                 {/* Action buttons — only in idle state */}
                 {disputeState === 'idle' && (
                   <>
-                    <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+                    <div className="flex flex-col sm:flex-row gap-2 shrink-0 sticky bottom-0 z-50 bg-white/95 backdrop-blur-sm border-t border-border p-4 -mx-4 lg:static lg:bg-transparent lg:backdrop-blur-none lg:border-0 lg:p-0 lg:mx-0">
                       <Button
                         variant="outline"
-                        onClick={() => { dismiss(alert.id); navigate('/protect') }}
+                        disabled={actionTaken !== null}
+                        onClick={() => {
+                          setActionTaken('confirmed')
+                          showToast({ message: 'Activity confirmed as yours', variant: 'success' })
+                          dismiss(alert.id)
+                        }}
                         className="gap-1"
                       >
                         <CheckCircle2 className="h-4 w-4" />
-                        This was Me
+                        {actionTaken === 'confirmed' ? '✓ Confirmed' : 'This was Me'}
                       </Button>
                       <Button
                         variant="destructive"
-                        onClick={() => setDisputeState('drafting')}
+                        disabled={actionTaken !== null}
+                        onClick={() => {
+                          setActionTaken('blocked')
+                          showToast({ message: 'Threat blocked and reported', variant: 'success' })
+                          setDisputeState('drafting')
+                        }}
                         className="gap-1"
                       >
                         <XCircle className="h-4 w-4" />
-                        Block & Report
+                        {actionTaken === 'blocked' ? '✓ Blocked' : 'Block & Report'}
                       </Button>
                     </div>
                     <p className="text-xs text-muted-foreground mt-2">Your response helps train our AI to better protect you</p>
@@ -259,11 +263,15 @@ export default function ProtectAlertDetailPage() {
                       {alert.flaggedIp && (
                         <DetailRow icon={<Globe className="h-4 w-4 text-gray-400" />} label="IP Address" value={alert.flaggedIp} />
                       )}
-                      <DetailRow
-                        icon={<Clock className="h-4 w-4 text-gray-400" />}
-                        label="AI Confidence"
-                        value={`${formatConfidence(alert.confidence)} (${alert.severity})`}
-                      />
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100">
+                          <Clock className="h-4 w-4 text-gray-400" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400">AI Confidence</p>
+                          <Badge variant="destructive">Critical</Badge>
+                        </div>
+                      </div>
                     </CardContent>
                   </motion.div>
                 )}
@@ -296,14 +304,12 @@ export default function ProtectAlertDetailPage() {
                     style={{ overflow: 'hidden' }}
                   >
                     <CardContent className="flex flex-col items-center justify-center py-8">
-                      <div className={`flex h-28 w-28 items-center justify-center rounded-full border-4 ${riskLevel.bg} ${riskLevel.ring}`}>
-                        <span className={`text-3xl font-bold ${riskLevel.color}`}>
-                          {Math.round(alert.confidence * 100)}%
-                        </span>
+                      <div className={`flex h-20 w-20 items-center justify-center rounded-2xl ${riskLevel.bg}`}>
+                        <AlertTriangle className={`h-10 w-10 ${riskLevel.color}`} />
                       </div>
-                      <p className={`mt-4 text-lg font-semibold ${riskLevel.color}`}>{riskLevel.label}</p>
+                      <p className={`mt-4 text-2xl font-bold ${riskLevel.color}`}>{riskLevel.label}</p>
                       <p className="mt-1 text-sm text-gray-500 text-center max-w-xs">
-                        Based on AI analysis of {factors.length} risk factors
+                        7 risk factors detected
                       </p>
                     </CardContent>
                   </motion.div>
@@ -444,7 +450,7 @@ export default function ProtectAlertDetailPage() {
                       <span className="text-gray-700">{caseBrief.dateStr}</span>
                       {alert.account && <><span className="text-gray-500">Account</span><span className="text-gray-700">{alert.account}</span></>}
                       <span className="text-gray-500">AI Confidence</span>
-                      <span className="font-bold text-amber-600">{formatConfidence(alert.confidence)} ({alert.severity})</span>
+                      <Badge variant="destructive">Critical</Badge>
                     </div>
                     <div className="mt-4 pt-3 border-t border-gray-200">
                       <p className="text-[10px] uppercase tracking-widest text-amber-600 font-semibold mb-2">Key Findings</p>

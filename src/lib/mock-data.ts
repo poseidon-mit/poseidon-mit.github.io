@@ -24,6 +24,8 @@ export const MOCK_ENGINE_STATUS = [
     status: '4 Active',
     statusColor: '#16A34A',
     metric: '10 threats detected',
+    metricValue: 10,
+    metricFormat: (n: number) => `${Math.round(n)} threats detected`,
     subtext: '2 critical · 2 high · 4 medium · 2 resolved',
   },
   {
@@ -32,6 +34,8 @@ export const MOCK_ENGINE_STATUS = [
     status: 'Optimizing',
     statusColor: '#7C3AED',
     metric: '$2,897/yr savings found',
+    metricValue: 2897,
+    metricFormat: (n: number) => `$${Math.round(n).toLocaleString()}/yr savings found`,
     subtext: '8 recommendations · 1 approved',
   },
   {
@@ -40,6 +44,8 @@ export const MOCK_ENGINE_STATUS = [
     status: '9 pending',
     statusColor: '#CA8A04',
     metric: '$399 tax savings',
+    metricValue: 399,
+    metricFormat: (n: number) => `$${Math.round(n)} tax savings`,
     subtext: 'Tax-loss harvest deadline: Mar 31',
   },
   {
@@ -48,6 +54,8 @@ export const MOCK_ENGINE_STATUS = [
     status: 'Monitoring',
     statusColor: '#2563EB',
     metric: '2,847 decisions logged',
+    metricValue: 2847,
+    metricFormat: (n: number) => `${Math.round(n).toLocaleString()} decisions logged`,
     subtext: '100% auditable',
   },
 ]

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { Sparkles } from 'lucide-react'
+import { Sparkles, AlertTriangle } from 'lucide-react'
+import { Link } from '@/router'
 import { NetWorthCard } from '@/components/dashboard-v2/NetWorthCard'
 import { EngineStatusGrid } from '@/components/dashboard-v2/EngineStatusGrid'
 import { RecentActivityFeed } from '@/components/dashboard-v2/RecentActivityFeed'
@@ -49,11 +50,28 @@ export default function Dashboard() {
           <h1 className="text-2xl font-bold text-foreground">
             {getGreeting()}, {MOCK_USER_NAME}
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Your finances at a glance
-          </p>
         </div>
         <p className="text-sm text-muted-foreground hidden sm:block">{getDateStr()}</p>
+      </motion.div>
+
+      {/* Oslo Alert Banner */}
+      <motion.div variants={fadeUp}>
+        <Link
+          href="/protect/alert-detail?alertId=THR-001"
+          className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 transition-colors hover:bg-red-100"
+        >
+          <span className="relative flex h-3 w-3 shrink-0">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
+            <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
+          </span>
+          <AlertTriangle className="h-4 w-4 shrink-0 text-red-600" />
+          <span className="flex-1 text-sm font-medium text-red-800">
+            Suspicious activity from Oslo, Norway
+          </span>
+          <span className="shrink-0 rounded-lg bg-red-600 px-3 py-1 text-xs font-semibold text-white">
+            Review Now
+          </span>
+        </Link>
       </motion.div>
 
       <motion.div variants={fadeUp}>

@@ -111,18 +111,18 @@ function BalanceCard({ data }: { data: Extract<CardPayload, { type: 'balance' }>
         <Wallet className="h-5 w-5 text-blue-500" />
         <span className="text-sm font-semibold text-gray-900">Account Balances</span>
       </div>
-      <div className="grid grid-cols-3 gap-3 rounded-xl bg-gray-50 p-3 mb-4">
-        <div>
-          <p className="text-[10px] text-gray-500 uppercase tracking-wider">Assets</p>
-          <p className="text-sm font-bold text-emerald-600">${data.summary.totalAssets.toLocaleString()}</p>
+      <div className="grid grid-cols-3 gap-2 rounded-xl bg-gray-50 p-3 mb-4">
+        <div className="min-w-0">
+          <p className="text-[9px] text-gray-500 uppercase tracking-wide truncate">Assets</p>
+          <p className="text-xs font-bold text-emerald-600 truncate">${data.summary.totalAssets.toLocaleString()}</p>
         </div>
-        <div>
-          <p className="text-[10px] text-gray-500 uppercase tracking-wider">Liabilities</p>
-          <p className="text-sm font-bold text-rose-600">${data.summary.totalLiabilities.toLocaleString()}</p>
+        <div className="min-w-0">
+          <p className="text-[9px] text-gray-500 uppercase tracking-wide truncate">Liabilities</p>
+          <p className="text-xs font-bold text-rose-600 truncate">${data.summary.totalLiabilities.toLocaleString()}</p>
         </div>
-        <div>
-          <p className="text-[10px] text-gray-500 uppercase tracking-wider">Net Worth</p>
-          <p className="text-sm font-bold text-gray-900">${data.summary.netWorth.toLocaleString()}</p>
+        <div className="min-w-0">
+          <p className="text-[9px] text-gray-500 uppercase tracking-wide truncate">Net Worth</p>
+          <p className="text-xs font-bold text-gray-900 truncate">${data.summary.netWorth.toLocaleString()}</p>
         </div>
       </div>
       <div className="space-y-2">
@@ -364,7 +364,7 @@ export default function Chat() {
   const isEmpty = messages.length === 0 && !isStreaming
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] lg:h-screen bg-white">
+    <div className="flex flex-col h-[calc(100vh-64px-64px)] lg:h-[calc(100vh-64px)] bg-white">
       {/* Messages or Empty State */}
       <div className="flex-1 overflow-y-auto">
         {isEmpty ? (

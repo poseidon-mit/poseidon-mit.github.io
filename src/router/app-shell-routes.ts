@@ -7,6 +7,7 @@ export const APP_SHELL_PREFIXES = [
   '/settings',
   '/help',
   '/orchestrator',
+  '/chat',
 ] as const
 
 export function isAppRoute(path: string): boolean {

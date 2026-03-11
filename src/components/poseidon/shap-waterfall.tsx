@@ -2,11 +2,14 @@
  * ShapWaterfall — SHAP feature attribution waterfall chart.
  *
  * Visualizes ML model explainability for governance/transparency.
- * Vertical waterfall: positive values = risk increase (rose), negative = risk decrease (blue).
+ * Desktop: vertical waterfall SVG (positive = rose, negative = blue).
+ * Mobile: horizontal Recharts BarChart (positive = green, negative = red).
  * Light-theme optimized with responsive SVG.
  */
 import { useMemo } from 'react'
+import { BarChart, Bar, XAxis, YAxis, Cell, ResponsiveContainer } from 'recharts'
 import { cn } from '@/lib/utils'
+import { useIsMobile } from '@/hooks/useMediaQuery'
 
 export interface ShapFactor {
   name: string
@@ -24,6 +27,8 @@ export function ShapWaterfall({
   baseValue = 0,
   className,
 }: ShapWaterfallProps) {
+  const isMobile = useIsMobile()
+
   const sortedFactors = useMemo(() => {
     const pos = factors.filter(f => f.value > 0).sort((a, b) => b.value - a.value)
     const neg = factors.filter(f => f.value <= 0).sort((a, b) => a.value - b.value)
@@ -68,6 +73,48 @@ export function ShapWaterfall({
   }, [yMax])
 
   const truncate = (s: string, max: number) => s.length > max ? s.slice(0, max - 1) + '…' : s
+
+  // Mobile: horizontal bar chart
+  if (isMobile) {
+    const mobileData = sortedFactors.map(f => ({ name: f.name, value: f.value }))
+    return (
+      <div className={cn('space-y-3', className)}>
+        {/* Legend */}
+        <div className="flex items-center justify-center gap-5 text-[11px] text-gray-500">
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-2.5 w-2.5 rounded-sm bg-rose-400" />
+            Risk increase
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-2.5 w-2.5 rounded-sm bg-blue-400" />
+            Risk decrease
+          </span>
+        </div>
+        <ResponsiveContainer width="100%" height={mobileData.length * 40 + 24}>
+          <BarChart
+            layout="vertical"
+            data={mobileData}
+            margin={{ top: 4, right: 48, bottom: 4, left: 8 }}
+          >
+            <XAxis type="number" tick={{ fontSize: 10, fill: '#9CA3AF' }} tickLine={false} axisLine={false} />
+            <YAxis
+              type="category"
+              dataKey="name"
+              width={90}
+              tick={{ fontSize: 10, fill: '#6B7280' }}
+              tickLine={false}
+              axisLine={false}
+            />
+            <Bar dataKey="value" radius={4} label={{ position: 'right', fontSize: 9, fill: '#374151', formatter: (v: number) => v > 0 ? `+${v.toFixed(2)}` : v.toFixed(2) }}>
+              {mobileData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.value >= 0 ? '#22C55E' : '#EF4444'} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    )
+  }
 
   return (
     <div className={cn('space-y-3', className)}>

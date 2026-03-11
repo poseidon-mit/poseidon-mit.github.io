@@ -91,7 +91,7 @@ export default function ProtectThreatsPage() {
     <motion.main
       id="main-content"
       role="main"
-      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#F8F7F4] min-h-screen`}
+      className={`${PAGE_CONTENT_CLASS} flex flex-col gap-6 pb-12 bg-[#EDEBE8] min-h-screen`}
       style={PAGE_CONTENT_STYLE}
       variants={staggerContainer}
       initial="hidden"
@@ -239,7 +239,7 @@ function SummaryCards({
 }) {
   return (
     <div className="grid gap-4 sm:grid-cols-3">
-      <Card className="border-red-200 bg-red-50">
+      <Card className="border-2 border-red-200 bg-red-50">
         <CardContent className="flex items-center gap-4 p-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
             <AlertTriangle className="h-6 w-6 text-red-600" />
@@ -251,7 +251,7 @@ function SummaryCards({
         </CardContent>
       </Card>
 
-      <Card className="border-green-200 bg-green-50">
+      <Card className="border-2 border-green-200 bg-green-50">
         <CardContent className="flex items-center gap-4 p-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
             <CheckCircle2 className="h-6 w-6 text-green-600" />
@@ -263,7 +263,7 @@ function SummaryCards({
         </CardContent>
       </Card>
 
-      <Card className="border-blue-200 bg-blue-50">
+      <Card className="border-2 border-blue-200 bg-blue-50">
         <CardContent className="flex items-center gap-4 p-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
             <Shield className="h-6 w-6 text-blue-600" />

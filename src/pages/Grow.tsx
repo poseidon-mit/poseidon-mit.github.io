@@ -96,9 +96,6 @@ export default function GrowPage() {
       <motion.div variants={fadeUp} className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Grow</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Investment management and wealth building
-          </p>
         </div>
         <Badge variant="outline" className="border-violet-200 bg-violet-50 text-violet-700">
           <TrendingUp className="mr-1.5 h-3.5 w-3.5" />
@@ -108,7 +105,7 @@ export default function GrowPage() {
 
       {/* Hero: Net Worth */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border border-border bg-card shadow-sm border-t-4 border-t-[var(--engine-grow)]">
           <CardContent className="p-6">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div>
@@ -211,7 +208,7 @@ export default function GrowPage() {
                               <p className="font-bold text-foreground">{formatUsd(goal.currentUsd)}</p>
                               <p className="text-sm text-muted-foreground">of {formatUsd(goal.targetUsd)}</p>
                             </div>
-                            <Link to={`/grow/goal?id=${goal.id}`} className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "h-8 w-8 p-0 text-muted-foreground")} aria-label="View goal details">
+                            <Link to={`/grow/goal?id=${goal.id}`} className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "h-[44px] w-[44px] p-0 text-muted-foreground")} aria-label="View goal details">
                               <ChevronRight className="h-4 w-4" />
                             </Link>
                           </div>
@@ -243,7 +240,7 @@ export default function GrowPage() {
                     <Lightbulb className="h-5 w-5 text-amber-500" />
                     Top Recommendations
                   </CardTitle>
-                  <Link to="/grow/recommendations" className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "text-sm text-muted-foreground")}>View All</Link>
+                  <Link to="/grow/recommendations" className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "min-h-[44px] text-sm text-muted-foreground")}>View All</Link>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -251,7 +248,6 @@ export default function GrowPage() {
                   <Link key={rec.id} to={`/grow/recommendation?id=${rec.id}`} className="block">
                     <div className="rounded-xl border border-border p-4 transition-colors hover:bg-muted/30">
                       <p className="font-medium text-foreground">{rec.title}</p>
-                      <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{rec.description}</p>
                       <div className="mt-2 flex items-center justify-between">
                         <span className="text-sm font-semibold text-emerald-600">
                           <ArrowUpRight className="mr-1 inline h-3.5 w-3.5" />
@@ -289,7 +285,7 @@ export default function GrowPage() {
                 </div>
                 <div className="rounded-xl bg-blue-50 p-3">
                   <p className="text-xs text-blue-700">
-                    {liquidity.percent}% of target — {liquidity.percent >= 100 ? 'Fully funded' : `${formatUsd(liquidity.targetUsd - liquidity.currentUsd)} needed`}
+                    {liquidity.percent}% of target — {liquidity.percent >= 100 ? 'Fully funded' : `${formatUsd(liquidity.targetUsd - liquidity.currentUsd)} to go`}
                   </p>
                 </div>
               </CardContent>

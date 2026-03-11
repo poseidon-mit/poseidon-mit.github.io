@@ -3,6 +3,83 @@ import { motion, AnimatePresence, type PanInfo } from 'framer-motion'
 import { X } from 'lucide-react'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
+/* ─── Side Drawer (left slide-in) ─────────────────────── */
+
+interface SideDrawerProps {
+  open: boolean
+  onDismiss: () => void
+  children: ReactNode
+  className?: string
+}
+
+const DRAG_X_CLOSE_THRESHOLD = 80
+
+export function SideDrawer({ open, onDismiss, children, className = '' }: SideDrawerProps) {
+  const prefersReduced = useReducedMotionSafe()
+
+  const handleDragEnd = useCallback(
+    (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+      if (info.offset.x < -DRAG_X_CLOSE_THRESHOLD) onDismiss()
+    },
+    [onDismiss],
+  )
+
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onDismiss()
+    }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [open, onDismiss])
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            key="drawer-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: prefersReduced ? 0 : 0.2 }}
+            className="fixed inset-0 z-[200] bg-black/30"
+            onClick={onDismiss}
+            aria-hidden="true"
+          />
+          <motion.div
+            key="drawer-content"
+            role="dialog"
+            aria-modal="true"
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
+            transition={
+              prefersReduced
+                ? { duration: 0 }
+                : { type: 'spring', stiffness: 300, damping: 30 }
+            }
+            drag="x"
+            dragConstraints={{ right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={handleDragEnd}
+            className={`fixed top-0 left-0 bottom-0 z-[210] w-[280px] bg-white shadow-2xl overflow-y-auto ${className}`}
+          >
+            <button
+              onClick={onDismiss}
+              className="absolute top-4 right-3 p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+              aria-label="Close menu"
+            >
+              <X size={18} />
+            </button>
+            {children}
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  )
+}
+
 interface BottomSheetProps {
   open: boolean
   onDismiss: () => void

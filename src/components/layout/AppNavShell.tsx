@@ -1,9 +1,12 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   Bell,
+  Menu,
   Settings,
 } from 'lucide-react';
 import { Link, useRouter } from '@/router';
+import { SideDrawer } from '@/components/ui/sheet';
 import { useCommandPalette } from '@/hooks/useCommandPalette';
 import { usePresentationMode } from '@/hooks/usePresentationMode';
 import { usePWA } from '@/hooks/usePWA';
@@ -61,8 +64,11 @@ export function AppNavShell({
     '/execute': pendingExecuteCount,
   }), [activeProtectCount, pendingExecuteCount]);
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   useEffect(() => {
     closePalette();
+    setDrawerOpen(false);
   }, [path, closePalette]);
 
   const handleBottomNavTap = useCallback(
@@ -77,6 +83,43 @@ export function AppNavShell({
   return (
     <div className="app-bg-oled flex min-h-screen selection:bg-blue-100 theme-precision">
       <CommandPalette isOpen={isPaletteOpen} onClose={closePalette} />
+
+      {/* ── Mobile Drawer ── */}
+      <SideDrawer open={drawerOpen} onDismiss={() => setDrawerOpen(false)}>
+        <div className="px-6 pt-8 pb-4">
+          <Link to="/" className="flex items-center gap-3" aria-label="Poseidon home">
+            <img src="/logo.png" alt="" width="48" height="48" className="h-12 w-12 object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.15)]" aria-hidden="true" />
+            <span className="text-lg font-semibold tracking-widest text-foreground">Poseidon</span>
+          </Link>
+        </div>
+        <nav className="flex flex-col gap-1 px-3 pb-8" aria-label="Navigation">
+          {NAV_ITEMS.map((item) => {
+            const isActive = path === item.path || path.startsWith(item.path + '/');
+            const Icon = item.icon;
+            const tone = TONE_CLASSES[item.tone];
+            const badge = mobileBadges[item.path] ?? 0;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={cn(
+                  'flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-200',
+                  isActive ? tone.activeLink : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                )}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                <Icon className={cn('h-[18px] w-[18px]', isActive && tone.activeIcon)} aria-hidden="true" />
+                <span className="flex-1 text-sm font-medium tracking-wide">{item.label}</span>
+                {badge > 0 && (
+                  <span className={cn('flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-bold text-white', TONE_CLASSES[item.tone].indicator)}>
+                    {badge}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+      </SideDrawer>
 
       {/* ── Desktop Sidebar ── */}
       <Sidebar path={path} />
@@ -93,18 +136,27 @@ export function AppNavShell({
         />
 
         {/* ── Mobile top header ── */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between px-5 bg-white/90 border-b border-border backdrop-blur-md lg:hidden">
-          <Link to="/" className="flex items-center gap-1.5" aria-label="Poseidon home">
-            <img
-              src="/logo.png"
-              alt=""
-              width="40"
-              height="40"
-              className="h-10 w-10 object-contain"
-              aria-hidden="true"
-            />
-            <span className="text-sm font-semibold tracking-widest text-foreground">Poseidon</span>
-          </Link>
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between px-3 bg-white/90 border-b border-border backdrop-blur-md lg:hidden">
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="flex h-11 w-11 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+              aria-label="Open menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+            <Link to="/" className="flex items-center gap-1.5" aria-label="Poseidon home">
+              <img
+                src="/logo.png"
+                alt=""
+                width="40"
+                height="40"
+                className="h-10 w-10 object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
+                aria-hidden="true"
+              />
+              <span className="text-sm font-semibold tracking-widest text-foreground">Poseidon</span>
+            </Link>
+          </div>
           <div className="pointer-events-none absolute left-1/2 flex max-w-[56vw] -translate-x-1/2 items-center gap-2">
             <span className="truncate text-sm font-medium text-foreground">{activeSection?.label ?? ''}</span>
           </div>
@@ -120,7 +172,19 @@ export function AppNavShell({
         </header>
 
         {/* ── Main content ── */}
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              key={path}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.12 }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
+        </main>
 
         <div className="h-16 lg:hidden" aria-hidden="true" />
       </div>
