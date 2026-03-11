@@ -45,6 +45,8 @@ export default defineConfig({
             // a function), so they must evaluate in the same chunk as React to
             // avoid "Cannot read properties of undefined (reading 'useLayoutEffect')"
             // when SES/Lockdown (e.g. MetaMask) freezes module bindings early.
+            // React ecosystem packages that access React hooks at module
+            // top-level (IIFE or module-level const) — must evaluate with React.
             '/react-remove-scroll/',
             '/react-remove-scroll-bar/',
             '/react-style-singleton/',
@@ -53,6 +55,10 @@ export default defineConfig({
             '/get-nonce/',
             '/aria-hidden/',
             '/react-focus-lock/',
+            '/react-redux/',
+            '/redux/',
+            '/redux-thunk/',
+            '/@reduxjs/',
           ];
           if (reactCore.some((segment) => id.includes(segment))) return 'vendor-react';
 

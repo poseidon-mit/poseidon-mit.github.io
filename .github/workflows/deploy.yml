@@ -34,7 +34,7 @@ jobs:
       - run: npm run guard:vite-only
       - run: npm run build
       - run: node scripts/emit-route-html.mjs
-      - name: Build smoke check
+      - name: Build smoke check (HTML structure)
         run: |
           test -f dist/index.html
           test -f dist/dashboard/index.html
@@ -56,6 +56,10 @@ jobs:
           grep -qi "<html" /tmp/deploy-smoke-dashboard.html
           grep -qi "<html" /tmp/deploy-smoke-govern-audit.html
           pkill -f "vite preview --host 127.0.0.1 --port 4173" || true
+      - name: Runtime smoke test (Playwright — React mount + console errors)
+        run: |
+          npx playwright install chromium --with-deps --quiet
+          npm run test:smoke
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:
