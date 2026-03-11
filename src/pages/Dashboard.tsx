@@ -1,14 +1,17 @@
 import { useMemo } from 'react'
-import { DashboardCoordinationProof } from '@/components/poseidon/dashboard-hero'
+import { DashboardHero } from '@/components/poseidon/dashboard-hero'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useRouter } from '@/router'
+import { MOCK_NET_WORTH, MOCK_USER, MOCK_SPARKLINE_DATA } from '@/lib/mock-data'
 import {
   selectProtectThreats,
   selectRecommendationsSummary,
   selectExecuteActionsView,
   selectGovernSummaryView,
-  selectGovernAuditEntries,
   selectSpotlightThreat,
+  selectSpotlightRecommendation,
+  selectSpotlightAction,
+  computeFinancialHealthScore,
   formatUsd,
 } from '@/domain/poseidon-universe'
 
@@ -20,65 +23,86 @@ export default function Dashboard() {
   const recs = useMemo(() => selectRecommendationsSummary(), [])
   const actions = useMemo(() => selectExecuteActionsView(), [])
   const governSummary = useMemo(() => selectGovernSummaryView(), [])
-  const auditEntries = useMemo(() => selectGovernAuditEntries(), [])
   const spotlight = useMemo(() => selectSpotlightThreat(), [])
+  const spotlightRec = useMemo(() => selectSpotlightRecommendation(), [])
+  const spotlightAction = useMemo(() => selectSpotlightAction(), [])
 
   const totalMonthlySavings = useMemo(
     () => recs.reduce((sum, r) => sum + r.monthly, 0),
     [recs],
   )
 
-  const criticalSignal = spotlight
-    ? {
-        id: spotlight.id,
-        counterparty: spotlight.counterparty,
-        amount: formatUsd(spotlight.amountUsd),
-        confidence: spotlight.confidence,
-        severity: spotlight.severity as 'Critical' | 'High' | 'Medium' | 'Low',
-      }
-    : null
+  const { score, breakdown } = useMemo(
+    () =>
+      computeFinancialHealthScore({
+        activeThreats: threats.length,
+        totalThreats: 5,
+        pendingActions: actions.length,
+        totalActions: 6,
+      }),
+    [threats, actions],
+  )
 
-  const topAction = actions[0] ?? null
-  const nextApproval = topAction
+  const protectSignal = spotlight
     ? {
-        id: topAction.id,
-        title: topAction.title,
-        amountLabel: topAction.amountLabel,
-        engine: topAction.engine,
-        urgency: topAction.urgency as 'high' | 'medium' | 'low',
+        threatCount: threats.length,
+        topAmount: formatUsd(spotlight.amountUsd),
+        topCounterparty: spotlight.counterparty,
+        severity: spotlight.severity,
       }
-    : null
+    : threats.length > 0
+      ? {
+          threatCount: threats.length,
+          topAmount: '',
+          topCounterparty: '',
+          severity: 'Medium',
+        }
+      : null
 
-  const auditStreamEntries = auditEntries.slice(0, 8).map((e) => ({
-    id: e.id,
-    type: e.type,
-    action: e.action,
-    confidence: e.confidence,
-  }))
+  const growSignal = spotlightRec
+    ? {
+        savingsPerMonth: totalMonthlySavings,
+        recCount: recs.length,
+        topTitle: spotlightRec.title,
+      }
+    : recs.length > 0
+      ? {
+          savingsPerMonth: totalMonthlySavings,
+          recCount: recs.length,
+          topTitle: '',
+        }
+      : null
+
+  const executeSignal = spotlightAction
+    ? {
+        pendingCount: actions.length,
+        topTitle: spotlightAction.title,
+        topAmount: spotlightAction.amountLabel,
+      }
+    : actions.length > 0
+      ? {
+          pendingCount: actions.length,
+          topTitle: '',
+          topAmount: '',
+        }
+      : null
 
   return (
     <div className="hero-viewport">
-      <DashboardCoordinationProof
-        activeThreats={threats.length}
-        monthlySavings={totalMonthlySavings}
-        pendingActions={actions.length}
+      <DashboardHero
+        userName={MOCK_USER.name}
+        netWorth={MOCK_NET_WORTH.total}
+        netWorthChange={MOCK_NET_WORTH.change}
+        netWorthChangePercent={MOCK_NET_WORTH.changePercent}
+        sparklineData={MOCK_SPARKLINE_DATA}
+        healthScore={score}
+        healthBreakdown={breakdown}
+        protectSignal={protectSignal}
+        growSignal={growSignal}
+        executeSignal={executeSignal}
         decisionsAudited={governSummary.decisionsAuditedTotal}
-        decisionsVerified={governSummary.verifiedDecisions}
-        recommendationCount={recs.length}
-        criticalSignal={criticalSignal}
-        nextApproval={nextApproval}
-        auditStreamEntries={auditStreamEntries}
-        onReviewThreat={
-          spotlight
-            ? () => router.navigate(`/protect/alert-detail?alertId=${spotlight.id}`)
-            : null
-        }
-        onReviewApproval={
-          topAction
-            ? () => router.navigate(`/execute/approval?actionId=${topAction.id}`)
-            : null
-        }
-        onViewRecommendations={() => router.navigate('/grow/recommendations')}
+        complianceScore={governSummary.complianceScore}
+        onNavigate={(path) => router.navigate(path)}
       />
     </div>
   )

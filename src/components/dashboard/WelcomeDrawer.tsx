@@ -54,14 +54,14 @@ function useEngineCards(): EngineCard[] {
 export function WelcomeDrawer() {
   const CARDS = useEngineCards()
   const [open, setOpen] = useState(false)
-  const timerRef = useRef<ReturnType<typeof setTimeout>>()
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     try {
       if (sessionStorage.getItem(DRAWER_KEY) === 'true') return
     } catch { /* noop */ }
     timerRef.current = setTimeout(() => setOpen(true), SHOW_DELAY_MS)
-    return () => clearTimeout(timerRef.current)
+    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
   }, [])
 
   const dismiss = useCallback(() => {

@@ -63,7 +63,7 @@ export { ProtectAnomalyRadar, type ProtectAnomalyRadarProps, ProtectThreatPostur
 export { GrowGrowthAdvantage, type GrowGrowthAdvantageProps } from './grow-hero'
 
 /* ── Dashboard Hero ── */
-export { DashboardCoordinationProof, type DashboardCoordinationProofProps } from './dashboard-hero'
+export { DashboardHero, type DashboardHeroProps } from './dashboard-hero'
 
 /* ── Execute Hero ── */
 export { ExecuteApprovalCommandDeck, type ExecuteApprovalCommandDeckProps } from './execute-hero'

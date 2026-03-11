@@ -23,7 +23,7 @@ const stagger = {
 
 const fadeUp = {
   hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] as const } },
 }
 
 export default function DashboardPreview() {
@@ -37,7 +37,7 @@ export default function DashboardPreview() {
           className="text-3xl sm:text-4xl font-bold text-center text-[#1A1A1A]"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+          transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] as const }}
         >
           Your Command Center
         </motion.h2>
@@ -47,7 +47,7 @@ export default function DashboardPreview() {
           className="bg-[#0A1628] rounded-2xl p-2 shadow-2xl max-w-4xl mx-auto mt-12"
           initial={{ opacity: 0, y: 40, scale: 0.95 }}
           animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-          transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1], delay: 0.15 }}
+          transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] as const, delay: 0.15 }}
         >
           <div className="bg-white rounded-xl p-6 md:p-8">
             {/* Net worth */}
