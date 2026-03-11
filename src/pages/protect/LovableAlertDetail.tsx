@@ -6,6 +6,7 @@ import { threats } from "@/data/threats";
 import { LovableSeverityBadge } from "@/components/shared/LovableSeverityBadge";
 import { LovableDecisionDrivers } from "@/components/shared/LovableDecisionDrivers";
 import { LovableGovernanceFooter } from "@/components/shared/LovableGovernanceFooter";
+import { motion } from "framer-motion";
 
 function CollapsibleSection({
   title,
@@ -16,22 +17,31 @@ function CollapsibleSection({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="bg-white rounded-xl border mt-3">
+    <div className="bg-white/[0.04] backdrop-blur-sm rounded-xl border border-white/[0.08] mt-3">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-4 text-left font-medium min-h-[44px]"
+        className="w-full flex items-center justify-between p-4 text-left font-medium text-white min-h-[44px]"
       >
         {title}
         <ChevronDown
-          className={`h-5 w-5 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`h-5 w-5 text-white/40 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
       {open && (
-        <div className="px-4 pb-4 border-t pt-3">{children}</div>
+        <div className="px-4 pb-4 border-t border-white/[0.06] pt-3">{children}</div>
       )}
     </div>
   );
 }
+
+const container = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.06 } },
+};
+const item = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
+};
 
 export default function LovableAlertDetail() {
   const { id } = useParams<{ id: string }>();
@@ -42,145 +52,155 @@ export default function LovableAlertDetail() {
       <div className="max-w-2xl mx-auto px-4 py-6">
         <Link
           to="/lovable/protect"
-          className="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
+          className="text-sm text-white/40 hover:text-white/70 mb-4 inline-block"
         >
           &larr; Back to Protect
         </Link>
-        <p className="text-gray-600">Threat not found.</p>
+        <p className="text-white/50">Threat not found.</p>
       </div>
     );
   }
 
   return (
-    <div
+    <motion.div
       className="max-w-2xl mx-auto px-4 py-6"
-      style={{ animation: "fadeIn 0.4s ease-out both" }}
+      variants={container}
+      initial="hidden"
+      animate="show"
     >
-      <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
-
-      <Link
-        to="/lovable/protect"
-        className="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
-      >
-        &larr; Back to Protect
-      </Link>
+      <motion.div variants={item}>
+        <Link
+          to="/lovable/protect"
+          className="text-sm text-white/40 hover:text-white/70 mb-4 inline-block transition-colors"
+        >
+          &larr; Back to Protect
+        </Link>
+      </motion.div>
 
       {/* Summary Card */}
-      <div className="bg-white rounded-xl border p-5">
+      <motion.div variants={item} className="bg-white/[0.04] backdrop-blur-sm rounded-xl border border-white/[0.08] p-5">
         <div className="flex items-center gap-2 mb-3">
           <LovableSeverityBadge severity={threat.severity} />
-          <h1 className="text-xl font-semibold text-gray-900">
+          <h1 className="text-xl font-semibold text-white">
             {threat.title}
           </h1>
         </div>
         <div className="grid grid-cols-2 gap-3 text-sm">
           {threat.amount != null && (
             <div>
-              <span className="text-gray-500">Amount</span>
-              <div className="font-mono text-gray-900">
+              <span className="text-white/40">Amount</span>
+              <div className="font-mono text-white">
                 ${threat.amount.toFixed(2)}
               </div>
             </div>
           )}
           <div>
-            <span className="text-gray-500">Timestamp</span>
-            <div className="font-mono text-gray-900">{threat.timestamp}</div>
+            <span className="text-white/40">Timestamp</span>
+            <div className="font-mono text-white">{threat.timestamp}</div>
           </div>
           {threat.location && (
             <div>
-              <span className="text-gray-500">Location</span>
-              <div className="font-mono text-gray-900">{threat.location}</div>
+              <span className="text-white/40">Location</span>
+              <div className="font-mono text-white">{threat.location}</div>
             </div>
           )}
           <div>
-            <span className="text-gray-500">Account</span>
-            <div className="font-mono text-gray-900">{threat.account}</div>
+            <span className="text-white/40">Account</span>
+            <div className="font-mono text-white">{threat.account}</div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Action Card — ABOVE FOLD */}
-      <div className="bg-white rounded-xl border p-5 mt-4">
-        <h2 className="text-lg font-semibold mb-3 text-gray-900">
+      {/* Action Card */}
+      <motion.div variants={item} className="bg-white/[0.04] backdrop-blur-sm rounded-xl border border-white/[0.08] p-5 mt-4">
+        <h2 className="text-lg font-semibold mb-3 text-white">
           Is this activity legitimate?
         </h2>
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={() => toast("Demo mode — action simulated ✓")}
-            className="bg-green-500 hover:bg-green-600 text-white py-4 rounded-xl shadow-lg shadow-green-500/25 flex-1 text-base font-semibold min-h-[44px] transition-colors"
+            className="bg-green-500 hover:bg-green-400 text-white py-4 rounded-xl shadow-lg shadow-green-500/25 flex-1 text-base font-semibold min-h-[44px] transition-all duration-200"
           >
             This was Me
           </button>
           <button
             onClick={() => toast("Demo mode — action simulated ✓")}
-            className="bg-red-500 hover:bg-red-600 text-white py-4 rounded-xl shadow-lg shadow-red-500/25 flex-1 text-base font-semibold min-h-[44px] transition-colors"
+            className="bg-red-500 hover:bg-red-400 text-white py-4 rounded-xl shadow-lg shadow-red-500/25 flex-1 text-base font-semibold min-h-[44px] transition-all duration-200"
           >
             Block &amp; Secure
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Collapsible Sections */}
-      <CollapsibleSection title="Transaction Details">
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-gray-500">Merchant</span>
-            <span className="text-gray-900">{threat.merchant ?? "N/A"}</span>
+      <motion.div variants={item}>
+        <CollapsibleSection title="Transaction Details">
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-white/40">Merchant</span>
+              <span className="text-white">{threat.merchant ?? "N/A"}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-white/40">Amount</span>
+              <span className="text-white">
+                {threat.amount != null ? `$${threat.amount.toFixed(2)}` : "N/A"}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-white/40">Card / Account</span>
+              <span className="text-white">{threat.account}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-white/40">Type</span>
+              <span className="text-white">
+                {threat.merchant ? "Purchase" : "Account Activity"}
+              </span>
+            </div>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Amount</span>
-            <span className="text-gray-900">
-              {threat.amount != null ? `$${threat.amount.toFixed(2)}` : "N/A"}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Card / Account</span>
-            <span className="text-gray-900">{threat.account}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Type</span>
-            <span className="text-gray-900">
-              {threat.merchant ? "Purchase" : "Account Activity"}
-            </span>
-          </div>
-        </div>
-      </CollapsibleSection>
+        </CollapsibleSection>
+      </motion.div>
 
-      <CollapsibleSection title="Device & Location">
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-gray-500">Device</span>
-            <span className="text-gray-900">{threat.device ?? "Unknown"}</span>
+      <motion.div variants={item}>
+        <CollapsibleSection title="Device & Location">
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-white/40">Device</span>
+              <span className="text-white">{threat.device ?? "Unknown"}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-white/40">OS / Browser</span>
+              <span className="text-white">{threat.device ?? "Unknown"}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-white/40">IP Address</span>
+              <span className="text-white">{threat.ip ?? "Unknown"}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-white/40">Location</span>
+              <span className="text-white">
+                {threat.location ?? "Unknown"}
+              </span>
+            </div>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">OS / Browser</span>
-            <span className="text-gray-900">{threat.device ?? "Unknown"}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">IP Address</span>
-            <span className="text-gray-900">{threat.ip ?? "Unknown"}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Location</span>
-            <span className="text-gray-900">
-              {threat.location ?? "Unknown"}
-            </span>
-          </div>
-        </div>
-      </CollapsibleSection>
+        </CollapsibleSection>
+      </motion.div>
 
       {threat.drivers && threat.drivers.length > 0 && (
-        <CollapsibleSection title="AI Decision Factors">
-          <LovableDecisionDrivers drivers={threat.drivers} />
-        </CollapsibleSection>
+        <motion.div variants={item}>
+          <CollapsibleSection title="AI Decision Factors">
+            <LovableDecisionDrivers drivers={threat.drivers} />
+          </CollapsibleSection>
+        </motion.div>
       )}
 
       {/* Governance Footer */}
-      <LovableGovernanceFooter
-        model="POSEIDON-THREATDETECT V1.0"
-        processingMs={234}
-        auditId="AUD-2026-0310-001"
-      />
-    </div>
+      <motion.div variants={item}>
+        <LovableGovernanceFooter
+          model="POSEIDON-THREATDETECT V1.0"
+          processingMs={234}
+          auditId="AUD-2026-0310-001"
+        />
+      </motion.div>
+    </motion.div>
   );
 }

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { actions } from "@/data/actions";
 import { LovableDecisionDrivers } from "@/components/shared/LovableDecisionDrivers";
 import { LovableGovernanceFooter } from "@/components/shared/LovableGovernanceFooter";
+import { motion } from "framer-motion";
 
 function CollapsibleSection({
   title,
@@ -15,22 +16,31 @@ function CollapsibleSection({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="bg-white rounded-xl border mt-3">
+    <div className="bg-white/[0.04] backdrop-blur-sm rounded-xl border border-white/[0.08] mt-3">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-4 text-left font-medium min-h-[44px]"
+        className="w-full flex items-center justify-between p-4 text-left font-medium text-white min-h-[44px]"
       >
         {title}
         <ChevronDown
-          className={`h-5 w-5 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`h-5 w-5 text-white/40 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
       {open && (
-        <div className="px-4 pb-4 border-t pt-3">{children}</div>
+        <div className="px-4 pb-4 border-t border-white/[0.06] pt-3">{children}</div>
       )}
     </div>
   );
 }
+
+const container = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.06 } },
+};
+const item = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
+};
 
 export default function LovableApproval() {
   const { id } = useParams<{ id: string }>();
@@ -38,12 +48,12 @@ export default function LovableApproval() {
 
   if (!action) {
     return (
-      <div className="min-h-screen bg-[#ECEAE5] p-4 flex items-center justify-center">
+      <div className="p-4 flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
-          <p className="text-lg font-medium text-gray-900 mb-2">
+          <p className="text-lg font-medium text-white mb-2">
             Action not found
           </p>
-          <Link to="/lovable/execute" className="text-yellow-600 hover:text-yellow-700">
+          <Link to="/lovable/execute" className="text-amber-400 hover:text-amber-300 transition-colors">
             &larr; Back to Execute
           </Link>
         </div>
@@ -56,104 +66,112 @@ export default function LovableApproval() {
   };
 
   return (
-    <div className="min-h-screen bg-[#ECEAE5] p-4 pb-24 animate-fade-in">
+    <motion.div className="p-4 pb-24" variants={container} initial="hidden" animate="show">
       {/* Back Link */}
-      <Link
-        to="/lovable/execute"
-        className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 mb-4"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Execute
-      </Link>
+      <motion.div variants={item}>
+        <Link
+          to="/lovable/execute"
+          className="inline-flex items-center gap-1 text-sm text-white/40 hover:text-white/70 mb-4 transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Execute
+        </Link>
+      </motion.div>
 
       {/* Summary Card */}
-      <div className="bg-white rounded-xl border p-5 mb-4">
-        <h1 className="text-xl font-bold text-gray-900 mb-2">
+      <motion.div variants={item} className="bg-white/[0.04] backdrop-blur-sm rounded-xl border border-white/[0.08] p-5 mb-4">
+        <h1 className="text-xl font-bold text-white mb-2">
           {action.title}
         </h1>
-        <p className="text-sm text-gray-600 mb-3">{action.description}</p>
+        <p className="text-sm text-white/50 mb-3">{action.description}</p>
 
         <div className="flex flex-wrap gap-3 text-sm">
           {action.amount != null && (
-            <span className="bg-yellow-50 text-yellow-700 rounded-lg px-3 py-1 font-medium">
+            <span className="bg-amber-500/15 text-amber-400 rounded-lg px-3 py-1 font-medium">
               ${action.amount.toLocaleString()}
             </span>
           )}
           {action.taxSavings != null && (
-            <span className="bg-green-50 text-green-700 rounded-lg px-3 py-1 font-medium">
+            <span className="bg-green-500/15 text-green-400 rounded-lg px-3 py-1 font-medium">
               Tax Savings: ${action.taxSavings.toLocaleString()}
             </span>
           )}
           {action.deadline && (
-            <span className="bg-gray-100 text-gray-700 rounded-lg px-3 py-1">
+            <span className="bg-white/[0.06] text-white/60 rounded-lg px-3 py-1">
               Deadline: {action.deadline}
             </span>
           )}
           {action.confidence != null && (
-            <span className="bg-blue-50 text-blue-700 rounded-lg px-3 py-1 font-medium">
+            <span className="bg-blue-500/15 text-blue-400 rounded-lg px-3 py-1 font-medium">
               {(action.confidence * 100).toFixed(0)}% confidence
             </span>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
+      <motion.div variants={item} className="grid grid-cols-2 gap-3 mb-4">
         <button
           onClick={() => handleAction("approve")}
-          className="bg-green-500 hover:bg-green-600 text-white font-medium py-4 rounded-xl min-h-[44px] transition-colors"
+          className="bg-green-500 hover:bg-green-400 text-white font-medium py-4 rounded-xl shadow-lg shadow-green-500/25 min-h-[44px] transition-all duration-200"
         >
           Approve
         </button>
         <button
           onClick={() => handleAction("reject")}
-          className="bg-red-500 hover:bg-red-600 text-white font-medium py-4 rounded-xl min-h-[44px] transition-colors"
+          className="bg-red-500 hover:bg-red-400 text-white font-medium py-4 rounded-xl shadow-lg shadow-red-500/25 min-h-[44px] transition-all duration-200"
         >
           Reject
         </button>
-      </div>
+      </motion.div>
 
       {/* Tax Calculation (EXE-001 only) */}
       {action.id === "EXE-001" && (
-        <CollapsibleSection title="Tax Calculation">
-          <table className="w-full text-sm font-mono">
-            <tbody>
-              <tr className="border-b">
-                <td className="py-2 text-gray-600">Federal Tax Savings</td>
-                <td className="py-2 text-right font-medium">$1,024.00</td>
-              </tr>
-              <tr className="border-b">
-                <td className="py-2 text-gray-600">California State Tax</td>
-                <td className="py-2 text-right font-medium">$297.60</td>
-              </tr>
-              <tr className="border-b">
-                <td className="py-2 text-gray-600">NIIT (3.8%)</td>
-                <td className="py-2 text-right font-medium">$121.60</td>
-              </tr>
-              <tr>
-                <td className="py-2 text-gray-900 font-bold">Total</td>
-                <td className="py-2 text-right font-bold text-gray-900">
-                  $1,443.20
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </CollapsibleSection>
+        <motion.div variants={item}>
+          <CollapsibleSection title="Tax Calculation">
+            <table className="w-full text-sm font-mono">
+              <tbody>
+                <tr className="border-b border-white/[0.06]">
+                  <td className="py-2 text-white/50">Federal Tax Savings</td>
+                  <td className="py-2 text-right font-medium text-white">$1,024.00</td>
+                </tr>
+                <tr className="border-b border-white/[0.06]">
+                  <td className="py-2 text-white/50">California State Tax</td>
+                  <td className="py-2 text-right font-medium text-white">$297.60</td>
+                </tr>
+                <tr className="border-b border-white/[0.06]">
+                  <td className="py-2 text-white/50">NIIT (3.8%)</td>
+                  <td className="py-2 text-right font-medium text-white">$121.60</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-white font-bold">Total</td>
+                  <td className="py-2 text-right font-bold text-green-400 drop-shadow-[0_0_6px_rgba(34,197,94,0.3)]">
+                    $1,443.20
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </CollapsibleSection>
+        </motion.div>
       )}
 
       {/* AI Decision Factors */}
       {action.drivers && action.drivers.length > 0 && (
-        <CollapsibleSection title="AI Decision Factors">
-          <LovableDecisionDrivers drivers={action.drivers} />
-        </CollapsibleSection>
+        <motion.div variants={item}>
+          <CollapsibleSection title="AI Decision Factors">
+            <LovableDecisionDrivers drivers={action.drivers} />
+          </CollapsibleSection>
+        </motion.div>
       )}
 
       {/* Governance Footer */}
-      <LovableGovernanceFooter
-        model="POSEIDON-EXECUTOR V1.3"
-        processingMs={312}
-        auditId="AUD-2026-0310-004"
-      />
-    </div>
+      <motion.div variants={item}>
+        <LovableGovernanceFooter
+          model="POSEIDON-EXECUTOR V1.3"
+          processingMs={312}
+          auditId="AUD-2026-0310-004"
+        />
+      </motion.div>
+    </motion.div>
   );
 }

@@ -3,9 +3,9 @@ interface SeverityBadgeProps {
 }
 
 const severityStyles: Record<SeverityBadgeProps["severity"], string> = {
-  high: "bg-red-100 text-red-700 border-red-200",
-  medium: "bg-amber-100 text-amber-700 border-amber-200",
-  low: "bg-blue-100 text-blue-700 border-blue-200",
+  high: "bg-red-500/15 text-red-400 border-red-500/20",
+  medium: "bg-amber-500/15 text-amber-400 border-amber-500/20",
+  low: "bg-blue-500/15 text-blue-400 border-blue-500/20",
 };
 
 export function LovableSeverityBadge({ severity }: SeverityBadgeProps) {

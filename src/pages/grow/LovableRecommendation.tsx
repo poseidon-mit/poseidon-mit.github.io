@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { ChevronDown } from "lucide-react";
 import { recommendations } from "@/data/recommendations";
 import { LovableGovernanceFooter } from "@/components/shared/LovableGovernanceFooter";
+import { motion } from "framer-motion";
 
 function CollapsibleSection({
   title,
@@ -14,22 +15,31 @@ function CollapsibleSection({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="bg-white rounded-xl border mt-3">
+    <div className="bg-white/[0.04] backdrop-blur-sm rounded-xl border border-white/[0.08] mt-3">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-4 text-left font-medium min-h-[44px]"
+        className="w-full flex items-center justify-between p-4 text-left font-medium text-white min-h-[44px]"
       >
         {title}
         <ChevronDown
-          className={`h-5 w-5 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`h-5 w-5 text-white/40 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
       {open && (
-        <div className="px-4 pb-4 border-t pt-3">{children}</div>
+        <div className="px-4 pb-4 border-t border-white/[0.06] pt-3">{children}</div>
       )}
     </div>
   );
 }
+
+const container = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.06 } },
+};
+const item = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
+};
 
 export default function LovableRecommendation() {
   const { id } = useParams<{ id: string }>();
@@ -40,90 +50,96 @@ export default function LovableRecommendation() {
       <div className="max-w-2xl mx-auto px-4 py-6">
         <Link
           to="/lovable/grow"
-          className="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
+          className="text-sm text-white/40 hover:text-white/70 mb-4 inline-block"
         >
           &larr; Back to Grow
         </Link>
-        <p className="text-gray-600">Recommendation not found.</p>
+        <p className="text-white/50">Recommendation not found.</p>
       </div>
     );
   }
 
   return (
-    <div
+    <motion.div
       className="max-w-2xl mx-auto px-4 py-6"
-      style={{ animation: "fadeIn 0.4s ease-out both" }}
+      variants={container}
+      initial="hidden"
+      animate="show"
     >
-      <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
-
-      <Link
-        to="/lovable/grow"
-        className="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
-      >
-        &larr; Back to Grow
-      </Link>
+      <motion.div variants={item}>
+        <Link
+          to="/lovable/grow"
+          className="text-sm text-white/40 hover:text-white/70 mb-4 inline-block transition-colors"
+        >
+          &larr; Back to Grow
+        </Link>
+      </motion.div>
 
       {/* Summary Card */}
-      <div className="bg-white rounded-xl border p-5">
-        <h1 className="text-xl font-semibold text-gray-900 mb-2">
+      <motion.div variants={item} className="bg-white/[0.04] backdrop-blur-sm rounded-xl border border-white/[0.08] p-5">
+        <h1 className="text-xl font-semibold text-white mb-2">
           {rec.title}
         </h1>
-        <p className="text-sm text-gray-600 mb-3">{rec.description}</p>
+        <p className="text-sm text-white/50 mb-3">{rec.description}</p>
         {(rec.benefit ?? rec.savings) && (
-          <div className="font-mono text-purple-600 text-lg font-semibold">
+          <div className="font-mono text-purple-400 text-lg font-semibold drop-shadow-[0_0_8px_rgba(139,92,246,0.3)]">
             {rec.benefit ?? rec.savings}
           </div>
         )}
-      </div>
+      </motion.div>
 
       {/* Action Card */}
-      <div className="bg-white rounded-xl border p-5 mt-4">
+      <motion.div variants={item} className="bg-white/[0.04] backdrop-blur-sm rounded-xl border border-white/[0.08] p-5 mt-4">
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={() => toast("Demo mode — action simulated ✓")}
-            className="bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-xl flex-1 text-base font-semibold min-h-[44px] transition-colors"
+            className="bg-purple-500 hover:bg-purple-400 text-white py-3 rounded-xl shadow-lg shadow-purple-500/25 flex-1 text-base font-semibold min-h-[44px] transition-all duration-200"
           >
             Accept
           </button>
           <button
             onClick={() => toast("Demo mode — action simulated ✓")}
-            className="border border-gray-300 text-gray-700 hover:bg-gray-50 py-3 rounded-xl flex-1 text-base font-semibold min-h-[44px] transition-colors"
+            className="border border-white/[0.15] text-white/70 hover:bg-white/[0.06] py-3 rounded-xl flex-1 text-base font-semibold min-h-[44px] transition-all duration-200"
           >
             Decline
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Collapsible Details */}
-      <CollapsibleSection title="Calculation Details">
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-gray-500">Recommendation</span>
-            <span className="text-gray-900">{rec.title}</span>
+      <motion.div variants={item}>
+        <CollapsibleSection title="Calculation Details">
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-white/40">Recommendation</span>
+              <span className="text-white">{rec.title}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-white/40">Estimated Benefit</span>
+              <span className="text-white">
+                {rec.benefit ?? rec.savings ?? "N/A"}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-white/40">Engine</span>
+              <span className="text-white">{rec.engine}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-white/40">Status</span>
+              <span className="text-white capitalize">{rec.status}</span>
+            </div>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Estimated Benefit</span>
-            <span className="text-gray-900">
-              {rec.benefit ?? rec.savings ?? "N/A"}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Engine</span>
-            <span className="text-gray-900">{rec.engine}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Status</span>
-            <span className="text-gray-900 capitalize">{rec.status}</span>
-          </div>
-        </div>
-      </CollapsibleSection>
+        </CollapsibleSection>
+      </motion.div>
 
       {/* Governance Footer */}
-      <LovableGovernanceFooter
-        model="POSEIDON-OPTIMIZER V2.1"
-        processingMs={456}
-        auditId="AUD-2026-0311-003"
-      />
-    </div>
+      <motion.div variants={item}>
+        <LovableGovernanceFooter
+          model="POSEIDON-OPTIMIZER V2.1"
+          processingMs={456}
+          auditId="AUD-2026-0311-003"
+        />
+      </motion.div>
+    </motion.div>
   );
 }

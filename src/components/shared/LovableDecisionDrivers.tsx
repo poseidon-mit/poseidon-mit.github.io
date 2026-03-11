@@ -12,14 +12,14 @@ export function LovableDecisionDrivers({ drivers }: DecisionDriversProps) {
         return (
           <div key={driver.label}>
             <div className="flex items-center justify-between mb-1">
-              <span className="text-sm text-gray-700">{driver.label}</span>
-              <span className="text-sm font-medium text-gray-900">
+              <span className="text-sm text-white/70">{driver.label}</span>
+              <span className="text-sm font-medium text-white">
                 {driver.value}%
               </span>
             </div>
-            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-2 bg-white/[0.06] rounded-full overflow-hidden">
               <div
-                className="h-full bg-cyan-500 rounded-full transition-all duration-500"
+                className="h-full bg-gradient-to-r from-cyan-500 to-cyan-400 rounded-full transition-all duration-700 shadow-[0_0_8px_rgba(0,240,255,0.3)]"
                 style={{ width: `${widthPercent}%` }}
               />
             </div>

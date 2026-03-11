@@ -15,8 +15,8 @@ export function LovablePageHeader({ icon: Icon, iconBg, iconColor, title, descri
         <Icon className={`h-5 w-5 ${iconColor}`} />
       </div>
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
-        <p className="text-gray-600 text-sm">{description}</p>
+        <h1 className="text-2xl font-bold text-white">{title}</h1>
+        <p className="text-white/50 text-sm">{description}</p>
       </div>
     </div>
   );
