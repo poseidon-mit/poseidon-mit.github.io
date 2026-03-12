@@ -18,14 +18,13 @@
       "route": "/",
       "key": "cta-budget",
       "criteria": "oneCta",
-      "ok": false,
-      "severity": "P0",
+      "ok": true,
+      "severity": "P2",
       "demoImpact": "high",
       "effort": "S",
-      "message": "Expected <= 1 primary CTA; found 3.",
+      "message": "Expected <= 1 primary CTA; found 1.",
       "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "autofixable": false
     },
     {
       "route": "/signup",
@@ -43,14 +42,13 @@
       "route": "/signup",
       "key": "cta-budget",
       "criteria": "oneCta",
-      "ok": false,
-      "severity": "P0",
+      "ok": true,
+      "severity": "P2",
       "demoImpact": "high",
       "effort": "S",
-      "message": "Expected <= 1 primary CTA; found 4.",
+      "message": "Expected <= 1 primary CTA; found 1.",
       "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "autofixable": false
     },
     {
       "route": "/login",
@@ -68,14 +66,13 @@
       "route": "/login",
       "key": "cta-budget",
       "criteria": "oneCta",
-      "ok": false,
-      "severity": "P0",
+      "ok": true,
+      "severity": "P2",
       "demoImpact": "high",
       "effort": "S",
-      "message": "Expected <= 1 primary CTA; found 4.",
+      "message": "Expected <= 1 primary CTA; found 1.",
       "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "autofixable": false
     },
     {
       "route": "/onboarding/connect",
@@ -93,14 +90,13 @@
       "route": "/onboarding/connect",
       "key": "cta-budget",
       "criteria": "oneCta",
-      "ok": false,
-      "severity": "P0",
+      "ok": true,
+      "severity": "P2",
       "demoImpact": "high",
       "effort": "S",
-      "message": "Expected <= 1 primary CTA; found 3.",
+      "message": "Expected <= 1 primary CTA; found 1.",
       "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "autofixable": false
     },
     {
       "route": "/dashboard",
@@ -118,14 +114,13 @@
       "route": "/dashboard",
       "key": "cta-budget",
       "criteria": "oneCta",
-      "ok": false,
-      "severity": "P0",
+      "ok": true,
+      "severity": "P2",
       "demoImpact": "high",
       "effort": "S",
-      "message": "Expected <= 1 primary CTA; found 3.",
+      "message": "Expected <= 1 primary CTA; found 1.",
       "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "autofixable": false
     },
     {
       "route": "/protect",
@@ -143,14 +138,13 @@
       "route": "/protect",
       "key": "cta-budget",
       "criteria": "oneCta",
-      "ok": false,
-      "severity": "P0",
+      "ok": true,
+      "severity": "P2",
       "demoImpact": "high",
       "effort": "S",
-      "message": "Expected <= 1 primary CTA; found 3.",
+      "message": "Expected <= 1 primary CTA; found 1.",
       "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "autofixable": false
     },
     {
       "route": "/grow",
@@ -168,14 +162,13 @@
       "route": "/grow",
       "key": "cta-budget",
       "criteria": "oneCta",
-      "ok": false,
-      "severity": "P0",
+      "ok": true,
+      "severity": "P2",
       "demoImpact": "high",
       "effort": "S",
-      "message": "Expected <= 1 primary CTA; found 4.",
+      "message": "Expected <= 1 primary CTA; found 1.",
       "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "autofixable": false
     },
     {
       "route": "/execute",
@@ -193,14 +186,13 @@
       "route": "/execute",
       "key": "cta-budget",
       "criteria": "oneCta",
-      "ok": false,
-      "severity": "P0",
+      "ok": true,
+      "severity": "P2",
       "demoImpact": "high",
       "effort": "S",
-      "message": "Expected <= 1 primary CTA; found 3.",
+      "message": "Expected <= 1 primary CTA; found 1.",
       "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "autofixable": false
     },
     {
       "route": "/govern",
@@ -218,14 +210,13 @@
       "route": "/govern",
       "key": "cta-budget",
       "criteria": "oneCta",
-      "ok": false,
-      "severity": "P0",
+      "ok": true,
+      "severity": "P2",
       "demoImpact": "high",
       "effort": "S",
-      "message": "Expected <= 1 primary CTA; found 3.",
+      "message": "Expected <= 1 primary CTA; found 0.",
       "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "autofixable": false
     },
     {
       "route": "/settings",
@@ -243,14 +234,13 @@
       "route": "/settings",
       "key": "cta-budget",
       "criteria": "oneCta",
-      "ok": false,
-      "severity": "P0",
+      "ok": true,
+      "severity": "P2",
       "demoImpact": "high",
       "effort": "S",
-      "message": "Expected <= 1 primary CTA; found 2.",
+      "message": "Expected <= 1 primary CTA; found 0.",
       "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "autofixable": false
     },
     {
       "route": "/help",
@@ -268,14 +258,13 @@
       "route": "/help",
       "key": "cta-budget",
       "criteria": "oneCta",
-      "ok": false,
-      "severity": "P0",
+      "ok": true,
+      "severity": "P2",
       "demoImpact": "high",
       "effort": "S",
-      "message": "Expected <= 1 primary CTA; found 3.",
+      "message": "Expected <= 1 primary CTA; found 0.",
       "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "autofixable": false
     }
   ]
 }

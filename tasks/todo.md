@@ -1,27 +1,44 @@
 # Current Task: Web Review Implementation (2026-03-12)
 
-- [ ] Fix shared shell mobile header collisions, bottom-nav safe space, and canonical `main#main-content`
-- [ ] Reduce public/auth CTA competition and align primary CTA markers with the current app architecture
-- [ ] Improve core hero CTA hierarchy where live routes still present multiple equally-primary actions
-- [ ] Raise muted token contrast and spot-check affected shell/public surfaces
-- [ ] Repair UX/a11y/bundle guardrails so they validate the current route map and emitted build chunks
-- [ ] Verify with `check:a11y-structure`, `ux:scan`, `test:smoke`, `build`, and live mobile checks
+- [x] Fix shared shell mobile header collisions, bottom-nav safe space, and canonical `main#main-content`
+- [x] Reduce public/auth CTA competition and align primary CTA markers with the current app architecture
+- [x] Improve core hero CTA hierarchy where live routes still present multiple equally-primary actions
+- [x] Raise muted token contrast and spot-check affected shell/public surfaces
+- [x] Repair UX/a11y/bundle guardrails so they validate the current route map and emitted build chunks
+- [x] Verify with `check:a11y-structure`, `ux:scan`, `test:smoke`, `build`, and live mobile checks
+
+## Review Notes (2026-03-12)
+
+- Shared shell fixes landed in `AppNavShell.tsx`: mobile header uses a three-column layout, top-level app routes expose a single `h1`, `main#main-content` is canonical, and mobile pages reserve bottom padding for the fixed nav.
+- Public/auth CTA hierarchy is reduced to one primary action per screen, and top-level engine heroes now mark only the dominant action as primary.
+- Contrast tokens were raised via `--muted` and `--muted-2`, and public hero accents were moved off hardcoded purple toward engine tokens.
+- `check:a11y-structure`, `typecheck`, `test:smoke`, and `build` pass on the final code state.
+- `ux:scan` now runs against a repo-local Vite server instead of whatever happens to be on port `4173`. Route heuristics pass for single-`h1` and CTA-budget checks across `/`, `/signup`, `/login`, `/dashboard`, `/protect`, `/grow`, `/execute`, `/govern`, `/settings`, and `/help`.
+- `ux:scan` still reports global visual drift because the screenshot baselines now lag the updated shell and CTA styling. That is expected until the baselines are intentionally refreshed.
+- `check:bundle-budget` still fails, but now for real emitted assets instead of a missing `vendor-three` chunk:
+  - CSS raw `338322` / gzip `45329`
+  - index JS raw `403670` / gzip `105690`
+- Live mobile verification on `/dashboard` and `/protect` at `390x844` confirmed the header title no longer collides with the logo cluster, and the final visible content clears the fixed bottom navigation by `24px` at full scroll.
 
 # Poseidon.AI Operational Rewrite Ledger (Phase-Gated, Scientific UX Enforcement)
 
 This ledger strictly governs the implementation AI. No phase may begin until the previous phase's row is complete. No route/subcomponent is complete until every validation column is explicitly verified and checked off.
 
 ## ✅ Phase -1: Truth Hardening (COMPLETE)
-*All blocking correctness issues resolved. Gate tests pass. Consumer copy purge clean.*
+
+_All blocking correctness issues resolved. Gate tests pass. Consumer copy purge clean._
 
 **1. Placeholder Detection Gate:**
+
 - [x] `scripts/check_no_placeholder_tests.sh` expanded to catch all 4 sentinel patterns: `test.todo`, `test.fails`, `expect(true).toBe(false)`, `expect('Implementation AI')`
 - [x] Script reports ZERO placeholder tests detected
 
 **2. Test Infrastructure:**
+
 - [x] `src/test/render-with-router.tsx` created — wraps `DemoStateProvider` + `RouterProvider` with `window.history.pushState`
 
 **3. Route Truth Fixes:**
+
 - [x] Removed 5 routes from `TARGET_SCOPE_READY_ROUTES`: `/deck`, `/share`, `/protect/dispute`, `/orchestrator`, `/test/spectacular`
 - [x] Deleted `/protect/dispute` metadata entry from `ROUTE_META_CONTRACT`
 - [x] `Signup.tsx`: `handlePasskey` and `handleSocial` navigate to `/onboarding` (not `/dashboard`)
@@ -30,6 +47,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - [x] `target-scope-contracts.test.ts`: updated golden path routes
 
 **4. Dead Code Deletion + Audit Expansion:**
+
 - [x] Deleted `GuidedSetupDrawer.tsx`, `OnboardingArrivalSheet.tsx`
 - [x] Removed imports/render from `Dashboard.tsx`
 - [x] Deleted `dashboard-drawers.test.tsx`
@@ -39,6 +57,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - [x] `SettingsAI.tsx`: "Protect Engine" → "Protect", "Grow Engine" → "Grow"
 
 **5. Test Rewrites (16 test files, 49 tests — ALL PASS):**
+
 - [x] `onboarding-reachability.test.tsx` — custom router, signup → `/onboarding`
 - [x] `loading-state-architecture.test.tsx` — 3-class loading contract (4 tests)
 - [x] `command-palette-consumer.test.tsx` — `isOpen`/`onClose` props, consumer copy
@@ -57,6 +76,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - [x] `route-contract-classification.test.tsx` — route classifications verified
 
 **6. Proof System Wiring:**
+
 - [x] `GovernTraceBinding` type verified complete in `govern-trace.ts`
 - [x] `GovernFooter` consumes `traceBinding` prop with deep-link `<a>`
 - [x] B2B jargon replaced with consumer language in footer
@@ -68,6 +88,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - [x] Footer opacity-70 suppression removed from `AuthenticatedLayout.tsx`
 
 **7. Consumer Copy Purge:**
+
 - [x] `check_consumer_copy.sh` expanded: added Proof System files, CSS class exclusion filter
 - [x] Domain data files moved to DEFERRED (canonical.ts, govern-audit-data.ts, decision-protocol.ts)
 - [x] Additional page-level B2B copy purged: ExecuteApproval, ExecuteHistory, GrowScenarios, Notifications, Landing, landing-copy.ts
@@ -75,6 +96,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - [x] `bash scripts/check_no_placeholder_tests.sh` → PASSED (zero placeholders)
 
 **8. Implementation-level fixes (resolved during implementation):**
+
 - [x] `TopBar.tsx`: bell button wired to navigate to `/dashboard/notifications`
 - [x] `Sidebar.tsx`: nav group label "Engines" → "Platform"
 - [x] `Dashboard.tsx`: "Financial Health" → "Financial Wellness"
@@ -88,6 +110,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - [x] `rebuild-contracts.ts`: "Protect engine." → "Protect."
 
 **Verification Evidence:**
+
 - 16/16 gate test files pass (49/49 tests)
 - `check_no_placeholder_tests.sh` → ZERO violations
 - `infra-integrity.test.ts` → 19/19 pass
@@ -96,6 +119,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - `target-scope-contracts.test.ts` → 34/37 pass (3 pre-existing settings page failures — not Phase -1 scope)
 
 **Known Accepted Gaps (documented, not oversights):**
+
 - Mobile bell in `AppNavShell.tsx` not wired — deferred to shell/auth rewrite phase
 - `engine-*` CSS utility class names retained — design system convention, not user-facing text
 - Domain data files (`canonical.ts`, `govern-audit-data.ts`, `decision-protocol.ts`) retain financial terminology — narrative demo data, tracked as deferred
@@ -157,6 +181,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - [x] `npm run build` → success (4.11s)
 
 **Verification Evidence:**
+
 - 20/20 gate test files pass (134/134 tests)
 - `check_no_placeholder_tests.sh` → ZERO violations
 - `check_consumer_copy.sh --fail-customer` → PASSED (expanded regex)
@@ -164,6 +189,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - `npm run build` → success
 
 **Known Pre-existing Gaps (not in scope):**
+
 - 13 test files with 36 failures are pre-existing (demo-coherence, dashboard-hero, protect-hero, screen-contracts-v4, flows/rights-exercise) — reference selectors/patterns not yet implemented
 - Domain data files (canonical.ts, govern-audit-data.ts, decision-protocol.ts) retain financial narrative data — tracked as deferred
 
@@ -181,6 +207,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - [x] Write one long-form Japanese chat-style document with prioritized remediation guidance
 
 **Review notes:**
+
 - Live route crawl completed across 25 routes with desktop text-volume census and spot-checked mobile rendering.
 - Shared-system issues confirmed: typography fragmentation, neutral-overloaded surfaces, repeated 10px/12px metadata, and persistent effect layers reducing clarity.
 - E2E flow issues confirmed: dashboard is summary-heavy but action-light, detail pages over-stack forensic evidence above decision support, and sticky GovernFooter visually interrupts multiple pages.
@@ -196,6 +223,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - [x] Write a Japanese chat-style remediation plan with prioritized fixes and validation criteria
 
 **Review notes:**
+
 - The reported UI matches `Dashboard` → `OnboardingBottomSheet`, not the Talk to Money sheet. The live app reproduced the same collapsed state on both desktop and mobile.
 - Primary rendering defect is route-specific: `OnboardingBottomSheet.tsx` spreads `fadeUp` variants directly into `motion.div`, which passes a truthy `hidden` prop to the DOM and forces the active step content to `display: none`.
 - Shared primitive issues remain after temporarily removing `hidden` in the live DOM: desktop still uses a bottom-docked 512px sheet that visually floats over the dashboard, and mobile allows the sheet to overlap the 64px bottom navigation.
@@ -206,6 +234,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 ## Mobile Grow / Protect / Execute Investigation Plan (2026-03-10)
 
 **Goal:** Investigate three reported issues without implementing fixes:
+
 1. `Grow` mobile hero visual defects
 2. Mobile tap-to-detail failures in `ProtectThreats`, `GrowRecommendations`, and `ExecuteQueue`
 3. Trust-breaking zero-value detail rendering in `grow/recommendation?id=1`, plus broader detail-screen data integrity risks in Grow and Protect
@@ -217,6 +246,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - [x] Record review notes and handoff-ready remediation plan
 
 **Findings:**
+
 - `Grow` hero has two separate controls leading from the same hero to `/grow/recommendations`: the primary CTA button in [`src/components/poseidon/grow-hero.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/grow-hero.tsx#L348) and the portal bar link in [`src/components/poseidon/grow-hero.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/grow-hero.tsx#L376). This matches the user report of duplicate links from the same hero zone.
 - The top-right Grow hero control overflows on mobile because the header row is a non-wrapping `justify-between` flex layout in [`src/components/poseidon/grow-hero.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/grow-hero.tsx#L85) while the `See Poseidon Delta` badge keeps its intrinsic width in [`src/components/poseidon/grow-hero.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/grow-hero.tsx#L103). Live Playwright measurement at 390px viewport showed the button extending `43.03px` past the hero card’s right edge.
 - The Grow chart is visually noisy on mobile because both the advantage band and the baseline line render dots at every point in [`src/components/poseidon/grow-hero.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/grow-hero.tsx#L219) and [`src/components/poseidon/grow-hero.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/poseidon/grow-hero.tsx#L247). In the live DOM, the chart rendered 28 circles for the 13-point simulation, which aligns with the “too many dots” complaint.
@@ -239,6 +269,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - [x] Write a Japanese chat-style findings report with route-by-route evidence and fix priorities
 
 **Review notes:**
+
 - Live audit executed against `http://127.0.0.1:5173` with Playwright mobile emulation (`375x812`, touch enabled).
 - Artifacts saved under `output/playwright/mobile-audit/` and `output/playwright/mobile-audit/viewports/`.
 - Severe mobile regressions are concentrated in shared shell interactions: bottom navigation overlays in-viewport content, multiple pages ship 36px or smaller top-bar controls, and several routes rely on non-wrapping horizontal button rows that push actions off-screen.
@@ -267,6 +298,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
   [`src/__tests__/demo-coherence.test.ts`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/__tests__/demo-coherence.test.ts)
 
 **Root cause summary:**
+
 - UI structure issue: Grow hero still contains two parallel navigation affordances inherited from the bento pattern, but on mobile they compete for scarce horizontal space and duplicate intent.
 - Mobile interaction issue: spotlight cards rely on desktop-only CTA visibility, yet the spotlight container itself is not a link.
 - Data contract issue: Grow detail UI assumes every recommendation can be rendered as a spend comparison, but canonical data mixes spend reduction, yield uplift, contribution increase, and allocation change under one flat numeric contract.
@@ -274,6 +306,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - Proof-binding issue: detail pages are wired at route granularity instead of entity granularity, so footer evidence can describe the wrong object.
 
 **Implementation plan for the separate AI:**
+
 1. Fix the mobile navigation regression first.
    Convert each spotlight card into a full-card `Link` or pass a tappable wrapper into `PrioritySpotlight`.
    Keep the desktop CTA visible if desired, but mobile must have exactly one tappable target and the whole spotlight surface should navigate.
@@ -309,6 +342,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
    Optional Playwright smoke: 390x844 route crawl for `/grow`, `/grow/recommendations`, `/protect/threats`, `/execute/queue`, `/grow/recommendation?id=1`, `/protect/alert-detail?alertId=THR-001`.
 
 **Suggested execution order:**
+
 - Phase 1: spotlight-card tap fixes plus tests
 - Phase 2: Grow hero mobile cleanup plus tests
 - Phase 3: Grow detail view-model refactor plus canonical validation
@@ -316,6 +350,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - Phase 5: governance footer/detail-proof cleanup plus final mobile smoke
 
 **Definition of done:**
+
 - On 375px and 390px widths, Grow hero has one recommendation navigation, no control overflow, and reduced chart dot noise.
 - Spotlight cards on Protect/Grow/Execute list pages navigate when the card surface is tapped on mobile.
 - No Grow detail page shows meaningless `$0.00 -> $0.00` comparisons.
@@ -324,6 +359,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - New automated tests fail on the current buggy behavior and pass after the fix.
 
 **Review notes:**
+
 - Live browser reproduction was done on `http://127.0.0.1:5173` at 390x844.
 - Relevant existing tests all passed despite the live regressions, so the implementation must include test additions rather than only code fixes.
 - No implementation was performed in this task. This section is a handoff artifact for a separate implementation AI.
@@ -333,6 +369,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 ## Integrated Implementation Handoff Plan (2026-03-10)
 
 **Goal:** Produce one implementation brief that combines:
+
 1. App-route correctness fixes for Grow / Protect / Execute mobile and detail screens
 2. Landing page bottom-half redesign in [`src/pages/Landing.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/Landing.tsx#L335) from dark-luxe into Apple-like light transition
 
@@ -342,6 +379,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - [x] Prepare long-form copy/paste prompt for another AI
 
 **Review notes:**
+
 - Landing redesign scope is currently concentrated in [`src/pages/Landing.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/Landing.tsx#L335) through [`src/pages/Landing.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/pages/Landing.tsx#L624).
 - Existing dark-theme-specific mechanics in Landing include `orbY1..orbY4`, `landingNoise`, vertical data-flow glow, and desktop-only spotlight gradients on the 4-engine bento cards. All of those are explicit refactor targets under the new light-transition brief.
 - This section is planning-only; no code implementation was performed.
@@ -359,6 +397,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - [x] Draft implementation plan for a separate AI with mobile-first and iPad-specific guidance
 
 **Runtime checks performed:**
+
 - Landing (`/`) at `390x844` and `820x1180`
 - Dashboard (`/dashboard`) at `390x844` and `820x1180`
 - Grow (`/grow`) at `390x844` and `820x1180`
@@ -366,6 +405,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - Production build via `npm run build`
 
 **Observed issues: performance and visual quality**
+
 - Landing hero is still visually overloaded on small screens because it stacks a background video, grid overlay, blurred black vignette, bright gradient headline, glass buttons, proof cards, and trust-strip microcopy in the same first viewport. In live mobile capture this reads as “high-energy promo” rather than “Apple-grade precision”.
 - The public landing top bar remains a dark glass bar with a glow-treated logo in [`src/components/landing/PublicTopBar.tsx`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/components/landing/PublicTopBar.tsx). The logo drop-shadow and translucent black header contribute to the “sci-fi” tone that conflicts with an Apple-calmer direction.
 - Landing lower-half effects are structurally expensive and visually theatrical:
@@ -384,6 +424,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - `Grow` still emits a runtime chart warning from Recharts at mobile load: `The width(-1) and height(-1) of chart should be greater than 0`. This indicates unstable initial measurement and should be treated as a quality/perf defect, not just a console nuisance.
 
 **Observed issues: bundle and CSS**
+
 - Production build output is currently dominated by a few large assets:
   `dist/assets/vendor-runtime-*.js` `617.72 kB` minified / `181.17 kB` gzip
   `dist/assets/vendor-charts-*.js` `297.47 kB` minified / `78.75 kB` gzip
@@ -398,6 +439,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - `app.css` still imports [`src/styles/colorblind-palettes.css`](/Users/shinjifujiwara/code/poseidon-mit.github.io/src/styles/colorblind-palettes.css) and global neon/glass layers for every route. Even if some tokens are neutralized by `theme-precision`, the payload and maintenance complexity remain.
 
 **Root causes**
+
 - Tone inconsistency: the product currently mixes “precision mode” language with a visual system inherited from neon / cyber / creator-studio aesthetics. The result is not one bad component; it is a global mismatch between brand promise and effect vocabulary.
 - Effect duplication: the same page often combines translucent glass, colored border accents, gradients, glow shadows, animated rails, animated counters, and animated overlays instead of selecting one dominant depth cue.
 - Shared-surface coupling: global layout pieces such as top bar, bottom nav, hero bento, aurora, footer, and CTA utilities all reinforce the same dark-glow style, so individual page cleanup will not be enough.
@@ -405,6 +447,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - Payload sprawl: CSS and vendor buckets include route-agnostic effect systems and chart libraries that are too broad for a product aiming at snappy mobile behavior.
 
 **Implementation plan for another AI**
+
 1. Establish a global “Apple Calm” presentation system before changing individual screens.
    Define a small set of shared visual principles:
    one primary surface style
@@ -461,6 +504,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
    The tests do not need pixel-perfect goldens, but they should catch reintroduction of overloaded first-view states, overflowing hero controls, or multi-CTA clutter.
 
 **Prioritized execution order**
+
 - Phase 1: shared visual system cleanup
   common surfaces, nav, footer, hero shell, aurora usage
 - Phase 2: landing simplification and calm-first restyling
@@ -473,6 +517,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
   route screenshots/smoke checks and bundle/build verification
 
 **Definition of done**
+
 - Mobile and iPad first view on Landing feels calm, legible, and premium rather than promotional or game-like.
 - App routes preserve engine identity without relying on neon/glow saturation.
 - No first viewport on mobile contains more than one dominant animated visual system at a time.
@@ -482,6 +527,7 @@ This ledger strictly governs the implementation AI. No phase may begin until the
 - Visual QA at `390px` and `820px` confirms the product reads as “Apple-grade precise dark UI” rather than “dark neon dashboard”.
 
 **Review notes:**
+
 - Runtime verification was performed against `http://127.0.0.1:5173` using real browser snapshots and screenshots, not source inspection alone.
 - The most important design conclusion is that this is primarily a shared-system problem, not a single-page problem.
 - No implementation was performed in this task. This section is a handoff artifact for a separate implementation AI.

@@ -1,6 +1,277 @@
 {
   "ok": true,
-  "bootstrap": true,
-  "reason": "baseline-created",
-  "diffs": []
+  "strict": false,
+  "bootstrap": false,
+  "summary": {
+    "total": 44,
+    "ok": 0,
+    "warn": 0,
+    "error": 44
+  },
+  "diffs": [
+    {
+      "file": "dashboard__desktop.png",
+      "changeRatio": 0.9996,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "dashboard__mobile.png",
+      "changeRatio": 0.9994,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "dashboard__tablet.png",
+      "changeRatio": 0.9995,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "dashboard__wide.png",
+      "changeRatio": 0.9995,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "execute__desktop.png",
+      "changeRatio": 0.9997,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "execute__mobile.png",
+      "changeRatio": 0.9996,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "execute__tablet.png",
+      "changeRatio": 0.9996,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "execute__wide.png",
+      "changeRatio": 0.9997,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "govern__desktop.png",
+      "changeRatio": 0.9997,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "govern__mobile.png",
+      "changeRatio": 0.9995,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "govern__tablet.png",
+      "changeRatio": 0.9996,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "govern__wide.png",
+      "changeRatio": 0.9995,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "grow__desktop.png",
+      "changeRatio": 0.9996,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "grow__mobile.png",
+      "changeRatio": 0.9994,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "grow__tablet.png",
+      "changeRatio": 0.9995,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "grow__wide.png",
+      "changeRatio": 0.9995,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "help__desktop.png",
+      "changeRatio": 0.9994,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "help__mobile.png",
+      "changeRatio": 0.9995,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "help__tablet.png",
+      "changeRatio": 0.9996,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "help__wide.png",
+      "changeRatio": 0.9993,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "login__desktop.png",
+      "changeRatio": 0.9989,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "login__mobile.png",
+      "changeRatio": 0.9993,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "login__tablet.png",
+      "changeRatio": 0.9987,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "login__wide.png",
+      "changeRatio": 0.9984,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "onboarding__connect__desktop.png",
+      "changeRatio": 0.9951,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "onboarding__connect__mobile.png",
+      "changeRatio": 0.9957,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "onboarding__connect__tablet.png",
+      "changeRatio": 0.995,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "onboarding__connect__wide.png",
+      "changeRatio": 0.9969,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "protect__desktop.png",
+      "changeRatio": 0.9997,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "protect__mobile.png",
+      "changeRatio": 0.9994,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "protect__tablet.png",
+      "changeRatio": 0.9995,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "protect__wide.png",
+      "changeRatio": 0.9995,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "root__desktop.png",
+      "changeRatio": 0.9961,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "root__mobile.png",
+      "changeRatio": 0.9979,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "root__tablet.png",
+      "changeRatio": 0.9963,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "root__wide.png",
+      "changeRatio": 0.9947,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "settings__desktop.png",
+      "changeRatio": 0.9993,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "settings__mobile.png",
+      "changeRatio": 0.9992,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "settings__tablet.png",
+      "changeRatio": 0.9993,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "settings__wide.png",
+      "changeRatio": 0.9991,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "signup__desktop.png",
+      "changeRatio": 0.9988,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "signup__mobile.png",
+      "changeRatio": 0.9991,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "signup__tablet.png",
+      "changeRatio": 0.9987,
+      "level": "error",
+      "method": "buffer"
+    },
+    {
+      "file": "signup__wide.png",
+      "changeRatio": 0.9982,
+      "level": "error",
+      "method": "buffer"
+    }
+  ]
 }

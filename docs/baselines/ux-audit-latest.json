@@ -12,62 +12,62 @@
   "scores": [
     {
       "criteria": "first5s",
-      "score": 4,
+      "score": 3.6,
       "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "oneCta",
-      "score": 4,
+      "score": 3.6,
       "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "heroDiff",
-      "score": 4,
+      "score": 3.6,
       "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "navConfidence",
-      "score": 4,
+      "score": 3.6,
       "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "calm",
-      "score": 4,
+      "score": 3.6,
       "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "performance",
-      "score": 4,
+      "score": 3.6,
       "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "trust",
-      "score": 4,
+      "score": 3.6,
       "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "copy",
-      "score": 4,
+      "score": 3.6,
       "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "state",
-      "score": 4,
+      "score": 3.6,
       "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "a11y",
-      "score": 4,
+      "score": 3.6,
       "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "reliability",
-      "score": 4,
+      "score": 3.6,
       "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "memorable",
-      "score": 4,
+      "score": 3.6,
       "note": "Derived from failed gates; inspect checkResults."
     }
   ],
@@ -96,22 +96,6 @@
       "severity": "P0",
       "demoImpact": "high",
       "effort": "S",
-      "symptom": "Automated check failed: check:a11y-structure",
-      "fixHypothesis": "Fix failing gate 'check:a11y-structure' and re-run ux:scan.",
-      "owner": "frontend",
-      "status": "open",
-      "detectedBy": "rule",
-      "confidence": 0.98,
-      "autofixable": false
-    },
-    {
-      "id": "UX-AUTO-003",
-      "route": "/dashboard",
-      "criteria": "reliability",
-      "layer": "component",
-      "severity": "P0",
-      "demoImpact": "high",
-      "effort": "S",
       "symptom": "Automated check failed: check:cta-hierarchy",
       "fixHypothesis": "Fix failing gate 'check:cta-hierarchy' and re-run ux:scan.",
       "owner": "frontend",
@@ -121,23 +105,7 @@
       "autofixable": false
     },
     {
-      "id": "UX-AUTO-004",
-      "route": "/dashboard",
-      "criteria": "reliability",
-      "layer": "component",
-      "severity": "P0",
-      "demoImpact": "high",
-      "effort": "S",
-      "symptom": "Automated check failed: check:contrast-budget",
-      "fixHypothesis": "Fix failing gate 'check:contrast-budget' and re-run ux:scan.",
-      "owner": "frontend",
-      "status": "open",
-      "detectedBy": "rule",
-      "confidence": 0.98,
-      "autofixable": false
-    },
-    {
-      "id": "UX-AUTO-005",
+      "id": "UX-AUTO-003",
       "route": "/dashboard",
       "criteria": "reliability",
       "layer": "component",
@@ -153,191 +121,708 @@
       "autofixable": false
     },
     {
-      "id": "UX-AUTO-006",
-      "route": "/",
-      "criteria": "oneCta",
+      "id": "UX-AUTO-004",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
       "layer": "shell",
-      "severity": "P0",
+      "severity": "P1",
       "demoImpact": "high",
-      "effort": "S",
-      "symptom": "Expected <= 1 primary CTA; found 3.",
-      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "effort": "M",
+      "symptom": "Visual drift detected in dashboard__desktop.png (ratio=0.9996, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
       "owner": "frontend",
       "status": "open",
-      "detectedBy": "rule",
-      "confidence": 0.9,
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-005",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in dashboard__mobile.png (ratio=0.9994, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-006",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in dashboard__tablet.png (ratio=0.9995, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
     },
     {
       "id": "UX-AUTO-007",
-      "route": "/signup",
-      "criteria": "oneCta",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
       "layer": "shell",
-      "severity": "P0",
+      "severity": "P1",
       "demoImpact": "high",
-      "effort": "S",
-      "symptom": "Expected <= 1 primary CTA; found 4.",
-      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "effort": "M",
+      "symptom": "Visual drift detected in dashboard__wide.png (ratio=0.9995, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
       "owner": "frontend",
       "status": "open",
-      "detectedBy": "rule",
-      "confidence": 0.9,
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
     },
     {
       "id": "UX-AUTO-008",
-      "route": "/login",
-      "criteria": "oneCta",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
       "layer": "shell",
-      "severity": "P0",
+      "severity": "P1",
       "demoImpact": "high",
-      "effort": "S",
-      "symptom": "Expected <= 1 primary CTA; found 4.",
-      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "effort": "M",
+      "symptom": "Visual drift detected in execute__desktop.png (ratio=0.9997, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
       "owner": "frontend",
       "status": "open",
-      "detectedBy": "rule",
-      "confidence": 0.9,
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
     },
     {
       "id": "UX-AUTO-009",
-      "route": "/onboarding/connect",
-      "criteria": "oneCta",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
       "layer": "shell",
-      "severity": "P0",
+      "severity": "P1",
       "demoImpact": "high",
-      "effort": "S",
-      "symptom": "Expected <= 1 primary CTA; found 3.",
-      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "effort": "M",
+      "symptom": "Visual drift detected in execute__mobile.png (ratio=0.9996, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
       "owner": "frontend",
       "status": "open",
-      "detectedBy": "rule",
-      "confidence": 0.9,
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
     },
     {
       "id": "UX-AUTO-010",
       "route": "/dashboard",
-      "criteria": "oneCta",
+      "criteria": "heroDiff",
       "layer": "shell",
-      "severity": "P0",
+      "severity": "P1",
       "demoImpact": "high",
-      "effort": "S",
-      "symptom": "Expected <= 1 primary CTA; found 3.",
-      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "effort": "M",
+      "symptom": "Visual drift detected in execute__tablet.png (ratio=0.9996, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
       "owner": "frontend",
       "status": "open",
-      "detectedBy": "rule",
-      "confidence": 0.9,
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
     },
     {
       "id": "UX-AUTO-011",
-      "route": "/protect",
-      "criteria": "oneCta",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
       "layer": "shell",
-      "severity": "P0",
+      "severity": "P1",
       "demoImpact": "high",
-      "effort": "S",
-      "symptom": "Expected <= 1 primary CTA; found 3.",
-      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "effort": "M",
+      "symptom": "Visual drift detected in execute__wide.png (ratio=0.9997, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
       "owner": "frontend",
       "status": "open",
-      "detectedBy": "rule",
-      "confidence": 0.9,
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
     },
     {
       "id": "UX-AUTO-012",
-      "route": "/grow",
-      "criteria": "oneCta",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
       "layer": "shell",
-      "severity": "P0",
+      "severity": "P1",
       "demoImpact": "high",
-      "effort": "S",
-      "symptom": "Expected <= 1 primary CTA; found 4.",
-      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "effort": "M",
+      "symptom": "Visual drift detected in govern__desktop.png (ratio=0.9997, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
       "owner": "frontend",
       "status": "open",
-      "detectedBy": "rule",
-      "confidence": 0.9,
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
     },
     {
       "id": "UX-AUTO-013",
-      "route": "/execute",
-      "criteria": "oneCta",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
       "layer": "shell",
-      "severity": "P0",
+      "severity": "P1",
       "demoImpact": "high",
-      "effort": "S",
-      "symptom": "Expected <= 1 primary CTA; found 3.",
-      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "effort": "M",
+      "symptom": "Visual drift detected in govern__mobile.png (ratio=0.9995, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
       "owner": "frontend",
       "status": "open",
-      "detectedBy": "rule",
-      "confidence": 0.9,
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
     },
     {
       "id": "UX-AUTO-014",
-      "route": "/govern",
-      "criteria": "oneCta",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
       "layer": "shell",
-      "severity": "P0",
+      "severity": "P1",
       "demoImpact": "high",
-      "effort": "S",
-      "symptom": "Expected <= 1 primary CTA; found 3.",
-      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "effort": "M",
+      "symptom": "Visual drift detected in govern__tablet.png (ratio=0.9996, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
       "owner": "frontend",
       "status": "open",
-      "detectedBy": "rule",
-      "confidence": 0.9,
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
     },
     {
       "id": "UX-AUTO-015",
-      "route": "/settings",
-      "criteria": "oneCta",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
       "layer": "shell",
-      "severity": "P0",
+      "severity": "P1",
       "demoImpact": "high",
-      "effort": "S",
-      "symptom": "Expected <= 1 primary CTA; found 2.",
-      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "effort": "M",
+      "symptom": "Visual drift detected in govern__wide.png (ratio=0.9995, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
       "owner": "frontend",
       "status": "open",
-      "detectedBy": "rule",
-      "confidence": 0.9,
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
     },
     {
       "id": "UX-AUTO-016",
-      "route": "/help",
-      "criteria": "oneCta",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
       "layer": "shell",
-      "severity": "P0",
+      "severity": "P1",
       "demoImpact": "high",
-      "effort": "S",
-      "symptom": "Expected <= 1 primary CTA; found 3.",
-      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "effort": "M",
+      "symptom": "Visual drift detected in grow__desktop.png (ratio=0.9996, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
       "owner": "frontend",
       "status": "open",
-      "detectedBy": "rule",
-      "confidence": 0.9,
-      "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion"
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-017",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in grow__mobile.png (ratio=0.9994, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-018",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in grow__tablet.png (ratio=0.9995, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-019",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in grow__wide.png (ratio=0.9995, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-020",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in help__desktop.png (ratio=0.9994, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-021",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in help__mobile.png (ratio=0.9995, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-022",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in help__tablet.png (ratio=0.9996, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-023",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in help__wide.png (ratio=0.9993, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-024",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in login__desktop.png (ratio=0.9989, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-025",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in login__mobile.png (ratio=0.9993, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-026",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in login__tablet.png (ratio=0.9987, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-027",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in login__wide.png (ratio=0.9984, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-028",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in onboarding__connect__desktop.png (ratio=0.9951, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-029",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in onboarding__connect__mobile.png (ratio=0.9957, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-030",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in onboarding__connect__tablet.png (ratio=0.995, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-031",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in onboarding__connect__wide.png (ratio=0.9969, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-032",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in protect__desktop.png (ratio=0.9997, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-033",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in protect__mobile.png (ratio=0.9994, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-034",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in protect__tablet.png (ratio=0.9995, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-035",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in protect__wide.png (ratio=0.9995, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-036",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in root__desktop.png (ratio=0.9961, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-037",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in root__mobile.png (ratio=0.9979, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-038",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in root__tablet.png (ratio=0.9963, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-039",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in root__wide.png (ratio=0.9947, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-040",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in settings__desktop.png (ratio=0.9993, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-041",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in settings__mobile.png (ratio=0.9992, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-042",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in settings__tablet.png (ratio=0.9993, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-043",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in settings__wide.png (ratio=0.9991, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-044",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in signup__desktop.png (ratio=0.9988, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-045",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in signup__mobile.png (ratio=0.9991, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-046",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in signup__tablet.png (ratio=0.9987, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-047",
+      "route": "/dashboard",
+      "criteria": "heroDiff",
+      "layer": "shell",
+      "severity": "P1",
+      "demoImpact": "high",
+      "effort": "M",
+      "symptom": "Visual drift detected in signup__wide.png (ratio=0.9982, method=buffer).",
+      "fixHypothesis": "Inspect screenshot diff and apply targeted shell/page styling fixes.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "visual-diff",
+      "confidence": 0.85,
+      "autofixable": false
     }
   ],
   "meta": {
@@ -358,10 +843,10 @@
       },
       {
         "script": "check:a11y-structure",
-        "ok": false,
-        "status": 1,
-        "stdout": "> poseidon-prototype@0.1.0 check:a11y-structure\n> node scripts/check-a11y-structure.mjs",
-        "stderr": "A11y structure checks failed:\n- src/pages/Landing.tsx: must include main landmark with id=\"main-content\".\n- src/pages/Pricing.tsx: required file is missing.\n- src/pages/Signup.tsx: must include main landmark with id=\"main-content\".\n- src/pages/Login.tsx: must include main landmark with id=\"main-content\".\n- src/pages/Onboarding.tsx: required file is missing.\n- src/pages/OnboardingGoals.tsx: required file is missing.\n- src/pages/OnboardingConsent.tsx: required file is missing.\n- src/pages/OnboardingComplete.tsx: required file is missing.\n- src/pages/Dashboard.tsx: must include main landmark with id=\"main-content\".\n- src/pages/Protect.tsx: required file is missing.\n- src/pages/ProtectAlertDetail.tsx: required file is missing.\n- src/pages/Grow.tsx: must include main landmark with id=\"main-content\".\n- src/pages/GrowScenarios.tsx: must include main landmark with id=\"main-content\".\n- src/pages/Execute.tsx: must include main landmark with id=\"main-content\".\n- src/pages/ExecuteHistory.tsx: must include main landmark with id=\"main-content\".\n- src/pages/Govern.tsx: must include main landmark with id=\"main-content\".\n- src/pages/GovernAuditLedger.tsx: must include main landmark with id=\"main-content\".\n- src/components/layout/AppNavShell.tsx: main nav aria label is required.\n- src/components/layout/AppNavShell.tsx: breadcrumb aria label is required."
+        "ok": true,
+        "status": 0,
+        "stdout": "> poseidon-prototype@0.1.0 check:a11y-structure\n> node scripts/check-a11y-structure.mjs\n\nA11y structure checks passed.",
+        "stderr": ""
       },
       {
         "script": "check:cta-hierarchy",
@@ -372,17 +857,17 @@
       },
       {
         "script": "check:contrast-budget",
-        "ok": false,
-        "status": 1,
-        "stdout": "> poseidon-prototype@0.1.0 check:contrast-budget\n> node scripts/check-contrast-budget.mjs",
-        "stderr": "Contrast budget checks failed:\n- --muted alpha 0.55 is below minimum 0.68.\n- --muted-2 alpha 0.35 is below minimum 0.58."
+        "ok": true,
+        "status": 0,
+        "stdout": "> poseidon-prototype@0.1.0 check:contrast-budget\n> node scripts/check-contrast-budget.mjs\n\nContrast budget checks passed.",
+        "stderr": ""
       },
       {
         "script": "check:bundle-budget",
         "ok": false,
         "status": 1,
-        "stdout": "> poseidon-prototype@0.1.0 check:bundle-budget\n> node scripts/check-bundle-budget.mjs",
-        "stderr": "Missing CSS assets, index JS asset, or vendor-three chunk in dist/assets."
+        "stdout": "> poseidon-prototype@0.1.0 check:bundle-budget\n> node scripts/check-bundle-budget.mjs\n\n{\n  \"css\": {\n    \"raw\": 338572,\n    \"gzip\": 45362\n  },\n  \"indexJs\": {\n    \"file\": \"index-BxoQBVpt.js\",\n    \"raw\": 403419,\n    \"gzip\": 105623\n  },\n  \"vendorThree\": null,\n  \"budgets\": {\n    \"cssRawMax\": 195000,\n    \"cssGzipMax\": 34000,\n    \"indexJsRawMax\": 130000,\n    \"indexJsGzipMax\": 45000,\n    \"threeRawMax\": 950000,\n    \"threeGzipMax\": 240000\n  }\n}",
+        "stderr": "Bundle budget violations:\n- CSS raw 338572 > 195000\n- CSS gzip 45362 > 34000\n- index JS raw 403419 > 130000\n- index JS gzip 105623 > 45000"
       },
       {
         "script": "verify:pwa",
@@ -621,9 +1106,280 @@
     },
     "visualDiff": {
       "ok": true,
-      "bootstrap": true,
-      "reason": "baseline-created",
-      "diffs": []
+      "strict": false,
+      "bootstrap": false,
+      "summary": {
+        "total": 44,
+        "ok": 0,
+        "warn": 0,
+        "error": 44
+      },
+      "diffs": [
+        {
+          "file": "dashboard__desktop.png",
+          "changeRatio": 0.9996,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "dashboard__mobile.png",
+          "changeRatio": 0.9994,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "dashboard__tablet.png",
+          "changeRatio": 0.9995,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "dashboard__wide.png",
+          "changeRatio": 0.9995,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "execute__desktop.png",
+          "changeRatio": 0.9997,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "execute__mobile.png",
+          "changeRatio": 0.9996,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "execute__tablet.png",
+          "changeRatio": 0.9996,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "execute__wide.png",
+          "changeRatio": 0.9997,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "govern__desktop.png",
+          "changeRatio": 0.9997,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "govern__mobile.png",
+          "changeRatio": 0.9995,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "govern__tablet.png",
+          "changeRatio": 0.9996,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "govern__wide.png",
+          "changeRatio": 0.9995,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "grow__desktop.png",
+          "changeRatio": 0.9996,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "grow__mobile.png",
+          "changeRatio": 0.9994,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "grow__tablet.png",
+          "changeRatio": 0.9995,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "grow__wide.png",
+          "changeRatio": 0.9995,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "help__desktop.png",
+          "changeRatio": 0.9994,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "help__mobile.png",
+          "changeRatio": 0.9995,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "help__tablet.png",
+          "changeRatio": 0.9996,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "help__wide.png",
+          "changeRatio": 0.9993,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "login__desktop.png",
+          "changeRatio": 0.9989,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "login__mobile.png",
+          "changeRatio": 0.9993,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "login__tablet.png",
+          "changeRatio": 0.9987,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "login__wide.png",
+          "changeRatio": 0.9984,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "onboarding__connect__desktop.png",
+          "changeRatio": 0.9951,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "onboarding__connect__mobile.png",
+          "changeRatio": 0.9957,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "onboarding__connect__tablet.png",
+          "changeRatio": 0.995,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "onboarding__connect__wide.png",
+          "changeRatio": 0.9969,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "protect__desktop.png",
+          "changeRatio": 0.9997,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "protect__mobile.png",
+          "changeRatio": 0.9994,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "protect__tablet.png",
+          "changeRatio": 0.9995,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "protect__wide.png",
+          "changeRatio": 0.9995,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "root__desktop.png",
+          "changeRatio": 0.9961,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "root__mobile.png",
+          "changeRatio": 0.9979,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "root__tablet.png",
+          "changeRatio": 0.9963,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "root__wide.png",
+          "changeRatio": 0.9947,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "settings__desktop.png",
+          "changeRatio": 0.9993,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "settings__mobile.png",
+          "changeRatio": 0.9992,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "settings__tablet.png",
+          "changeRatio": 0.9993,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "settings__wide.png",
+          "changeRatio": 0.9991,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "signup__desktop.png",
+          "changeRatio": 0.9988,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "signup__mobile.png",
+          "changeRatio": 0.9991,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "signup__tablet.png",
+          "changeRatio": 0.9987,
+          "level": "error",
+          "method": "buffer"
+        },
+        {
+          "file": "signup__wide.png",
+          "changeRatio": 0.9982,
+          "level": "error",
+          "method": "buffer"
+        }
+      ]
     },
     "domHeuristics": {
       "ok": true,
@@ -645,14 +1401,13 @@
           "route": "/",
           "key": "cta-budget",
           "criteria": "oneCta",
-          "ok": false,
-          "severity": "P0",
+          "ok": true,
+          "severity": "P2",
           "demoImpact": "high",
           "effort": "S",
-          "message": "Expected <= 1 primary CTA; found 3.",
+          "message": "Expected <= 1 primary CTA; found 1.",
           "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-          "autofixable": true,
-          "autofixRule": "engine-core-nav-cta-demotion"
+          "autofixable": false
         },
         {
           "route": "/signup",
@@ -670,14 +1425,13 @@
           "route": "/signup",
           "key": "cta-budget",
           "criteria": "oneCta",
-          "ok": false,
-          "severity": "P0",
+          "ok": true,
+          "severity": "P2",
           "demoImpact": "high",
           "effort": "S",
-          "message": "Expected <= 1 primary CTA; found 4.",
+          "message": "Expected <= 1 primary CTA; found 1.",
           "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-          "autofixable": true,
-          "autofixRule": "engine-core-nav-cta-demotion"
+          "autofixable": false
         },
         {
           "route": "/login",
@@ -695,14 +1449,13 @@
           "route": "/login",
           "key": "cta-budget",
           "criteria": "oneCta",
-          "ok": false,
-          "severity": "P0",
+          "ok": true,
+          "severity": "P2",
           "demoImpact": "high",
           "effort": "S",
-          "message": "Expected <= 1 primary CTA; found 4.",
+          "message": "Expected <= 1 primary CTA; found 1.",
           "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-          "autofixable": true,
-          "autofixRule": "engine-core-nav-cta-demotion"
+          "autofixable": false
         },
         {
           "route": "/onboarding/connect",
@@ -720,14 +1473,13 @@
           "route": "/onboarding/connect",
           "key": "cta-budget",
           "criteria": "oneCta",
-          "ok": false,
-          "severity": "P0",
+          "ok": true,
+          "severity": "P2",
           "demoImpact": "high",
           "effort": "S",
-          "message": "Expected <= 1 primary CTA; found 3.",
+          "message": "Expected <= 1 primary CTA; found 1.",
           "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-          "autofixable": true,
-          "autofixRule": "engine-core-nav-cta-demotion"
+          "autofixable": false
         },
         {
           "route": "/dashboard",
@@ -745,14 +1497,13 @@
           "route": "/dashboard",
           "key": "cta-budget",
           "criteria": "oneCta",
-          "ok": false,
-          "severity": "P0",
+          "ok": true,
+          "severity": "P2",
           "demoImpact": "high",
           "effort": "S",
-          "message": "Expected <= 1 primary CTA; found 3.",
+          "message": "Expected <= 1 primary CTA; found 1.",
           "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-          "autofixable": true,
-          "autofixRule": "engine-core-nav-cta-demotion"
+          "autofixable": false
         },
         {
           "route": "/protect",
@@ -770,14 +1521,13 @@
           "route": "/protect",
           "key": "cta-budget",
           "criteria": "oneCta",
-          "ok": false,
-          "severity": "P0",
+          "ok": true,
+          "severity": "P2",
           "demoImpact": "high",
           "effort": "S",
-          "message": "Expected <= 1 primary CTA; found 3.",
+          "message": "Expected <= 1 primary CTA; found 1.",
           "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-          "autofixable": true,
-          "autofixRule": "engine-core-nav-cta-demotion"
+          "autofixable": false
         },
         {
           "route": "/grow",
@@ -795,14 +1545,13 @@
           "route": "/grow",
           "key": "cta-budget",
           "criteria": "oneCta",
-          "ok": false,
-          "severity": "P0",
+          "ok": true,
+          "severity": "P2",
           "demoImpact": "high",
           "effort": "S",
-          "message": "Expected <= 1 primary CTA; found 4.",
+          "message": "Expected <= 1 primary CTA; found 1.",
           "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-          "autofixable": true,
-          "autofixRule": "engine-core-nav-cta-demotion"
+          "autofixable": false
         },
         {
           "route": "/execute",
@@ -820,14 +1569,13 @@
           "route": "/execute",
           "key": "cta-budget",
           "criteria": "oneCta",
-          "ok": false,
-          "severity": "P0",
+          "ok": true,
+          "severity": "P2",
           "demoImpact": "high",
           "effort": "S",
-          "message": "Expected <= 1 primary CTA; found 3.",
+          "message": "Expected <= 1 primary CTA; found 1.",
           "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-          "autofixable": true,
-          "autofixRule": "engine-core-nav-cta-demotion"
+          "autofixable": false
         },
         {
           "route": "/govern",
@@ -845,14 +1593,13 @@
           "route": "/govern",
           "key": "cta-budget",
           "criteria": "oneCta",
-          "ok": false,
-          "severity": "P0",
+          "ok": true,
+          "severity": "P2",
           "demoImpact": "high",
           "effort": "S",
-          "message": "Expected <= 1 primary CTA; found 3.",
+          "message": "Expected <= 1 primary CTA; found 0.",
           "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-          "autofixable": true,
-          "autofixRule": "engine-core-nav-cta-demotion"
+          "autofixable": false
         },
         {
           "route": "/settings",
@@ -870,14 +1617,13 @@
           "route": "/settings",
           "key": "cta-budget",
           "criteria": "oneCta",
-          "ok": false,
-          "severity": "P0",
+          "ok": true,
+          "severity": "P2",
           "demoImpact": "high",
           "effort": "S",
-          "message": "Expected <= 1 primary CTA; found 2.",
+          "message": "Expected <= 1 primary CTA; found 0.",
           "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-          "autofixable": true,
-          "autofixRule": "engine-core-nav-cta-demotion"
+          "autofixable": false
         },
         {
           "route": "/help",
@@ -895,14 +1641,13 @@
           "route": "/help",
           "key": "cta-budget",
           "criteria": "oneCta",
-          "ok": false,
-          "severity": "P0",
+          "ok": true,
+          "severity": "P2",
           "demoImpact": "high",
           "effort": "S",
-          "message": "Expected <= 1 primary CTA; found 3.",
+          "message": "Expected <= 1 primary CTA; found 0.",
           "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
-          "autofixable": true,
-          "autofixRule": "engine-core-nav-cta-demotion"
+          "autofixable": false
         }
       ]
     }

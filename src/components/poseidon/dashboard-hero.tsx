@@ -16,44 +16,57 @@ import {
   CheckCircle2,
   ChevronRight,
   type LucideIcon,
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { HeroBento } from './hero-bento'
-import { CountUp } from './count-up'
-import { KpiCard } from './kpi-card'
-import { ListPortalBar } from './list-portal-bar'
-import { formatUsd } from '@/domain/poseidon-universe'
-import type { FinancialHealthBreakdown } from '@/domain/poseidon-universe'
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { HeroBento } from "./hero-bento";
+import { CountUp } from "./count-up";
+import { KpiCard } from "./kpi-card";
+import { ListPortalBar } from "./list-portal-bar";
+import { formatUsd } from "@/domain/poseidon-universe";
+import type { FinancialHealthBreakdown } from "@/domain/poseidon-universe";
 
 /* ── Props ── */
 
 export interface DashboardHeroProps {
-  userName: string
-  netWorth: number
-  netWorthChange: number
-  netWorthChangePercent: number
-  assets: number
-  liabilities: number
-  monthlyCashFlow: number
-  sparklineData: number[]
-  healthScore: number
-  healthBreakdown: FinancialHealthBreakdown[]
-  protectSignal: { threatCount: number; topAmount: string; topCounterparty: string; severity: string } | null
-  growSignal: { savingsPerMonth: number; recCount: number; topTitle: string } | null
-  executeSignal: { pendingCount: number; topTitle: string; topAmount: string } | null
-  decisionsAudited: number
-  complianceScore: number
-  onNavigate: (path: string) => void
+  userName: string;
+  netWorth: number;
+  netWorthChange: number;
+  netWorthChangePercent: number;
+  assets: number;
+  liabilities: number;
+  monthlyCashFlow: number;
+  sparklineData: number[];
+  healthScore: number;
+  healthBreakdown: FinancialHealthBreakdown[];
+  protectSignal: {
+    threatCount: number;
+    topAmount: string;
+    topCounterparty: string;
+    severity: string;
+  } | null;
+  growSignal: {
+    savingsPerMonth: number;
+    recCount: number;
+    topTitle: string;
+  } | null;
+  executeSignal: {
+    pendingCount: number;
+    topTitle: string;
+    topAmount: string;
+  } | null;
+  decisionsAudited: number;
+  complianceScore: number;
+  onNavigate: (path: string) => void;
 }
 
 /* ── Engine color map ── */
 
 const ENGINE_CSS_VAR: Record<string, string> = {
-  protect: '--engine-protect',
-  grow: '--engine-grow',
-  execute: '--engine-execute',
-  govern: '--engine-govern',
-}
+  protect: "--engine-protect",
+  grow: "--engine-grow",
+  execute: "--engine-execute",
+  govern: "--engine-govern",
+};
 
 /* ═══════════════════════════════════════════
    MAIN COMPONENT
@@ -100,11 +113,7 @@ export function DashboardHero({
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mt-auto">
-            <KpiCard
-              label="Assets"
-              value={formatUsd(assets)}
-              color="white"
-            />
+            <KpiCard label="Assets" value={formatUsd(assets)} color="white" />
             <KpiCard
               label="Liabilities"
               value={formatUsd(liabilities)}
@@ -125,7 +134,7 @@ export function DashboardHero({
               <EngineSignalCard
                 engine="protect"
                 icon={Shield}
-                primaryMetric={`${protectSignal.threatCount} active threat${protectSignal.threatCount !== 1 ? 's' : ''}`}
+                primaryMetric={`${protectSignal.threatCount} active threat${protectSignal.threatCount !== 1 ? "s" : ""}`}
                 secondaryLine={`${protectSignal.topAmount} flagged · ${protectSignal.topCounterparty}`}
                 navigateTo="/protect"
                 onNavigate={onNavigate}
@@ -138,7 +147,7 @@ export function DashboardHero({
                 engine="grow"
                 icon={TrendingUp}
                 primaryMetric={`+${formatUsd(growSignal.savingsPerMonth)}/mo found`}
-                secondaryLine={`${growSignal.recCount} recommendation${growSignal.recCount !== 1 ? 's' : ''}`}
+                secondaryLine={`${growSignal.recCount} recommendation${growSignal.recCount !== 1 ? "s" : ""}`}
                 navigateTo="/grow"
                 onNavigate={onNavigate}
                 priority="secondary"
@@ -149,7 +158,7 @@ export function DashboardHero({
               <EngineSignalCard
                 engine="execute"
                 icon={Zap}
-                primaryMetric={`${executeSignal.pendingCount} pending approval${executeSignal.pendingCount !== 1 ? 's' : ''}`}
+                primaryMetric={`${executeSignal.pendingCount} pending approval${executeSignal.pendingCount !== 1 ? "s" : ""}`}
                 secondaryLine={`${executeSignal.topAmount} tax savings`}
                 navigateTo="/execute"
                 onNavigate={onNavigate}
@@ -173,30 +182,30 @@ export function DashboardHero({
             engine="protect"
             label="View all threats"
             count={protectSignal?.threatCount ?? 0}
-            destination={{ type: 'route', to: '/protect/threats' }}
+            destination={{ type: "route", to: "/protect/threats" }}
           />
           <ListPortalBar
             engine="grow"
             label="View recommendations"
             count={growSignal?.recCount ?? 0}
-            destination={{ type: 'route', to: '/grow/recommendations' }}
+            destination={{ type: "route", to: "/grow/recommendations" }}
           />
           <ListPortalBar
             engine="execute"
             label="Actions to approve"
             count={executeSignal?.pendingCount ?? 0}
-            destination={{ type: 'route', to: '/execute/queue' }}
+            destination={{ type: "route", to: "/execute/queue" }}
           />
           <ListPortalBar
             engine="govern"
             label="Decision history"
             count={decisionsAudited}
-            destination={{ type: 'route', to: '/govern/audit' }}
+            destination={{ type: "route", to: "/govern/audit" }}
           />
         </div>
       </HeroBento.Portal>
     </HeroBento>
-  )
+  );
 }
 
 /* ═══════════════════════════════════════════
@@ -206,17 +215,18 @@ export function DashboardHero({
 /* ── Greeting ── */
 
 function GreetingLine({ userName }: { userName: string }) {
-  const hour = new Date().getHours()
-  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
+  const hour = new Date().getHours();
+  const greeting =
+    hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
   return (
     <p
       className="text-lg md:text-xl text-white/60 italic"
-      style={{ fontFamily: 'var(--font-display, serif)' }}
+      style={{ fontFamily: "var(--font-display, serif)" }}
     >
       {greeting}, {userName}.
     </p>
-  )
+  );
 }
 
 /* ── Net Worth Display ── */
@@ -226,12 +236,12 @@ function NetWorthDisplay({
   change,
   changePercent,
 }: {
-  netWorth: number
-  change: number
-  changePercent: number
+  netWorth: number;
+  change: number;
+  changePercent: number;
 }) {
-  const isPositive = change >= 0
-  const TrendIcon = isPositive ? TrendingUp : TrendingDown
+  const isPositive = change >= 0;
+  const TrendIcon = isPositive ? TrendingUp : TrendingDown;
 
   return (
     <div className="flex flex-col gap-2 lg:gap-4">
@@ -241,12 +251,16 @@ function NetWorthDisplay({
       <span className="text-[10px] uppercase tracking-[0.08em] text-white/40 font-medium">
         Net Worth
       </span>
-      <span className={`inline-flex items-center gap-1.5 font-mono text-sm ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+      <span
+        className={`inline-flex items-center gap-1.5 font-mono text-sm ${isPositive ? "text-emerald-400" : "text-red-400"}`}
+      >
         <TrendIcon size={12} />
-        {isPositive ? '+' : ''}{formatUsd(Math.abs(change))} ({isPositive ? '+' : ''}{changePercent.toFixed(1)}%)
+        {isPositive ? "+" : ""}
+        {formatUsd(Math.abs(change))} ({isPositive ? "+" : ""}
+        {changePercent.toFixed(1)}%)
       </span>
     </div>
-  )
+  );
 }
 
 /* ── Health Score Bar ── */
@@ -255,8 +269,8 @@ function HealthScoreBar({
   score,
   breakdown,
 }: {
-  score: number
-  breakdown: FinancialHealthBreakdown[]
+  score: number;
+  breakdown: FinancialHealthBreakdown[];
 }) {
   return (
     <div className="flex flex-col gap-2 mt-1">
@@ -284,28 +298,31 @@ function HealthScoreBar({
         Financial Health Score
       </span>
     </div>
-  )
+  );
 }
 
 /* ── Sparkline ── */
 
 function NetWorthSparkline({ data }: { data: number[] }) {
-  if (data.length < 2) return null
+  if (data.length < 2) return null;
 
-  const width = 200
-  const height = 40
-  const min = Math.min(...data)
-  const max = Math.max(...data)
-  const range = max - min || 1
+  const width = 200;
+  const height = 40;
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
 
   const points = data.map((v, i) => {
-    const x = (i / (data.length - 1)) * width
-    const y = height - ((v - min) / range) * (height - 4) - 2
-    return `${x},${y}`
-  })
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((v - min) / range) * (height - 4) - 2;
+    return `${x},${y}`;
+  });
 
-  const polyline = points.join(' ')
-  const areaPath = `M${points[0]} ${points.slice(1).map(p => `L${p}`).join(' ')} L${width},${height} L0,${height} Z`
+  const polyline = points.join(" ");
+  const areaPath = `M${points[0]} ${points
+    .slice(1)
+    .map((p) => `L${p}`)
+    .join(" ")} L${width},${height} L0,${height} Z`;
 
   return (
     <svg
@@ -316,8 +333,16 @@ function NetWorthSparkline({ data }: { data: number[] }) {
     >
       <defs>
         <linearGradient id="sparkline-fill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--engine-dashboard)" stopOpacity="0.12" />
-          <stop offset="100%" stopColor="var(--engine-dashboard)" stopOpacity="0" />
+          <stop
+            offset="0%"
+            stopColor="var(--engine-dashboard)"
+            stopOpacity="0.12"
+          />
+          <stop
+            offset="100%"
+            stopColor="var(--engine-dashboard)"
+            stopOpacity="0"
+          />
         </linearGradient>
       </defs>
       <path d={areaPath} fill="url(#sparkline-fill)" />
@@ -330,7 +355,7 @@ function NetWorthSparkline({ data }: { data: number[] }) {
         strokeLinejoin="round"
       />
     </svg>
-  )
+  );
 }
 
 /* ── Engine Signal Card ── */
@@ -345,32 +370,38 @@ function EngineSignalCard({
   priority,
   delayClass,
 }: {
-  engine: string
-  icon: LucideIcon
-  primaryMetric: string
-  secondaryLine: string
-  navigateTo: string
-  onNavigate: (path: string) => void
-  priority: 'primary' | 'secondary'
-  delayClass: string
+  engine: string;
+  icon: LucideIcon;
+  primaryMetric: string;
+  secondaryLine: string;
+  navigateTo: string;
+  onNavigate: (path: string) => void;
+  priority: "primary" | "secondary";
+  delayClass: string;
 }) {
-  const cssVar = ENGINE_CSS_VAR[engine] ?? '--engine-dashboard'
+  const cssVar = ENGINE_CSS_VAR[engine] ?? "--engine-dashboard";
 
   return (
     <button
       type="button"
       onClick={() => onNavigate(navigateTo)}
-      data-cta-priority={priority === 'primary' ? 'primary' : undefined}
+      data-cta-priority={priority === "primary" ? "primary" : undefined}
       className={`animate-fade-up ${delayClass} flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 rounded-xl bg-[#0A0A0A]/40 backdrop-blur-md border border-white/5 border-l-4 p-4 md:p-5 w-full cursor-pointer hover:bg-white/5 transition-colors overflow-hidden relative group`}
       style={{
         borderLeftColor: `var(${cssVar})`,
-        backgroundColor: priority === 'primary' ? 'rgba(255,255,255,0.06)' : undefined,
-        boxShadow: priority === 'primary' ? `0 0 36px color-mix(in srgb, var(${cssVar}) 12%, transparent)` : undefined,
+        backgroundColor:
+          priority === "primary" ? "rgba(255,255,255,0.06)" : undefined,
+        boxShadow:
+          priority === "primary"
+            ? `0 0 36px color-mix(in srgb, var(${cssVar}) 12%, transparent)`
+            : undefined,
       }}
     >
-      <div 
+      <div
         className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"
-        style={{ background: `linear-gradient(90deg, var(${cssVar}) 0%, transparent 100%)` }}
+        style={{
+          background: `linear-gradient(90deg, var(${cssVar}) 0%, transparent 100%)`,
+        }}
       />
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/5 border border-white/10">
         <Icon
@@ -381,7 +412,10 @@ function EngineSignalCard({
         />
       </div>
       <div className="flex-1 min-w-0 flex flex-col items-start gap-1">
-        <span className="font-mono text-base md:text-lg font-bold text-white block truncate" style={{ color: `var(${cssVar})`}}>
+        <span
+          className="font-mono text-base md:text-lg font-bold text-white block truncate"
+          style={{ color: `var(${cssVar})` }}
+        >
           {primaryMetric}
         </span>
         <span className="text-xs text-white/50 block truncate font-medium">
@@ -390,17 +424,17 @@ function EngineSignalCard({
       </div>
       <div
         className={cn(
-          'mt-2 sm:mt-0 ml-auto flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
-          priority === 'primary'
-            ? 'border border-white/[0.15] bg-white/[0.08] text-white/80 group-hover:bg-white/[0.12]'
-            : 'border border-white/10 bg-white/5 text-white/55 group-hover:bg-white/10'
+          "mt-2 sm:mt-0 ml-auto flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
+          priority === "primary"
+            ? "border border-white/[0.15] bg-white/[0.08] text-white/80 group-hover:bg-white/[0.12]"
+            : "border border-white/10 bg-white/5 text-white/55 group-hover:bg-white/10",
         )}
       >
         View
         <ChevronRight size={14} />
       </div>
     </button>
-  )
+  );
 }
 
 /* ── Govern Badge ── */
@@ -409,20 +443,24 @@ function GovernBadge({
   decisionsAudited,
   onNavigate,
 }: {
-  decisionsAudited: number
-  onNavigate: (path: string) => void
+  decisionsAudited: number;
+  onNavigate: (path: string) => void;
 }) {
   return (
     <button
       type="button"
-      onClick={() => onNavigate('/govern')}
+      onClick={() => onNavigate("/govern")}
       className="animate-fade-up animate-fade-up-delay-3 flex items-center gap-2 mt-3 cursor-pointer hover:opacity-80 transition-opacity"
     >
-      <Scale size={14} style={{ color: 'var(--engine-govern)' }} className="shrink-0" />
+      <Scale
+        size={14}
+        style={{ color: "var(--engine-govern)" }}
+        className="shrink-0"
+      />
       <span className="text-xs text-white/40">
         {decisionsAudited.toLocaleString()} decisions verified
       </span>
       <CheckCircle2 size={12} className="text-emerald-400/60 shrink-0" />
     </button>
-  )
+  );
 }

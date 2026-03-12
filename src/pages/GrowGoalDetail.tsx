@@ -1,19 +1,18 @@
 import { motion } from "framer-motion";
-import { Link } from '@/router';
+import { Link } from "@/router";
 import { Target, ArrowRight, ArrowLeft, Scale, TrendingUp } from "lucide-react";
 import { ForecastBand } from "@/components/poseidon/forecast-band";
-import { CountUp } from '@/components/poseidon';
+import { CountUp } from "@/components/poseidon";
 import type { ForecastPoint } from "@/components/poseidon/forecast-band";
-import { getMotionPreset } from '@/lib/motion-presets';
-import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
-import { usePageTitle } from '@/hooks/use-page-title';
-import { Card, CardContent } from '@/components/ui/card';
-
+import { getMotionPreset } from "@/lib/motion-presets";
+import { useReducedMotionSafe } from "@/hooks/useReducedMotionSafe";
+import { usePageTitle } from "@/hooks/use-page-title";
+import { Card, CardContent } from "@/components/ui/card";
 
 /* ── Cross-thread ── */
-import { cn } from '@/lib/utils';
-import { buttonVariants } from '@/components/ui/button';
-import { selectGrowLiquidityReserveView } from '@/domain/poseidon-universe';
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { selectGrowLiquidityReserveView } from "@/domain/poseidon-universe";
 
 const liquidityReserve = selectGrowLiquidityReserveView();
 const RESERVE_PROGRESS = liquidityReserve.percent;
@@ -25,7 +24,7 @@ const FORECAST_DATA: ForecastPoint[] = Array.from({ length: 12 }, (_, i) => ({
   x: i,
   median: RESERVE_CURRENT + i * 250,
   low: RESERVE_CURRENT + i * 180,
-  high: RESERVE_CURRENT + i * 320
+  high: RESERVE_CURRENT + i * 320,
 }));
 
 /* ── Monthly contribution data ── */
@@ -34,30 +33,36 @@ const ALLOCATIONS = [
   { month: "Nov", amount: 380 },
   { month: "Dec", amount: 360 },
   { month: "Jan", amount: 420 },
-  { month: "Feb", amount: 420 }];
-
+  { month: "Feb", amount: 420 },
+];
 
 export default function GrowGoalPage() {
-  usePageTitle('Goal Detail');
-  const prefersReducedMotion = useReducedMotionSafe()
-  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } = getMotionPreset(prefersReducedMotion)
+  usePageTitle("Goal Detail");
+  const prefersReducedMotion = useReducedMotionSafe();
+  const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } =
+    getMotionPreset(prefersReducedMotion);
   const circumference = 2 * Math.PI * 40;
-  const strokeDashoffset = circumference - RESERVE_PROGRESS / 100 * circumference;
+  const strokeDashoffset =
+    circumference - (RESERVE_PROGRESS / 100) * circumference;
 
   return (
     <div className="hero-viewport">
-
-      <motion.main
-        id="main-content"
+      <motion.section
         className="flex-1 min-h-0 overflow-y-auto flex flex-col"
         initial="hidden"
         animate="visible"
-        variants={staggerContainerVariant}>
-
+        variants={staggerContainerVariant}
+      >
         {/* ── P1: Goal Progress Summary ── */}
-        <motion.section variants={staggerContainerVariant} className="mb-8 pt-8 lg:pt-12">
+        <motion.section
+          variants={staggerContainerVariant}
+          className="mb-8 pt-8 lg:pt-12"
+        >
           <motion.div variants={fadeUpVariant} className="mb-8">
-            <Link to="/grow" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <Link
+              to="/grow"
+              className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
               <ArrowLeft size={16} />
               Back to Grow
             </Link>
@@ -66,10 +71,18 @@ export default function GrowGoalPage() {
           <motion.div variants={fadeUpVariant}>
             <Card className="border border-border bg-card shadow-sm">
               <CardContent className="p-8 lg:p-12 flex flex-col md:flex-row items-center gap-10 lg:gap-16">
-
                 <div className="relative w-48 h-48 lg:w-56 lg:h-56 flex-shrink-0">
-                  <svg className="w-full h-full -rotate-90" viewBox="0 0 160 160">
-                    <circle cx="80" cy="80" r="70" className="stroke-[hsl(var(--muted))] fill-none" strokeWidth="8" />
+                  <svg
+                    className="w-full h-full -rotate-90"
+                    viewBox="0 0 160 160"
+                  >
+                    <circle
+                      cx="80"
+                      cy="80"
+                      r="70"
+                      className="stroke-[hsl(var(--muted))] fill-none"
+                      strokeWidth="8"
+                    />
                     <circle
                       cx="80"
                       cy="80"
@@ -78,11 +91,17 @@ export default function GrowGoalPage() {
                       style={{ stroke: "var(--engine-grow)" }}
                       strokeLinecap="round"
                       strokeDasharray={`${2 * Math.PI * 70}`}
-                      strokeDashoffset={2 * Math.PI * 70 - RESERVE_PROGRESS / 100 * 2 * Math.PI * 70}
-                      className="fill-none transition-all duration-1000 ease-out" />
+                      strokeDashoffset={
+                        2 * Math.PI * 70 -
+                        (RESERVE_PROGRESS / 100) * 2 * Math.PI * 70
+                      }
+                      className="fill-none transition-all duration-1000 ease-out"
+                    />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="typo-hero-number text-4xl text-foreground"><CountUp value={RESERVE_PROGRESS} />%</span>
+                    <span className="typo-hero-number text-4xl text-foreground">
+                      <CountUp value={RESERVE_PROGRESS} />%
+                    </span>
                   </div>
                 </div>
 
@@ -91,13 +110,23 @@ export default function GrowGoalPage() {
                     <div className="w-12 h-12 rounded-2xl bg-[var(--engine-grow)]/20 border border-[var(--engine-grow)]/30 flex items-center justify-center text-[var(--engine-grow)]">
                       <Target size={20} />
                     </div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-foreground">Liquidity Reserve</h1>
+                    <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+                      Liquidity Reserve
+                    </h1>
                   </div>
                   <p className="text-2xl lg:text-3xl text-muted-foreground font-light mt-2 tracking-wide">
-                    <span className="font-mono text-foreground font-medium">${RESERVE_CURRENT.toLocaleString()}</span> of ${RESERVE_TARGET.toLocaleString()}
+                    <span className="font-mono text-foreground font-medium">
+                      ${RESERVE_CURRENT.toLocaleString()}
+                    </span>{" "}
+                    of ${RESERVE_TARGET.toLocaleString()}
                   </p>
                   <p className="text-base text-muted-foreground tracking-wide mt-4 max-w-xl leading-relaxed">
-                    At your current savings rate, the reserve will reach target in approximately <span className="text-foreground font-medium">14 months</span>.
+                    At your current savings rate, the reserve will reach target
+                    in approximately{" "}
+                    <span className="text-foreground font-medium">
+                      14 months
+                    </span>
+                    .
                   </p>
                 </div>
               </CardContent>
@@ -117,24 +146,33 @@ export default function GrowGoalPage() {
                   </h3>
                 </div>
                 <div className="flex flex-col gap-5 flex-1">
-                  {ALLOCATIONS.map((c, i) =>
-                    <div key={c.month} className={`flex items-center justify-between pt-2 pb-3 ${i !== 0 ? 'border-t border-border' : ''}`}>
-                      <span className="text-sm font-semibold text-foreground flex-shrink-0 w-24 tracking-wide uppercase">{c.month} <span className="text-white/40 text-xs ml-1 font-mono">2026</span></span>
+                  {ALLOCATIONS.map((c, i) => (
+                    <div
+                      key={c.month}
+                      className={`flex items-center justify-between pt-2 pb-3 ${i !== 0 ? "border-t border-border" : ""}`}
+                    >
+                      <span className="text-sm font-semibold text-foreground flex-shrink-0 w-24 tracking-wide uppercase">
+                        {c.month}{" "}
+                        <span className="text-white/40 text-xs ml-1 font-mono">
+                          2026
+                        </span>
+                      </span>
                       <div className="flex items-center gap-4 flex-1 justify-end">
                         <div className="w-full max-w-[120px] h-2 rounded-full overflow-hidden bg-muted">
                           <div
                             className="h-full rounded-full"
                             style={{
-                              width: `${c.amount / 450 * 100}%`,
-                              background: "var(--engine-grow)"
-                            }} />
+                              width: `${(c.amount / 450) * 100}%`,
+                              background: "var(--engine-grow)",
+                            }}
+                          />
                         </div>
                         <span className="text-sm font-mono font-bold flex-shrink-0 w-16 text-right text-[var(--engine-grow)]">
                           ${c.amount}
                         </span>
                       </div>
                     </div>
-                  )}
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -150,10 +188,20 @@ export default function GrowGoalPage() {
                   </h3>
                 </div>
                 <div className="flex-1 flex flex-col justify-center gap-4">
-                  <ForecastBand data={FORECAST_DATA} width={600} height={180} engine="grow" className="w-full" />
+                  <ForecastBand
+                    data={FORECAST_DATA}
+                    width={600}
+                    height={180}
+                    engine="grow"
+                    className="w-full"
+                  />
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-                    <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest px-2">Now</span>
-                    <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest px-2">+12 months</span>
+                    <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest px-2">
+                      Now
+                    </span>
+                    <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest px-2">
+                      +12 months
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -163,7 +211,10 @@ export default function GrowGoalPage() {
 
         {/* ── P3: Goal Adjustment Action ── */}
         <motion.section variants={fadeUpVariant} className="mb-12">
-          <Card className="border border-border bg-card shadow-sm border-l-4" style={{ borderLeftColor: 'var(--engine-grow)' }}>
+          <Card
+            className="border border-border bg-card shadow-sm border-l-4"
+            style={{ borderLeftColor: "var(--engine-grow)" }}
+          >
             <CardContent className="p-8 lg:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="max-w-2xl pl-2">
                 <div className="flex items-center gap-3 mb-4">
@@ -175,29 +226,42 @@ export default function GrowGoalPage() {
                   </p>
                 </div>
                 <p className="text-base text-muted-foreground leading-relaxed tracking-wide mt-2">
-                  Increasing the monthly allocation by <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-violet-500/10 rounded-md border border-violet-500/20">$60</span> would accelerate reserve target by <strong className="text-foreground font-medium">3 weeks</strong>.
+                  Increasing the monthly allocation by{" "}
+                  <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-violet-500/10 rounded-md border border-violet-500/20">
+                    $60
+                  </span>{" "}
+                  would accelerate reserve target by{" "}
+                  <strong className="text-foreground font-medium">
+                    3 weeks
+                  </strong>
+                  .
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-4 md:ml-auto">
                 <Link
                   to="/grow"
-                  className={cn(buttonVariants({ variant: "outline", size: "lg" }), "rounded-2xl px-6 transition-all font-semibold tracking-wide")}>
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "lg" }),
+                    "rounded-2xl px-6 transition-all font-semibold tracking-wide",
+                  )}
+                >
                   Back to grow
                 </Link>
                 {/* CTA: Primary -> /execute */}
                 <Link
                   to="/execute"
-                  className={cn(buttonVariants({ variant: "default", size: "lg" }), "rounded-2xl px-8 transition-all font-semibold tracking-wide border-none bg-violet-600 text-white hover:bg-violet-700 hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] flex items-center gap-2")}>
+                  className={cn(
+                    buttonVariants({ variant: "default", size: "lg" }),
+                    "rounded-2xl px-8 transition-all font-semibold tracking-wide border-none bg-violet-600 text-white hover:bg-violet-700 hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] flex items-center gap-2",
+                  )}
+                >
                   Modify allocation <ArrowRight size={18} />
                 </Link>
               </div>
             </CardContent>
           </Card>
         </motion.section>
-
-
-      </motion.main>
+      </motion.section>
     </div>
   );
-
 }
