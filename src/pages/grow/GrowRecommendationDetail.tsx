@@ -34,9 +34,9 @@ import { useToastContext } from "@/components/providers/ToastProvider";
 
 /* ── Helpers ── */
 
-/** Map GRW-XXX string id to canonical numeric id */
-function grwIdToNumeric(grwId: string): number {
-  const match = grwId.match(/GRW-(\d+)/);
+function recommendationIdToNumeric(value: string): number {
+  if (/^\d+$/.test(value)) return Number(value);
+  const match = value.match(/GRW-(\d+)/);
   return match ? Number(match[1]) : -1;
 }
 
@@ -63,15 +63,14 @@ function getRiskLabel(c: number): string {
 
 function BeforeAfterPanel({ rec }: { rec: RecommendationDetail }) {
   const c = rec.comparison;
-  if (!c) return null;
 
-  if (c.kind === "yield") {
+  if (c?.kind === "yield") {
     return (
       <div className="grid gap-4 sm:grid-cols-2">
         {/* Before */}
         <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40 mb-2">
-            Before
+            Current APY
           </p>
           <p className="text-sm font-medium text-muted-foreground">
             Chase Savings
@@ -86,7 +85,7 @@ function BeforeAfterPanel({ rec }: { rec: RecommendationDetail }) {
         {/* After */}
         <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-5 shadow-[0_0_15px_rgba(139,92,246,0.1)]">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-400 mb-2">
-            After
+            New APY
           </p>
           <p className="text-sm font-medium text-violet-400">
             High-Yield Savings
@@ -98,16 +97,24 @@ function BeforeAfterPanel({ rec }: { rec: RecommendationDetail }) {
             $269.40/yr in interest
           </p>
         </div>
+        <div className="sm:col-span-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-5">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400 mb-2">
+            You earn
+          </p>
+          <p className="font-mono text-lg font-semibold text-emerald-300">
+            +${c.annualGain?.toLocaleString() ?? 0}/yr
+          </p>
+        </div>
       </div>
     );
   }
 
-  if (c.kind === "allocation") {
+  if (c?.kind === "allocation") {
     return (
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40 mb-2">
-            Current Allocation
+            Current allocation
           </p>
           <p className="font-mono text-sm text-muted-foreground">
             {c.currentMix}
@@ -115,7 +122,7 @@ function BeforeAfterPanel({ rec }: { rec: RecommendationDetail }) {
         </div>
         <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-5 shadow-[0_0_15px_rgba(139,92,246,0.1)]">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-400 mb-2">
-            Recommended
+            Recommended allocation
           </p>
           <p className="font-mono text-sm font-semibold text-violet-400">
             {c.newMix}
@@ -125,7 +132,30 @@ function BeforeAfterPanel({ rec }: { rec: RecommendationDetail }) {
     );
   }
 
-  if (c.kind === "contribution") {
+  if (c?.kind === "coverage") {
+    return (
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40 mb-2">
+            Current coverage
+          </p>
+          <p className="font-mono text-lg text-muted-foreground">
+            {c.currentMonths} months
+          </p>
+        </div>
+        <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-5 shadow-[0_0_15px_rgba(139,92,246,0.1)]">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-400 mb-2">
+            Target coverage
+          </p>
+          <p className="font-mono text-lg font-semibold text-violet-400">
+            {c.targetMonths} months
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (c?.kind === "contribution") {
     return (
       <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] px-5 py-4">
         <div className="flex flex-col gap-1">
@@ -200,26 +230,27 @@ export default function GrowRecommendationDetailPage() {
     () => new URLSearchParams(search).get("id") ?? "",
     [search],
   );
+  const numericId = useMemo(() => recommendationIdToNumeric(grwId), [grwId]);
 
   // Find the matching data record from canonical summary
   const recSummary = useMemo(() => {
-    const numericId = grwIdToNumeric(grwId);
     return selectRecommendationListItems().find((r) => r.id === numericId);
-  }, [grwId]);
+  }, [numericId]);
 
   // Find the matching canonical detail record
   const rec = useMemo(() => {
-    const numericId = grwIdToNumeric(grwId);
     return recommendationDetails.find((r) => r.id === numericId);
-  }, [grwId]);
+  }, [numericId]);
 
   if (!rec || !recSummary) {
     navigate("/grow");
     return null;
   }
 
+  const recommendationKey = `GRW-${String(rec.id).padStart(3, "0")}`;
+
   // Demo state decision
-  const demoDecision = state.recommendations.decisions[grwId];
+  const demoDecision = state.recommendations.decisions[recommendationKey];
   const effectiveStatus = demoDecision
     ? demoDecision.decision === "accepted"
       ? "approved"
@@ -230,7 +261,7 @@ export default function GrowRecommendationDetailPage() {
     effectiveStatus === "approved" || effectiveStatus === "dismissed";
 
   const handleAccept = () => {
-    decideRecommendation(grwId, "accepted");
+    decideRecommendation(recommendationKey, "accepted");
     showToast({
       message: `Recommendation "${recSummary.title}" accepted`,
       variant: "success",
@@ -238,7 +269,7 @@ export default function GrowRecommendationDetailPage() {
   };
 
   const handleDecline = () => {
-    decideRecommendation(grwId, "declined");
+    decideRecommendation(recommendationKey, "declined");
     showToast({
       message: `Recommendation "${recSummary.title}" declined`,
       variant: "info",
@@ -468,7 +499,7 @@ export default function GrowRecommendationDetailPage() {
                     {/* Audit Trail Link */}
                     <div className="pt-2">
                       <Link
-                        to="/govern/audit-detail?id=AUD-2026-0311-003"
+                        to={`/govern/audit-detail?decision=${encodeURIComponent(recSummary.auditId)}`}
                         className="inline-flex items-center gap-1.5 text-sm font-medium text-violet-600 hover:text-violet-800 transition-colors"
                       >
                         View Activity Log

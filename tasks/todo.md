@@ -1,3 +1,16 @@
+# Hero Concept Study (2026-03-12)
+
+- [x] Review current Tier 1 hero facades, page wiring, canonical selectors, and governance contracts
+- [x] Design 5 Dark-Luxe hero concepts each for Grow / Execute / Govern with desktop-first full-screen composition and strict mobile containment
+- [x] Document each concept with meaning, ASCII layout, interaction intent, and data/props boundaries
+- [x] Add a short review note summarizing the recommended implementation direction
+
+## Review Notes
+
+- Existing page composition already satisfies the core separation rule: [Grow.tsx], [Execute.tsx], and [Govern.tsx] are thin selector/router wrappers around presentational heroes fed from canonical selectors.
+- Recommended implementation path is variant-based hero facades inside `src/components/poseidon/`, plus shared Dark-Luxe hero primitives for frame, metric rail, proof strip, action dock, and mobile-safe stacking.
+- No mock data should be introduced in hero components; every numeric cluster, sparkline, ledger row, and CTA state should remain parent-provided from canonical selectors.
+
 # Current Task: Immersive HERO Edition (2026-03-12)
 
 - [x] Replace Tier 1 overview data dependencies with canonical selectors and align the demo baseline with the Blueprint v3.0 numbers
@@ -8,7 +21,7 @@
 
 ## Review Notes
 
-- Canonical baseline now matches the immersive blueprint: net worth `$284,500`, liquid `$42,100`, investments `$242,400`, debt `$0`, monthly cash flow `14,200 / 9,850`, 1 Protect anomaly, 2 Grow opportunities, 2 Execute approvals, and 142 Govern inferences.
+- Canonical baseline now matches the selector-driven overview: net worth `$284,500`, liquid `$42,100`, investments `$242,400`, debt `$0`, monthly cash flow `14,200 / 9,850`, 1 Protect anomaly, 20 ranked Grow opportunities, 15 pending Execute approvals in demo state, and 45 Govern audit decisions.
 - Tier 1 overview pages now route through shared immersive hero facades and use canonical selectors or demo-state rather than `usePoseidonStore`.
 - Verification completed: targeted Vitest suite `59/59` passed, `npx tsc --noEmit --pretty false` passed, `npm run build` passed, and Playwright smoke on `/`, `/dashboard`, `/protect`, `/grow`, `/execute`, `/govern` confirmed desktop/mobile hero-first layout with below-the-fold detail after scroll and no runtime console errors.
 
@@ -205,6 +218,20 @@ _All blocking correctness issues resolved. Gate tests pass. Consumer copy purge 
 - E2E flow issues confirmed: dashboard is summary-heavy but action-light, detail pages over-stack forensic evidence above decision support, and sticky GovernFooter visually interrupts multiple pages.
 
 ## Bottom Sheet Display Audit Plan (2026-03-09)
+
+# Selector-Driven Dark-Luxe Hero Refresh (2026-03-12)
+
+- [x] Audit current hero/page wiring and add selector-derived hero view models for Dashboard / Protect / Grow / Execute / Govern
+- [x] Replace the 5 live hero internals with selector-driven Dark-Luxe variants while preserving exported prop interfaces and route contracts
+- [x] Update stale tests and narrative references that still conflict with the current canonical universe
+- [x] Verify with targeted Vitest suites, `npx tsc --noEmit`, `npm run build`, and desktop/mobile hero smoke checks
+
+## Review Notes
+
+- Selector-driven means hero components never hardcode canonical IDs; spotlighted threat/recommendation/action/audit data must come from selector helpers.
+- The currently exported canonical universe remains authoritative even where older comments/tests still reference the prior `~$94K` narrative.
+- Govern-facing footers and detail links now resolve against canonical relations or selector-provided audit IDs instead of stale page-local constants.
+- Verification completed: targeted Vitest suites `52/52` passed, `npx tsc --noEmit --pretty false` passed, `npm run build` passed, and Playwright smoke confirmed no console errors or horizontal overflow on `/dashboard`, `/protect`, `/grow`, `/execute`, and `/govern` at 1440px and 390px widths.
 
 **Goal:** Verify the broken Bottom Sheet in live Desktop and Mobile rendering, identify the concrete layout/viewport/container failures, and produce an implementation plan for another AI.
 

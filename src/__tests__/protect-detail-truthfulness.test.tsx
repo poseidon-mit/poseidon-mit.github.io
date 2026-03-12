@@ -35,7 +35,7 @@ describe('Protect detail truthfulness', () => {
     const matches = screen.getAllByText('Alert #THR-001')
     expect(matches.length).toBeGreaterThan(0)
     // Account should come from canonical, not hardcoded
-    expect(screen.getByText('Visa ****4821')).toBeTruthy()
+    expect(screen.getByText('Amex Gold ••••4821')).toBeTruthy()
   })
 
   it('severity comparison uses correct case (Critical not critical)', () => {

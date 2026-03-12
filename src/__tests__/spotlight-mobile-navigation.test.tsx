@@ -40,7 +40,7 @@ describe('Spotlight cards are tappable links on mobile', () => {
       (link) => link.getAttribute('href')?.includes('/protect/alert-detail?alertId='),
     )
     expect(spotlightLink).toBeTruthy()
-    expect(spotlightLink!.className).toContain('block')
+    expect(spotlightLink!.className).not.toContain('sr-only')
   })
 
   it('ExecuteQueue spotlight card links to approval page', () => {

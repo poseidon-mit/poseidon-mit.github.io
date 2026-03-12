@@ -5,12 +5,12 @@ import { RouterProvider } from "../router";
 import GovernPage from "../pages/Govern";
 
 const DEFAULT_PROPS = {
-  decisionsAudited: 142,
+  decisionsAudited: 45,
   engineBreakdown: [
-    { engine: "Protect", count: 41, percent: 29, color: "var(--engine-protect)" },
-    { engine: "Grow", count: 37, percent: 26, color: "var(--engine-grow)" },
-    { engine: "Execute", count: 35, percent: 25, color: "var(--engine-execute)" },
-    { engine: "Govern", count: 29, percent: 20, color: "var(--engine-govern)" },
+    { engine: "Protect", count: 19, percent: 42, color: "var(--engine-protect)" },
+    { engine: "Grow", count: 18, percent: 40, color: "var(--engine-grow)" },
+    { engine: "Execute", count: 8, percent: 18, color: "var(--engine-execute)" },
+    { engine: "Govern", count: 0, percent: 0, color: "var(--engine-govern)" },
   ],
   auditEntries: [
     {
@@ -61,8 +61,8 @@ function renderHero(overrides: Record<string, unknown> = {}) {
 describe("GovernHero", () => {
   it("renders the new immutable-audit headline", () => {
     renderHero();
-    expect(screen.getByText("THE IMMUTABLE AUDIT TRAIL")).toBeInTheDocument();
-    expect(screen.getByText(/100% Traceability/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /shieldmatrix/i })).toBeInTheDocument();
+    expect(screen.getByText(/100% auditability/i)).toBeInTheDocument();
   });
 
   it("renders engine breakdown and trust guarantees", () => {
@@ -72,11 +72,11 @@ describe("GovernHero", () => {
         auditCoveragePercent: 100,
         llmTrainingOptOut: true,
       },
-      statusBreakdown: { verified: 139, pending: 2, flagged: 1 },
+      statusBreakdown: { verified: 33, pending: 9, flagged: 3 },
     });
 
     expect(screen.getByText("What Poseidon checked")).toBeInTheDocument();
-    expect(screen.getByText(/Protect 29%/)).toBeInTheDocument();
+    expect(screen.getByText(/Protect 42%/)).toBeInTheDocument();
     expect(screen.getByText("Your safety guarantees")).toBeInTheDocument();
     expect(screen.getByText(/0 actions taken without your approval/)).toBeInTheDocument();
   });
@@ -115,11 +115,8 @@ describe("GovernPage integration", () => {
 
   it("renders the hero with canonical audit data", () => {
     renderGovern();
-    expect(screen.getByText("THE IMMUTABLE AUDIT TRAIL")).toBeInTheDocument();
-    expect(
-      screen.getAllByText((_, node) => node?.textContent?.includes("142 AI inferences logged in the last 24h") ?? false)
-        .length,
-    ).toBeGreaterThan(0);
+    expect(screen.getByRole("heading", { name: /shieldmatrix/i })).toBeInTheDocument();
+    expect(screen.getByText(/45 auditable decisions in the current selector set/i)).toBeInTheDocument();
   });
 
   it("renders trust guarantees and the audit portal link", () => {

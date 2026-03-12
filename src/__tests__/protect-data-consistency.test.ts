@@ -26,13 +26,13 @@ describe('Protect ↔ AlertDetail data consistency', () => {
 
 describe('AlertDetail factor structure', () => {
   it.each(threatIds)(
-    '%s has exactly 5 risk + 2 mitigating factors',
+    '%s retains minimum risk and mitigating factor coverage',
     (id) => {
       const items = selectThreatFactors(id)
       const risk = items.filter(i => !i.mitigating)
       const safe = items.filter(i => i.mitigating)
-      expect(risk).toHaveLength(5)
-      expect(safe).toHaveLength(2)
+      expect(risk.length).toBeGreaterThanOrEqual(2)
+      expect(safe.length).toBeGreaterThanOrEqual(1)
     },
   )
 

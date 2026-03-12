@@ -7,6 +7,7 @@ import {
   CANONICAL_RECOMMENDATIONS_FOR_LIST,
 } from './canonical'
 import { ENGINE_COLOR_MAP, type EngineLabel } from '@/lib/engine-color-map'
+import { formatDemoTimestamp } from '@/lib/demo-date'
 import type {
   AccountEntity,
   CanonicalBalanceSheet,
@@ -15,6 +16,7 @@ import type {
   DeliberationTrace,
   EngineName,
   EventChildren,
+  ExecuteEngineName,
   ExecuteActionEntity,
   ExecutionType,
   GoalEntity,
@@ -27,6 +29,7 @@ import type {
   RecommendationListItem,
   ThreatFactor,
   ThreatTiming,
+  DecisionStatus,
   UrgencyLevel,
 } from './types'
 
@@ -173,6 +176,16 @@ export function selectAlertAuditChain(alertId: string): AlertAuditChain | null {
   const decisionIds = universe.relations.actionToDecision[actionId]
   if (!decisionIds || decisionIds.length !== 1) return null
   return { alertId, actionId, decisionId: decisionIds[0] }
+}
+
+export function selectExecuteActionAuditDecisionId(actionId: string): string | null {
+  return getCanonicalUniverse().relations.actionToDecision[actionId]?.[0] ?? null
+}
+
+export function selectRecommendationAuditDecisionId(recommendationId: string): string | null {
+  const actionId = getCanonicalUniverse().relations.recommendationToAction[recommendationId]?.[0]
+  if (!actionId) return null
+  return selectExecuteActionAuditDecisionId(actionId)
 }
 
 export function selectCohortMetrics() {
@@ -584,6 +597,463 @@ export function selectAccountByLast4(last4: string): AccountEntity | undefined {
 
 export function selectCohortHeadlines() {
   return getCanonicalUniverse().metrics.cohortHeadlines
+}
+
+type ExecuteActionStateLike = Record<string, { status: string } | undefined>
+
+function isPendingExecuteAction(
+  action: ExecuteActionEntity,
+  actionStates?: ExecuteActionStateLike,
+) {
+  return (actionStates?.[action.id]?.status ?? 'pending') === 'pending'
+}
+
+function buildDashboardSparkline(
+  netWorth: number,
+  monthlyIncome: number,
+  projected3yAdvantageUsd: number,
+) {
+  const lift = Math.round(projected3yAdvantageUsd / 12)
+  return [
+    netWorth - monthlyIncome * 0.75,
+    netWorth - monthlyIncome * 0.58,
+    netWorth - monthlyIncome * 0.42,
+    netWorth - monthlyIncome * 0.3,
+    netWorth - monthlyIncome * 0.12,
+    netWorth + lift,
+  ]
+}
+
+function pickSeverityThreat<T extends Pick<ProtectThreatEntity, 'id' | 'severity' | 'confidence'>>(
+  threats: T[],
+) {
+  const severityOrder: Record<ProtectThreatEntity['severity'], number> = {
+    Critical: 4,
+    High: 3,
+    Medium: 2,
+    Low: 1,
+  }
+
+  if (threats.length === 0) return null
+
+  return threats.reduce((best, threat) => {
+    const severityCmp = severityOrder[threat.severity] - severityOrder[best.severity]
+    if (severityCmp !== 0) return severityCmp > 0 ? threat : best
+    const confidenceCmp = threat.confidence - best.confidence
+    if (confidenceCmp !== 0) return confidenceCmp > 0 ? threat : best
+    return threat.id < best.id ? threat : best
+  })
+}
+
+export interface DashboardHeroView {
+  netWorth: number
+  netWorthChange: number
+  netWorthChangePercent: number
+  assets: number
+  liabilities: number
+  monthlyCashFlow: number
+  sparklineData: number[]
+  healthScore: number
+  healthBreakdown: FinancialHealthBreakdown[]
+  protectSignal: {
+    threatCount: number
+    topAmount: string
+    topCounterparty: string
+    severity: string
+  } | null
+  growSignal: {
+    savingsPerMonth: number
+    recCount: number
+    topTitle: string
+  } | null
+  executeSignal: {
+    pendingCount: number
+    topTitle: string
+    topAmount: string
+  } | null
+  decisionsAudited: number
+  complianceScore: number
+}
+
+export interface ProtectHeroAttentionView {
+  mode: 'attention'
+  alert: {
+    id: string
+    counterparty: string
+    amount: string
+    confidence: number
+    severity: ProtectThreatEntity['severity']
+    description: string
+    time: string
+  }
+  radarAxes: {
+    label: string
+    value: number
+    maxValue: number
+    color?: string
+  }[]
+  evidenceCues: string[]
+  auditChain: AlertAuditChain | null
+  remainingCount: number
+  totalExposure: number
+  fpRate: string
+}
+
+export interface ProtectHeroMonitoringView {
+  mode: 'monitoring'
+  activeCount: number
+  highCount: number
+  mediumCount: number
+  lowCount: number
+  resolvedCount: number
+  fpRate: string
+  modelUpdate: string
+  topAlert: {
+    id: string
+    counterparty: string
+    severity: ProtectThreatEntity['severity']
+  } | null
+}
+
+export type ProtectHeroView = ProtectHeroAttentionView | ProtectHeroMonitoringView
+
+export interface GrowHeroView {
+  projectedGain: number
+  totalMonthlySavings: number
+  avgConfidence: number
+  recommendationCount: number
+  simulationData: GrowthSimulationPoint[]
+  spotlightRec: {
+    title: string
+    monthlySavings: number
+    confidence: number
+  } | null
+  goals: {
+    id: string
+    title: string
+    currentUsd: number
+    targetUsd: number
+  }[]
+  cohortHeadline?: string
+}
+
+export interface ExecuteHeroView {
+  queueTotal: number
+  urgentCount: number
+  agentStepsCompleted: number
+  agentStepsTotal: number
+  featuredAction: {
+    id: string
+    title: string
+    amountLabel: string
+    confidence: number
+    engine: ExecuteEngineName
+    sourceEngine: ExecuteEngineName
+    expiresIn: string | null
+    rollbackHours: number | null
+    executionType?: ExecutionType
+    riskTier?: 1 | 2
+  } | null
+  engineSources: {
+    engine: ExecuteEngineName
+    count: number
+    color: string
+  }[]
+  urgencyBreakdown: { high: number; medium: number; low: number }
+  currentSavingsUsd: number
+  potentialSavingsUsd: number
+}
+
+export interface GovernHeroView {
+  decisionsAudited: number
+  engineBreakdown: { engine: string; count: number; percent: number; color: string }[]
+  auditEntries: {
+    id: string
+    engine: string
+    engineColor: string
+    action: string
+    confidence: number
+    time: string
+    status: DecisionStatus
+    modelVersion: string
+    topFactor: string
+  }[]
+  errorCount: number
+  statusBreakdown: { verified: number; pending: number; flagged: number }
+  trustGuarantees: {
+    autoExecutionsWithoutConsent: number
+    auditCoveragePercent: number
+    llmTrainingOptOut: boolean
+  }
+  spotlightEntry: { id: string; action: string; status: DecisionStatus; confidence: number } | null
+}
+
+export function selectPendingExecuteActions(actionStates?: ExecuteActionStateLike): ExecuteActionEntity[] {
+  return selectExecuteActionsView().filter((action) => isPendingExecuteAction(action, actionStates))
+}
+
+export function selectDashboardHeroView(actionStates?: ExecuteActionStateLike): DashboardHeroView {
+  const balanceSheet = selectBalanceSheet()
+  const cohort = selectCohortMetrics()
+  const recommendations = selectRecommendationsSummary()
+  const spotlightThreat = selectSpotlightThreat()
+  const spotlightRecommendation = selectSpotlightRecommendation()
+  const pendingActions = selectPendingExecuteActions(actionStates)
+  const spotlightAction = selectSpotlightAction()
+  const featuredAction = spotlightAction
+    ? pendingActions.find((action) => action.id === spotlightAction.id) ?? pendingActions[0] ?? null
+    : pendingActions[0] ?? null
+  const governSummary = selectGovernSummaryView()
+  const trust = selectArchitecturalTrust()
+  const activeThreats = selectProtectThreats().filter((threat) => threat.status !== 'resolved')
+  const { score, breakdown } = computeFinancialHealthScore({
+    activeThreats: spotlightThreat ? 1 : 0,
+    totalThreats: Math.max(activeThreats.length, 1),
+    pendingActions: pendingActions.length,
+    totalActions: Math.max(selectExecuteActionsView().length, 1),
+  })
+
+  return {
+    netWorth: balanceSheet.netWorth,
+    netWorthChange: Math.max(cohort.avgMonthlySavingsUsd, 0),
+    netWorthChangePercent:
+      (Math.max(cohort.avgMonthlySavingsUsd, 0) / Math.max(balanceSheet.netWorth, 1)) * 100,
+    assets: balanceSheet.totalAssets,
+    liabilities: balanceSheet.totalLiabilities,
+    monthlyCashFlow: balanceSheet.monthlyIncome - balanceSheet.monthlyExpenses,
+    sparklineData: buildDashboardSparkline(
+      balanceSheet.netWorth,
+      balanceSheet.monthlyIncome,
+      cohort.projected3yAdvantageUsd,
+    ),
+    healthScore: score,
+    healthBreakdown: breakdown,
+    protectSignal: spotlightThreat
+      ? {
+          threatCount: 1,
+          topAmount: formatUsd(spotlightThreat.amountUsd),
+          topCounterparty: spotlightThreat.counterparty,
+          severity: spotlightThreat.severity,
+        }
+      : null,
+    growSignal: spotlightRecommendation
+      ? {
+          savingsPerMonth: selectExecuteSavingsView().potentialMonthlySavingsUsd,
+          recCount: recommendations.length,
+          topTitle: spotlightRecommendation.title,
+        }
+      : null,
+    executeSignal: featuredAction
+      ? {
+          pendingCount: pendingActions.length,
+          topTitle: featuredAction.title,
+          topAmount: featuredAction.amountLabel,
+        }
+      : null,
+    decisionsAudited: governSummary.decisionsAuditedTotal,
+    complianceScore: trust.auditCoveragePercent,
+  }
+}
+
+export function selectProtectHeroView(
+  dismissedThreatIds?: Iterable<string>,
+): ProtectHeroView {
+  const dismissed = new Set(dismissedThreatIds ?? [])
+  const allThreats = selectProtectThreats()
+  const activeThreats = allThreats.filter((threat) => !dismissed.has(threat.id))
+  const spotlight =
+    activeThreats.length === 0
+      ? null
+      : activeThreats.reduce((best, threat) =>
+          threat.compositePriority > best.compositePriority ? threat : best)
+  const fpRate = formatPercent(selectArchitecturalTrust().falsePositiveRate * 100, 1)
+
+  if (
+    spotlight &&
+    (spotlight.severity === 'Critical' || spotlight.severity === 'High')
+  ) {
+    const radarAxes = selectThreatFactors(spotlight.id)
+      .filter((factor) => !factor.mitigating)
+      .map((factor) => ({
+        label: factor.title,
+        value: factor.weight,
+        maxValue: 0.3,
+        color:
+          factor.weight >= 0.2
+            ? 'var(--state-critical)'
+            : 'var(--engine-protect)',
+      }))
+    const evidenceCues = selectThreatFactors(spotlight.id)
+      .filter((factor) => !factor.mitigating)
+      .sort((left, right) => right.weight - left.weight)
+      .slice(0, 3)
+      .map((factor) => factor.heroCue ?? factor.details)
+
+    return {
+      mode: 'attention',
+      alert: {
+        id: spotlight.id,
+        counterparty: spotlight.counterparty,
+        amount: formatUsd(spotlight.amountUsd),
+        confidence: spotlight.confidence,
+        severity: spotlight.severity,
+        description: spotlight.description,
+        time: spotlight.relativeTime,
+      },
+      radarAxes,
+      evidenceCues,
+      auditChain: selectAlertAuditChain(spotlight.id),
+      remainingCount: Math.max(0, activeThreats.length - 1),
+      totalExposure: activeThreats.reduce((sum, threat) => sum + threat.amountUsd, 0),
+      fpRate,
+    }
+  }
+
+  const topAlert = pickSeverityThreat(activeThreats)
+
+  return {
+    mode: 'monitoring',
+    activeCount: activeThreats.length,
+    highCount: activeThreats.filter((threat) => threat.severity === 'High').length,
+    mediumCount: activeThreats.filter((threat) => threat.severity === 'Medium').length,
+    lowCount: activeThreats.filter((threat) => threat.severity === 'Low').length,
+    resolvedCount: allThreats.filter((threat) => threat.status === 'resolved').length,
+    fpRate,
+    modelUpdate: spotlight?.relativeTime ?? 'live',
+    topAlert: topAlert
+      ? {
+          id: topAlert.id,
+          counterparty: topAlert.counterparty,
+          severity: topAlert.severity,
+        }
+      : null,
+  }
+}
+
+export function selectGrowHeroView(): GrowHeroView {
+  const savings = selectExecuteSavingsView()
+  const spotlight = selectSpotlightRecommendation()
+
+  return {
+    projectedGain: savings.potentialMonthlySavingsUsd * 12,
+    totalMonthlySavings: savings.potentialMonthlySavingsUsd,
+    avgConfidence: spotlight?.confidence ?? 0,
+    recommendationCount: selectRecommendationsSummary().length,
+    simulationData: selectGrowSimulationData(),
+    spotlightRec: spotlight
+      ? {
+          title: spotlight.title,
+          monthlySavings: spotlight.monthlySavings,
+          confidence: spotlight.confidence,
+        }
+      : null,
+    goals: selectGoals().map((goal) => ({
+      id: goal.id,
+      title: goal.title,
+      currentUsd: goal.currentUsd,
+      targetUsd: goal.targetUsd,
+    })),
+    cohortHeadline: selectCohortHeadlines().grow,
+  }
+}
+
+export function selectExecuteHeroView(
+  actionStates?: ExecuteActionStateLike,
+): ExecuteHeroView {
+  const pendingActions = selectPendingExecuteActions(actionStates)
+  const spotlight = selectSpotlightAction()
+  const featuredAction = spotlight
+    ? pendingActions.find((action) => action.id === spotlight.id) ?? pendingActions[0] ?? null
+    : pendingActions[0] ?? null
+  const urgencyBreakdown = pendingActions.reduce(
+    (acc, action) => {
+      acc[action.urgency] += 1
+      return acc
+    },
+    { high: 0, medium: 0, low: 0 },
+  )
+  const counts: Record<string, number> = {}
+  for (const action of pendingActions) {
+    const engine = action.sourceEngine || action.engine
+    counts[engine] = (counts[engine] || 0) + 1
+  }
+  const savings = selectExecuteSavingsView()
+
+  return {
+    queueTotal: pendingActions.length,
+    urgentCount: urgencyBreakdown.high,
+    agentStepsCompleted: featuredAction
+      ? featuredAction.steps.filter((step) => step.status === 'completed').length
+      : 0,
+    agentStepsTotal: featuredAction ? featuredAction.steps.length : 0,
+    featuredAction: featuredAction
+      ? {
+          id: featuredAction.id,
+          title: featuredAction.title,
+          amountLabel: featuredAction.amountLabel,
+          confidence: featuredAction.confidence,
+          engine: featuredAction.engine,
+          sourceEngine: featuredAction.sourceEngine,
+          expiresIn: featuredAction.expiresIn,
+          rollbackHours: featuredAction.rollbackWindowHours ?? null,
+          executionType: featuredAction.executionType,
+          riskTier: featuredAction.riskTier,
+        }
+      : null,
+    engineSources: Object.entries(counts).map(([engine, count]) => ({
+      engine: engine as ExecuteEngineName,
+      count,
+      color:
+        ENGINE_COLOR_MAP[engine as keyof typeof ENGINE_COLOR_MAP] ??
+        'var(--engine-execute)',
+    })),
+    urgencyBreakdown,
+    currentSavingsUsd: savings.currentMonthlySavingsUsd,
+    potentialSavingsUsd: savings.potentialMonthlySavingsUsd,
+  }
+}
+
+export function selectGovernHeroView(): GovernHeroView {
+  const summary = selectGovernAuditSummaryView()
+  const trust = selectArchitecturalTrust()
+  const spotlight = selectSpotlightAuditEntry()
+
+  return {
+    decisionsAudited: summary.total,
+    engineBreakdown: selectGovernEngineBreakdown(),
+    auditEntries: selectGovernAuditEntries().slice(0, 5).map((entry) => ({
+      id: entry.id,
+      engine: entry.type,
+      engineColor:
+        ENGINE_COLOR_MAP[entry.type as keyof typeof ENGINE_COLOR_MAP] ??
+        'var(--engine-govern)',
+      action: entry.action,
+      confidence: entry.confidence,
+      time: formatDemoTimestamp(entry.timestampIso),
+      status: entry.status,
+      modelVersion: `${entry.type} trace ledger`,
+      topFactor: `${entry.evidence} evidence checks captured`,
+    })),
+    errorCount: 0,
+    statusBreakdown: {
+      verified: summary.verified,
+      pending: summary.pending,
+      flagged: summary.flagged,
+    },
+    trustGuarantees: {
+      autoExecutionsWithoutConsent: trust.autoExecutionsWithoutConsent,
+      auditCoveragePercent: trust.auditCoveragePercent,
+      llmTrainingOptOut: trust.llmTrainingOptOut,
+    },
+    spotlightEntry: spotlight
+      ? {
+          id: spotlight.id,
+          action: spotlight.action,
+          status: spotlight.status,
+          confidence: spotlight.confidence,
+        }
+      : null,
+  }
 }
 
 /* ── GovernFooter View Selector ── */

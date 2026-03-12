@@ -54,7 +54,7 @@ export default function ExecuteQueuePage() {
   const lowCount = pendingActions.filter(a => a.urgency === 'low').length
 
   return (
-    <div className="hero-viewport">
+    <main id="main-content" role="main" className="hero-viewport">
       <motion.div
         className="flex flex-col gap-5 h-full"
         variants={staggerContainer}
@@ -130,7 +130,7 @@ export default function ExecuteQueuePage() {
           )}
         </div>
       </motion.div>
-    </div>
+    </main>
   )
 }
 

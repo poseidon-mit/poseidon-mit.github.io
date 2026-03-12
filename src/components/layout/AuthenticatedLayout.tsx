@@ -83,14 +83,6 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
 
     return (
         <AppNavShell path={path}>
-            {/* Skip-to-content — single instance for all app routes */}
-            <a
-                href="#main-content"
-                className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-xl focus:px-4 focus:py-2 focus:text-sm focus:font-semibold"
-                style={{ background: meta?.auroraColor ?? 'var(--engine-dashboard)', color: 'var(--bg-oled)' }}
-            >
-                Skip to main content
-            </a>
             <div className="relative min-h-full flex flex-col">
                 {/* Layer 0: Ambient Liquid Glow */}
                 {meta && (
@@ -100,7 +92,7 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
                 )}
 
                 {/* Layer 1: Page Content */}
-                <div className="relative z-10 flex-1 flex flex-col pt-10 px-6 lg:px-10 max-w-[1920px] mx-auto w-full pb-20">
+                <div className="relative z-10 mx-auto flex w-full max-w-[1920px] flex-1 flex-col px-3 pt-4 pb-6 sm:px-4 sm:pt-5 sm:pb-8 md:px-6 md:pt-6 md:pb-10 lg:px-10 lg:pt-10 lg:pb-20">
                     <PageErrorBoundary path={path}>
                         <Suspense fallback={<PageSkeleton />}>
                             {children}
@@ -111,7 +103,7 @@ export function AuthenticatedLayout({ children, path }: AuthenticatedLayoutProps
                     {meta?.showFooter && (() => {
                         const isDetailRoute = /\/(detail|approval|audit-detail|recommendation|alert-detail)/.test(path) || path.includes('/alert/');
                         return (
-                            <div className={`mt-4 pt-3${isDetailRoute ? '' : ' sticky bottom-0 z-10'}`}>
+                            <div className={`mt-4 pt-3${isDetailRoute ? '' : ' lg:sticky lg:bottom-0 lg:z-10'}`}>
                                 <GovernFooter
                                     auditId={meta.auditId}
                                     pageContext={meta.pageContext}

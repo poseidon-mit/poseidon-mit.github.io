@@ -47,10 +47,10 @@ describe('demo coherence invariants', () => {
 
   it('uses canonical universe selectors on golden-path pages', () => {
     const selectorExpectations: Array<{ file: string; selector: string }> = [
-      { file: 'src/pages/Dashboard.tsx', selector: 'selectDashboardView' },
+      { file: 'src/pages/Dashboard.tsx', selector: 'selectDashboardHeroView' },
       { file: 'src/pages/protect/protect-data.ts', selector: 'selectProtectThreats' },
-      { file: 'src/pages/Execute.tsx', selector: 'selectExecuteActionsView' },
-      { file: 'src/pages/Govern.tsx', selector: 'selectGovernAuditEntries' },
+      { file: 'src/pages/Execute.tsx', selector: 'selectExecuteHeroView' },
+      { file: 'src/pages/Govern.tsx', selector: 'selectGovernHeroView' },
       { file: 'src/pages/GovernAuditLedger.tsx', selector: 'selectGovernAuditEntries' },
     ]
 
@@ -93,7 +93,6 @@ describe('demo coherence invariants', () => {
   it('uses selectCohortMetrics on downstream pages', () => {
     const cohortPages = [
       { file: 'src/pages/Landing.tsx', selector: 'selectCohortMetrics' },
-      { file: 'src/pages/Dashboard.tsx', selector: 'selectCohortMetrics' },
     ]
 
     for (const { file, selector } of cohortPages) {
@@ -156,8 +155,7 @@ describe('demo coherence invariants', () => {
 
   it('Govern.tsx renders hero with canonical audit data', () => {
     const governSource = readSource('src/pages/Govern.tsx')
-    expect(governSource).toContain('selectGovernAuditSummaryView')
-    expect(governSource).toContain('selectGovernAuditEntries')
+    expect(governSource).toContain('selectGovernHeroView')
   })
 
   it('keeps risk incidents flagged tied to canonical via contract', () => {
@@ -190,8 +188,9 @@ describe('demo coherence invariants', () => {
 
   it('anchors protect proof thread to canonical selectors (always visible)', () => {
     const src = readSource('src/pages/protect/Protect.tsx')
-    expect(src).toContain('selectProtectThreats')
-    expect(src).toContain('selectAccounts')
+    expect(src).toContain('selectProtectHeroView')
+    const threatsSrc = readSource('src/pages/protect/ProtectThreats.tsx')
+    expect(threatsSrc).toContain('selectAccounts')
   })
 
   it('renders chart with simulation data on grow hero', () => {

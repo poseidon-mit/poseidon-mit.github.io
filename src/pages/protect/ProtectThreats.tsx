@@ -46,11 +46,11 @@ const severityIconBg: Record<ThreatSeverity, string> = {
   Low: 'bg-blue-500',
 }
 
-const severityBorderColor: Record<ThreatSeverity, string> = {
-  Critical: '#ef4444',
-  High: '#f97316',
-  Medium: '#eab308',
-  Low: '#3b82f6',
+const SEVERITY_SORT_ORDER: Record<ThreatSeverity, number> = {
+  Critical: 3,
+  High: 2,
+  Medium: 1,
+  Low: 0,
 }
 
 /* ── Main Page ── */
@@ -61,6 +61,7 @@ export default function ProtectThreatsPage() {
   const { fadeUp, staggerContainer } = getMotionPreset(prefersReducedMotion)
   const { dismissed } = useDismissedAlerts()
 
+  const [sortMode, setSortMode] = useState<'critical' | 'confidence' | 'recent'>('critical')
   const [accountFilter, setAccountFilter] = useState('all')
   const [severityFilter, setSeverityFilter] = useState('all')
   const [dateFilter, setDateFilter] = useState('7days')
@@ -81,20 +82,30 @@ export default function ProtectThreatsPage() {
     })
   }, [activeThreats, accountFilter, severityFilter])
 
-  const pendingThreats = useMemo(() => filtered.filter(t => t.status === 'pending'), [filtered])
-  const resolvedThreats = useMemo(() => filtered.filter(t => t.status === 'resolved'), [filtered])
+  const sorted = useMemo(() => {
+    const rows = [...filtered]
+    return rows.sort((left, right) => {
+      if (sortMode === 'confidence') return right.confidence - left.confidence
+      if (sortMode === 'recent') return right.sortTime - left.sortTime
+      return SEVERITY_SORT_ORDER[right.severity] - SEVERITY_SORT_ORDER[left.severity]
+    })
+  }, [filtered, sortMode])
+
+  const pendingThreats = useMemo(() => sorted.filter(t => t.status === 'pending'), [sorted])
+  const resolvedThreats = useMemo(() => sorted.filter(t => t.status === 'resolved'), [sorted])
   const allResolved = THREATS.filter(t => t.status === 'resolved').length
 
   const clearFilters = () => {
+    setSortMode('critical')
     setAccountFilter('all')
     setSeverityFilter('all')
     setDateFilter('7days')
   }
 
-  const hasActiveFilters = accountFilter !== 'all' || severityFilter !== 'all' || dateFilter !== '7days'
+  const hasActiveFilters = sortMode !== 'critical' || accountFilter !== 'all' || severityFilter !== 'all' || dateFilter !== '7days'
 
   return (
-    <div className="hero-viewport">
+    <main id="main-content" role="main" className="hero-viewport">
       <motion.div
         className="flex flex-col gap-5 h-full"
         variants={staggerContainer}
@@ -135,6 +146,28 @@ export default function ProtectThreatsPage() {
 
         {/* Scrollable list area */}
         <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4">
+          <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2">
+            {[
+              { id: 'critical', label: 'Critical first' },
+              { id: 'confidence', label: 'Highest confidence' },
+              { id: 'recent', label: 'Most recent' },
+            ].map((option) => (
+              <button
+                key={option.id}
+                type="button"
+                onClick={() => setSortMode(option.id as typeof sortMode)}
+                className={cn(
+                  'rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors',
+                  sortMode === option.id
+                    ? 'border-red-500/20 bg-red-500/10 text-red-300'
+                    : 'border-white/[0.06] bg-white/[0.03] text-muted-foreground hover:border-white/10 hover:text-foreground',
+                )}
+              >
+                {option.label}
+              </button>
+            ))}
+          </motion.div>
+
           {/* Filters */}
           <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -231,7 +264,7 @@ export default function ProtectThreatsPage() {
           </motion.div>
         </div>
       </motion.div>
-    </div>
+    </main>
   )
 }
 
@@ -285,7 +318,7 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
               'shrink-0 whitespace-nowrap'
             )}
           >
-            {isResolved ? 'View' : 'Review'}
+            {isResolved ? 'View' : 'Investigate'}
             <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
         </div>

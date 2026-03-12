@@ -69,7 +69,7 @@ export function GrowRecommendations() {
   const hasActiveFilters = sort !== 'benefit' || category !== 'All'
 
   return (
-    <div className="hero-viewport">
+    <main id="main-content" role="main" className="hero-viewport">
       <motion.div
         className="flex flex-col gap-5 h-full"
         variants={staggerContainer}
@@ -198,7 +198,7 @@ export function GrowRecommendations() {
           )}
         </div>
       </motion.div>
-    </div>
+    </main>
   )
 }
 
@@ -234,7 +234,7 @@ function RecommendationCard({ rec }: { rec: RecommendationListItem }) {
                   Impact: ${rec.annualSavings.toLocaleString()}/yr
                 </span>
                 <Button variant="outline" size="sm" className="shrink-0">
-                  View Details
+                  See opportunity
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Button>
               </div>

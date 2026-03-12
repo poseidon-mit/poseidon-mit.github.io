@@ -3,15 +3,16 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { RouterProvider } from '../router'
 import { DemoStateProvider } from '../lib/demo-state/provider'
 import GrowRecommendations from '../pages/GrowRecommendations'
+import { AppNavShell } from '../components/layout/AppNavShell'
 
 function renderPage() {
   window.history.pushState({}, '', '/grow/recommendations')
   return render(
-    <DemoStateProvider>
-      <RouterProvider>
+    <RouterProvider>
+      <AppNavShell path="/grow/recommendations">
         <GrowRecommendations />
-      </RouterProvider>
-    </DemoStateProvider>,
+      </AppNavShell>
+    </RouterProvider>,
   )
 }
 
@@ -28,7 +29,7 @@ describe('GrowRecommendations page contract', () => {
     const links = screen.getAllByRole('link', { name: /see opportunity/i })
     expect(links.length).toBeGreaterThan(0)
     for (const link of links) {
-      expect(link.getAttribute('href')).toMatch(/\/grow\/recommendation\?id=\d+/)
+      expect(link.getAttribute('href')).toMatch(/\/grow\/recommendation\?id=GRW-\d+/)
     }
   })
 

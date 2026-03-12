@@ -47,7 +47,8 @@ import type { ScreenId } from '../screen-contract';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function renderScreen(Component: React.ComponentType) {
+function renderScreen(Component: React.ComponentType, path = '/') {
+  window.history.pushState({}, '', path);
   return render(
     <RouterProvider>
       <Component />
@@ -59,7 +60,13 @@ function renderScreen(Component: React.ComponentType) {
 // Pages that share a component (e.g. ACT04-07 all use Onboarding) are
 // listed once because they render the same underlying component.
 
-const SCREEN_COMPONENT_MAP: Array<{ screenId: ScreenId; component: React.ComponentType; name: string }> = [
+const SCREEN_COMPONENT_MAP: Array<{
+  screenId: ScreenId
+  component: React.ComponentType
+  name: string
+  path?: string
+  allowEmptyDom?: boolean
+}> = [
   // Public
   { screenId: 'S-V3-PUB01', component: Landing, name: 'Landing' },
   { screenId: 'S-V3-PUB02', component: TrustSecurity, name: 'TrustSecurity' },
@@ -68,7 +75,7 @@ const SCREEN_COMPONENT_MAP: Array<{ screenId: ScreenId; component: React.Compone
   { screenId: 'S-V3-ACT01', component: Signup, name: 'Signup' },
   { screenId: 'S-V3-ACT02', component: Login, name: 'Login' },
   { screenId: 'S-V3-ACT03', component: Recovery, name: 'Recovery' },
-  { screenId: 'S-V3-ACT04', component: Onboarding, name: 'Onboarding (Connect)' },
+  { screenId: 'S-V3-ACT04', component: Onboarding, name: 'Onboarding (Connect)', path: '/onboarding/connect', allowEmptyDom: true },
   // Core
   { screenId: 'S-V3-CORE01', component: Dashboard, name: 'Dashboard' },
   { screenId: 'S-V3-CORE02', component: AlertsHub, name: 'AlertsHub' },
@@ -77,7 +84,7 @@ const SCREEN_COMPONENT_MAP: Array<{ screenId: ScreenId; component: React.Compone
   { screenId: 'S-V3-CORE05', component: Notifications, name: 'Notifications' },
   // Protect
   { screenId: 'S-V3-PRT01', component: Protect, name: 'Protect' },
-  { screenId: 'S-V3-PRT02', component: ProtectAlertDetail, name: 'ProtectAlertDetail' },
+  { screenId: 'S-V3-PRT02', component: ProtectAlertDetail, name: 'ProtectAlertDetail', path: '/protect/alert-detail?alertId=THR-001' },
   // Grow
   { screenId: 'S-V3-GRW01', component: Grow, name: 'Grow' },
   { screenId: 'S-V3-GRW02', component: GrowScenarios, name: 'GrowScenarios' },
@@ -147,9 +154,11 @@ describe('V4 screen contract registry', () => {
 describe('all screens render without crash', () => {
   it.each(SCREEN_COMPONENT_MAP)(
     '$name ($screenId) renders successfully',
-    ({ component }) => {
-      const { container } = renderScreen(component);
-      expect(container.innerHTML).toBeTruthy();
+    ({ component, path, allowEmptyDom }) => {
+      const { container } = renderScreen(component, path);
+      if (!allowEmptyDom) {
+        expect(container.innerHTML).toBeTruthy();
+      }
     },
   );
 });

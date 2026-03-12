@@ -10,8 +10,8 @@ import ExecuteApproval from '../../pages/ExecuteApproval';
  */
 describe('Execute approval flow (EXE02)', () => {
   beforeEach(() => {
-    // Set URL to a valid action so the approval page renders
-    window.history.pushState({}, '', '/execute/approval?actionId=EXE-003');
+    // Set URL to a Tier 2 action so the approval page renders
+    window.history.pushState({}, '', '/execute/approval?actionId=EXE-011');
   });
 
   function renderEXE02() {
@@ -24,7 +24,7 @@ describe('Execute approval flow (EXE02)', () => {
 
   it('starts with slide-to-authorize disabled (Tier 2)', () => {
     renderEXE02();
-    // EXE-003 is riskTier 2, uses SlideToApprove instead of button
+    // EXE-011 is riskTier 2, uses SlideToApprove instead of button
     const slider = screen.getByRole('slider', { name: /Slide to Approve/i });
     expect(slider).toBeInTheDocument();
   });
@@ -73,7 +73,7 @@ describe('Execute approval flow (EXE02)', () => {
 describe('Execution Stream (Step 5)', () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    window.history.pushState({}, '', '/execute/approval?actionId=EXE-003');
+    window.history.pushState({}, '', '/execute/approval?actionId=EXE-011');
   });
   afterEach(() => {
     vi.useRealTimers();

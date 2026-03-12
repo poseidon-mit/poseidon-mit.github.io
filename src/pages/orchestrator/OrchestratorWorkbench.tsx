@@ -23,6 +23,7 @@ import { IntentWorkspaceShell } from '@/components/orchestrator/workspace/Intent
 
 // ─── Poseidon Facades ────────────────────────────────────────────────────────
 import { GovernFooter, AuroraPulse } from '@/components/poseidon'
+import { selectGovernFooterView } from '@/domain/poseidon-universe'
 
 // ─── Hooks ──────────────────────────────────────────────────────────────────
 import { useOrchestratorLifecycle } from '@/hooks/useOrchestratorLifecycle'
@@ -34,6 +35,8 @@ function WorkbenchInner() {
   const { state } = useWorkbenchContext()
   const isGovern = state.themeMode.mode === 'govern'
   const engineColor = isGovern ? 'var(--engine-govern)' : 'var(--engine-dashboard)'
+  const auditId =
+    selectGovernFooterView(isGovern ? 'govern' : undefined).latestEntries[0]?.id ?? 'AUD-891'
 
   // OPFS persistence + auto-purge
   useOrchestratorLifecycle({
@@ -51,7 +54,7 @@ function WorkbenchInner() {
 
       {/* Govern Footer */}
       <GovernFooter
-        auditId="GOV-ORCHESTRATOR-001"
+        auditId={auditId}
         pageContext="Orchestrator v4.0 — Context-Aware Intent Workspace"
       />
     </div>

@@ -1,6 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
 import { motion } from "framer-motion";
+import {
+  formatUsd,
+  selectDashboardHeroView,
+  selectExecuteHeroView,
+  selectGrowHeroView,
+  selectProtectHeroView,
+} from "@/domain/poseidon-universe";
 
 interface Message {
   role: "user" | "ai";
@@ -16,20 +23,28 @@ const SUGGESTED_PROMPTS = [
 
 function getAIResponse(input: string): string {
   const lower = input.toLowerCase();
+  const dashboard = selectDashboardHeroView();
+  const protect = selectProtectHeroView();
+  const grow = selectGrowHeroView();
+  const execute = selectExecuteHeroView();
+
   if (lower.includes("net worth")) {
-    return "Your current net worth is $94,040.77, spread across 7 accounts. Your total assets are $97,272.09 with $3,231.32 in liabilities (credit cards). Your portfolio is up 7.8% YTD.";
+    return `Your current net worth is ${formatUsd(dashboard.netWorth)}, with ${formatUsd(dashboard.assets ?? dashboard.netWorth)} in assets and ${formatUsd(dashboard.liabilities ?? 0)} in liabilities. The latest selector delta is +${formatUsd(dashboard.netWorthChange)} (${dashboard.netWorthChangePercent.toFixed(2)}%).`;
   }
   if (lower.includes("threat")) {
-    return "I've detected 2 high-severity threats from Oslo, Norway. An unusual login at 3:42 AM and a $234.50 purchase at Oslo Electronics. I recommend reviewing these immediately in the Protect engine.";
+    if (protect.mode === "attention") {
+      return `Protect has ${protect.remainingCount + 1} active threat${protect.remainingCount === 0 ? "" : "s"}, led by ${protect.alert.counterparty} for ${protect.alert.amount}. Confidence is ${Math.round(protect.alert.confidence * 100)}%, and ${protect.remainingCount} more threat${protect.remainingCount === 1 ? "" : "s"} remain in the queue.`;
+    }
+    return `Protect is in monitoring mode with ${protect.activeCount} active alert${protect.activeCount === 1 ? "" : "s"}, ${protect.resolvedCount} resolved, and a ${protect.fpRate} false-positive rate.`;
   }
   if (lower.includes("dining") || lower.includes("food") || lower.includes("spend")) {
     return "You spent $2,890.45 on Food & Dining in February, which is 14.5% of your monthly spending. This is slightly above your 3-month average of $2,650.";
   }
   if (lower.includes("saving")) {
-    return "I've identified $2,437/year in potential savings: $269.40 from moving idle cash to high-yield savings, $468 from canceling duplicate subscriptions, $96-192 from optimizing credit card rewards, and $399.60 from tax-loss harvesting.";
+    return `Grow currently models ${formatUsd(grow.projectedGain)} per year in upside. The top recommendation is ${grow.spotlightRec?.title ?? "not yet ranked"} at about +${formatUsd(grow.spotlightRec?.monthlySavings ?? 0)}/mo, with ${grow.recommendationCount} ranked opportunities in the queue.`;
   }
   if (lower.includes("pending") || lower.includes("action")) {
-    return "You have 3 pending actions requiring approval: 1) Tax-Loss Harvest VTI (save $399.60), 2) Monthly $500 transfer to savings, 3) Adobe duplicate refund dispute ($59.99).";
+    return `You have ${execute.queueTotal} pending action${execute.queueTotal === 1 ? "" : "s"} requiring approval. The current priority is ${execute.featuredAction?.title ?? "queue clear"} for ${execute.featuredAction?.amountLabel ?? "$0"}, with ${execute.urgentCount} time-sensitive item${execute.urgentCount === 1 ? "" : "s"} in the consent gate.`;
   }
   return "I can help with your accounts, threats, savings, and pending actions. Try asking about one of these topics.";
 }

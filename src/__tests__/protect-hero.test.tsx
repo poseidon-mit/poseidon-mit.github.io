@@ -60,7 +60,7 @@ describe("ProtectAnomalyRadar", () => {
     const { props } = renderRadar();
     fireEvent.click(screen.getByRole("button", { name: /review threat/i }));
     expect(props.onReviewThreat).toHaveBeenCalledOnce();
-    expect(screen.getByText("SYSTEM DEFENSE PATTERN")).toBeInTheDocument();
+    expect(screen.getAllByText(/Glass matrix projection/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/Status: 1 anomaly flagged/i)).toBeInTheDocument();
   });
 
@@ -85,7 +85,8 @@ describe("ProtectAnomalyRadar", () => {
       expect(axis.maxValue).toBe(0.3);
     }
     expect(screen.getByText(/4 more threats below/)).toBeInTheDocument();
-    expect(screen.getByText(/\$13,247 total exposure/)).toBeInTheDocument();
+    expect(screen.getByText("Total exposure")).toBeInTheDocument();
+    expect(screen.getByText("$13,247")).toBeInTheDocument();
   });
 });
 
@@ -106,7 +107,7 @@ describe("ProtectThreatPosture", () => {
       />,
     );
 
-    expect(screen.getByText("No critical threats. 4 alerts still monitored.")).toBeInTheDocument();
+    expect(screen.getByText("Monitoring matrix stable. 4 alerts still tracked.")).toBeInTheDocument();
     const button = screen.getByRole("button", { name: /review top alert/i });
     fireEvent.click(button);
     expect(onOpen).toHaveBeenCalledOnce();

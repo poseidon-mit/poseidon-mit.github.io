@@ -1,75 +1,126 @@
-import { AlertTriangle, ArrowRight, CheckCircle2, Landmark, Shield, TrendingUp, Zap } from "lucide-react";
-import { ListPortalBar } from "./list-portal-bar";
-import { cn } from "@/lib/utils";
-import { formatUsd } from "@/domain/poseidon-universe";
-import type { FinancialHealthBreakdown } from "@/domain/poseidon-universe";
+import { useMemo, useState } from 'react'
+import {
+  AlertTriangle,
+  ArrowRight,
+  CheckCircle2,
+  Landmark,
+  Shield,
+  Sparkles,
+  TrendingUp,
+  Zap,
+} from 'lucide-react'
+import { ListPortalBar } from './list-portal-bar'
+import { cn } from '@/lib/utils'
+import { formatUsd } from '@/domain/poseidon-universe'
+import type { FinancialHealthBreakdown } from '@/domain/poseidon-universe'
+import {
+  HeroBackdrop,
+  HeroEyebrow,
+  HeroMetricPill,
+  HeroPanel,
+} from './hero-concept-primitives'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 export interface DashboardHeroProps {
-  userName: string;
-  netWorth: number;
-  netWorthChange: number;
-  netWorthChangePercent: number;
-  assets?: number;
-  liabilities?: number;
-  monthlyCashFlow?: number;
-  sparklineData: number[];
-  healthScore: number;
-  healthBreakdown: FinancialHealthBreakdown[];
+  userName: string
+  netWorth: number
+  netWorthChange: number
+  netWorthChangePercent: number
+  assets?: number
+  liabilities?: number
+  monthlyCashFlow?: number
+  sparklineData: number[]
+  healthScore: number
+  healthBreakdown: FinancialHealthBreakdown[]
   protectSignal: {
-    threatCount: number;
-    topAmount: string;
-    topCounterparty: string;
-    severity: string;
-  } | null;
+    threatCount: number
+    topAmount: string
+    topCounterparty: string
+    severity: string
+  } | null
   growSignal: {
-    savingsPerMonth: number;
-    recCount: number;
-    topTitle: string;
-  } | null;
+    savingsPerMonth: number
+    recCount: number
+    topTitle: string
+  } | null
   executeSignal: {
-    pendingCount: number;
-    topTitle: string;
-    topAmount: string;
-  } | null;
-  decisionsAudited: number;
-  complianceScore: number;
-  onNavigate: (path: string) => void;
+    pendingCount: number
+    topTitle: string
+    topAmount: string
+  } | null
+  decisionsAudited: number
+  complianceScore: number
+  onNavigate: (path: string) => void
+}
+
+type SignalCardItem = {
+  key: string
+  label: string
+  body: string
+  helper: string
+  icon: typeof Shield
+  accent: string
+  path: string
 }
 
 function formatMoney(value: number): string {
   return value.toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  });
+  })
 }
 
-function AssetTopography({ data }: { data: number[] }) {
-  if (data.length === 0) return null;
-  const min = Math.min(...data);
-  const max = Math.max(...data);
-  const width = 820;
-  const height = 320;
+function HorizonTopography({
+  data,
+  reducedMotion,
+}: {
+  data: number[]
+  reducedMotion: boolean
+}) {
+  if (data.length === 0) return null
+
+  const min = Math.min(...data)
+  const max = Math.max(...data)
+  const width = 820
+  const height = 280
   const points = data
     .map((value, index) => {
-      const x = (index / Math.max(data.length - 1, 1)) * width;
-      const y = height - ((value - min) / Math.max(max - min, 1)) * (height - 60) - 30;
-      return `${x},${y}`;
+      const x = (index / Math.max(data.length - 1, 1)) * width
+      const y =
+        height - ((value - min) / Math.max(max - min, 1)) * (height - 64) - 28
+      return `${x},${y}`
     })
-    .join(" ");
-  const areaPoints = `${points} ${width},${height} 0,${height}`;
+    .join(' ')
+  const areaPoints = `${points} ${width},${height} 0,${height}`
 
   return (
-    <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,17,30,0.9),rgba(6,10,18,0.7))] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+    <HeroPanel className="relative overflow-hidden px-4 py-4 md:px-5">
+      <div
+        className={cn(
+          'absolute inset-x-[8%] top-1/3 h-28 rounded-full blur-3xl opacity-35',
+          !reducedMotion && 'animate-[pulse_8s_ease-in-out_infinite]',
+        )}
+        style={{
+          background:
+            'linear-gradient(90deg, transparent, rgba(0,240,255,0.26), transparent)',
+        }}
+      />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),transparent_35%)]" />
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        className="h-[280px] w-full"
+        className="relative z-10 h-[240px] w-full"
         role="img"
-        aria-label="Portfolio asset topography for the last month"
+        aria-label="Portfolio horizon showing selector-driven net-worth movement"
       >
         <defs>
           <linearGradient id="dashboard-area-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgba(0,240,255,0.45)" />
+            <stop offset="0%" stopColor="rgba(0,240,255,0.42)" />
             <stop offset="100%" stopColor="rgba(0,240,255,0.02)" />
+          </linearGradient>
+          <linearGradient id="dashboard-line-gradient" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="rgba(0,240,255,0.35)" />
+            <stop offset="50%" stopColor="rgba(255,255,255,0.95)" />
+            <stop offset="100%" stopColor="rgba(59,130,246,0.8)" />
           </linearGradient>
           <filter id="dashboard-line-glow" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="4" result="blur" />
@@ -78,25 +129,45 @@ function AssetTopography({ data }: { data: number[] }) {
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+          <mask id="dashboard-breath-mask">
+            <rect x="0" y="0" width={width} height={height} fill="black" />
+            <rect
+              x="-160"
+              y="0"
+              width="240"
+              height={height}
+              fill="white"
+              className={cn(!reducedMotion && 'animate-[dashboard-breath_10s_linear_infinite]')}
+            />
+          </mask>
         </defs>
 
-        {[0.15, 0.35, 0.55, 0.75].map((y) => (
+        {[0.18, 0.38, 0.58, 0.78].map((line) => (
           <line
-            key={y}
+            key={line}
             x1="0"
-            y1={height * y}
+            y1={height * line}
             x2={width}
-            y2={height * y}
+            y2={height * line}
             stroke="rgba(255,255,255,0.06)"
             strokeDasharray="4 8"
           />
         ))}
 
         <polygon points={areaPoints} fill="url(#dashboard-area-fill)" />
+        <rect
+          x="0"
+          y="0"
+          width={width}
+          height={height}
+          fill="rgba(255,255,255,0.3)"
+          opacity="0.2"
+          mask="url(#dashboard-breath-mask)"
+        />
         <polyline
           points={points}
           fill="none"
-          stroke="var(--engine-dashboard)"
+          stroke="url(#dashboard-line-gradient)"
           strokeWidth="4"
           filter="url(#dashboard-line-glow)"
           strokeLinecap="round"
@@ -104,74 +175,80 @@ function AssetTopography({ data }: { data: number[] }) {
         />
       </svg>
 
-      <div className="pointer-events-none absolute inset-x-8 bottom-6 flex items-center justify-between text-[10px] uppercase tracking-[0.25em] text-white/35">
-        <span>Month Open</span>
-        <span>Command Center Projection</span>
-        <span>Today</span>
+      <div className="relative z-10 mt-3 flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-white/35">
+        <span>Command open</span>
+        <span>Selector horizon</span>
+        <span>Live now</span>
       </div>
-    </div>
-  );
+    </HeroPanel>
+  )
 }
 
-function SignalCard({
+function SignalDockCard({
   label,
   body,
   helper,
   icon: Icon,
-  tintClass,
+  accent,
   onClick,
 }: {
-  label: string;
-  body: string;
-  helper: string;
-  icon: typeof Shield;
-  tintClass: string;
-  onClick: () => void;
+  label: string
+  body: string
+  helper: string
+  icon: typeof Shield
+  accent: string
+  onClick: () => void
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="flex min-h-[88px] items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left transition-colors hover:bg-white/[0.06]"
+      className="group snap-start rounded-[26px] border border-white/10 bg-white/[0.03] px-4 py-4 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-colors hover:bg-white/[0.06] min-w-0"
+      style={{
+        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.04), 0 0 0 1px color-mix(in srgb, ${accent} 16%, transparent)`,
+      }}
     >
-      <div className={cn("mt-0.5 rounded-2xl border border-white/10 p-3", tintClass)}>
-        <Icon className="h-4 w-4" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45">{label}</p>
-        <p className="mt-2 text-sm text-white">{body}</p>
-        <div className="mt-2 flex items-center justify-between gap-3">
-          <span className="truncate text-xs text-white/45">{helper}</span>
-          <ArrowRight className="h-4 w-4 shrink-0 text-white/35" />
+      <div className="flex items-start justify-between gap-4">
+        <div
+          className="rounded-2xl border border-white/10 p-3"
+          style={{ color: accent, background: `color-mix(in srgb, ${accent} 14%, transparent)` }}
+        >
+          <Icon className="h-4 w-4" />
         </div>
+        <ArrowRight className="h-4 w-4 shrink-0 text-white/28 transition-transform group-hover:translate-x-0.5" />
       </div>
+      <p className="mt-4 text-[11px] uppercase tracking-[0.18em] text-white/40">{label}</p>
+      <p className="mt-2 text-sm font-medium text-white">{body}</p>
+      <p className="mt-3 text-xs leading-5 text-white/46">{helper}</p>
     </button>
-  );
+  )
 }
 
-function HealthMeter({
+function HealthConsole({
   score,
   breakdown,
   decisionsAudited,
   complianceScore,
 }: {
-  score: number;
-  breakdown: FinancialHealthBreakdown[];
-  decisionsAudited: number;
-  complianceScore: number;
+  score: number
+  breakdown: FinancialHealthBreakdown[]
+  decisionsAudited: number
+  complianceScore: number
 }) {
   return (
-    <div className="rounded-[28px] border border-white/10 bg-black/20 p-5">
-      <div className="flex items-center justify-between gap-4">
+    <HeroPanel className="px-5 py-5">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45">
-            Financial Health Score
+          <p className="text-[11px] uppercase tracking-[0.18em] text-white/40">
+            System posture
           </p>
-          <p className="mt-2 text-3xl font-semibold text-white">{score.toFixed(1)}</p>
+          <p className="mt-3 text-4xl font-semibold text-white">{score.toFixed(1)}</p>
         </div>
         <div className="text-right">
           <p className="text-[11px] uppercase tracking-[0.18em] text-white/35">Govern</p>
-          <p className="mt-2 font-mono text-sm text-[var(--engine-govern)]">{decisionsAudited.toLocaleString()} verified</p>
+          <p className="mt-2 text-sm font-medium text-[var(--engine-govern)]">
+            {decisionsAudited.toLocaleString()} audited
+          </p>
         </div>
       </div>
 
@@ -181,25 +258,25 @@ function HealthMeter({
             key={item.engine}
             style={{ width: `${item.weight * 100}%` }}
             className={cn(
-              item.engine === "protect" && "bg-[var(--engine-protect)]",
-              item.engine === "grow" && "bg-[var(--engine-grow)]",
-              item.engine === "execute" && "bg-[var(--engine-execute)]",
-              item.engine === "govern" && "bg-[var(--engine-govern)]",
+              item.engine === 'protect' && 'bg-[var(--engine-protect)]',
+              item.engine === 'grow' && 'bg-[var(--engine-grow)]',
+              item.engine === 'execute' && 'bg-[var(--engine-execute)]',
+              item.engine === 'govern' && 'bg-[var(--engine-govern)]',
             )}
           />
         ))}
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-3 text-xs text-white/40">
+      <div className="mt-4 flex flex-wrap gap-3 text-xs text-white/45">
         {breakdown.map((item) => (
           <span key={item.engine} className="inline-flex items-center gap-2">
             <span
               className={cn(
-                "h-2 w-2 rounded-full",
-                item.engine === "protect" && "bg-[var(--engine-protect)]",
-                item.engine === "grow" && "bg-[var(--engine-grow)]",
-                item.engine === "execute" && "bg-[var(--engine-execute)]",
-                item.engine === "govern" && "bg-[var(--engine-govern)]",
+                'h-2 w-2 rounded-full',
+                item.engine === 'protect' && 'bg-[var(--engine-protect)]',
+                item.engine === 'grow' && 'bg-[var(--engine-grow)]',
+                item.engine === 'execute' && 'bg-[var(--engine-execute)]',
+                item.engine === 'govern' && 'bg-[var(--engine-govern)]',
               )}
             />
             {item.engine} {Math.round(item.value)}
@@ -207,11 +284,11 @@ function HealthMeter({
         ))}
         <span className="inline-flex items-center gap-2">
           <CheckCircle2 className="h-3.5 w-3.5 text-[var(--engine-govern)]" />
-          Compliance {complianceScore}%
+          Audit coverage {complianceScore}%
         </span>
       </div>
-    </div>
-  );
+    </HeroPanel>
+  )
 }
 
 export function DashboardHero({
@@ -232,10 +309,55 @@ export function DashboardHero({
   complianceScore,
   onNavigate,
 }: DashboardHeroProps) {
-  const resolvedAssets = assets ?? netWorth;
-  const resolvedLiabilities = liabilities ?? 0;
-  const resolvedMonthlyCashFlow = monthlyCashFlow ?? netWorthChange;
-  const positiveDay = netWorthChange >= 0;
+  const reducedMotion = useReducedMotionSafe()
+  const [glow, setGlow] = useState({ x: 50, y: 50 })
+  const positiveDay = netWorthChange >= 0
+  const resolvedAssets = assets ?? netWorth
+  const resolvedLiabilities = liabilities ?? 0
+  const resolvedMonthlyCashFlow = monthlyCashFlow ?? netWorthChange
+
+  const signalCards = useMemo(
+    () =>
+      [
+        protectSignal && {
+          key: 'protect',
+          label: 'Protect',
+          body: `${protectSignal.threatCount} ${protectSignal.threatCount === 1 ? 'anomaly' : 'anomalies'} flagged`,
+          helper: `${protectSignal.topCounterparty} · ${protectSignal.topAmount}`,
+          icon: AlertTriangle,
+          accent: 'var(--engine-protect)',
+          path: '/protect',
+        },
+        growSignal && {
+          key: 'grow',
+          label: 'Grow',
+          body: `+${formatUsd(growSignal.savingsPerMonth)}/mo ready`,
+          helper: `${growSignal.topTitle} · ${growSignal.recCount} queued opportunities`,
+          icon: Landmark,
+          accent: 'var(--engine-grow)',
+          path: '/grow',
+        },
+        executeSignal && {
+          key: 'execute',
+          label: 'Execute',
+          body: `${executeSignal.pendingCount} authorization${executeSignal.pendingCount === 1 ? '' : 's'} live`,
+          helper: `${executeSignal.topTitle} · ${executeSignal.topAmount}`,
+          icon: Zap,
+          accent: 'var(--engine-execute)',
+          path: '/execute',
+        },
+        {
+          key: 'govern',
+          label: 'Govern',
+          body: `${decisionsAudited.toLocaleString()} decisions replayable`,
+          helper: `Audit coverage ${complianceScore}%`,
+          icon: Shield,
+          accent: 'var(--engine-govern)',
+          path: '/govern',
+        },
+      ].filter((card): card is SignalCardItem => Boolean(card)),
+    [complianceScore, decisionsAudited, executeSignal, growSignal, protectSignal],
+  )
 
   return (
     <section
@@ -243,59 +365,101 @@ export function DashboardHero({
       aria-labelledby="dashboard-hero-title"
       className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[#081221] shadow-[0_30px_120px_rgba(0,0,0,0.35)]"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(0,240,255,0.12),transparent_42%),radial-gradient(circle_at_80%_10%,rgba(59,130,246,0.14),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.02),transparent_35%)]" />
+      <style>
+        {`
+          @keyframes dashboard-breath {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(980px); }
+          }
+        `}
+      </style>
+      <HeroBackdrop
+        accent="var(--engine-dashboard)"
+        secondaryAccent="var(--engine-govern)"
+        reducedMotion={reducedMotion}
+      />
+
       <div className="relative z-10 flex min-h-[65vh] flex-col gap-8 px-6 py-8 md:px-10 md:py-10">
-        <div className="grid flex-1 gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+        <div className="grid flex-1 gap-8 xl:grid-cols-[0.95fr_1.05fr] xl:items-center">
           <div className="flex flex-col gap-6">
-            <div className="flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-white/45">
-              <span>Portfolio Command Center</span>
-              <span className="rounded-full border border-white/10 px-3 py-1 text-white/55">
-                {userName}
-              </span>
+            <div className="flex flex-wrap items-center gap-3">
+              <HeroEyebrow>
+                <Sparkles className="h-3.5 w-3.5 text-[var(--engine-dashboard)]" />
+                Portfolio Command Center
+              </HeroEyebrow>
+              <HeroEyebrow className="text-white/52">{userName}</HeroEyebrow>
             </div>
 
-            <div>
-              <p className="text-sm text-white/45">Net Worth</p>
+            <div className="max-w-2xl">
+              <p className="text-sm uppercase tracking-[0.22em] text-white/38">Core observatory</p>
               <h2
                 id="dashboard-hero-title"
-                className="mt-3 text-[clamp(3.25rem,9vw,6.5rem)] font-semibold leading-none tracking-[-0.05em] text-white"
+                className="mt-4 text-[clamp(3rem,9vw,6.1rem)] font-semibold leading-none tracking-[-0.06em] text-white"
               >
-                ${formatMoney(netWorth)}
+                CORE OBSERVATORY
               </h2>
-              <p
-                className={cn(
-                  "mt-4 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium",
-                  positiveDay
-                    ? "bg-[rgba(34,197,94,0.12)] text-[var(--engine-protect)]"
-                    : "bg-[rgba(239,68,68,0.12)] text-[var(--state-critical)]",
-                )}
-              >
-                <TrendingUp className="h-4 w-4" />
-                {positiveDay ? "+" : "-"}
-                {formatUsd(Math.abs(netWorthChange))} Today
-                <span className="text-white/45">({positiveDay ? "+" : ""}{netWorthChangePercent.toFixed(2)}%)</span>
+              <p className="mt-5 max-w-xl text-base leading-7 text-white/58">
+                A selector-driven financial command stage that turns the highest-leverage
+                protect, grow, execute, and govern signals into one decision surface.
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
-                <p className="text-[11px] uppercase tracking-[0.18em] text-white/35">Assets</p>
-                <p className="mt-3 text-lg font-semibold text-white">{formatUsd(resolvedAssets)}</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
-                <p className="text-[11px] uppercase tracking-[0.18em] text-white/35">Liabilities</p>
-                <p className="mt-3 text-lg font-semibold text-white">{formatUsd(resolvedLiabilities)}</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
-                <p className="text-[11px] uppercase tracking-[0.18em] text-white/35">Monthly Flow</p>
-                <p className="mt-3 text-lg font-semibold text-white">
-                  {resolvedMonthlyCashFlow >= 0 ? "+" : "-"}
-                  {formatUsd(Math.abs(resolvedMonthlyCashFlow))}
+            <HeroPanel
+              className="relative overflow-hidden px-5 py-5 md:px-6"
+              onMouseMove={(event) => {
+                if (reducedMotion) return
+                const rect = event.currentTarget.getBoundingClientRect()
+                setGlow({
+                  x: ((event.clientX - rect.left) / rect.width) * 100,
+                  y: ((event.clientY - rect.top) / rect.height) * 100,
+                })
+              }}
+            >
+              <div
+                className="absolute inset-0 opacity-90"
+                style={{
+                  background: reducedMotion
+                    ? 'linear-gradient(135deg, rgba(255,255,255,0.03), transparent 65%)'
+                    : `radial-gradient(circle at ${glow.x}% ${glow.y}%, rgba(0,240,255,0.22), transparent 26%), linear-gradient(135deg, rgba(255,255,255,0.03), transparent 65%)`,
+                }}
+              />
+              <div className="relative z-10">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-white/40">
+                  Net worth
                 </p>
-              </div>
-            </div>
+                <p className="mt-3 text-[clamp(3rem,7vw,5rem)] font-semibold leading-none tracking-[-0.05em] text-white">
+                  ${formatMoney(netWorth)}
+                </p>
+                <div
+                  className={cn(
+                    'mt-4 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium',
+                    positiveDay
+                      ? 'bg-[rgba(34,197,94,0.12)] text-[var(--engine-protect)]'
+                      : 'bg-[rgba(239,68,68,0.12)] text-[var(--state-critical)]',
+                  )}
+                >
+                  <TrendingUp className="h-4 w-4" />
+                  {positiveDay ? '+' : '-'}
+                  {formatUsd(Math.abs(netWorthChange))} selector delta
+                  <span className="text-white/45">
+                    ({positiveDay ? '+' : ''}
+                    {netWorthChangePercent.toFixed(2)}%)
+                  </span>
+                </div>
 
-            <HealthMeter
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <HeroMetricPill label="Assets" value={formatUsd(resolvedAssets)} />
+                  <HeroMetricPill label="Liabilities" value={formatUsd(resolvedLiabilities)} />
+                  <HeroMetricPill
+                    label="Monthly flow"
+                    value={`${resolvedMonthlyCashFlow >= 0 ? '+' : '-'}${formatUsd(Math.abs(resolvedMonthlyCashFlow))}`}
+                    tone={resolvedMonthlyCashFlow >= 0 ? 'var(--engine-protect)' : undefined}
+                  />
+                </div>
+              </div>
+            </HeroPanel>
+
+            <HealthConsole
               score={healthScore}
               breakdown={healthBreakdown}
               decisionsAudited={decisionsAudited}
@@ -304,39 +468,21 @@ export function DashboardHero({
           </div>
 
           <div className="flex flex-col gap-5">
-            <AssetTopography data={sparklineData} />
+            <HorizonTopography data={sparklineData} reducedMotion={reducedMotion} />
 
-            <div className="grid gap-3">
-              {protectSignal && (
-                <SignalCard
-                  label="Protect"
-                  body={`${protectSignal.threatCount} anomaly flagged`}
-                  helper={`${protectSignal.topCounterparty} · ${protectSignal.topAmount}`}
-                  icon={AlertTriangle}
-                  tintClass="bg-[rgba(34,197,94,0.12)] text-[var(--engine-protect)]"
-                  onClick={() => onNavigate("/protect")}
-                />
-              )}
-              {growSignal && (
-                <SignalCard
-                  label="Grow"
-                  body={`+${formatUsd(growSignal.savingsPerMonth)}/mo unlocked`}
-                  helper={`${growSignal.recCount} opportunity${growSignal.recCount === 1 ? "" : "ies"} · ${growSignal.topTitle}`}
-                  icon={Landmark}
-                  tintClass="bg-[rgba(139,92,246,0.14)] text-[var(--engine-grow)]"
-                  onClick={() => onNavigate("/grow")}
-                />
-              )}
-              {executeSignal && (
-                <SignalCard
-                  label="Execute"
-                  body={`${executeSignal.pendingCount} action${executeSignal.pendingCount === 1 ? "" : "s"} queued`}
-                  helper={`${executeSignal.topTitle} · ${executeSignal.topAmount}`}
-                  icon={Zap}
-                  tintClass="bg-[rgba(234,179,8,0.14)] text-[var(--engine-execute)]"
-                  onClick={() => onNavigate("/execute")}
-                />
-              )}
+            <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 md:grid md:grid-cols-2 md:overflow-visible md:pb-0">
+              {signalCards.map((card) => (
+                <div key={card.key} className="min-w-[78%] md:min-w-0">
+                  <SignalDockCard
+                    label={card.label}
+                    body={card.body}
+                    helper={card.helper}
+                    icon={card.icon}
+                    accent={card.accent}
+                    onClick={() => onNavigate(card.path)}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -347,29 +493,29 @@ export function DashboardHero({
               engine="protect"
               label="Threat details"
               count={protectSignal?.threatCount ?? 0}
-              destination={{ type: "route", to: "/protect/threats" }}
+              destination={{ type: 'route', to: '/protect/threats' }}
             />
             <ListPortalBar
               engine="grow"
               label="Opportunities"
               count={growSignal?.recCount ?? 0}
-              destination={{ type: "route", to: "/grow/recommendations" }}
+              destination={{ type: 'route', to: '/grow/recommendations' }}
             />
             <ListPortalBar
               engine="execute"
               label="Approval queue"
               count={executeSignal?.pendingCount ?? 0}
-              destination={{ type: "route", to: "/execute/queue" }}
+              destination={{ type: 'route', to: '/execute/queue' }}
             />
             <ListPortalBar
               engine="govern"
               label="Audit history"
               count={decisionsAudited}
-              destination={{ type: "route", to: "/govern/audit" }}
+              destination={{ type: 'route', to: '/govern/audit' }}
             />
           </div>
         </div>
       </div>
     </section>
-  );
+  )
 }

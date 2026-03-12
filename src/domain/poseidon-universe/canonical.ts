@@ -3,7 +3,7 @@
  *
  * Single source of truth for all screen data.
  * B2C personal finance narrative for MIT Professional Education capstone.
- * Demo persona: Shinji Fujiwara — $180K total comp ($150K base + $30K RSUs), ~$94K net worth.
+ * Demo persona: Shinji Fujiwara — $180K total comp ($150K base + $30K RSUs), $284.5K net worth across cash and investment accounts.
  */
 import { DEMO_THREAD } from '@/lib/demo-thread'
 import type {
@@ -25,9 +25,9 @@ import type {
 } from './types'
 import type { ExecutionType } from './types'
 
-const VERIFIED_DECISIONS = 139
-const PENDING_REVIEW_DECISIONS = 2
-const FLAGGED_DECISIONS = 1
+const VERIFIED_DECISIONS = 33
+const PENDING_REVIEW_DECISIONS = 9
+const FLAGGED_DECISIONS = 3
 
 // ─── Dashboard Activities ────────────────────────────────────────────────────
 
@@ -53,7 +53,7 @@ const DASHBOARD_ACTIVITIES: DashboardActivityEntity[] = [
   {
     id: 'ACT-004',
     kind: 'govern',
-    label: 'Immutable audit ledger logged 142 AI inferences in the last 24 hours',
+    label: 'Immutable audit ledger logged 45 auditable decisions in the current selector set',
     relativeTime: '27 min ago',
   },
   {
@@ -3049,7 +3049,7 @@ export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
   metrics: {
     systemConfidence: DEMO_THREAD.systemConfidence,
     complianceScore: DEMO_THREAD.complianceScore,
-    pendingActions: 2,
+    pendingActions: 20,
     monthlyOptimizationCurrentUsd: 0,
     monthlyOptimizationPotentialUsd: 92,
     decisionsAuditedTotal: VERIFIED_DECISIONS + PENDING_REVIEW_DECISIONS + FLAGGED_DECISIONS,
@@ -3061,7 +3061,12 @@ export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
       currentUsd: 42100,
       targetUsd: 60000,
     },
-    engineBreakdown: { Protect: 41, Grow: 37, Execute: 35, Govern: 29 },
+    engineBreakdown: {
+      Protect: 19,
+      Grow: 18,
+      Execute: 8,
+      Govern: 0,
+    },
     platformProfileCount: 184_290,
     architecturalTrust: {
       autoExecutionsWithoutConsent: 0,
@@ -3103,7 +3108,7 @@ export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
       protect: '2,450 transactions scanned in the last 30 days. One anomaly crossed the critical threshold.',
       grow: 'Poseidon found 2 high-conviction capital-allocation moves worth roughly $1,100/year.',
       execute: 'Every transfer and dispute waits for your cryptographic consent before it moves.',
-      govern: '100% traceability across 142 AI inferences, with every decision replayable on demand.',
+      govern: '100% traceability across 45 auditable decisions, with every decision replayable on demand.',
     },
   },
   entities: {

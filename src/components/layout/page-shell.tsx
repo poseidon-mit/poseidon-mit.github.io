@@ -9,6 +9,7 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { GovernFooter } from '@/components/poseidon/govern-footer'
+import { selectGovernFooterView } from '@/domain/poseidon-universe'
 import type { EngineName } from '@/lib/engine-tokens'
 
 export interface PageShellProps {
@@ -26,6 +27,8 @@ export function PageShell({
   showGovernFooter = true,
   className,
 }: PageShellProps) {
+  const fallbackAuditId = selectGovernFooterView(engine).latestEntries[0]?.id ?? 'AUD-891'
+
   return (
     <div
       className={cn('page-shell flex flex-col min-h-full', className)}
@@ -43,7 +46,7 @@ export function PageShell({
 
       {showGovernFooter && (
         <footer className="page-shell-footer mt-auto px-[var(--page-padding)] pb-6">
-          <GovernFooter auditId="GV-2026-0211-4821" />
+          <GovernFooter auditId={fallbackAuditId} currentEngine={engine} />
         </footer>
       )}
     </div>

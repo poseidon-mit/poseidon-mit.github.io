@@ -41,7 +41,7 @@ function renderHero(overrides: Partial<typeof DEFAULT_PROPS> = {}) {
 describe("ExecuteApprovalCommandDeck", () => {
   it("renders the new immersive headline", () => {
     const { hero } = renderHero();
-    expect(within(hero).getByText("AWAITING AUTHORIZATION")).toBeInTheDocument();
+    expect(within(hero).getByRole("heading", { name: /consentgate/i })).toBeInTheDocument();
   });
 
   it("renders the featured action and posture panels", () => {
@@ -55,10 +55,10 @@ describe("ExecuteApprovalCommandDeck", () => {
   it("renders queue count and singular/plural state", () => {
     const { hero } = renderHero();
     expect(within(hero).getAllByText("2").length).toBeGreaterThanOrEqual(1);
-    expect(within(hero).getByText(/actions queued for review/i)).toBeInTheDocument();
+    expect(within(hero).getByText(/2 live queue items/i)).toBeInTheDocument();
 
     const singular = renderHero({ queueTotal: 1, urgentCount: 1 });
-    expect(within(singular.hero).getByText(/action queued for review/i)).toBeInTheDocument();
+    expect(within(singular.hero).getByText(/1 live queue item/i)).toBeInTheDocument();
   });
 
   it("fires onReviewApproval when the CTA is clicked", () => {
@@ -100,8 +100,8 @@ describe("ExecutePage integration", () => {
     const { container } = renderExecute();
     const hero = container.querySelector('[role="region"]') as HTMLElement;
 
-    expect(screen.getByText(/human authorization required/i)).toBeInTheDocument();
-    expect(screen.getByText(/0 auto-executions without consent/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/human authorization required/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/0 auto-executions without consent/i).length).toBeGreaterThan(0);
     expect(within(hero).getByText("Freeze card and dispute Apple Store Miami charge")).toBeInTheDocument();
   });
 
@@ -116,9 +116,9 @@ describe("ExecutePage integration", () => {
 
   it("renders the below-the-fold queue cards", () => {
     renderExecute();
-    expect(screen.getAllByText("Execution plan").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText("Control posture").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByRole("link", { name: /approve & execute/i }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByRole("link", { name: /Approval queue/i })).toHaveAttribute("href", "/execute/queue");
+    expect(screen.getByRole("link", { name: /Savings history/i })).toHaveAttribute("href", "/execute/history");
+    expect(screen.getByRole("link", { name: /Audit trail/i })).toHaveAttribute("href", "/govern/audit");
   });
 
   it("updates the featured action after approving EXE-002", () => {

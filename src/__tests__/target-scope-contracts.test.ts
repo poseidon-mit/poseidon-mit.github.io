@@ -36,6 +36,8 @@ const ROUTE_PAGE_FILES: Record<RoutePath, string | null> = {
   '/onboarding/priorities': 'src/pages/OnboardingRedirect.tsx',
   '/onboarding/activate': 'src/pages/OnboardingRedirect.tsx',
   '/onboarding-v2': 'src/pages/OnboardingRedirect.tsx',
+  '/chat': 'src/pages/Chat.tsx',
+  '/talk': 'src/pages/Chat.tsx',
   '/dashboard': 'src/pages/Dashboard.tsx',
   '/dashboard/alerts': 'src/pages/AlertsHub.tsx',
   '/dashboard/insights': 'src/pages/InsightsFeed.tsx',
@@ -60,9 +62,9 @@ const ROUTE_PAGE_FILES: Record<RoutePath, string | null> = {
   '/govern/oversight': 'src/pages/GovernOversight.tsx',
   '/govern/policy': 'src/pages/GovernPolicy.tsx',
   '/settings': 'src/pages/Settings.tsx',
-  '/settings/ai': 'src/pages/Settings.tsx',
-  '/settings/integrations': 'src/pages/Settings.tsx',
-  '/settings/rights': 'src/pages/Settings.tsx',
+  '/settings/ai': 'src/pages/SettingsAI.tsx',
+  '/settings/integrations': 'src/pages/SettingsIntegrations.tsx',
+  '/settings/rights': 'src/pages/SettingsRights.tsx',
   '/help': 'src/pages/HelpSupport.tsx',
   '/share': 'src/pages/ShareFiles.tsx',
   '/grow/recommendation': 'src/pages/grow/GrowRecommendationDetail.tsx',
@@ -202,12 +204,18 @@ describe('target pages enforce minimum structure', () => {
 
   it.each(targetRoutesWith404)('%s includes skip link and main landmark', (route) => {
     const source = readPageSource(route);
+    const meta = ROUTE_META_CONTRACT[route];
     const hasInlineSkipLink = source.includes('Skip to main content');
     const hasMainId = source.includes('id="main-content"');
     const hasMainRole = source.includes('role="main"') || /<(?:motion\.)?main[\s>]/.test(source);
-    const hasSharedMainShell = source.includes('AuthShell') || source.includes('OnboardingShell');
-    expect(hasMainId && hasMainRole || hasSharedMainShell).toBe(true);
-    // Skip links may be provided by shared shells on some routes.
+    const hasSharedMainShell =
+      source.includes('AuthShell') ||
+      source.includes('OnboardingShell') ||
+      meta?.navType === 'app-shell' ||
+      meta?.navType === 'public-topbar' ||
+      meta?.navType === 'onboarding-shell' ||
+      meta?.navType === 'system-shell';
+    expect((hasMainId && hasMainRole) || hasSharedMainShell).toBe(true);
     expect(typeof hasInlineSkipLink).toBe('boolean');
   });
 
@@ -219,16 +227,15 @@ describe('target pages enforce minimum structure', () => {
   });
 
   it('anchors demo-critical timeline pages to March 2026 absolute dates', () => {
-    // Routes that contain the date anchor directly in their page source.
-    // Other timeline-critical pages (Govern, ProtectAlertDetail, ExecuteHistory) derive
-    // dates from shared data modules (protect-data.ts, govern-audit-data.ts).
-    const anchoredRoutes: RoutePath[] = [
-      '/govern/audit',
+    const anchorSources = [
+      { file: 'src/lib/demo-date.ts', marker: '2026-03-19' },
+      { file: 'src/pages/ExecuteApproval.tsx', marker: 'March 19, 2026 anchor' },
+      { file: 'src/lib/govern-audit-data.ts', marker: '2026-03-10' },
     ];
 
-    for (const route of anchoredRoutes) {
-      const source = readPageSource(route);
-      expect(source).toContain('2026-03-19');
+    for (const { file, marker } of anchorSources) {
+      const source = readFileSync(resolve(root, '..', file), 'utf-8');
+      expect(source).toContain(marker);
     }
   });
 });
@@ -253,9 +260,9 @@ describe('cross-thread consistency contract', () => {
 
   it('keeps canonical critical alert references on golden-path pages', () => {
     const routeSelectorContracts: Array<{ route: RoutePath; expected: string[] }> = [
-      { route: '/dashboard', expected: ['selectDashboardView'] },
-      { route: '/protect', expected: ['THREATS'] },
-      { route: '/protect/alert-detail', expected: ['THREATS'] },
+      { route: '/dashboard', expected: ['selectDashboardHeroView'] },
+      { route: '/protect', expected: ['selectProtectHeroView'] },
+      { route: '/protect/alert-detail', expected: ['THREATS', 'selectThreatFactors'] },
       { route: '/execute/approval', expected: ['selectExecuteActionById'] },
     ];
 

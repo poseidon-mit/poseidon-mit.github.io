@@ -11,9 +11,9 @@ describe("Landing layout remains structurally immutable", () => {
 
   test("hero CTA links to /dashboard", () => {
     const { container } = renderWithRouter(<Landing />, { initialPath: "/" });
-    const cta = screen.getByText(/connect bank to start/i);
-    expect(cta.tagName).toBe("A");
-    expect(cta.getAttribute("href")).toBe("/dashboard");
+    const ctas = screen.getAllByRole("link", { name: /open prototype/i });
+    expect(ctas.length).toBeGreaterThanOrEqual(1);
+    expect(ctas.every((cta) => cta.getAttribute("href") === "/dashboard")).toBe(true);
     expect(container.querySelector('a[href="/dashboard"]')).not.toBeNull();
   });
 
@@ -29,9 +29,9 @@ describe("Landing layout remains structurally immutable", () => {
     expect(container.querySelectorAll('a[href="/dashboard"]').length).toBeGreaterThanOrEqual(2);
   });
 
-  test("footer login link exists", () => {
+  test("footer trust link exists", () => {
     const { container } = renderWithRouter(<Landing />, { initialPath: "/" });
-    expect(container.querySelector('a[href="/login"]')).not.toBeNull();
+    expect(container.querySelector('a[href="/trust"]')).not.toBeNull();
   });
 
   test("no B2B copy leaked onto Landing page", () => {

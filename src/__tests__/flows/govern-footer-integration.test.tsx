@@ -9,8 +9,8 @@ import { AuthenticatedLayout } from '../../components/layout/AuthenticatedLayout
  * architectural layer (AuthenticatedLayout) and that the ticker interrupt
  * responds to CustomEvent broadcasts.
  *
- * Uses /govern (overview) to get full footer mode with ticker.
- * Detail routes use compact footer (no ticker).
+ * Overview routes intentionally suppress the footer via route policy.
+ * Detail routes use compact footer.
  */
 describe('GovernFooter integration (AuthenticatedLayout)', () => {
   afterEach(() => {
@@ -18,24 +18,24 @@ describe('GovernFooter integration (AuthenticatedLayout)', () => {
   });
 
   function renderWithLayout() {
-    window.history.pushState({}, '', '/dashboard/alerts');
+    window.history.pushState({}, '', '/dashboard');
     return render(
       <RouterProvider>
-        <AuthenticatedLayout path="/dashboard/alerts">
-          <div>Alerts content</div>
+        <AuthenticatedLayout path="/dashboard">
+          <div>Dashboard content</div>
         </AuthenticatedLayout>
       </RouterProvider>,
     );
   }
 
-  it('renders GovernFooter on overview route (full mode)', () => {
+  it('omits GovernFooter on overview routes when route policy disables it', () => {
     const { container } = renderWithLayout();
     expect(
       container.querySelector('footer[aria-label="Governance verification footer"]'),
-    ).not.toBeNull();
+    ).toBeNull();
   });
 
-  it('ticker updates when poseidon:execute-approved event fires', () => {
+  it('keeps overview routes free of footer chrome when ticker events fire', () => {
     const { container } = renderWithLayout();
 
     act(() => {
@@ -51,10 +51,7 @@ describe('GovernFooter integration (AuthenticatedLayout)', () => {
     });
 
     const footer = container.querySelector('footer[aria-label="Governance verification footer"]');
-    expect(footer).not.toBeNull();
-    expect(footer!.textContent).toContain('Action approved');
-    expect(footer!.textContent).toContain('Portfolio rebalance');
-    expect(footer!.textContent).toContain('GV-2026-0319-847');
+    expect(footer).toBeNull();
   });
 
   it('renders compact footer on detail routes', () => {

@@ -20,43 +20,36 @@ function renderDetail(id: number) {
   )
 }
 
-describe('Grow detail comparison strip adapts to recommendation kind', () => {
-  it('id=1 (yield) shows APY comparison, not $0.00', () => {
+describe('Grow detail comparison strip follows canonical recommendation data', () => {
+  it('id=1 shows the yield comparison strip, not $0.00 fallbacks', () => {
     renderDetail(1)
-    // Should show APY values
     expect(screen.getByText('Current APY')).toBeTruthy()
     expect(screen.getByText('New APY')).toBeTruthy()
     expect(screen.getByText('You earn')).toBeTruthy()
-    // Should NOT show $0.00
     expect(screen.queryByText('$0.00')).toBeNull()
   })
 
-  it('id=5 (allocation) shows mix comparison, not $0.00', () => {
+  it('id=5 keeps the employer-match recommendation on the yield presentation', () => {
     renderDetail(5)
-    expect(screen.getByText('Current allocation')).toBeTruthy()
-    expect(screen.getByText('Recommended allocation')).toBeTruthy()
+    expect(screen.getByText('Current APY')).toBeTruthy()
+    expect(screen.getByText('New APY')).toBeTruthy()
+    expect(screen.getByText('You earn')).toBeTruthy()
     expect(screen.queryByText('$0.00')).toBeNull()
   })
 
-  it('id=6 (coverage) shows months comparison, not $0.00', () => {
+  it('id=6 omits the comparison strip when canonical data has no before/after view', () => {
     renderDetail(6)
-    expect(screen.getByText('Current coverage')).toBeTruthy()
-    expect(screen.getByText('Target coverage')).toBeTruthy()
+    expect(screen.queryByText('Current APY')).toBeNull()
+    expect(screen.queryByText('Before')).toBeNull()
+    expect(screen.queryByText('After')).toBeNull()
     expect(screen.queryByText('$0.00')).toBeNull()
   })
 
-  it('id=9 (contribution) shows percentage + match, not $0.00', () => {
-    renderDetail(9)
-    expect(screen.getByText('Current')).toBeTruthy()
-    expect(screen.getByText('Target')).toBeTruthy()
-    expect(screen.getByText('Match captured')).toBeTruthy()
-    expect(screen.queryByText('$0.00')).toBeNull()
-  })
-
-  it('id=3 (spend) still shows Before/After/You save', () => {
-    renderDetail(3)
+  it('id=18 uses the spend fallback strip with annual benefit copy', () => {
+    renderDetail(18)
     expect(screen.getByText('Before')).toBeTruthy()
     expect(screen.getByText('After')).toBeTruthy()
-    expect(screen.getByText('You save')).toBeTruthy()
+    expect(screen.getByText('Annual Benefit:')).toBeTruthy()
+    expect(screen.getByText('Save $1,344')).toBeTruthy()
   })
 })

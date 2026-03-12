@@ -5,7 +5,7 @@ import { useRouter } from '@/router'
 import type { ExecuteActionEntity } from '@/domain/poseidon-universe'
 import { dispatchApprovalBridge } from '@/lib/execute-approval-bridge'
 
-export type ExecutionPhase = 'idle' | 'validating' | 'signing' | 'broadcasting' | 'confirmed'
+export type ExecutionPhase = 'idle' | 'reviewing' | 'signing' | 'submitting' | 'confirmed'
 
 export function useExecuteApprovalFlow(
   action: ExecuteActionEntity | undefined,
@@ -37,10 +37,10 @@ export function useExecuteApprovalFlow(
 
     if (decision === 'approved') {
       isExecuting.current = true
-      setExecutionPhase('validating')
+      setExecutionPhase('reviewing')
 
       timerIds.current.push(setTimeout(() => setExecutionPhase('signing'), 1200))
-      timerIds.current.push(setTimeout(() => setExecutionPhase('broadcasting'), 2800))
+      timerIds.current.push(setTimeout(() => setExecutionPhase('submitting'), 2800))
       timerIds.current.push(setTimeout(() => {
         setExecutionPhase('confirmed')
         setExecuteDecision({

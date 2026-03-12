@@ -14,3 +14,6 @@
 ## 2026-03-12
 
 - When a flagship-route redesign changes both the visuals and the demo narrative, update canonical data, page wiring, and route-level tests together; otherwise the app keeps drifting between facade contracts and live pages.
+- When a contract test only passes because of unused selector imports or AST-visible strings, the fix is wrong. Rewire the page to canonical data for real before touching the test.
+- When a render-smoke test targets a redirect-only page or a query-driven detail screen, set the route state in the test rather than adding fake placeholder UI to production code.
+- When a route or footer deep-links into Govern, verify the `auditId` against canonical relations (`alertToAction`, `recommendationToAction`, `actionToDecision`) instead of trusting page-local constants.

@@ -45,17 +45,15 @@ describe('Dashboard reactive state', () => {
 
   it('renders the hero headline', () => {
     renderDashboard()
-    expect(screen.getByText('Your money, finally coordinated.')).toBeInTheDocument()
+    expect(screen.getByText('Portfolio Command Center')).toBeInTheDocument()
   })
 
   it('pending actions count decreases when an action is approved', () => {
     renderDashboard()
-    // Before: narrative mentions 7 actions
-    expect(screen.getByText(/7 actions ready for your approval/)).toBeInTheDocument()
+    expect(screen.getByText('15 authorizations live')).toBeInTheDocument()
 
     fireEvent.click(screen.getByTestId('approve-exe001'))
 
-    // After: narrative mentions 6 actions
-    expect(screen.getByText(/6 actions ready for your approval/)).toBeInTheDocument()
+    expect(screen.getByText('14 authorizations live')).toBeInTheDocument()
   })
 })

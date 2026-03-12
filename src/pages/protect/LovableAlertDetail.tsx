@@ -2,7 +2,11 @@ import { useState } from "react";
 import {  useRouter, Link  } from "@/router";
 import { useToast } from "@/hooks/useToast";
 import { ChevronDown } from "lucide-react";
-import { selectSpotlightThreat } from "@/domain/poseidon-universe";
+import {
+  selectAlertAuditChain,
+  selectGovernFooterView,
+  selectSpotlightThreat,
+} from "@/domain/poseidon-universe";
 import { LovableSeverityBadge } from "@/components/shared/LovableSeverityBadge";
 import { LovableDecisionDrivers } from "@/components/shared/LovableDecisionDrivers";
 import { LovableGovernanceFooter } from "@/components/shared/LovableGovernanceFooter";
@@ -45,6 +49,11 @@ const item: import("framer-motion").Variants = {
 
 export default function LovableAlertDetail() {
   const rawThreat = selectSpotlightThreat();
+  const auditId = rawThreat
+    ? selectAlertAuditChain(rawThreat.id)?.decisionId ??
+      selectGovernFooterView("protect").latestEntries[0]?.id ??
+      ""
+    : "";
   const threat = rawThreat ? {
     ...rawThreat,
     amount: rawThreat.amountUsd,
@@ -210,7 +219,7 @@ export default function LovableAlertDetail() {
         <LovableGovernanceFooter
           model="POSEIDON-THREATDETECT V1.0"
           processingMs={234}
-          auditId="AUD-2026-0310-001"
+          auditId={auditId}
         />
       </motion.div>
     </motion.div>

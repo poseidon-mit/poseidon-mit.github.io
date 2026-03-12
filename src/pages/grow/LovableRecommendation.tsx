@@ -143,7 +143,7 @@ export default function LovableRecommendation() {
         <LovableGovernanceFooter
           model="POSEIDON-OPTIMIZER V2.1"
           processingMs={456}
-          auditId="AUD-2026-0311-003"
+          auditId={rec.auditId}
         />
       </motion.div>
     </motion.div>

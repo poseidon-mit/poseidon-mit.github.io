@@ -19,7 +19,11 @@ export function LovableGovernanceFooter({ model, processingMs, auditId }: Govern
           </span>
         </div>
         <Link
-          to="/lovable/govern"
+          to={
+            auditId
+              ? `/govern/audit-detail?decision=${encodeURIComponent(auditId)}`
+              : "/govern/audit"
+          }
           className="text-sm text-blue-400 hover:text-blue-300 font-medium transition-colors"
         >
           View Full Audit &rarr;

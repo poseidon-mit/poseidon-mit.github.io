@@ -8,6 +8,7 @@ import { usePresentationMode } from "@/hooks/usePresentationMode";
 import { usePWA } from "@/hooks/usePWA";
 import { CommandPalette } from "./CommandPalette";
 import { Button } from "@/components/ui/button";
+import { TalkToMoneyFab } from "@/components/ui/TalkToMoneyFab";
 import { type EngineName } from "@/lib/engine-tokens";
 import { cn } from "@/lib/utils";
 import { BREADCRUMB_MAP } from "@/lib/breadcrumb-registry";
@@ -113,7 +114,13 @@ export function AppNavShell({
   );
 
   return (
-    <div className="app-bg-oled flex min-h-screen selection:bg-cyan-500/20 theme-precision">
+    <div className="app-bg-oled flex h-[100dvh] overflow-hidden selection:bg-cyan-500/20 theme-precision lg:h-auto lg:min-h-screen lg:overflow-visible">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+      >
+        Skip to main content
+      </a>
       <CommandPalette isOpen={isPaletteOpen} onClose={closePalette} />
 
       {/* ── Mobile Drawer ── */}
@@ -274,10 +281,12 @@ export function AppNavShell({
         {/* ── Main content ── */}
         <main
           id="main-content"
-          className="flex-1 pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:pb-0"
+          role="main"
+          className="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:overflow-visible lg:pb-0"
         >
           <AnimatePresence mode="popLayout">
             <motion.div
+              className="min-h-full"
               key={path}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -290,7 +299,7 @@ export function AppNavShell({
         </main>
       </div>
 
-      {/* Talk your money FAB disabled */}
+      <TalkToMoneyFab />
 
       {/* ── Mobile bottom navigation ── */}
       <nav

@@ -5,6 +5,7 @@
  * Phase 5: Shinji Fujiwara persona rewrite — Oslo scenario, new audit IDs.
  */
 import { DEMO_THREAD } from '@/lib/demo-thread'
+import { selectGovernAuditEntries } from '@/domain/poseidon-universe'
 
 export interface AuditDecision {
   id: string
@@ -39,6 +40,8 @@ export const ROUTE_TO_DECISION: Record<string, string> = {
   '/execute/queue':      'GV-2026-0307-006',
   '/execute/approval':   'GV-2026-0307-006',
   '/govern':             'GV-2026-0310-001',
+  '/govern/audit':       'GV-2026-0310-001',
+  '/govern/audit-detail': 'GV-2026-0310-001',
 }
 
 const sharedOsloFactors = [
@@ -268,4 +271,45 @@ export const AUDIT_DECISIONS: Record<string, AuditDecision> = {
     coreAssertion: 'Poseidon identified $1,500/yr in uncaptured employer 401(k) match by analyzing payroll and benefit data',
     baseReality: [{ label: 'Current rate', value: '4%' }, { label: 'Optimal rate', value: '8%' }, { label: 'Annual gain', value: '$1,500/yr employer match' }, { label: 'Tax savings', value: '~$1,800/yr' }],
   },
+}
+
+for (const entry of selectGovernAuditEntries()) {
+  if (AUDIT_DECISIONS[entry.id]) continue
+  AUDIT_DECISIONS[entry.id] = {
+    id: entry.id,
+    engine: entry.type,
+    type: `${entry.type.toLowerCase()}_decision`,
+    action: entry.action,
+    timestamp: entry.timestampIso,
+    model: { name: 'Poseidon Council', version: '5.0', accuracy: 98.2 },
+    explanation: {
+      summary: `${entry.action}. Poseidon logged this ${entry.type.toLowerCase()} decision with ${Math.round(entry.confidence * 100)}% confidence and preserved a replayable audit trail.`,
+      confidence: entry.confidence,
+    },
+    topFactors: [
+      {
+        label: 'Recorded event',
+        contribution: entry.confidence,
+        note: 'Canonical event evidence captured in the immutable audit stream.',
+      },
+      {
+        label: 'Governance coverage',
+        contribution: entry.evidence,
+        note: 'Evidence score met the audit publication threshold for this decision.',
+      },
+    ],
+    compliance: { gdpr: true, ecoa: true, ccpa: true },
+    userFeedback: {
+      correct: entry.status !== 'Flagged',
+      comment: 'Synthesized from canonical audit ledger to preserve deep-link continuity.',
+    },
+    dataSources: ['Canonical audit ledger', 'Govern engine event registry'],
+    coreAssertion: `${entry.action} is preserved in the canonical audit ledger.`,
+    baseReality: [
+      { label: 'Engine', value: entry.type },
+      { label: 'Status', value: entry.status },
+      { label: 'Evidence', value: `${Math.round(entry.evidence * 100)}%` },
+      { label: 'Recorded', value: entry.timestampIso.slice(0, 10) },
+    ],
+  }
 }

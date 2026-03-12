@@ -37,7 +37,7 @@ function renderHero(
 describe("GrowHero", () => {
   it("renders the immersive headline and projected gain", () => {
     renderHero();
-    expect(screen.getByRole("heading", { name: /wealth trajectory forecast/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /compound horizon/i })).toBeInTheDocument();
     expect(screen.getByText(/\+\$30,245\/yr/)).toBeInTheDocument();
   });
 
@@ -100,7 +100,7 @@ describe("GrowHero", () => {
       fireEvent.click(screen.getByRole("button", { name: /replay/i }));
       act(() => vi.advanceTimersByTime(1200));
       expect(screen.getByRole("button", { name: /view all opportunities/i })).toBeInTheDocument();
-      expect(screen.getByRole("heading", { name: /wealth trajectory forecast/i })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /compound horizon/i })).toBeInTheDocument();
     });
   });
 });
@@ -123,7 +123,7 @@ describe("GrowPage integration", () => {
 
   it("renders the hero with derived opportunity data", () => {
     renderGrowPage();
-    expect(screen.getByText(/\+\$1,100\/yr/)).toBeInTheDocument();
+    expect(screen.getByText(/\+\$1,104\/yr/)).toBeInTheDocument();
     expect(screen.getAllByText("Eliminate Cash Drag").length).toBeGreaterThanOrEqual(1);
   });
 

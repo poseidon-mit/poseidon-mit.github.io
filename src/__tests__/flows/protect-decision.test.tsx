@@ -12,6 +12,7 @@ import { formatConfidence } from '../../lib/demo-date';
  */
 describe('Protect decision flow (PRT02)', () => {
   function renderPRT02() {
+    window.history.pushState({}, '', `/protect/alert-detail?alertId=${DEMO_THREAD.criticalAlert.id}`);
     return render(
       <RouterProvider>
         <ProtectAlertDetail />

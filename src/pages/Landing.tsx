@@ -10,6 +10,7 @@ import { Footer } from '@/components/landing/jeton/Footer';
 import SpotlightCard from '@/components/landing/jeton/effects/SpotlightCard';
 import { JETON_COPY, JETON_FEATURES } from '@/content/landing-copy-jeton';
 import { selectArchitecturalTrust, selectCohortMetrics } from '@/domain/poseidon-universe';
+import { LANDING_COPY } from '@/content/landing-copy';
 
 const ParticleGlobe = lazy(() => import('@/components/landing/jeton/effects/ParticleGlobe'));
 
@@ -126,15 +127,14 @@ export default function Landing() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.8 }}
           >
-            <span className="flex items-center gap-2">
-              <Lock size={14} /> Bank-Level AES-256
-            </span>
-            <span className="flex items-center gap-2">
-              <ShieldCheck size={14} /> {trust.autoExecutionsWithoutConsent} Auto-Executions
-            </span>
-            <span className="flex items-center gap-2">
-              <Eye size={14} /> {trust.auditCoveragePercent}% Audit Coverage
-            </span>
+            {LANDING_COPY.hero.trustItems.map((item, idx) => {
+              const Icon = idx === 0 ? Lock : idx === 1 ? ShieldCheck : Eye;
+              return (
+                <span key={item} className="flex items-center gap-2">
+                  <Icon size={14} /> {item}
+                </span>
+              );
+            })}
           </motion.div>
         </div>
       </motion.section>

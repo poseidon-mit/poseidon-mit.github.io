@@ -4,6 +4,8 @@ import { RouterProvider } from '../router'
 import { DemoStateProvider } from '../lib/demo-state/provider'
 import { resetDemoStateStorage } from '../lib/demo-state/storage'
 import ExecuteQueuePage from '../pages/ExecuteQueue'
+import { AppNavShell } from '../components/layout/AppNavShell'
+import { selectExecuteActionsView } from '../domain/poseidon-universe'
 
 /**
  * Tests the ExecuteQueue page contract:
@@ -17,7 +19,9 @@ function renderQueue(search = '') {
   return render(
     <DemoStateProvider>
       <RouterProvider>
-        <ExecuteQueuePage />
+        <AppNavShell path="/execute/queue">
+          <ExecuteQueuePage />
+        </AppNavShell>
       </RouterProvider>
     </DemoStateProvider>,
   )
@@ -45,15 +49,17 @@ describe('ExecuteQueue page contract', () => {
   })
 
   it('shows empty state when all actions are decided', async () => {
-    // Set all default actions to approved in localStorage before rendering
     const { DemoStateProvider: Provider } = await import('../lib/demo-state/provider')
     const { createDefaultDemoState } = await import('../lib/demo-state/types')
     const { saveDemoState } = await import('../lib/demo-state/storage')
 
     const state = createDefaultDemoState()
-    // Mark all default actions as approved
-    for (const id of Object.keys(state.execute.actionStates)) {
-      state.execute.actionStates[id] = { id, status: 'approved', decidedAt: new Date().toISOString() }
+    for (const action of selectExecuteActionsView()) {
+      state.execute.actionStates[action.id] = {
+        id: action.id,
+        status: 'approved',
+        decidedAt: new Date().toISOString(),
+      }
     }
     saveDemoState(state)
 
@@ -61,7 +67,9 @@ describe('ExecuteQueue page contract', () => {
     render(
       <Provider>
         <RouterProvider>
-          <ExecuteQueuePage />
+          <AppNavShell path="/execute/queue">
+            <ExecuteQueuePage />
+          </AppNavShell>
         </RouterProvider>
       </Provider>,
     )

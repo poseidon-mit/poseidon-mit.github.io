@@ -92,22 +92,29 @@ function getRiskLevel(confidence: number): {
   bg: string;
   ring: string;
 } {
-  if (confidence >= 0.7)
+  if (confidence >= 0.9)
     return {
-      label: "High Risk",
+      label: "Critical",
       color: "text-red-400",
       bg: "bg-red-500/15",
       ring: "border-red-500/30",
     };
-  if (confidence >= 0.4)
+  if (confidence >= 0.7)
     return {
-      label: "Medium Risk",
+      label: "High",
       color: "text-amber-400",
       bg: "bg-amber-500/15",
       ring: "border-amber-500/30",
     };
+  if (confidence >= 0.4)
+    return {
+      label: "Medium",
+      color: "text-blue-400",
+      bg: "bg-blue-500/15",
+      ring: "border-blue-500/30",
+    };
   return {
-    label: "Low Risk",
+    label: "Low",
     color: "text-emerald-400",
     bg: "bg-emerald-500/15",
     ring: "border-emerald-500/30",
@@ -128,7 +135,9 @@ export default function ProtectAlertDetailPage() {
   const [disputeState, setDisputeState] = useState<
     "idle" | "drafting" | "submitted" | "neutralized"
   >("idle");
-  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(
+    () => new Set(["details", "risk"]),
+  );
   const toggleCard = (id: string) =>
     setExpandedCards((prev) => {
       const next = new Set(prev);
@@ -231,7 +240,7 @@ export default function ProtectAlertDetailPage() {
     : null;
 
   return (
-    <div className="flex flex-col gap-0">
+    <main id="main-content" role="main" className="flex flex-col gap-0">
       <SubPageNav
         engine="protect"
         parentPath="/protect/threats"
@@ -392,6 +401,11 @@ export default function ProtectAlertDetailPage() {
                     style={{ overflow: "hidden" }}
                   >
                     <CardContent className="space-y-4">
+                      <DetailRow
+                        icon={<Shield className="h-4 w-4 text-white/40" />}
+                        label="Counterparty"
+                        value={alert.counterparty}
+                      />
                       {alert.account && (
                         <DetailRow
                           icon={
@@ -405,7 +419,7 @@ export default function ProtectAlertDetailPage() {
                         icon={
                           <AlertTriangle className="h-4 w-4 text-white/40" />
                         }
-                        label="Alert Type"
+                        label="Alert type"
                         value={alert.description}
                       />
                       <DetailRow
@@ -581,7 +595,7 @@ export default function ProtectAlertDetailPage() {
                 }}
               >
                 <h3 className="text-lg font-semibold text-foreground">
-                  Recommended Actions
+                  Recommended Action
                 </h3>
                 <ChevronDown
                   className={cn(
@@ -1022,7 +1036,7 @@ export default function ProtectAlertDetailPage() {
           </motion.div>
         )}
       </motion.section>
-    </div>
+    </main>
   );
 }
 

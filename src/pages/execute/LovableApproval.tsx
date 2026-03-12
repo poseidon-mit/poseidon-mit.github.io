@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Link } from "@/router";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
-import { selectExecuteActionById } from "@/domain/poseidon-universe";
+import {
+  selectExecuteActionAuditDecisionId,
+  selectExecuteActionById,
+} from "@/domain/poseidon-universe";
 import { LovableDecisionDrivers } from "@/components/shared/LovableDecisionDrivers";
 import { LovableGovernanceFooter } from "@/components/shared/LovableGovernanceFooter";
 import { motion, type Variants } from "framer-motion";
@@ -47,6 +50,7 @@ export default function LovableApproval() {
   // Using a mock ID as parameterized routes aren't supported in standard lazyRoutes without query parsing
   const id = "EXE-001";
   const rawAction = selectExecuteActionById(id || "");
+  const auditId = selectExecuteActionAuditDecisionId(id) ?? "";
   const action = rawAction ? {
     ...rawAction,
     deadline: rawAction.expiresIn,
@@ -188,7 +192,7 @@ export default function LovableApproval() {
         <LovableGovernanceFooter
           model="POSEIDON-EXECUTOR V1.3"
           processingMs={312}
-          auditId="AUD-2026-0310-004"
+          auditId={auditId}
         />
       </motion.div>
     </motion.div>

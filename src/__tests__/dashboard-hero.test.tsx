@@ -6,10 +6,10 @@ import DashboardPage from "../pages/Dashboard";
 
 const DEFAULT_PROPS = {
   userName: "Shinji",
-  netWorth: 94041,
-  netWorthChange: 1247,
-  netWorthChangePercent: 1.3,
-  sparklineData: [88200, 89500, 90800, 91400, 92700, 94041],
+  netWorth: 284500,
+  netWorthChange: 438,
+  netWorthChangePercent: 0.15,
+  sparklineData: [273850, 276264, 278536, 280240, 282796, 284775],
   healthScore: 82.4,
   healthBreakdown: [
     { engine: "protect" as const, weight: 0.3, value: 80 },
@@ -40,7 +40,7 @@ const DEFAULT_PROPS = {
 
 function renderHero(overrides: Partial<typeof DEFAULT_PROPS> = {}) {
   const props = { ...DEFAULT_PROPS, ...overrides };
-  return { ...render(<DashboardHero {...props} />), props };
+  return { ...render(<RouterProvider><DashboardHero {...props} /></RouterProvider>), props };
 }
 
 describe("DashboardHero", () => {
@@ -52,20 +52,20 @@ describe("DashboardHero", () => {
 
   it("renders engine signal cards with the new copy", () => {
     renderHero();
-    expect(screen.getByText("5 anomaly flagged")).toBeInTheDocument();
-    expect(screen.getByText("+$203/mo unlocked")).toBeInTheDocument();
-    expect(screen.getByText("3 actions queued")).toBeInTheDocument();
+    expect(screen.getAllByText("5 anomalies flagged").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("+$203/mo ready").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("3 authorizations live").length).toBeGreaterThan(0);
   });
 
   it("renders the govern verification readout", () => {
     renderHero();
-    expect(screen.getByText(/2,847 verified/)).toBeInTheDocument();
-    expect(screen.getByText(/Compliance 98%/)).toBeInTheDocument();
+    expect(screen.getByText(/2,847 audited/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Audit coverage 98%/).length).toBeGreaterThan(0);
   });
 
   it("fires onNavigate when a signal card is clicked", () => {
     const { props } = renderHero();
-    fireEvent.click(screen.getByText("5 anomaly flagged"));
+    fireEvent.click(screen.getAllByText("5 anomalies flagged")[0]);
     expect(props.onNavigate).toHaveBeenCalledWith("/protect");
   });
 
@@ -85,16 +85,27 @@ describe("DashboardPage integration", () => {
     );
   }
 
-  it("renders the immersive hero and below-the-fold sections", () => {
+  it("renders the live dashboard hero stage and engine panels", () => {
     renderDashboard();
     expect(screen.getByText("Portfolio Command Center")).toBeInTheDocument();
-    expect(screen.getByText("Balance sheet")).toBeInTheDocument();
-    expect(screen.getByText("Action center")).toBeInTheDocument();
+    expect(screen.getByText("1 anomaly flagged")).toBeInTheDocument();
+    expect(screen.getByText("+$92/mo ready")).toBeInTheDocument();
+    expect(screen.getByText("15 authorizations live")).toBeInTheDocument();
   });
 
-  it("renders canonical action-center links", () => {
+  it("uses shell-sized layout instead of absolute offset positioning", () => {
+    const { container } = renderDashboard();
+    const root = container.firstElementChild;
+
+    expect(root).toHaveClass("hero-viewport");
+    expect(root).not.toHaveClass("absolute");
+  });
+
+  it("renders the current dashboard action links", () => {
     renderDashboard();
-    expect(screen.getByText("Protect: 1 anomaly detected")).toBeInTheDocument();
-    expect(screen.getByText(/Grow: \+\$92\/mo identified/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Threat details/i })).toHaveAttribute("href", "/protect/threats");
+    expect(screen.getByRole("link", { name: /Opportunities/i })).toHaveAttribute("href", "/grow/recommendations");
+    expect(screen.getByRole("link", { name: /Approval queue/i })).toHaveAttribute("href", "/execute/queue");
+    expect(screen.getByRole("link", { name: /Audit history/i })).toHaveAttribute("href", "/govern/audit");
   });
 });

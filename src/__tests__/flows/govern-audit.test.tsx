@@ -11,7 +11,8 @@ import GovernAuditDetail from '../../pages/GovernAuditDetail';
  * Decision → Audit → Review chain.
  */
 describe('Govern audit flow', () => {
-  function renderWithRouter(Component: React.ComponentType) {
+  function renderWithRouter(Component: React.ComponentType, path: string = "/govern") {
+    window.history.pushState({}, '', path);
     return render(
       <RouterProvider>
         <Component />
@@ -20,14 +21,14 @@ describe('Govern audit flow', () => {
   }
 
   describe('GOV01 - Govern Dashboard', () => {
-    it('displays decisions audited headline', () => {
+    it('displays immutable audit trail headline', () => {
       renderWithRouter(GovernTrust);
-      expect(screen.getAllByText(/Decisions Audited/i).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(/Shield matrix/i).length).toBeGreaterThan(0);
     });
 
-    it('shows decision audit trail', () => {
+    it('shows the activity log panel', () => {
       renderWithRouter(GovernTrust);
-      expect(screen.getAllByText(/Decision Audit Trail/i).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(/Activity log/i).length).toBeGreaterThan(0);
     });
 
     // GovernFooter is injected by AuthenticatedLayout, not by the page component.
@@ -51,19 +52,19 @@ describe('Govern audit flow', () => {
 
   describe('GOV03 - Audit Detail', () => {
     it('shows decision reconstruction', () => {
-      renderWithRouter(GovernAuditDetail);
+      renderWithRouter(GovernAuditDetail, "/govern/audit-detail?decision=LED-8092");
       expect(screen.getAllByText(/Why This Decision/i).length).toBeGreaterThan(0);
     });
 
     it('shows compliance flags', () => {
-      renderWithRouter(GovernAuditDetail);
+      renderWithRouter(GovernAuditDetail, "/govern/audit-detail?decision=LED-8092");
       expect(screen.getAllByText(/GDPR/i).length).toBeGreaterThan(0);
       expect(screen.getAllByText(/ECOA/i).length).toBeGreaterThan(0);
       expect(screen.getAllByText(/CCPA/i).length).toBeGreaterThan(0);
     });
 
     it('all compliance flags show protected', () => {
-      renderWithRouter(GovernAuditDetail);
+      renderWithRouter(GovernAuditDetail, "/govern/audit-detail?decision=LED-8092");
       const protectedElements = screen.getAllByText(/Protected/i);
       expect(protectedElements.length).toBe(3);
     });
