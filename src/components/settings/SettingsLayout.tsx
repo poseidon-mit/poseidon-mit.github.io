@@ -2,9 +2,8 @@ import { cn } from '@/lib/utils'
 import { useRouter } from '@/router'
 
 const SETTINGS_TABS = [
-  { label: 'General', path: '/settings' },
-  { label: 'AI', path: '/settings/ai' },
   { label: 'Integrations', path: '/settings/integrations' },
+  { label: 'AI', path: '/settings/ai' },
   { label: 'Rights', path: '/settings/rights' },
 ] as const
 
