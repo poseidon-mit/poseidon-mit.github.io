@@ -13,6 +13,17 @@
   --color-engine-execute: hsl(38, 92%, 50%);
   --color-engine-govern: hsl(217, 91%, 60%);
 
+  /* Poseidon Next-Gen Colors (HSL) */
+  --poseidon-bg: 220 30% 6%;
+  --poseidon-surface: 220 25% 10%;
+  --poseidon-border: 220 20% 18%;
+  --poseidon-cyan: 190 90% 55%;
+  --poseidon-gold: 42 85% 60%;
+  --poseidon-red: 0 75% 55%;
+  --poseidon-green: 145 70% 50%;
+  --poseidon-text: 220 15% 85%;
+  --poseidon-muted: 220 10% 50%;
+
   /* Surface colors (dark) */
   --color-surface-base: #0A0A0F;
   --color-surface-card: rgba(255, 255, 255, 0.04);
@@ -176,8 +187,8 @@
 
   body {
     font-family: var(--font-sans);
-    background: var(--color-surface-base);
-    color: var(--color-text-primary);
+    background: hsl(var(--poseidon-bg));
+    color: hsl(var(--poseidon-text));
     line-height: 1.5;
     overflow-x: hidden;
     font-variant-numeric: tabular-nums lining-nums;

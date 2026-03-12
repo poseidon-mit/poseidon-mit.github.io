@@ -1,24 +1,16 @@
-# Current Task: Web Review Implementation (2026-03-12)
+# Current Task: Immersive HERO Edition (2026-03-12)
 
-- [x] Fix shared shell mobile header collisions, bottom-nav safe space, and canonical `main#main-content`
-- [x] Reduce public/auth CTA competition and align primary CTA markers with the current app architecture
-- [x] Improve core hero CTA hierarchy where live routes still present multiple equally-primary actions
-- [x] Raise muted token contrast and spot-check affected shell/public surfaces
-- [x] Repair UX/a11y/bundle guardrails so they validate the current route map and emitted build chunks
-- [x] Verify with `check:a11y-structure`, `ux:scan`, `test:smoke`, `build`, and live mobile checks
+- [x] Replace Tier 1 overview data dependencies with canonical selectors and align the demo baseline with the Blueprint v3.0 numbers
+- [x] Rebuild `Landing` around the immersive public structure while restoring skip-link / `main#main-content` contracts and `/dashboard` CTA routing
+- [x] Rework shared hero facades for Dashboard / Protect / Grow / Execute / Govern into centered cinematic stages using existing Poseidon effects
+- [x] Update overview pages to use the rebuilt facades and preserve below-the-fold detail surfaces and deep links
+- [x] Refresh hero/page tests to the new contracts and run targeted verification (`vitest`, `build`, live desktop/mobile smoke)
 
-## Review Notes (2026-03-12)
+## Review Notes
 
-- Shared shell fixes landed in `AppNavShell.tsx`: mobile header uses a three-column layout, top-level app routes expose a single `h1`, `main#main-content` is canonical, and mobile pages reserve bottom padding for the fixed nav.
-- Public/auth CTA hierarchy is reduced to one primary action per screen, and top-level engine heroes now mark only the dominant action as primary.
-- Contrast tokens were raised via `--muted` and `--muted-2`, and public hero accents were moved off hardcoded purple toward engine tokens.
-- `check:a11y-structure`, `typecheck`, `test:smoke`, and `build` pass on the final code state.
-- `ux:scan` now runs against a repo-local Vite server instead of whatever happens to be on port `4173`. Route heuristics pass for single-`h1` and CTA-budget checks across `/`, `/signup`, `/login`, `/dashboard`, `/protect`, `/grow`, `/execute`, `/govern`, `/settings`, and `/help`.
-- `ux:scan` still reports global visual drift because the screenshot baselines now lag the updated shell and CTA styling. That is expected until the baselines are intentionally refreshed.
-- `check:bundle-budget` still fails, but now for real emitted assets instead of a missing `vendor-three` chunk:
-  - CSS raw `338322` / gzip `45329`
-  - index JS raw `403670` / gzip `105690`
-- Live mobile verification on `/dashboard` and `/protect` at `390x844` confirmed the header title no longer collides with the logo cluster, and the final visible content clears the fixed bottom navigation by `24px` at full scroll.
+- Canonical baseline now matches the immersive blueprint: net worth `$284,500`, liquid `$42,100`, investments `$242,400`, debt `$0`, monthly cash flow `14,200 / 9,850`, 1 Protect anomaly, 2 Grow opportunities, 2 Execute approvals, and 142 Govern inferences.
+- Tier 1 overview pages now route through shared immersive hero facades and use canonical selectors or demo-state rather than `usePoseidonStore`.
+- Verification completed: targeted Vitest suite `59/59` passed, `npx tsc --noEmit --pretty false` passed, `npm run build` passed, and Playwright smoke on `/`, `/dashboard`, `/protect`, `/grow`, `/execute`, `/govern` confirmed desktop/mobile hero-first layout with below-the-fold detail after scroll and no runtime console errors.
 
 # Poseidon.AI Operational Rewrite Ledger (Phase-Gated, Scientific UX Enforcement)
 

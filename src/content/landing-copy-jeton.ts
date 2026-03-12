@@ -20,11 +20,32 @@ export const JETON_COPY = {
     proof: 'System uptime 99.97% · Last audit: 4m ago · Model v3.2.1 · Decisions today: 47',
   },
   cta: {
-    titleA: 'Take Command of Your',
-    titleB: 'Financial Future.',
+    titleA: 'Take Control of Your',
+    titleB: 'Financial Destiny Today.',
     body: 'Built at MIT Sloan. Production-minded from day one.',
-    button: 'Get Started — It\'s Free',
+    button: 'GET STARTED NOW',
     meta: 'Trusted by pilot users · SOC 2 Type II in progress · MIT Sloan CTO Program',
+  },
+  trust: {
+    eyebrow: 'SECURITY & TRANSPARENCY',
+    title: 'Built on Cryptographic Certainty.',
+    pillars: [
+      {
+        title: 'AES-256 Encryption',
+        description: 'Military-grade encryption protects every byte of your financial data at rest and in transit.',
+        icon: 'lock' as const,
+      },
+      {
+        title: 'Read-Only API',
+        description: 'Poseidon can observe but never move money without your explicit cryptographic consent.',
+        icon: 'shield' as const,
+      },
+      {
+        title: 'SHAP Explainability',
+        description: 'Every AI recommendation includes a full evidence trail showing exactly why it was made.',
+        icon: 'eye' as const,
+      },
+    ],
   },
 } as const;
 

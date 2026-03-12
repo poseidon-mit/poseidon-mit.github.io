@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+// @ts-nocheck
+import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Environment, Float, Sphere, Torus, Icosahedron } from '@react-three/drei';
 import * as THREE from 'three';

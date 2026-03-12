@@ -1,6 +1,6 @@
 import { DEMO_USER, type DemoUser } from '@/lib/demo-user'
 
-export const DEMO_STATE_VERSION = 3
+export const DEMO_STATE_VERSION = 4
 
 export type DemoAuthMethod = 'skip' | 'form' | 'google' | 'apple' | 'passkey'
 export type EntryIntent = 'express' | 'agentic'
@@ -99,12 +99,16 @@ export interface DemoState {
   support: DemoSupportState
 }
 
-const DEFAULT_EXECUTE_IDS = ['EXE-001', 'EXE-002', 'EXE-003', 'EXE-004', 'EXE-005', 'EXE-006', 'EXE-007'] as const
-
 function createDefaultExecuteActionStates(): Record<string, DemoExecuteActionState> {
-  return Object.fromEntries(
-    DEFAULT_EXECUTE_IDS.map((id) => [id, { id, status: 'pending', decidedAt: null }]),
-  ) as Record<string, DemoExecuteActionState>
+  return {
+    'EXE-001': { id: 'EXE-001', status: 'pending', decidedAt: null },
+    'EXE-002': { id: 'EXE-002', status: 'pending', decidedAt: null },
+    'EXE-003': { id: 'EXE-003', status: 'approved', decidedAt: '2026-03-07T11:22:00-05:00' },
+    'EXE-004': { id: 'EXE-004', status: 'approved', decidedAt: '2026-02-15T14:12:00-05:00' },
+    'EXE-005': { id: 'EXE-005', status: 'approved', decidedAt: '2026-02-28T09:04:00-05:00' },
+    'EXE-006': { id: 'EXE-006', status: 'deferred', decidedAt: '2026-03-09T08:45:00-05:00' },
+    'EXE-007': { id: 'EXE-007', status: 'approved', decidedAt: '2026-03-01T10:18:00-05:00' },
+  }
 }
 
 export function createDefaultDemoState(): DemoState {

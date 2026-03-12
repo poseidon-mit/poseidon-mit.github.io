@@ -1,55 +1,11 @@
-/**
- * Protect Hero — facade components for the /protect page hero section.
- *
- * Two states:
- * - ProtectAnomalyRadar: bento grid with risk contribution radar when critical threat exists
- * - ProtectThreatPosture: posture summary when no critical threats exist
- */
-import { useState } from "react";
-import { ArrowRight } from "lucide-react";
-import { SeverityBadge } from "./severity-badge";
-import { CountUp } from "./count-up";
-import { KpiCard } from "./kpi-card";
-import { HeroBento } from "./hero-bento";
-import { ListPortalBar } from "./list-portal-bar";
+import { ArrowRight, ShieldAlert } from "lucide-react";
 import { Link } from "@/router";
-import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { ChartRadar } from "@/assets/charts/ChartRadar";
-
-/* ── Types (narrowed inline — no page-module dependency) ── */
+import { ListPortalBar } from "./list-portal-bar";
+import { RadarSweep } from "./effects/RadarSweep";
+import { cn } from "@/lib/utils";
 
 type HeroSeverity = "Critical" | "High" | "Medium" | "Low";
-
-function toDisplaySeverity(s: HeroSeverity): "critical" | "warning" | "info" {
-  switch (s) {
-    case "Critical":
-      return "critical";
-    case "High":
-      return "warning";
-    case "Medium":
-      return "info";
-    case "Low":
-      return "info";
-  }
-}
-
-/* ── Posture Stat helper ── */
-
-function PostureStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between">
-      <span className="text-xs md:text-sm text-white/50">{label}</span>
-      <span className="text-sm md:text-base font-mono tabular-nums text-white/80">
-        {value}
-      </span>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════
-   ANOMALY RADAR HERO
-   ═══════════════════════════════════════════════════════ */
 
 export interface ProtectAnomalyRadarProps {
   alert: {
@@ -61,16 +17,13 @@ export interface ProtectAnomalyRadarProps {
     description: string;
     time: string;
   };
-  /** Derived contribution values mapped to radar axes (fixed 0-0.30 scale) */
   radarAxes: {
     label: string;
     value: number;
     maxValue: number;
     color?: string;
   }[];
-  /** Authored short evidence cues for hero display */
   evidenceCues: string[];
-  /** Canonical audit chain (alert → action → decision), null if ambiguous or missing */
   auditChain: { alertId: string; actionId: string; decisionId: string } | null;
   remainingCount: number;
   totalExposure: number;
@@ -88,192 +41,133 @@ export function ProtectAnomalyRadar({
   fpRate,
   onReviewThreat,
 }: ProtectAnomalyRadarProps) {
-  const [showAiLogic, setShowAiLogic] = useState(false);
+  const badgeTone =
+    alert.severity === "Critical" ? "border-[var(--state-warning)] text-[var(--state-warning)]" : "border-[var(--engine-protect)] text-[var(--engine-protect)]";
+  const riskLines = radarAxes.slice(0, 3);
+
   return (
     <div className="flex flex-col gap-3">
-      <HeroBento
-        engine="protect"
-        accentColor={
-          alert.severity === "Critical"
-            ? "var(--state-critical)"
-            : "var(--state-warning)"
-        }
-        className="xl:grid-cols-[2fr_1fr]"
+      <section
+        role="region"
+        aria-labelledby="protect-hero-title"
+        className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[#07111d]"
       >
-        <div className="flex flex-col lg:flex-row w-full">
-          {/* Col 1: Hero & Content */}
-          <div className="flex flex-col gap-3 lg:gap-5 flex-1 p-6 lg:p-10 justify-center">
-            {/* Hero Number */}
-            <span
-              className="typo-hero-number text-[clamp(2.5rem,8vw,5rem)] leading-none"
-              style={{
-                color:
-                  alert.severity === "Critical"
-                    ? "var(--state-critical)"
-                    : "var(--state-warning)",
-              }}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(34,197,94,0.18),transparent_40%),linear-gradient(180deg,rgba(255,255,255,0.02),transparent_35%)]" />
+        <div className="relative z-10 grid min-h-[65vh] gap-8 px-6 py-8 md:px-10 md:py-10 lg:grid-cols-[1fr_320px] lg:items-center">
+          <div className="flex flex-col items-center justify-center text-center">
+            <ShieldAlert className="mb-6 h-10 w-10 text-[var(--engine-execute)]" />
+            <h2
+              id="protect-hero-title"
+              className="text-[clamp(2.6rem,8vw,5.4rem)] font-semibold leading-none tracking-[-0.05em] text-white"
             >
-              ${totalExposure.toLocaleString()}
-            </span>
-
-            {/* Editorial Headline */}
-            <h2 className="typo-display text-xl md:text-2xl lg:text-3xl text-white">
-              {alert.severity === "Critical"
-                ? "1 critical threat detected."
-                : "1 high-severity threat requires attention."}
+              SYSTEM DEFENSE PATTERN
             </h2>
 
-            {/* Subtitle */}
-            <p className="text-sm text-white/50">
-              {remainingCount} more under review · {fpRate} false positive rate
-            </p>
-
-            {/* Alert info row */}
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-2">
-              <SeverityBadge severity={toDisplaySeverity(alert.severity)} />
-              <span className="text-xs font-mono text-white/40 uppercase tracking-widest">
-                {alert.id}
-              </span>
-              <span className="text-sm font-medium text-white/90">
-                {alert.counterparty}
-              </span>
-              <span className="text-sm font-mono tabular-nums text-white/70">
-                {alert.amount}
-              </span>
-              <span className="text-xs font-mono text-white/40">
-                <CountUp value={alert.confidence} decimals={2} /> confidence
-              </span>
-            </div>
-          </div>
-
-          {/* Col 2: Action & AI Logic */}
-          <div className="flex flex-col gap-6 lg:min-w-[300px] lg:border-l lg:border-white/5 p-6 lg:p-10 justify-center bg-white/[0.02]">
-            {/* CTAs */}
-            <div className="flex flex-col gap-3 mt-auto lg:mt-0">
-              <button
-                onClick={onReviewThreat}
-                data-cta-priority="primary"
-                className={cn(
-                  buttonVariants({ variant: "default", size: "lg" }),
-                  "h-auto w-full md:w-auto rounded-2xl px-8 py-4 min-h-[44px]",
-                  "bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950",
-                  "font-semibold tracking-wide text-sm",
-                  "hover:from-emerald-400 hover:to-cyan-400 transition-all",
-                  "flex items-center justify-center gap-2",
-                )}
-              >
-                Review threat <ArrowRight size={16} />
-              </button>
-              <Link
-                to={
-                  auditChain
-                    ? `/govern/audit-detail?decision=${auditChain.decisionId}`
-                    : "/govern/audit"
-                }
-                className={cn(
-                  buttonVariants({ variant: "outline", size: "lg" }),
-                  "h-auto w-full md:w-auto rounded-2xl px-8 py-4 min-h-[44px]",
-                  "border-white/12 bg-white/[0.03] text-white/75",
-                  "font-semibold tracking-wide text-sm",
-                  "hover:bg-white/[0.06] hover:text-white transition-all",
-                  "flex items-center justify-center gap-2",
-                )}
-              >
-                View audit trail <ArrowRight size={14} />
-              </Link>
+            <div className={cn("mt-6 inline-flex items-center gap-3 rounded-full border px-5 py-2 text-sm font-semibold uppercase tracking-[0.22em]", badgeTone)}>
+              <span className="h-2 w-2 rounded-full bg-current" />
+              Status: 1 anomaly flagged
             </div>
 
-            {/* ✨ AI Logic toggle + inline accordion */}
-            {evidenceCues.length > 0 && (
-              <div className="flex flex-col items-start mt-auto">
-                <button
-                  onClick={() => setShowAiLogic((v) => !v)}
-                  className="flex items-center gap-1.5 text-[11px] text-white/40 hover:text-white/70 transition-colors"
-                >
-                  <span>✨</span>
-                  <span>{showAiLogic ? "Hide AI Logic" : "Read AI Logic"}</span>
-                </button>
-                <div
-                  className={cn(
-                    "overflow-hidden transition-all duration-300 w-full",
-                    showAiLogic
-                      ? "max-h-[500px] opacity-100 mt-2"
-                      : "max-h-0 opacity-0",
-                  )}
-                >
-                  <div className="flex flex-col gap-1.5">
-                    {evidenceCues.map((cue, i) => (
-                      <p
-                        key={i}
-                        className="text-xs font-mono text-white/40 flex items-start gap-2"
-                      >
-                        <span className="text-white/20 mt-0.5 shrink-0">·</span>
-                        <span>{cue}</span>
-                      </p>
-                    ))}
-                  </div>
+            <div className="relative mt-10 flex items-center justify-center">
+              <RadarSweep size={420} />
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <div className="rounded-full border border-[rgba(34,197,94,0.24)] bg-[rgba(4,12,18,0.82)] px-5 py-3 font-mono text-sm text-[var(--engine-protect)] shadow-[0_0_35px_rgba(34,197,94,0.22)]">
+                  {alert.counterparty}
                 </div>
               </div>
-            )}
+            </div>
+
+            <p className="mt-8 max-w-3xl text-base leading-8 text-white/55 md:text-lg">
+              2,450 transactions scanned in the last 30 days. We caught an unusual pattern requiring your immediate review.
+            </p>
+
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-xs text-white/45">
+              <span className="rounded-full border border-white/10 px-3 py-1 font-mono">{alert.id}</span>
+              <span className="rounded-full border border-white/10 px-3 py-1 font-mono">{alert.amount}</span>
+              <span className="rounded-full border border-white/10 px-3 py-1 font-mono">{Math.round(alert.confidence * 100)}% confidence</span>
+              <span className="rounded-full border border-white/10 px-3 py-1 font-mono">{alert.time}</span>
+            </div>
+
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={onReviewThreat}
+                className={cn(
+                  buttonVariants({ variant: "default", size: "lg" }),
+                  "min-h-[48px] rounded-full bg-[var(--engine-protect)] px-7 text-slate-950 hover:bg-[var(--engine-protect)]/90",
+                )}
+              >
+                Review threat
+              </button>
+              <Link
+                to={auditChain ? `/govern/audit-detail?decision=${auditChain.decisionId}` : "/govern/audit"}
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "lg" }),
+                  "min-h-[48px] rounded-full border-white/15 bg-white/[0.03] px-7 text-white/80 hover:bg-white/[0.08]",
+                )}
+              >
+                View audit trail
+              </Link>
+            </div>
           </div>
 
-          {/* Col 3: Radar */}
-          <div className="flex flex-col gap-4 p-6 lg:p-10 lg:w-[320px] shrink-0 border-t lg:border-t-0 lg:border-l border-white/5 bg-black/20 items-center lg:justify-center">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30 self-start md:self-center">
-              Risk Contribution Profile
-            </span>
+          <div className="rounded-[28px] border border-white/10 bg-black/25 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/40">Signal breakdown</p>
+            <div className="mt-5 space-y-3">
+              {riskLines.map((item) => (
+                <div key={item.label}>
+                  <div className="mb-1.5 flex items-center justify-between text-xs text-white/50">
+                    <span>{item.label}</span>
+                    <span className="font-mono">{Math.round(item.value * 100)}%</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-white/[0.06]">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${Math.min(100, (item.value / Math.max(item.maxValue, 0.01)) * 100)}%`,
+                        backgroundColor: item.color ?? "var(--engine-protect)",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
 
-            {radarAxes.length > 0 && (
-              <div className="w-full max-w-[300px]">
-                <ChartRadar
-                  axes={radarAxes}
-                  width={300}
-                  height={300}
-                  rings={4}
-                  showLabels
-                  showValues={false}
-                  fillColor={
-                    alert.severity === "Critical"
-                      ? "rgba(239,68,68,0.12)"
-                      : "rgba(245,158,11,0.12)"
-                  }
-                  fillOpacity={0.15}
-                  strokeColor={
-                    alert.severity === "Critical"
-                      ? "var(--state-critical)"
-                      : "var(--state-warning)"
-                  }
-                />
+            {evidenceCues.length > 0 && (
+              <div className="mt-6 space-y-3 border-t border-white/10 pt-6">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/40">Why Poseidon cares</p>
+                {evidenceCues.slice(0, 3).map((cue) => (
+                  <p key={cue} className="text-sm leading-6 text-white/58">
+                    {cue}
+                  </p>
+                ))}
               </div>
             )}
+
+            <div className="mt-6 flex flex-wrap gap-3 border-t border-white/10 pt-6 text-xs text-white/45">
+              <span className="rounded-full border border-white/10 px-3 py-1">False positives {fpRate}</span>
+              <span className="rounded-full border border-white/10 px-3 py-1">Exposure ${totalExposure.toLocaleString()}</span>
+              <span className="rounded-full border border-white/10 px-3 py-1">{remainingCount} more below</span>
+            </div>
           </div>
         </div>
 
-        {/* ── Zone C: Portal ── */}
-        <HeroBento.Portal>
+        <div className="border-t border-white/10 px-6 py-4 md:px-10">
           <ListPortalBar
             engine="protect"
-            label={`${remainingCount} more threat${remainingCount !== 1 ? "s" : ""}`}
-            count={remainingCount}
+            label="Threat details"
+            count={remainingCount + 1}
             destination={{ type: "route", to: "/protect/threats" }}
           />
-        </HeroBento.Portal>
-      </HeroBento>
+        </div>
+      </section>
 
-      {/* Bridge line */}
-      {remainingCount > 0 && (
-        <p className="text-xs text-white/30 text-center font-mono tracking-wide">
-          {remainingCount} more threat{remainingCount !== 1 ? "s" : ""} below ·
-          ${totalExposure.toLocaleString()} total exposure
-        </p>
-      )}
+      <p className="text-center text-xs font-mono uppercase tracking-[0.22em] text-white/28">
+        {remainingCount} more threat{remainingCount === 1 ? "" : "s"} below · ${totalExposure.toLocaleString()} total exposure
+      </p>
     </div>
   );
 }
-
-/* ═══════════════════════════════════════════════════════
-   THREAT POSTURE (fallback — no critical alerts)
-   ═══════════════════════════════════════════════════════ */
 
 export interface ProtectThreatPostureProps {
   activeCount: number;
@@ -290,85 +184,75 @@ export interface ProtectThreatPostureProps {
 export function ProtectThreatPosture({
   activeCount,
   highCount,
+  mediumCount,
+  lowCount,
   resolvedCount,
   fpRate,
+  modelUpdate,
   topAlert,
   onOpenTopAlert,
 }: ProtectThreatPostureProps) {
-  const heading =
-    activeCount === 0
-      ? "All clear"
-      : `No critical alerts — ${activeCount} threat${activeCount !== 1 ? "s" : ""} monitored`;
-
   return (
-    <HeroBento engine="protect">
-      <div className="flex flex-col lg:flex-row w-full">
-        <div className="flex flex-col gap-6 lg:gap-10 flex-1 p-6 lg:p-10 justify-center">
-          <h2 className="typo-display text-2xl md:text-3xl lg:text-[clamp(2rem,4vw,3rem)] text-white">
-            {heading}
+    <section className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[#07111d] px-6 py-8 md:px-10 md:py-10">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(34,197,94,0.15),transparent_40%)]" />
+      <div className="relative z-10 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+        <div>
+          <h2
+            className="font-light tracking-tight text-[clamp(2.2rem,6vw,4rem)] text-white"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            {activeCount === 0 ? "All clear" : `No critical threats. ${activeCount} alerts still monitored.`}
           </h2>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-white/55">
+            Protect stays read-only and keeps surfacing the anomalies that deserve human review.
+          </p>
 
-          {/* KPI grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-2 gap-3 lg:gap-5">
-            <KpiCard label="Active threats" value={activeCount} />
-            <KpiCard
-              label="High severity"
-              value={highCount}
-              color={highCount > 0 ? "var(--state-warning)" : undefined}
-            />
-            <KpiCard
-              label="Resolved (30d)"
-              value={resolvedCount}
-              color="var(--engine-protect)"
-            />
-            <KpiCard label="False positive rate" value={fpRate} />
+          <div className="mt-8 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-black/25 px-4 py-4 text-sm text-white/70">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-white/35">Active</p>
+              <p className="mt-3 text-2xl font-semibold text-white">{activeCount}</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/25 px-4 py-4 text-sm text-white/70">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-white/35">Resolved</p>
+              <p className="mt-3 text-2xl font-semibold text-white">{resolvedCount}</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/25 px-4 py-4 text-sm text-white/70">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-white/35">High / Medium / Low</p>
+              <p className="mt-3 text-lg font-semibold text-white">
+                {highCount} / {mediumCount} / {lowCount}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/25 px-4 py-4 text-sm text-white/70">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-white/35">False positives</p>
+              <p className="mt-3 text-lg font-semibold text-white">{fpRate}</p>
+            </div>
           </div>
         </div>
 
-        {/* Top alert CTA */}
-        {topAlert && onOpenTopAlert && (
-          <div className="flex flex-col lg:min-w-[300px] lg:border-l lg:border-white/5 p-6 lg:p-10 justify-end mt-4 lg:mt-0 pt-4 lg:pt-0 border-t border-white/[0.06] lg:border-t-0 bg-white/[0.02]">
+        <div className="rounded-[28px] border border-white/10 bg-black/25 p-5">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/40">Monitoring posture</p>
+          <p className="mt-4 text-sm leading-7 text-white/58">
+            Model refresh: {modelUpdate}. Protect prioritizes pattern shifts, keeps the system read-only, and only escalates when evidence crosses the critical threshold.
+          </p>
+          {topAlert && onOpenTopAlert && (
             <button
+              type="button"
               onClick={onOpenTopAlert}
-              data-cta-priority="primary"
-              className={cn(
-                buttonVariants({ variant: "default", size: "lg" }),
-                "h-auto w-full md:w-auto self-start rounded-2xl px-8 py-4 min-h-[44px]",
-                "bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950",
-                "font-semibold tracking-wide text-sm",
-                "hover:from-emerald-400 hover:to-cyan-400 transition-all",
-                "flex items-center justify-center gap-2",
-              )}
+              className="mt-6 inline-flex h-auto min-h-[48px] items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-6 py-3 text-sm font-semibold text-slate-950"
             >
-              Review top alert <ArrowRight size={16} />
+              Review top alert
             </button>
-          </div>
-        )}
-
-        {/* Posture Metrics */}
-        <div className="flex flex-col gap-3 p-6 lg:p-10 lg:w-[320px] shrink-0 border-t lg:border-t-0 lg:border-l border-white/5 bg-black/20">
-          <span className="typo-label text-white/30">Posture Metrics</span>
-          <div className="flex flex-col gap-4 mt-2">
-            <PostureStat label="Transactions monitored" value="1,347" />
-            <PostureStat
-              label="Accounts protected"
-              value={String(activeCount)}
+          )}
+          <div className="mt-6 border-t border-white/10 pt-6">
+            <ListPortalBar
+              engine="protect"
+              label="View all threats"
+              count={activeCount}
+              destination={{ type: "route", to: "/protect/threats" }}
             />
-            <PostureStat label="False positive rate" value={fpRate} />
-            <PostureStat label="Last scan" value="2 min ago" />
           </div>
         </div>
       </div>
-
-      {/* ── Zone C: Portal ── */}
-      <HeroBento.Portal>
-        <ListPortalBar
-          engine="protect"
-          label="View all threats"
-          count={activeCount}
-          destination={{ type: "route", to: "/protect/threats" }}
-        />
-      </HeroBento.Portal>
-    </HeroBento>
+    </section>
   );
 }

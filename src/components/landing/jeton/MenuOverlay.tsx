@@ -24,77 +24,18 @@ export function MenuOverlay() {
           POSEIDON
         </Link>
 
-        <div className="hidden items-center gap-8 text-sm text-white/76 md:flex">
-          <a href="#platform" className="transition-colors hover:text-inherit">
-            Product
-          </a>
-          <Link to="/pricing" className="transition-colors hover:text-inherit">
-            Pricing
-          </Link>
-          <Link to="/login" className="transition-colors hover:text-inherit">
-            Sign in
-          </Link>
-        </div>
-
-        <div className="hidden md:block">
+        <div className="flex items-center gap-4">
           <ButtonLink
-            to="/signup"
+            to="/dashboard"
             variant="glass"
             engine="dashboard"
             size="sm"
             className="rounded-full"
           >
-            Get Started
+            Open Prototype
           </ButtonLink>
         </div>
-
-        <Button
-          type="button"
-          onClick={() => setMobileOpen((value) => !value)}
-          className="inline-flex !h-10 !min-h-10 !w-10 items-center justify-center rounded-full border border-current/20 !px-0 md:hidden"
-          aria-expanded={mobileOpen}
-          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-          variant="ghost"
-          size="sm"
-          springPress={false}
-        >
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </Button>
       </div>
-
-      <AnimatePresence>
-        {mobileOpen ? (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.35, ease: JETON_EASING }}
-            className="overflow-hidden border-t border-white/10 bg-[rgba(5,5,8,0.96)] md:hidden"
-          >
-            <div className="flex flex-col gap-4 px-6 py-5 text-sm">
-              <a href="#platform" onClick={() => setMobileOpen(false)}>
-                Product
-              </a>
-              <Link to="/pricing" onClick={() => setMobileOpen(false)}>
-                Pricing
-              </Link>
-              <Link to="/login" onClick={() => setMobileOpen(false)}>
-                Sign in
-              </Link>
-              <ButtonLink
-                to="/signup"
-                variant="glass"
-                engine="dashboard"
-                size="sm"
-                className="rounded-full"
-                onClick={() => setMobileOpen(false)}
-              >
-                Get Started
-              </ButtonLink>
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
     </nav>
   );
 }
