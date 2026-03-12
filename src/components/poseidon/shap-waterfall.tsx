@@ -136,14 +136,14 @@ export function ShapWaterfall({
           })}
 
           {/* Final Output Row */}
-          <div className="flex items-center group relative h-9 mt-4 pt-3 pb-1 border-t border-white/[0.06]">
+          <div className="flex items-center group relative h-12 mt-4 pt-3 pb-3 border-t border-white/[0.06]">
              <div className="w-[110px] sm:w-[160px] md:w-[200px] shrink-0 text-[11px] font-bold text-white pr-3 sm:pr-4 text-right uppercase tracking-widest">
                Risk Score
              </div>
              <div className="flex-1 relative h-full">
                {segments.length > 0 && (
                  <div 
-                   className="absolute border-l border-dashed border-white/20 -top-[18px] h-[24px] z-0" 
+                   className="absolute border-l border-dashed border-white/20 -top-[18px] h-[30px] z-0" 
                    style={{ left: `${getPercent(segments[segments.length - 1].end)}%` }}
                  />
                )}
@@ -151,7 +151,7 @@ export function ShapWaterfall({
                <div className="absolute top-0 bottom-0 border-l border-white/5 border-dashed pointer-events-none" style={{ left: `${getPercent(0)}%` }} />
                
                <div 
-                 className="absolute h-6 top-1.5 rounded-sm bg-white/10 transition-all duration-500"
+                 className="absolute h-[28px] top-1 rounded-sm bg-white/10 transition-all duration-500"
                  style={{
                     left: `${getPercent(Math.min(0, targetOutput))}%`,
                     width: `${Math.abs(getPercent(targetOutput) - getPercent(0))}%`,
