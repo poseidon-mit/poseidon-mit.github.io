@@ -155,7 +155,10 @@ export default function GrowRecommendationDetailPage() {
   const grwId = useMemo(() => new URLSearchParams(search).get('id') ?? '', [search])
 
   // Find the matching data record from canonical summary
-  const recSummary = useMemo(() => selectRecommendationListItems().find(r => String(r.id) === grwId), [grwId])
+  const recSummary = useMemo(() => {
+    const numericId = grwIdToNumeric(grwId)
+    return selectRecommendationListItems().find(r => r.id === numericId)
+  }, [grwId])
 
   // Find the matching canonical detail record
   const rec = useMemo(() => {

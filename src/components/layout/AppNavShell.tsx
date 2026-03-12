@@ -92,7 +92,7 @@ export function AppNavShell({
             <span className="text-lg font-semibold tracking-widest text-foreground">Poseidon</span>
           </Link>
         </div>
-        <nav className="flex flex-col gap-1 px-3 pb-8" aria-label="Navigation">
+        <nav className="flex flex-col gap-1 px-3 pb-8" aria-label="Main navigation">
           {NAV_ITEMS.map((item) => {
             const isActive = path === item.path || path.startsWith(item.path + '/');
             const Icon = item.icon;
@@ -136,43 +136,51 @@ export function AppNavShell({
         />
 
         {/* ── Mobile top header ── */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between px-3 bg-[#08080D]/90 border-b border-white/5 backdrop-blur-xl lg:hidden">
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => setDrawerOpen(true)}
-              className="flex h-11 w-11 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-              aria-label="Open menu"
-            >
-              <Menu className="h-5 w-5" />
-            </button>
-            <Link to="/" className="flex items-center gap-1.5" aria-label="Poseidon home">
-              <img
-                src="/logo.png"
-                alt=""
-                width="40"
-                height="40"
-                className="h-10 w-10 object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
-                aria-hidden="true"
-              />
-              <span className="text-sm font-semibold tracking-widest text-foreground">Poseidon</span>
-            </Link>
-          </div>
-          <div className="pointer-events-none absolute left-1/2 flex max-w-[56vw] -translate-x-1/2 items-center gap-2">
-            <span className="truncate text-sm font-medium text-foreground">{activeSection?.label ?? ''}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Link to="/settings" className={cn("relative flex h-11 w-11 items-center justify-center rounded-lg transition-colors", path === '/settings' ? 'text-foreground' : 'text-muted-foreground')} aria-label="Settings">
-              <Settings className="h-5 w-5" aria-hidden="true" />
-            </Link>
-            <Button variant="ghost" size="icon" className="relative !h-11 !min-h-11 !w-11 rounded-lg !px-0 text-muted-foreground" onClick={() => navigate('/dashboard/notifications')} aria-label="Notifications">
-              <Bell className="h-5 w-5" aria-hidden="true" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" aria-hidden="true" />
-            </Button>
+        <header className="sticky top-0 z-30 border-b border-white/5 bg-[#08080D]/90 px-3 backdrop-blur-xl lg:hidden">
+          <div className="grid h-16 grid-cols-[auto,1fr,auto] items-center gap-2">
+            <div className="flex items-center gap-1 min-w-0">
+              <button
+                onClick={() => setDrawerOpen(true)}
+                className="flex h-11 w-11 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                aria-label="Open menu"
+              >
+                <Menu className="h-5 w-5" />
+              </button>
+              <Link to="/" className="flex min-w-0 items-center gap-1.5" aria-label="Poseidon home">
+                <img
+                  src="/logo.png"
+                  alt=""
+                  width="40"
+                  height="40"
+                  className="h-10 w-10 object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
+                  aria-hidden="true"
+                />
+                <span className="hidden min-[430px]:inline text-sm font-semibold tracking-widest text-foreground">
+                  Poseidon
+                </span>
+              </Link>
+            </div>
+            <nav aria-label="Breadcrumb" className="min-w-0">
+              <ol className="flex items-center justify-center">
+                <li className="truncate px-1 text-center text-sm font-medium text-foreground">
+                  {activeSection?.label ?? ''}
+                </li>
+              </ol>
+            </nav>
+            <div className="flex items-center justify-end gap-1">
+              <Link to="/settings" className={cn("relative flex h-11 w-11 items-center justify-center rounded-lg transition-colors", path === '/settings' ? 'text-foreground' : 'text-muted-foreground')} aria-label="Settings">
+                <Settings className="h-5 w-5" aria-hidden="true" />
+              </Link>
+              <Button variant="ghost" size="icon" className="relative !h-11 !min-h-11 !w-11 rounded-lg !px-0 text-muted-foreground" onClick={() => navigate('/dashboard/notifications')} aria-label="Notifications">
+                <Bell className="h-5 w-5" aria-hidden="true" />
+                <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" aria-hidden="true" />
+              </Button>
+            </div>
           </div>
         </header>
 
         {/* ── Main content ── */}
-        <main className="flex-1">
+        <main id="main-content" className="flex-1 pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:pb-0">
           <AnimatePresence mode="popLayout">
             <motion.div
               key={path}
@@ -185,8 +193,6 @@ export function AppNavShell({
             </motion.div>
           </AnimatePresence>
         </main>
-
-        <div className="h-16 lg:hidden" aria-hidden="true" />
       </div>
 
       {/* Talk your money FAB disabled */}

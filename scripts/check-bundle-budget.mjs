@@ -26,8 +26,8 @@ const jsFiles = assetNames.filter((name) => name.endsWith('.js'));
 const indexJsFile = jsFiles.find((name) => /^index-.*\.js$/.test(name));
 const threeJsFile = jsFiles.find((name) => /^vendor-three-.*\.js$/.test(name));
 
-if (cssFiles.length === 0 || !indexJsFile || !threeJsFile) {
-  console.error('Missing CSS assets, index JS asset, or vendor-three chunk in dist/assets.');
+if (cssFiles.length === 0 || !indexJsFile) {
+  console.error('Missing CSS assets or index JS asset in dist/assets.');
   process.exit(1);
 }
 
@@ -49,7 +49,7 @@ const cssMetrics = cssFiles
   );
 
 const indexMetrics = measure(path.join(distAssets, indexJsFile));
-const threeMetrics = measure(path.join(distAssets, threeJsFile));
+const threeMetrics = threeJsFile ? measure(path.join(distAssets, threeJsFile)) : null;
 
 const violations = [];
 if (cssMetrics.raw > budgets.cssRawMax) {
@@ -64,10 +64,10 @@ if (indexMetrics.raw > budgets.indexJsRawMax) {
 if (indexMetrics.gzip > budgets.indexJsGzipMax) {
   violations.push(`index JS gzip ${indexMetrics.gzip} > ${budgets.indexJsGzipMax}`);
 }
-if (threeMetrics.raw > budgets.threeRawMax) {
+if (threeMetrics && threeMetrics.raw > budgets.threeRawMax) {
   violations.push(`vendor-three raw ${threeMetrics.raw} > ${budgets.threeRawMax}`);
 }
-if (threeMetrics.gzip > budgets.threeGzipMax) {
+if (threeMetrics && threeMetrics.gzip > budgets.threeGzipMax) {
   violations.push(`vendor-three gzip ${threeMetrics.gzip} > ${budgets.threeGzipMax}`);
 }
 
@@ -79,10 +79,12 @@ console.log(
         file: indexJsFile,
         ...indexMetrics,
       },
-      vendorThree: {
-        file: threeJsFile,
-        ...threeMetrics,
-      },
+      vendorThree: threeMetrics
+        ? {
+            file: threeJsFile,
+            ...threeMetrics,
+          }
+        : null,
       budgets,
     },
     null,

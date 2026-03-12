@@ -65,7 +65,7 @@ export default defineConfig({
           const chartLibs = ['/recharts/', '/d3-', '/internmap/'];
           if (chartLibs.some((segment) => id.includes(segment))) return 'vendor-charts';
 
-          const threeLibs = ['/three/', '/@react-three/fiber/'];
+          const threeLibs = ['/three/', '/@react-three/fiber/', '/@react-three/drei/'];
           if (threeLibs.some((segment) => id.includes(segment))) return 'vendor-three';
 
           if (id.includes('/framer-motion/') || id.includes('/motion-dom/')) return 'vendor-motion';
@@ -81,7 +81,7 @@ export default defineConfig({
           // PDF tooling
           if (id.includes('/pdfjs-dist/') || id.includes('/pdf.worker')) return 'vendor-pdf';
 
-          return 'vendor-runtime';
+          return undefined;
         },
       },
     },

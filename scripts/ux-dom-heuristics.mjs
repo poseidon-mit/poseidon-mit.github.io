@@ -65,7 +65,7 @@ try {
       autofixable: false,
     });
 
-    const primaryCtaCount = await page.locator('.entry-btn--primary').count();
+    const primaryCtaCount = await page.locator('[data-cta-priority="primary"], .entry-btn--primary').count();
     checks.push({
       route,
       key: 'cta-budget',

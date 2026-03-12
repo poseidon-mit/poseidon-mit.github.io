@@ -61,11 +61,18 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0F] text-white overflow-hidden overflow-x-hidden w-full relative">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-xl focus:bg-[var(--engine-grow)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-slate-950"
+      >
+        Skip to main content
+      </a>
 
       {/* ════════════════════════════════════════════════════════════════════════
        * SECTION 1 — Hero with Background Video
        * ════════════════════════════════════════════════════════════════════════ */}
-      <section className="relative min-h-[100dvh] w-full flex flex-col items-center overflow-hidden">
+      <main id="main-content" role="main">
+        <section className="relative min-h-[100dvh] w-full flex flex-col items-center overflow-hidden">
 
         {/* Background video (z-0) */}
         <video
@@ -106,13 +113,13 @@ export default function Landing() {
               {/* Mobile Presentation Link removed as requested */}
               <Link
                 to="/login"
-                className="bg-white text-[#171717] px-4 py-2 rounded-lg font-semibold text-sm border border-[#d4d4d4] hover:bg-gray-100 transition-colors"
+                className="px-4 py-2 rounded-lg font-semibold text-sm text-white/70 hover:text-white transition-colors"
               >
                 Sign In
               </Link>
               <Link
                 to="/dashboard"
-                className="bg-[#7b39fc] text-[#fafafa] px-4 py-2 rounded-lg font-semibold text-sm hover:bg-[#6d2fe0] transition-colors"
+                className="px-4 py-2 rounded-lg border border-white/10 font-semibold text-sm text-white/80 hover:bg-white/5 hover:text-white transition-colors"
               >
                 Get Started
               </Link>
@@ -151,7 +158,11 @@ export default function Landing() {
               <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center justify-center max-w-2xl mx-auto">
                 <Link
                   to="/dashboard?demo=true"
-                  className="bg-[#7b39fc] px-6 py-3.5 rounded-[10px] font-medium text-base text-white hover:bg-[#6d2fe0] transition-colors inline-flex items-center gap-2 whitespace-nowrap"
+                  data-cta-priority="primary"
+                  className="px-6 py-3.5 rounded-[10px] font-medium text-base text-slate-950 transition-colors inline-flex items-center gap-2 whitespace-nowrap"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--engine-grow), color-mix(in srgb, var(--engine-grow) 72%, white))',
+                  }}
                 >
                   Explore Prototype
                   <ArrowRight size={16} />
@@ -160,14 +171,14 @@ export default function Landing() {
                   href="https://youtu.be/ymwtd7X3CYI?si=T_4MA_Zs7n8Rf91U"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-[#2b2344] px-6 py-3.5 rounded-[10px] font-medium text-base text-[#f6f7f9] hover:bg-[#372d52] transition-colors inline-flex items-center gap-2 whitespace-nowrap"
+                  className="px-3 py-2 text-sm font-medium text-white/65 hover:text-white transition-colors inline-flex items-center gap-2 whitespace-nowrap"
                 >
                   <PlayCircle size={16} />
                   Video
                 </a>
                 <Link
                   to="/deck"
-                  className="bg-white/[0.05] border border-white/10 px-6 py-3.5 rounded-[10px] font-medium text-base text-[#f6f7f9] hover:bg-white/10 hover:border-white/20 transition-colors inline-flex items-center gap-2 whitespace-nowrap"
+                  className="px-3 py-2 text-sm font-medium text-white/65 hover:text-white transition-colors inline-flex items-center gap-2 whitespace-nowrap"
                 >
                   <Presentation size={16} />
                   Presentation
@@ -204,12 +215,12 @@ export default function Landing() {
             />
           </div>
         </motion.div>
-      </section>
+        </section>
 
       {/* ════════════════════════════════════════════════════════════════════════
        * SECTION 2 — Value Proof
        * ════════════════════════════════════════════════════════════════════════ */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24">
+        <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24">
         <motion.span
           className="mb-12 text-[10px] font-semibold uppercase tracking-[0.25em] text-white/30"
           initial={{ opacity: 0 }}
@@ -257,12 +268,12 @@ export default function Landing() {
             )
           })}
         </motion.div>
-      </section>
+        </section>
 
       {/* ════════════════════════════════════════════════════════════════════════
        * SECTION 3 — How It Works
        * ════════════════════════════════════════════════════════════════════════ */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24">
+        <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24">
         <motion.span
           className="mb-16 text-[10px] font-semibold uppercase tracking-[0.25em] text-white/30"
           initial={{ opacity: 0 }}
@@ -309,12 +320,12 @@ export default function Landing() {
             </motion.div>
           ))}
         </motion.div>
-      </section>
+        </section>
 
       {/* ════════════════════════════════════════════════════════════════════════
        * SECTION 4 — Final CTA
        * ════════════════════════════════════════════════════════════════════════ */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24">
+        <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24">
         {/* Trust signals */}
         <motion.div
           className="mb-10 flex flex-wrap items-center justify-center gap-4 gap-y-2"
@@ -413,7 +424,8 @@ export default function Landing() {
             MIT CTO Program · Group 7 · &copy; 2026 Poseidon.AI
           </p>
         </div>
-      </section>
+        </section>
+      </main>
     </div>
   )
 }

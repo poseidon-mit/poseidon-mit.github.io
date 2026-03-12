@@ -47,25 +47,6 @@ export default function SignupPage() {
         <div>
           <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex flex-col">
 
-            {/* Skip — instant demo access */}
-            <motion.div variants={fadeUp} className="mb-6">
-              <button
-                type="button"
-                onClick={handleSkip}
-                className="w-full flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 min-h-[44px] text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-colors"
-              >
-                Try the demo instantly
-                <ArrowRight size={14} />
-              </button>
-            </motion.div>
-
-            {/* Divider */}
-            <motion.div variants={fadeUp} className="flex items-center gap-4 mb-6">
-              <div className="flex-1 h-px bg-white/10" />
-              <span className="text-xs text-white/40 uppercase tracking-wider">or</span>
-              <div className="flex-1 h-px bg-white/10" />
-            </motion.div>
-
             {/* Passkey — primary */}
             <motion.div variants={fadeUp} className="flex flex-col items-center mb-6">
               <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-4">
@@ -75,6 +56,7 @@ export default function SignupPage() {
                 type="button"
                 onClick={handlePasskey}
                 disabled={scanning}
+                data-cta-priority="primary"
                 className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-4 min-h-[44px] text-sm font-semibold text-white hover:from-cyan-400 hover:to-blue-400 transition-all disabled:opacity-60 flex items-center justify-center gap-2"
               >
                 {scanning ? (
@@ -94,7 +76,7 @@ export default function SignupPage() {
             {/* Divider */}
             <motion.div variants={fadeUp} className="flex items-center gap-4 mb-6">
               <div className="flex-1 h-px bg-white/10" />
-              <span className="text-xs text-white/40 uppercase tracking-wider">or</span>
+              <span className="text-xs text-white/40 uppercase tracking-wider">other sign-up options</span>
               <div className="flex-1 h-px bg-white/10" />
             </motion.div>
 
@@ -103,7 +85,7 @@ export default function SignupPage() {
               <button
                 type="button"
                 onClick={() => handleSocial('google')}
-                className="flex items-center justify-center gap-3 w-full rounded-lg bg-white px-4 py-3 text-sm font-medium text-[#1f1f1f] hover:bg-[#f2f2f2] transition-colors border border-[#dadce0] shadow-sm min-h-[44px]"
+                className="flex items-center justify-center gap-3 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-sm font-medium text-white/80 hover:bg-white/[0.06] hover:text-white transition-colors min-h-[44px]"
               >
                 <svg className="w-[18px] h-[18px]" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
                   <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z" fill="#4285F4"/>
@@ -116,12 +98,23 @@ export default function SignupPage() {
               <button
                 type="button"
                 onClick={() => handleSocial('apple')}
-                className="flex items-center justify-center gap-3 w-full rounded-lg bg-white px-4 py-3 text-sm font-medium text-black hover:bg-[#f2f2f2] transition-colors border border-[#dadce0] shadow-sm min-h-[44px]"
+                className="flex items-center justify-center gap-3 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-sm font-medium text-white/80 hover:bg-white/[0.06] hover:text-white transition-colors min-h-[44px]"
               >
                 <svg className="w-[18px] h-[18px]" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M13.71 14.12c-.74 1.1-1.54 2.19-2.76 2.21-1.21.02-1.6-.72-2.98-.72s-1.81.7-2.96.74c-1.18.04-2.09-1.19-2.84-2.28C.62 11.72-.6 7.93.89 5.35A4.35 4.35 0 0 1 4.6 3.07c1.17-.02 2.27.79 2.98.79.72 0 2.06-.97 3.47-.83.59.02 2.24.24 3.3 1.8-.09.05-1.97 1.15-1.95 3.44.02 2.73 2.4 3.64 2.42 3.65-.02.06-.38 1.3-1.25 2.57l.14-.37ZM10.87 1.88c.59-.72 1.57-1.25 2.39-1.29.1 1.06-.31 2.12-.88 2.88-.56.76-1.48 1.35-2.39 1.27-.12-1.03.36-2.12.88-2.86Z" fill="#000"/>
+                  <path d="M13.71 14.12c-.74 1.1-1.54 2.19-2.76 2.21-1.21.02-1.6-.72-2.98-.72s-1.81.7-2.96.74c-1.18.04-2.09-1.19-2.84-2.28C.62 11.72-.6 7.93.89 5.35A4.35 4.35 0 0 1 4.6 3.07c1.17-.02 2.27.79 2.98.79.72 0 2.06-.97 3.47-.83.59.02 2.24.24 3.3 1.8-.09.05-1.97 1.15-1.95 3.44.02 2.73 2.4 3.64 2.42 3.65-.02.06-.38 1.3-1.25 2.57l.14-.37ZM10.87 1.88c.59-.72 1.57-1.25 2.39-1.29.1 1.06-.31 2.12-.88 2.88-.56.76-1.48 1.35-2.39 1.27-.12-1.03.36-2.12.88-2.86Z" fill="currentColor"/>
                 </svg>
                 Sign up with Apple
+              </button>
+            </motion.div>
+
+            <motion.div variants={fadeUp} className="mb-6 flex justify-center">
+              <button
+                type="button"
+                onClick={handleSkip}
+                className="inline-flex items-center gap-2 text-sm font-medium text-white/55 hover:text-white transition-colors"
+              >
+                Try the demo instantly
+                <ArrowRight size={14} />
               </button>
             </motion.div>
 

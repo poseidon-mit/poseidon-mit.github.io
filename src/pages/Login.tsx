@@ -113,6 +113,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={handleAuth}
                 disabled={authState !== 'idle'}
+                data-cta-priority="primary"
                 className="w-full rounded-2xl py-7 text-lg font-bold shadow-[0_0_30px_rgba(6,182,212,0.2)] hover:shadow-[0_0_50px_rgba(6,182,212,0.4)] transition-all flex justify-center items-center gap-2 border border-cyan-500/50 bg-cyan-500 text-slate-950 hover:bg-cyan-400"
               >
                 {authState === 'idle' ? (
@@ -129,7 +130,7 @@ export default function LoginPage() {
                   beginDemoSession({ method: 'skip', email: DEMO_USER.email, entryIntent: 'express' })
                   navigate(nextPath)
                 }}
-                className="block mx-auto mt-3 text-sm text-slate-400 hover:text-slate-200 transition-colors"
+                className="block mx-auto mt-3 text-sm text-slate-500 hover:text-slate-200 transition-colors"
               >
                 Skip to demo
               </button>

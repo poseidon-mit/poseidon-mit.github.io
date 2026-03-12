@@ -1,3 +1,12 @@
+# Current Task: Web Review Implementation (2026-03-12)
+
+- [ ] Fix shared shell mobile header collisions, bottom-nav safe space, and canonical `main#main-content`
+- [ ] Reduce public/auth CTA competition and align primary CTA markers with the current app architecture
+- [ ] Improve core hero CTA hierarchy where live routes still present multiple equally-primary actions
+- [ ] Raise muted token contrast and spot-check affected shell/public surfaces
+- [ ] Repair UX/a11y/bundle guardrails so they validate the current route map and emitted build chunks
+- [ ] Verify with `check:a11y-structure`, `ux:scan`, `test:smoke`, `build`, and live mobile checks
+
 # Poseidon.AI Operational Rewrite Ledger (Phase-Gated, Scientific UX Enforcement)
 
 This ledger strictly governs the implementation AI. No phase may begin until the previous phase's row is complete. No route/subcomponent is complete until every validation column is explicitly verified and checked off.

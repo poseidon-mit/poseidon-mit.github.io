@@ -303,6 +303,7 @@ export function ExecuteHero({
           {onReviewApproval && (
             <button
               onClick={onReviewApproval}
+              data-cta-priority="primary"
               className={cn(
                 buttonVariants({ variant: 'default', size: 'lg' }),
                 'h-auto w-full md:w-auto self-end rounded-2xl px-8 py-4 min-h-[48px]',

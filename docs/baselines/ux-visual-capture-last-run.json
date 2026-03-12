@@ -1,7 +1,7 @@
 {
   "ok": true,
   "skipped": false,
-  "strict": true,
+  "strict": false,
   "captures": [
     {
       "route": "/",

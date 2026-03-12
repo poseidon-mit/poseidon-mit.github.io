@@ -17,6 +17,7 @@ import {
   ChevronRight,
   type LucideIcon,
 } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { HeroBento } from './hero-bento'
 import { CountUp } from './count-up'
 import { KpiCard } from './kpi-card'
@@ -128,6 +129,7 @@ export function DashboardHero({
                 secondaryLine={`${protectSignal.topAmount} flagged · ${protectSignal.topCounterparty}`}
                 navigateTo="/protect"
                 onNavigate={onNavigate}
+                priority="primary"
                 delayClass=""
               />
             )}
@@ -139,6 +141,7 @@ export function DashboardHero({
                 secondaryLine={`${growSignal.recCount} recommendation${growSignal.recCount !== 1 ? 's' : ''}`}
                 navigateTo="/grow"
                 onNavigate={onNavigate}
+                priority="secondary"
                 delayClass="animate-fade-up-delay-1"
               />
             )}
@@ -150,6 +153,7 @@ export function DashboardHero({
                 secondaryLine={`${executeSignal.topAmount} tax savings`}
                 navigateTo="/execute"
                 onNavigate={onNavigate}
+                priority="secondary"
                 delayClass="animate-fade-up-delay-2"
               />
             )}
@@ -338,6 +342,7 @@ function EngineSignalCard({
   secondaryLine,
   navigateTo,
   onNavigate,
+  priority,
   delayClass,
 }: {
   engine: string
@@ -346,6 +351,7 @@ function EngineSignalCard({
   secondaryLine: string
   navigateTo: string
   onNavigate: (path: string) => void
+  priority: 'primary' | 'secondary'
   delayClass: string
 }) {
   const cssVar = ENGINE_CSS_VAR[engine] ?? '--engine-dashboard'
@@ -354,8 +360,13 @@ function EngineSignalCard({
     <button
       type="button"
       onClick={() => onNavigate(navigateTo)}
+      data-cta-priority={priority === 'primary' ? 'primary' : undefined}
       className={`animate-fade-up ${delayClass} flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 rounded-xl bg-[#0A0A0A]/40 backdrop-blur-md border border-white/5 border-l-4 p-4 md:p-5 w-full cursor-pointer hover:bg-white/5 transition-colors overflow-hidden relative group`}
-      style={{ borderLeftColor: `var(${cssVar})` }}
+      style={{
+        borderLeftColor: `var(${cssVar})`,
+        backgroundColor: priority === 'primary' ? 'rgba(255,255,255,0.06)' : undefined,
+        boxShadow: priority === 'primary' ? `0 0 36px color-mix(in srgb, var(${cssVar}) 12%, transparent)` : undefined,
+      }}
     >
       <div 
         className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"
@@ -377,7 +388,14 @@ function EngineSignalCard({
           {secondaryLine}
         </span>
       </div>
-      <div className="mt-2 sm:mt-0 ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/5 border border-white/10 text-xs font-medium text-white/60 group-hover:bg-white/10 transition-colors">
+      <div
+        className={cn(
+          'mt-2 sm:mt-0 ml-auto flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+          priority === 'primary'
+            ? 'border border-white/[0.15] bg-white/[0.08] text-white/80 group-hover:bg-white/[0.12]'
+            : 'border border-white/10 bg-white/5 text-white/55 group-hover:bg-white/10'
+        )}
+      >
         View
         <ChevronRight size={14} />
       </div>

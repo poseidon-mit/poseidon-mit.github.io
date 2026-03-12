@@ -120,6 +120,7 @@ export function ProtectAnomalyRadar({
             <div className="flex flex-col gap-3 mt-auto lg:mt-0">
               <button
                 onClick={onReviewThreat}
+                data-cta-priority="primary"
                 className={cn(
                   buttonVariants({ variant: 'default', size: 'lg' }),
                   'h-auto w-full md:w-auto rounded-2xl px-8 py-4 min-h-[44px]',
@@ -134,11 +135,11 @@ export function ProtectAnomalyRadar({
               <Link
                 to={auditChain ? `/govern/audit-detail?decision=${auditChain.decisionId}` : '/govern/audit'}
                 className={cn(
-                  buttonVariants({ variant: 'default', size: 'lg' }),
+                  buttonVariants({ variant: 'outline', size: 'lg' }),
                   'h-auto w-full md:w-auto rounded-2xl px-8 py-4 min-h-[44px]',
-                  'bg-gradient-to-r from-blue-500 to-cyan-500 text-slate-950',
+                  'border-white/12 bg-white/[0.03] text-white/75',
                   'font-semibold tracking-wide text-sm',
-                  'hover:from-blue-400 hover:to-cyan-400 transition-all',
+                  'hover:bg-white/[0.06] hover:text-white transition-all',
                   'flex items-center justify-center gap-2',
                 )}
               >
@@ -272,6 +273,7 @@ export function ProtectThreatPosture({
           <div className="flex flex-col lg:min-w-[300px] lg:border-l lg:border-white/5 p-6 lg:p-10 justify-end mt-4 lg:mt-0 pt-4 lg:pt-0 border-t border-white/[0.06] lg:border-t-0 bg-white/[0.02]">
             <button
               onClick={onOpenTopAlert}
+              data-cta-priority="primary"
               className={cn(
                 buttonVariants({ variant: 'default', size: 'lg' }),
                 'h-auto w-full md:w-auto self-start rounded-2xl px-8 py-4 min-h-[44px]',

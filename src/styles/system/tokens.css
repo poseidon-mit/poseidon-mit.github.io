@@ -40,8 +40,8 @@
 
   /* ── Colors — Text (Dark) ── */
   --text: #F0F0F5;
-  --muted: rgba(255, 255, 255, 0.55);
-  --muted-2: rgba(255, 255, 255, 0.35);
+  --muted: rgba(255, 255, 255, 0.7);
+  --muted-2: rgba(255, 255, 255, 0.6);
   --text-on-accent: #0A0A0F;
 
   /* ── Colors — Accents (Precision-calibrated) ── */

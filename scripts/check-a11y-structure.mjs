@@ -14,32 +14,9 @@ function read(file) {
   return fs.readFileSync(fullPath, 'utf8');
 }
 
-const targetRouteFiles = [
-  'src/pages/Landing.tsx',
-  'src/pages/Pricing.tsx',
-  'src/pages/Signup.tsx',
-  'src/pages/Login.tsx',
-  'src/pages/Onboarding.tsx',
-  'src/pages/OnboardingGoals.tsx',
-  'src/pages/OnboardingConsent.tsx',
-  'src/pages/OnboardingComplete.tsx',
-  'src/pages/Dashboard.tsx',
-  'src/pages/Protect.tsx',
-  'src/pages/ProtectAlertDetail.tsx',
-  'src/pages/Grow.tsx',
-  'src/pages/GrowGoalDetail.tsx',
-  'src/pages/GrowScenarios.tsx',
-  'src/pages/Execute.tsx',
-  'src/pages/ExecuteHistory.tsx',
-  'src/pages/Govern.tsx',
-  'src/pages/GovernAuditLedger.tsx',
-  'src/pages/Settings.tsx',
-  'src/pages/NotFound.tsx',
-];
-
-for (const file of targetRouteFiles) {
+function assertMainLandmark(file) {
   const source = read(file);
-  if (!source) continue;
+  if (!source) return;
 
   const hasMainId = source.includes('id="main-content"');
   const hasMainRole = source.includes('role="main"') || /<(?:motion\.)?main[\s>]/.test(source);
@@ -49,15 +26,39 @@ for (const file of targetRouteFiles) {
   }
 }
 
-const appNav = read('src/components/layout/AppNavShell.tsx');
-if (appNav) {
-  if (!/aria-label="Main navigation"/.test(appNav)) {
-    failures.push('src/components/layout/AppNavShell.tsx: main nav aria label is required.');
-  }
-  if (!/aria-label="Breadcrumb"/.test(appNav)) {
-    failures.push('src/components/layout/AppNavShell.tsx: breadcrumb aria label is required.');
-  }
+function assertPattern(file, pattern, message) {
+  const source = read(file);
+  if (!source) return;
+  if (!pattern.test(source)) failures.push(`${file}: ${message}`);
 }
+
+[
+  'src/pages/Landing.tsx',
+  'src/components/layout/AuthShell.tsx',
+  'src/components/layout/AppNavShell.tsx',
+  'src/pages/NotFound.tsx',
+].forEach(assertMainLandmark);
+
+assertPattern(
+  'src/components/landing/PublicTopBar.tsx',
+  /aria-label="Main navigation"/,
+  'main nav aria label is required.',
+);
+assertPattern(
+  'src/components/navigation/Sidebar.tsx',
+  /aria-label="Main navigation"/,
+  'main nav aria label is required.',
+);
+assertPattern(
+  'src/components/navigation/TopBar.tsx',
+  /aria-label="Breadcrumb"/,
+  'breadcrumb aria label is required.',
+);
+assertPattern(
+  'src/components/layout/AppNavShell.tsx',
+  /aria-label="Breadcrumb"/,
+  'mobile breadcrumb aria label is required.',
+);
 
 if (failures.length > 0) {
   console.error('A11y structure checks failed:');

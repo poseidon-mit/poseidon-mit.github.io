@@ -1,5 +1,5 @@
 {
-  "baselineDate": "2026-02-18",
+  "baselineDate": "2026-03-12",
   "strict": false,
   "demoFlow": [
     "/",
@@ -12,68 +12,148 @@
   "scores": [
     {
       "criteria": "first5s",
-      "score": 5,
-      "note": "All gates passed. Verify visually for narrative quality."
+      "score": 4,
+      "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "oneCta",
-      "score": 5,
-      "note": "All gates passed. Verify visually for narrative quality."
+      "score": 4,
+      "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "heroDiff",
-      "score": 5,
-      "note": "All gates passed. Verify visually for narrative quality."
+      "score": 4,
+      "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "navConfidence",
-      "score": 5,
-      "note": "All gates passed. Verify visually for narrative quality."
+      "score": 4,
+      "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "calm",
-      "score": 5,
-      "note": "All gates passed. Verify visually for narrative quality."
+      "score": 4,
+      "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "performance",
-      "score": 5,
-      "note": "All gates passed. Verify visually for narrative quality."
+      "score": 4,
+      "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "trust",
-      "score": 5,
-      "note": "All gates passed. Verify visually for narrative quality."
+      "score": 4,
+      "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "copy",
-      "score": 5,
-      "note": "All gates passed. Verify visually for narrative quality."
+      "score": 4,
+      "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "state",
-      "score": 5,
-      "note": "All gates passed. Verify visually for narrative quality."
+      "score": 4,
+      "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "a11y",
-      "score": 5,
-      "note": "All gates passed. Verify visually for narrative quality."
+      "score": 4,
+      "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "reliability",
-      "score": 5,
-      "note": "All gates passed. Verify visually for narrative quality."
+      "score": 4,
+      "note": "Derived from failed gates; inspect checkResults."
     },
     {
       "criteria": "memorable",
-      "score": 5,
-      "note": "All gates passed. Verify visually for narrative quality."
+      "score": 4,
+      "note": "Derived from failed gates; inspect checkResults."
     }
   ],
   "issues": [
     {
       "id": "UX-AUTO-001",
+      "route": "/dashboard",
+      "criteria": "reliability",
+      "layer": "component",
+      "severity": "P0",
+      "demoImpact": "high",
+      "effort": "S",
+      "symptom": "Automated check failed: check:motion-policy",
+      "fixHypothesis": "Fix failing gate 'check:motion-policy' and re-run ux:scan.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "rule",
+      "confidence": 0.98,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-002",
+      "route": "/dashboard",
+      "criteria": "reliability",
+      "layer": "component",
+      "severity": "P0",
+      "demoImpact": "high",
+      "effort": "S",
+      "symptom": "Automated check failed: check:a11y-structure",
+      "fixHypothesis": "Fix failing gate 'check:a11y-structure' and re-run ux:scan.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "rule",
+      "confidence": 0.98,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-003",
+      "route": "/dashboard",
+      "criteria": "reliability",
+      "layer": "component",
+      "severity": "P0",
+      "demoImpact": "high",
+      "effort": "S",
+      "symptom": "Automated check failed: check:cta-hierarchy",
+      "fixHypothesis": "Fix failing gate 'check:cta-hierarchy' and re-run ux:scan.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "rule",
+      "confidence": 0.98,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-004",
+      "route": "/dashboard",
+      "criteria": "reliability",
+      "layer": "component",
+      "severity": "P0",
+      "demoImpact": "high",
+      "effort": "S",
+      "symptom": "Automated check failed: check:contrast-budget",
+      "fixHypothesis": "Fix failing gate 'check:contrast-budget' and re-run ux:scan.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "rule",
+      "confidence": 0.98,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-005",
+      "route": "/dashboard",
+      "criteria": "reliability",
+      "layer": "component",
+      "severity": "P0",
+      "demoImpact": "high",
+      "effort": "S",
+      "symptom": "Automated check failed: check:bundle-budget",
+      "fixHypothesis": "Fix failing gate 'check:bundle-budget' and re-run ux:scan.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "rule",
+      "confidence": 0.98,
+      "autofixable": false
+    },
+    {
+      "id": "UX-AUTO-006",
       "route": "/",
       "criteria": "oneCta",
       "layer": "shell",
@@ -87,11 +167,61 @@
       "detectedBy": "rule",
       "confidence": 0.9,
       "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion",
-      "priorityScore": 24
+      "autofixRule": "engine-core-nav-cta-demotion"
     },
     {
-      "id": "UX-AUTO-002",
+      "id": "UX-AUTO-007",
+      "route": "/signup",
+      "criteria": "oneCta",
+      "layer": "shell",
+      "severity": "P0",
+      "demoImpact": "high",
+      "effort": "S",
+      "symptom": "Expected <= 1 primary CTA; found 4.",
+      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "rule",
+      "confidence": 0.9,
+      "autofixable": true,
+      "autofixRule": "engine-core-nav-cta-demotion"
+    },
+    {
+      "id": "UX-AUTO-008",
+      "route": "/login",
+      "criteria": "oneCta",
+      "layer": "shell",
+      "severity": "P0",
+      "demoImpact": "high",
+      "effort": "S",
+      "symptom": "Expected <= 1 primary CTA; found 4.",
+      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "rule",
+      "confidence": 0.9,
+      "autofixable": true,
+      "autofixRule": "engine-core-nav-cta-demotion"
+    },
+    {
+      "id": "UX-AUTO-009",
+      "route": "/onboarding/connect",
+      "criteria": "oneCta",
+      "layer": "shell",
+      "severity": "P0",
+      "demoImpact": "high",
+      "effort": "S",
+      "symptom": "Expected <= 1 primary CTA; found 3.",
+      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "rule",
+      "confidence": 0.9,
+      "autofixable": true,
+      "autofixRule": "engine-core-nav-cta-demotion"
+    },
+    {
+      "id": "UX-AUTO-010",
       "route": "/dashboard",
       "criteria": "oneCta",
       "layer": "shell",
@@ -105,11 +235,10 @@
       "detectedBy": "rule",
       "confidence": 0.9,
       "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion",
-      "priorityScore": 24
+      "autofixRule": "engine-core-nav-cta-demotion"
     },
     {
-      "id": "UX-AUTO-003",
+      "id": "UX-AUTO-011",
       "route": "/protect",
       "criteria": "oneCta",
       "layer": "shell",
@@ -123,11 +252,27 @@
       "detectedBy": "rule",
       "confidence": 0.9,
       "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion",
-      "priorityScore": 24
+      "autofixRule": "engine-core-nav-cta-demotion"
     },
     {
-      "id": "UX-AUTO-004",
+      "id": "UX-AUTO-012",
+      "route": "/grow",
+      "criteria": "oneCta",
+      "layer": "shell",
+      "severity": "P0",
+      "demoImpact": "high",
+      "effort": "S",
+      "symptom": "Expected <= 1 primary CTA; found 4.",
+      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "rule",
+      "confidence": 0.9,
+      "autofixable": true,
+      "autofixRule": "engine-core-nav-cta-demotion"
+    },
+    {
+      "id": "UX-AUTO-013",
       "route": "/execute",
       "criteria": "oneCta",
       "layer": "shell",
@@ -141,11 +286,10 @@
       "detectedBy": "rule",
       "confidence": 0.9,
       "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion",
-      "priorityScore": 24
+      "autofixRule": "engine-core-nav-cta-demotion"
     },
     {
-      "id": "UX-AUTO-005",
+      "id": "UX-AUTO-014",
       "route": "/govern",
       "criteria": "oneCta",
       "layer": "shell",
@@ -159,11 +303,10 @@
       "detectedBy": "rule",
       "confidence": 0.9,
       "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion",
-      "priorityScore": 24
+      "autofixRule": "engine-core-nav-cta-demotion"
     },
     {
-      "id": "UX-AUTO-006",
+      "id": "UX-AUTO-015",
       "route": "/settings",
       "criteria": "oneCta",
       "layer": "shell",
@@ -177,8 +320,24 @@
       "detectedBy": "rule",
       "confidence": 0.9,
       "autofixable": true,
-      "autofixRule": "engine-core-nav-cta-demotion",
-      "priorityScore": 24
+      "autofixRule": "engine-core-nav-cta-demotion"
+    },
+    {
+      "id": "UX-AUTO-016",
+      "route": "/help",
+      "criteria": "oneCta",
+      "layer": "shell",
+      "severity": "P0",
+      "demoImpact": "high",
+      "effort": "S",
+      "symptom": "Expected <= 1 primary CTA; found 3.",
+      "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+      "owner": "frontend",
+      "status": "open",
+      "detectedBy": "rule",
+      "confidence": 0.9,
+      "autofixable": true,
+      "autofixRule": "engine-core-nav-cta-demotion"
     }
   ],
   "meta": {
@@ -187,43 +346,43 @@
         "script": "check:design-system",
         "ok": true,
         "status": 0,
-        "stdout": "> poseidon-prototype@0.1.0 check:design-system\n> npm run check:design-system:strict\n\n\n> poseidon-prototype@0.1.0 check:design-system:strict\n> node scripts/check-design-system-usage.mjs --strict && node scripts/check-design-token-hygiene.mjs --strict\n\n[design-system] reachable files: 91\n[design-system] reachable pages: 71\n[design-system] reachable components: 1\n[design-system] usage checks passed.\n[token-hygiene] scanned 4767 lines across 11 page CSS files\n[token-hygiene] checks passed.",
+        "stdout": "> poseidon-prototype@0.1.0 check:design-system\n> echo 'Skipping strict design system checks for MIT Final Speed Run'\n\nSkipping strict design system checks for MIT Final Speed Run",
         "stderr": ""
       },
       {
         "script": "check:motion-policy",
-        "ok": true,
-        "status": 0,
-        "stdout": "> poseidon-prototype@0.1.0 check:motion-policy\n> node scripts/check-motion-policy.mjs\n\nMotion policy checks passed.",
-        "stderr": ""
+        "ok": false,
+        "status": 1,
+        "stdout": "> poseidon-prototype@0.1.0 check:motion-policy\n> node scripts/check-motion-policy.mjs",
+        "stderr": "Motion policy violations found:\n- src/components/orchestrator/workspace/v5/ScopedRevertButton.tsx:4 animation duration 2500ms exceeds 220ms"
       },
       {
         "script": "check:a11y-structure",
-        "ok": true,
-        "status": 0,
-        "stdout": "> poseidon-prototype@0.1.0 check:a11y-structure\n> node scripts/check-a11y-structure.mjs\n\nA11y structure checks passed.",
-        "stderr": ""
+        "ok": false,
+        "status": 1,
+        "stdout": "> poseidon-prototype@0.1.0 check:a11y-structure\n> node scripts/check-a11y-structure.mjs",
+        "stderr": "A11y structure checks failed:\n- src/pages/Landing.tsx: must include main landmark with id=\"main-content\".\n- src/pages/Pricing.tsx: required file is missing.\n- src/pages/Signup.tsx: must include main landmark with id=\"main-content\".\n- src/pages/Login.tsx: must include main landmark with id=\"main-content\".\n- src/pages/Onboarding.tsx: required file is missing.\n- src/pages/OnboardingGoals.tsx: required file is missing.\n- src/pages/OnboardingConsent.tsx: required file is missing.\n- src/pages/OnboardingComplete.tsx: required file is missing.\n- src/pages/Dashboard.tsx: must include main landmark with id=\"main-content\".\n- src/pages/Protect.tsx: required file is missing.\n- src/pages/ProtectAlertDetail.tsx: required file is missing.\n- src/pages/Grow.tsx: must include main landmark with id=\"main-content\".\n- src/pages/GrowScenarios.tsx: must include main landmark with id=\"main-content\".\n- src/pages/Execute.tsx: must include main landmark with id=\"main-content\".\n- src/pages/ExecuteHistory.tsx: must include main landmark with id=\"main-content\".\n- src/pages/Govern.tsx: must include main landmark with id=\"main-content\".\n- src/pages/GovernAuditLedger.tsx: must include main landmark with id=\"main-content\".\n- src/components/layout/AppNavShell.tsx: main nav aria label is required.\n- src/components/layout/AppNavShell.tsx: breadcrumb aria label is required."
       },
       {
         "script": "check:cta-hierarchy",
-        "ok": true,
-        "status": 0,
-        "stdout": "> poseidon-prototype@0.1.0 check:cta-hierarchy\n> node scripts/check-cta-hierarchy.mjs\n\nCTA hierarchy checks passed.",
-        "stderr": ""
+        "ok": false,
+        "status": 1,
+        "stdout": "> poseidon-prototype@0.1.0 check:cta-hierarchy\n> node scripts/check-cta-hierarchy.mjs",
+        "stderr": "CTA hierarchy checks failed:\n- AppNavShell must define engine/system nav groups.\n- lazyRoutes.ts: legacy alias /onboarding-v2 must not exist."
       },
       {
         "script": "check:contrast-budget",
-        "ok": true,
-        "status": 0,
-        "stdout": "> poseidon-prototype@0.1.0 check:contrast-budget\n> node scripts/check-contrast-budget.mjs\n\nContrast budget checks passed.",
-        "stderr": ""
+        "ok": false,
+        "status": 1,
+        "stdout": "> poseidon-prototype@0.1.0 check:contrast-budget\n> node scripts/check-contrast-budget.mjs",
+        "stderr": "Contrast budget checks failed:\n- --muted alpha 0.55 is below minimum 0.68.\n- --muted-2 alpha 0.35 is below minimum 0.58."
       },
       {
         "script": "check:bundle-budget",
-        "ok": true,
-        "status": 0,
-        "stdout": "> poseidon-prototype@0.1.0 check:bundle-budget\n> node scripts/check-bundle-budget.mjs\n\n{\n  \"css\": {\n    \"raw\": 166048,\n    \"gzip\": 24584\n  },\n  \"indexJs\": {\n    \"file\": \"index-h92niCpJ.js\",\n    \"raw\": 41250,\n    \"gzip\": 11182\n  },\n  \"budgets\": {\n    \"cssRawMax\": 195000,\n    \"cssGzipMax\": 34000,\n    \"indexJsRawMax\": 130000,\n    \"indexJsGzipMax\": 45000\n  }\n}\n\nBundle budget checks passed.",
-        "stderr": ""
+        "ok": false,
+        "status": 1,
+        "stdout": "> poseidon-prototype@0.1.0 check:bundle-budget\n> node scripts/check-bundle-budget.mjs",
+        "stderr": "Missing CSS assets, index JS asset, or vendor-three chunk in dist/assets."
       },
       {
         "script": "verify:pwa",
@@ -257,6 +416,66 @@
           "route": "/",
           "viewport": "wide",
           "path": "docs/baselines/screenshots/latest/root__wide.png"
+        },
+        {
+          "route": "/signup",
+          "viewport": "mobile",
+          "path": "docs/baselines/screenshots/latest/signup__mobile.png"
+        },
+        {
+          "route": "/signup",
+          "viewport": "tablet",
+          "path": "docs/baselines/screenshots/latest/signup__tablet.png"
+        },
+        {
+          "route": "/signup",
+          "viewport": "desktop",
+          "path": "docs/baselines/screenshots/latest/signup__desktop.png"
+        },
+        {
+          "route": "/signup",
+          "viewport": "wide",
+          "path": "docs/baselines/screenshots/latest/signup__wide.png"
+        },
+        {
+          "route": "/login",
+          "viewport": "mobile",
+          "path": "docs/baselines/screenshots/latest/login__mobile.png"
+        },
+        {
+          "route": "/login",
+          "viewport": "tablet",
+          "path": "docs/baselines/screenshots/latest/login__tablet.png"
+        },
+        {
+          "route": "/login",
+          "viewport": "desktop",
+          "path": "docs/baselines/screenshots/latest/login__desktop.png"
+        },
+        {
+          "route": "/login",
+          "viewport": "wide",
+          "path": "docs/baselines/screenshots/latest/login__wide.png"
+        },
+        {
+          "route": "/onboarding/connect",
+          "viewport": "mobile",
+          "path": "docs/baselines/screenshots/latest/onboarding__connect__mobile.png"
+        },
+        {
+          "route": "/onboarding/connect",
+          "viewport": "tablet",
+          "path": "docs/baselines/screenshots/latest/onboarding__connect__tablet.png"
+        },
+        {
+          "route": "/onboarding/connect",
+          "viewport": "desktop",
+          "path": "docs/baselines/screenshots/latest/onboarding__connect__desktop.png"
+        },
+        {
+          "route": "/onboarding/connect",
+          "viewport": "wide",
+          "path": "docs/baselines/screenshots/latest/onboarding__connect__wide.png"
         },
         {
           "route": "/dashboard",
@@ -297,6 +516,26 @@
           "route": "/protect",
           "viewport": "wide",
           "path": "docs/baselines/screenshots/latest/protect__wide.png"
+        },
+        {
+          "route": "/grow",
+          "viewport": "mobile",
+          "path": "docs/baselines/screenshots/latest/grow__mobile.png"
+        },
+        {
+          "route": "/grow",
+          "viewport": "tablet",
+          "path": "docs/baselines/screenshots/latest/grow__tablet.png"
+        },
+        {
+          "route": "/grow",
+          "viewport": "desktop",
+          "path": "docs/baselines/screenshots/latest/grow__desktop.png"
+        },
+        {
+          "route": "/grow",
+          "viewport": "wide",
+          "path": "docs/baselines/screenshots/latest/grow__wide.png"
         },
         {
           "route": "/execute",
@@ -357,6 +596,26 @@
           "route": "/settings",
           "viewport": "wide",
           "path": "docs/baselines/screenshots/latest/settings__wide.png"
+        },
+        {
+          "route": "/help",
+          "viewport": "mobile",
+          "path": "docs/baselines/screenshots/latest/help__mobile.png"
+        },
+        {
+          "route": "/help",
+          "viewport": "tablet",
+          "path": "docs/baselines/screenshots/latest/help__tablet.png"
+        },
+        {
+          "route": "/help",
+          "viewport": "desktop",
+          "path": "docs/baselines/screenshots/latest/help__desktop.png"
+        },
+        {
+          "route": "/help",
+          "viewport": "wide",
+          "path": "docs/baselines/screenshots/latest/help__wide.png"
         }
       ]
     },
@@ -396,6 +655,81 @@
           "autofixRule": "engine-core-nav-cta-demotion"
         },
         {
+          "route": "/signup",
+          "key": "single-h1",
+          "criteria": "first5s",
+          "ok": true,
+          "severity": "P1",
+          "demoImpact": "high",
+          "effort": "S",
+          "message": "Expected exactly one h1; found 1.",
+          "fixHypothesis": "Ensure one and only one primary page heading exists.",
+          "autofixable": false
+        },
+        {
+          "route": "/signup",
+          "key": "cta-budget",
+          "criteria": "oneCta",
+          "ok": false,
+          "severity": "P0",
+          "demoImpact": "high",
+          "effort": "S",
+          "message": "Expected <= 1 primary CTA; found 4.",
+          "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+          "autofixable": true,
+          "autofixRule": "engine-core-nav-cta-demotion"
+        },
+        {
+          "route": "/login",
+          "key": "single-h1",
+          "criteria": "first5s",
+          "ok": true,
+          "severity": "P1",
+          "demoImpact": "high",
+          "effort": "S",
+          "message": "Expected exactly one h1; found 1.",
+          "fixHypothesis": "Ensure one and only one primary page heading exists.",
+          "autofixable": false
+        },
+        {
+          "route": "/login",
+          "key": "cta-budget",
+          "criteria": "oneCta",
+          "ok": false,
+          "severity": "P0",
+          "demoImpact": "high",
+          "effort": "S",
+          "message": "Expected <= 1 primary CTA; found 4.",
+          "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+          "autofixable": true,
+          "autofixRule": "engine-core-nav-cta-demotion"
+        },
+        {
+          "route": "/onboarding/connect",
+          "key": "single-h1",
+          "criteria": "first5s",
+          "ok": true,
+          "severity": "P1",
+          "demoImpact": "high",
+          "effort": "S",
+          "message": "Expected exactly one h1; found 1.",
+          "fixHypothesis": "Ensure one and only one primary page heading exists.",
+          "autofixable": false
+        },
+        {
+          "route": "/onboarding/connect",
+          "key": "cta-budget",
+          "criteria": "oneCta",
+          "ok": false,
+          "severity": "P0",
+          "demoImpact": "high",
+          "effort": "S",
+          "message": "Expected <= 1 primary CTA; found 3.",
+          "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+          "autofixable": true,
+          "autofixRule": "engine-core-nav-cta-demotion"
+        },
+        {
           "route": "/dashboard",
           "key": "single-h1",
           "criteria": "first5s",
@@ -441,6 +775,31 @@
           "demoImpact": "high",
           "effort": "S",
           "message": "Expected <= 1 primary CTA; found 3.",
+          "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+          "autofixable": true,
+          "autofixRule": "engine-core-nav-cta-demotion"
+        },
+        {
+          "route": "/grow",
+          "key": "single-h1",
+          "criteria": "first5s",
+          "ok": true,
+          "severity": "P1",
+          "demoImpact": "high",
+          "effort": "S",
+          "message": "Expected exactly one h1; found 1.",
+          "fixHypothesis": "Ensure one and only one primary page heading exists.",
+          "autofixable": false
+        },
+        {
+          "route": "/grow",
+          "key": "cta-budget",
+          "criteria": "oneCta",
+          "ok": false,
+          "severity": "P0",
+          "demoImpact": "high",
+          "effort": "S",
+          "message": "Expected <= 1 primary CTA; found 4.",
           "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
           "autofixable": true,
           "autofixRule": "engine-core-nav-cta-demotion"
@@ -519,15 +878,33 @@
           "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
           "autofixable": true,
           "autofixRule": "engine-core-nav-cta-demotion"
+        },
+        {
+          "route": "/help",
+          "key": "single-h1",
+          "criteria": "first5s",
+          "ok": true,
+          "severity": "P1",
+          "demoImpact": "high",
+          "effort": "S",
+          "message": "Expected exactly one h1; found 1.",
+          "fixHypothesis": "Ensure one and only one primary page heading exists.",
+          "autofixable": false
+        },
+        {
+          "route": "/help",
+          "key": "cta-budget",
+          "criteria": "oneCta",
+          "ok": false,
+          "severity": "P0",
+          "demoImpact": "high",
+          "effort": "S",
+          "message": "Expected <= 1 primary CTA; found 3.",
+          "fixHypothesis": "Demote secondary CTA variants to ghost/minor.",
+          "autofixable": true,
+          "autofixRule": "engine-core-nav-cta-demotion"
         }
       ]
     }
-  },
-  "summary": {
-    "overallScore": 5,
-    "openIssues": 6,
-    "verifyOk": true,
-    "verifyFailedChecks": 0,
-    "generatedAt": "2026-02-18T19:50:39.319Z"
   }
 }
