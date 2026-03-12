@@ -35,7 +35,7 @@ export default function ProtectPage() {
         <ProtectAnomalyRadar
           alert={heroView.alert}
           radarAxes={heroView.radarAxes}
-          evidenceCues={heroView.evidenceCues}
+          shapFactors={heroView.shapFactors}
           auditChain={heroView.auditChain}
           remainingCount={heroView.remainingCount}
           totalExposure={heroView.totalExposure}

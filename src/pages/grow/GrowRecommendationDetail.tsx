@@ -59,6 +59,99 @@ function getRiskLabel(c: number): string {
   return "Higher Risk";
 }
 
+/* ── SHAP Factor Builder ── */
+
+/**
+ * Generates short-label SHAP factors from recommendation data.
+ * Includes both positive (driving) and negative (mitigating) factors
+ * for a realistic waterfall chart.
+ */
+const SHAP_FACTOR_TEMPLATES: Record<string, Array<{ label: string; value: number }>> = {
+  'Cash & Savings': [
+    { label: 'Idle cash ratio', value: 0.90 },
+    { label: 'Rate spread', value: 0.70 },
+    { label: 'FDIC coverage', value: 0.50 },
+    { label: 'Liquidity buffer', value: -0.15 },
+    { label: 'Transfer friction', value: -0.10 },
+    { label: 'Account consolidation', value: 0.25 },
+  ],
+  'Investments': [
+    { label: 'Idle balance', value: 0.85 },
+    { label: 'Yield differential', value: 0.72 },
+    { label: 'Reinvestment ease', value: 0.45 },
+    { label: 'Market volatility', value: -0.20 },
+    { label: 'Tax impact', value: -0.12 },
+    { label: 'Compound growth', value: 0.30 },
+  ],
+  'Subscriptions': [
+    { label: 'Duplicate services', value: 0.88 },
+    { label: 'Bundle discount', value: 0.65 },
+    { label: 'Usage overlap', value: 0.55 },
+    { label: 'Feature loss risk', value: -0.18 },
+    { label: 'Migration effort', value: -0.08 },
+    { label: 'Annual cost delta', value: 0.40 },
+  ],
+  'Rewards & Points': [
+    { label: 'Reward rate gap', value: 0.82 },
+    { label: 'Spend category match', value: 0.68 },
+    { label: 'No new fees', value: 0.42 },
+    { label: 'Habit change needed', value: -0.15 },
+    { label: 'Point devaluation', value: -0.10 },
+    { label: 'Annual value uplift', value: 0.35 },
+  ],
+  'Retirement': [
+    { label: 'Employer match gap', value: 0.92 },
+    { label: 'Tax bracket benefit', value: 0.70 },
+    { label: 'Cash flow capacity', value: 0.55 },
+    { label: 'Liquidity reduction', value: -0.22 },
+    { label: 'Early withdrawal risk', value: -0.10 },
+    { label: 'Compound growth', value: 0.38 },
+  ],
+  'Bills & Fees': [
+    { label: 'Rate increase detected', value: 0.86 },
+    { label: 'Competitive alternative', value: 0.62 },
+    { label: 'Retention offer odds', value: 0.48 },
+    { label: 'Switching cost', value: -0.18 },
+    { label: 'Service disruption', value: -0.12 },
+    { label: 'Annual savings', value: 0.35 },
+  ],
+  'Education': [
+    { label: 'Tax-free growth', value: 0.88 },
+    { label: 'Dependent eligibility', value: 0.72 },
+    { label: 'State deduction', value: 0.50 },
+    { label: 'Lock-in period', value: -0.15 },
+    { label: 'Opportunity cost', value: -0.10 },
+    { label: 'Compounding horizon', value: 0.40 },
+  ],
+  'Insurance': [
+    { label: 'Premium vs market', value: 0.84 },
+    { label: 'Clean driving record', value: 0.68 },
+    { label: 'Coverage equivalence', value: 0.45 },
+    { label: 'Switching friction', value: -0.15 },
+    { label: 'Loyalty discount loss', value: -0.08 },
+    { label: 'Multi-policy savings', value: 0.30 },
+  ],
+}
+
+// Deterministic hash for consistent mock values per recommendation
+function seededRandom(seed: number): () => number {
+  let s = seed
+  return () => {
+    s = (s * 16807 + 0) % 2147483647
+    return (s - 1) / 2147483646
+  }
+}
+
+function buildShapFactors(rec: { id: number; category: string }): Array<{ label: string; value: number }> {
+  const template = SHAP_FACTOR_TEMPLATES[rec.category] ?? SHAP_FACTOR_TEMPLATES['Cash & Savings']!
+  const rng = seededRandom(rec.id * 1000 + 7)
+  // Add small jitter to make each recommendation's chart unique
+  return template.map(f => ({
+    label: f.label,
+    value: f.value * (0.85 + rng() * 0.30),
+  }))
+}
+
 /* ── Before → After Panel ── */
 
 function BeforeAfterPanel({ rec }: { rec: RecommendationDetail }) {
@@ -462,11 +555,9 @@ export default function GrowRecommendationDetailPage() {
                       </h4>
                       <div className="space-y-3">
                         <ShapWaterfall
-                          factors={rec.factors.map((factor, i) => ({
-                            name: factor,
-                            value: Math.max(0.9 - i * 0.2, 0.1), // Mocking SHAP impact values
-                          }))}
+                          factors={buildShapFactors(rec)}
                           baseValue={0.2}
+                          engine="grow"
                         />
                       </div>
                     </div>

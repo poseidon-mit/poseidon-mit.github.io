@@ -28,26 +28,26 @@ function makeRadarAxes(alertId: string, confidence: number) {
     }));
 }
 
-function makeEvidenceCues(alertId: string) {
-  return selectThreatFactors(alertId)
-    .filter((factor) => !factor.mitigating)
-    .sort((left, right) => right.weight - left.weight)
-    .slice(0, 3)
-    .map((factor) => factor.heroCue ?? factor.details);
+function makeShapFactors(alertId: string) {
+  return selectThreatFactors(alertId).map((factor) => ({
+    label: factor.title,
+    weight: factor.weight,
+    mitigating: !!factor.mitigating,
+  }));
 }
 
 describe("ProtectAnomalyRadar", () => {
   const radarAxes = makeRadarAxes("THR-001", THR_001.confidence);
-  const evidenceCues = makeEvidenceCues("THR-001");
+  const shapFactors = makeShapFactors("THR-001");
 
   function renderRadar(overrides: Partial<Parameters<typeof ProtectAnomalyRadar>[0]> = {}) {
     const props = {
       alert: THR_001,
       radarAxes,
-      evidenceCues,
+      shapFactors,
       auditChain: { alertId: "THR-001", actionId: "EXE-002", decisionId: "AUD-888" },
       remainingCount: 4,
-      totalExposure: 13247,
+      totalExposure: 1299,
       fpRate: "0.8%",
       onReviewThreat: vi.fn(),
       ...overrides,
@@ -60,17 +60,17 @@ describe("ProtectAnomalyRadar", () => {
     const { props } = renderRadar();
     fireEvent.click(screen.getByRole("button", { name: /review threat/i }));
     expect(props.onReviewThreat).toHaveBeenCalledOnce();
-    expect(screen.getAllByText(/Glass matrix projection/i).length).toBeGreaterThan(0);
+    expect(screen.getByRole("heading", { name: /protect/i })).toBeInTheDocument();
     expect(screen.getByText(/Status: 1 anomaly flagged/i)).toBeInTheDocument();
   });
 
-  it("renders the alert spotlight, evidence cues, and audit link", () => {
+  it("renders the alert spotlight, SHAP waterfall, and audit link", () => {
     renderRadar();
     expect(screen.getByText(THR_001.counterparty)).toBeInTheDocument();
-    expect(screen.getByText(THR_001.amount)).toBeInTheDocument();
-    for (const cue of evidenceCues) {
-      expect(screen.getByText(cue)).toBeInTheDocument();
-    }
+    expect(screen.getAllByText(THR_001.amount).length).toBeGreaterThan(0);
+    // SHAP waterfall chart is rendered
+    expect(screen.getByRole("img", { name: /shap feature attribution waterfall/i })).toBeInTheDocument();
+    expect(screen.getByText(/SHAP Waterfall/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /view audit trail/i })).toHaveAttribute(
       "href",
       "/govern/audit-detail?decision=AUD-888",
@@ -86,7 +86,7 @@ describe("ProtectAnomalyRadar", () => {
     }
     expect(screen.getByText(/4 more threats below/)).toBeInTheDocument();
     expect(screen.getByText("Total exposure")).toBeInTheDocument();
-    expect(screen.getByText("$13,247")).toBeInTheDocument();
+    expect(screen.getAllByText("$1,299").length).toBeGreaterThan(0);
   });
 });
 

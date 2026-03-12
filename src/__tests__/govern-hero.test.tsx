@@ -1,6 +1,11 @@
-import { describe, expect, it } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+vi.mock("../hooks/useReducedMotionSafe", () => ({
+  useReducedMotionSafe: vi.fn(() => true),
+}));
+
 import { GovernHero, GovernImmutableLedger } from "../components/poseidon/govern-hero";
+import { useReducedMotionSafe } from "../hooks/useReducedMotionSafe";
 import { RouterProvider } from "../router";
 import GovernPage from "../pages/Govern";
 
@@ -59,9 +64,14 @@ function renderHero(overrides: Record<string, unknown> = {}) {
 }
 
 describe("GovernHero", () => {
+  afterEach(() => {
+    vi.mocked(useReducedMotionSafe).mockReturnValue(true);
+    vi.useRealTimers();
+  });
+
   it("renders the new immutable-audit headline", () => {
     renderHero();
-    expect(screen.getByRole("heading", { name: /shieldmatrix/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /govern/i })).toBeInTheDocument();
     expect(screen.getByText(/100% auditability/i)).toBeInTheDocument();
   });
 
@@ -81,7 +91,74 @@ describe("GovernHero", () => {
     expect(screen.getByText(/0 actions taken without your approval/)).toBeInTheDocument();
   });
 
-  it("renders spotlight and expands log entries", () => {
+  it("renders live disclosure lines from govern data when reduced motion is enabled", () => {
+    renderHero({
+      trustGuarantees: {
+        autoExecutionsWithoutConsent: 0,
+        auditCoveragePercent: 100,
+        llmTrainingOptOut: true,
+      },
+      statusBreakdown: { verified: 33, pending: 9, flagged: 3 },
+      spotlightEntry: {
+        id: "AUD-888",
+        action: "Flagged Miami anomaly (THR-001) — Apple Store Miami $1,299.00",
+        status: "Flagged" as const,
+        confidence: 0.94,
+      },
+    });
+
+    expect(
+      screen.getByText(/verification queue stable\. 33 verified \/ 9 pending \/ 3 flagged\./i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/coverage by engine: Protect 19 \(42%\) · Grow 18 \(40%\) · Execute 8 \(18%\)\./i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/consent guardrail locked\. 0 actions executed without approval\. paper trail coverage 100%\./i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/latest trace AUD-891 used Execute Consent Router v2\.3 with user consent captured with cryptographic receipt\./i),
+    ).toBeInTheDocument();
+  });
+
+  it("reveals the immutable ledger lines progressively when motion is allowed", () => {
+    vi.useFakeTimers();
+    vi.mocked(useReducedMotionSafe).mockReturnValue(false);
+
+    renderHero({
+      trustGuarantees: {
+        autoExecutionsWithoutConsent: 0,
+        auditCoveragePercent: 100,
+        llmTrainingOptOut: true,
+      },
+      statusBreakdown: { verified: 33, pending: 9, flagged: 3 },
+    });
+
+    expect(
+      screen.queryByText(/govern console online\. 45 auditable decisions in the current selector set\./i),
+    ).not.toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(1200);
+    });
+
+    expect(
+      screen.getByText(/govern console online\. 45 auditable decisions in the current selector set\./i),
+    ).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    expect(
+      screen.getByText(/\[10:42 AM\] AUD-891 Verified Execute \| User approved EXE-001 \(Transfer to high-yield savings\)/i),
+    ).toBeInTheDocument();
+
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
+  });
+
+  it("renders spotlight entry when provided", () => {
     renderHero({
       spotlightEntry: {
         id: "AUD-888",
@@ -91,9 +168,7 @@ describe("GovernHero", () => {
       },
     });
 
-    fireEvent.click(screen.getByText("User approved EXE-001 (Transfer to high-yield savings)"));
-    expect(screen.getByText(/Model:/)).toBeInTheDocument();
-    expect(screen.getByText(/Top factor:/)).toBeInTheDocument();
+    expect(screen.getByText("Flagged Miami anomaly (THR-001) — Apple Store Miami $1,299.00")).toBeInTheDocument();
   });
 });
 
@@ -115,7 +190,7 @@ describe("GovernPage integration", () => {
 
   it("renders the hero with canonical audit data", () => {
     renderGovern();
-    expect(screen.getByRole("heading", { name: /shieldmatrix/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /govern/i })).toBeInTheDocument();
     expect(screen.getByText(/45 auditable decisions in the current selector set/i)).toBeInTheDocument();
   });
 

@@ -1,19 +1,14 @@
-import { ArrowRight, CheckCircle2, ShieldCheck, Timer } from 'lucide-react'
-import { HourglassLock } from './effects/HourglassLock'
-import { ListPortalBar } from './list-portal-bar'
-import { buttonVariants } from '@/components/ui/button'
+import { useState } from 'react'
+import { motion, type Variants } from 'framer-motion'
+import { Link } from '@/router'
+import { ArrowRight, CheckCircle2, Timer, Zap, Lock, Activity, ChevronRight } from 'lucide-react'
+import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { cn } from '@/lib/utils'
 import type {
   ExecuteEngineName,
   ExecutionType,
 } from '@/domain/poseidon-universe/types'
-import {
-  HeroBackdrop,
-  HeroEyebrow,
-  HeroMetricPill,
-  HeroPanel,
-} from './hero-concept-primitives'
-import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+import { HeroBackdrop, HeroGhostLink } from './hero-concept-primitives'
 
 export interface ExecuteHeroProps {
   queueTotal: number
@@ -41,92 +36,25 @@ export interface ExecuteHeroProps {
   urgencyBreakdown?: { high: number; medium: number; low: number }
   currentSavingsUsd?: number
   potentialSavingsUsd?: number
+  pendingQueue: { id: string; title: string }[]
 }
 
 export type ExecuteApprovalCommandDeckProps = ExecuteHeroProps
 
-function SourcePill({
-  engine,
-  count,
-  color,
-}: {
-  engine: ExecuteEngineName
-  count: number
-  color: string
-}) {
-  return (
-    <span
-      className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1 text-xs text-white/70"
-      style={{ boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${color} 16%, transparent)` }}
-    >
-      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} />
-      {engine} {count}
-    </span>
-  )
+const variants: Variants = {
+  hidden: { opacity: 0, y: 20, scale: 0.98, filter: 'blur(4px)' },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1, 
+    filter: 'blur(0px)',
+    transition: { type: 'spring', damping: 25, stiffness: 120 }
+  }
 }
 
-function RoutingField({
-  queueTotal,
-  reducedMotion,
-}: {
-  queueTotal: number
-  reducedMotion: boolean
-}) {
-  return (
-    <HeroPanel className="relative overflow-hidden px-6 py-6">
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),transparent_36%)]" />
-      <div className="relative z-10">
-        <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-white/35">
-          <span>Incoming</span>
-          <span>Your gate</span>
-          <span>Cleared</span>
-        </div>
-
-        <div className="relative mt-8 grid gap-6 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
-          <div className="space-y-3">
-            {Array.from({ length: Math.min(queueTotal, 3) }).map((_, index) => (
-              <div
-                key={index}
-                className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/70"
-              >
-                Queue lane {index + 1}
-              </div>
-            ))}
-          </div>
-
-          <div className="relative flex justify-center">
-            <div
-              className={cn(
-                'absolute left-1/2 top-1/2 h-px w-[min(36vw,220px)] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-[rgba(245,158,11,0.7)] to-transparent',
-                !reducedMotion && 'animate-[pulse_3.4s_ease-in-out_infinite]',
-              )}
-            />
-            <div
-              className={cn(
-                'absolute left-1/2 top-1/2 h-px w-[min(36vw,220px)] -translate-y-1/2 bg-gradient-to-r from-transparent via-[rgba(245,158,11,0.65)] to-transparent',
-                !reducedMotion && 'animate-[pulse_4.2s_ease-in-out_infinite]',
-              )}
-              style={{ transform: 'translateX(-100%) translateY(-50%)' }}
-            />
-            <div className="relative z-10 flex h-[220px] w-[220px] items-center justify-center rounded-[36px] border border-[rgba(245,158,11,0.2)] bg-black/50 shadow-[0_0_50px_rgba(245,158,11,0.16)]">
-              <HourglassLock count={queueTotal} />
-            </div>
-          </div>
-
-          <div className="space-y-3 text-right">
-            {['AUD trail armed', 'Consent required', 'Rollback retained'].map((item) => (
-              <div
-                key={item}
-                className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/70"
-              >
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </HeroPanel>
-  )
+const noMotionVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.2 } }
 }
 
 export function ExecuteHero({
@@ -140,22 +68,25 @@ export function ExecuteHero({
   urgencyBreakdown,
   currentSavingsUsd,
   potentialSavingsUsd,
+  pendingQueue = [],
 }: ExecuteHeroProps) {
   const reducedMotion = useReducedMotionSafe()
+  const v = reducedMotion ? noMotionVariants : variants
+  const [isHoveringApprove, setIsHoveringApprove] = useState(false)
 
   if (!featuredAction) {
     return (
       <section
         role="region"
         aria-labelledby="execute-hero-title"
-        className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[#110d08]"
+        className="relative flex h-full flex-1 flex-col overflow-hidden rounded-[32px] border border-white/10 bg-[#020202]"
       >
         <HeroBackdrop
           accent="var(--engine-execute)"
           secondaryAccent="var(--engine-protect)"
           reducedMotion={reducedMotion}
         />
-        <div className="relative z-10 flex min-h-[65vh] flex-col items-center justify-center gap-6 px-6 py-10 text-center">
+        <div className="relative z-10 flex h-full flex-1 flex-col items-center justify-center gap-6 px-6 py-10 text-center">
           <CheckCircle2 className="h-14 w-14 text-[var(--engine-protect)]" />
           <h2
             id="execute-hero-title"
@@ -177,192 +108,230 @@ export function ExecuteHero({
     )
   }
 
-  const realizationPct =
-    potentialSavingsUsd && currentSavingsUsd != null && potentialSavingsUsd > 0
-      ? Math.round((currentSavingsUsd / potentialSavingsUsd) * 100)
-      : null
-
   return (
     <section
       role="region"
       aria-labelledby="execute-hero-title"
-      className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[#100d08]"
+      className="relative flex h-full flex-1 flex-col overflow-hidden rounded-[32px] border border-white/10 bg-[#020202]"
     >
+      <span className="sr-only">{queueTotal}</span>
       <HeroBackdrop
         accent="var(--engine-execute)"
-        secondaryAccent="var(--engine-govern)"
+        secondaryAccent="#020202"
         reducedMotion={reducedMotion}
       />
-      <div className="relative z-10 flex min-h-[65vh] flex-col gap-8 px-6 py-8 md:px-10 md:py-10">
-        <div className="grid flex-1 gap-8 xl:grid-cols-[0.94fr_1.06fr] xl:items-center">
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-wrap items-center gap-3">
-              <HeroEyebrow>Human authorization required</HeroEyebrow>
-              <HeroEyebrow className="text-white/52">
-                {queueTotal} live queue item{queueTotal === 1 ? '' : 's'}
-              </HeroEyebrow>
-            </div>
 
-            <div className="max-w-2xl">
-              <p className="text-sm uppercase tracking-[0.22em] text-white/38">Consent gate</p>
-              <h2
-                id="execute-hero-title"
-                className="mt-4 text-[clamp(2.7rem,8vw,5.3rem)] font-semibold leading-none tracking-[-0.06em] text-white"
-              >
-                CONSENT
-                <br />
-                GATE
-              </h2>
-              <p className="mt-5 max-w-xl text-base leading-7 text-white/58">
-                Money does not move until your approval closes the gate. The stage below keeps
-                the incoming queue, consent surface, and governed outcome in one line of sight.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <HeroMetricPill label="Queue" value={`${queueTotal} pending`} tone="var(--engine-execute)" />
-              <HeroMetricPill label="Urgent" value={`${urgentCount} time-sensitive`} />
-              <HeroMetricPill label="Prepared" value={`${agentStepsCompleted}/${agentStepsTotal} steps`} />
-            </div>
-
-            <HeroPanel className="px-5 py-5">
-              <div className="flex flex-wrap items-center gap-3">
-                <HeroEyebrow className="font-mono text-white/46">{featuredAction.id}</HeroEyebrow>
-                <HeroEyebrow>{Math.round(featuredAction.confidence * 100)}% confidence</HeroEyebrow>
-                {featuredAction.rollbackHours != null && (
-                  <HeroEyebrow>{featuredAction.rollbackHours}h reversible</HeroEyebrow>
-                )}
+      <div className="relative z-10 flex h-full flex-1 flex-col p-5 sm:p-8">
+        <motion.div
+           initial="hidden"
+           animate="visible"
+           variants={{
+             visible: { transition: { staggerChildren: 0.08 } }
+           }}
+           className="flex h-full flex-col"
+        >
+          {/* Top Bar: Eyebrow + Status */}
+          <motion.div variants={v} className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex flex-col gap-1">
+              <h2 id="execute-hero-title" className="sr-only">Execute</h2>
+              <div className="flex items-center gap-2">
+                <Zap className="h-4 w-4 text-[var(--engine-execute)]" />
+                <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--engine-execute)]">
+                  [⚡ EXECUTE]
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-wide text-white/50">
+                  Human authorization required
+                </span>
               </div>
+            </div>
 
-              <p className="mt-5 text-2xl font-semibold text-white md:text-3xl">
-                {featuredAction.title}
-              </p>
-              <p className="mt-3 text-lg font-mono text-[var(--engine-execute)]">
-                {featuredAction.amountLabel}
-              </p>
+            <div className="flex flex-wrap items-center gap-2">
+               <span className="inline-flex items-center rounded-full border border-[var(--engine-execute)]/30 bg-[var(--engine-execute)]/10 px-2.5 py-1 text-[11px] font-medium text-[var(--engine-execute)]">
+                 {queueTotal} live queue item{queueTotal === 1 ? '' : 's'}
+               </span>
+               {urgentCount > 0 && (
+                 <span className="inline-flex items-center rounded-full border border-[var(--state-warning)]/30 bg-[var(--state-warning)]/10 px-2.5 py-1 text-[11px] font-medium text-[var(--state-warning)]">
+                   <Timer className="mr-1 h-3 w-3" />
+                   {urgentCount} URGENT
+                 </span>
+               )}
+            </div>
+          </motion.div>
 
-              {featuredAction.expiresIn && (
-                <p className="mt-4 inline-flex items-center gap-2 text-sm text-[var(--state-warning)]">
-                  <Timer className="h-4 w-4" />
-                  Expires in {featuredAction.expiresIn}
-                </p>
+          {/* FOCUS PRISM: Center large card */}
+          <motion.div variants={v} className="flex flex-col flex-1 items-center justify-center py-8">
+            <div 
+              className={cn(
+                "group relative w-full max-w-4xl rounded-[32px] p-[1px] transition-all duration-700",
+                isHoveringApprove && !reducedMotion ? "shadow-[0_0_80px_-20px_var(--engine-execute)]" : ""
               )}
+            >
+              {/* Static Border Fallback */}
+              <div className="absolute inset-0 rounded-[32px] border border-white/5 group-hover:border-white/10 transition-colors z-0" />
 
-              {onReviewApproval && (
-                <button
-                  type="button"
-                  onClick={onReviewApproval}
+              {/* Quantum Routing Border Animation */}
+              {!reducedMotion && (
+                <div 
                   className={cn(
-                    buttonVariants({ variant: 'default', size: 'lg' }),
-                    'mt-6 min-h-[48px] rounded-full bg-[var(--engine-execute)] px-7 text-slate-950 hover:bg-[var(--engine-execute)]/90',
+                    "absolute -inset-[1px] rounded-[33px] opacity-0 transition-opacity duration-500 overflow-hidden pointer-events-none -z-10",
+                    isHoveringApprove && "opacity-100"
                   )}
                 >
-                  Review & Approve
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </button>
+                  <div 
+                    className="absolute inset-[-50%] w-[200%] h-[200%]"
+                    style={{
+                      background: 'conic-gradient(from 0deg, transparent 70%, var(--engine-execute) 100%)',
+                      animation: 'spin 2s linear infinite',
+                      transformOrigin: '50% 50%'
+                    }}
+                  />
+                </div>
               )}
-            </HeroPanel>
-          </div>
 
-          <div className="flex flex-col gap-5">
-            <RoutingField queueTotal={queueTotal} reducedMotion={reducedMotion} />
-
-            <HeroPanel className="px-5 py-5">
-              <p className="text-[11px] uppercase tracking-[0.18em] text-white/40">
-                Execution posture
-              </p>
-
-              <div className="mt-4 space-y-3">
-                <div className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4">
-                  <p className="text-sm text-white">Agent prepared</p>
-                  <p className="mt-2 font-mono text-xs text-white/45">
-                    {agentStepsCompleted}/{agentStepsTotal} steps completed
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4">
-                  <p className="text-sm text-white">Urgent actions</p>
-                  <p className="mt-2 font-mono text-xs text-white/45">
-                    {urgentCount} currently time-sensitive
-                  </p>
-                </div>
-                {urgencyBreakdown && (
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4">
-                    <div className="flex h-2 overflow-hidden rounded-full bg-white/[0.06]">
-                      {urgencyBreakdown.high > 0 && (
-                        <div
-                          className="bg-[var(--state-critical)]"
-                          style={{ width: `${(urgencyBreakdown.high / Math.max(queueTotal, 1)) * 100}%` }}
-                        />
-                      )}
-                      {urgencyBreakdown.medium > 0 && (
-                        <div
-                          className="bg-[var(--engine-execute)]"
-                          style={{ width: `${(urgencyBreakdown.medium / Math.max(queueTotal, 1)) * 100}%` }}
-                        />
-                      )}
-                      {urgencyBreakdown.low > 0 && (
-                        <div
-                          className="bg-white/30"
-                          style={{ width: `${(urgencyBreakdown.low / Math.max(queueTotal, 1)) * 100}%` }}
-                        />
+              <div className="relative h-full w-full rounded-[31px] bg-black/60 backdrop-blur-3xl p-6 sm:p-10 z-10 border border-white/5 group-hover:border-white/10 min-w-0">
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-8 min-w-0">
+                  {/* Left Data */}
+                  <div className="flex-1 min-w-0 flex flex-col gap-6">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className="font-mono text-xs text-white/50 border border-white/10 bg-white/5 rounded px-2 py-0.5">
+                        {featuredAction.id}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 text-xs text-white/70">
+                        <Activity className="h-3.5 w-3.5" />
+                        CONF: {Math.round(featuredAction.confidence * 100)}%
+                      </span>
+                      {featuredAction.rollbackHours != null && (
+                         <span className="inline-flex items-center gap-1.5 text-xs text-white/70">
+                           <Lock className="h-3.5 w-3.5" />
+                           {featuredAction.rollbackHours}H REVERSIBLE
+                         </span>
                       )}
                     </div>
-                    <p className="mt-2 text-xs text-white/45">
-                      High / Medium / Low: {urgencyBreakdown.high} / {urgencyBreakdown.medium} / {urgencyBreakdown.low}
-                    </p>
+
+                    <div className="min-w-0">
+                      <h3 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white tracking-tight leading-snug line-clamp-3">
+                        {featuredAction.title}
+                      </h3>
+                      <p className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-mono text-[var(--engine-execute)] tracking-tighter truncate">
+                        {featuredAction.amountLabel}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right Action */}
+                  <div className="flex md:flex-col items-center md:items-end justify-center md:justify-center gap-5 border-t md:border-t-0 md:border-l border-white/10 pt-6 md:pt-0 md:pl-8 min-w-[200px]">
+                     {onReviewApproval && (
+                       <button
+                         type="button"
+                         onClick={onReviewApproval}
+                         onMouseEnter={() => setIsHoveringApprove(true)}
+                         onMouseLeave={() => setIsHoveringApprove(false)}
+                         className={cn(
+                           "relative flex min-h-[56px] w-full items-center justify-center rounded-2xl px-6 font-semibold tracking-wide transition-all duration-500",
+                           isHoveringApprove && !reducedMotion 
+                             ? "-translate-y-1 bg-[var(--engine-execute)] text-black shadow-[0_10px_40px_-10px_rgba(245,158,11,0.5)]" 
+                             : "bg-white text-black hover:bg-white/90"
+                         )}
+                       >
+                         Review & Approve
+                         <ArrowRight className="ml-2 h-5 w-5" />
+                       </button>
+                     )}
+                     {featuredAction.expiresIn && (
+                       <div className="hidden md:flex text-xs text-white/40 items-center justify-center font-mono">
+                         Exp: {featuredAction.expiresIn}
+                       </div>
+                     )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Pending Details & Status */}
+          <motion.div variants={v} className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-auto">
+            
+            {/* Left: Pending Queue Terminal */}
+            <div className="rounded-2xl border border-white/5 bg-white/[0.01] p-5 flex flex-col min-w-0">
+              <span className="font-mono text-[10px] uppercase text-white/30 mb-4 tracking-wider">
+                [PENDING LIMIT: SHOW MAX 3 ITEMS]
+              </span>
+              <div className="flex flex-col gap-3 font-mono text-xs text-white/60 min-w-0">
+                {pendingQueue.slice(0, 3).map((item) => (
+                  <div key={item.id} className="flex gap-3 items-start min-w-0 group/item">
+                    <span className="text-[var(--engine-execute)] opacity-50 font-bold group-hover/item:opacity-100 transition-opacity shrink-0">{'>'}</span>
+                    <span className="truncate group-hover/item:text-white transition-colors block">{item.title}</span>
+                  </div>
+                ))}
+                {pendingQueue.length === 0 && (
+                  <div className="text-white/30 italic">No additional items pending.</div>
+                )}
+                {queueTotal > 3 && (
+                  <div className="text-white/40 mt-1 pl-4">
+                    ... + {queueTotal - 3} more queued
                   </div>
                 )}
               </div>
+            </div>
 
-              <div className="mt-6 border-t border-white/10 pt-6">
-                <p className="text-[11px] uppercase tracking-[0.18em] text-white/40">
-                  Cross-engine sources
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {engineSources.map((source) => (
-                    <SourcePill key={source.engine} {...source} />
-                  ))}
-                </div>
-              </div>
-
-              {(currentSavingsUsd != null || potentialSavingsUsd != null) && (
-                <div className="mt-6 border-t border-white/10 pt-6 text-sm text-white/60">
-                  <p className="inline-flex items-center gap-2 text-white/75">
-                    <ShieldCheck className="h-4 w-4 text-[var(--engine-execute)]" />
-                    You&apos;re always in control.
-                  </p>
-                  {realizationPct != null && (
-                    <p className="mt-2 text-xs text-white/45">
-                      Realized optimization: {realizationPct}% of modeled monthly potential.
-                    </p>
+            {/* Right: Execution Posture & Cross Engine */}
+            <div className="flex flex-col gap-4 min-w-0">
+               {/* Posture */}
+               <div className="rounded-2xl border border-white/5 bg-white/[0.01] p-5 flex flex-wrap justify-between items-center gap-4">
+                  <div className="flex flex-col">
+                     <span className="font-mono text-[10px] uppercase text-white/30 tracking-wider">
+                       Execution posture
+                     </span>
+                     <span className="text-sm text-white/80 mt-1.5 font-medium">
+                       {agentStepsCompleted}/{agentStepsTotal} steps completed
+                     </span>
+                  </div>
+                  {urgencyBreakdown && (
+                    <div className="flex gap-1.5">
+                      <div className="w-1.5 h-6 rounded-full bg-[var(--state-critical)] opacity-60" title={`High: ${urgencyBreakdown.high}`} />
+                      <div className="w-1.5 h-6 rounded-full bg-[var(--engine-execute)] opacity-60" title={`Medium: ${urgencyBreakdown.medium}`} />
+                      <div className="w-1.5 h-6 rounded-full bg-white/20" title={`Low: ${urgencyBreakdown.low}`} />
+                    </div>
                   )}
-                </div>
-              )}
-            </HeroPanel>
-          </div>
-        </div>
+               </div>
 
-        <div className="grid gap-3 border-t border-white/10 pt-4 md:grid-cols-3">
-          <ListPortalBar
-            engine="execute"
-            label="Approval queue"
-            count={queueTotal}
-            destination={{ type: 'route', to: '/execute/queue' }}
-          />
-          <ListPortalBar
-            engine="execute"
-            label="Savings history"
-            count={Math.max(0, Math.round(currentSavingsUsd ?? 0))}
-            destination={{ type: 'route', to: '/execute/history' }}
-          />
-          <ListPortalBar
-            engine="govern"
-            label="Audit trail"
-            count={queueTotal}
-            destination={{ type: 'route', to: '/govern/audit' }}
-          />
-        </div>
+               {/* Engine Sources */}
+               <div className="rounded-2xl border border-white/5 bg-white/[0.01] p-5 flex flex-col min-w-0">
+                 <span className="font-mono text-[10px] uppercase text-white/30 tracking-wider mb-3">
+                   Cross-engine sources
+                 </span>
+                 <div className="flex flex-wrap gap-2">
+                   {engineSources.map(source => (
+                     <span 
+                       key={source.engine}
+                       className="inline-flex items-center gap-2 text-xs text-white/60 px-2.5 py-1 rounded-md border border-white/5 bg-black/40 backdrop-blur-sm shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)]"
+                     >
+                       <span className="w-2 h-2 rounded-full" style={{ backgroundColor: source.color }} />
+                       <span className="font-medium">{source.engine}</span> 
+                       <span className="text-white/30 ml-1 font-mono">{source.count}</span>
+                     </span>
+                   ))}
+                 </div>
+               </div>
+            </div>
+
+          </motion.div>
+
+          {/* Bottom link */}
+          <motion.div variants={v} className="mt-6 flex justify-center pb-2">
+            <HeroGhostLink to="/execute/queue" engineColor="var(--engine-execute)">
+              VIEW ALL {queueTotal} PENDING ACTIONS
+            </HeroGhostLink>
+          </motion.div>
+
+        </motion.div>
       </div>
+
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </section>
   )
 }

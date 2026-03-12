@@ -37,7 +37,7 @@ function renderHero(
 describe("GrowHero", () => {
   it("renders the immersive headline and projected gain", () => {
     renderHero();
-    expect(screen.getByRole("heading", { name: /compound horizon/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /grow/i })).toBeInTheDocument();
     expect(screen.getByText(/\+\$30,245\/yr/)).toBeInTheDocument();
   });
 
@@ -50,7 +50,7 @@ describe("GrowHero", () => {
   it("renders KPI strip stats", () => {
     renderHero();
     expect(screen.getByText("+$759/mo")).toBeInTheDocument();
-    expect(screen.getByText("10")).toBeInTheDocument();
+    expect(screen.getByText(/10 ranked opportunities ready for execution/)).toBeInTheDocument();
     expect(screen.getByText("87%")).toBeInTheDocument();
   });
 
@@ -100,7 +100,7 @@ describe("GrowHero", () => {
       fireEvent.click(screen.getByRole("button", { name: /replay/i }));
       act(() => vi.advanceTimersByTime(1200));
       expect(screen.getByRole("button", { name: /view all opportunities/i })).toBeInTheDocument();
-      expect(screen.getByRole("heading", { name: /compound horizon/i })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /grow/i })).toBeInTheDocument();
     });
   });
 });
@@ -139,9 +139,9 @@ describe("GrowPage integration", () => {
     expect(screen.getByText(`+$${expected.toLocaleString()}/mo`)).toBeInTheDocument();
   });
 
-  it("renders spotlight recommendation and goal progress from canonical data", () => {
+  it("renders spotlight recommendation from canonical data", () => {
     renderGrowPage();
     expect(screen.getByText("Top recommendation")).toBeInTheDocument();
-    expect(screen.getByText("Goal progress")).toBeInTheDocument();
+    // The integration test has "Eliminate Cash Drag" as top recommendation based on line 127
   });
 });

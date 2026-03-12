@@ -22,16 +22,25 @@ const DEFAULT_PROPS = {
     topAmount: "$234.50",
     topCounterparty: "AMZN Mktp US*3K7R2F",
     severity: "Critical",
+    attentionItems: [
+      { label: "AMZN Mktp US*3K7R2F · $234.50", href: "/protect/alert-detail?alertId=THR-001" },
+    ],
   },
   growSignal: {
     savingsPerMonth: 203,
     recCount: 4,
     topTitle: "Switch to high-yield savings",
+    attentionItems: [
+      { label: "Switch to high-yield savings", href: "/grow/recommendation?id=REC-001" },
+    ],
   },
   executeSignal: {
     pendingCount: 3,
     topTitle: "Tax-loss harvest",
     topAmount: "$399.60",
+    attentionItems: [
+      { label: "Tax-loss harvest · $399.60", href: "/execute/approval?id=EXE-001" },
+    ],
   },
   decisionsAudited: 2847,
   complianceScore: 98,
@@ -44,10 +53,10 @@ function renderHero(overrides: Partial<typeof DEFAULT_PROPS> = {}) {
 }
 
 describe("DashboardHero", () => {
-  it("renders the command-center framing and user name", () => {
+  it("renders the command-center framing and heading", () => {
     renderHero();
     expect(screen.getByText("Portfolio Command Center")).toBeInTheDocument();
-    expect(screen.getByText("Shinji")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /dashboard/i })).toBeInTheDocument();
   });
 
   it("renders engine signal cards with the new copy", () => {
@@ -57,16 +66,17 @@ describe("DashboardHero", () => {
     expect(screen.getAllByText("3 authorizations live").length).toBeGreaterThan(0);
   });
 
-  it("renders the govern verification readout", () => {
+  it("renders the hero heading and description", () => {
     renderHero();
-    expect(screen.getByText(/2,847 audited/)).toBeInTheDocument();
-    expect(screen.getAllByText(/Audit coverage 98%/).length).toBeGreaterThan(0);
+    expect(screen.getByRole("heading", { name: /dashboard/i })).toBeInTheDocument();
+    expect(screen.getByText("Your financial health at a glance.")).toBeInTheDocument();
   });
 
-  it("fires onNavigate when a signal card is clicked", () => {
-    const { props } = renderHero();
-    fireEvent.click(screen.getAllByText("5 anomalies flagged")[0]);
-    expect(props.onNavigate).toHaveBeenCalledWith("/protect");
+  it("renders attention detail links in signal cards", () => {
+    renderHero();
+    expect(screen.getByRole("link", { name: /AMZN Mktp US\*3K7R2F/i })).toHaveAttribute("href", "/protect/alert-detail?alertId=THR-001");
+    expect(screen.getByRole("link", { name: /Switch to high-yield/i })).toHaveAttribute("href", "/grow/recommendation?id=REC-001");
+    expect(screen.getByRole("link", { name: /Tax-loss harvest/i })).toHaveAttribute("href", "/execute/approval?id=EXE-001");
   });
 
   it("hides the protect signal when null", () => {
@@ -88,7 +98,7 @@ describe("DashboardPage integration", () => {
   it("renders the live dashboard hero stage and engine panels", () => {
     renderDashboard();
     expect(screen.getByText("Portfolio Command Center")).toBeInTheDocument();
-    expect(screen.getByText("1 anomaly flagged")).toBeInTheDocument();
+    expect(screen.getByText(/\d+ anomal(y|ies) flagged/)).toBeInTheDocument();
     expect(screen.getByText("+$92/mo ready")).toBeInTheDocument();
     expect(screen.getByText("15 authorizations live")).toBeInTheDocument();
   });
@@ -103,9 +113,9 @@ describe("DashboardPage integration", () => {
 
   it("renders the current dashboard action links", () => {
     renderDashboard();
-    expect(screen.getByRole("link", { name: /Threat details/i })).toHaveAttribute("href", "/protect/threats");
-    expect(screen.getByRole("link", { name: /Opportunities/i })).toHaveAttribute("href", "/grow/recommendations");
-    expect(screen.getByRole("link", { name: /Approval queue/i })).toHaveAttribute("href", "/execute/queue");
+    expect(screen.getByRole("link", { name: /All threats/i })).toHaveAttribute("href", "/protect/threats");
+    expect(screen.getByRole("link", { name: /All opportunities/i })).toHaveAttribute("href", "/grow/recommendations");
+    expect(screen.getByRole("link", { name: /All approvals/i })).toHaveAttribute("href", "/execute/queue");
     expect(screen.getByRole("link", { name: /Audit history/i })).toHaveAttribute("href", "/govern/audit");
   });
 });

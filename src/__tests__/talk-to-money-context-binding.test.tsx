@@ -10,7 +10,7 @@ describe('Talk your money Context Binding ensures Route-Specific Relevance', () 
     test('TalkToMoney on /dashboard is active with no disabled or coming-soon state', () => {
         renderWithRouter(<TalkToMoneyFab />, { initialPath: '/dashboard' })
 
-        const fab = screen.getByRole('button', { name: /talk your money/i })
+        const fab = screen.getByLabelText(/talk your money/i)
         expect(fab).toBeTruthy()
         expect(fab.hasAttribute('disabled')).toBe(false)
 
@@ -23,7 +23,7 @@ describe('Talk your money Context Binding ensures Route-Specific Relevance', () 
             initialPath: '/govern/audit-detail?decision=GOV-003',
         })
 
-        const fab = screen.getByRole('button', { name: /talk your money/i })
+        const fab = screen.getByLabelText(/talk your money/i)
         expect(fab).toBeTruthy()
         expect(fab.textContent?.toLowerCase()).not.toContain('coming soon')
     })

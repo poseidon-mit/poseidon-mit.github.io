@@ -282,7 +282,7 @@ export function AppNavShell({
         <main
           id="main-content"
           role="main"
-          className="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:overflow-visible lg:pb-0"
+          className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:overflow-visible lg:pb-0"
         >
           <AnimatePresence mode="popLayout">
             <motion.div

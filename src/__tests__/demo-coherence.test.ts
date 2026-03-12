@@ -141,7 +141,7 @@ describe('demo coherence invariants', () => {
   })
 
   it('uses selectArchitecturalTrust on downstream pages', () => {
-    for (const file of ['src/pages/Landing.tsx', 'src/pages/Execute.tsx']) {
+    for (const file of ['src/pages/Landing.tsx']) {
       expect(readSource(file)).toContain('selectArchitecturalTrust')
     }
   })

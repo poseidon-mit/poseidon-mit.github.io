@@ -17,7 +17,7 @@ describe('Talk your money Entrypoints are Explicit and Context-Bound across Flag
         test(`TalkToMoney exposes an entrypoint from ${label} (${path})`, () => {
             renderWithRouter(<TalkToMoneyFab />, { initialPath: path })
 
-            const fab = screen.getByRole('button', { name: /talk your money/i })
+            const fab = screen.getByLabelText(/talk your money/i)
             expect(fab).toBeTruthy()
             expect(fab.hasAttribute('disabled')).toBe(false)
             expect(fab.textContent?.toLowerCase()).not.toContain('coming soon')
@@ -28,7 +28,7 @@ describe('Talk your money Entrypoints are Explicit and Context-Bound across Flag
         for (const { path } of flagshipRoutes) {
             const { unmount } = renderWithRouter(<TalkToMoneyFab />, { initialPath: path })
 
-            const fab = screen.getByRole('button', { name: /talk your money/i })
+            const fab = screen.getByLabelText(/talk your money/i)
             expect(fab.className).not.toContain('cursor-not-allowed')
 
             unmount()

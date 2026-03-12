@@ -566,10 +566,11 @@ export default function ProtectAlertDetailPage() {
                   <CardContent className="p-6 lg:p-8 pt-0 lg:pt-0">
                     <ShapWaterfall
                       factors={factors.map((f) => ({
-                        name: f.title,
+                        label: f.title,
                         value: f.value,
                       }))}
                       baseValue={0}
+                      finalValue={alert.confidence}
                     />
                   </CardContent>
                 </motion.div>

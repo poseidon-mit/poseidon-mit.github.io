@@ -57,16 +57,16 @@ export default function Landing() {
           loop
           muted
           playsInline
-          className="absolute inset-0 h-full w-full object-cover scale-[1.15] opacity-35 pointer-events-none"
+          className="absolute inset-0 h-full w-full object-cover scale-[1.15] opacity-70 pointer-events-none"
         />
 
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#06060A]/60 to-[#06060A] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#06060A]/20 to-[#06060A]/80 pointer-events-none" />
 
         {/* Particle Globe */}
         {!reducedMotion && (
           <Suspense fallback={null}>
-            <div className="absolute inset-0 opacity-60 pointer-events-none">
+            <div className="absolute inset-0 opacity-90 pointer-events-none">
               <ParticleGlobe quality="auto" />
             </div>
           </Suspense>

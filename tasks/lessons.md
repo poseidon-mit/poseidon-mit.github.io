@@ -17,3 +17,4 @@
 - When a contract test only passes because of unused selector imports or AST-visible strings, the fix is wrong. Rewire the page to canonical data for real before touching the test.
 - When a render-smoke test targets a redirect-only page or a query-driven detail screen, set the route state in the test rather than adding fake placeholder UI to production code.
 - When a route or footer deep-links into Govern, verify the `auditId` against canonical relations (`alertToAction`, `recommendationToAction`, `actionToDecision`) instead of trusting page-local constants.
+- When the user expands a prompt artifact from one engine to all flagship engines, replace engine-specific guardrails with shared hero/layout contracts first; otherwise the new prompt keeps accidental assumptions from the original engine.

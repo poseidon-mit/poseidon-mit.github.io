@@ -1,9 +1,7 @@
 import { useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Eye, Scale, Shield, TrendingUp, Zap } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, Eye, Scale, Shield, TrendingUp, Zap } from 'lucide-react'
 import { Link, useRouter } from '@/router'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { getMotionPreset } from '@/lib/motion-presets'
@@ -12,10 +10,10 @@ import { AUDIT_DECISIONS, DEFAULT_DECISION_ID } from '@/lib/govern-audit-data'
 import { cn } from '@/lib/utils'
 
 const ENGINE_MAP = {
-  Protect: { icon: Shield, color: 'text-emerald-700', bg: 'bg-emerald-50' },
-  Grow: { icon: TrendingUp, color: 'text-violet-700', bg: 'bg-violet-50' },
-  Execute: { icon: Zap, color: 'text-amber-700', bg: 'bg-amber-50' },
-  Govern: { icon: Scale, color: 'text-blue-700', bg: 'bg-blue-50' },
+  Protect: { icon: Shield, accent: 'var(--engine-protect)', label: 'Protect' },
+  Grow: { icon: TrendingUp, accent: 'var(--engine-grow)', label: 'Grow' },
+  Execute: { icon: Zap, accent: 'var(--engine-execute)', label: 'Execute' },
+  Govern: { icon: Scale, accent: 'var(--engine-govern)', label: 'Govern' },
 } as const
 
 const DECISION_ID_ALIASES: Record<string, string> = {
@@ -28,9 +26,29 @@ function resolveDecision(id: string | null) {
   return AUDIT_DECISIONS[normalized] ?? AUDIT_DECISIONS[DEFAULT_DECISION_ID]
 }
 
-function narrateBaseReality(baseReality: Array<{ label: string; value: string }>) {
-  const fragments = baseReality.map((row) => `${row.label}: ${row.value}`)
-  return fragments.join(' · ')
+function Panel({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <div
+      className={cn(
+        'rounded-2xl border border-white/10 bg-white/[0.03] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]',
+        className,
+      )}
+    >
+      {children}
+    </div>
+  )
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-[11px] uppercase tracking-[0.18em] text-white/40">{children}</p>
+  )
 }
 
 export function GovernAuditDetail() {
@@ -44,6 +62,7 @@ export function GovernAuditDetail() {
   const decision = useMemo(() => resolveDecision(decisionId), [decisionId])
   const engineInfo = ENGINE_MAP[decision.engine] ?? ENGINE_MAP.Govern
   const EngineIcon = engineInfo.icon
+  const confidencePct = Math.round(decision.explanation.confidence * 100)
 
   usePageTitle('Audit Detail')
 
@@ -51,140 +70,203 @@ export function GovernAuditDetail() {
     <motion.main
       id="main-content"
       role="main"
-      className="hero-viewport flex flex-col gap-6 pb-12"
+      className="hero-viewport flex flex-col gap-5 pb-12"
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
     >
+      {/* Back link */}
       <motion.div variants={fadeUp}>
         <Link
           to="/govern/audit"
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900"
+          className="inline-flex items-center gap-2 text-sm font-medium text-white/40 transition-colors hover:text-white/70"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Audit Log
+          Audit Ledger
         </Link>
       </motion.div>
 
+      {/* Header card */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-4">
-              <div className={cn('flex h-14 w-14 items-center justify-center rounded-2xl shrink-0', engineInfo.bg)}>
-                <EngineIcon className={cn('h-7 w-7', engineInfo.color)} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-500">Audit Record #{decision.id}</p>
-                <h1 className="text-2xl font-bold text-gray-900">{decision.action}</h1>
-                <p className="mt-1 text-sm text-gray-400">{formatDemoTimestamp(decision.timestamp)}</p>
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <Badge variant="outline" className={cn(engineInfo.bg, engineInfo.color)}>
-                    {decision.engine}
-                  </Badge>
-                  <Badge variant="outline" className="border-blue-200 bg-blue-50 text-blue-700">
-                    Audit Record
-                  </Badge>
-                </div>
-              </div>
-              <div className="shrink-0 rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-right">
-                <p className="text-[10px] uppercase tracking-widest text-gray-400">Confidence</p>
-                <p className="mt-2 text-lg font-semibold text-gray-900">{Math.round(decision.explanation.confidence * 100)}%</p>
+        <Panel className="px-6 py-6">
+          <div className="flex items-start gap-5">
+            <div
+              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/10"
+              style={{
+                color: engineInfo.accent,
+                background: `color-mix(in srgb, ${engineInfo.accent} 14%, transparent)`,
+              }}
+            >
+              <EngineIcon className="h-6 w-6" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="font-mono text-xs text-white/35">{decision.id}</p>
+              <h1 className="mt-1 text-xl font-semibold text-white md:text-2xl">
+                {decision.action}
+              </h1>
+              <p className="mt-2 text-sm text-white/40">
+                {formatDemoTimestamp(decision.timestamp)}
+              </p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span
+                  className="inline-flex items-center rounded-lg border px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] font-medium"
+                  style={{
+                    color: engineInfo.accent,
+                    borderColor: `color-mix(in srgb, ${engineInfo.accent} 30%, transparent)`,
+                    background: `color-mix(in srgb, ${engineInfo.accent} 8%, transparent)`,
+                  }}
+                >
+                  {decision.engine}
+                </span>
+                <span className="inline-flex items-center rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-white/50">
+                  Audit Record
+                </span>
               </div>
             </div>
-          </CardContent>
-        </Card>
+            <div className="shrink-0 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3 text-right">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-white/35">
+                Confidence
+              </p>
+              <p
+                className="mt-2 text-2xl font-semibold"
+                style={{ color: engineInfo.accent }}
+              >
+                {confidencePct}%
+              </p>
+            </div>
+          </div>
+        </Panel>
       </motion.div>
 
+      {/* Why This Decision */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-900">Why This Decision</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm leading-relaxed text-gray-700">{decision.explanation.summary}</p>
-            <div className="space-y-3">
-              {decision.topFactors.map((factor) => (
-                <div key={factor.label} className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+        <Panel className="px-6 py-6">
+          <SectionLabel>Why This Decision</SectionLabel>
+          <p className="mt-4 text-sm leading-relaxed text-white/60">
+            {decision.explanation.summary}
+          </p>
+          <div className="mt-5 space-y-2.5">
+            {decision.topFactors.map((factor) => {
+              const pct = Math.round(factor.contribution * 100)
+              return (
+                <div
+                  key={factor.label}
+                  className="rounded-xl border border-white/8 bg-white/[0.02] px-4 py-3"
+                >
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm font-medium text-gray-900">{factor.label}</span>
-                    <span className="text-xs font-mono font-semibold text-blue-700">
-                      {Math.round(factor.contribution * 100)}%
+                    <span className="text-sm font-medium text-white/80">
+                      {factor.label}
+                    </span>
+                    <span
+                      className="font-mono text-xs font-semibold"
+                      style={{ color: engineInfo.accent }}
+                    >
+                      {pct}%
                     </span>
                   </div>
-                  <p className="mt-2 text-xs leading-relaxed text-gray-500">{factor.note}</p>
+                  <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/[0.06]">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${pct}%`,
+                        backgroundColor: engineInfo.accent,
+                        opacity: 0.7,
+                      }}
+                    />
+                  </div>
+                  <p className="mt-2 text-xs leading-relaxed text-white/40">
+                    {factor.note}
+                  </p>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+              )
+            })}
+          </div>
+        </Panel>
       </motion.div>
 
-      <motion.div variants={fadeUp} className="grid gap-6 lg:grid-cols-2">
-        <Card className="border border-border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-900">Input Data</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm leading-relaxed text-gray-600">{narrateBaseReality(decision.baseReality)}</p>
-            <div className="flex flex-wrap gap-2">
-              {decision.baseReality.map((row) => (
-                <span
-                  key={row.label}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs"
-                >
-                  <span className="text-[10px] uppercase tracking-wider text-gray-400">{row.label}</span>
-                  <span className="text-gray-700">{row.value}</span>
-                </span>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+      {/* Input Data + Compliance */}
+      <motion.div variants={fadeUp} className="grid gap-5 lg:grid-cols-2">
+        <Panel className="px-6 py-6">
+          <SectionLabel>Input Data</SectionLabel>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            {decision.baseReality.map((row) => (
+              <div
+                key={row.label}
+                className="rounded-xl border border-white/8 bg-white/[0.02] px-4 py-3"
+              >
+                <p className="text-[10px] uppercase tracking-[0.18em] text-white/30">
+                  {row.label}
+                </p>
+                <p className="mt-1.5 text-sm text-white/75">{row.value}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {decision.dataSources.map((src) => (
+              <span
+                key={src}
+                className="rounded-lg border border-white/8 bg-white/[0.02] px-2.5 py-1 text-[10px] text-white/35"
+              >
+                {src}
+              </span>
+            ))}
+          </div>
+        </Panel>
 
-        <Card className="border border-border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-900">Compliance Flags</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-3 sm:grid-cols-3">
-              {[
+        <Panel className="px-6 py-6">
+          <SectionLabel>Compliance</SectionLabel>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            {(
+              [
                 { label: 'GDPR', enabled: decision.compliance.gdpr },
                 { label: 'ECOA', enabled: decision.compliance.ecoa },
                 { label: 'CCPA', enabled: decision.compliance.ccpa },
-              ].map((item) => (
-                <div key={item.label} className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-4">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-semibold text-gray-900">{item.label}</span>
-                    <span className={cn(
-                      'text-[10px] font-bold uppercase tracking-wider',
-                      item.enabled ? 'text-emerald-600' : 'text-amber-600',
-                    )}>
-                      {item.enabled ? 'Protected' : 'Review'}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-xs leading-relaxed text-gray-500">
-                    {item.enabled
-                      ? 'Your rights are preserved for this decision.'
-                      : 'Additional review is required.'}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+              ] as const
+            ).map((item) => (
+              <div
+                key={item.label}
+                className="flex flex-col items-center rounded-xl border border-white/8 bg-white/[0.02] px-4 py-4"
+              >
+                <CheckCircle2
+                  className={cn(
+                    'h-5 w-5',
+                    item.enabled
+                      ? 'text-[var(--engine-protect)]'
+                      : 'text-amber-500/70',
+                  )}
+                />
+                <span className="mt-2 text-sm font-semibold text-white/80">
+                  {item.label}
+                </span>
+                <span
+                  className={cn(
+                    'mt-1 text-[10px] font-bold uppercase tracking-wider',
+                    item.enabled
+                      ? 'text-[var(--engine-protect)]'
+                      : 'text-amber-500/70',
+                  )}
+                >
+                  {item.enabled ? 'Protected' : 'Review'}
+                </span>
+              </div>
+            ))}
+          </div>
+        </Panel>
       </motion.div>
 
+      {/* Outcome */}
       <motion.div variants={fadeUp}>
-        <Card className="border border-border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-              <Eye className="h-5 w-5 text-blue-600" />
-              Outcome
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm leading-relaxed text-gray-700">{decision.coreAssertion}</p>
-          </CardContent>
-        </Card>
+        <Panel className="px-6 py-5">
+          <div className="flex items-start gap-3">
+            <Eye className="mt-0.5 h-5 w-5 shrink-0" style={{ color: engineInfo.accent }} />
+            <div>
+              <SectionLabel>Outcome</SectionLabel>
+              <p className="mt-2 text-sm leading-relaxed text-white/60">
+                {decision.coreAssertion}
+              </p>
+            </div>
+          </div>
+        </Panel>
       </motion.div>
     </motion.main>
   )

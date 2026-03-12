@@ -23,12 +23,12 @@ describe('Govern audit flow', () => {
   describe('GOV01 - Govern Dashboard', () => {
     it('displays immutable audit trail headline', () => {
       renderWithRouter(GovernTrust);
-      expect(screen.getAllByText(/Shield matrix/i).length).toBeGreaterThan(0);
+      expect(screen.getByRole("heading", { name: /govern/i })).toBeInTheDocument();
     });
 
-    it('shows the activity log panel', () => {
+    it('shows the audit metrics', () => {
       renderWithRouter(GovernTrust);
-      expect(screen.getAllByText(/Activity log/i).length).toBeGreaterThan(0);
+      expect(screen.getByText(/Audit decisions/i)).toBeInTheDocument();
     });
 
     // GovernFooter is injected by AuthenticatedLayout, not by the page component.

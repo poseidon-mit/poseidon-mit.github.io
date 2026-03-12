@@ -80,7 +80,6 @@ export const NAV_ITEMS: NavItem[] = [
     { label: 'Grow', path: '/grow', icon: TrendingUp, engine: 'grow', group: 'engine', tone: 'grow' },
     { label: 'Execute', path: '/execute', icon: Zap, engine: 'execute', group: 'engine', tone: 'execute' },
     { label: 'Govern', path: '/govern', icon: Scale, engine: 'govern', group: 'engine', tone: 'govern' },
-    { label: 'Talk', path: '/chat', icon: MessageCircle, group: 'system', tone: 'system' },
     { label: 'Settings', path: '/settings', icon: Settings, group: 'system', tone: 'system' },
 ];
 

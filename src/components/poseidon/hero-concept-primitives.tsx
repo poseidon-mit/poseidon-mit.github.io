@@ -1,4 +1,6 @@
 import { cn } from '@/lib/utils'
+import { Link } from '@/router'
+import { ChevronRight } from 'lucide-react'
 
 export interface HeroBackdropProps {
   accent: string
@@ -38,15 +40,6 @@ export function HeroBackdrop({
           background: `linear-gradient(90deg, transparent, color-mix(in srgb, ${accent} 32%, transparent), transparent)`,
         }}
       />
-      <div
-        className={cn(
-          'absolute inset-x-[10%] top-[45%] h-px opacity-35',
-          !reducedMotion && 'animate-[pulse_6s_ease-in-out_infinite]',
-        )}
-        style={{
-          background: `linear-gradient(90deg, transparent, color-mix(in srgb, ${secondary} 82%, transparent), transparent)`,
-        }}
-      />
     </div>
   )
 }
@@ -84,12 +77,12 @@ export function HeroMetricPill({
   return (
     <div
       className={cn(
-        'rounded-full border border-white/10 bg-black/25 px-4 py-2 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]',
+        'flex flex-col items-center justify-center rounded-full border border-white/10 bg-black/25 px-5 py-3 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]',
         className,
       )}
     >
       <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">{label}</p>
-      <p className="mt-1 text-sm font-medium text-white" style={tone ? { color: tone } : undefined}>
+      <p className="mt-1 text-base font-medium text-white" style={tone ? { color: tone } : undefined}>
         {value}
       </p>
     </div>
@@ -112,6 +105,45 @@ export function HeroPanel({
       {...rest}
     >
       {children}
+    </div>
+  )
+}
+
+export interface HeroGhostLinkProps {
+  to: string
+  children: React.ReactNode
+  engineColor: string
+  className?: string
+}
+
+export function HeroGhostLink({ to, children, engineColor, className }: HeroGhostLinkProps) {
+  return (
+    <div className={cn("relative group inline-flex font-mono", className)}>
+      <Link 
+        to={to}
+        className="relative z-10 flex items-center justify-center gap-2 px-6 py-3 text-xs tracking-[0.2em] text-white/50 transition-all duration-500 hover:text-white hover:-translate-y-0.5"
+      >
+        <span className="uppercase">[ {children} ]</span>
+        <ChevronRight className="h-3.5 w-3.5 opacity-40 transition-all duration-500 group-hover:opacity-100 group-hover:translate-x-1" />
+      </Link>
+      
+      {/* Underglow Sweep Effect */}
+      <div className="absolute bottom-0 left-0 h-[1px] w-full overflow-hidden opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <div 
+          className="absolute h-full w-full -translate-x-full group-hover:animate-[sweep_1.5s_ease-in-out_infinite]"
+          style={{
+            background: `linear-gradient(90deg, transparent, ${engineColor}, transparent)`,
+            boxShadow: `0 0 10px 1px ${engineColor}`
+          }}
+        />
+      </div>
+
+      <style>{`
+        @keyframes sweep {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+      `}</style>
     </div>
   )
 }

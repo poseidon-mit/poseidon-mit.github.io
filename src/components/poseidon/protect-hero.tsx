@@ -2,7 +2,6 @@ import { ArrowRight, ShieldAlert } from 'lucide-react'
 import { Link } from '@/router'
 import { buttonVariants } from '@/components/ui/button'
 import { ListPortalBar } from './list-portal-bar'
-import { RadarSweep } from './effects/RadarSweep'
 import { cn } from '@/lib/utils'
 import {
   HeroBackdrop,
@@ -13,6 +12,12 @@ import {
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 
 type HeroSeverity = 'Critical' | 'High' | 'Medium' | 'Low'
+
+export interface ShapFactor {
+  label: string
+  weight: number
+  mitigating: boolean
+}
 
 export interface ProtectAnomalyRadarProps {
   alert: {
@@ -30,13 +35,17 @@ export interface ProtectAnomalyRadarProps {
     maxValue: number
     color?: string
   }[]
-  evidenceCues: string[]
+  shapFactors: ShapFactor[]
   auditChain: { alertId: string; actionId: string; decisionId: string } | null
   remainingCount: number
   totalExposure: number
   fpRate: string
   onReviewThreat: () => void
 }
+
+import { ShapWaterfall } from '@/components/poseidon/shap-waterfall'
+
+const SHAP_BASE = 0.12 // baseline fraud probability
 
 function ProtectLedgerField({
   label,
@@ -46,9 +55,9 @@ function ProtectLedgerField({
   value: string
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-      <p className="text-[10px] uppercase tracking-[0.2em] text-white/35">{label}</p>
-      <p className="mt-2 text-sm text-white">{value}</p>
+    <div className="flex flex-col gap-1 border-l border-white/10 pl-4 py-1">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">{label}</p>
+      <p className="font-mono text-sm text-white/80">{value}</p>
     </div>
   )
 }
@@ -61,21 +70,23 @@ function BackgroundTransactionTape({
   reducedMotion: boolean
 }) {
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-40">
-      <div className="absolute inset-y-0 left-0 w-full bg-[radial-gradient(circle_at_center,transparent_18%,rgba(0,0,0,0.6)_74%)]" />
-      <div className="absolute inset-y-0 left-0 flex w-full flex-col justify-between px-4 py-5 text-[10px] font-mono uppercase tracking-[0.18em] text-white/20 md:px-8">
+    <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-10">
+      <div className="absolute inset-y-0 left-0 w-full bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.8)_80%)]" />
+      <div className="absolute inset-y-0 left-0 flex w-full flex-col justify-between px-4 py-8 text-[10px] font-mono uppercase tracking-[0.2em] text-white/30 md:px-8">
         {items.map((item, index) => (
           <div
             key={`${item}-${index}`}
             className={cn(
-              'flex justify-between gap-6 whitespace-nowrap',
-              !reducedMotion && index % 2 === 0 && 'animate-[pulse_9s_ease-in-out_infinite]',
+              'flex justify-between gap-6 whitespace-nowrap opacity-20',
+              !reducedMotion && 'animate-[pulse_8s_ease-in-out_infinite]',
+              index % 2 === 0 ? 'translate-x-[5%]' : '-translate-x-[5%]'
             )}
+            style={{ animationDelay: `${index * 1.5}s` }}
           >
-            <span>{item}</span>
-            <span>verified</span>
-            <span>{item}</span>
-            <span>verified</span>
+            <span>{item} verified</span>
+            <span>{item} flagged</span>
+            <span>{item} verified</span>
+            <span>{item} flagged</span>
           </div>
         ))}
       </div>
@@ -85,8 +96,8 @@ function BackgroundTransactionTape({
 
 export function ProtectAnomalyRadar({
   alert,
-  radarAxes,
-  evidenceCues,
+  radarAxes, // Kept for interface compatibility but unused in this visual paradigm
+  shapFactors,
   auditChain,
   remainingCount,
   totalExposure,
@@ -94,13 +105,8 @@ export function ProtectAnomalyRadar({
   onReviewThreat,
 }: ProtectAnomalyRadarProps) {
   const reducedMotion = useReducedMotionSafe()
-  const ringClass = reducedMotion ? '' : 'animate-[ping_4s_ease-out_infinite]'
   const tapeItems = [
-    `${alert.id} // ${alert.time}`,
-    `${alert.counterparty} // ${alert.amount}`,
-    `${Math.round(alert.confidence * 100)}% confidence // geo mismatch`,
-    `owner review required // protect matrix live`,
-    `exposure ${totalExposure.toLocaleString()} // false positives ${fpRate}`,
+    `NODE-891`, `NODE-892`, `NODE-893`, `NODE-894`, `NODE-895`, `NODE-896`
   ]
 
   return (
@@ -108,173 +114,159 @@ export function ProtectAnomalyRadar({
       <section
         role="region"
         aria-labelledby="protect-hero-title"
-        className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[#07111d]"
+        className="relative flex min-h-[580px] w-full flex-col items-center justify-center overflow-hidden rounded-[32px] border border-white/10 bg-[#020202]"
       >
         <HeroBackdrop
           accent="var(--engine-protect)"
-          secondaryAccent="var(--engine-govern)"
+          secondaryAccent="#020202"
           reducedMotion={reducedMotion}
         />
         <BackgroundTransactionTape items={tapeItems} reducedMotion={reducedMotion} />
+        
+        {/* Core Content Area */}
+        <div className="relative z-10 flex w-full max-w-5xl flex-col items-center justify-center px-6 py-12 md:px-10">
+          
+          <div className="flex flex-col items-center gap-2 mb-8 text-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.02]">
+            <HeroEyebrow className="border-[var(--engine-protect)]/20 bg-[var(--engine-protect)]/5 text-[var(--engine-protect)]">
+              <ShieldAlert className="h-3.5 w-3.5" />
+              Protect matrix live
+            </HeroEyebrow>
+            <h2
+              id="protect-hero-title"
+              className="sr-only"
+            >
+              Protect
+            </h2>
+            <p className="mt-2 text-sm font-medium tracking-wide text-white/50">
+              Status: 1 anomaly flagged
+            </p>
+          </div>
 
-        <div className="relative z-10 grid min-h-[65vh] gap-8 px-6 py-8 md:px-10 md:py-10 xl:grid-cols-[1.08fr_0.92fr] xl:items-center">
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-wrap items-center gap-3">
-              <HeroEyebrow>
-                <ShieldAlert className="h-3.5 w-3.5 text-[var(--engine-protect)]" />
-                Protect matrix live
-              </HeroEyebrow>
-              <HeroEyebrow className="text-white/52">Status: 1 anomaly flagged</HeroEyebrow>
-            </div>
-
-            <div className="max-w-2xl">
-              <p className="text-sm uppercase tracking-[0.22em] text-white/38">
-                Glass matrix projection
-              </p>
-              <h2
-                id="protect-hero-title"
-                className="mt-4 text-[clamp(2.7rem,8vw,5.5rem)] font-semibold leading-none tracking-[-0.06em] text-white"
-              >
-                GLASS MATRIX
-                <br />
-                PROJECTION
-              </h2>
-              <p className="mt-5 max-w-xl text-base leading-7 text-white/58">
-                Protect pushed the highest-priority anomaly to the center, suppressed the
-                background noise, and kept the next action path attached to the same proof chain.
-              </p>
-            </div>
-
-            <div className="relative flex items-center justify-center py-4">
-              <div className={cn('absolute h-[320px] w-[320px] rounded-full border border-[rgba(34,197,94,0.26)]', ringClass)} />
-              <div
-                className={cn(
-                  'absolute h-[420px] w-[420px] rounded-full border border-[rgba(34,197,94,0.12)]',
-                  !reducedMotion && 'animate-[ping_5.8s_ease-out_infinite]',
-                )}
-              />
-              <RadarSweep size={420} />
-              <HeroPanel className="relative z-10 w-full max-w-xl px-6 py-6">
-                <div className="flex flex-wrap items-center gap-3">
-                  <HeroEyebrow className="border-[rgba(34,197,94,0.22)] text-[var(--engine-protect)]">
-                    Anomaly detected
-                  </HeroEyebrow>
-                  <HeroEyebrow className="font-mono text-white/46">{alert.id}</HeroEyebrow>
+          {/* The Prism: Central Focus Card */}
+          <div className="group relative w-full overflow-hidden rounded-[24px] border border-white/[0.08] bg-white/[0.02] p-[1px] shadow-2xl backdrop-blur-3xl transition-all duration-500 hover:border-[var(--engine-protect)]/30 hover:shadow-[0_0_80px_-20px_var(--engine-protect)]">
+             {/* Quantum Routing Border Glow (Hover) */}
+             {!reducedMotion && (
+              <div className="pointer-events-none absolute inset-0 -z-10 rounded-[24px] bg-[conic-gradient(from_0deg,transparent_0_340deg,var(--engine-protect)_360deg)] opacity-0 mix-blend-screen transition-opacity duration-300 group-hover:animate-[spin_3s_linear_infinite] group-hover:opacity-100" />
+            )}
+            
+            <div className="relative z-10 grid gap-0 rounded-[23px] bg-[#050A0F] lg:grid-cols-2">
+              
+              {/* Left Pane: Alert Focus */}
+              <div className="flex flex-col p-8 md:p-10 border-b lg:border-b-0 lg:border-r border-white/10">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="flex h-2 w-2 rounded-full bg-[var(--engine-protect)] shadow-[0_0_10px_var(--engine-protect)]" />
+                  <span className="font-mono text-xs uppercase tracking-[0.2em] text-white/50">
+                    Target Identification
+                  </span>
                 </div>
-
-                <p className="mt-5 text-2xl font-semibold text-white md:text-3xl">
+                
+                <p className="text-xl font-semibold text-white/90 md:text-2xl mb-1">
                   {alert.counterparty}
                 </p>
-                <p className="mt-2 font-mono text-3xl text-[var(--engine-protect)] md:text-4xl">
+                <p className="font-mono text-4xl text-white tracking-tight md:text-5xl mb-6">
                   {alert.amount}
                 </p>
-                <p className="mt-4 max-w-lg text-sm leading-7 text-white/58">
+                
+                <p className="text-sm leading-6 text-white/60 mb-8 max-w-sm">
                   {alert.description}
                 </p>
 
-                <div className="mt-5 flex flex-wrap gap-3">
-                  <HeroMetricPill
-                    label="Confidence"
-                    value={`${Math.round(alert.confidence * 100)}%`}
-                    tone="var(--engine-protect)"
+                <div className="flex flex-wrap gap-3 mt-auto">
+                  <HeroMetricPill 
+                    label="Confidence" 
+                    value={`${Math.round(alert.confidence * 100)}%`} 
+                    tone="var(--engine-protect)" 
                   />
-                  <HeroMetricPill label="Severity" value={alert.severity} />
-                  <HeroMetricPill label="Observed" value={alert.time} />
+                  <HeroMetricPill 
+                    label="Severity" 
+                    value={alert.severity} 
+                    tone={alert.severity === 'Critical' ? 'var(--state-critical)' : 'var(--engine-execute)'}
+                  />
                 </div>
-              </HeroPanel>
-            </div>
+              </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                onClick={onReviewThreat}
-                className={cn(
-                  buttonVariants({ variant: 'default', size: 'lg' }),
-                  'min-h-[48px] rounded-full bg-[var(--engine-protect)] px-7 text-slate-950 hover:bg-[var(--engine-protect)]/90',
+              {/* Right Pane: Shapley Hologram */}
+              <div className="flex flex-col p-8 md:p-10 bg-[radial-gradient(ellipse_at_top_right,rgba(34,197,94,0.05)_0%,transparent_70%)] relative overflow-hidden">
+                {!reducedMotion && (
+                  <div className="absolute top-0 right-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[var(--engine-protect)]/30 to-transparent group-hover:opacity-100 opacity-0 transition-opacity duration-700" />
                 )}
-              >
-                Review threat
-              </button>
-              <Link
-                to={
-                  auditChain
-                    ? `/govern/audit-detail?decision=${auditChain.decisionId}`
-                    : '/govern/audit'
-                }
-                className={cn(
-                  buttonVariants({ variant: 'outline', size: 'lg' }),
-                  'min-h-[48px] rounded-full border-white/15 bg-white/[0.03] px-7 text-white/80 hover:bg-white/[0.08]',
+                
+                <div className="flex items-center justify-between mb-8">
+                  <span className="font-mono text-xs uppercase tracking-[0.2em] text-white/50">
+                    Diagnostic Trace
+                  </span>
+                  <span className="font-mono text-xs text-[var(--engine-protect)]">
+                    {alert.id}
+                  </span>
+                </div>
+
+                {shapFactors.length > 0 ? (
+                  <div className="flex-1 w-full max-w-md ml-auto mt-2">
+                    <p className="sr-only">SHAP Waterfall</p>
+                    <ShapWaterfall
+                      factors={shapFactors.map(f => ({
+                        label: f.label,
+                        value: f.mitigating ? -f.weight : f.weight
+                      }))}
+                      baseValue={SHAP_BASE}
+                      finalValue={alert.confidence}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex-1 flex items-center justify-center border border-dashed border-white/10 rounded-xl">
+                    <p className="font-mono text-xs text-white/30">AWAITING_TELEMETRY</p>
+                  </div>
                 )}
-              >
-                View audit trail
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+                
+                <div className="mt-10 flex justify-end">
+                   <button
+                    type="button"
+                    onClick={onReviewThreat}
+                    className={cn(
+                      buttonVariants({ variant: 'default', size: 'lg' }),
+                      'min-h-[48px] w-full sm:w-auto rounded-xl bg-white/5 border border-white/10 text-white hover:bg-[var(--engine-protect)] hover:text-black hover:border-[var(--engine-protect)] transition-all duration-300 shadow-[0_0_0_transparent] hover:shadow-[0_0_30px_rgba(34,197,94,0.4)]',
+                    )}
+                  >
+                    Review threat
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
-          <HeroPanel className="px-5 py-5">
-            <p className="text-[11px] uppercase tracking-[0.18em] text-white/40">
-              Containment field
-            </p>
-
-            <div className="mt-5 space-y-3">
-              {radarAxes.slice(0, 3).map((item) => (
-                <div key={item.label}>
-                  <div className="mb-1.5 flex items-center justify-between text-xs text-white/50">
-                    <span>{item.label}</span>
-                    <span className="font-mono">{Math.round(item.value * 100)}%</span>
-                  </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-white/[0.06]">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${Math.min(100, (item.value / Math.max(item.maxValue, 0.01)) * 100)}%`,
-                        backgroundColor: item.color ?? 'var(--engine-protect)',
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          {/* Ledger / Metadata (Ghost tier) */}
+          <div className="mt-8 flex w-full max-w-4xl flex-col items-center justify-between gap-6 sm:flex-row border-t border-white/5 pt-6">
+            <div className="flex flex-wrap items-center justify-center gap-8">
               <ProtectLedgerField label="Total exposure" value={`$${totalExposure.toLocaleString()}`} />
               <ProtectLedgerField label="False positives" value={fpRate} />
-              <ProtectLedgerField label="Remaining queue" value={`${remainingCount} below`} />
-              <ProtectLedgerField label="Linked review" value={auditChain ? auditChain.actionId : 'Govern audit'} />
+              <ProtectLedgerField 
+                label="Linked review" 
+                value={auditChain ? auditChain.actionId : 'Govern audit'} 
+              />
             </div>
-
-            {evidenceCues.length > 0 && (
-              <div className="mt-6 border-t border-white/10 pt-6">
-                <p className="text-[11px] uppercase tracking-[0.18em] text-white/40">
-                  Why Poseidon cares
-                </p>
-                <div className="mt-4 space-y-3">
-                  {evidenceCues.slice(0, 3).map((cue) => (
-                    <p key={cue} className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-4 text-sm leading-6 text-white/58">
-                      {cue}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            )}
-          </HeroPanel>
-        </div>
-
-        <div className="border-t border-white/10 px-6 py-4 md:px-10">
-          <ListPortalBar
-            engine="protect"
-            label="Threat details"
-            count={remainingCount + 1}
-            destination={{ type: 'route', to: '/protect/threats' }}
-          />
+             
+             {auditChain && (
+               <Link
+                 to={`/govern/audit-detail?decision=${auditChain.decisionId}`}
+                 className="text-[11px] font-mono uppercase tracking-widest text-white/40 hover:text-[var(--engine-govern)] transition-colors flex items-center gap-2"
+               >
+                 View audit trail <ArrowRight className="h-3 w-3" />
+               </Link>
+             )}
+          </div>
         </div>
       </section>
 
-      <p className="text-center text-xs font-mono uppercase tracking-[0.22em] text-white/28">
-        {remainingCount} more threat{remainingCount === 1 ? '' : 's'} below · $
-        {totalExposure.toLocaleString()} exposure mapped to the current account graph
-      </p>
+      {/* Full-width bottom bar (Ghost Button style) */}
+      <Link
+        to="/protect/threats"
+        className="group relative flex w-full items-center justify-center gap-3 rounded-full py-4 transition-colors hover:bg-white/[0.02]"
+      >
+        <ShieldAlert className="h-4 w-4 text-[var(--engine-protect)] opacity-50 transition-opacity group-hover:opacity-100" />
+        <span className="font-mono text-xs uppercase tracking-[0.2em] text-white/40 transition-colors group-hover:text-white/80">
+          {remainingCount} more threats below
+        </span>
+      </Link>
     </div>
   )
 }
@@ -305,69 +297,64 @@ export function ProtectThreatPosture({
   const reducedMotion = useReducedMotionSafe()
 
   return (
-    <section className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[#07111d] px-6 py-8 md:px-10 md:py-10">
+    <section className="relative flex min-h-[580px] w-full flex-col items-center justify-center overflow-hidden rounded-[32px] border border-white/10 bg-[#020202] px-6 py-12 md:px-10">
       <HeroBackdrop
         accent="var(--engine-protect)"
-        secondaryAccent="var(--engine-dashboard)"
+        secondaryAccent="#020202"
         reducedMotion={reducedMotion}
       />
+      
+      {/* Subtle Breathing Green Glow */}
+      {!reducedMotion && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center mix-blend-screen opacity-20">
+          <div className="h-[40vh] w-[40vw] rounded-full bg-[var(--engine-protect)] blur-[120px] animate-[pulse_6s_ease-in-out_infinite]" />
+        </div>
+      )}
 
-      <div className="relative z-10 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-        <div>
-          <HeroEyebrow>Monitoring matrix</HeroEyebrow>
-          <h2
-            className="mt-5 font-light tracking-tight text-[clamp(2.4rem,6vw,4.3rem)] text-white"
-            style={{ fontFamily: 'var(--font-display)' }}
-          >
-            {activeCount === 0
-              ? 'All clear'
-              : `Monitoring matrix stable. ${activeCount} alerts still tracked.`}
-          </h2>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-white/55">
-            Protect stays read-only, keeps background telemetry flowing, and only escalates
-            when the evidence stack becomes undeniable.
-          </p>
+      <div className="relative z-10 flex max-w-3xl flex-col items-center text-center">
+        <div className="mb-8 flex items-center justify-center h-16 w-16 rounded-full bg-[var(--engine-protect)]/10 border border-[var(--engine-protect)]/20 text-[var(--engine-protect)] shadow-[0_0_30px_rgba(34,197,94,0.1)]">
+           
+        </div>
+        
+        <h2
+          className="font-display text-3xl font-semibold tracking-tight text-white md:text-5xl lg:text-6xl" style={{ fontFamily: "var(--font-display)" }}
+        >
+          {activeCount === 0 ? 'All clear' : `Monitoring matrix stable. ${activeCount} alerts still tracked.`}
+        </h2>
+        
+        <p className="mt-6 max-w-xl text-base leading-relaxed text-white/50">
+          {activeCount === 0
+            ? 'No suspicious activity detected. Protect engines are continuously scanning telemetry in the background.'
+            : `Protect stays read-only, keeps background telemetry flowing, and only escalates when the evidence stack becomes undeniable.`}
+        </p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            <HeroMetricPill label="Active" value={activeCount} tone="var(--engine-protect)" />
-            <HeroMetricPill label="Resolved" value={resolvedCount} />
-            <HeroMetricPill label="False positives" value={fpRate} />
-            <HeroMetricPill label="Latest pass" value={modelUpdate} />
-          </div>
+        <div className="mt-12 flex flex-wrap justify-center gap-x-8 gap-y-4 border-t border-white/10 pt-8">
+          <ProtectLedgerField label="Total Tracked" value={activeCount.toString()} />
+          <ProtectLedgerField label="Resolved" value={resolvedCount.toString()} />
+          <ProtectLedgerField label="False Positives" value={fpRate} />
+          <ProtectLedgerField label="Model Update" value={modelUpdate} />
         </div>
 
-        <HeroPanel className="px-5 py-5">
-          <p className="text-[11px] uppercase tracking-[0.18em] text-white/40">
-            Monitoring posture
-          </p>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <ProtectLedgerField label="High / Medium / Low" value={`${highCount} / ${mediumCount} / ${lowCount}`} />
-            <ProtectLedgerField label="Resolved" value={`${resolvedCount} closed`} />
-          </div>
-          <p className="mt-5 text-sm leading-7 text-white/58">
-            This calmer state intentionally removes the sonar focus and leaves the route ready
-            for manual review when a new spike re-enters the field.
-          </p>
-
-          {topAlert && onOpenTopAlert && (
+        {topAlert && onOpenTopAlert && (
+          <div className="mt-12">
             <button
               type="button"
               onClick={onOpenTopAlert}
-              className="mt-6 inline-flex h-auto min-h-[48px] items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-6 py-3 text-sm font-semibold text-slate-950"
+              className="inline-flex h-auto min-h-[48px] items-center justify-center rounded-2xl bg-gradient-to-r from-[var(--engine-protect)] to-[var(--engine-dashboard)] px-6 py-3 text-sm font-semibold text-slate-950 transition-all hover:opacity-90"
             >
-              Review top alert
+              Review top alert: {topAlert.counterparty}
             </button>
-          )}
-
-          <div className="mt-6 border-t border-white/10 pt-6">
-            <ListPortalBar
-              engine="protect"
-              label="View all threats"
-              count={activeCount}
-              destination={{ type: 'route', to: '/protect/threats' }}
-            />
           </div>
-        </HeroPanel>
+        )}
+
+        <div className="mt-8">
+          <Link
+            to="/protect/threats"
+            className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-white/40 transition-colors hover:text-white"
+          >
+            View all threats <ArrowRight className="h-3 w-3 opacity-50 group-hover:translate-x-1 group-hover:opacity-100 transition-all" />
+          </Link>
+        </div>
       </div>
     </section>
   )

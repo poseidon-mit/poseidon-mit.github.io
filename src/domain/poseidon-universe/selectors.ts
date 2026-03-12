@@ -660,16 +660,19 @@ export interface DashboardHeroView {
     topAmount: string
     topCounterparty: string
     severity: string
+    attentionItems: { label: string; href: string }[]
   } | null
   growSignal: {
     savingsPerMonth: number
     recCount: number
     topTitle: string
+    attentionItems: { label: string; href: string }[]
   } | null
   executeSignal: {
     pendingCount: number
     topTitle: string
     topAmount: string
+    attentionItems: { label: string; href: string }[]
   } | null
   decisionsAudited: number
   complianceScore: number
@@ -692,7 +695,7 @@ export interface ProtectHeroAttentionView {
     maxValue: number
     color?: string
   }[]
-  evidenceCues: string[]
+  shapFactors: { label: string; weight: number; mitigating: boolean }[]
   auditChain: AlertAuditChain | null
   remainingCount: number
   totalExposure: number
@@ -762,6 +765,7 @@ export interface ExecuteHeroView {
   urgencyBreakdown: { high: number; medium: number; low: number }
   currentSavingsUsd: number
   potentialSavingsUsd: number
+  pendingQueue: { id: string; title: string }[]
 }
 
 export interface GovernHeroView {
@@ -830,10 +834,14 @@ export function selectDashboardHeroView(actionStates?: ExecuteActionStateLike): 
     healthBreakdown: breakdown,
     protectSignal: spotlightThreat
       ? {
-          threatCount: 1,
+          threatCount: activeThreats.length,
           topAmount: formatUsd(spotlightThreat.amountUsd),
           topCounterparty: spotlightThreat.counterparty,
           severity: spotlightThreat.severity,
+          attentionItems: activeThreats.slice(0, 2).map((threat) => ({
+            label: `${threat.counterparty} · ${formatUsd(threat.amountUsd)}`,
+            href: `/protect/alert-detail?alertId=${threat.id}`,
+          })),
         }
       : null,
     growSignal: spotlightRecommendation
@@ -841,6 +849,10 @@ export function selectDashboardHeroView(actionStates?: ExecuteActionStateLike): 
           savingsPerMonth: selectExecuteSavingsView().potentialMonthlySavingsUsd,
           recCount: recommendations.length,
           topTitle: spotlightRecommendation.title,
+          attentionItems: recommendations.slice(0, 2).map((rec) => ({
+            label: `${rec.title} · +$${rec.projectedBenefitUsd}/mo`,
+            href: `/grow/recommendation?id=${rec.rank}`,
+          })),
         }
       : null,
     executeSignal: featuredAction
@@ -848,6 +860,10 @@ export function selectDashboardHeroView(actionStates?: ExecuteActionStateLike): 
           pendingCount: pendingActions.length,
           topTitle: featuredAction.title,
           topAmount: featuredAction.amountLabel,
+          attentionItems: pendingActions.slice(0, 2).map((action) => ({
+            label: `${action.title} · ${action.amountLabel}`,
+            href: `/execute/approval?id=${action.id}`,
+          })),
         }
       : null,
     decisionsAudited: governSummary.decisionsAuditedTotal,
@@ -883,11 +899,12 @@ export function selectProtectHeroView(
             ? 'var(--state-critical)'
             : 'var(--engine-protect)',
       }))
-    const evidenceCues = selectThreatFactors(spotlight.id)
-      .filter((factor) => !factor.mitigating)
-      .sort((left, right) => right.weight - left.weight)
-      .slice(0, 3)
-      .map((factor) => factor.heroCue ?? factor.details)
+    const shapFactors = selectThreatFactors(spotlight.id)
+      .map((factor) => ({
+        label: factor.title,
+        weight: factor.weight,
+        mitigating: !!factor.mitigating,
+      }))
 
     return {
       mode: 'attention',
@@ -901,10 +918,10 @@ export function selectProtectHeroView(
         time: spotlight.relativeTime,
       },
       radarAxes,
-      evidenceCues,
+      shapFactors,
       auditChain: selectAlertAuditChain(spotlight.id),
       remainingCount: Math.max(0, activeThreats.length - 1),
-      totalExposure: activeThreats.reduce((sum, threat) => sum + threat.amountUsd, 0),
+      totalExposure: spotlight.amountUsd,
       fpRate,
     }
   }
@@ -947,12 +964,6 @@ export function selectGrowHeroView(): GrowHeroView {
           confidence: spotlight.confidence,
         }
       : null,
-    goals: selectGoals().map((goal) => ({
-      id: goal.id,
-      title: goal.title,
-      currentUsd: goal.currentUsd,
-      targetUsd: goal.targetUsd,
-    })),
     cohortHeadline: selectCohortHeadlines().grow,
   }
 }
@@ -1010,6 +1021,7 @@ export function selectExecuteHeroView(
     urgencyBreakdown,
     currentSavingsUsd: savings.currentMonthlySavingsUsd,
     potentialSavingsUsd: savings.potentialMonthlySavingsUsd,
+    pendingQueue: pendingActions.map((a) => ({ id: a.id, title: a.title })),
   }
 }
 
@@ -1021,7 +1033,7 @@ export function selectGovernHeroView(): GovernHeroView {
   return {
     decisionsAudited: summary.total,
     engineBreakdown: selectGovernEngineBreakdown(),
-    auditEntries: selectGovernAuditEntries().slice(0, 5).map((entry) => ({
+    auditEntries: selectGovernAuditEntries().slice(0, 8).map((entry) => ({
       id: entry.id,
       engine: entry.type,
       engineColor:

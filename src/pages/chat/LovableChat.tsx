@@ -44,7 +44,7 @@ function getAIResponse(input: string): string {
     return `Grow currently models ${formatUsd(grow.projectedGain)} per year in upside. The top recommendation is ${grow.spotlightRec?.title ?? "not yet ranked"} at about +${formatUsd(grow.spotlightRec?.monthlySavings ?? 0)}/mo, with ${grow.recommendationCount} ranked opportunities in the queue.`;
   }
   if (lower.includes("pending") || lower.includes("action")) {
-    return `You have ${execute.queueTotal} pending action${execute.queueTotal === 1 ? "" : "s"} requiring approval. The current priority is ${execute.featuredAction?.title ?? "queue clear"} for ${execute.featuredAction?.amountLabel ?? "$0"}, with ${execute.urgentCount} time-sensitive item${execute.urgentCount === 1 ? "" : "s"} in the consent gate.`;
+    return `You have ${execute.queueTotal} pending action${execute.queueTotal === 1 ? "" : "s"} requiring approval. The current priority is ${execute.featuredAction?.title ?? "queue clear"} for ${execute.featuredAction?.amountLabel ?? "$0"}, with ${execute.urgentCount} time-sensitive item${execute.urgentCount === 1 ? "" : "s"} in the approval queue.`;
   }
   return "I can help with your accounts, threats, savings, and pending actions. Try asking about one of these topics.";
 }
