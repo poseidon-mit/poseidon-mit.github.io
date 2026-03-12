@@ -141,7 +141,13 @@ export default function Landing() {
   const videoSrc = useHeroVideoSrc();
 
   return (
-    <div className="min-h-screen bg-[#0B0B14] text-white overflow-hidden overflow-x-hidden w-full relative">
+    <div className="min-h-screen bg-[#0A0A0F] text-white overflow-hidden overflow-x-hidden w-full relative">
+      <svg className="pointer-events-none fixed inset-0 z-50 h-[100dvh] w-full opacity-[0.035] mix-blend-overlay" aria-hidden="true">
+        <filter id="noise">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#noise)" />
+      </svg>
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-xl focus:bg-[var(--engine-grow)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-slate-950"
@@ -167,6 +173,11 @@ export default function Landing() {
           >
             <source src={videoSrc} type="video/mp4" />
           </video>
+          
+          {/* Video dark overlays for text readability (z-[1]) */}
+          <div className="absolute inset-0 z-[1] bg-black/20 pointer-events-none" aria-hidden="true" />
+          <div className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.5)_0%,transparent_60%)] pointer-events-none" aria-hidden="true" />
+          <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#0B0B14]/30 via-transparent to-[#0B0B14] pointer-events-none" aria-hidden="true" />
 
 
           {/* Navbar (z-50, fixed) */}
@@ -202,11 +213,10 @@ export default function Landing() {
 
           {/* Hero Content (z-[2]) */}
           <div
-            className="relative z-[2] flex flex-col items-center text-center max-w-[871px] mx-auto mt-[120px] md:mt-[162px] px-6"
-            style={{ filter: "drop-shadow(0 2px 12px rgba(0,0,0,0.7)) drop-shadow(0 0 40px rgba(0,0,0,0.5))" }}
+            className="relative z-[2] flex flex-col items-center text-center max-w-[1024px] mx-auto mt-[120px] md:mt-[180px] px-6"
           >
             <motion.div
-              className="flex flex-col gap-6"
+              className="flex flex-col gap-6 w-full"
               variants={staggerContainer}
               initial="hidden"
               animate="visible"
@@ -214,18 +224,12 @@ export default function Landing() {
               {/* Headline */}
               <motion.div
                 variants={staggerItem}
-                className="flex flex-col gap-2.5"
+                className="flex flex-col gap-2 md:gap-4"
               >
-                <h1 className="text-5xl md:text-[84px] font-medium tracking-[-2px] leading-[1.1] text-white">
+                <h1 className="text-5xl md:text-[96px] lg:text-[112px] font-medium tracking-tighter leading-[0.9] text-white">
                   {LANDING_COPY.hero.titleA}
                 </h1>
-                <span
-                  className="block text-5xl md:text-[84px] font-medium tracking-[-2px] leading-[1.1] italic font-serif bg-clip-text text-transparent"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(135deg, #8B5CF6, #00F0FF, #EAB308)",
-                  }}
-                >
+                <span className="block text-4xl md:text-[64px] lg:text-[76px] typo-display text-white/80 mt-2">
                   {LANDING_COPY.hero.titleB}
                 </span>
               </motion.div>
@@ -233,7 +237,7 @@ export default function Landing() {
               {/* Subtitle */}
               <motion.p
                 variants={staggerItem}
-                className="text-xl leading-[30px] text-white/90 max-w-[640px] mx-auto"
+                className="text-lg md:text-xl leading-relaxed text-white/60 max-w-[600px] mx-auto font-light mt-6 tracking-wide"
               >
                 {LANDING_COPY.hero.subtitle}
               </motion.p>
@@ -241,46 +245,40 @@ export default function Landing() {
               {/* CTA Buttons */}
               <motion.div
                 variants={staggerItem}
-                className="flex flex-col gap-6 items-center justify-center"
+                className="flex flex-col gap-8 items-center justify-center mt-8"
               >
-                <div className="flex flex-col sm:flex-row flex-wrap gap-3 items-center justify-center max-w-2xl mx-auto">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center justify-center max-w-2xl mx-auto">
                   <Link
                     to="/dashboard?demo=true"
                     data-cta-priority="primary"
-                    className="px-7 py-3.5 rounded-xl font-semibold text-base text-slate-950 shadow-[0_0_30px_rgba(139,92,246,0.3)] transition-all duration-300 hover:shadow-[0_0_50px_rgba(139,92,246,0.45)] hover:scale-[1.03] inline-flex items-center gap-2 whitespace-nowrap"
-                    style={{
-                      background:
-                        "linear-gradient(135deg, var(--engine-grow), color-mix(in srgb, var(--engine-grow) 72%, white))",
-                    }}
+                    className="px-8 py-4 rounded-full font-medium text-sm md:text-base text-black transition-all duration-300 hover:scale-[1.03] inline-flex items-center gap-2 whitespace-nowrap bg-white shadow-[0_0_32px_rgba(255,255,255,0.15)]"
                   >
                     Explore Prototype
-                    <ArrowRight size={16} />
+                    <ArrowRight size={18} className="text-black/70" />
                   </Link>
                   <a
                     href="https://youtu.be/ymwtd7X3CYI?si=T_4MA_Zs7n8Rf91U"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white/90 bg-white/10 border border-white/15 backdrop-blur-sm hover:bg-white/20 hover:text-white transition-all duration-200 inline-flex items-center gap-2 whitespace-nowrap"
+                    className="px-8 py-4 rounded-full text-sm md:text-base font-medium text-white/90 border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all duration-300 inline-flex items-center gap-2 whitespace-nowrap glass-surface"
                   >
-                    <PlayCircle size={16} />
-                    Video
+                    <PlayCircle size={18} className="text-white/60" />
+                    Watch Video
                   </a>
                   <Link
                     to="/deck"
-                    className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white/90 bg-white/10 border border-white/15 backdrop-blur-sm hover:bg-white/20 hover:text-white transition-all duration-200 inline-flex items-center gap-2 whitespace-nowrap"
+                    className="px-8 py-4 rounded-full text-sm md:text-base font-medium text-white/90 border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all duration-300 inline-flex items-center gap-2 whitespace-nowrap glass-surface"
                   >
-                    <Presentation size={16} />
-                    Presentation
+                    <Presentation size={18} className="text-white/60" />
+                    Presentation Deck
                   </Link>
                 </div>
-                <div className="flex items-center justify-center gap-4 text-sm font-medium text-white/50">
-                  <span className="flex items-center gap-1.5">
-                    <Lock size={12} className="text-emerald-500/70" />{" "}
-                    Bank-grade encryption
+                <div className="flex items-center justify-center gap-6 text-xs md:text-sm font-medium text-white/40 tracking-wide uppercase">
+                  <span className="flex items-center gap-2">
+                    <Lock size={12} className="opacity-50" /> Bank-grade encryption
                   </span>
-                  <span className="flex items-center gap-1.5">
-                    <Shield size={12} className="text-cyan-500/70" /> SOC 2 Type
-                    II
+                  <span className="flex items-center gap-2">
+                    <Shield size={12} className="opacity-50" /> SOC 2 Type II
                   </span>
                 </div>
               </motion.div>
@@ -292,19 +290,24 @@ export default function Landing() {
         {/* ════════════════════════════════════════════════════════════════════════
          * SECTION 2 — Value Proof
          * ════════════════════════════════════════════════════════════════════════ */}
-        <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24">
+        <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24 md:py-32 overflow-hidden">
+          {/* Ambient glass blobs */}
+          <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[var(--engine-protect)]/10 blur-[120px] pointer-events-none -z-10 mix-blend-screen" />
+          <div className="absolute bottom-[20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[var(--engine-grow)]/10 blur-[150px] pointer-events-none -z-10 mix-blend-screen" />
+
+
           <motion.div
-            className="mb-4 text-center"
+            className="mb-6 text-center relative z-10"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <span className="text-xs font-semibold uppercase tracking-[0.25em] text-white/50">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/40 typo-label">
               Trusted by Users Worldwide
             </span>
           </motion.div>
           <motion.h2
-            className="mb-14 text-center text-3xl md:text-4xl font-bold tracking-tight text-white/90"
+            className="mb-20 text-center text-4xl md:text-5xl font-medium tracking-tight text-white/90 relative z-10"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -312,8 +315,9 @@ export default function Landing() {
             Real Results, Real Impact
           </motion.h2>
 
+          {/* 1px Architectural Grid */}
           <motion.div
-            className="grid w-full max-w-4xl gap-5 sm:grid-cols-2"
+            className="grid w-full max-w-5xl sm:grid-cols-2 relative z-10 bg-white/[0.06] gap-[1px] p-[1px] rounded-[32px] overflow-hidden"
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
@@ -325,34 +329,31 @@ export default function Landing() {
                 <motion.div
                   key={stat.engine}
                   variants={staggerItem}
-                  className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.04] p-8 backdrop-blur-sm transition-colors duration-300 hover:bg-white/[0.07]"
-                  style={{
-                    borderLeftWidth: "2px",
-                    borderLeftColor: stat.color,
-                    boxShadow: `0 0 40px ${withAlpha(stat.color, 0.06)}`,
-                  }}
+                  className="group relative bg-[#0A0A0F] p-10 md:p-14 transition-colors duration-500 hover:bg-white/[0.02] flex flex-col justify-between"
                 >
-                  <div className="mb-3 flex items-center gap-2">
-                    <Icon className="h-5 w-5" style={{ color: stat.color }} />
-                    <span className="text-sm font-medium text-white/60">
-                      {stat.engine.charAt(0).toUpperCase() +
-                        stat.engine.slice(1)}
-                    </span>
+                  <div>
+                    <div className="mb-6 flex items-center justify-between">
+                      <span className="text-xs font-semibold uppercase tracking-[0.1em] text-white/40">
+                        {stat.engine}
+                      </span>
+                      <Icon className="h-4 w-4 opacity-50" style={{ color: stat.color }} />
+                    </div>
+                    <div
+                      className="text-5xl md:text-6xl font-light tracking-tighter mb-4 typo-hero-number"
+                    >
+                      <CountUp
+                        value={stat.value}
+                        prefix={stat.prefix}
+                        suffix={stat.suffix}
+                        decimals={stat.value % 1 !== 0 ? 1 : 0}
+                        duration={1.2}
+                      />
+                    </div>
                   </div>
-                  <div
-                    className="text-4xl font-bold tracking-tight"
-                    style={{ color: stat.color }}
-                  >
-                    <CountUp
-                      value={stat.value}
-                      prefix={stat.prefix}
-                      suffix={stat.suffix}
-                      decimals={stat.value % 1 !== 0 ? 1 : 0}
-                      duration={1.2}
-                    />
+                  <div>
+                    <p className="text-lg font-medium tracking-tight text-white/80">{stat.label}</p>
+                    <p className="mt-1 text-sm text-white/40">{stat.detail}</p>
                   </div>
-                  <p className="mt-1 text-base text-white/60">{stat.label}</p>
-                  <p className="mt-2 text-sm text-white/35">{stat.detail}</p>
                 </motion.div>
               );
             })}
@@ -360,70 +361,76 @@ export default function Landing() {
         </section>
 
         {/* ════════════════════════════════════════════════════════════════════════
-         * SECTION 3 — How It Works
+         * SECTION 3 — How It Works (1px Timeline)
          * ════════════════════════════════════════════════════════════════════════ */}
-        <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24">
+        <section className="relative flex min-h-screen flex-col items-center px-6 py-24 md:py-32 overflow-hidden">
+          {/* Ambient glass blobs */}
+          <div className="absolute top-[30%] right-[-20%] w-[700px] h-[700px] rounded-full bg-[var(--engine-execute)]/10 blur-[140px] pointer-events-none -z-10 mix-blend-screen" />
+          <div className="absolute bottom-[10%] left-[-15%] w-[500px] h-[500px] rounded-full bg-[var(--engine-govern)]/15 blur-[120px] pointer-events-none -z-10 mix-blend-screen" />
+
+
           <motion.span
-            className="mb-16 text-xs font-semibold uppercase tracking-[0.25em] text-white/50"
+            className="mb-20 text-xs font-semibold uppercase tracking-[0.2em] text-white/40 typo-label relative z-10"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            How It Works
+            The Precision System
           </motion.span>
 
+          {/* 1px structural spine timeline */}
           <motion.div
-            className="relative flex w-full max-w-xl flex-col gap-0"
+            className="relative flex w-full max-w-[1000px] flex-col gap-0 z-10 mx-auto"
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
           >
+            {/* Center line */}
             <div
-              className="absolute left-6 top-6 bottom-6 w-px bg-gradient-to-b from-white/10 via-white/5 to-transparent"
+              className="absolute left-[24px] md:left-1/2 top-4 bottom-4 w-[1px] bg-white/[0.08] -translate-x-1/2"
               aria-hidden="true"
             />
 
-            {ENGINE_STEPS.map((step) => (
-              <motion.div
-                key={step.engine}
-                className="relative flex gap-5 py-6"
-                variants={staggerItem}
-              >
-                <div
-                  className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full border text-base font-bold"
-                  style={{
-                    borderColor: withAlpha(step.color, 0.3),
-                    backgroundColor: withAlpha(step.color, 0.08),
-                    color: step.color,
-                    boxShadow: `0 0 20px ${withAlpha(step.color, 0.15)}`,
-                  }}
+            {ENGINE_STEPS.map((step, index) => {
+              const isEven = index % 2 === 0;
+              return (
+                <motion.div
+                  key={step.engine}
+                  className="relative flex items-center py-10 md:py-16 group w-full"
+                  variants={staggerItem}
                 >
-                  {step.num}
-                </div>
-                <div className="pt-1">
-                  <h3
-                    className="text-xl font-semibold"
-                    style={{ color: step.color }}
-                  >
-                    {step.title}
-                  </h3>
-                  <p className="mt-1.5 text-base leading-relaxed text-white/55">
-                    {step.desc}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+                  {/* Node */}
+                  <div className="absolute left-[24px] md:left-1/2 z-10 flex h-10 w-10 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-full border border-white/20 bg-[#0A0A0F] text-xs font-mono font-bold transition-all duration-500 group-hover:scale-110 -translate-x-1/2"
+                       style={{ color: step.color, borderColor: withAlpha(step.color, 0.4) }}>
+                    0{step.num}
+                  </div>
+
+                  {/* Content Container */}
+                  <div className={`flex w-full pl-[60px] md:pl-0 ${!isEven ? 'md:justify-end' : 'md:justify-start'}`}>
+                    <div className={`w-full md:w-1/2 ${!isEven ? 'md:pl-16' : 'md:pr-16 md:text-right'}`}>
+                         <h3 className="text-2xl md:text-3xl font-medium tracking-tight" style={{ color: step.color }}>{step.title}</h3>
+                         <p className={`mt-3 text-base md:text-lg leading-relaxed text-white/50 font-light max-w-sm md:max-w-none ml-0 ${isEven ? 'md:ml-auto' : ''}`}>{step.desc}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </section>
 
         {/* ════════════════════════════════════════════════════════════════════════
-         * SECTION 4 — Final CTA
+         * SECTION 4 — Final CTA (The Monolith)
          * ════════════════════════════════════════════════════════════════════════ */}
-        <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24">
+        <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24 md:py-32 overflow-hidden">
+          {/* Ambient glass blobs */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-blue-500/10 blur-[180px] pointer-events-none -z-10 mix-blend-screen" />
+          <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-violet-500/10 blur-[120px] pointer-events-none -z-10 mix-blend-screen" />
+
+
           {/* Trust signals */}
           <motion.div
-            className="mb-10 flex flex-wrap items-center justify-center gap-4 gap-y-2"
+            className="mb-12 flex flex-wrap items-center justify-center gap-6 gap-y-3 relative z-10"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -431,83 +438,51 @@ export default function Landing() {
             {TRUST_SIGNALS.map((t) => {
               const Icon = t.icon;
               return (
-                <div key={t.label} className="flex items-center gap-1.5">
+                <div key={t.label} className="flex items-center gap-2">
                   <Icon
-                    className="h-4 w-4 text-white/40"
+                    className="h-4 w-4 text-white/30"
                     aria-hidden="true"
                   />
-                  <span className="text-sm text-white/40">{t.label}</span>
+                  <span className="text-xs font-medium tracking-[0.04em] text-white/40 uppercase">{t.label}</span>
                 </div>
               );
             })}
           </motion.div>
 
-          {/* CTA card */}
+          {/* Monolithic CTA card */}
           <motion.div
-            className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/[0.1] bg-white/[0.05] p-12 text-center backdrop-blur-sm"
+            className="relative z-10 w-full max-w-[800px] overflow-hidden rounded-[40px] border border-white/[0.06] bg-[#0A0A0F] p-16 md:p-24 text-center glass-surface"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              boxShadow:
-                "0 0 80px hsl(189 94% 43% / 0.06), 0 0 40px hsl(258 90% 66% / 0.04)",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 20px 40px rgba(0,0,0,0.8)",
             }}
           >
-            <div
-              className="pointer-events-none absolute inset-0 rounded-2xl"
-              style={{
-                background:
-                  "conic-gradient(from 180deg, hsl(189 94% 43% / 0.15), hsl(258 90% 66% / 0.1), hsl(38 92% 50% / 0.1), hsl(217 91% 60% / 0.1), hsl(189 94% 43% / 0.15))",
-                maskImage:
-                  "linear-gradient(black, black) content-box, linear-gradient(black, black)",
-                maskComposite: "exclude",
-                padding: "1px",
-              }}
-              aria-hidden="true"
-            />
-
             <img
               src="/logo.png"
-              className="mx-auto h-12 w-12 opacity-70"
+              className="mx-auto h-16 w-16 opacity-50 mb-10"
               alt=""
             />
-            <h2 className="mt-5 text-3xl font-bold tracking-tight">
-              Your Money, Your Control
+            <h2 className="text-4xl md:text-[56px] font-medium tracking-tighter leading-tight mb-6">
+              Your Money, Your Control.
             </h2>
-            <p className="mt-3 text-base text-white/50">
-              AI-powered decisions. Human-approved actions. Every step audited.
+            <p className="text-lg md:text-xl text-white/50 max-w-[480px] mx-auto font-light leading-relaxed mb-12">
+              AI-powered decisions. Human-approved actions. Every step mathematically audited.
             </p>
 
             <Link
               to="/dashboard"
-              className="group mt-8 inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-black shadow-[0_0_40px_rgba(255,255,255,0.12)] transition-all duration-300 hover:shadow-[0_0_60px_rgba(255,255,255,0.2)] hover:scale-[1.02]"
+              className="group inline-flex items-center gap-3 rounded-full bg-white px-10 py-5 text-base font-semibold text-black transition-all duration-500 hover:scale-[1.02]"
             >
               Open Dashboard
-              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+              <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1 opacity-70" />
             </Link>
           </motion.div>
 
-          {/* Architecture chips */}
-          <motion.div
-            className="mt-10 flex flex-wrap items-center justify-center gap-2"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-          >
-            {ARCH_CHIPS.map((chip) => (
-              <span
-                key={chip}
-                className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-1.5 text-xs font-medium text-white/40"
-              >
-                {chip}
-              </span>
-            ))}
-          </motion.div>
-
           {/* Footer */}
-          <div className="mt-16 flex flex-col items-center gap-3">
+          <div className="mt-16 flex flex-col items-center gap-3 relative z-10">
             <a
               href="https://online.professionalprogramsmit.com/blended-professional-certificate-chief-technology-officer"
               target="_blank"
