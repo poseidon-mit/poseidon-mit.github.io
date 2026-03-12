@@ -43,10 +43,10 @@ import { useDismissedAlerts } from './useDismissedAlerts'
 /* ── Severity config for dark theme ── */
 
 const severityBadgeConfig: Record<ThreatSeverity, { bg: string; text: string; border: string; iconBg: string; iconColor: string }> = {
-  Critical: { bg: 'bg-red-500/15', text: 'text-red-400', border: 'border-red-500/20', iconBg: 'bg-red-500/15', iconColor: 'text-red-400' },
-  High: { bg: 'bg-red-500/15', text: 'text-red-400', border: 'border-red-500/20', iconBg: 'bg-red-500/15', iconColor: 'text-red-400' },
-  Medium: { bg: 'bg-amber-500/15', text: 'text-amber-400', border: 'border-amber-500/20', iconBg: 'bg-amber-500/15', iconColor: 'text-amber-400' },
-  Low: { bg: 'bg-blue-500/15', text: 'text-blue-400', border: 'border-blue-500/20', iconBg: 'bg-blue-500/15', iconColor: 'text-blue-400' },
+  Critical: { bg: 'bg-red-500/15', text: 'text-red-400', border: 'border-red-500/20', iconBg: 'bg-red-500', iconColor: 'text-white' },
+  High: { bg: 'bg-red-500/15', text: 'text-red-400', border: 'border-red-500/20', iconBg: 'bg-red-500', iconColor: 'text-white' },
+  Medium: { bg: 'bg-amber-500/15', text: 'text-amber-400', border: 'border-amber-500/20', iconBg: 'bg-amber-500', iconColor: 'text-white' },
+  Low: { bg: 'bg-blue-500/15', text: 'text-blue-400', border: 'border-blue-500/20', iconBg: 'bg-blue-500', iconColor: 'text-white' },
 }
 
 function getRiskLevel(confidence: number): { label: string; color: string; bg: string; ring: string } {
@@ -163,7 +163,7 @@ export default function ProtectAlertDetailPage() {
 
         {/* ── Alert Header ── */}
         <motion.div variants={fadeUpVariant}>
-          <Card className="bg-card border-white/[0.06] border-t-4" style={{ borderTopColor: alert.severity === 'Critical' ? '#ef4444' : alert.severity === 'High' ? '#f97316' : alert.severity === 'Medium' ? '#eab308' : '#3b82f6' }}>
+          <Card className="bg-card border-white/[0.06]">
             <CardContent className="p-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex items-start gap-4">

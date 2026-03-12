@@ -1,7 +1,10 @@
 import { Bell } from 'lucide-react'
 import { Link } from '@/router'
-import { MOCK_USER } from '@/lib/mock-data'
-
+const MOCK_USER = {
+  name: 'Shinji',
+  initials: 'SF',
+  email: 'shinji@mit.com',
+}
 export function DashboardHeader() {
   const now = new Date()
   const hour = now.getHours()

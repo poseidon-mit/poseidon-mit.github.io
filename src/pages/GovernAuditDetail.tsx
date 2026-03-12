@@ -15,7 +15,7 @@ import { usePageTitle } from '@/hooks/use-page-title'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { formatDemoTimestamp } from '@/lib/demo-date'
 import { AUDIT_DECISIONS, DEFAULT_DECISION_ID } from '@/lib/govern-audit-data'
-import { auditRecords } from '@/data/audit'
+import { selectGovernAuditEntries } from '@/domain/poseidon-universe'
 import { cn } from '@/lib/utils'
 
 /* ── Engine visual config ── */
@@ -68,7 +68,7 @@ function resolveDecision(id: string | null) {
 
 function resolveAuditRecord(id: string | null) {
   if (!id) return undefined
-  return auditRecords.find(r => r.id === id)
+  return selectGovernAuditEntries().find(r => r.id === id)
 }
 
 /* ── Confidence label ── */
@@ -146,68 +146,76 @@ export function GovernAuditDetail() {
         </div>
       </motion.div>
 
-      {/* ── Decision Flow: INPUT -> MODEL -> OUTPUT ── */}
+      {/* ── Decision Story: INPUT -> MODEL -> OUTPUT ── */}
       <motion.div variants={fadeUp}>
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-white/40 mb-4">Decision Flow</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-widest text-white/40 mb-6 text-center">Decision Timeline</h2>
 
-        <div className="flex flex-col items-center gap-0">
-          {/* INPUT card */}
-          <div className="w-full rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/[0.04] text-[11px] font-bold text-muted-foreground">1</span>
-              <span className="text-xs font-semibold uppercase tracking-wider text-white/40">Input</span>
+        <div className="relative flex flex-col items-start gap-0 w-full max-w-2xl mx-auto">
+          {/* Connecting line behind items */}
+          <div className="absolute left-[27px] top-6 bottom-6 w-[2px] bg-white/[0.06] z-0" aria-hidden="true" />
+
+          {/* INPUT Node */}
+          <div className="w-full relative z-10 flex gap-6 pb-8">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#0A0A0A] border-4 border-white/[0.06]">
+              <span className="text-white/40 font-mono font-bold">1</span>
             </div>
-            <p className="text-sm text-foreground leading-relaxed mb-3">
-              {narrateInput(decision.baseReality)}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {decision.baseReality.map((row) => (
-                <span
-                  key={row.label}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.02] border border-white/[0.06] text-xs"
-                >
-                  <span className="text-white/40 font-mono uppercase tracking-wider text-[10px]">{row.label}</span>
-                  <span className="text-foreground font-medium">{row.value}</span>
-                </span>
-              ))}
+            <div className="flex-1 mt-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-white/40 mb-2 block">Reality Captured</span>
+              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5">
+                <p className="text-sm text-foreground leading-relaxed mb-3">
+                  {narrateInput(decision.baseReality)}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {decision.baseReality.map((row) => (
+                    <span
+                      key={row.label}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] text-xs"
+                    >
+                      <span className="text-white/40 font-mono uppercase tracking-wider text-[10px]">{row.label}</span>
+                      <span className="text-foreground font-medium">{row.value}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Down arrow */}
-          <div className="flex items-center justify-center h-10">
-            <ArrowDown className="h-5 w-5 text-white/30" />
+          {/* MODEL Node */}
+          <div className="w-full relative z-10 flex gap-6 pb-8">
+            <div className={cn('flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#0A0A0A] border-4', engineInfo.border)}>
+              <span className={cn('font-mono font-bold', engineInfo.color)}>2</span>
+            </div>
+            <div className="flex-1 mt-2">
+              <span className={cn('text-xs font-bold uppercase tracking-widest mb-2 block', engineInfo.color)}>Poseidon Analysis</span>
+              <div className={cn('rounded-2xl border bg-white/[0.02] p-5', engineInfo.border)}>
+                <div className="flex items-center gap-3 mb-3">
+                  <Badge variant="outline" className={cn('text-xs font-semibold', confidenceInfo.className)}>
+                    {confidenceInfo.label}
+                  </Badge>
+                  <span className="text-xs text-white/40 font-mono px-2 py-0.5 rounded bg-white/[0.04]">
+                    {decision.model.name} v{decision.model.version}
+                  </span>
+                </div>
+                <p className="text-sm text-foreground leading-relaxed italic border-l-2 border-white/20 pl-3 py-1">
+                  "Evaluated transaction parameters against historical entity behavior and jurisdictional risk thresholds. Found no anomalies."
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* MODEL card */}
-          <div className={cn('w-full rounded-2xl border bg-white/[0.03] p-5', engineInfo.border)}>
-            <div className="flex items-center gap-2 mb-3">
-              <span className={cn('flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold', engineInfo.bg, engineInfo.color)}>2</span>
-              <span className="text-xs font-semibold uppercase tracking-wider text-white/40">Model Analysis</span>
+          {/* OUTPUT Node */}
+          <div className="w-full relative z-10 flex gap-6">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#0A0A0A] border-4 border-blue-500/20">
+              <span className="text-blue-400 font-mono font-bold">3</span>
             </div>
-            <div className="flex items-center gap-3 mb-2">
-              <Badge variant="outline" className={cn('text-xs font-semibold', confidenceInfo.className)} style={{ boxShadow: decision.explanation.confidence >= 0.85 ? '0 0 10px rgba(16,185,129,0.15)' : undefined }}>
-                {confidenceInfo.label}
-              </Badge>
+            <div className="flex-1 mt-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-2 block">Decision Executed</span>
+              <div className="rounded-2xl border border-blue-500/20 bg-blue-500/5 p-5 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
+                <p className="text-base font-semibold text-blue-100 leading-relaxed">
+                  {decision.explanation.summary}
+                </p>
+              </div>
             </div>
-            <p className="text-xs text-white/40 font-mono">
-              {decision.model.name} v{decision.model.version}
-            </p>
-          </div>
-
-          {/* Down arrow */}
-          <div className="flex items-center justify-center h-10">
-            <ArrowDown className="h-5 w-5 text-white/30" />
-          </div>
-
-          {/* OUTPUT card */}
-          <div className="w-full rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500/10 text-[11px] font-bold text-blue-400">3</span>
-              <span className="text-xs font-semibold uppercase tracking-wider text-white/40">Output</span>
-            </div>
-            <p className="text-sm text-foreground leading-relaxed">
-              {decision.explanation.summary}
-            </p>
           </div>
         </div>
       </motion.div>
@@ -236,7 +244,7 @@ export function GovernAuditDetail() {
       {/* ── Processing metadata (small/muted) ── */}
       <motion.div variants={fadeUp} className="flex items-center justify-center gap-4 py-6 border-t border-white/[0.06]">
         <span className="text-[11px] text-white/40 font-mono tabular-nums">
-          {auditRecord ? `${auditRecord.processingMs}ms` : `${decision.model.accuracy}% accuracy`}
+          {(auditRecord as any)?.processingMs ? `${(auditRecord as any).processingMs}ms` : `${decision.model.accuracy}% accuracy`}
         </span>
         <span className="text-white/20">|</span>
         <span className="text-[11px] text-white/40 font-mono">

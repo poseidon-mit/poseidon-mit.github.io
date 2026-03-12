@@ -33,17 +33,17 @@ const severityBadgeConfig: Record<ThreatSeverity, { bg: string; text: string; bo
 }
 
 const severityIconColor: Record<ThreatSeverity, string> = {
-  Critical: 'text-red-400',
-  High: 'text-red-400',
-  Medium: 'text-amber-400',
-  Low: 'text-blue-400',
+  Critical: 'text-white',
+  High: 'text-white',
+  Medium: 'text-white',
+  Low: 'text-white',
 }
 
 const severityIconBg: Record<ThreatSeverity, string> = {
-  Critical: 'bg-red-500/10',
-  High: 'bg-red-500/10',
-  Medium: 'bg-amber-500/10',
-  Low: 'bg-blue-500/10',
+  Critical: 'bg-red-500',
+  High: 'bg-red-500',
+  Medium: 'bg-amber-500',
+  Low: 'bg-blue-500',
 }
 
 const severityBorderColor: Record<ThreatSeverity, string> = {
@@ -242,7 +242,7 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
   const isResolved = threat.status === 'resolved'
 
   return (
-    <Card className="bg-card border-white/[0.06] transition-all hover:bg-white/[0.04] border-l-[3px]" style={{ borderLeftColor: severityBorderColor[threat.severity] }}>
+    <Card className="bg-card border-white/[0.06] transition-all hover:bg-white/[0.04]">
       <CardContent className="p-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-start gap-4">

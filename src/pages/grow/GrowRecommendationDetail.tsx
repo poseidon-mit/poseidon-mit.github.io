@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { Link, useRouter } from '@/router'
 import { CountUp } from '@/components/poseidon'
+import { ShapWaterfall } from '@/components/poseidon/shap-waterfall'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -18,7 +19,7 @@ import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
 
 import { cn } from '@/lib/utils'
-import { recommendations } from '@/data/recommendations'
+import { selectRecommendationListItems, formatUsd } from '@/domain/poseidon-universe'
 import { recommendationDetails } from './recommendation-detail-data'
 import type { RecommendationDetail } from './recommendation-detail-data'
 import { useDemoState } from '@/lib/demo-state'
@@ -146,15 +147,15 @@ export default function GrowRecommendationDetailPage() {
   usePageTitle('Recommendation Detail')
   const prefersReducedMotion = useReducedMotionSafe()
   const { fadeUp, staggerContainer } = getMotionPreset(prefersReducedMotion)
-  const [whyOpen, setWhyOpen] = useState(false)
+  const [whyOpen, setWhyOpen] = useState(true)
   const { state, decideRecommendation } = useDemoState()
   const { showToast } = useToastContext()
 
   // Resolve the GRW-XXX id from query params
   const grwId = useMemo(() => new URLSearchParams(search).get('id') ?? '', [search])
 
-  // Find the matching data record from data/recommendations.ts
-  const recSummary = useMemo(() => recommendations.find(r => r.id === grwId), [grwId])
+  // Find the matching data record from canonical summary
+  const recSummary = useMemo(() => selectRecommendationListItems().find(r => String(r.id) === grwId), [grwId])
 
   // Find the matching canonical detail record
   const rec = useMemo(() => {
@@ -173,7 +174,7 @@ export default function GrowRecommendationDetailPage() {
     ? demoDecision.decision === 'accepted'
       ? 'approved'
       : 'dismissed'
-    : recSummary.status
+    : 'pending'
 
   const isDecided = effectiveStatus === 'approved' || effectiveStatus === 'dismissed'
 
@@ -197,11 +198,9 @@ export default function GrowRecommendationDetailPage() {
   const confBadgeClass = getConfidenceBadgeClass(rec.confidence)
 
   // Build the annual benefit text
-  const benefitText = recSummary.benefit
-    ? `+${recSummary.benefit}`
-    : recSummary.savings
-      ? `Save ${recSummary.savings}`
-      : null
+  const benefitText = recSummary.annualSavings
+    ? `Save ${formatUsd(recSummary.annualSavings)}`
+    : null
 
   return (
     <div className="hero-viewport">
@@ -355,27 +354,19 @@ export default function GrowRecommendationDetailPage() {
                 className="overflow-hidden"
               >
                 <div className="px-5 pb-5 border-t border-white/[0.06] space-y-5">
-                  {/* Decision driver bars */}
+                  {/* Decision driver bars using SHAP Waterfall */}
                   <div className="pt-4">
                     <h4 className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-3">
-                      Key Factors
+                      SHAP Explainability Factors
                     </h4>
                     <div className="space-y-3">
-                      {rec.factors.map((factor, i) => {
-                        // Weight visualization: first factor strongest
-                        const weight = Math.max(90 - i * 20, 30)
-                        return (
-                          <div key={i} className="space-y-1">
-                            <p className="text-sm text-muted-foreground">{factor}</p>
-                            <div className="h-2 w-full rounded-full bg-white/[0.04]">
-                              <div
-                                className="h-2 rounded-full bg-violet-500"
-                                style={{ width: `${weight}%` }}
-                              />
-                            </div>
-                          </div>
-                        )
-                      })}
+                      <ShapWaterfall
+                        factors={rec.factors.map((factor, i) => ({
+                          name: factor,
+                          value: Math.max(0.9 - i * 0.2, 0.1) // Mocking SHAP impact values
+                        }))}
+                        baseValue={0.2}
+                      />
                     </div>
                   </div>
 

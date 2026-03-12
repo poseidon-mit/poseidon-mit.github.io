@@ -27,8 +27,7 @@ export function HeroBento({ engine, accentColor, fullscreen, className, children
   return (
     <div
       className={cn(
-        'glass-card relative overflow-hidden rounded-2xl',
-        'grid grid-cols-1 md:grid-cols-[1fr_380px]',
+        'glass-card relative overflow-hidden rounded-2xl flex flex-col w-full',
         fullscreen && 'flex-1 h-full',
         className,
       )}
@@ -55,7 +54,7 @@ export interface HeroBentoActionProps {
 
 function Action({ children, className }: HeroBentoActionProps) {
   return (
-    <div className={cn('relative z-10 flex flex-col justify-start gap-3 p-5 md:p-6 overflow-y-auto', className)}>
+    <div className={cn('relative z-10 flex flex-col justify-start p-5 md:p-8 lg:p-10 flex-1', className)}>
       {children}
     </div>
   )
@@ -73,7 +72,7 @@ export interface HeroBentoProofProps {
 
 function Proof({ children, className }: HeroBentoProofProps) {
   return (
-    <div className={cn('relative z-10 flex flex-col gap-2 p-5 md:p-6 md:border-l md:border-white/5 overflow-y-auto', className)}>
+    <div className={cn('relative z-10 flex flex-col gap-3 p-5 md:p-8 lg:p-10 lg:w-[380px] lg:shrink-0 lg:border-l lg:border-white/5 bg-black/20 overflow-hidden', className)}>
       {children}
     </div>
   )
@@ -91,7 +90,7 @@ export interface HeroBentoPortalProps {
 
 function Portal({ children, className }: HeroBentoPortalProps) {
   return (
-    <div className={cn('relative z-10 col-span-1 md:col-span-2 border-t border-white/5 px-6 py-3', className)}>
+    <div className={cn('relative z-10 w-full border-t border-white/5 px-6 py-3 shrink-0', className)}>
       {children}
     </div>
   )

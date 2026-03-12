@@ -1,13 +1,13 @@
-import { Link } from "react-router-dom";
+import {  Link  } from "@/router";
 import { Shield, Eye, AlertTriangle, ShieldCheck } from "lucide-react";
 import { LovablePageHeader } from "@/components/layout/LovablePageHeader";
 import { LovableSeverityBadge } from "@/components/shared/LovableSeverityBadge";
-import { threats, protectStats } from "@/data/threats";
+import { selectProtectThreats } from "@/domain/poseidon-universe";
 import { motion } from "framer-motion";
 
-const summaryCards = [
+const getSummaryCards = (threatsCount: number) => [
   {
-    value: protectStats.transactionsMonitored.toLocaleString(),
+    value: "8,452",
     label: "Transactions Protected",
     icon: Shield,
     iconBg: "bg-green-500/15",
@@ -21,14 +21,14 @@ const summaryCards = [
     iconColor: "text-green-400",
   },
   {
-    value: String(protectStats.threatsDetected),
+    value: String(threatsCount),
     label: "Threats Detected",
     icon: AlertTriangle,
     iconBg: "bg-amber-500/15",
     iconColor: "text-amber-400",
   },
   {
-    value: String(protectStats.threatsBlocked),
+    value: String(threatsCount - 3),
     label: "Threats Blocked",
     icon: ShieldCheck,
     iconBg: "bg-green-500/15",
@@ -36,16 +36,28 @@ const summaryCards = [
   },
 ];
 
-const container = {
+const container: import("framer-motion").Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.06 } },
 };
-const item = {
+const item: import("framer-motion").Variants = {
   hidden: { opacity: 0, y: 12 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
 };
 
 export default function LovableProtect() {
+  const universeThreats = selectProtectThreats();
+  const threats = universeThreats.map(t => ({
+    ...t,
+    status: t.status === "resolved" ? "dismissed" : "active",
+    amount: t.amountUsd,
+    account: "Checking *1234",
+    title: t.counterparty,
+    timestamp: t.relativeTime,
+    severity: (t.severity === "Critical" || t.severity === "High" ? "high" : (t.severity === "Medium" ? "medium" : "low")) as "high" | "medium" | "low"
+  }));
+  const summaryCards = getSummaryCards(threats.length);
+
   return (
     <motion.div
       className="max-w-2xl mx-auto px-4 py-6"

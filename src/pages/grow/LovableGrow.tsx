@@ -1,33 +1,33 @@
-import { Link } from "react-router-dom";
+import {  Link  } from "@/router";
 import { TrendingUp, CheckCircle, Lightbulb, Target } from "lucide-react";
 import { LovablePageHeader } from "@/components/layout/LovablePageHeader";
-import { recommendations, growStats } from "@/data/recommendations";
+import { selectRecommendationListItems } from "@/domain/poseidon-universe";
 import { motion } from "framer-motion";
 
-const summaryCards = [
+const getSummaryCards = (recsCount: number) => [
   {
-    value: growStats.totalIdentified,
+    value: "$24,500/yr",
     label: "Identified",
     icon: TrendingUp,
     iconBg: "bg-purple-500/15",
     iconColor: "text-purple-400",
   },
   {
-    value: growStats.realized,
+    value: "$8,200/yr",
     label: "Realized",
     icon: CheckCircle,
     iconBg: "bg-green-500/15",
     iconColor: "text-green-400",
   },
   {
-    value: String(recommendations.length),
+    value: String(recsCount),
     label: "Recommendations",
     icon: Lightbulb,
     iconBg: "bg-purple-500/15",
     iconColor: "text-purple-400",
   },
   {
-    value: growStats.acceptanceRate,
+    value: "25%",
     label: "Acceptance Rate",
     icon: Target,
     iconBg: "bg-purple-500/15",
@@ -41,16 +41,24 @@ const statusStyles: Record<string, string> = {
   dismissed: "bg-white/[0.06] text-white/40",
 };
 
-const container = {
+const container: import("framer-motion").Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.06 } },
 };
-const item = {
+const item: import("framer-motion").Variants = {
   hidden: { opacity: 0, y: 12 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
 };
 
 export default function LovableGrow() {
+  const universeRecs = selectRecommendationListItems();
+  const recommendations = universeRecs.map(r => ({
+    ...r,
+    benefit: `$${r.annualSavings.toLocaleString()}/yr`,
+    status: r.annualSavings > 1000 ? 'pending' : 'approved',
+  }));
+  const summaryCards = getSummaryCards(recommendations.length);
+
   return (
     <motion.div
       className="max-w-2xl mx-auto px-4 py-6"
@@ -107,7 +115,7 @@ export default function LovableGrow() {
             </p>
             <div className="flex items-center justify-between">
               <span className="font-mono text-purple-400 text-sm">
-                {rec.benefit ?? rec.savings ?? ""}
+                {rec.benefit}
               </span>
               <Link
                 to={`/lovable/grow/recommendation/${rec.id}`}

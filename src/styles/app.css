@@ -1043,3 +1043,7 @@
 .theme-precision .alerts-hub__btn--primary:hover {
   box-shadow: none;
 }
+/* Global overflow fix */
+body {
+  overflow-x: hidden;
+}

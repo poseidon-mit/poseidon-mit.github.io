@@ -1,36 +1,37 @@
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { Shield, TrendingUp, Zap, Scale, Lock, Eye, UserCheck, ChevronDown, ArrowRight } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { Shield, TrendingUp, Zap, Scale, Lock, Eye, UserCheck, ArrowRight, PlayCircle, Presentation } from 'lucide-react'
 import { Link } from '@/router'
 import { CountUp } from '@/components/poseidon'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+import { LANDING_COPY } from '@/content/landing-copy'
 
-/* ── Trident SVG ── */
-function TridentIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 64 64"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-hidden="true"
-    >
-      <path
-        d="M32 4v52M32 4l-8 12M32 4l8 12M12 20c0 8 8 14 16 18M52 20c0 8-8 14-16 18M32 56v4M26 60h12"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
+/* ── Responsive hero video hook ── */
+
+function useHeroVideoSrc() {
+  const [src, setSrc] = useState('/videos/hero-theme-desktop-v2.mp4')
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 767px)')
+    const update = (e: MediaQueryListEvent | MediaQueryList) =>
+      setSrc(e.matches ? '/videos/hero-theme-mobile-v2.mp4' : '/videos/hero-theme-desktop-v2.mp4')
+    update(mql)
+    mql.addEventListener('change', update)
+    return () => mql.removeEventListener('change', update)
+  }, [])
+  return src
 }
 
+/* ── Helpers ── */
+
+const withAlpha = (hsl: string, alpha: number) => hsl.replace(')', ` / ${alpha})`)
+
 /* ── Engine data for sections ── */
+
 const VALUE_STATS = [
-  { engine: 'protect' as const, color: 'hsl(160, 84%, 39%)', label: 'Blocked from fraud', prefix: '$', value: 16860, icon: Shield },
+  { engine: 'protect' as const, color: 'hsl(160, 84%, 39%)', label: 'Blocked from fraud', prefix: '$', value: 16860, suffix: '', icon: Shield },
   { engine: 'grow' as const, color: 'hsl(258, 90%, 66%)', label: 'Savings found per year', prefix: '$', value: 8130, suffix: '/yr', icon: TrendingUp },
-  { engine: 'execute' as const, color: 'hsl(38, 92%, 50%)', label: 'Actions awaiting approval', prefix: '', value: 7, icon: Zap },
+  { engine: 'execute' as const, color: 'hsl(38, 92%, 50%)', label: 'Actions awaiting approval', prefix: '', value: 7, suffix: '', icon: Zap },
   { engine: 'govern' as const, color: 'hsl(217, 91%, 60%)', label: 'Fully auditable', prefix: '', value: 100, suffix: '%', icon: Scale },
 ] as const
 
@@ -49,117 +50,159 @@ const TRUST_SIGNALS = [
 
 const ARCH_CHIPS = ['Multi-Agent', 'SHAP Explainability', 'Immutable Audit', 'Real-time Streaming'] as const
 
+/* ═══════════════════════════════════════════════════════
+   LANDING PAGE
+   ═══════════════════════════════════════════════════════ */
+
 export default function Landing() {
   const prefersReduced = useReducedMotionSafe()
-  const { fadeUp, staggerContainer, staggerItem } = getMotionPreset(prefersReduced)
-  const { scrollYProgress } = useScroll()
-  const orbY = useTransform(scrollYProgress, [0, 1], ['0%', '40%'])
+  const { staggerContainer, staggerItem } = getMotionPreset(prefersReduced)
+  const videoSrc = useHeroVideoSrc()
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] text-white selection:bg-cyan-500/20 overflow-x-hidden">
+    <div className="min-h-screen bg-[#0A0A0F] text-white overflow-hidden overflow-x-hidden w-full relative">
+
       {/* ════════════════════════════════════════════════════════════════════════
-       * SECTION 1 — Hero
+       * SECTION 1 — Hero with Background Video
        * ════════════════════════════════════════════════════════════════════════ */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6">
-        {/* Grid overlay */}
+      <section className="relative min-h-[100dvh] w-full flex flex-col items-center overflow-hidden">
+
+        {/* Background video (z-0) */}
+        <video
+          key={videoSrc}
+          className="absolute inset-0 w-[120%] h-[120%] max-w-none object-cover object-bottom -translate-x-[8.33%] z-0"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          poster="/videos/hero-theme-poster-v2.jpg"
+        >
+          <source src={videoSrc} type="video/mp4" />
+        </video>
+
+        {/* Blur pill (z-[1]) - Reduced opacity to brighten the landing page */}
         <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-            maskImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, black, transparent)',
-          }}
+          className="absolute left-1/2 -translate-x-1/2 top-[30%] w-full h-[50vh] rounded-full bg-black blur-[120px] opacity-30 z-[1]"
           aria-hidden="true"
         />
 
-        {/* Animated gradient orb */}
-        <motion.div
-          className="pointer-events-none absolute top-1/3 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30 blur-[120px]"
-          style={{
-            background: 'radial-gradient(circle, hsl(189 94% 43% / 0.6), hsl(258 90% 66% / 0.2), transparent 70%)',
-            y: orbY,
-          }}
-          aria-hidden="true"
-        />
+        {/* Navbar (z-50, fixed) */}
+        <nav className="fixed top-0 left-0 right-0 z-50" aria-label="Main navigation">
+          <div className="max-w-[1440px] mx-auto px-6 md:px-[120px] h-[102px] flex items-center justify-between">
+            {/* Left: Logo + Nav Links */}
+            <div className="flex items-center gap-6">
+              <Link to="/" className="flex items-center gap-2.5">
+                <img src="/logo.png" className="h-9 w-9" alt="Poseidon" />
+                <span className="text-lg font-semibold text-white">Poseidon</span>
+              </Link>
+              <div className="hidden md:flex items-center gap-[10px]">
+                {/* Desktop Nav Links removed as requested */}
+              </div>
+            </div>
 
-        {/* Authority header */}
-        <motion.nav
-          className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-5 md:px-12"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
-            MIT Professional Education
-          </span>
-          <div className="flex items-center gap-5">
-            <a
-              href="/deck"
-              className="text-[11px] font-medium text-white/30 transition-colors hover:text-white/60"
-            >
-              Deck
-            </a>
-            <a
-              href="https://online.professionalprogramsmit.com/blended-professional-certificate-chief-technology-officer"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[11px] font-medium text-white/30 transition-colors hover:text-white/60"
-            >
-              MIT
-            </a>
+            {/* Right: Sign In + Get Started */}
+            <div className="flex items-center gap-3">
+              {/* Mobile Presentation Link removed as requested */}
+              <Link
+                to="/login"
+                className="bg-white text-[#171717] px-4 py-2 rounded-lg font-semibold text-sm border border-[#d4d4d4] hover:bg-gray-100 transition-colors"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/dashboard"
+                className="bg-[#7b39fc] text-[#fafafa] px-4 py-2 rounded-lg font-semibold text-sm hover:bg-[#6d2fe0] transition-colors"
+              >
+                Get Started
+              </Link>
+            </div>
           </div>
-        </motion.nav>
+        </nav>
 
-        {/* Hero content */}
-        <motion.div
-          className="relative z-10 flex flex-col items-center text-center"
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* Trident */}
-          <motion.div variants={staggerItem}>
-            <TridentIcon className="h-16 w-16 text-cyan-400 drop-shadow-[0_0_20px_rgba(0,200,255,0.4)]" />
-          </motion.div>
-
-          {/* Title */}
-          <motion.h1
-            className="mt-6 text-6xl font-bold tracking-[-0.04em] sm:text-7xl md:text-8xl"
-            variants={staggerItem}
+        {/* Hero Content (z-[2]) */}
+        <div className="relative z-[2] flex flex-col items-center text-center max-w-[871px] mx-auto mt-[120px] md:mt-[162px] px-6">
+          <motion.div
+            className="flex flex-col gap-6"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
           >
-            Poseidon
-          </motion.h1>
+            {/* Headline */}
+            <motion.div variants={staggerItem} className="flex flex-col gap-2.5">
+              <h1 className="text-4xl md:text-[76px] font-medium tracking-[-2px] leading-[1.15] text-white">
+                {LANDING_COPY.hero.titleA}
+              </h1>
+              <span className="block text-4xl md:text-[76px] font-medium tracking-[-2px] leading-[1.15] text-white italic font-serif">
+                {LANDING_COPY.hero.titleB}
+              </span>
+            </motion.div>
 
-          {/* Subtitle */}
-          <motion.p
-            className="mt-4 max-w-md text-lg text-white/50"
-            variants={staggerItem}
-          >
-            AI-Native Personal Finance
-          </motion.p>
-
-          {/* CTA */}
-          <motion.div variants={staggerItem} className="mt-10">
-            <Link
-              to="/dashboard"
-              className="group inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-black shadow-[0_0_40px_rgba(255,255,255,0.15)] transition-all duration-300 hover:shadow-[0_0_60px_rgba(255,255,255,0.25)] hover:scale-[1.02]"
+            {/* Subtitle */}
+            <motion.p
+              variants={staggerItem}
+              className="text-lg leading-[26px] text-[#f6f7f9]/90 max-w-[613px] mx-auto"
             >
-              Enter Demo
-              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-            </Link>
-          </motion.div>
-        </motion.div>
+              {LANDING_COPY.hero.subtitle}
+            </motion.p>
 
-        {/* Scroll hint */}
+            {/* CTA Buttons */}
+            <motion.div variants={staggerItem} className="flex flex-col gap-6 items-center justify-center">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center justify-center max-w-2xl mx-auto">
+                <Link
+                  to="/dashboard?demo=true"
+                  className="bg-[#7b39fc] px-6 py-3.5 rounded-[10px] font-medium text-base text-white hover:bg-[#6d2fe0] transition-colors inline-flex items-center gap-2 whitespace-nowrap"
+                >
+                  Explore Prototype
+                  <ArrowRight size={16} />
+                </Link>
+                <a
+                  href="https://youtu.be/ymwtd7X3CYI?si=T_4MA_Zs7n8Rf91U"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-[#2b2344] px-6 py-3.5 rounded-[10px] font-medium text-base text-[#f6f7f9] hover:bg-[#372d52] transition-colors inline-flex items-center gap-2 whitespace-nowrap"
+                >
+                  <PlayCircle size={16} />
+                  Video
+                </a>
+                <Link
+                  to="/deck"
+                  className="bg-white/[0.05] border border-white/10 px-6 py-3.5 rounded-[10px] font-medium text-base text-[#f6f7f9] hover:bg-white/10 hover:border-white/20 transition-colors inline-flex items-center gap-2 whitespace-nowrap"
+                >
+                  <Presentation size={16} />
+                  Presentation
+                </Link>
+              </div>
+              <div className="flex items-center justify-center gap-4 text-xs font-medium text-white/40">
+                <span className="flex items-center gap-1.5"><Lock size={12} className="text-emerald-500/70" /> Bank-grade encryption</span>
+                <span className="flex items-center gap-1.5"><Shield size={12} className="text-cyan-500/70" /> AICPA SOC 2 Type II</span>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Dashboard Preview (z-[2]) */}
         <motion.div
-          className="absolute bottom-8 flex flex-col items-center gap-1"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.3 }}
-          transition={{ delay: 2, duration: 1 }}
+          className="relative z-[2] mt-20 pb-10 flex justify-center px-6"
+          variants={staggerItem}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
         >
-          <span className="text-[10px] uppercase tracking-wider text-white/30">Scroll</span>
-          <ChevronDown className="h-4 w-4 animate-bounce text-white/30" />
+          <div className="max-w-[1163px] w-[90vw] rounded-3xl backdrop-blur-[10px] bg-white/5 border border-white/10 p-[22.5px]">
+            <img
+              src="/og/poseidon-dashboard.png"
+              alt="Poseidon Dashboard Preview"
+              className="w-full h-auto rounded-lg object-cover"
+              loading="lazy"
+              width={1163}
+              height={654}
+              onError={(e) => {
+                // Fallback: hide if image doesn't exist
+                (e.target as HTMLImageElement).style.display = 'none'
+              }}
+            />
+          </div>
         </motion.div>
       </section>
 
@@ -183,7 +226,7 @@ export default function Landing() {
           whileInView="visible"
           viewport={{ once: true, margin: '-80px' }}
         >
-          {VALUE_STATS.map((stat, i) => {
+          {VALUE_STATS.map((stat) => {
             const Icon = stat.icon
             return (
               <motion.div
@@ -193,7 +236,7 @@ export default function Landing() {
                 style={{
                   borderLeftWidth: '2px',
                   borderLeftColor: stat.color,
-                  boxShadow: `0 0 40px ${stat.color.replace(')', ' / 0.06)')}`,
+                  boxShadow: `0 0 40px ${withAlpha(stat.color, 0.06)}`,
                 }}
               >
                 <div className="mb-3 flex items-center gap-2">
@@ -204,9 +247,9 @@ export default function Landing() {
                   <CountUp
                     value={stat.value}
                     prefix={stat.prefix}
-                    suffix={stat.suffix ?? ''}
+                    suffix={stat.suffix}
                     locale
-                    duration={1600}
+                    duration={1.2}
                   />
                 </div>
                 <p className="mt-1 text-sm text-white/40">{stat.label}</p>
@@ -229,33 +272,32 @@ export default function Landing() {
           How It Works
         </motion.span>
 
-        <div className="relative flex w-full max-w-lg flex-col gap-0">
-          {/* Vertical connector line */}
+        <motion.div
+          className="relative flex w-full max-w-lg flex-col gap-0"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+        >
           <div className="absolute left-6 top-6 bottom-6 w-px bg-gradient-to-b from-white/10 via-white/5 to-transparent" aria-hidden="true" />
 
-          {ENGINE_STEPS.map((step, i) => (
+          {ENGINE_STEPS.map((step) => (
             <motion.div
               key={step.engine}
               className="relative flex gap-5 py-6"
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.5, delay: i * 0.12 }}
+              variants={staggerItem}
             >
-              {/* Numbered circle */}
               <div
                 className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border text-sm font-bold"
                 style={{
-                  borderColor: step.color.replace(')', ' / 0.3)'),
-                  backgroundColor: step.color.replace(')', ' / 0.08)'),
+                  borderColor: withAlpha(step.color, 0.3),
+                  backgroundColor: withAlpha(step.color, 0.08),
                   color: step.color,
-                  boxShadow: `0 0 20px ${step.color.replace(')', ' / 0.15)')}`,
+                  boxShadow: `0 0 20px ${withAlpha(step.color, 0.15)}`,
                 }}
               >
                 {step.num}
               </div>
-
-              {/* Content */}
               <div className="pt-1">
                 <h3 className="text-lg font-semibold" style={{ color: step.color }}>
                   {step.title}
@@ -266,7 +308,7 @@ export default function Landing() {
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* ════════════════════════════════════════════════════════════════════════
@@ -275,7 +317,7 @@ export default function Landing() {
       <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24">
         {/* Trust signals */}
         <motion.div
-          className="mb-10 flex items-center gap-6"
+          className="mb-10 flex flex-wrap items-center justify-center gap-4 gap-y-2"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -284,7 +326,7 @@ export default function Landing() {
             const Icon = t.icon
             return (
               <div key={t.label} className="flex items-center gap-1.5">
-                <Icon className="h-3.5 w-3.5 text-white/25" />
+                <Icon className="h-3.5 w-3.5 text-white/25" aria-hidden="true" />
                 <span className="text-[11px] text-white/25">{t.label}</span>
               </div>
             )
@@ -303,7 +345,6 @@ export default function Landing() {
               '0 0 80px hsl(189 94% 43% / 0.06), 0 0 40px hsl(258 90% 66% / 0.04)',
           }}
         >
-          {/* Animated border gradient */}
           <div
             className="pointer-events-none absolute inset-0 rounded-2xl"
             style={{
@@ -316,7 +357,7 @@ export default function Landing() {
             aria-hidden="true"
           />
 
-          <TridentIcon className="mx-auto h-10 w-10 text-cyan-400/60" />
+          <img src="/logo.png" className="mx-auto h-10 w-10 opacity-60" alt="" />
           <h2 className="mt-4 text-2xl font-bold tracking-tight">
             Your Money, Your Control
           </h2>
@@ -363,6 +404,9 @@ export default function Landing() {
               src="/mit-logo.png"
               alt="MIT Professional Education"
               className="h-8 w-auto opacity-40"
+              loading="lazy"
+              width={120}
+              height={32}
             />
           </a>
           <p className="text-[11px] text-white/20">

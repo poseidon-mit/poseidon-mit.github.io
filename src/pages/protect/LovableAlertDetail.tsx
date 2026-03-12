@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { toast } from "sonner";
+import {  useRouter, Link  } from "@/router";
+import { useToast } from "@/hooks/useToast";
 import { ChevronDown } from "lucide-react";
-import { threats } from "@/data/threats";
+import { selectSpotlightThreat } from "@/domain/poseidon-universe";
 import { LovableSeverityBadge } from "@/components/shared/LovableSeverityBadge";
 import { LovableDecisionDrivers } from "@/components/shared/LovableDecisionDrivers";
 import { LovableGovernanceFooter } from "@/components/shared/LovableGovernanceFooter";
@@ -34,18 +34,30 @@ function CollapsibleSection({
   );
 }
 
-const container = {
+const container: import("framer-motion").Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.06 } },
 };
-const item = {
+const item: import("framer-motion").Variants = {
   hidden: { opacity: 0, y: 12 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
 };
 
 export default function LovableAlertDetail() {
-  const { id } = useParams<{ id: string }>();
-  const threat = threats.find((t) => t.id === id);
+  const rawThreat = selectSpotlightThreat();
+  const threat = rawThreat ? {
+    ...rawThreat,
+    amount: rawThreat.amountUsd,
+    account: "Checking *1234",
+    merchant: rawThreat.counterparty,
+    title: rawThreat.counterparty,
+    device: "iPhone 14 Pro",
+    ip: "192.168.1.1",
+    location: "Oslo, Norway",
+    timestamp: rawThreat.relativeTime,
+    severity: (rawThreat.severity === "Critical" || rawThreat.severity === "High" ? "high" : (rawThreat.severity === "Medium" ? "medium" : "low")) as "high" | "medium" | "low",
+    drivers: (rawThreat as any).factors || []
+  } : undefined;
 
   if (!threat) {
     return (
@@ -118,13 +130,13 @@ export default function LovableAlertDetail() {
         </h2>
         <div className="flex flex-col sm:flex-row gap-3">
           <button
-            onClick={() => toast("Demo mode — action simulated ✓")}
+            onClick={() => alert("Demo mode — action simulated ✓")}
             className="bg-green-500 hover:bg-green-400 text-white py-4 rounded-xl shadow-lg shadow-green-500/25 flex-1 text-base font-semibold min-h-[44px] transition-all duration-200"
           >
             This was Me
           </button>
           <button
-            onClick={() => toast("Demo mode — action simulated ✓")}
+            onClick={() => alert("Demo mode — action simulated ✓")}
             className="bg-red-500 hover:bg-red-400 text-white py-4 rounded-xl shadow-lg shadow-red-500/25 flex-1 text-base font-semibold min-h-[44px] transition-all duration-200"
           >
             Block &amp; Secure

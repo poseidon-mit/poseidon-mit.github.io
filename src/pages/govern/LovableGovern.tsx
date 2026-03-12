@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import {  Link  } from "@/router";
 import { FileText, Database, Shield, Target, UserCheck } from "lucide-react";
-import { auditRecords, governStats } from "@/data/audit";
+import { selectGovernAuditEntries } from "@/domain/poseidon-universe";
 import { motion } from "framer-motion";
 
 const engineColors: Record<string, string> = {
@@ -10,16 +10,29 @@ const engineColors: Record<string, string> = {
   Govern: "bg-blue-400 shadow-[0_0_6px_rgba(59,130,246,0.5)]",
 };
 
-const container = {
+const container: import("framer-motion").Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.06 } },
 };
-const item = {
+const item: import("framer-motion").Variants = {
   hidden: { opacity: 0, y: 12 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
 };
 
 export default function LovableGovern() {
+  const governStats = {
+    totalRecords: 2847,
+    modelAccuracy: "99.8%",
+    userOverrides: "12 (0.4%)",
+  };
+  const universeRecords = selectGovernAuditEntries();
+  const auditRecords = universeRecords.map(r => ({
+    id: r.id,
+    engine: r.type.charAt(0).toUpperCase() + r.type.slice(1),
+    action: r.action || "Monitor System",
+    timestamp: r.timestampIso,
+    confidence: r.confidence,
+  }));
   const latestRecords = auditRecords.slice(0, 5);
 
   return (
@@ -58,8 +71,8 @@ export default function LovableGovern() {
           iconBg="bg-green-500/15"
         />
         <SummaryCard
-          value={governStats.overrideRate}
-          label="Override Rate"
+          value={governStats.userOverrides}
+          label="User Overrides"
           icon={<UserCheck className="h-5 w-5 text-amber-400" />}
           iconBg="bg-amber-500/15"
         />

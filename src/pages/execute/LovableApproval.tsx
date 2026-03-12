@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "@/router";
 import { ArrowLeft, ChevronDown } from "lucide-react";
-import { toast } from "sonner";
-import { actions } from "@/data/actions";
+import { useToast } from "@/hooks/useToast";
+import { selectExecuteActionById } from "@/domain/poseidon-universe";
 import { LovableDecisionDrivers } from "@/components/shared/LovableDecisionDrivers";
 import { LovableGovernanceFooter } from "@/components/shared/LovableGovernanceFooter";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 function CollapsibleSection({
   title,
@@ -33,18 +33,24 @@ function CollapsibleSection({
   );
 }
 
-const container = {
+const container: Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.06 } },
 };
-const item = {
+const item: Variants = {
   hidden: { opacity: 0, y: 12 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
 };
 
 export default function LovableApproval() {
-  const { id } = useParams<{ id: string }>();
-  const action = actions.find((a) => a.id === id);
+  const { showToast } = useToast();
+  // Using a mock ID as parameterized routes aren't supported in standard lazyRoutes without query parsing
+  const id = "EXE-001";
+  const rawAction = selectExecuteActionById(id || "");
+  const action = rawAction ? {
+    ...rawAction,
+    deadline: rawAction.expiresIn,
+  } : undefined;
 
   if (!action) {
     return (
@@ -62,7 +68,7 @@ export default function LovableApproval() {
   }
 
   const handleAction = (type: "approve" | "reject") => {
-    toast(`Demo mode \u2014 action simulated \u2713`);
+    showToast({ variant: 'success', message: `Demo mode \u2014 action simulated \u2713` });
   };
 
   return (
@@ -86,14 +92,9 @@ export default function LovableApproval() {
         <p className="text-sm text-white/50 mb-3">{action.description}</p>
 
         <div className="flex flex-wrap gap-3 text-sm">
-          {action.amount != null && (
+          {action.amountLabel && (
             <span className="bg-amber-500/15 text-amber-400 rounded-lg px-3 py-1 font-medium">
-              ${action.amount.toLocaleString()}
-            </span>
-          )}
-          {action.taxSavings != null && (
-            <span className="bg-green-500/15 text-green-400 rounded-lg px-3 py-1 font-medium">
-              Tax Savings: ${action.taxSavings.toLocaleString()}
+              {action.amountLabel}
             </span>
           )}
           {action.deadline && (
@@ -107,21 +108,39 @@ export default function LovableApproval() {
             </span>
           )}
         </div>
+
+        {/* Impact Summary (Summary First) */}
+        {action.id === "EXE-001" && (
+            <div className="mt-6 grid grid-cols-2 gap-4">
+              <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-center">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40 mb-1">Current</p>
+                <p className="font-mono tabular-nums text-xl font-bold text-white/60">
+                  $0 Tax Saved
+                </p>
+              </div>
+              <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 text-center shadow-[0_0_15px_rgba(245,158,11,0.1)]">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-amber-400 mb-1">After Execution</p>
+                <p className="font-mono tabular-nums text-xl font-bold text-amber-500">
+                  $399.60 Tax Saved
+                </p>
+              </div>
+            </div>
+        )}
       </motion.div>
 
       {/* Action Buttons */}
-      <motion.div variants={item} className="grid grid-cols-2 gap-3 mb-4">
+      <motion.div variants={item} className="grid grid-cols-2 gap-3 mb-6 sticky top-4 z-10 p-2 -mx-2 bg-[#0A0A0A]/80 backdrop-blur-md rounded-2xl border border-white/5">
         <button
           onClick={() => handleAction("approve")}
-          className="bg-green-500 hover:bg-green-400 text-white font-medium py-4 rounded-xl shadow-lg shadow-green-500/25 min-h-[44px] transition-all duration-200"
+          className="bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold py-4 rounded-xl shadow-lg shadow-amber-500/25 min-h-[44px] transition-all duration-200"
         >
-          Approve
+          Approve Execution
         </button>
         <button
           onClick={() => handleAction("reject")}
-          className="bg-red-500 hover:bg-red-400 text-white font-medium py-4 rounded-xl shadow-lg shadow-red-500/25 min-h-[44px] transition-all duration-200"
+          className="bg-transparent hover:bg-white/5 border border-white/10 text-white/60 hover:text-white font-medium py-4 rounded-xl min-h-[44px] transition-all duration-200"
         >
-          Reject
+          Decline
         </button>
       </motion.div>
 
@@ -156,10 +175,10 @@ export default function LovableApproval() {
       )}
 
       {/* AI Decision Factors */}
-      {action.drivers && action.drivers.length > 0 && (
+      {(action as any).factors && (action as any).factors.length > 0 && (
         <motion.div variants={item}>
           <CollapsibleSection title="AI Decision Factors">
-            <LovableDecisionDrivers drivers={action.drivers} />
+            <LovableDecisionDrivers drivers={(action as any).factors} />
           </CollapsibleSection>
         </motion.div>
       )}

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { toast } from "sonner";
+import {  useRouter, Link  } from "@/router";
+import { useToast } from "@/hooks/useToast";
 import { ChevronDown } from "lucide-react";
-import { recommendations } from "@/data/recommendations";
+import { selectSpotlightRecommendation } from "@/domain/poseidon-universe";
 import { LovableGovernanceFooter } from "@/components/shared/LovableGovernanceFooter";
 import { motion } from "framer-motion";
 
@@ -32,18 +32,24 @@ function CollapsibleSection({
   );
 }
 
-const container = {
+const container: import("framer-motion").Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.06 } },
 };
-const item = {
+const item: import("framer-motion").Variants = {
   hidden: { opacity: 0, y: 12 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
 };
 
 export default function LovableRecommendation() {
-  const { id } = useParams<{ id: string }>();
-  const rec = recommendations.find((r) => r.id === id);
+  const rawRec = selectSpotlightRecommendation();
+  const rec = rawRec ? {
+    ...rawRec,
+    benefit: `$${rawRec.annualSavings.toLocaleString()}/yr`,
+    status: "pending",
+    engine: "Grow",
+    savings: undefined
+  } : undefined;
 
   if (!rec) {
     return (
@@ -92,13 +98,13 @@ export default function LovableRecommendation() {
       <motion.div variants={item} className="bg-white/[0.04] backdrop-blur-sm rounded-xl border border-white/[0.08] p-5 mt-4">
         <div className="flex flex-col sm:flex-row gap-3">
           <button
-            onClick={() => toast("Demo mode — action simulated ✓")}
+            onClick={() => alert("Demo mode — action simulated ✓")}
             className="bg-purple-500 hover:bg-purple-400 text-white py-3 rounded-xl shadow-lg shadow-purple-500/25 flex-1 text-base font-semibold min-h-[44px] transition-all duration-200"
           >
             Accept
           </button>
           <button
-            onClick={() => toast("Demo mode — action simulated ✓")}
+            onClick={() => alert("Demo mode — action simulated ✓")}
             className="border border-white/[0.15] text-white/70 hover:bg-white/[0.06] py-3 rounded-xl flex-1 text-base font-semibold min-h-[44px] transition-all duration-200"
           >
             Decline

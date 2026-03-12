@@ -5,7 +5,14 @@
  * All data sourced from CANONICAL_UNIVERSE and MOCK_* constants.
  */
 import { CANONICAL_UNIVERSE } from '@/domain/poseidon-universe/canonical'
-import { MOCK_NET_WORTH } from '@/lib/mock-data'
+const MOCK_NET_WORTH = {
+  total: 94040.77,
+  change: 1247.34,
+  changePercent: 1.34,
+  assets: 115722.09,
+  liabilities: 21681.32,
+  monthlyCashFlow: 8500.00,
+}
 import type { SimulatedResponse, SpendingCategory } from './types'
 
 const MOCK_SPENDING: SpendingCategory[] = [
@@ -30,7 +37,7 @@ const rules: IntentRule[] = [
   {
     keywords: /net\s*worth|資産|total.*worth|how.*rich|財産/i,
     respond: () => ({
-      text: `Your current net worth is **$${MOCK_NET_WORTH.total.toLocaleString()}**, up $${MOCK_NET_WORTH.change.toLocaleString()} (+${MOCK_NET_WORTH.changePercent}%) this month.\n\nYour total assets are $${MOCK_NET_WORTH.assets.toLocaleString()} against $${MOCK_NET_WORTH.liabilities.toLocaleString()} in liabilities. Monthly cash flow is $${MOCK_NET_WORTH.monthlyCashFlow.toLocaleString()}.`,
+      text: `Net worth calculated: **$${MOCK_NET_WORTH.total.toLocaleString()}** (+$${MOCK_NET_WORTH.change.toLocaleString()} / +${MOCK_NET_WORTH.changePercent}% MTD).\n\nAssets: $${MOCK_NET_WORTH.assets.toLocaleString()}. Liabilities: $${MOCK_NET_WORTH.liabilities.toLocaleString()}. Target monthly cash flow: $${MOCK_NET_WORTH.monthlyCashFlow.toLocaleString()}.`,
       cards: [{
         type: 'net-worth',
         total: MOCK_NET_WORTH.total,
@@ -48,7 +55,7 @@ const rules: IntentRule[] = [
       const accounts = CANONICAL_UNIVERSE.entities.accounts
       const bs = CANONICAL_UNIVERSE.balanceSheet
       return {
-        text: `Here are your ${accounts.length} connected accounts. Total assets: **$${bs.totalAssets.toLocaleString()}**, liabilities: **$${bs.totalLiabilities.toLocaleString()}**.`,
+        text: `Account reconciliation complete. ${accounts.length} nodes connected. Total assets: **$${bs.totalAssets.toLocaleString()}**. Liabilities: **$${bs.totalLiabilities.toLocaleString()}**.`,
         cards: [{
           type: 'balance',
           accounts,
@@ -65,7 +72,7 @@ const rules: IntentRule[] = [
       const pending = threats.filter(t => t.status === 'pending')
       const critical = threats.filter(t => t.severity === 'Critical' || t.severity === 'High')
       return {
-        text: `I'm monitoring **${threats.length} threats** — ${pending.length} pending, ${critical.length} critical/high priority.\n\nThe most urgent is **${threats[0].counterparty}** ($${threats[0].amountUsd}) with ${Math.round(threats[0].confidence * 100)}% confidence. I recommend reviewing the critical alerts first.`,
+        text: `Threat assessment active. **${threats.length} total anomalies** (${pending.length} pending, ${critical.length} critical).\n\nPrimary threat: **${threats[0].counterparty}** ($${threats[0].amountUsd}) at ${Math.round(threats[0].confidence * 100)}% detection confidence. Immediate review mandated.`,
         cards: [{ type: 'threats', threats: threats.slice(0, 5) }],
         toolCallLabel: 'Scanning threat landscape',
       }
@@ -76,7 +83,7 @@ const rules: IntentRule[] = [
     respond: () => {
       const total = MOCK_SPENDING.reduce((s, c) => s + c.amount, 0)
       return {
-        text: `Last month you spent **$${total.toLocaleString()}** across ${MOCK_SPENDING.length} categories.\n\nEntertainment is up 18% and shopping up 8% — those are the fastest-growing categories. Housing remains your largest expense at $8,500/mo.`,
+        text: `Expenditure analysis complete. Total: **$${total.toLocaleString()}**.\n\nFastest growing sectors: Entertainment (+18%), Shopping (+8%). Largest allocation: Housing ($8,500/mo).`,
         cards: [{
           type: 'spending',
           totalSpent: total,
@@ -93,7 +100,7 @@ const rules: IntentRule[] = [
       const recs = CANONICAL_UNIVERSE.entities.recommendations
       const totalBenefit = recs.reduce((s, r) => s + r.annualBenefitUsd, 0)
       return {
-        text: `I found **${recs.length} optimization opportunities** totaling **$${totalBenefit.toLocaleString()}/year** in potential savings.\n\nThe highest-impact recommendation is "${recs[0].title}" with a projected benefit of $${recs[0].projectedBenefitUsd.toLocaleString()}.`,
+        text: `Optimization scan complete. **${recs.length} pathways identified** yielding **$${totalBenefit.toLocaleString()}/year**.\n\nPrimary recommendation: "${recs[0].title}" (Projected yield: $${recs[0].projectedBenefitUsd.toLocaleString()}).`,
         cards: [{ type: 'recommendations', recommendations: recs }],
         toolCallLabel: 'Finding recommendations',
       }
@@ -104,7 +111,7 @@ const rules: IntentRule[] = [
     respond: () => {
       const actions = CANONICAL_UNIVERSE.entities.executeActions
       return {
-        text: `You have **${actions.length} pending actions** awaiting your decision.\n\nThe most urgent is "${actions[0].title}" — ${actions[0].description}. Would you like me to walk you through any of these?`,
+        text: `**${actions.length} executions pending.**\n\nUrgent priority: "${actions[0].title}" — ${actions[0].description}. Awaiting your authorization code.`,
         cards: [{ type: 'actions', actions: actions.slice(0, 5) }],
         toolCallLabel: 'Loading pending actions',
       }
@@ -113,7 +120,7 @@ const rules: IntentRule[] = [
   {
     keywords: /transfer|move.*money|振込|送金|high.yield/i,
     respond: () => ({
-      text: "Here's a preview of the transfer. Moving $5,000 from Chase Checking to Marcus High-Yield Savings would earn an additional **$225/year** in interest at 4.5% APY.\n\nWould you like me to proceed?",
+      text: "Transfer protocol simulated. Routing $5,000 from Chase Checking to Marcus High-Yield Savings yields +$225/year at 4.5% APY.\n\nAwaiting execution authorization.",
       cards: [{
         type: 'transfer-preview',
         from: 'Chase Checking',
@@ -127,14 +134,14 @@ const rules: IntentRule[] = [
   {
     keywords: /hello|hi|hey|こんにちは|はじめ|help|what.*can/i,
     respond: () => ({
-      text: "Hi Shinji! I'm your Poseidon AI financial companion. I can help you with:\n\n• **Check your net worth** and account balances\n• **Review security threats** and alerts\n• **Analyze spending** patterns and trends\n• **Find savings opportunities** and recommendations\n• **Manage pending actions** and approvals\n• **Preview transfers** between accounts\n\nWhat would you like to explore?",
+      text: "Poseidon Execution Engine active. Awaiting directive framework:\n\n• **Net Worth & Balances**\n• **Threat Vectors**\n• **Expenditure Analysis**\n• **Yield Optimization**\n• **Pending Executions**\n• **Asset Transfers**\n\nSpecify target.",
       cards: [],
     }),
   },
 ]
 
 const FALLBACK: SimulatedResponse = {
-  text: "I can help you understand your financial picture. Try asking about your **net worth**, **account balances**, **security threats**, **spending patterns**, **savings recommendations**, or **pending actions**.\n\nYou can also ask me to **transfer money** between accounts.",
+  text: "Directive unrecognized. Specify parameters: net worth, account balances, security threats, spending patterns, savings recommendations, or pending actions. Transfer protocols also available.",
   cards: [],
 }
 

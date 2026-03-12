@@ -1,11 +1,11 @@
 import { TrendingUp } from 'lucide-react'
 import { CountUp } from '@/components/poseidon'
-import { accountsSummary } from '@/data/accounts'
-import { persona } from '@/data/persona'
+import { selectBalanceSheet } from '@/domain/poseidon-universe'
 import { formatCurrency } from '@/lib/formatters'
 
 export function NetWorthCard() {
-  const { netWorth, totalAssets, totalLiabilities } = accountsSummary
+  const balanceSheet = selectBalanceSheet()
+  const { netWorth, totalAssets, totalLiabilities } = balanceSheet
 
   return (
     <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 md:p-8 border-t-4 border-t-[var(--engine-dashboard)]">
@@ -25,7 +25,7 @@ export function NetWorthCard() {
         <div className="text-right shrink-0">
           <p className="text-sm text-muted-foreground font-medium">Credit Score</p>
           <p className="text-3xl font-bold text-foreground font-mono tabular-nums mt-1">
-            <CountUp value={persona.creditScore} duration={1200} />
+            <CountUp value={782} duration={1200} />
           </p>
           <p className="text-xs font-medium text-emerald-600 mt-0.5">Excellent</p>
         </div>

@@ -1,18 +1,30 @@
-import { Link } from "react-router-dom";
+import { Link } from "@/router";
 import { Zap, Clock, CheckCircle, DollarSign, Cpu } from "lucide-react";
-import { actions, executeStats } from "@/data/actions";
-import { motion } from "framer-motion";
+import { selectExecuteActionsView } from "@/domain/poseidon-universe";
+import { motion, type Variants } from "framer-motion";
 
-const container = {
+const container: Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.06 } },
 };
-const item = {
+const item: Variants = {
   hidden: { opacity: 0, y: 12 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
 };
 
 export default function LovableExecute() {
+  const universeActions = selectExecuteActionsView();
+  const actions = universeActions.map(a => ({
+    ...a,
+    deadline: a.expiresIn,
+    status: a.executionType === 'auto' ? 'completed' : 'pending',
+  }));
+  const executeStats = {
+    pending: actions.filter(a => a.status !== 'completed').length,
+    completedThisMonth: actions.filter(a => a.status === 'completed').length,
+    totalExecuted: "$1.2M",
+    pendingTaxSavings: 399.60
+  };
   return (
     <motion.div className="p-4 pb-24" variants={container} initial="hidden" animate="show">
       {/* Page Header */}
@@ -52,9 +64,9 @@ export default function LovableExecute() {
           iconBg="bg-amber-500/15"
         />
         <SummaryCard
-          value={executeStats.automationRate}
-          label="Automation"
-          icon={<Cpu className="h-5 w-5 text-amber-400" />}
+          value={`$${executeStats.pendingTaxSavings}`}
+          label="Tax Savings"
+          icon={<DollarSign className="h-5 w-5 text-amber-400" />}
           iconBg="bg-amber-500/15"
         />
       </motion.div>
@@ -88,12 +100,25 @@ export default function LovableExecute() {
                   </p>
                 )}
               </div>
-              <Link
-                to={`/lovable/execute/approval/${action.id}`}
-                className="text-sm font-medium text-amber-400 hover:text-amber-300 whitespace-nowrap transition-colors"
-              >
-                Review &rarr;
-              </Link>
+              <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4 shrink-0 mt-3 sm:mt-0">
+                <Link
+                  to={`/lovable/execute/approval/${action.id}`}
+                  className="text-sm font-medium text-white/40 hover:text-white/80 whitespace-nowrap transition-colors"
+                >
+                  Review Details
+                </Link>
+                {action.status !== "completed" && (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      // Provide quick approve UI hook here
+                    }}
+                    className="text-sm font-semibold text-amber-950 bg-amber-400 hover:bg-amber-300 px-4 py-2 rounded-lg whitespace-nowrap transition-colors"
+                  >
+                    Quick Approve
+                  </button>
+                )}
+              </div>
             </div>
           </motion.div>
         ))}

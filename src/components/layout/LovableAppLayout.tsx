@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet, Link, useLocation, useSearchParams } from "react-router-dom";
+import { Link, useRouter  } from "@/router";
 import {
   LayoutDashboard,
   Shield,
@@ -46,13 +46,13 @@ const activeGlowMap: Record<NavColor, string> = {
   blue: "shadow-[0_0_12px_rgba(59,130,246,0.3)]",
 };
 
-export function LovableAppLayout() {
-  const location = useLocation();
-  const [searchParams] = useSearchParams();
+export function LovableAppLayout({ children }: { children?: React.ReactNode }) {
+  const { path, search } = useRouter();
+  const searchParams = new URLSearchParams(search);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isDemo = searchParams.get("demo") === "true";
 
-  const isActive = (path: string) => location.pathname.startsWith(path);
+  const isActive = (targetPath: string) => path.startsWith(targetPath);
 
   return (
     <div className="min-h-screen bg-[#0B1120]">
@@ -213,7 +213,7 @@ export function LovableAppLayout() {
         } pb-20 md:pb-0`}
       >
         <div className="p-6">
-          <Outlet />
+          {children}
         </div>
       </main>
 

@@ -316,124 +316,129 @@ export function GrowHero({
 
   return (
     <HeroBento engine="grow" className="md:grid-cols-[2fr_3fr]">
-      {/* ── Zone A: Action ── */}
-      <HeroBento.Action>
-        {/* Headline + controls */}
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex flex-col gap-2">
-            <h2 className="typo-display text-xl md:text-2xl lg:text-3xl text-white">
-              Your Growth Trajectory
-            </h2>
-            <span
-              className="typo-hero-number text-4xl md:text-5xl"
-              style={{ color: 'var(--engine-grow)' }}
-            >
-              +$<CountUp value={projectedGain} duration={1200} locale />
-            </span>
-            <span className="text-xs font-medium uppercase tracking-widest text-white/40">
-              3-year projected advantage
-            </span>
+      <div className="flex flex-col lg:flex-row w-full">
+        {/* Col 1: Hero */}
+        <div className="flex flex-col gap-6 lg:gap-10 flex-1 p-6 lg:p-10 justify-center">
+          {/* Headline + controls */}
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-2 lg:gap-4">
+              <h2 className="typo-display text-xl md:text-2xl lg:text-3xl text-white">
+                Your Growth Trajectory
+              </h2>
+              <span
+                className="typo-hero-number text-[clamp(2.5rem,8vw,5rem)] leading-none"
+                style={{ color: 'var(--engine-grow)' }}
+              >
+                +$<CountUp value={projectedGain} duration={1200} locale />
+              </span>
+              <span className="text-xs lg:text-sm font-medium uppercase tracking-widest text-white/40">
+                3-year projected advantage
+              </span>
+            </div>
+            {showControls && (
+              !isOptimized ? (
+                <button
+                  onClick={handleOptimize}
+                  aria-label="See Poseidon Delta"
+                  className="hidden md:flex flex-shrink-0 items-center gap-1.5 rounded-xl bg-violet-500/10 border border-violet-500/20 px-3 py-2 min-h-[44px] text-xs font-semibold text-violet-400 hover:bg-violet-500/20 transition-colors engine-bg-grow engine-border-grow engine-text-grow mt-2"
+                >
+                  See Poseidon Delta
+                </button>
+              ) : (
+                <button
+                  onClick={handleReplay}
+                  aria-label="Replay growth animation"
+                  className="flex-shrink-0 flex items-center justify-center w-10 h-10 min-h-[44px] min-w-[44px] rounded-full bg-white/[0.04] border border-white/[0.08] text-white/40 hover:text-[var(--engine-grow)] hover:border-[var(--engine-grow)]/30 transition-colors mt-2"
+                >
+                  <RotateCcw size={14} />
+                </button>
+              )
+            )}
           </div>
-          {showControls && (
-            !isOptimized ? (
-              <button
-                onClick={handleOptimize}
-                aria-label="See Poseidon Delta"
-                className="hidden md:flex flex-shrink-0 items-center gap-1.5 rounded-xl bg-violet-500/10 border border-violet-500/20 px-3 py-2 min-h-[44px] text-xs font-semibold text-violet-400 hover:bg-violet-500/20 transition-colors engine-bg-grow engine-border-grow engine-text-grow"
-              >
-                See Poseidon Delta
-              </button>
-            ) : (
-              <button
-                onClick={handleReplay}
-                aria-label="Replay growth animation"
-                className="flex-shrink-0 flex items-center justify-center w-10 h-10 min-h-[44px] min-w-[44px] rounded-full bg-white/[0.04] border border-white/[0.08] text-white/40 hover:text-[var(--engine-grow)] hover:border-[var(--engine-grow)]/30 transition-colors"
-              >
-                <RotateCcw size={14} />
-              </button>
-            )
+
+          {/* KPI strip */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs lg:text-sm text-white/40 font-mono">
+            <span><span className="text-white/70">${totalMonthlySavings.toLocaleString()}/mo</span> savings</span>
+            <span className="text-white/20">&middot;</span>
+            <span><span className="text-white/70">{Math.round(avgConfidence * 100)}%</span> avg confidence</span>
+            <span className="text-white/20">&middot;</span>
+            <span><span className="text-white/70">{recommendationCount}</span> recommendations</span>
+          </div>
+        </div>
+
+        {/* Col 2: Action details */}
+        <div className="flex flex-col gap-6 lg:min-w-[320px] lg:w-[350px] lg:border-l lg:border-white/5 p-6 lg:p-10 justify-center bg-white/[0.02]">
+          {/* Spotlight Recommendation */}
+          {spotlightRec && (
+            <div className="bg-white/[0.04] border-l-2 border-[var(--engine-grow)] rounded-lg p-3 animate-fadeUp" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Top Recommendation</span>
+              <p className="text-sm text-white/90 mt-1">{spotlightRec.title}</p>
+              <p className="text-xs font-mono mt-0.5" style={{ color: 'var(--engine-grow)' }}>
+                ${spotlightRec.monthlySavings.toLocaleString()}/mo · {Math.round(spotlightRec.confidence * 100)}% confidence
+              </p>
+            </div>
+          )}
+
+          {/* Goal Progress */}
+          {goalsWithProgress && goalsWithProgress.length > 0 && (
+            <div className="hidden md:flex flex-col gap-3 animate-fadeUp" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Goal Progress</span>
+              {goalsWithProgress.map(g => (
+                <div key={g.id} className="flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-white/60">{g.title}</span>
+                    <span className="text-xs font-mono text-white/40">{g.pct}%</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-[var(--engine-grow)] to-cyan-400 transition-all duration-700"
+                      style={{ width: `${Math.min(100, g.pct)}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Primary CTA */}
+          <div className="pt-2 mt-auto lg:mt-0">
+            <button
+              onClick={onViewRecommendations}
+              className={cn(
+                buttonVariants({ variant: 'default', size: 'lg' }),
+                'h-auto w-full md:w-auto self-start rounded-2xl px-8 py-4 min-h-[44px]',
+                'bg-gradient-to-r from-violet-500 to-purple-500 text-white',
+                'font-semibold tracking-wide text-sm',
+                'hover:from-violet-400 hover:to-purple-400 transition-all',
+              )}
+            >
+              View all {recommendationCount} recommendations <ArrowRight size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* Col 3: Chart */}
+        <div className="flex flex-col gap-4 p-6 lg:p-10 lg:w-[450px] shrink-0 border-t lg:border-t-0 lg:border-l border-white/5 bg-black/20">
+          <HeroChart
+            chartData={chartData}
+            finalBaseline={finalData?.baseline ?? 0}
+            finalAiOptimized={finalData?.aiOptimized ?? 0}
+            isReplaying={isReplaying && !prefersReducedMotion}
+            replayKey={chartKey}
+            isOptimized={isOptimized}
+            totalMonthlySavings={totalMonthlySavings}
+            hasConfidenceBand={hasConfidenceBand}
+          />
+
+          {/* Cohort Proof Pill */}
+          {cohortHeadline && (
+            <div className="bg-white/[0.03] rounded-xl px-4 py-3 border border-white/[0.06] flex items-start gap-2.5 mt-auto">
+              <Users size={14} className="text-white/30 mt-0.5 shrink-0" />
+              <p className="text-xs italic text-white/50 leading-relaxed">{cohortHeadline}</p>
+            </div>
           )}
         </div>
-
-        {/* KPI strip */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/40 font-mono">
-          <span><span className="text-white/70">${totalMonthlySavings.toLocaleString()}/mo</span> savings</span>
-          <span className="text-white/20">&middot;</span>
-          <span><span className="text-white/70">{Math.round(avgConfidence * 100)}%</span> avg confidence</span>
-          <span className="text-white/20">&middot;</span>
-          <span><span className="text-white/70">{recommendationCount}</span> recommendations</span>
-        </div>
-
-        {/* Spotlight Recommendation */}
-        {spotlightRec && (
-          <div className="bg-white/[0.04] border-l-2 border-[var(--engine-grow)] rounded-lg p-2 animate-fadeUp" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Top Recommendation</span>
-            <p className="text-sm text-white/90 mt-1">{spotlightRec.title}</p>
-            <p className="text-xs font-mono mt-0.5" style={{ color: 'var(--engine-grow)' }}>
-              ${spotlightRec.monthlySavings.toLocaleString()}/mo · {Math.round(spotlightRec.confidence * 100)}% confidence
-            </p>
-          </div>
-        )}
-
-        {/* Goal Progress */}
-        {goalsWithProgress && goalsWithProgress.length > 0 && (
-          <div className="hidden md:flex flex-col gap-2.5 animate-fadeUp" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Goal Progress</span>
-            {goalsWithProgress.map(g => (
-              <div key={g.id} className="flex flex-col gap-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-white/60">{g.title}</span>
-                  <span className="text-xs font-mono text-white/40">{g.pct}%</span>
-                </div>
-                <div className="h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-[var(--engine-grow)] to-cyan-400 transition-all duration-700"
-                    style={{ width: `${Math.min(100, g.pct)}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Primary CTA */}
-        <div className="pt-2">
-          <button
-            onClick={onViewRecommendations}
-            className={cn(
-              buttonVariants({ variant: 'default', size: 'lg' }),
-              'h-auto w-full md:w-auto self-start rounded-2xl px-8 py-4 min-h-[44px]',
-              'bg-gradient-to-r from-violet-500 to-purple-500 text-white',
-              'font-semibold tracking-wide text-sm',
-              'hover:from-violet-400 hover:to-purple-400 transition-all',
-            )}
-          >
-            View all {recommendationCount} recommendations <ArrowRight size={16} />
-          </button>
-        </div>
-      </HeroBento.Action>
-
-      {/* ── Zone B: Proof ── */}
-      <HeroBento.Proof>
-        <HeroChart
-          chartData={chartData}
-          finalBaseline={finalData?.baseline ?? 0}
-          finalAiOptimized={finalData?.aiOptimized ?? 0}
-          isReplaying={isReplaying && !prefersReducedMotion}
-          replayKey={chartKey}
-          isOptimized={isOptimized}
-          totalMonthlySavings={totalMonthlySavings}
-          hasConfidenceBand={hasConfidenceBand}
-        />
-
-        {/* Cohort Proof Pill */}
-        {cohortHeadline && (
-          <div className="bg-white/[0.03] rounded-xl px-4 py-2.5 border border-white/[0.06] flex items-start gap-2.5">
-            <Users size={14} className="text-white/30 mt-0.5 shrink-0" />
-            <p className="text-xs italic text-white/50">{cohortHeadline}</p>
-          </div>
-        )}
-      </HeroBento.Proof>
+      </div>
 
       {/* ── Zone C: Portal ── */}
       <HeroBento.Portal>

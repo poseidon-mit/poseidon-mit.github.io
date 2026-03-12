@@ -10,9 +10,11 @@ import {
   TrendingUp,
   Zap,
 } from 'lucide-react'
-import { accountsSummary } from '@/data/accounts'
-import { threats } from '@/data/threats'
-import { actions } from '@/data/actions'
+import {
+  selectBalanceSheet,
+  selectProtectThreats,
+  selectExecuteActionsView
+} from '@/domain/poseidon-universe'
 import { motion } from 'framer-motion'
 
 function useCountUp(target: number, duration = 600) {
@@ -31,14 +33,18 @@ function useCountUp(target: number, duration = 600) {
   return value
 }
 
-const pendingActions = actions.filter((a) => a.status === 'pending')
-const highThreats = threats.filter((t) => t.severity === 'high')
-const monthlyIncome = 15000 // $180,000/year ÷ 12
+const balanceSheet = selectBalanceSheet()
+const threats = selectProtectThreats()
+const actions = selectExecuteActionsView()
+
+const pendingActions = actions.filter((a) => a.executionType !== 'auto')
+const highThreats = threats.filter((t) => t.severity === 'High' || t.severity === 'Critical')
+const monthlyIncome = balanceSheet.monthlyIncome || 15000
 const savingsRate = Math.round(
-  ((monthlyIncome - accountsSummary.monthlySpending) / monthlyIncome) * 100
+  ((monthlyIncome - balanceSheet.monthlyExpenses) / monthlyIncome) * 100
 )
 
-const container = {
+const container: import("framer-motion").Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -46,14 +52,14 @@ const container = {
   },
 }
 
-const item = {
+const item: import("framer-motion").Variants = {
   hidden: { opacity: 0, y: 16 },
   show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 30 } },
 }
 
 export default function LovableDashboard() {
-  const netWorth = useCountUp(accountsSummary.netWorth)
-  const spending = useCountUp(accountsSummary.monthlySpending)
+  const netWorth = useCountUp(balanceSheet.netWorth)
+  const spending = useCountUp(balanceSheet.monthlyExpenses)
   const savings = useCountUp(savingsRate)
   const pending = useCountUp(pendingActions.length)
 

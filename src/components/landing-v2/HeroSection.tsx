@@ -8,10 +8,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { CountUp } from '@/components/poseidon'
-import { protectStats } from '@/data/threats'
-import { growStats } from '@/data/recommendations'
-import { executeStats } from '@/data/actions'
-import { persona } from '@/data/persona'
+import { getCanonicalUniverse, selectExecuteActionsView } from '@/domain/poseidon-universe'
 
 const engines = [
   { icon: Shield, label: 'Protect', color: '#16A34A' },
@@ -32,6 +29,9 @@ const fadeUp = {
 
 export default function HeroSection() {
   const [videoOpen, setVideoOpen] = useState(false)
+  const universe = getCanonicalUniverse()
+  const metrics = universe.metrics
+  const pendingActions = selectExecuteActionsView().filter(a => a.executionType !== 'auto').length
 
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden bg-slate-950">
@@ -165,10 +165,10 @@ export default function HeroSection() {
           className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mt-10 w-full max-w-2xl"
         >
           {[
-            { label: 'Transactions Monitored', value: protectStats.transactionsMonitored, prefix: '' },
-            { label: 'Annual Savings', value: 2437, prefix: '$' },
-            { label: 'Credit Score', value: persona.creditScore, prefix: '' },
-            { label: 'Pending Actions', value: executeStats.pending, prefix: '' },
+            { label: 'Transactions Monitored', value: metrics.decisionsAuditedTotal, prefix: '' },
+            { label: 'Annual Savings', value: metrics.monthlyOptimizationPotentialUsd * 12, prefix: '$' },
+            { label: 'Credit Score', value: 782, prefix: '' },
+            { label: 'Pending Actions', value: pendingActions, prefix: '' },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <p className="text-2xl sm:text-3xl font-bold font-mono tabular-nums text-white">

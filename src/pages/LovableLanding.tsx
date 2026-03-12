@@ -15,12 +15,12 @@ const trustSignals = [
   { value: '$2,437', label: 'Savings Identified' },
 ] as const
 
-const container = {
+const container: import("framer-motion").Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
 }
 
-const fadeUp = {
+const fadeUp: import("framer-motion").Variants = {
   hidden: { opacity: 0, y: 24 },
   show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 25 } },
 }

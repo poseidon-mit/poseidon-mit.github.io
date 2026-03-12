@@ -6,27 +6,22 @@
 .hero-viewport {
   display: flex;
   flex-direction: column;
-  height: calc(100dvh - var(--nav-top-height, 56px) - var(--nav-bottom-height, 72px) - var(--safe-bottom, 0px));
   min-height: calc(100dvh - var(--nav-top-height, 56px) - var(--nav-bottom-height, 72px) - var(--safe-bottom, 0px));
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
   padding: 12px 16px;
 }
 
 /* Desktop: no bottom nav */
 @media (min-width: 768px) {
   .hero-viewport {
-    height: calc(100dvh - var(--nav-top-height, 64px));
-    min-height: calc(100dvh - var(--nav-top-height, 64px));
+    min-height: 0;
     padding: 16px 24px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow-y: visible;
   }
 }
 
 /* Hero content fills viewport */
 .hero-viewport > *:first-child {
-  flex: 1;
+  /* Removed flex: 1 to let heroes size to their content */
   min-height: 0;
 }
 

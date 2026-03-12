@@ -85,7 +85,7 @@ export default function NotFound() {
           {/* Return button */}
           <motion.div variants={fadeUp}>
             <Link
-              href="/"
+              to="/"
               className="inline-flex items-center gap-2 rounded-xl bg-[#0A1628] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0A1628]/90"
             >
               Return to Shore

@@ -105,7 +105,7 @@ export function ShapWaterfall({
               tickLine={false}
               axisLine={false}
             />
-            <Bar dataKey="value" radius={4} label={{ position: 'right', fontSize: 9, fill: 'rgba(255,255,255,0.5)', formatter: (v: number) => v > 0 ? `+${v.toFixed(2)}` : v.toFixed(2) }}>
+            <Bar dataKey="value" radius={4} label={{ position: 'right', fontSize: 9, fill: 'rgba(255,255,255,0.5)', formatter: (v: any) => typeof v === 'number' ? (v > 0 ? `+${v.toFixed(2)}` : v.toFixed(2)) : v }}>
               {mobileData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.value >= 0 ? '#22C55E' : '#EF4444'} />
               ))}

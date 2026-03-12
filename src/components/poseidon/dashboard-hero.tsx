@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { HeroBento } from './hero-bento'
 import { CountUp } from './count-up'
+import { KpiCard } from './kpi-card'
 import { ListPortalBar } from './list-portal-bar'
 import { formatUsd } from '@/domain/poseidon-universe'
 import type { FinancialHealthBreakdown } from '@/domain/poseidon-universe'
@@ -30,6 +31,9 @@ export interface DashboardHeroProps {
   netWorth: number
   netWorthChange: number
   netWorthChangePercent: number
+  assets: number
+  liabilities: number
+  monthlyCashFlow: number
   sparklineData: number[]
   healthScore: number
   healthBreakdown: FinancialHealthBreakdown[]
@@ -67,67 +71,96 @@ export function DashboardHero({
   executeSignal,
   decisionsAudited,
   onNavigate,
+  assets,
+  liabilities,
+  monthlyCashFlow,
 }: DashboardHeroProps) {
   return (
     <HeroBento engine="dashboard">
-      {/* ── Zone A: Action ── */}
-      <HeroBento.Action>
-        <GreetingLine userName={userName} />
+      <div className="flex flex-col lg:flex-row w-full">
+        {/* ── Main Dashboard Top Section ── */}
+        <div className="flex flex-col flex-1 p-6 lg:p-10 justify-between gap-8 lg:gap-12">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-6">
+            <div className="flex flex-col flex-1">
+              <GreetingLine userName={userName} />
+              <div className="mt-6 lg:mt-8">
+                <NetWorthDisplay
+                  netWorth={netWorth}
+                  change={netWorthChange}
+                  changePercent={netWorthChangePercent}
+                />
+              </div>
+            </div>
 
-        <NetWorthDisplay
-          netWorth={netWorth}
-          change={netWorthChange}
-          changePercent={netWorthChangePercent}
-        />
+            <div className="flex flex-col justify-end gap-6 lg:gap-8 lg:min-w-[320px]">
+              <HealthScoreBar score={healthScore} breakdown={healthBreakdown} />
+              <NetWorthSparkline data={sparklineData} />
+            </div>
+          </div>
 
-        <HealthScoreBar score={healthScore} breakdown={healthBreakdown} />
-
-        <NetWorthSparkline data={sparklineData} />
-      </HeroBento.Action>
-
-      {/* ── Zone B: Proof — Engine Signals ── */}
-      <HeroBento.Proof>
-        <div className="flex flex-col gap-2">
-          {protectSignal && (
-            <EngineSignalCard
-              engine="protect"
-              icon={Shield}
-              primaryMetric={`${protectSignal.threatCount} active threat${protectSignal.threatCount !== 1 ? 's' : ''}`}
-              secondaryLine={`${protectSignal.topAmount} flagged · ${protectSignal.topCounterparty}`}
-              navigateTo="/protect"
-              onNavigate={onNavigate}
-              delayClass=""
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mt-auto">
+            <KpiCard
+              label="Assets"
+              value={formatUsd(assets)}
+              color="white"
             />
-          )}
-          {growSignal && (
-            <EngineSignalCard
-              engine="grow"
-              icon={TrendingUp}
-              primaryMetric={`+${formatUsd(growSignal.savingsPerMonth)}/mo found`}
-              secondaryLine={`${growSignal.recCount} recommendation${growSignal.recCount !== 1 ? 's' : ''}`}
-              navigateTo="/grow"
-              onNavigate={onNavigate}
-              delayClass="animate-fade-up-delay-1"
+            <KpiCard
+              label="Liabilities"
+              value={formatUsd(liabilities)}
+              color="var(--state-warning)"
             />
-          )}
-          {executeSignal && (
-            <EngineSignalCard
-              engine="execute"
-              icon={Zap}
-              primaryMetric={`${executeSignal.pendingCount} pending approval${executeSignal.pendingCount !== 1 ? 's' : ''}`}
-              secondaryLine={`${executeSignal.topAmount} tax savings`}
-              navigateTo="/execute"
-              onNavigate={onNavigate}
-              delayClass="animate-fade-up-delay-2"
+            <KpiCard
+              label="Monthly Flow"
+              value={`+${formatUsd(monthlyCashFlow)}`}
+              color="var(--engine-grow)"
             />
-          )}
+          </div>
         </div>
 
-        <GovernBadge
-          decisionsAudited={decisionsAudited}
-          onNavigate={onNavigate}
-        />
-      </HeroBento.Proof>
+        {/* ── Engine Signals ── */}
+        <div className="flex flex-col gap-3 p-6 lg:p-10 lg:w-[380px] shrink-0 border-t lg:border-t-0 lg:border-l border-white/5 bg-black/20">
+          <div className="flex flex-col gap-2">
+            {protectSignal && (
+              <EngineSignalCard
+                engine="protect"
+                icon={Shield}
+                primaryMetric={`${protectSignal.threatCount} active threat${protectSignal.threatCount !== 1 ? 's' : ''}`}
+                secondaryLine={`${protectSignal.topAmount} flagged · ${protectSignal.topCounterparty}`}
+                navigateTo="/protect"
+                onNavigate={onNavigate}
+                delayClass=""
+              />
+            )}
+            {growSignal && (
+              <EngineSignalCard
+                engine="grow"
+                icon={TrendingUp}
+                primaryMetric={`+${formatUsd(growSignal.savingsPerMonth)}/mo found`}
+                secondaryLine={`${growSignal.recCount} recommendation${growSignal.recCount !== 1 ? 's' : ''}`}
+                navigateTo="/grow"
+                onNavigate={onNavigate}
+                delayClass="animate-fade-up-delay-1"
+              />
+            )}
+            {executeSignal && (
+              <EngineSignalCard
+                engine="execute"
+                icon={Zap}
+                primaryMetric={`${executeSignal.pendingCount} pending approval${executeSignal.pendingCount !== 1 ? 's' : ''}`}
+                secondaryLine={`${executeSignal.topAmount} tax savings`}
+                navigateTo="/execute"
+                onNavigate={onNavigate}
+                delayClass="animate-fade-up-delay-2"
+              />
+            )}
+          </div>
+
+          <GovernBadge
+            decisionsAudited={decisionsAudited}
+            onNavigate={onNavigate}
+          />
+        </div>
+      </div>
 
       {/* ── Zone C: Portal ── */}
       <HeroBento.Portal>
@@ -197,8 +230,8 @@ function NetWorthDisplay({
   const TrendIcon = isPositive ? TrendingUp : TrendingDown
 
   return (
-    <div className="flex flex-col gap-1">
-      <span className="typo-hero-number text-4xl md:text-5xl lg:text-7xl text-white/95 tracking-tighter">
+    <div className="flex flex-col gap-2 lg:gap-4">
+      <span className="typo-hero-number text-[clamp(3.5rem,10vw,7rem)] leading-none text-white/95 tracking-tighter">
         <CountUp value={Math.round(netWorth)} prefix="$" locale />
       </span>
       <span className="text-[10px] uppercase tracking-[0.08em] text-white/40 font-medium">
@@ -273,7 +306,7 @@ function NetWorthSparkline({ data }: { data: number[] }) {
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
-      className="w-full max-w-[200px] h-10 mt-1"
+      className="w-full max-w-sm h-12 mt-1 opacity-80"
       preserveAspectRatio="none"
       aria-hidden="true"
     >
@@ -321,26 +354,33 @@ function EngineSignalCard({
     <button
       type="button"
       onClick={() => onNavigate(navigateTo)}
-      className={`animate-fade-up ${delayClass} flex items-center gap-3 rounded-xl bg-white/[0.03] border border-white/[0.06] border-l-4 p-3 md:p-4 min-h-[48px] cursor-pointer hover:bg-white/[0.06] transition-colors duration-200 text-left w-full`}
+      className={`animate-fade-up ${delayClass} flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 rounded-xl bg-[#0A0A0A]/40 backdrop-blur-md border border-white/5 border-l-4 p-4 md:p-5 w-full cursor-pointer hover:bg-white/5 transition-colors overflow-hidden relative group`}
       style={{ borderLeftColor: `var(${cssVar})` }}
     >
-      <Icon
-        size={16}
-        className="shrink-0"
-        style={{
-          color: `var(${cssVar})`,
-          filter: `drop-shadow(0 0 6px color-mix(in srgb, var(${cssVar}) 30%, transparent))`,
-        }}
+      <div 
+        className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"
+        style={{ background: `linear-gradient(90deg, var(${cssVar}) 0%, transparent 100%)` }}
       />
-      <div className="flex-1 min-w-0">
-        <span className="font-mono text-base md:text-lg font-semibold text-white/85 block truncate">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/5 border border-white/10">
+        <Icon
+          size={20}
+          style={{
+            color: `var(${cssVar})`,
+          }}
+        />
+      </div>
+      <div className="flex-1 min-w-0 flex flex-col items-start gap-1">
+        <span className="font-mono text-base md:text-lg font-bold text-white block truncate" style={{ color: `var(${cssVar})`}}>
           {primaryMetric}
         </span>
-        <span className="text-xs text-white/45 block truncate">
+        <span className="text-xs text-white/50 block truncate font-medium">
           {secondaryLine}
         </span>
       </div>
-      <ChevronRight size={14} className="shrink-0 text-white/20" />
+      <div className="mt-2 sm:mt-0 ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/5 border border-white/10 text-xs font-medium text-white/60 group-hover:bg-white/10 transition-colors">
+        View
+        <ChevronRight size={14} />
+      </div>
     </button>
   )
 }

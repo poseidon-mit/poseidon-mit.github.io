@@ -22,8 +22,8 @@ import { useToast } from '@/hooks/useToast'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { formatCurrency } from '@/lib/formatters'
 import { CountUp } from '@/components/poseidon'
-import { actions } from '@/data/actions'
-import type { Action } from '@/data/actions'
+import { selectExecuteActionById } from '@/domain/poseidon-universe'
+import type { ExecuteActionEntity } from '@/domain/poseidon-universe'
 
 /* ── Tax calculation for EXE-001 ── */
 const TAX_CALC = {
@@ -51,7 +51,7 @@ export function ExecuteApproval() {
   const { showToast } = useToast()
 
   const actionId = useMemo(() => new URLSearchParams(search).get('actionId') ?? new URLSearchParams(search).get('id'), [search])
-  const action = useMemo(() => actions.find((a) => a.id === actionId), [actionId])
+  const action = useMemo(() => actionId ? selectExecuteActionById(actionId) : undefined, [actionId])
 
   usePageTitle(action ? `Approve: ${action.title}` : 'Action Approval')
 
@@ -142,10 +142,10 @@ export function ExecuteApproval() {
                           High Confidence
                         </Badge>
                       )}
-                      {action.deadline && (
+                      {action.expiresIn && (
                         <Badge variant="outline" className="border-red-500/20 bg-red-500/10 text-red-400 text-xs animate-pulse">
                           <CalendarClock className="mr-1 h-3 w-3" />
-                          Due {action.deadline}
+                          Due {action.expiresIn}
                         </Badge>
                       )}
                     </div>
@@ -300,7 +300,7 @@ export function ExecuteApproval() {
       </motion.div>
 
       {/* "Why this was recommended" — Collapsible, default CLOSED */}
-      {isEXE001 && action.drivers && action.drivers.length > 0 && (
+      {isEXE001 && action.factors && action.factors.length > 0 && (
         <motion.div variants={fadeUp}>
           <Card className="border border-border bg-card">
             <div
@@ -327,19 +327,19 @@ export function ExecuteApproval() {
                   <CardContent className="pt-0 pb-5 px-5 space-y-4">
                     {/* Decision driver bars */}
                     <div className="space-y-3">
-                      {action.drivers!.map((driver) => (
-                        <div key={driver.label}>
+                      {action.factors.map((factor) => (
+                        <div key={factor.label}>
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-sm text-foreground">{driver.label}</span>
+                            <span className="text-sm text-foreground">{factor.label}</span>
                             <span className="text-xs font-mono tabular-nums text-muted-foreground">
-                              {Math.round(driver.value * 100)}%
+                              {Math.round(factor.value * 100)}%
                             </span>
                           </div>
                           <div className="h-2 bg-muted rounded-full overflow-hidden">
                             <motion.div
                               className="h-full bg-amber-500 rounded-full"
                               initial={{ width: 0 }}
-                              animate={{ width: `${driver.value * 100}%` }}
+                              animate={{ width: `${factor.value * 100}%` }}
                               transition={{ duration: 0.6, ease: 'easeOut' }}
                             />
                           </div>

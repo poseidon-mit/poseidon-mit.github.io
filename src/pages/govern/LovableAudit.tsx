@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import {  Link  } from "@/router";
 import { ArrowLeft, Download } from "lucide-react";
-import { toast } from "sonner";
-import { auditRecords } from "@/data/audit";
+import { useToast } from "@/hooks/useToast";
+import { selectGovernAuditEntries } from "@/domain/poseidon-universe";
 import { motion } from "framer-motion";
 
 type EngineFilter = "All" | "Protect" | "Grow" | "Execute";
 type StatusFilter = "All" | "pending" | "completed" | "rejected";
 
-const container = {
+const container: import("framer-motion").Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.06 } },
 };
-const item = {
+const item: import("framer-motion").Variants = {
   hidden: { opacity: 0, y: 12 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
 };
@@ -20,6 +20,18 @@ const item = {
 export default function LovableAudit() {
   const [engineFilter, setEngineFilter] = useState<EngineFilter>("All");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
+
+  const universeRecords = selectGovernAuditEntries();
+  const auditRecords = universeRecords.map(r => ({
+    id: r.id,
+    engine: r.type.charAt(0).toUpperCase() + r.type.slice(1),
+    action: r.action || "System Audit",
+    timestamp: r.timestampIso,
+    confidence: r.confidence,
+    model: "POSEIDON-V1",
+    processingMs: 245,
+    status: r.status === "Flagged" ? "rejected" : "completed"
+  }));
 
   const filtered = auditRecords.filter((r) => {
     if (engineFilter !== "All" && r.engine !== engineFilter) return false;
@@ -69,7 +81,7 @@ export default function LovableAudit() {
         </select>
 
         <button
-          onClick={() => toast("Demo mode \u2014 export simulated")}
+          onClick={() => alert("Demo mode \u2014 export simulated")}
           className="ml-auto inline-flex items-center gap-1.5 bg-white/[0.06] border border-white/[0.1] rounded-xl px-4 py-2 text-sm font-medium text-white/70 hover:bg-white/[0.1] min-h-[44px] transition-colors"
         >
           <Download className="h-4 w-4" />

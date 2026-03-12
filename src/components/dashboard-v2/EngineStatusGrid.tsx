@@ -1,56 +1,61 @@
 import { Shield, TrendingUp, Zap, Eye } from 'lucide-react'
 import { Link } from '@/router'
 import { CountUp } from '@/components/poseidon'
-import { protectStats } from '@/data/threats'
-import { growStats } from '@/data/recommendations'
-import { executeStats } from '@/data/actions'
-import { governStats } from '@/data/audit'
-import { formatNumber } from '@/lib/formatters'
-
-const engines = [
-  {
-    key: 'protect',
-    label: 'Protect',
-    icon: Shield,
-    color: '#16A34A',
-    path: '/protect',
-    metric: protectStats.transactionsMonitored,
-    context: 'transactions monitored',
-    prefix: '',
-  },
-  {
-    key: 'grow',
-    label: 'Grow',
-    icon: TrendingUp,
-    color: '#7C3AED',
-    path: '/grow',
-    metric: 2437,
-    context: '/yr savings found',
-    prefix: '$',
-  },
-  {
-    key: 'execute',
-    label: 'Execute',
-    icon: Zap,
-    color: '#CA8A04',
-    path: '/execute',
-    metric: executeStats.pending,
-    context: 'awaiting your decision',
-    prefix: '',
-  },
-  {
-    key: 'govern',
-    label: 'Govern',
-    icon: Eye,
-    color: '#2563EB',
-    path: '/govern',
-    metric: governStats.totalRecords,
-    context: 'records \u2014 100% auditable',
-    prefix: '',
-  },
-] as const
+import {
+  getCanonicalUniverse,
+  selectExecuteActionsView,
+  selectGovernAuditEntries
+} from '@/domain/poseidon-universe'
 
 export function EngineStatusGrid() {
+  const universe = getCanonicalUniverse()
+  const metrics = universe.metrics
+  const pendingActions = selectExecuteActionsView().filter(a => a.executionType !== 'auto').length
+  const auditEntries = selectGovernAuditEntries().length
+
+  const engines = [
+    {
+      key: 'protect',
+      label: 'Protect',
+      icon: Shield,
+      color: '#16A34A',
+      path: '/protect',
+      metric: metrics.decisionsAuditedTotal,
+      context: 'transactions monitored',
+      prefix: '',
+    },
+    {
+      key: 'grow',
+      label: 'Grow',
+      icon: TrendingUp,
+      color: '#7C3AED',
+      path: '/grow',
+      metric: metrics.monthlyOptimizationPotentialUsd * 12,
+      context: '/yr savings found',
+      prefix: '$',
+    },
+    {
+      key: 'execute',
+      label: 'Execute',
+      icon: Zap,
+      color: '#CA8A04',
+      path: '/execute',
+      metric: pendingActions,
+      context: 'awaiting your decision',
+      prefix: '',
+    },
+    {
+      key: 'govern',
+      label: 'Govern',
+      icon: Eye,
+      color: '#2563EB',
+      path: '/govern',
+      metric: auditEntries,
+      context: 'records \u2014 100% auditable',
+      prefix: '',
+    },
+  ] as const
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {engines.map((e) => {

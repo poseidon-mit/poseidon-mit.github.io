@@ -2,7 +2,22 @@ import { useMemo } from 'react'
 import { DashboardHero } from '@/components/poseidon/dashboard-hero'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useRouter } from '@/router'
-import { MOCK_NET_WORTH, MOCK_USER, MOCK_SPARKLINE_DATA } from '@/lib/mock-data'
+const MOCK_USER = {
+  name: 'Shinji',
+  initials: 'SF',
+  email: 'shinji@mit.com',
+}
+const MOCK_NET_WORTH = {
+  total: 94040.77,
+  change: 1247.34,
+  changePercent: 1.34,
+  assets: 115722.09,
+  liabilities: 21681.32,
+  monthlyCashFlow: 8500.00,
+}
+const MOCK_SPARKLINE_DATA = [
+  88200, 89500, 88900, 90800, 91400, 91100, 92700, 93500, 93100, 94041,
+]
 import {
   selectProtectThreats,
   selectRecommendationsSummary,
@@ -94,6 +109,9 @@ export default function Dashboard() {
         netWorth={MOCK_NET_WORTH.total}
         netWorthChange={MOCK_NET_WORTH.change}
         netWorthChangePercent={MOCK_NET_WORTH.changePercent}
+        assets={MOCK_NET_WORTH.assets}
+        liabilities={MOCK_NET_WORTH.liabilities}
+        monthlyCashFlow={MOCK_NET_WORTH.monthlyCashFlow}
         sparklineData={MOCK_SPARKLINE_DATA}
         healthScore={score}
         healthBreakdown={breakdown}
