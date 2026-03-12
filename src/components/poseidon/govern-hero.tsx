@@ -7,7 +7,7 @@
  * - Zone C: Portal links to audit log, council, safety
  */
 import { useState } from 'react'
-import { Lock, Shield, Eye, LockKeyhole } from 'lucide-react'
+import { Lock, Shield, Eye, LockKeyhole, CheckCircle2, Clock, AlertTriangle, type LucideIcon } from 'lucide-react'
 import { HeroBento } from './hero-bento'
 import { ListPortalBar } from './list-portal-bar'
 import { CountUp } from './count-up'
@@ -52,10 +52,10 @@ const STATUS_STYLE: Record<DecisionStatus, string> = {
   Flagged: 'bg-red-500/10 text-red-400/80 state-bg-critical state-text-critical',
 }
 
-const STATUS_ICON: Record<DecisionStatus, string> = {
-  Verified: '✓',
-  'Pending review': '⏳',
-  Flagged: '⚠',
+const STATUS_ICON: Record<DecisionStatus, LucideIcon> = {
+  Verified: CheckCircle2,
+  'Pending review': Clock,
+  Flagged: AlertTriangle,
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -104,17 +104,17 @@ export function GovernHero({
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
                 <span className="flex items-center gap-1.5 text-emerald-400/80">
-                  <span>✓</span>
+                  <CheckCircle2 size={12} strokeWidth={3} />
                   <span className="font-mono tabular-nums">{statusBreakdown.verified}</span>
                   <span className="text-white/40">Verified</span>
                 </span>
                 <span className="flex items-center gap-1.5 text-amber-400/80">
-                  <span>⏳</span>
+                  <Clock size={12} strokeWidth={3} />
                   <span className="font-mono tabular-nums">{statusBreakdown.pending}</span>
                   <span className="text-white/40">Reviewing</span>
                 </span>
                 <span className="flex items-center gap-1.5 text-red-400/80">
-                  <span>⚠</span>
+                  <AlertTriangle size={12} strokeWidth={3} />
                   <span className="font-mono tabular-nums">{statusBreakdown.flagged}</span>
                   <span className="text-white/40">Flagged</span>
                 </span>
@@ -218,8 +218,12 @@ export function GovernHero({
                 : 'bg-amber-500/[0.06] border-amber-500/40',
             )}>
               <div className="flex items-center gap-2">
-                <span className={cn('px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider', STATUS_STYLE[spotlightEntry.status])}>
-                  {STATUS_ICON[spotlightEntry.status]} {spotlightEntry.status}
+                <span className={cn('px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex items-center gap-1', STATUS_STYLE[spotlightEntry.status])}>
+                  {(() => {
+                    const Icon = STATUS_ICON[spotlightEntry.status]
+                    return <Icon size={10} strokeWidth={3} />
+                  })()}
+                  {spotlightEntry.status}
                 </span>
                 <span className="text-[10px] font-mono text-white/30">{spotlightEntry.id}</span>
               </div>

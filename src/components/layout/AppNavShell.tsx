@@ -201,8 +201,8 @@ export function AppNavShell({
 
         {/* ── Mobile top header ── */}
         <header className="sticky top-0 z-30 border-b border-white/5 bg-[#08080D]/90 px-3 backdrop-blur-xl lg:hidden">
-          <div className="grid h-16 grid-cols-[auto,1fr,auto] items-center gap-2">
-            <div className="flex items-center gap-1 min-w-0">
+          <div className="flex h-16 w-full items-center justify-between gap-2">
+            <div className="flex shrink-0 items-center gap-1 min-w-0">
               <button
                 onClick={() => setDrawerOpen(true)}
                 className="flex h-11 w-11 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
