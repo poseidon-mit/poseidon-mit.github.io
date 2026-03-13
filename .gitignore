@@ -24,3 +24,4 @@ remotion/public/assets/recordings/*-raw.mp4
 
 # Visual regression screenshots (generated at runtime)
 docs/baselines/screenshots/
+output/playwright/blink-trace/
