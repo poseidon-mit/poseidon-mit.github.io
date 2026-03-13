@@ -4,6 +4,7 @@ import { Menu, X } from 'lucide-react';
 import { Link } from '@/router';
 import { Button, ButtonLink } from '@/design-system';
 import { JETON_EASING } from './jeton-config';
+import { LANDING_COPY } from '@/content/landing-copy';
 
 export function MenuOverlay() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -18,10 +19,10 @@ export function MenuOverlay() {
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-[15px] font-semibold tracking-[0.08em]"
-          aria-label="Poseidon home"
+          aria-label={LANDING_COPY.nav.brandAriaLabel}
         >
           <img src="/logo.png" alt="" width="30" height="30" className="h-[30px] w-[30px]" aria-hidden="true" />
-          POSEIDON
+          {LANDING_COPY.nav.brandText}
         </Link>
 
         <div className="flex items-center gap-4">
@@ -32,7 +33,7 @@ export function MenuOverlay() {
             size="sm"
             className="rounded-full"
           >
-            Open Prototype
+            {LANDING_COPY.nav.primaryCta}
           </ButtonLink>
         </div>
       </div>

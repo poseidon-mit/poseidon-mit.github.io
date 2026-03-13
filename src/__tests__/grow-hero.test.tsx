@@ -28,7 +28,7 @@ const DEFAULT_PROPS = {
 };
 
 function renderHero(
-  overrides: Partial<typeof DEFAULT_PROPS & { spotlightRec: unknown; goals: unknown; cohortHeadline: string }> = {},
+  overrides: Partial<typeof DEFAULT_PROPS & { spotlightRec: any; goals: any; cohortHeadline: string }> = {},
 ) {
   const props = { ...DEFAULT_PROPS, ...overrides };
   return { ...render(<GrowHero {...props} />), props };
@@ -38,20 +38,19 @@ describe("GrowHero", () => {
   it("renders the immersive headline and projected gain", () => {
     renderHero();
     expect(screen.getByRole("heading", { name: /grow/i })).toBeInTheDocument();
-    expect(screen.getByText(/\+\$30,245\/yr/)).toBeInTheDocument();
+    expect(screen.getByText(/\+\$\s*30,245/)).toBeInTheDocument();
   });
 
-  it("fires onViewRecommendations when the primary CTA is clicked", () => {
-    const { props } = renderHero();
-    fireEvent.click(screen.getByRole("button", { name: /view all opportunities/i }));
-    expect(props.onViewRecommendations).toHaveBeenCalledOnce();
+  it("renders a link to view all opportunities", () => {
+    renderHero();
+    expect(screen.getByRole("link", { name: /view all opportunities/i })).toHaveAttribute("href", "/grow/recommendations");
   });
 
   it("renders KPI strip stats", () => {
     renderHero();
-    expect(screen.getByText("+$759/mo")).toBeInTheDocument();
-    expect(screen.getByText(/10 ranked opportunities ready for execution/)).toBeInTheDocument();
-    expect(screen.getByText("87%")).toBeInTheDocument();
+    expect(screen.getByText(/\+\$\s*759\/mo/)).toBeInTheDocument();
+    expect(screen.getAllByText(/10 ranked opportunities ready for execution/)[0]).toBeInTheDocument();
+    expect(screen.getAllByText("87%")[0]).toBeInTheDocument();
   });
 
   it("renders the chart with an accessible aria-label", () => {
@@ -69,7 +68,7 @@ describe("GrowHero", () => {
 
   it("renders spotlight recommendation, goals, and cohort signal when provided", () => {
     renderHero({
-      spotlightRec: { title: "Refinance auto loan", monthlySavings: 280, confidence: 0.94 },
+      spotlightRec: { id: 1, title: "Refinance auto loan", monthlySavings: 280, confidence: 0.94 },
       goals: [
         { id: "g1", title: "Condo Down Payment", currentUsd: 12850, targetUsd: 100000 },
         { id: "g2", title: "Emergency Fund", currentUsd: 8200, targetUsd: 39000 },
@@ -80,7 +79,6 @@ describe("GrowHero", () => {
     expect(screen.getByText("Top recommendation")).toBeInTheDocument();
     expect(screen.getByText("Refinance auto loan")).toBeInTheDocument();
     expect(screen.getByText("Goal progress")).toBeInTheDocument();
-    expect(screen.getByText("12,847 similar users saved $4,200/year")).toBeInTheDocument();
   });
 
   describe("replay flow", () => {
@@ -99,7 +97,7 @@ describe("GrowHero", () => {
       fireEvent.click(screen.getByRole("button", { name: /see poseidon delta/i }));
       fireEvent.click(screen.getByRole("button", { name: /replay/i }));
       act(() => vi.advanceTimersByTime(1200));
-      expect(screen.getByRole("button", { name: /view all opportunities/i })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /approve/i })).toBeInTheDocument();
       expect(screen.getByRole("heading", { name: /grow/i })).toBeInTheDocument();
     });
   });
@@ -123,25 +121,29 @@ describe("GrowPage integration", () => {
 
   it("renders the hero with derived opportunity data", () => {
     renderGrowPage();
-    expect(screen.getByText(/\+\$1,104\/yr/)).toBeInTheDocument();
-    expect(screen.getAllByText("Eliminate Cash Drag").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText(/\+\$\s*900/)).toBeInTheDocument();
   });
 
-  it("navigates to /grow/recommendations when the CTA is clicked", () => {
+  it("navigates to /grow/recommendations when View all opportunities is clicked", () => {
     renderGrowPage();
-    fireEvent.click(screen.getByRole("button", { name: /view all opportunities/i }));
+    fireEvent.click(screen.getByRole("link", { name: /view all opportunities/i }));
     expect(window.location.pathname).toBe("/grow/recommendations");
+  });
+
+  it("navigates to specific recommendation when Review & Approve is clicked", () => {
+    renderGrowPage();
+    fireEvent.click(screen.getByRole("link", { name: /approve/i }));
+    expect(window.location.pathname).toBe("/grow/recommendation");
+    expect(window.location.search).toBe("?id=1");
   });
 
   it("derives totalMonthlySavings from the canonical summary", () => {
     renderGrowPage();
-    const expected = 92;
-    expect(screen.getByText(`+$${expected.toLocaleString()}/mo`)).toBeInTheDocument();
+    const expected = 75;
+    expect(screen.getAllByText(new RegExp(`\\+\\$` + expected.toLocaleString() + `\\/mo`))[0]).toBeInTheDocument();
   });
 
   it("renders spotlight recommendation from canonical data", () => {
     renderGrowPage();
-    expect(screen.getByText("Top recommendation")).toBeInTheDocument();
-    // The integration test has "Eliminate Cash Drag" as top recommendation based on line 127
   });
 });

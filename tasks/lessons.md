@@ -18,3 +18,6 @@
 - When a render-smoke test targets a redirect-only page or a query-driven detail screen, set the route state in the test rather than adding fake placeholder UI to production code.
 - When a route or footer deep-links into Govern, verify the `auditId` against canonical relations (`alertToAction`, `recommendationToAction`, `actionToDecision`) instead of trusting page-local constants.
 - When the user expands a prompt artifact from one engine to all flagship engines, replace engine-specific guardrails with shared hero/layout contracts first; otherwise the new prompt keeps accidental assumptions from the original engine.
+- When the user says a visual bug still reproduces, do not stop after removing one animation layer; verify the live route pipeline end-to-end, including `Suspense` fallbacks, lazy-module caching, and unrelated overlays triggered by route prefetch.
+- When the user says a settings surface is still too dense, do not respond by only shortening copy or splitting routes. Remove whole panels, summaries, and secondary controls until the screen has one obvious purpose.
+- When a route family should visually match the flagship hero pages, do not polish it with route-local badges, pill navigation, or custom icon boxes. Reuse the shared hero canvas, backdrop, typography rhythm, and glass surfaces first.

@@ -175,6 +175,7 @@ export interface DashboardActivityEntity {
   kind: 'protect' | 'grow' | 'execute' | 'govern' | 'system'
   label: string
   relativeTime: string
+  href?: string
 }
 
 export interface CohortFraudTrendData {

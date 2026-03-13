@@ -19,9 +19,8 @@ describe("Landing layout remains structurally immutable", () => {
 
   test("final CTA links to /dashboard", () => {
     renderWithRouter(<Landing />, { initialPath: "/" });
-    const cta = screen.getByText(/get started now/i);
-    expect(cta.tagName).toBe("A");
-    expect(cta.getAttribute("href")).toBe("/dashboard");
+    const ctas = screen.getAllByRole("link", { name: /open prototype/i });
+    expect(ctas[ctas.length - 1].getAttribute("href")).toBe("/dashboard");
   });
 
   test("keeps at least two dashboard CTAs", () => {
@@ -36,15 +35,15 @@ describe("Landing layout remains structurally immutable", () => {
 
   test("no B2B copy leaked onto Landing page", () => {
     renderWithRouter(<Landing />, { initialPath: "/" });
-    expect(screen.queryByText(/AML/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/Wire Transfer/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/KYC/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/compliance engine/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/AML/i)).toBeNull();
+    expect(screen.queryByText(/Wire Transfer/i)).toBeNull();
+    expect(screen.queryByText(/KYC/i)).toBeNull();
+    expect(screen.queryByText(/compliance engine/i)).toBeNull();
   });
 
-  test("renders the new four-engines heading", () => {
+  test("renders the new section headings", () => {
     renderWithRouter(<Landing />, { initialPath: "/" });
-    expect(screen.getByRole("heading", { name: /Four Engines\. One Cohesive Ecosystem\./i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Cinematic HUD/i })).toBeDefined();
   });
 
   test("keeps a primary h1", () => {

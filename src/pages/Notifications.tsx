@@ -1,7 +1,7 @@
 import { useState, type KeyboardEvent } from "react";
 import { motion } from "framer-motion";
 import { Bell, Settings2 } from "lucide-react";
-import { Link } from "@/router";
+import { Link, useRouter } from "@/router";
 import { EmptyState } from "@/components/poseidon";
 import { ListHeroBanner } from "@/components/poseidon/list-hero-banner";
 import { getMotionPreset } from "@/lib/motion-presets";
@@ -36,17 +36,17 @@ const notifications: Notification[] = [
     body: `$${DEMO_THREAD.criticalAlert.amount.toLocaleString()} charge from ${DEMO_THREAD.criticalAlert.counterparty} flagged for review.`,
     time: "Just now",
     read: false,
-    actionLink: "/protect/alert-detail",
+    actionLink: "/protect/alert-detail?alertId=THR-001",
   },
   {
     id: "N-002",
     engine: "Protect",
     category: "security",
-    title: "Subscription price increase detected",
-    body: "Spotify increased from $10.99 to $11.99 without prior notification.",
+    title: "Amazon Prime fee increase detected",
+    body: "Amazon Prime annual fee increased $139 → $164 without prior notification.",
     time: "12m ago",
     read: false,
-    actionLink: "/protect",
+    actionLink: "/protect/alert-detail?alertId=THR-012",
   },
   {
     id: "N-003",
@@ -56,35 +56,37 @@ const notifications: Notification[] = [
     body: `${DEMO_THREAD.liquidityReserve.percent}% toward your $${DEMO_THREAD.liquidityReserve.target.toLocaleString()} goal.`,
     time: "1h ago",
     read: false,
+    actionLink: "/grow/goal",
   },
   {
     id: "N-004",
     engine: "Grow",
     category: "growth",
-    title: "New savings opportunity found",
-    body: "Switching to a high-yield savings account could earn you $840/year more in interest.",
+    title: "High-yield savings opportunity",
+    body: "Moving idle cash to a high-yield savings account could earn you $900/year more in interest.",
     time: "2h ago",
     read: false,
+    actionLink: "/grow/recommendation?id=GRW-001",
   },
   {
     id: "N-005",
     engine: "Execute",
     category: "actions",
     title: "Dispute package compiled",
-    body: "Dispute package compiled for AMZN $347.89 charge — Awaiting your approval in Execute.",
+    body: "Dispute package compiled for Apple Store Miami $1,299 charge — Awaiting your approval in Execute.",
     time: "3h ago",
     read: true,
-    actionLink: "/execute/approval",
+    actionLink: "/execute/approval?actionId=EXE-002",
   },
   {
     id: "N-006",
     engine: "Execute",
     category: "actions",
     title: "2 actions awaiting your approval",
-    body: "Savings transfer and balance transfer expire in 18h.",
+    body: "Savings transfer and card dispute expire in 18h.",
     time: "4h ago",
     read: true,
-    actionLink: "/execute/approval",
+    actionLink: "/execute/queue",
   },
   {
     id: "N-007",
@@ -104,35 +106,37 @@ const notifications: Notification[] = [
     body: "Zero data shared with AI training. All models run in zero-retention mode.",
     time: "8h ago",
     read: true,
+    actionLink: "/govern",
   },
   {
     id: "N-009",
     engine: "Protect",
     category: "security",
-    title: "Comcast bill increase detected",
-    body: "Comcast bill increase detected — $89 → $99/mo without notification.",
+    title: "Utility bill spike detected",
+    body: "PG&E bill spike detected — $387.42, significantly above your 12-month average.",
     time: "6h ago",
     read: false,
-    actionLink: "/protect",
+    actionLink: "/protect/alert-detail?alertId=THR-007",
   },
   {
     id: "N-010",
     engine: "Protect",
     category: "security",
-    title: "Unrecognized subscription charge",
-    body: "Unrecognized recurring charge — APP*CLOUDSVCS $14.99/mo for 3 months.",
+    title: "Unrecognized recurring charge",
+    body: "Unrecognized recurring charge — DIGISRV*PREMIUM $9.99/mo flagged for review.",
     time: "8h ago",
     read: false,
-    actionLink: "/protect",
+    actionLink: "/protect/alert-detail?alertId=THR-006",
   },
   {
     id: "N-011",
     engine: "Grow",
     category: "growth",
     title: "401(k) employer match opportunity",
-    body: "You may be leaving $3,600/yr in employer match on the table — increase 401(k) from 4% to 6%.",
+    body: "You may be leaving $1,500/yr in employer match on the table — increase 401(k) contribution to 8%.",
     time: "1d ago",
     read: false,
+    actionLink: "/grow/recommendation?id=GRW-005",
   },
 ];
 
@@ -155,6 +159,7 @@ export function Notifications() {
   const { fadeUp: fadeUpVariant, staggerContainer: staggerContainerVariant } =
     getMotionPreset(prefersReducedMotion);
   usePageTitle("Notifications");
+  const router = useRouter();
 
   const [filter, setFilter] = useState<CategoryFilter>("all");
   const [readState, setReadState] = useState<Record<string, boolean>>(
@@ -261,7 +266,7 @@ export function Notifications() {
                   onClick={() => setFilter(t)}
                   className={cn(
                     buttonVariants({ variant: "outline", size: "sm" }),
-                    `!min-h-[44px] rounded-full px-3 py-1.5 text-xs font-medium capitalize transition-colors ${filter === t ? (t === "security" ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" : t === "growth" ? "text-violet-400 border-violet-500/30 bg-violet-500/10" : t === "actions" ? "text-amber-400 border-amber-500/30 bg-amber-500/10" : t === "system" ? "text-blue-400 border-blue-500/30 bg-blue-500/10" : "text-foreground border-foreground bg-muted") : "text-muted-foreground border-border hover:bg-muted"}`,
+                    `!min-h-[44px] rounded-full border px-3 py-1.5 text-xs font-medium capitalize transition-all ${filter === t ? (t === "security" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" : t === "growth" ? "border-violet-500/30 bg-violet-500/10 text-violet-400" : t === "actions" ? "border-amber-500/30 bg-amber-500/10 text-amber-400" : t === "system" ? "border-blue-500/30 bg-blue-500/10 text-blue-400" : "border-white/15 bg-white/[0.08] text-foreground") : "border-white/[0.08] bg-white/[0.03] text-muted-foreground hover:bg-white/[0.05] hover:text-foreground"}`,
                   )}
                 >
                   {t === "all"
@@ -288,9 +293,23 @@ export function Notifications() {
               {sorted.map((notif) => (
                 <div
                   key={notif.id}
-                  className={`rounded-2xl border border-border p-4 flex items-start gap-3 cursor-pointer transition-colors hover:bg-muted/50 ${!readState[notif.id] ? "bg-muted/30 border-l-[3px] border-l-cyan-400" : "bg-card"}`}
-                  onClick={() => markRead(notif.id)}
-                  onKeyDown={(event) => markReadByKeyboard(event, notif.id)}
+                  className={cn(
+                    "glass-list-card rounded-2xl p-4 flex items-start gap-3 cursor-pointer transition-all hover:-translate-y-0.5 hover:bg-white/[0.05]",
+                    !readState[notif.id]
+                      ? "border-l-[3px] border-l-cyan-400 bg-white/[0.05]"
+                      : "border-white/[0.06] bg-white/[0.03]",
+                  )}
+                  onClick={() => {
+                    markRead(notif.id);
+                    if (notif.actionLink) router.navigate(notif.actionLink);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      markRead(notif.id);
+                      if (notif.actionLink) router.navigate(notif.actionLink);
+                    }
+                  }}
                   tabIndex={0}
                   role="button"
                   aria-label={`${notif.title}. ${readState[notif.id] ? "Read" : "Unread"}. ${notif.time}`}
@@ -326,7 +345,7 @@ export function Notifications() {
                       {notif.actionLink && (
                         <Link
                           to={notif.actionLink}
-                          className="text-xs font-medium text-cyan-600 hover:underline"
+                          className="text-xs font-medium text-[var(--engine-dashboard)] hover:underline"
                           onClick={(e) => e.stopPropagation()}
                         >
                           View →
@@ -365,7 +384,7 @@ export function Notifications() {
               </span>
             </summary>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-              <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-3">
+              <div className="glass-list-card rounded-2xl p-5 flex flex-col gap-3">
                 <div className="space-y-3">
                   {[
                     {
@@ -391,7 +410,7 @@ export function Notifications() {
                   ].map((pref) => (
                     <div
                       key={pref.label}
-                      className="flex items-center justify-between py-1 border-b border-border last:border-0"
+                      className="flex items-center justify-between py-1 border-b border-white/[0.06] last:border-0"
                     >
                       <div>
                         <span className="text-sm font-medium text-foreground tracking-wide">
@@ -402,7 +421,7 @@ export function Notifications() {
                         </span>
                       </div>
                       <div
-                        className={`w-9 h-5 rounded-full relative ${pref.enabled ? "bg-cyan-500 engine-indicator-dashboard" : "bg-muted"}`}
+                        className={`w-9 h-5 rounded-full relative ${pref.enabled ? "bg-cyan-500 engine-indicator-dashboard" : "bg-white/[0.08]"}`}
                       >
                         <div
                           className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${pref.enabled ? "left-4" : "left-0.5"}`}
@@ -414,7 +433,7 @@ export function Notifications() {
                     <span className="text-xs text-muted-foreground block mb-1">
                       Digest frequency
                     </span>
-                    <select className="w-full rounded-lg bg-muted border border-border px-3 py-1.5 text-xs text-foreground focus:outline-none">
+                    <select className="w-full rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-[var(--engine-dashboard)]/40">
                       <option>Daily</option>
                       <option>Weekly</option>
                       <option>Monthly</option>
@@ -422,7 +441,7 @@ export function Notifications() {
                   </div>
                 </div>
               </div>
-              <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-3">
+              <div className="glass-list-card rounded-2xl p-5 flex flex-col gap-3">
                 <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
                   Stats
                 </h3>
@@ -451,12 +470,14 @@ export function Notifications() {
                   ].map((row) => (
                     <div
                       key={row.label}
-                      className="flex justify-between items-center py-1 border-b border-border last:border-0"
+                      className="flex justify-between items-center py-1 border-b border-white/[0.06] last:border-0"
                     >
                       <span className="text-xs text-muted-foreground">
                         {row.label}
                       </span>
-                      <span className={`text-sm font-mono ${row.color}`}>
+                      <span
+                        className={`text-sm font-mono tabular-nums ${row.color}`}
+                      >
                         {row.value}
                       </span>
                     </div>

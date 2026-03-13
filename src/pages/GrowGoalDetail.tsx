@@ -7,7 +7,6 @@ import type { ForecastPoint } from "@/components/poseidon/forecast-band";
 import { getMotionPreset } from "@/lib/motion-presets";
 import { useReducedMotionSafe } from "@/hooks/useReducedMotionSafe";
 import { usePageTitle } from "@/hooks/use-page-title";
-import { Card, CardContent } from "@/components/ui/card";
 
 /* ── Cross-thread ── */
 import { cn } from "@/lib/utils";
@@ -69,8 +68,8 @@ export default function GrowGoalPage() {
           </motion.div>
 
           <motion.div variants={fadeUpVariant}>
-            <Card className="border border-border bg-card shadow-sm">
-              <CardContent className="p-8 lg:p-12 flex flex-col md:flex-row items-center gap-10 lg:gap-16">
+            <div className="glass-detail-card rounded-3xl">
+              <div className="p-8 lg:p-12 flex flex-col md:flex-row items-center gap-10 lg:gap-16">
                 <div className="relative w-48 h-48 lg:w-56 lg:h-56 flex-shrink-0">
                   <svg
                     className="w-full h-full -rotate-90"
@@ -115,22 +114,25 @@ export default function GrowGoalPage() {
                     </h1>
                   </div>
                   <p className="text-2xl lg:text-3xl text-muted-foreground font-light mt-2 tracking-wide">
-                    <span className="font-mono text-foreground font-medium">
+                    <span className="font-mono tabular-nums text-foreground font-medium">
                       ${RESERVE_CURRENT.toLocaleString()}
                     </span>{" "}
-                    of ${RESERVE_TARGET.toLocaleString()}
+                    of{" "}
+                    <span className="font-mono tabular-nums">
+                      ${RESERVE_TARGET.toLocaleString()}
+                    </span>
                   </p>
                   <p className="text-base text-muted-foreground tracking-wide mt-4 max-w-xl leading-relaxed">
                     At your current savings rate, the reserve will reach target
                     in approximately{" "}
-                    <span className="text-foreground font-medium">
+                    <span className="font-mono tabular-nums text-foreground font-medium">
                       14 months
                     </span>
                     .
                   </p>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </motion.div>
         </motion.section>
 
@@ -138,9 +140,9 @@ export default function GrowGoalPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
           {/* Contribution timeline */}
           <motion.div variants={fadeUpVariant} className="lg:col-span-4">
-            <Card className="border border-border bg-card shadow-sm h-full">
-              <CardContent className="p-6 lg:p-8 flex flex-col h-full">
-                <div className="flex items-center justify-between border-b border-border pb-6 mb-6">
+            <div className="glass-detail-card rounded-3xl h-full">
+              <div className="p-6 lg:p-8 flex flex-col h-full">
+                <div className="flex items-center justify-between border-b border-white/[0.06] pb-6 mb-6">
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                     Recent allocations
                   </h3>
@@ -149,7 +151,7 @@ export default function GrowGoalPage() {
                   {ALLOCATIONS.map((c, i) => (
                     <div
                       key={c.month}
-                      className={`flex items-center justify-between pt-2 pb-3 ${i !== 0 ? "border-t border-border" : ""}`}
+                      className={`flex items-center justify-between pt-2 pb-3 ${i !== 0 ? "border-t border-white/[0.06]" : ""}`}
                     >
                       <span className="text-sm font-semibold text-foreground flex-shrink-0 w-24 tracking-wide uppercase">
                         {c.month}{" "}
@@ -167,22 +169,22 @@ export default function GrowGoalPage() {
                             }}
                           />
                         </div>
-                        <span className="text-sm font-mono font-bold flex-shrink-0 w-16 text-right text-[var(--engine-grow)]">
+                        <span className="text-sm font-mono font-bold tabular-nums flex-shrink-0 w-16 text-right text-[var(--engine-grow)]">
                           ${c.amount}
                         </span>
                       </div>
                     </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </motion.div>
 
           {/* Forecast */}
           <motion.div variants={fadeUpVariant} className="lg:col-span-8">
-            <Card className="border border-border bg-card shadow-sm h-full">
-              <CardContent className="p-6 lg:p-10 flex flex-col h-full">
-                <div className="flex items-center justify-between border-b border-border pb-6 mb-8">
+            <div className="glass-detail-card rounded-3xl h-full">
+              <div className="p-6 lg:p-10 flex flex-col h-full">
+                <div className="flex items-center justify-between border-b border-white/[0.06] pb-6 mb-8">
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                     Projected path
                   </h3>
@@ -195,7 +197,7 @@ export default function GrowGoalPage() {
                     engine="grow"
                     className="w-full"
                   />
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/[0.06]">
                     <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest px-2">
                       Now
                     </span>
@@ -204,18 +206,18 @@ export default function GrowGoalPage() {
                     </span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </motion.div>
         </div>
 
         {/* ── P3: Goal Adjustment Action ── */}
         <motion.section variants={fadeUpVariant} className="mb-12">
-          <Card
-            className="border border-border bg-card shadow-sm border-l-4"
+          <div
+            className="glass-detail-card rounded-3xl border-l-4"
             style={{ borderLeftColor: "var(--engine-grow)" }}
           >
-            <CardContent className="p-8 lg:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="p-8 lg:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="max-w-2xl pl-2">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-xl bg-[var(--engine-grow)]/20 border border-[var(--engine-grow)]/30 flex items-center justify-center text-[var(--engine-grow)]">
@@ -227,7 +229,7 @@ export default function GrowGoalPage() {
                 </div>
                 <p className="text-base text-muted-foreground leading-relaxed tracking-wide mt-2">
                   Increasing the monthly allocation by{" "}
-                  <span className="font-mono text-[var(--engine-grow)] font-bold text-lg px-2 bg-violet-500/10 rounded-md border border-violet-500/20">
+                  <span className="font-mono tabular-nums text-[var(--engine-grow)] font-bold text-lg px-2 bg-violet-500/10 rounded-md border border-violet-500/20">
                     $60
                   </span>{" "}
                   would accelerate reserve target by{" "}
@@ -258,8 +260,8 @@ export default function GrowGoalPage() {
                   Modify allocation <ArrowRight size={18} />
                 </Link>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </motion.section>
       </motion.section>
     </div>

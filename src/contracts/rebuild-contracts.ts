@@ -155,6 +155,7 @@ export const TARGET_SCOPE_READY_ROUTES = [
   '/settings/ai',
   '/settings/integrations',
   '/settings/rights',
+  '/deck',
   '/404',
 ] as const;
 

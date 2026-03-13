@@ -5,7 +5,7 @@
  * (initial="hidden" animate="visible").
  */
 
-import type { Variants, Transition } from 'framer-motion'
+import type { Variants, Transition } from "framer-motion";
 
 /* ── Transition Curves ── */
 export const easings = {
@@ -14,45 +14,65 @@ export const easings = {
   decelerate: [0, 0, 0.2, 1] as const,
   /** Premium scroll-reveal curve — fast attack, long deceleration tail */
   poseidonScroll: [0.23, 1, 0.32, 1] as const,
-}
+};
 
 /* ── Spring config (Apple creator-studio baseline) ── */
-const spring = { type: 'spring' as const, stiffness: 220, damping: 30 }
+const spring = { type: "spring" as const, stiffness: 220, damping: 30 };
+const heroSpring = { type: "spring" as const, stiffness: 120, damping: 25 };
 export const creatorStudioSpringPress = {
-  type: 'spring' as const,
+  type: "spring" as const,
   stiffness: 400,
   damping: 25,
   mass: 0.8,
-}
+};
 
 /** Hover-lift spring for KPI / stat cards (Dashboard, etc.) */
-export const hoverLift = { type: 'spring' as const, stiffness: 400, damping: 25 }
+export const hoverLift = {
+  type: "spring" as const,
+  stiffness: 400,
+  damping: 25,
+};
 
 /** Card-select spring for interactive selection (GrowScenarios, etc.) */
-export const cardSelect = { type: 'spring' as const, stiffness: 280, damping: 24, mass: 0.8 }
+export const cardSelect = {
+  type: "spring" as const,
+  stiffness: 280,
+  damping: 24,
+  mass: 0.8,
+};
 
 /* ── Page Transition ── */
 export const pageTransition: Variants = {
   initial: { opacity: 0, y: 6 },
   animate: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -3 },
-}
+};
 
 export const pageTransitionConfig = {
   duration: 0.3,
   ease: easings.standard,
-} satisfies Transition
+} satisfies Transition;
 
 /* ── Card / Element Entry ── */
 export const fadeIn: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { duration: 0.2 } },
-}
+};
 
 export const fadeUp: Variants = {
   hidden: { opacity: 0, y: 8, scale: 0.995 },
   visible: { opacity: 1, y: 0, scale: 1, transition: spring },
-}
+};
+
+export const heroFadeUp: Variants = {
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: heroSpring,
+  },
+};
 
 export const creatorStudioFadeUp: Variants = {
   hidden: { opacity: 0, y: 8, scale: 0.995 },
@@ -62,17 +82,17 @@ export const creatorStudioFadeUp: Variants = {
     scale: 1,
     transition: spring,
   },
-}
+};
 
 export const fadeScale: Variants = {
   hidden: { opacity: 0, scale: 0.96 },
   visible: { opacity: 1, scale: 1, transition: spring },
-}
+};
 
 export const slideRight: Variants = {
   hidden: { opacity: 0, x: -8 },
   visible: { opacity: 1, x: 0, transition: spring },
-}
+};
 
 /* ── Stagger Container ── */
 export const staggerContainer: Variants = {
@@ -83,7 +103,27 @@ export const staggerContainer: Variants = {
       staggerChildren: 0.05,
     },
   },
-}
+};
+
+export const heroStaggerContainer: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      delayChildren: 0.02,
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+export const dashboardHeroStaggerContainer: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      delayChildren: 0.02,
+      staggerChildren: 0.1,
+    },
+  },
+};
 
 export const creatorStudioStaggerContainer: Variants = {
   hidden: {},
@@ -93,7 +133,7 @@ export const creatorStudioStaggerContainer: Variants = {
       staggerChildren: 0.04,
     },
   },
-}
+};
 
 /** Compatibility alias for old delayed-stagger API (now synced for simultaneous entry). */
 export const staggerContainerDelayed: Variants = {
@@ -104,12 +144,12 @@ export const staggerContainerDelayed: Variants = {
       staggerChildren: 0.08,
     },
   },
-}
+};
 
 export const staggerItem: Variants = {
   hidden: { opacity: 0, y: 8, scale: 0.995 },
   visible: { opacity: 1, y: 0, scale: 1, transition: spring },
-}
+};
 
 export const creatorStudioStaggerItem: Variants = {
   hidden: { opacity: 0, y: 8, scale: 0.995 },
@@ -119,62 +159,62 @@ export const creatorStudioStaggerItem: Variants = {
     scale: 1,
     transition: spring,
   },
-}
+};
 
 /** Route-level contract: all children enter at the same time (no staggering). */
 export const creatorStudioRouteSyncContainer: Variants = {
   hidden: {},
   visible: {},
-}
+};
 
 /** Route-level card/item contract: spring movement without opacity fade (anti-flicker). */
 export const creatorStudioRouteSyncItem: Variants = {
   hidden: { opacity: 0, y: 8, scale: 0.995 },
   visible: { opacity: 1, y: 0, scale: 1, transition: spring },
-}
+};
 
 /* ── Helper: stagger delay for index ── */
 export function staggerDelay(i: number, base = 0.1): Transition {
-  return { delay: i * base }
+  return { delay: i * base };
 }
 
 /* ── Presentation mode variants (slower for readability) ── */
 export const staggerContainerPresentation: Variants = {
   hidden: {},
   visible: {},
-}
+};
 
 /* ── Accordion expand/collapse ── */
 export const accordionVariants: Variants = {
   hidden: { height: 0, opacity: 0 },
-  visible: { height: 'auto', opacity: 1 },
+  visible: { height: "auto", opacity: 1 },
   exit: { height: 0, opacity: 0 },
   collapsed: { height: 0, opacity: 0 },
-  expanded: { height: 'auto', opacity: 1 },
-}
+  expanded: { height: "auto", opacity: 1 },
+};
 
 export const accordionTransition: Transition = {
   duration: 0.25,
-  ease: 'easeInOut' as const,
-}
+  ease: "easeInOut" as const,
+};
 
 /* ── Reduced motion variants (instant, no animation) ── */
 export const staticVariants: Variants = {
   hidden: { opacity: 1 },
   visible: { opacity: 1 },
-}
+};
 
 export const staticContainer: Variants = {
   hidden: {},
   visible: {},
-}
+};
 
 /** Page transition with reduced motion (instant) */
 export const pageTransitionReduced: Variants = {
   initial: { opacity: 1, y: 0 },
   animate: { opacity: 1, y: 0 },
   exit: { opacity: 1, y: 0 },
-}
+};
 
 /**
  * Returns motion-safe or static variants based on prefers-reduced-motion.
@@ -183,16 +223,33 @@ export const pageTransitionReduced: Variants = {
 export function getMotionPreset(prefersReduced: boolean) {
   return {
     fadeUp: prefersReduced ? staticVariants : fadeUp,
+    heroFadeUp: prefersReduced ? staticVariants : heroFadeUp,
     creatorStudioFadeUp: prefersReduced ? staticVariants : creatorStudioFadeUp,
     fadeIn: prefersReduced ? staticVariants : fadeIn,
     fadeScale: prefersReduced ? staticVariants : fadeScale,
     staggerContainer: prefersReduced ? staticContainer : staggerContainer,
-    creatorStudioStaggerContainer: prefersReduced ? staticContainer : creatorStudioStaggerContainer,
-    staggerContainerDelayed: prefersReduced ? staticContainer : staggerContainerDelayed,
+    heroStaggerContainer: prefersReduced
+      ? staticContainer
+      : heroStaggerContainer,
+    dashboardHeroStaggerContainer: prefersReduced
+      ? staticContainer
+      : dashboardHeroStaggerContainer,
+    creatorStudioStaggerContainer: prefersReduced
+      ? staticContainer
+      : creatorStudioStaggerContainer,
+    staggerContainerDelayed: prefersReduced
+      ? staticContainer
+      : staggerContainerDelayed,
     staggerItem: prefersReduced ? staticVariants : staggerItem,
-    creatorStudioStaggerItem: prefersReduced ? staticVariants : creatorStudioStaggerItem,
-    creatorStudioRouteSyncContainer: prefersReduced ? staticContainer : creatorStudioRouteSyncContainer,
-    creatorStudioRouteSyncItem: prefersReduced ? staticVariants : creatorStudioRouteSyncItem,
+    creatorStudioStaggerItem: prefersReduced
+      ? staticVariants
+      : creatorStudioStaggerItem,
+    creatorStudioRouteSyncContainer: prefersReduced
+      ? staticContainer
+      : creatorStudioRouteSyncContainer,
+    creatorStudioRouteSyncItem: prefersReduced
+      ? staticVariants
+      : creatorStudioRouteSyncItem,
     pageTransition: prefersReduced ? pageTransitionReduced : pageTransition,
-  }
+  };
 }

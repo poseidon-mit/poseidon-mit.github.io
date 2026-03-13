@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { Bell, Menu, Settings } from "lucide-react";
 import { Link, useRouter } from "@/router";
 import { SideDrawer } from "@/components/ui/sheet";
@@ -153,11 +152,11 @@ export function AppNavShell({
               path === item.path || path.startsWith(item.path + "/");
             const Icon = item.icon;
             const tone = TONE_CLASSES[item.tone];
-            const badge = mobileBadges[item.path] ?? 0;
             return (
               <Link
                 key={item.path}
                 to={item.path}
+                prefetch={item.group === "engine" ? "render" : "none"}
                 className={cn(
                   "flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-200",
                   isActive
@@ -176,16 +175,6 @@ export function AppNavShell({
                 <span className="flex-1 text-sm font-medium tracking-wide">
                   {item.label}
                 </span>
-                {badge > 0 && (
-                  <span
-                    className={cn(
-                      "flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-bold text-white",
-                      TONE_CLASSES[item.tone].indicator,
-                    )}
-                  >
-                    {badge}
-                  </span>
-                )}
               </Link>
             );
           })}
@@ -284,18 +273,7 @@ export function AppNavShell({
           role="main"
           className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:overflow-visible lg:pb-0"
         >
-          <AnimatePresence mode="popLayout">
-            <motion.div
-              className="min-h-full"
-              key={path}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.12 }}
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
+          <div className="min-h-full">{children}</div>
         </main>
       </div>
 
@@ -315,6 +293,7 @@ export function AppNavShell({
             <Link
               key={item.path}
               to={item.path}
+              prefetch="render"
               className={cn(
                 "flex min-h-12 flex-1 flex-col items-center justify-center gap-1 py-2 transition-colors duration-150",
                 isActive ? "text-white" : "text-white/25",
@@ -332,14 +311,6 @@ export function AppNavShell({
               />
               <div className="relative">
                 <Icon className="h-5 w-5" aria-hidden="true" />
-                {(mobileBadges[item.path] ?? 0) > 0 && (
-                  <span
-                    className="absolute -top-1 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-bold text-white"
-                    aria-hidden="true"
-                  >
-                    {mobileBadges[item.path]}
-                  </span>
-                )}
               </div>
               <span className="text-[10px] font-medium">{item.label}</span>
             </Link>

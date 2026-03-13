@@ -85,7 +85,7 @@ export default function ExecuteQueuePage() {
         <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-3">
           {pendingActions.length === 0 ? (
             <motion.div variants={fadeUp}>
-              <Card className="rounded-xl border border-border bg-card p-12 flex items-center justify-center">
+              <Card className="rounded-xl border border-white/[0.04] bg-white/[0.02] backdrop-blur-md p-12 flex items-center justify-center">
                 <EmptyState
                   icon={CheckCircle2}
                   title="Queue clear"
@@ -107,11 +107,11 @@ export default function ExecuteQueuePage() {
 
               {spotlightPending && remainingActions.length > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-border" />
+                  <div className="flex-1 h-px bg-white/[0.06]" />
                   <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest shrink-0">
                     {remainingActions.length} more action{remainingActions.length !== 1 ? 's' : ''}
                   </span>
-                  <div className="flex-1 h-px bg-border" />
+                  <div className="flex-1 h-px bg-white/[0.06]" />
                 </div>
               )}
 
@@ -141,7 +141,12 @@ function SpotlightCard({ action }: { action: ExecuteActionEntity }) {
   const isExpiringSoon = action.expiresIn && action.expiresIn.includes('h') && parseInt(action.expiresIn) <= 4
 
   return (
-    <div className="flex flex-col gap-3">
+    <div
+      className="flex flex-col gap-3 rounded-2xl p-1"
+      style={{
+        background: 'linear-gradient(135deg, color-mix(in srgb, var(--engine-execute) 6%, transparent), transparent)',
+      }}
+    >
       <div className="flex items-center gap-2 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-amber-400">
           Highest Priority
@@ -159,21 +164,21 @@ function SpotlightCard({ action }: { action: ExecuteActionEntity }) {
 
       <h3 className="text-lg md:text-xl font-semibold text-foreground">{action.title}</h3>
 
-      <span className="text-xl font-mono font-bold" style={{ color: `var(${token.cssVar})` }}>
+      <span className="text-2xl md:text-3xl font-mono font-bold tabular-nums" style={{ color: `var(${token.cssVar})` }}>
         {action.amountLabel}
       </span>
 
       <div className="flex items-center gap-4 flex-wrap text-sm text-muted-foreground">
-        <span className="font-mono text-xs">{action.id}</span>
+        <span className="font-mono text-xs tabular-nums">{action.id}</span>
         <span>·</span>
         <span style={{ color: `var(${token.cssVar})` }}>{action.engine}</span>
         <span>·</span>
-        <span>{Math.round(action.confidence * 100)}% confidence</span>
+        <span className="tabular-nums">{Math.round(action.confidence * 100)}% confidence</span>
       </div>
 
       <span
         className={cn(
-          'self-start hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors',
+          'self-start hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-4 transition-colors',
           'bg-amber-600 text-white hover:bg-amber-700',
         )}
       >
@@ -192,13 +197,13 @@ function CompactQueueCard({ action }: { action: ExecuteActionEntity }) {
   return (
     <Link
       to={`/execute/approval?actionId=${action.id}`}
-      className="rounded-[16px] border border-border bg-card p-4 flex items-center gap-3 hover:bg-muted/50 transition-colors border-l-2 group"
+      className="rounded-2xl border border-white/[0.04] bg-white/[0.015] backdrop-blur-sm p-4 flex items-center gap-3 hover:bg-white/[0.03] hover:border-white/[0.08] transition-all duration-300 border-l-2 group"
       style={{ borderLeftColor: `var(${token.cssVar})` }}
     >
       <div className="flex-1 min-w-0">
         <span className="text-sm font-medium text-foreground truncate block">{action.title}</span>
         <div className="flex items-center gap-2 mt-1">
-          <span className="text-sm font-mono font-bold" style={{ color: `var(${token.cssVar})` }}>
+          <span className="text-sm font-mono font-bold tabular-nums" style={{ color: `var(${token.cssVar})` }}>
             {action.amountLabel}
           </span>
           <span className="text-[10px] text-muted-foreground font-mono">{action.engine}</span>
@@ -220,7 +225,7 @@ function QueueCard({ action }: { action: ExecuteActionEntity }) {
     <Link
       to={`/execute/approval?actionId=${action.id}`}
       className={cn(
-        'rounded-[20px] border border-border bg-card flex items-center hover:bg-muted/50 transition-colors border-l-2 group block',
+        'rounded-2xl border border-white/[0.04] bg-white/[0.02] backdrop-blur-sm flex items-center hover:bg-white/[0.04] hover:border-white/[0.1] hover:translate-y-[-1px] transition-all duration-300 border-l-2 group block',
         isFocus ? 'p-5 gap-4' : 'p-4 gap-3',
       )}
       style={{ borderLeftColor: `var(${token.cssVar})` }}
@@ -238,7 +243,7 @@ function QueueCard({ action }: { action: ExecuteActionEntity }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-3 flex-wrap mb-1">
           <span className={cn('text-foreground truncate', isFocus ? 'text-base font-semibold' : 'text-sm font-semibold')}>{action.title}</span>
-          <span className={cn(isFocus ? 'text-lg font-mono font-bold' : 'text-base font-mono font-bold')} style={{ color: `var(${token.cssVar})` }}>
+          <span className={cn(isFocus ? 'text-lg font-mono font-bold tabular-nums' : 'text-base font-mono font-bold tabular-nums')} style={{ color: `var(${token.cssVar})` }}>
             {action.amountLabel}
           </span>
           <span className={cn('inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest', URGENCY_BADGE[action.urgency])}>
@@ -253,30 +258,31 @@ function QueueCard({ action }: { action: ExecuteActionEntity }) {
         </div>
 
         <div className={cn('flex items-center gap-3 flex-wrap text-xs')}>
-          <span className="font-mono text-muted-foreground">{action.id}</span>
+          <span className="font-mono text-muted-foreground tabular-nums">{action.id}</span>
           <span className="text-muted-foreground">·</span>
           <span style={{ color: `var(${token.cssVar})` }}>{action.engine}</span>
           <span className="text-muted-foreground">·</span>
           <span className="text-muted-foreground">{Math.round(action.confidence * 100)}% confidence</span>
         </div>
-      </div>
-
-      {isFocus ? (
-        <span
-          className={cn(
-            'shrink-0 hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors',
-            'bg-amber-600 text-white hover:bg-amber-700',
+        <div className="mt-3 flex items-center">
+          {isFocus ? (
+            <span
+              className={cn(
+                'shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors',
+                'bg-amber-600 text-white hover:bg-amber-700',
+              )}
+            >
+              Review &amp; Approve
+            </span>
+          ) : (
+            <span
+              className="shrink-0 inline-flex items-center gap-1.5 border border-white/[0.06] text-foreground hover:bg-white/[0.04] rounded-xl px-4 py-2 text-xs font-semibold transition-colors"
+            >
+              Review &amp; Approve
+            </span>
           )}
-        >
-          Review &amp; Approve
-        </span>
-      ) : (
-        <span
-          className="shrink-0 hidden sm:inline-flex items-center gap-1.5 border border-border text-foreground hover:bg-muted/50 rounded-xl px-4 py-2 text-xs font-semibold transition-colors"
-        >
-          Review &amp; Approve
-        </span>
-      )}
+        </div>
+      </div>
     </Link>
   )
 }

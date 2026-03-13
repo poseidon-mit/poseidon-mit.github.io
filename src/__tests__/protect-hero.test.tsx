@@ -71,10 +71,8 @@ describe("ProtectAnomalyRadar", () => {
     // SHAP waterfall chart is rendered
     expect(screen.getByRole("img", { name: /shap feature attribution waterfall/i })).toBeInTheDocument();
     expect(screen.getByText(/SHAP Waterfall/)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /view audit trail/i })).toHaveAttribute(
-      "href",
-      "/govern/audit-detail?decision=AUD-888",
-    );
+    expect(screen.getByText(/Cohort signal/i)).toBeInTheDocument();
+    expect(screen.getByText(/Credential-stuffing attacks up 31% this quarter/i)).toBeInTheDocument();
   });
 
   it("renders derived radar axes and bridge line", () => {
@@ -84,7 +82,7 @@ describe("ProtectAnomalyRadar", () => {
       expect(axis.value).toBeGreaterThan(0);
       expect(axis.maxValue).toBe(0.3);
     }
-    expect(screen.getByText(/4 more threats below/)).toBeInTheDocument();
+    expect(screen.getAllByText(/VIEW ALL ANOMALIES/)[0]).toBeInTheDocument();
     expect(screen.getByText("Total exposure")).toBeInTheDocument();
     expect(screen.getAllByText("$1,299").length).toBeGreaterThan(0);
   });
@@ -132,7 +130,7 @@ describe("ProtectThreatPosture", () => {
     );
 
     const heading = screen.getByRole("heading", { level: 2 });
-    expect(heading.style.fontFamily).toContain("var(--font-display)");
+    expect(heading.className).toContain("text-[clamp(1.5rem,4vw,3.5rem)]");
     const childrenBefore = Array.from(heading.parentElement?.children ?? []).slice(
       0,
       Array.from(heading.parentElement?.children ?? []).indexOf(heading),

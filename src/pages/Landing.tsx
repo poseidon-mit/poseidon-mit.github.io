@@ -1,20 +1,15 @@
-import { lazy, Suspense } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { motion, useScroll, useTransform, useMotionValue, useSpring, useMotionTemplate, AnimatePresence } from 'framer-motion';
 import { Link } from '@/router';
-import { Lock, Eye, ShieldCheck, Shield, TrendingUp, Zap, Scale, Play, FileText } from 'lucide-react';
+import { Shield, TrendingUp, Zap, Scale, Lock, ShieldCheck, Eye, Play, FileText, Blocks, ArrowRight, CheckCircle2, Presentation, X } from 'lucide-react';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/motion-presets';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { MenuOverlay } from '@/components/landing/jeton/MenuOverlay';
 import { Footer } from '@/components/landing/jeton/Footer';
-import SpotlightCard from '@/components/landing/jeton/effects/SpotlightCard';
-import { JETON_COPY, JETON_FEATURES } from '@/content/landing-copy-jeton';
 import { selectArchitecturalTrust, selectCohortMetrics } from '@/domain/poseidon-universe';
 import { LANDING_COPY } from '@/content/landing-copy';
 
-const ParticleGlobe = lazy(() => import('@/components/landing/jeton/effects/ParticleGlobe'));
-
-const ENGINE_ICONS = { protect: Shield, grow: TrendingUp, execute: Zap, govern: Scale } as const;
 const ENGINE_COLORS: Record<string, string> = {
   protect: 'var(--engine-protect)',
   grow: 'var(--engine-grow)',
@@ -22,277 +17,556 @@ const ENGINE_COLORS: Record<string, string> = {
   govern: 'var(--engine-govern)',
 };
 
-const TRUST_ICONS = { lock: Lock, shield: ShieldCheck, eye: Eye } as const;
+const ENGINES = [
+  { id: 'protect', name: LANDING_COPY.engineShowcase.cards[0].name, desc: LANDING_COPY.engineShowcase.cards[0].description, icon: Shield, confidence: LANDING_COPY.engineShowcase.cards[0].confidence },
+  { id: 'grow', name: LANDING_COPY.engineShowcase.cards[1].name, desc: LANDING_COPY.engineShowcase.cards[1].description, icon: TrendingUp, confidence: LANDING_COPY.engineShowcase.cards[1].confidence },
+  { id: 'execute', name: LANDING_COPY.engineShowcase.cards[2].name, desc: LANDING_COPY.engineShowcase.cards[2].description, icon: Zap, confidence: LANDING_COPY.engineShowcase.cards[2].confidence },
+  { id: 'govern', name: LANDING_COPY.engineShowcase.cards[3].name, desc: LANDING_COPY.engineShowcase.cards[3].description, icon: Scale, confidence: LANDING_COPY.engineShowcase.cards[3].confidence },
+];
 
 export default function Landing() {
   usePageTitle('Welcome to Poseidon');
   const reducedMotion = useReducedMotionSafe();
   const { scrollYProgress } = useScroll();
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.18], [1, 0]);
+  
+  const [isMobile, setIsMobile] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const trust = selectArchitecturalTrust();
   const cohort = selectCohortMetrics();
 
+  // Section 1: Hero Lens
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const lensX = useSpring(mouseX, { stiffness: 50, damping: 20 });
+  const lensY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+  
+  const handleHeroPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isMobile || reducedMotion) return;
+    const { clientX, clientY, currentTarget } = e;
+    const { left, top, width, height } = currentTarget.getBoundingClientRect();
+    mouseX.set((clientX - left) - width / 2);
+    mouseY.set((clientY - top) - height / 2);
+  };
+
+  // Section 3: Glass Vault Parallax
+  const vaultRotateX = useTransform(scrollYProgress, [0.3, 0.7], [10, -5]);
+  
+  // Section 4: Z-Pattern 
+  const zPathProgress = useTransform(scrollYProgress, [0.6, 0.9], [1, 0]);
+
   return (
-    <div className="overflow-x-clip bg-[#06060A] text-white">
+    <div className="overflow-x-clip bg-[#06060A] text-white selection:bg-[var(--engine-dashboard)]/30">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-black"
       >
-        Skip to content
+        {LANDING_COPY.skipLink}
       </a>
       <MenuOverlay />
+      
       <main id="main-content" role="main">
+        {/* =========================================
+            SECTION 1: THE MONOLITHIC OBELISK (HERO)
+            ========================================= */}
+        <motion.section
+          onPointerMove={handleHeroPointerMove}
+          className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden pt-16 group"
+        >
+          {/* Background Video */}
+          <video
+            src="/videos/hero-theme-desktop-v2.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 h-full w-full object-cover scale-[1.05] opacity-60 pointer-events-none mix-blend-screen"
+          />
+          {/* Cinematic Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[var(--engine-dashboard)]/5 via-[#06060A]/60 to-[#06060A] pointer-events-none" />
 
-      {/* ═══════════════════════════════════════════
-          SECTION 1: IMMERSIVE HERO (100vh)
-          ═══════════════════════════════════════════ */}
-      <motion.section
-        className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden pt-16"
-        style={{ opacity: reducedMotion ? 1 : heroOpacity }}
-      >
-        {/* Video Background */}
-        <video
-          src="/videos/hero-theme-desktop-v2.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 h-full w-full object-cover scale-[1.15] opacity-70 pointer-events-none"
-        />
+          {/* WOW Visual 2: Central Aurora Glass Lens */}
+          {!isMobile && !reducedMotion && (
+            <motion.div
+              style={{ x: lensX, y: lensY }}
+              className="absolute left-1/2 top-1/2 -ml-[250px] -mt-[250px] w-[500px] h-[500px] rounded-full mix-blend-overlay pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-1000"
+            >
+              <div className="w-full h-full rounded-full backdrop-blur-2xl bg-[var(--engine-dashboard)]/5 [mask-image:radial-gradient(black,transparent_70%)]" />
+            </motion.div>
+          )}
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#06060A]/20 to-[#06060A]/80 pointer-events-none" />
+          <div className="relative z-10 flex flex-col items-center px-6 text-center w-full max-w-5xl mx-auto">
+            <motion.div variants={fadeUp} initial="hidden" animate="visible" className="flex flex-col items-center">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-8">
+                <ShieldCheck className="w-4 h-4 text-[var(--engine-dashboard)]" />
+                <span className="text-xs font-mono text-white/70 uppercase tracking-widest">{LANDING_COPY.hero.badge}</span>
+              </div>
 
-        {/* Particle Globe */}
-        {!reducedMotion && (
-          <Suspense fallback={null}>
-            <div className="absolute inset-0 opacity-90 pointer-events-none">
-              <ParticleGlobe quality="auto" />
+              <h1 className="font-medium tracking-tight leading-[1] mb-8 mix-blend-lighten">
+                <span className="block text-3xl sm:text-5xl md:text-7xl filter drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]">{LANDING_COPY.hero.headlineLine1}</span>
+                <span className="block text-4xl sm:text-6xl md:text-8xl bg-gradient-to-r from-[var(--engine-dashboard)] to-[var(--engine-grow)] bg-clip-text text-transparent filter drop-shadow-[0_0_30px_rgba(0,240,255,0.3)]">
+                  {LANDING_COPY.hero.headlineLine2}
+                </span>
+              </h1>
+
+              <p className="text-lg md:text-2xl text-white/50 max-w-2xl mx-auto mb-12 font-light tracking-wide">
+                {LANDING_COPY.hero.subtitle}
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4 w-full max-w-2xl mx-auto">
+                <Link
+                  to="/dashboard"
+                  className="group relative inline-flex items-center justify-center px-8 py-4 rounded-full bg-[var(--engine-dashboard)] text-[#06060A] font-semibold text-[15px] tracking-wide transition-all hover:scale-[1.02] shadow-[0_0_40px_rgba(0,240,255,0.3)] hover:shadow-[0_0_60px_rgba(0,240,255,0.5)] flex-1 min-w-[200px]"
+                >
+                  <span className="relative z-10">{LANDING_COPY.hero.primaryCta}</span>
+                  <div className="absolute inset-0 rounded-full bg-white/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => setShowVideo(true)}
+                  className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium text-[15px] hover:bg-white/10 transition-colors backdrop-blur-md flex-1 min-w-[200px]"
+                >
+                  <Play className="w-4 h-4" />
+                  {LANDING_COPY.hero.secondaryCta}
+                </button>
+
+                <Link
+                  to="/deck"
+                  className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium text-[15px] hover:bg-white/10 transition-colors backdrop-blur-md flex-1 min-w-[200px]"
+                >
+                  <Presentation className="w-4 h-4" />
+                  Presentation
+                </Link>
+              </div>
+            </motion.div>
+
+            <motion.div
+              className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 mt-20 text-white/40 text-sm font-medium"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 1 }}
+            >
+              {LANDING_COPY.hero.trustItems.map((item, idx) => {
+                const Icon = idx === 0 ? Lock : idx === 1 ? ShieldCheck : Eye;
+                return (
+                  <span key={item} className="flex items-center gap-2 tracking-wide">
+                    <Icon size={14} className="text-[var(--engine-dashboard)]/50" /> {item}
+                  </span>
+                );
+              })}
+            </motion.div>
+          </div>
+        </motion.section>
+
+        {/* =========================================
+            SECTION 2: CINEMATIC HUD
+            ========================================= */}
+        <section className="relative px-6 py-32 md:py-40 md:px-8 border-t border-white/5 bg-gradient-to-b from-[#06060A] to-[#0A0A0F]">
+          <div className="mx-auto max-w-7xl relative z-10">
+            <motion.div
+              className="mb-20 text-center md:text-left"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-20%' }}
+            >
+              <h2 className="text-3xl sm:text-5xl font-medium tracking-tight mb-6">
+                {LANDING_COPY.engineShowcase.sectionTitle}
+              </h2>
+              <p className="text-base md:text-xl text-white/50 max-w-2xl leading-relaxed">
+                {LANDING_COPY.engineShowcase.sectionSubtitle}
+              </p>
+            </motion.div>
+
+            {/* WOW Visual 4: Fast-Packet Neural Synapses */}
+            <div className="absolute top-0 left-0 right-0 h-px bg-white/5">
+              {!isMobile && !reducedMotion && (
+                <svg className="absolute inset-0 w-full h-[2px] overflow-visible" preserveAspectRatio="none">
+                  <motion.line 
+                    x1="0" y1="0" x2="100%" y2="0" 
+                    stroke="var(--engine-dashboard)" 
+                    strokeWidth="2" 
+                    strokeDasharray="100 1000"
+                    initial={{ strokeDashoffset: -1000 }}
+                    animate={{ strokeDashoffset: 0 }}
+                    transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+                    style={{ filter: 'drop-shadow(0 0 8px var(--engine-dashboard))' }}
+                  />
+                </svg>
+              )}
             </div>
-          </Suspense>
-        )}
 
-        {/* Hero Content */}
-        <div className="relative z-10 flex flex-col items-center px-6 text-center">
+            <motion.div
+              className="flex flex-col sm:flex-row items-stretch gap-4 md:gap-6 w-full"
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-10%' }}
+            >
+              {ENGINES.map((engine) => (
+                <TiltHUDCard key={engine.id} engine={engine} isMobile={isMobile} reducedMotion={reducedMotion} />
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* =========================================
+            SECTION 3: THE GLASS VAULT
+            ========================================= */}
+        <section className="relative px-6 py-32 md:py-48 overflow-hidden bg-[#0A0A0F]">
+          <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-16 items-center lg:items-end">
+            
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-20%' }}
+              className="order-2 lg:order-1"
+            >
+              <h2 className="text-3xl sm:text-5xl font-medium tracking-tight mb-6">
+                {LANDING_COPY.trustSection.sectionTitle}
+              </h2>
+              <p className="text-lg text-white/50 mb-8 leading-relaxed">
+                {LANDING_COPY.trustSection.sectionSubtitle}
+              </p>
+
+              <div className="flex flex-col gap-4">
+                {[
+                  { icon: Lock, label: LANDING_COPY.trustSection.features[0].label, desc: LANDING_COPY.trustSection.features[0].description },
+                  { icon: Eye, label: LANDING_COPY.trustSection.features[1].label, desc: LANDING_COPY.trustSection.features[1].description },
+                  { icon: Blocks, label: LANDING_COPY.trustSection.features[2].label, desc: LANDING_COPY.trustSection.features[2].description }
+                ].map((item) => (
+                  <div key={item.label} className="flex items-start gap-4 p-4 rounded-xl border border-white/5 bg-white/[0.02]">
+                    <div className="p-2 rounded-lg bg-white/5 text-[var(--engine-protect)]"><item.icon size={20} /></div>
+                    <div>
+                      <h4 className="font-medium text-white/90">{item.label}</h4>
+                      <p className="text-sm text-white/50">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* WOW Visual 5: The Glass Vault 3D Parallax */}
+            <div className="order-1 lg:order-2 lg:self-end">
+              <motion.div
+                style={{ rotateX: reducedMotion ? 0 : vaultRotateX, transformPerspective: 1200 }}
+                className="origin-bottom h-[400px] w-full rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.05] to-transparent backdrop-blur-3xl relative p-8 flex flex-col items-center justify-center shadow-[0_0_100px_rgba(255,255,255,0.02)]"
+              >
+                <SpotlightVault isMobile={isMobile} />
+
+                {/* Animated Audit Log Simulation */}
+                <div className="absolute inset-0 z-10 pointer-events-none">
+                  <AuditLogSimulation isMobile={isMobile} reducedMotion={reducedMotion} />
+                </div>
+              </motion.div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* =========================================
+            SECTION 4: FLUID Z-PATTERN CTA
+            ========================================= */}
+        <section className="relative flex min-h-[80vh] flex-col items-center justify-center px-6 py-32 text-center bg-[#06060A] overflow-hidden">
+          {/* WOW Visual 7: Z-Pattern Energy Descent */}
+          <div className="absolute inset-0 pointer-events-none opacity-50">
+            <svg className="w-full h-full" preserveAspectRatio="none">
+              <motion.path
+                d="M 100 0 L 100 200 L 90% 400 L 50% 600 L 50% 100%"
+                fill="none"
+                stroke="var(--engine-dashboard)"
+                strokeWidth="2"
+                style={{ pathLength: reducedMotion ? 1 : scrollYProgress }}
+                className="opacity-30 drop-shadow-[0_0_8px_var(--engine-dashboard)]"
+              />
+            </svg>
+          </div>
+
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--engine-dashboard)_0%,transparent_50%)] opacity-[0.03] animate-pulse" />
+
           <motion.div
-            className="max-w-3xl"
+            className="relative z-10 max-w-3xl flex flex-col items-center"
             variants={fadeUp}
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-20%' }}
           >
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-medium tracking-tight leading-[1.1] mb-6">
-              Deterministic Finance.
+            <h2 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-8">
+              <span className="text-white filter drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]">{LANDING_COPY.finalCta.headlineLine1}</span>
               <br />
-              <span className="bg-gradient-to-r from-[var(--engine-dashboard)] to-[var(--engine-govern)] bg-clip-text text-transparent">
-                Agentic Execution.
+              <span className="bg-gradient-to-r from-[var(--engine-dashboard)] to-[var(--engine-grow)] bg-clip-text text-transparent filter drop-shadow-[0_0_20px_rgba(0,240,255,0.2)]">
+                {LANDING_COPY.finalCta.headlineLine2}
               </span>
-            </h1>
+            </h2>
 
-            <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-12">
-              The AI-native platform that shows its work before it asks for trust.
+            <p className="text-lg md:text-xl text-white/50 mb-12 max-w-2xl font-light">
+              {LANDING_COPY.finalCta.subtitle}
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 w-full max-w-3xl mx-auto">
-              <Link
-                to="/dashboard"
-                className="inline-flex items-center justify-center px-10 py-4 rounded-full bg-[var(--engine-dashboard)] text-[#06060A] font-semibold text-[15px] tracking-wide hover:scale-105 transition-transform shadow-[0_0_40px_rgba(0,240,255,0.4)] flex-1 min-w-[200px]"
-              >
-                OPEN PROTOTYPE
-              </Link>
-              
-              <a
-                href="https://youtu.be/ymwtd7X3CYI?si=GquLUJOtmQ7RVN4k"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium text-[15px] hover:bg-white/10 transition-colors backdrop-blur-md flex-1 min-w-[200px]"
-              >
-                <Play className="w-4 h-4" />
-                Video
-              </a>
-              
-              <Link
-                to="/deck"
-                className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium text-[15px] hover:bg-white/10 transition-colors backdrop-blur-md flex-1 min-w-[200px]"
-              >
-                <FileText className="w-4 h-4" />
-                Presentation
-              </Link>
+            {/* WOW Visual 8: Magnetic Supermassive CTA */}
+            <MagneticCTA isMobile={isMobile} reducedMotion={reducedMotion} />
+
+            <div className="mt-12 flex items-center justify-center gap-6 text-sm text-white/40">
+               <span className="flex items-center gap-2"><CheckCircle2 size={14} className="text-[var(--engine-protect)]" /> {LANDING_COPY.finalCta.proofPoints[0]}</span>
+               <span className="hidden sm:flex items-center gap-2"><CheckCircle2 size={14} className="text-[var(--engine-grow)]" /> {LANDING_COPY.finalCta.proofPoints[1]}</span>
             </div>
           </motion.div>
+        </section>
 
-          {/* Trust Badges */}
+      </main>
+      <Footer />
+
+      {/* Video Modal */}
+      <AnimatePresence>
+        {showVideo && (
           <motion.div
-            className="flex flex-wrap items-center justify-center gap-8 mt-16 text-white/40 text-sm"
+            className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowVideo(false)}
           >
-            {LANDING_COPY.hero.trustItems.map((item, idx) => {
-              const Icon = idx === 0 ? Lock : idx === 1 ? ShieldCheck : Eye;
-              return (
-                <span key={item} className="flex items-center gap-2">
-                  <Icon size={14} /> {item}
-                </span>
-              );
-            })}
+            <motion.div
+              className="relative w-[90vw] max-w-4xl aspect-video"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => setShowVideo(false)}
+                className="absolute -top-10 right-0 text-white/60 hover:text-white transition-colors"
+                aria-label="Close video"
+              >
+                <X size={24} />
+              </button>
+              <iframe
+                src="https://www.youtube.com/embed/ymwtd7X3CYI?autoplay=1&rel=0"
+                title="Poseidon AI Demo"
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+                className="w-full h-full rounded-xl border border-white/10"
+              />
+            </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ----- WOW Visual 3: Horizontal Holographic Tilt Display -----
+function TiltHUDCard({ engine, isMobile, reducedMotion }: any) {
+  const x = useMotionValue(0.5);
+  const y = useMotionValue(0.5);
+
+  const rotateX = useTransform(y, [0, 1], [15, -15]);
+  const rotateY = useTransform(x, [0, 1], [-15, 15]);
+
+  const smoothRotateX = useSpring(rotateX, { stiffness: 300, damping: 30 });
+  const smoothRotateY = useSpring(rotateY, { stiffness: 300, damping: 30 });
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (isMobile || reducedMotion) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    x.set((e.clientX - rect.left) / rect.width);
+    y.set((e.clientY - rect.top) / rect.height);
+  };
+
+  const handlePointerLeave = () => {
+    x.set(0.5);
+    y.set(0.5);
+  };
+
+  const Icon = engine.icon;
+  const color = ENGINE_COLORS[engine.id];
+
+  return (
+    <motion.div
+      variants={staggerItem}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      style={{
+        rotateX: (!isMobile && !reducedMotion) ? smoothRotateX : 0,
+        rotateY: (!isMobile && !reducedMotion) ? smoothRotateY : 0,
+        transformPerspective: 1000,
+      }}
+      className="relative flex-1 rounded-xl border border-white/10 bg-white/[0.02] p-6 backdrop-blur-md group overflow-hidden"
+    >
+      <div 
+        className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none"
+        style={{ background: `radial-gradient(circle at 50% 0%, ${color}22 0%, transparent 70%)` }}
+      />
+      <div className="relative z-10 flex flex-col h-full">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/5 border border-white/10" style={{ color }}>
+            <Icon size={24} />
+          </div>
+          <span className="font-mono text-xs text-white/30 truncate backdrop-blur-md px-2 py-1 bg-black/20 rounded">
+            {engine.confidence}
+          </span>
         </div>
-      </motion.section>
-
-      {/* ═══════════════════════════════════════════
-          SECTION 2: FOUR ENGINES
-          ═══════════════════════════════════════════ */}
-      <section id="platform" className="relative px-6 py-28 md:py-40 md:px-8">
-        <div className="mx-auto max-w-6xl">
-          <motion.div
-            className="mb-16 text-center"
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-20%' }}
-          >
-            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-white/40 mb-4">
-              {JETON_COPY.valueProp.eyebrow}
-            </p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight">
-              Four Engines. One Cohesive Ecosystem.
-            </h2>
-            <p className="mt-4 text-base md:text-lg text-white/50 max-w-2xl mx-auto">
-              Coordinated protection, capital allocation, execution, and governance for the same balance sheet. {cohort.cohortSize.toLocaleString()} similar users shape the recommendation layer.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6"
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-10%' }}
-          >
-            {JETON_FEATURES.map((feature) => {
-              const Icon = ENGINE_ICONS[feature.tone];
-              return (
-                <motion.div key={feature.name} variants={staggerItem}>
-                  <SpotlightCard glowTone={feature.tone} theme="dark" className="h-full">
-                    <div className="p-6 md:p-8">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div
-                          className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 border border-white/10"
-                          style={{ color: ENGINE_COLORS[feature.tone] }}
-                        >
-                          <Icon size={20} />
-                        </div>
-                        <h3 className="text-lg font-semibold">{feature.name}</h3>
-                        <span className="ml-auto font-mono text-xs text-white/30">
-                          {feature.confidence} confidence
-                        </span>
-                      </div>
-                      <p className="text-sm text-white/60 leading-relaxed">
-                        {feature.description}
-                      </p>
-                    </div>
-                  </SpotlightCard>
-                </motion.div>
-              );
-            })}
-          </motion.div>
+        <h3 className="text-xl font-semibold mb-3 tracking-wide">{engine.name}</h3>
+        <p className="text-sm text-white/50 leading-relaxed font-light flex-grow">
+          {engine.desc}
+        </p>
+        
+        {/* Holographic scanning line effect */}
+        <div className="absolute left-0 right-0 h-px top-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-hidden">
+           <motion.div 
+             className="w-full h-full" 
+             style={{ background: `linear-gradient(90deg, transparent, ${color}, transparent)` }} 
+             animate={{ x: ['-100%', '100%'] }} 
+             transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+           />
         </div>
-      </section>
+      </div>
+    </motion.div>
+  );
+}
 
-      {/* ═══════════════════════════════════════════
-          SECTION 3: TRUST & ARCHITECTURE
-          ═══════════════════════════════════════════ */}
-      <section className="relative px-6 py-28 md:py-40 md:px-8">
-        <div className="mx-auto max-w-6xl">
-          <motion.div
-            className="mb-16 text-center"
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-20%' }}
-          >
-            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-white/40 mb-4">
-              {JETON_COPY.trust.eyebrow}
-            </p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight">
-              Built on Cryptographic Certainty.
-            </h2>
-          </motion.div>
+// ----- WOW Visual 6: Interactive Spotlight Tooltips -----
+function SpotlightVault({ isMobile }: { isMobile: boolean }) {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const spotlightBackground = useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(255,255,255,0.06), transparent 80%)`;
 
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6"
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-10%' }}
-          >
-            {JETON_COPY.trust.pillars.map((pillar) => {
-              const Icon = TRUST_ICONS[pillar.icon];
-              return (
-                <motion.div
-                  key={pillar.title}
-                  variants={staggerItem}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 md:p-8"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 border border-white/10 mb-5 text-[var(--engine-dashboard)]">
-                    <Icon size={22} />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">{pillar.title}</h3>
-                  <p className="text-sm text-white/50 leading-relaxed">
-                    {pillar.description}
-                  </p>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-      </section>
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (isMobile) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  };
 
-      {/* ═══════════════════════════════════════════
-          SECTION 4: FINAL CTA
-          ═══════════════════════════════════════════ */}
-      <section className="relative flex min-h-[60vh] flex-col items-center justify-center px-6 py-24 text-center">
-        {/* Decorative radials */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] rounded-full bg-[radial-gradient(ellipse,var(--engine-dashboard)_0%,transparent_70%)] opacity-[0.06]" />
-        </div>
-
+  return (
+    <div 
+      className="absolute inset-0 z-20 group"
+      onPointerMove={handlePointerMove}
+    >
+      {!isMobile && (
         <motion.div
-          className="relative z-10 max-w-2xl"
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-20%' }}
+          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{ background: spotlightBackground }}
+        />
+      )}
+    </div>
+  );
+}
+
+// ----- WOW Visual 8: Magnetic Supermassive CTA -----
+function MagneticCTA({ isMobile, reducedMotion }: { isMobile: boolean, reducedMotion: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  
+  const springX = useSpring(x, { stiffness: 150, damping: 15, mass: 0.5 });
+  const springY = useSpring(y, { stiffness: 150, damping: 15, mass: 0.5 });
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (isMobile || reducedMotion || !ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    
+    // Magnetic pull radius 150px
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < 150) {
+      x.set(dx * 0.3);
+      y.set(dy * 0.3);
+    } else {
+      x.set(0);
+      y.set(0);
+    }
+  };
+
+  const handlePointerLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <div 
+      className="relative p-12 -m-12" // large hit area
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+    >
+      {/* Ambient breathing glow */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[var(--engine-dashboard)]/20 to-[var(--engine-grow)]/20 blur-3xl rounded-full scale-150 animate-pulse pointer-events-none" />
+      
+      <motion.div ref={ref} style={{ x: springX, y: springY }}>
+        <Link
+          to="/dashboard"
+          className="group relative flex items-center gap-3 px-12 py-5 rounded-full bg-white text-black font-semibold tracking-wide text-lg overflow-hidden transition-colors hover:bg-white/90"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight mb-6">
-            <span className="bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
-              Take control of your
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-[var(--engine-dashboard)] to-[var(--engine-grow)] bg-clip-text text-transparent">
-              financial destiny today.
-            </span>
-          </h2>
+          <span className="relative z-10">{LANDING_COPY.finalCta.button}</span>
+          <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+        </Link>
+      </motion.div>
+    </div>
+  );
+}
 
-          <p className="text-base md:text-lg text-white/50 mb-10">
-            Start with the command center, then drill into Protect, Grow, Execute, and Govern as the story unfolds.
-          </p>
+// ----- WOW Visual 9: Animated Audit Log Simulation -----
+function AuditLogSimulation({ isMobile, reducedMotion }: { isMobile: boolean, reducedMotion: boolean }) {
+  const LOGS = [
+    { id: 1, engine: 'protect', action: 'Login Attempt Blocked', detail: 'Unrecognized device in new region', time: '0.01s ago' },
+    { id: 2, engine: 'govern', action: 'Policy Updated', detail: 'New tax regulations applied to portfolio', time: '0.4s ago' },
+    { id: 3, engine: 'grow', action: 'Dividend Reinvested', detail: 'Purchased fractional shares of VTI', time: '1.2s ago' },
+    { id: 4, engine: 'govern', action: 'Activity Logged', detail: 'Saved securely to your permanent record', time: '2.5s ago' },
+    { id: 5, engine: 'protect', action: 'Anomaly Detected', detail: 'Flagged unusual merchant context', time: '3.8s ago' },
+    { id: 6, engine: 'grow', action: 'Yield Harvested', detail: 'Reallocated $4,200 to higher rate', time: '5.1s ago' },
+    { id: 7, engine: 'execute', action: 'Transaction Staged', detail: 'Awaiting your biological approval', time: '6.4s ago' },
+    { id: 8, engine: 'govern', action: 'Activity Logged', detail: 'Saved securely to your permanent record', time: '8.2s ago' },
+  ];
 
-          <Link
-            to="/dashboard"
-            className="inline-flex items-center gap-2 px-10 py-4 rounded-full bg-[var(--engine-dashboard)] text-[#06060A] font-semibold text-base tracking-wide hover:scale-105 transition-transform shadow-[0_0_40px_var(--engine-dashboard)]"
-          >
-            GET STARTED NOW
-          </Link>
-
-          <p className="mt-8 text-xs text-white/30">
-            Read-only bank connectivity. Explainable AI. No invisible automation.
-          </p>
-        </motion.div>
-      </section>
-
-      <Footer />
-      </main>
+  return (
+    <div className="absolute inset-x-4 bottom-4 md:inset-x-8 md:bottom-8 h-[80%] flex flex-col justify-end gap-2 overflow-hidden">
+      {/* Top fade out mask */}
+      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#0A0A0F] to-transparent z-10 pointer-events-none" />
+      
+      {/* Dynamic scan line - moved to z-10 for visibility */}
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--engine-dashboard)]/20 to-transparent animate-pulse pointer-events-none z-10" />
+      
+      <div className="flex flex-col gap-2 w-full max-w-lg mx-auto relative z-0">
+        <AnimatePresence>
+          {LOGS.map((log, index) => {
+            const Icon = ENGINES.find(e => e.id === log.engine)?.icon || Shield;
+            const color = ENGINE_COLORS[log.engine];
+            
+            return (
+              <motion.div
+                key={log.id}
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: reducedMotion ? 0 : index * 0.15, duration: 0.5, ease: "easeOut" }}
+                className="flex items-center gap-3 p-3 md:p-4 rounded-lg bg-[#0A0A0F]/80 border border-white/10 backdrop-blur-md shadow-lg"
+              >
+                <div className="p-2 rounded bg-white/5 border border-white/10" style={{ color }}>
+                  <Icon size={14} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-medium text-white/90 truncate">{log.action}</span>
+                    <span className="text-[10px] font-mono text-white/30 whitespace-nowrap">{log.time}</span>
+                  </div>
+                  <p className="text-xs text-white/50 truncate mt-0.5">{log.detail}</p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

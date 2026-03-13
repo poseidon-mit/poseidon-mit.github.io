@@ -93,14 +93,14 @@ describe('Execution Stream (Step 5)', () => {
     const slider = screen.getByRole('slider', { name: /Slide to Approve/i });
     fireEvent.keyDown(slider, { key: 'Enter' });
     // Confirm in dialog
-    const confirmBtn = screen.getByRole('button', { name: /^Approve$/i });
+    const confirmBtn = screen.getByRole('button', { name: /^Approve & Sign$/i });
     fireEvent.click(confirmBtn);
     return result;
   }
 
   it('shows execution stream overlay after approval', () => {
     renderAndApprove();
-    expect(screen.getByText('Execution Stream')).toBeInTheDocument();
+    expect(screen.getByText(/Secured Execution Stream/i)).toBeInTheDocument();
     expect(screen.getByText('Reviewing')).toBeInTheDocument();
   });
 
@@ -126,18 +126,18 @@ describe('Execution Stream (Step 5)', () => {
     // Authorize via slider keyboard Enter (Tier 2)
     const slider = screen.getByRole('slider', { name: /Slide to Approve/i });
     fireEvent.keyDown(slider, { key: 'Enter' });
-    const confirmBtn = screen.getByRole('button', { name: /^Approve$/i });
+    const confirmBtn = screen.getByRole('button', { name: /^Approve & Sign$/i });
     fireEvent.click(confirmBtn);
     // Overlay should be showing
-    expect(screen.getByText('Execution Stream')).toBeInTheDocument();
+    expect(screen.getByText(/Secured Execution Stream/i)).toBeInTheDocument();
     // The dialog is dismissed so a second approve is not possible via UI
     // Verify only one overlay exists
-    expect(screen.getAllByText('Execution Stream')).toHaveLength(1);
+    expect(screen.getAllByText(/Secured Execution Stream/i)).toHaveLength(1);
   });
 
   it('cleans up timers on unmount', () => {
     const { unmount } = renderAndApprove();
-    expect(screen.getByText('Execution Stream')).toBeInTheDocument();
+    expect(screen.getByText(/Secured Execution Stream/i)).toBeInTheDocument();
     unmount();
     // Advancing timers after unmount should not throw
     expect(() => {

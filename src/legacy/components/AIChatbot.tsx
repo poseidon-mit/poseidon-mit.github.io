@@ -150,8 +150,13 @@ export function AIChatbot() {
               <div className="mission-chatbot-actions">
                 <VoiceInput onTranscript={handleVoiceTranscript} className="mission-chatbot-voice" />
                 <button
-                  onClick={() => setIsOpen(false)}
-                  className="mission-chatbot-close"
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsOpen(false);
+                  }}
+                  className="mission-chatbot-close hover:bg-white/10 transition-colors"
                   aria-label="Close chat"
                 >
                   ✕

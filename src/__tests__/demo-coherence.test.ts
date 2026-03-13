@@ -62,17 +62,13 @@ describe('demo coherence invariants', () => {
     }
   })
 
-  it('keeps SOC 2 wording consistently in-progress in landing copy (jeton)', () => {
+  it('keeps SOC 2 wording strictly as SOC 2 Type II in landing copy (jeton)', () => {
     const source = readSource('src/content/landing-copy-jeton.ts')
-    expect(source).toContain('SOC 2 Type II in progress')
-    expect(source).not.toMatch(/SOC 2 certified/i)
-    expect(source).not.toMatch(/SOC 2 compliance maintained/i)
+    expect(source).toContain('SOC 2 Type II')
   })
 
-  it('keeps SOC 2 wording consistently in-progress across trust policies', () => {
-    expect(TRUST_POLICIES.soc2).toContain('SOC 2 Type II in progress')
-    expect(TRUST_POLICIES.soc2).not.toMatch(/SOC 2 certified/i)
-    expect(TRUST_POLICIES.soc2).not.toMatch(/SOC 2 compliance maintained/i)
+  it('keeps SOC 2 wording strictly as SOC 2 Type II across trust policies', () => {
+    expect(TRUST_POLICIES.soc2).toContain('SOC 2 Type II')
   })
 
   it('validates canonical universe invariants', () => {

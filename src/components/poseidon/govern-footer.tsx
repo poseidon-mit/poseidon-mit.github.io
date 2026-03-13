@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ExternalLink, FileText, Lock, Shield, ShieldCheck, User } from 'lucide-react'
+import { Link } from '@/router'
 import { accordionTransition, accordionVariants } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
 import { selectGovernFooterView } from '@/domain/poseidon-universe'
@@ -29,7 +30,10 @@ function relativeTime(iso: string | null | undefined): string {
 
 function EntryRow({ entry }: { entry: GovernAuditEntryEntity }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3">
+    <Link
+      to={`/govern/audit-detail?decision=${entry.id}`}
+      className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 transition-colors hover:bg-white/[0.06]"
+    >
       <div className="min-w-0">
         <p className="truncate text-sm text-white">{entry.action}</p>
         <p className="mt-1 text-xs text-white/38">
@@ -39,7 +43,7 @@ function EntryRow({ entry }: { entry: GovernAuditEntryEntity }) {
       <span className="shrink-0 rounded-full border border-white/[0.08] px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/55">
         {entry.status}
       </span>
-    </div>
+    </Link>
   )
 }
 
@@ -77,13 +81,13 @@ export function GovernFooter({
               Auditable
             </span>
           </div>
-          <a
-            href={deepLinkHref}
+          <Link
+            to={deepLinkHref}
             className="inline-flex items-center gap-1 text-xs font-mono text-white/55 transition-colors hover:text-white"
           >
             {displayId}
             <ExternalLink className="h-3 w-3" aria-hidden="true" />
-          </a>
+          </Link>
         </div>
       </footer>
     )
@@ -120,13 +124,13 @@ export function GovernFooter({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <a
-            href={deepLinkHref}
+          <Link
+            to={deepLinkHref}
             className="inline-flex items-center gap-1 text-xs font-mono text-white/55 transition-colors hover:text-white"
           >
             {displayId}
             <ExternalLink className="h-3 w-3" aria-hidden="true" />
-          </a>
+          </Link>
           <button
             type="button"
             className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-white/[0.08] px-4 py-2 text-xs font-medium text-white/72 transition-colors hover:bg-white/[0.04]"

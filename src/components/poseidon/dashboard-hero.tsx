@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect } from "react";
 import {
   AlertTriangle,
   ArrowRight,
@@ -8,119 +8,128 @@ import {
   Sparkles,
   TrendingUp,
   Zap,
-} from 'lucide-react'
-import { Link } from '@/router'
-import { cn } from '@/lib/utils'
-import { formatUsd } from '@/domain/poseidon-universe'
-import type { FinancialHealthBreakdown } from '@/domain/poseidon-universe'
+} from "lucide-react";
+import { Link } from "@/router";
+import { cn } from "@/lib/utils";
+import { formatUsd } from "@/domain/poseidon-universe";
+import type { FinancialHealthBreakdown } from "@/domain/poseidon-universe";
 import {
   HeroBackdrop,
   HeroEyebrow,
   HeroMetricPill,
   HeroPanel,
-} from './hero-concept-primitives'
-import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
-import { motion, AnimatePresence } from 'framer-motion'
+} from "./hero-concept-primitives";
+import { useReducedMotionSafe } from "@/hooks/useReducedMotionSafe";
+import { motion, AnimatePresence } from "framer-motion";
+import { getMotionPreset } from "@/lib/motion-presets";
 
 export interface DashboardHeroProps {
-  userName: string
-  netWorth: number
-  netWorthChange: number
-  netWorthChangePercent: number
-  assets?: number
-  liabilities?: number
-  monthlyCashFlow?: number
-  sparklineData: number[]
-  healthScore: number
-  healthBreakdown: FinancialHealthBreakdown[]
+  userName: string;
+  netWorth: number;
+  netWorthChange: number;
+  netWorthChangePercent: number;
+  assets?: number;
+  liabilities?: number;
+  monthlyCashFlow?: number;
+  sparklineData: number[];
+  healthScore: number;
+  healthBreakdown: FinancialHealthBreakdown[];
   protectSignal: {
-    threatCount: number
-    topAmount: string
-    topCounterparty: string
-    severity: string
-    attentionItems?: AttentionItem[]
-  } | null
+    threatCount: number;
+    topAmount: string;
+    topCounterparty: string;
+    severity: string;
+    attentionItems?: AttentionItem[];
+  } | null;
   growSignal: {
-    savingsPerMonth: number
-    recCount: number
-    topTitle: string
-    attentionItems?: AttentionItem[]
-  } | null
+    savingsPerMonth: number;
+    recCount: number;
+    topTitle: string;
+    attentionItems?: AttentionItem[];
+  } | null;
   executeSignal: {
-    pendingCount: number
-    topTitle: string
-    topAmount: string
-    attentionItems?: AttentionItem[]
-  } | null
-  decisionsAudited: number
-  complianceScore: number
-  onNavigate: (path: string) => void
+    pendingCount: number;
+    topTitle: string;
+    topAmount: string;
+    attentionItems?: AttentionItem[];
+  } | null;
+  decisionsAudited: number;
+  complianceScore: number;
+  onNavigate: (path: string) => void;
 }
 
 type AttentionItem = {
-  label: string
-  href: string
-}
+  label: string;
+  href: string;
+};
 
 type SignalCardItem = {
-  key: string
-  label: string
-  body: string
-  icon: typeof Shield
-  accent: string
-  path: string
-  listPath: string
-  listLabel: string
-  attentionItems?: AttentionItem[]
-  testCopy?: string
-}
+  key: string;
+  label: string;
+  body: string;
+  icon: typeof Shield;
+  accent: string;
+  path: string;
+  listPath: string;
+  listLabel: string;
+  attentionItems?: AttentionItem[];
+  testCopy?: string;
+};
 
 function formatMoney(value: number): string {
   return value.toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  })
+  });
 }
 
-function DecryptingCurrency({ value, isHovered, reducedMotion }: { value: number, isHovered: boolean, reducedMotion: boolean }) {
-  const [displayValue, setDisplayValue] = useState(formatMoney(value))
-  const targetStr = formatMoney(value)
-  
+function DecryptingCurrency({
+  value,
+  isHovered,
+  reducedMotion,
+}: {
+  value: number;
+  isHovered: boolean;
+  reducedMotion: boolean;
+}) {
+  const [displayValue, setDisplayValue] = useState(formatMoney(value));
+  const targetStr = formatMoney(value);
+
   useEffect(() => {
     if (reducedMotion) {
-      setDisplayValue(targetStr)
-      return
+      setDisplayValue(targetStr);
+      return;
     }
-    
+
     if (isHovered) {
-      let iterations = 0
-      const chars = '0123456789X$0@#'
+      let iterations = 0;
+      const chars = "0123456789X$0@#";
       const interval = setInterval(() => {
         setDisplayValue(
           targetStr
-            .split('')
+            .split("")
             .map((char, index) => {
-              if (char === ',' || char === '.') return char
-              if (index < iterations) return targetStr[index]
-              return chars[Math.floor(Math.random() * chars.length)]
+              if (char === "," || char === ".") return char;
+              if (index < iterations) return targetStr[index];
+              return chars[Math.floor(Math.random() * chars.length)];
             })
-            .join('')
-        )
+            .join(""),
+        );
         if (iterations >= targetStr.length) {
-          clearInterval(interval)
+          clearInterval(interval);
         }
-        iterations += 1 / 2 // Speed of decrypt
-      }, 30)
+        iterations += 1 / 2; // Speed of decrypt
+      }, 30);
       return () => {
-        clearInterval(interval)
-        setDisplayValue(targetStr)
-      }
+        clearInterval(interval);
+        setDisplayValue(targetStr);
+      };
     } else {
-      setDisplayValue(targetStr)
+      setDisplayValue(targetStr);
     }
-  }, [value, isHovered, reducedMotion, targetStr])
+  }, [value, isHovered, reducedMotion, targetStr]);
 
-  return <>{displayValue}</>
+  return <>{displayValue}</>;
 }
 
 function SignalDockCard({
@@ -131,7 +140,7 @@ function SignalDockCard({
   listPath,
   listLabel,
   attentionItems,
-}: Omit<SignalCardItem, 'key' | 'testCopy'>) {
+}: Omit<SignalCardItem, "key" | "testCopy">) {
   return (
     <div
       className="group flex flex-col h-full w-full rounded-[24px] border border-white/10 bg-black/20 px-6 py-6 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.02)] min-w-0 transition-all duration-500 hover:bg-black/40 hover:border-white/20"
@@ -142,14 +151,21 @@ function SignalDockCard({
       <div className="flex w-full items-start justify-between gap-4">
         <div
           className="rounded-full border border-white/5 p-2.5 transition-transform duration-500 group-hover:scale-110"
-          style={{ color: accent, background: `color-mix(in srgb, ${accent} 8%, transparent)` }}
+          style={{
+            color: accent,
+            background: `color-mix(in srgb, ${accent} 8%, transparent)`,
+          }}
         >
           <Icon className="h-4 w-4" />
         </div>
       </div>
       <div className="mt-4 flex flex-col flex-1 w-full min-w-0">
-        <p className="text-[10px] uppercase tracking-[0.2em] text-white/30">{label}</p>
-        <p className="mt-1 text-base font-semibold text-white tracking-tight">{body}</p>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-white/30">
+          {label}
+        </p>
+        <p className="mt-1 text-lg font-semibold text-white tracking-tight leading-snug">
+          {body}
+        </p>
 
         {attentionItems && attentionItems.length > 0 && (
           <div className="mt-4 space-y-2 relative z-10 w-full">
@@ -163,7 +179,9 @@ function SignalDockCard({
                   className="h-1 w-1 shrink-0 rounded-full"
                   style={{ backgroundColor: accent, opacity: 0.8 }}
                 />
-                <span className="truncate whitespace-nowrap overflow-hidden">{item.label}</span>
+                <span className="truncate whitespace-nowrap overflow-hidden">
+                  {item.label}
+                </span>
               </Link>
             ))}
           </div>
@@ -179,7 +197,7 @@ function SignalDockCard({
         </Link>
       </div>
     </div>
-  )
+  );
 }
 
 export function DashboardHero({
@@ -200,108 +218,105 @@ export function DashboardHero({
   complianceScore,
   onNavigate,
 }: DashboardHeroProps) {
-  const reducedMotion = useReducedMotionSafe()
-  const [isHovered, setIsHovered] = useState(false)
-  
-  const positiveDay = netWorthChange >= 0
-  const resolvedAssets = assets ?? netWorth
-  const resolvedLiabilities = liabilities ?? 0
-  const resolvedMonthlyCashFlow = monthlyCashFlow ?? netWorthChange
+  const reducedMotion = useReducedMotionSafe();
+  const { heroFadeUp, dashboardHeroStaggerContainer } =
+    getMotionPreset(reducedMotion);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const positiveDay = netWorthChange >= 0;
+  const resolvedAssets = assets ?? netWorth;
+  const resolvedLiabilities = liabilities ?? 0;
+  const resolvedMonthlyCashFlow = monthlyCashFlow ?? netWorthChange;
 
   const signalCards = useMemo(() => {
-    const cards: SignalCardItem[] = []
-    
+    const cards: SignalCardItem[] = [];
+
     if (protectSignal) {
       cards.push({
-        key: 'protect',
-        label: 'Protect',
-        body: `${protectSignal.threatCount} ${protectSignal.threatCount === 1 ? 'anomaly' : 'anomalies'} flagged`,
+        key: "protect",
+        label: "Protect",
+        body: `${protectSignal.threatCount} ${protectSignal.threatCount === 1 ? "anomaly" : "anomalies"} flagged`,
         icon: AlertTriangle,
-        accent: 'var(--engine-protect)',
-        path: '/protect',
-        listPath: '/protect/threats',
-        listLabel: 'All threats',
+        accent: "var(--engine-protect)",
+        path: "/protect",
+        listPath: "/protect/threats",
+        listLabel: "All threats",
         attentionItems: protectSignal.attentionItems,
-        testCopy: `${protectSignal.threatCount} anomalies flagged`
-      })
+        testCopy: `${protectSignal.threatCount} anomalies flagged`,
+      });
     }
-    
+
     if (growSignal) {
       cards.push({
-        key: 'grow',
-        label: 'Grow',
+        key: "grow",
+        label: "Grow",
         body: `${growSignal.recCount} opportunities identified`,
         icon: Landmark,
-        accent: 'var(--engine-grow)',
-        path: '/grow',
-        listPath: '/grow/recommendations',
-        listLabel: 'All opportunities',
+        accent: "var(--engine-grow)",
+        path: "/grow",
+        listPath: "/grow/recommendations",
+        listLabel: "All opportunities",
         attentionItems: growSignal.attentionItems,
-        testCopy: `+$${growSignal.savingsPerMonth}/mo ready`
-      })
+        testCopy: `+$${growSignal.savingsPerMonth}/mo ready`,
+      });
     }
-    
+
     if (executeSignal) {
       cards.push({
-        key: 'execute',
-        label: 'Execute',
-        body: `${executeSignal.pendingCount} authorization${executeSignal.pendingCount === 1 ? '' : 's'} live`,
+        key: "execute",
+        label: "Execute",
+        body: `${executeSignal.pendingCount} authorization${executeSignal.pendingCount === 1 ? "" : "s"} live`,
         icon: Zap,
-        accent: 'var(--engine-execute)',
-        path: '/execute',
-        listPath: '/execute/queue',
-        listLabel: 'All approvals',
+        accent: "var(--engine-execute)",
+        path: "/execute",
+        listPath: "/execute/queue",
+        listLabel: "All approvals",
         attentionItems: executeSignal.attentionItems,
-        testCopy: `${executeSignal.pendingCount} authorizations live`
-      })
+        testCopy: `${executeSignal.pendingCount} authorizations live`,
+      });
     }
-    
+
     cards.push({
-      key: 'govern',
-      label: 'Govern',
+      key: "govern",
+      label: "Govern",
       body: `${decisionsAudited.toLocaleString()} decisions replayable`,
       icon: Shield,
-      accent: 'var(--engine-govern)',
-      path: '/govern',
-      listPath: '/govern/audit',
-      listLabel: 'Audit history',
-      testCopy: '100% Audit Coverage' // Generic for govern test filler
-    })
+      accent: "var(--engine-govern)",
+      path: "/govern",
+      listPath: "/govern/audit",
+      listLabel: "Audit history",
+      testCopy: "100% Audit Coverage", // Generic for govern test filler
+    });
 
-    return cards
-  }, [decisionsAudited, executeSignal, growSignal, protectSignal])
-
-  const containerVariants: any = reducedMotion ? undefined : {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.2 }
-    }
-  }
-
-  const childVariants: any = reducedMotion ? undefined : {
-    hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
-  }
+    return cards;
+  }, [decisionsAudited, executeSignal, growSignal, protectSignal]);
 
   // Core Ignition scanline animation
-  const ignitionLineVariants: any = reducedMotion ? undefined : {
-    hidden: { scaleX: 0, opacity: 0 },
-    visible: { 
-      scaleX: 1, 
-      opacity: [0, 1, 0.5, 0], 
-      transition: { duration: 1.2, ease: "easeInOut", times: [0, 0.2, 0.8, 1] } 
-    }
-  }
+  const ignitionLineVariants: any = reducedMotion
+    ? undefined
+    : {
+        hidden: { scaleX: 0, opacity: 0 },
+        visible: {
+          scaleX: 1,
+          opacity: [0, 1, 0.5, 0],
+          transition: {
+            duration: 1.2,
+            ease: "easeInOut",
+            times: [0, 0.2, 0.8, 1],
+          },
+        },
+      };
 
   return (
     <section
       role="region"
       aria-labelledby="dashboard-hero-title"
-      className="relative flex h-full flex-1 flex-col overflow-x-hidden overflow-y-auto rounded-[32px] border border-white/10 bg-[#020202] lg:overflow-hidden"
+      className="hero-canvas relative flex h-full flex-1 flex-col overflow-x-hidden overflow-y-auto rounded-[32px] border border-white/10 lg:overflow-hidden"
     >
-      <h2 id="dashboard-hero-title" className="sr-only">Dashboard</h2>
-      
+      <h2 id="dashboard-hero-title" className="sr-only">
+        Dashboard
+      </h2>
+
       {/* Test Strings explicitly rendered invisible to pass tests */}
       <div className="sr-only" aria-hidden="true" data-testid="dashboard-tests">
         <p>Portfolio Command Center</p>
@@ -315,31 +330,34 @@ export function DashboardHero({
         className="opacity-70"
       />
 
-      <motion.div 
-        variants={containerVariants}
+      <motion.div
+        variants={dashboardHeroStaggerContainer}
         initial="hidden"
         animate="visible"
         className="relative z-10 flex h-full flex-1 flex-col p-4 sm:p-6 lg:p-8"
       >
         {/* Core Ignition Effect Line */}
-        <motion.div 
+        <motion.div
           className="absolute top-1/2 left-0 w-full h-[1px] bg-[var(--engine-dashboard)] pointer-events-none z-0"
           variants={ignitionLineVariants}
-          style={{ boxShadow: '0 0 20px 2px var(--engine-dashboard)', transformOrigin: 'center' }}
+          style={{
+            boxShadow: "0 0 20px 2px var(--engine-dashboard)",
+            transformOrigin: "center",
+          }}
         />
 
         {/* UPPER: The Core Reactor / Focus Prism */}
-        <motion.div variants={childVariants} className="w-full relative z-10">
+        <motion.div variants={heroFadeUp} className="w-full relative z-10">
           <HeroPanel
             className="group relative flex flex-col items-center justify-center overflow-hidden px-6 py-10 md:py-16 text-center transition-all duration-700 hover:border-[var(--engine-dashboard)]/30 hover:shadow-[0_0_100px_-20px_rgba(0,240,255,0.2)]"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
             {/* System Resonance Pulse Background */}
-            <div 
+            <div
               className={cn(
                 "absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out pointer-events-none",
-                isHovered && "opacity-100"
+                isHovered && "opacity-100",
               )}
               style={{
                 background: `radial-gradient(ellipse at center, color-mix(in srgb, var(--engine-dashboard) 10%, transparent) 0%, transparent 60%)`,
@@ -351,34 +369,39 @@ export function DashboardHero({
               SYSTEM PULSE: OPTIMAL
             </HeroEyebrow>
 
-            <p className="text-xs uppercase tracking-[0.3em] text-white/40 mb-3">
+            <p className="text-[11px] font-mono tracking-[0.2em] uppercase text-white/40 mb-3">
               Total Net Worth
             </p>
-            
+
             <div className="relative inline-block">
               <p className="text-[clamp(3rem,8vw,6rem)] font-light leading-none tracking-tight text-white transition-all duration-300 group-hover:text-[var(--engine-dashboard)] group-hover:drop-shadow-[0_0_25px_rgba(0,240,255,0.4)]">
-                $<DecryptingCurrency value={netWorth} isHovered={isHovered} reducedMotion={reducedMotion} />
+                $
+                <DecryptingCurrency
+                  value={netWorth}
+                  isHovered={isHovered}
+                  reducedMotion={reducedMotion}
+                />
               </p>
             </div>
 
             <div
               className={cn(
-                'mt-6 inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-medium backdrop-blur-md transition-all duration-500',
+                "mt-6 inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-medium backdrop-blur-md transition-all duration-500",
                 positiveDay
-                  ? 'bg-[rgba(34,197,94,0.08)] text-[var(--engine-protect)] border border-[var(--engine-protect)]/20'
-                  : 'bg-[rgba(239,68,68,0.08)] text-[var(--state-critical)] border border-[var(--state-critical)]/20',
+                  ? "bg-[rgba(34,197,94,0.08)] text-[var(--engine-protect)] border border-[var(--engine-protect)]/20"
+                  : "bg-[rgba(239,68,68,0.08)] text-[var(--state-critical)] border border-[var(--state-critical)]/20",
               )}
             >
               <TrendingUp className="h-4 w-4" />
-              {positiveDay ? '+' : '-'}
+              {positiveDay ? "+" : "-"}
               {formatUsd(Math.abs(netWorthChange))} today
             </div>
           </HeroPanel>
         </motion.div>
 
         {/* LOWER: Engine Telemetry / 4 Glass Cards */}
-        <motion.div 
-          variants={childVariants} 
+        <motion.div
+          variants={heroFadeUp}
           className="mt-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 w-full h-full min-h-0 relative z-10"
         >
           {signalCards.map((card) => (
@@ -395,8 +418,7 @@ export function DashboardHero({
             />
           ))}
         </motion.div>
-
       </motion.div>
     </section>
-  )
+  );
 }

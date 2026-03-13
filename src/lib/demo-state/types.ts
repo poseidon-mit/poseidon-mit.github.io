@@ -1,6 +1,6 @@
 import { DEMO_USER, type DemoUser } from '@/lib/demo-user'
 
-export const DEMO_STATE_VERSION = 4
+export const DEMO_STATE_VERSION = 5
 
 export type DemoAuthMethod = 'skip' | 'form' | 'google' | 'apple' | 'passkey'
 export type EntryIntent = 'express' | 'agentic'
@@ -53,7 +53,25 @@ export interface DemoGovernTrustConfig {
   toggles: Record<string, boolean>
 }
 
+export type DemoNotificationDensity = 'Quiet' | 'Standard' | 'Verbose'
+export type DemoAITone = 'Direct & Concise' | 'Analytical & Detailed' | 'Strategic Coaching'
+export type DemoDataRetention = '7d' | '30d' | 'unlimited'
+
 export interface DemoSettingsState {
+  general: {
+    biometricApproval: boolean
+    hardwareKey: boolean
+    displayCurrency: string
+    notificationDensity: DemoNotificationDensity
+  }
+  ai: {
+    autonomyThreshold: number
+    toneAndPersona: DemoAITone
+  }
+  rights: {
+    llmTrainingOptOut: boolean
+    dataRetention: DemoDataRetention
+  }
   notifications: {
     threatAlerts: boolean
     weeklyDigest: boolean
@@ -147,6 +165,20 @@ export function createDefaultDemoState(): DemoState {
       decisions: {},
     },
     settings: {
+      general: {
+        biometricApproval: true,
+        hardwareKey: false,
+        displayCurrency: 'USD',
+        notificationDensity: 'Standard',
+      },
+      ai: {
+        autonomyThreshold: 0,
+        toneAndPersona: 'Strategic Coaching',
+      },
+      rights: {
+        llmTrainingOptOut: true,
+        dataRetention: '30d',
+      },
       notifications: {
         threatAlerts: true,
         weeklyDigest: true,

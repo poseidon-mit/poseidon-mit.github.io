@@ -21,10 +21,6 @@ import { ApprovalProvider } from '@/contexts/ApprovalContext'
 // ─── Workspace Shell (v4.0 — replaces ChatOrchestratorShell as primary) ─────
 import { IntentWorkspaceShell } from '@/components/orchestrator/workspace/IntentWorkspaceShell'
 
-// ─── Poseidon Facades ────────────────────────────────────────────────────────
-import { GovernFooter, AuroraPulse } from '@/components/poseidon'
-import { selectGovernFooterView } from '@/domain/poseidon-universe'
-
 // ─── Hooks ──────────────────────────────────────────────────────────────────
 import { useOrchestratorLifecycle } from '@/hooks/useOrchestratorLifecycle'
 import { useWorkbenchContext } from '@/contexts/WorkbenchContext'
@@ -33,11 +29,6 @@ import { useWorkbenchContext } from '@/contexts/WorkbenchContext'
 
 function WorkbenchInner() {
   const { state } = useWorkbenchContext()
-  const isGovern = state.themeMode.mode === 'govern'
-  const engineColor = isGovern ? 'var(--engine-govern)' : 'var(--engine-dashboard)'
-  const auditId =
-    selectGovernFooterView(isGovern ? 'govern' : undefined).latestEntries[0]?.id ?? 'AUD-891'
-
   // OPFS persistence + auto-purge
   useOrchestratorLifecycle({
     persistEnabled: state.localFirstStatus.opfsAvailable,
@@ -46,17 +37,8 @@ function WorkbenchInner() {
 
   return (
     <div id="main-content" role="main" className="flex flex-col h-screen overflow-hidden bg-black">
-      {/* Aurora Pulse */}
-      <AuroraPulse color={engineColor} intensity="subtle" />
-
       {/* Context-Aware Intent Workspace (v4.0 primary interface) */}
       <IntentWorkspaceShell />
-
-      {/* Govern Footer */}
-      <GovernFooter
-        auditId={auditId}
-        pageContext="Orchestrator v4.0 — Context-Aware Intent Workspace"
-      />
     </div>
   )
 }

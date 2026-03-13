@@ -821,13 +821,13 @@ function formatSubscriptionResponse(_intent: ParsedIntent): QueryResponse {
           description: 'AI assistant access'
         },
         {
-          name: 'AWS',
-          cost: 34.21,
+          name: 'iCloud+',
+          cost: 2.99,
           billingCycle: 'Monthly',
           lastUsed: 'Today',
           status: 'Active',
           autoRenew: true,
-          description: 'Cloud computing services'
+          description: 'Apple cloud storage'
         },
         {
           name: 'New York Times',

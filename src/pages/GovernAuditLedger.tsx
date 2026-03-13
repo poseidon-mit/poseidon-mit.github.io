@@ -120,7 +120,7 @@ export default function GovernAuditPage() {
         <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4">
           {/* Search + filter bar */}
           <motion.div variants={fadeUp} className="flex flex-col gap-3">
-            <div className="flex items-center gap-3 rounded-2xl border border-white/[0.06] px-4 py-3 bg-white/[0.03] focus-within:border-blue-500/30 focus-within:ring-1 focus-within:ring-blue-500/20 transition-all">
+            <div className="flex items-center gap-3 rounded-2xl border border-white/[0.04] px-4 py-3 bg-white/[0.03] backdrop-blur-sm focus-within:border-blue-500/30 focus-within:ring-1 focus-within:ring-blue-500/20 transition-all">
               <Search size={16} className="text-white/40 shrink-0" />
               <input
                 type="search"
@@ -179,11 +179,11 @@ export default function GovernAuditPage() {
                     <CircleDot size={16} style={{ color: typeColor[spotlightEntry.type as DecisionType] }} />
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-foreground font-medium">{spotlightEntry.action}</p>
+                    <p className="text-base text-foreground font-semibold">{spotlightEntry.action}</p>
                     <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-                      <span className="font-mono">{spotlightEntry.id}</span>
-                      <span>{Math.round(spotlightEntry.confidence * 100)}% confidence</span>
-                      <span>{spotlightEntry.evidence} evidence</span>
+                      <span className="font-mono tabular-nums">{spotlightEntry.id}</span>
+                      <span className="tabular-nums">{Math.round(spotlightEntry.confidence * 100)}% confidence</span>
+                      <span className="tabular-nums">{spotlightEntry.evidence} evidence</span>
                     </div>
                   </div>
                   <Link
@@ -206,7 +206,7 @@ export default function GovernAuditPage() {
           {/* Entry list */}
           {filtered.length === 0 ? (
             <motion.div variants={fadeUp}>
-              <Card className="rounded-xl p-12 flex items-center justify-center">
+              <Card className="rounded-xl border border-white/[0.04] bg-white/[0.02] backdrop-blur-md p-12 flex items-center justify-center">
                 <EmptyState
                   icon={Search}
                   title="No matching decisions"
@@ -223,11 +223,11 @@ export default function GovernAuditPage() {
 
               {filtered.some(e => e.status !== 'Verified') && filtered.some(e => e.status === 'Verified') && (
                 <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-border" />
+                  <div className="flex-1 h-px bg-white/[0.06]" />
                   <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest shrink-0">
                     {filtered.filter(e => e.status === 'Verified').length} verified
                   </span>
-                  <div className="flex-1 h-px bg-border" />
+                  <div className="flex-1 h-px bg-white/[0.06]" />
                 </div>
               )}
 
@@ -260,12 +260,12 @@ function CompactAuditCard({ entry }: { entry: AuditEntryRow }) {
   return (
     <Link
       to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
-      className="rounded-xl border border-border bg-card p-4 flex items-center gap-3 hover:bg-white/[0.02] transition-colors border-l-2 group"
+      className="rounded-2xl border border-white/[0.04] bg-white/[0.015] backdrop-blur-sm p-4 flex items-center gap-3 hover:bg-white/[0.03] hover:border-white/[0.08] transition-all duration-300 border-l-2 group"
       style={{ borderLeftColor: typeColor[entry.type] }}
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-xs font-mono font-medium" style={{ color: 'var(--engine-govern)' }}>
+          <span className="text-xs font-mono font-medium tabular-nums" style={{ color: 'var(--engine-govern)' }}>
             {entry.id}
           </span>
           <span
@@ -294,7 +294,7 @@ function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
   return (
     <Link
       to={`/govern/audit-detail?decision=${encodeURIComponent(entry.id)}`}
-      className="rounded-xl border border-border bg-card p-5 lg:p-6 flex items-center gap-4 transition-colors border-l-2 group block hover:bg-white/[0.02]"
+      className="rounded-2xl border border-white/[0.04] bg-white/[0.02] backdrop-blur-sm p-5 lg:p-6 flex items-center gap-4 hover:bg-white/[0.04] hover:border-white/[0.1] hover:translate-y-[-1px] transition-all duration-300 border-l-2 group block"
       style={{ borderLeftColor: borderColor }}
     >
       <div
@@ -310,7 +310,7 @@ function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap mb-1">
-          <span className="text-xs font-mono font-medium" style={{ color: 'var(--engine-govern)' }}>
+          <span className="text-xs font-mono font-medium tabular-nums" style={{ color: 'var(--engine-govern)' }}>
             {entry.id}
           </span>
           <span
@@ -332,9 +332,9 @@ function AuditEntryCard({ entry }: { entry: AuditEntryRow }) {
         <p className="text-sm text-foreground mb-1">{entry.action}</p>
 
         <div className="flex items-center gap-3 text-xs">
-          <span className="text-muted-foreground">{Math.round(entry.confidence * 100)}% confidence</span>
+          <span className="text-muted-foreground tabular-nums">{Math.round(entry.confidence * 100)}% confidence</span>
           <span className="text-muted-foreground">·</span>
-          <span className="text-muted-foreground">{entry.evidence} evidence</span>
+          <span className="text-muted-foreground tabular-nums">{entry.evidence} evidence</span>
         </div>
       </div>
 

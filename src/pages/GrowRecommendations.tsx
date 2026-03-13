@@ -151,27 +151,32 @@ export function GrowRecommendations() {
           {spotlightRec && (
             <motion.div variants={fadeUp}>
               <Link to={`/grow/recommendation?id=GRW-${String(spotlightRec.id).padStart(3, '0')}`} className="block">
-                <Card className="border-violet-500/20 bg-gradient-to-r from-violet-500/10 to-purple-500/10 transition-shadow hover:from-violet-500/15 hover:to-purple-500/15">
-                  <CardContent className="p-6">
-                    <div className="flex flex-col gap-3">
-                      <Badge variant="outline" className="self-start border-violet-500/20 bg-violet-500/10 text-violet-400 text-[10px] uppercase tracking-widest">
-                        Top Priority
-                      </Badge>
-                      <p className="text-lg font-semibold text-foreground leading-snug">{spotlightRec.title}</p>
-                      <p className="text-sm text-muted-foreground line-clamp-2">{spotlightRec.description}</p>
-                      <div className="flex items-center gap-3 mt-1">
-                        <span className="typo-hero-number text-3xl text-violet-400">
-                          ${spotlightRec.annualSavings.toLocaleString()}/yr
-                        </span>
-                        <DifficultyBadge difficulty={spotlightRec.difficulty} />
-                      </div>
-                      <span className="self-start hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors bg-violet-600 text-white hover:bg-violet-700">
-                        See opportunity
-                        <ChevronRight size={14} />
+                <div
+                  className="border border-white/[0.06] backdrop-blur-lg rounded-2xl p-6 border-l-[3px] transition-all duration-300 hover:border-white/[0.1]"
+                  style={{
+                    borderLeftColor: 'var(--engine-grow)',
+                    background: 'linear-gradient(135deg, color-mix(in srgb, var(--engine-grow) 6%, transparent), transparent)',
+                    boxShadow: '0 0 24px color-mix(in srgb, var(--engine-grow) 8%, transparent), inset 0 1px 0 rgba(255,255,255,0.04)',
+                  }}
+                >
+                  <div className="flex flex-col gap-3">
+                    <Badge variant="outline" className="self-start border-violet-500/20 bg-violet-500/10 text-violet-400 text-[10px] uppercase tracking-widest">
+                      Top Priority
+                    </Badge>
+                    <p className="text-lg font-semibold text-foreground leading-snug">{spotlightRec.title}</p>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{spotlightRec.description}</p>
+                    <div className="flex items-center gap-3 mt-1">
+                      <span className="typo-hero-number text-2xl md:text-3xl tabular-nums text-violet-400">
+                        ${spotlightRec.annualSavings.toLocaleString()}/yr
                       </span>
+                      <DifficultyBadge difficulty={spotlightRec.difficulty} />
                     </div>
-                  </CardContent>
-                </Card>
+                    <span className="self-start hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors bg-violet-600 text-white hover:bg-violet-700">
+                      See opportunity
+                      <ChevronRight size={14} />
+                    </span>
+                  </div>
+                </div>
               </Link>
             </motion.div>
           )}
@@ -179,7 +184,7 @@ export function GrowRecommendations() {
           {/* Recommendation list */}
           {filtered.length === 0 ? (
             <motion.div variants={fadeUp}>
-              <Card className="bg-card border-white/[0.06]">
+              <Card className="bg-white/[0.02] border border-white/[0.04] backdrop-blur-md">
                 <CardContent className="flex flex-col items-center justify-center py-12">
                   <Lightbulb className="h-12 w-12 text-white/40" />
                   <p className="mt-4 text-lg font-medium text-foreground">No recommendations</p>
@@ -215,34 +220,35 @@ function RecommendationCard({ rec }: { rec: RecommendationListItem }) {
   const CategoryIcon = CATEGORY_ICON[rec.category] ?? Lightbulb
 
   return (
-    <Card className="bg-card border-white/[0.06] transition-shadow hover:bg-white/[0.04]">
-      <CardContent className="p-5">
-        <Link to={`/grow/recommendation?id=GRW-${String(rec.id).padStart(3, '0')}`} className="block">
-          <div className="flex items-start gap-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-500/10">
-              <CategoryIcon className="h-5 w-5 text-violet-400" />
+    <div
+      className="bg-white/[0.02] border border-white/[0.04] backdrop-blur-sm rounded-2xl p-5 hover:bg-white/[0.04] hover:border-white/[0.1] hover:translate-y-[-1px] transition-all duration-300 border-l-[3px]"
+      style={{ borderLeftColor: 'var(--engine-grow)' }}
+    >
+      <Link to={`/grow/recommendation?id=GRW-${String(rec.id).padStart(3, '0')}`} className="block">
+        <div className="flex items-start gap-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-500/10 border border-violet-500/15">
+            <CategoryIcon className="h-5 w-5 text-violet-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="font-semibold text-foreground">{rec.title}</p>
+              <DifficultyBadge difficulty={rec.difficulty} />
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <p className="font-semibold text-foreground">{rec.title}</p>
-                <DifficultyBadge difficulty={rec.difficulty} />
-              </div>
-              <p className="text-xs text-white/40 mt-0.5">{rec.category}</p>
-              <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{rec.description}</p>
-              <div className="mt-3 flex items-center justify-between">
-                <span className="text-sm font-bold" style={{ color: 'var(--engine-grow)' }}>
-                  Impact: ${rec.annualSavings.toLocaleString()}/yr
-                </span>
-                <Button variant="outline" size="sm" className="shrink-0">
-                  See opportunity
-                  <ChevronRight className="ml-1 h-4 w-4" />
-                </Button>
-              </div>
+            <p className="text-xs text-white/40 mt-0.5">{rec.category}</p>
+            <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{rec.description}</p>
+            <div className="mt-3 flex items-center justify-between">
+              <span className="text-sm font-bold font-mono tabular-nums" style={{ color: 'var(--engine-grow)' }}>
+                Impact: ${rec.annualSavings.toLocaleString()}/yr
+              </span>
+              <Button variant="outline" size="sm" className="shrink-0">
+                See opportunity
+                <ChevronRight className="ml-1 h-4 w-4" />
+              </Button>
             </div>
           </div>
-        </Link>
-      </CardContent>
-    </Card>
+        </div>
+      </Link>
+    </div>
   )
 }
 

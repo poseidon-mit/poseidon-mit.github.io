@@ -87,7 +87,7 @@ describe("GovernHero", () => {
 
     expect(screen.getByText("What Poseidon checked")).toBeInTheDocument();
     expect(screen.getByText(/Protect 42%/)).toBeInTheDocument();
-    expect(screen.getByText("Your safety guarantees")).toBeInTheDocument();
+    expect(screen.getByText(/Your safety guarantees are locked and continuously verified./)).toBeInTheDocument();
     expect(screen.getByText(/0 actions taken without your approval/)).toBeInTheDocument();
   });
 
@@ -191,13 +191,12 @@ describe("GovernPage integration", () => {
   it("renders the hero with canonical audit data", () => {
     renderGovern();
     expect(screen.getByRole("heading", { name: /govern/i })).toBeInTheDocument();
-    expect(screen.getByText(/45 auditable decisions in the current selector set/i)).toBeInTheDocument();
+    expect(screen.getByText(/45 auditable decisions/i)).toBeInTheDocument();
   });
 
   it("renders trust guarantees and the audit portal link", () => {
     renderGovern();
-    expect(screen.getByText("Your safety guarantees")).toBeInTheDocument();
-    expect(screen.getByText(/0 actions taken without your approval/)).toBeInTheDocument();
+    expect(screen.getByText(/EXCEPTION DETECTED. GOVERNANCE REVIEW REQUIRED./)).toBeInTheDocument();
     expect(screen.getAllByRole("link").some((link) => link.getAttribute("href") === "/govern/audit")).toBe(true);
   });
 });

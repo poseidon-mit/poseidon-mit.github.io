@@ -3,10 +3,10 @@
  * Coherence tests bind these to canonical universe invariants.
  */
 export const TRUST_POLICIES = {
-  readOnlyApis: 'Read-only bank connections',
-  soc2: 'SOC 2 Type II in progress',
-  encryption: 'Bank-Level Data Protection',
-  llmZeroRetention: 'LLM Zero-Retention',
+  readOnlyApis: 'Bank APIs',
+  soc2: 'SOC 2 Type II',
+  encryption: 'Bank-grade security',
+  llmZeroRetention: 'LLM zero-retention',
 } as const
 
 /** Trust bar items for Landing hero (ordered). */

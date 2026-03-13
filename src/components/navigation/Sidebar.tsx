@@ -126,12 +126,11 @@ export function Sidebar({ path }: { path: string }) {
                     const isActive = path === item.path || path.startsWith(item.path + '/');
                     const Icon = item.icon;
                     const tone = TONE_CLASSES[item.tone];
-                    const badge = navBadges[item.path];
-                    const isProtectAlert = !isActive && item.path === '/protect' && activeProtectCount > 0;
                     return (
                         <Link
                             key={item.path}
                             to={item.path}
+                            prefetch="render"
                             className={cn(
                                 'group relative flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-300',
                                 isActive
@@ -143,17 +142,7 @@ export function Sidebar({ path }: { path: string }) {
                             <Icon className={cn('h-[18px] w-[18px] transition-transform duration-300 group-hover:scale-110', isActive && tone.activeIcon)} aria-hidden="true" />
                             <span className="flex-1 text-sm font-medium tracking-wide">
                                 {item.label}
-                                {isProtectAlert && (
-                                    <span className="block text-[9px] font-semibold text-emerald-400 engine-text-protect tracking-widest uppercase leading-none mt-0.5">
-                                        Action Required
-                                    </span>
-                                )}
                             </span>
-                            {badge && badge.value > 0 && (
-                                <span className={cn('flex h-[18px] min-w-[18px] flex-shrink-0 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white', TONE_CLASSES[badge.tone].indicator)} aria-hidden="true">
-                                    {badge.value}
-                                </span>
-                            )}
                         </Link>
                     );
                 })}

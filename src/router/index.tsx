@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { logger } from '../utils/logger';
-import { prefetchRoute, type RoutePath } from './lazyRoutes';
+import { getLoadedRouteComponent, isKnownRoutePath, prefetchRoute, type RoutePath } from './lazyRoutes';
 
 interface RouterState {
   path: string;
@@ -86,12 +86,34 @@ export function resolveInitialSearch(locationLike: Pick<Location, 'pathname' | '
 export const RouterProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [path, setPath] = useState(() => resolveInitialPath(window.location));
   const [search, setSearch] = useState(() => resolveInitialSearch(window.location));
+  const navigationRequestRef = useRef(0);
 
   useEffect(() => {
     const handlePopState = () => {
       const resolved = resolveInitialLocation(window.location);
-      setPath(resolved.path);
-      setSearch(resolved.search);
+      const requestId = ++navigationRequestRef.current;
+
+      const syncNavigation = async () => {
+        try {
+          if (
+            isKnownRoutePath(resolved.path) &&
+            !getLoadedRouteComponent(resolved.path)
+          ) {
+            await prefetchRoute(resolved.path);
+          }
+        } catch (error) {
+          logger.warn('Route prefetch failed during popstate sync', {
+            path: resolved.path,
+            error,
+          });
+        }
+
+        if (requestId !== navigationRequestRef.current) return;
+        setPath(resolved.path);
+        setSearch(resolved.search);
+      };
+
+      void syncNavigation();
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -104,18 +126,42 @@ export const RouterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const targetPath = normalizePath(rawPath);
     if (targetPath === path && rawSearch === search) return;
 
+    const requestId = ++navigationRequestRef.current;
+    const previousPath = path;
+
     const update = () => {
       window.history.pushState({}, '', targetPath + rawSearch);
       setPath(targetPath);
       setSearch(rawSearch);
-      if (targetPath !== path) {
+      if (targetPath !== previousPath) {
         window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
       }
     };
 
-    // Keep routing deterministic for demo stability.
-    // View Transition API can leave transient overlays during lazy-route swaps.
-    update();
+    const loadAndNavigate = async () => {
+      try {
+        if (
+          targetPath !== previousPath &&
+          isKnownRoutePath(targetPath) &&
+          !getLoadedRouteComponent(targetPath)
+        ) {
+          await prefetchRoute(targetPath);
+        }
+      } catch (error) {
+        logger.warn('Route prefetch failed during navigation', {
+          path: targetPath,
+          error,
+        });
+      }
+
+      if (requestId !== navigationRequestRef.current) return;
+
+      // Keep routing deterministic for demo stability.
+      // View Transition API can leave transient overlays during lazy-route swaps.
+      update();
+    };
+
+    void loadAndNavigate();
   };
 
   const prefetch = async (to: RoutePath) => prefetchRoute(to);

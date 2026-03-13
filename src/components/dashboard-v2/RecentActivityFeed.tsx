@@ -39,9 +39,16 @@ export function RecentActivityFeed() {
         {activities.map((item) => {
           const Icon = typeIcons[item.kind]
           const color = typeColors[item.kind]
+          const fallbackHref: Record<string, string> = {
+            protect: '/protect/threats',
+            grow: '/grow/recommendations',
+            execute: '/execute/queue',
+            govern: '/govern/audit',
+          }
+          const href = item.href ?? fallbackHref[item.kind]
 
-          return (
-            <div key={item.id} className="flex items-center gap-4 p-4">
+          const content = (
+            <>
               <div
                 className="w-10 h-10 rounded-full bg-white/[0.04] flex items-center justify-center shrink-0"
               >
@@ -56,7 +63,20 @@ export function RecentActivityFeed() {
                   {item.relativeTime}
                 </p>
               </div>
+            </>
+          )
 
+          return href ? (
+            <Link
+              key={item.id}
+              to={href}
+              className="flex items-center gap-4 p-4 transition-colors hover:bg-white/[0.04]"
+            >
+              {content}
+            </Link>
+          ) : (
+            <div key={item.id} className="flex items-center gap-4 p-4">
+              {content}
             </div>
           )
         })}

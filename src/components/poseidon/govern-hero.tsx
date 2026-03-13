@@ -1,77 +1,79 @@
-import { useEffect, useMemo, useState } from 'react'
-import { motion, type Variants } from 'framer-motion'
-import { Link } from '@/router'
-import { Shield, ChevronRight, Lock, CheckCircle2, ShieldAlert, Activity } from 'lucide-react'
-import { MatrixRain } from './effects/MatrixRain'
-import { HeroBackdrop, HeroGhostLink } from './hero-concept-primitives'
-import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
-import { cn } from '@/lib/utils'
-import type { DecisionStatus } from '@/domain/poseidon-universe'
+import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { Link } from "@/router";
+import {
+  Shield,
+  ChevronRight,
+  Lock,
+  CheckCircle2,
+  ShieldAlert,
+  Activity,
+} from "lucide-react";
+import { MatrixRain } from "./effects/MatrixRain";
+import { HeroBackdrop, HeroUnifiedFooter } from "./hero-concept-primitives";
+import { useReducedMotionSafe } from "@/hooks/useReducedMotionSafe";
+import { cn } from "@/lib/utils";
+import { getMotionPreset } from "@/lib/motion-presets";
+import type { DecisionStatus } from "@/domain/poseidon-universe";
 
 export interface GovernHeroProps {
-  decisionsAudited: number
-  engineBreakdown: { engine: string; count: number; percent: number; color: string }[]
+  decisionsAudited: number;
+  engineBreakdown: {
+    engine: string;
+    count: number;
+    percent: number;
+    color: string;
+  }[];
   auditEntries: {
-    id: string
-    engine: string
-    engineColor: string
-    action: string
-    confidence: number
-    time: string
-    status: DecisionStatus
-    modelVersion: string
-    topFactor: string
-  }[]
-  errorCount?: number
-  statusBreakdown?: { verified: number; pending: number; flagged: number }
+    id: string;
+    engine: string;
+    engineColor: string;
+    action: string;
+    confidence: number;
+    time: string;
+    status: DecisionStatus;
+    modelVersion: string;
+    topFactor: string;
+  }[];
+  errorCount?: number;
+  statusBreakdown?: { verified: number; pending: number; flagged: number };
   trustGuarantees?: {
-    autoExecutionsWithoutConsent: number
-    auditCoveragePercent: number
-    llmTrainingOptOut: boolean
-  }
-  spotlightEntry?: { id: string; action: string; status: DecisionStatus; confidence: number } | null
+    autoExecutionsWithoutConsent: number;
+    auditCoveragePercent: number;
+    llmTrainingOptOut: boolean;
+  };
+  spotlightEntry?: {
+    id: string;
+    action: string;
+    status: DecisionStatus;
+    confidence: number;
+  } | null;
 }
 
-export type GovernImmutableLedgerProps = GovernHeroProps
-
-const variants: Variants = {
-  hidden: { opacity: 0, y: 20, scale: 0.98, filter: 'blur(4px)' },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    scale: 1, 
-    filter: 'blur(0px)',
-    transition: { type: 'spring', damping: 25, stiffness: 120 }
-  }
-}
-
-const noMotionVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.2 } }
-}
+export type GovernImmutableLedgerProps = GovernHeroProps;
 
 const STATUS_CLASS: Record<DecisionStatus, string> = {
-  Verified: 'bg-[rgba(34,197,94,0.14)] text-[var(--engine-protect)]',
-  'Pending review': 'bg-[rgba(234,179,8,0.14)] text-[var(--engine-execute)]',
-  Flagged: 'bg-[rgba(59,130,246,0.16)] text-[var(--engine-govern)]',
-}
+  Verified: "bg-[rgba(34,197,94,0.14)] text-[var(--engine-protect)]",
+  "Pending review": "bg-[rgba(234,179,8,0.14)] text-[var(--engine-execute)]",
+  Flagged: "bg-[rgba(59,130,246,0.16)] text-[var(--engine-govern)]",
+};
 
 const LEDGER_STATUS_COLOR: Record<DecisionStatus, string> = {
-  Verified: 'color-mix(in srgb, var(--engine-protect) 72%, white 20%)',
-  'Pending review': 'color-mix(in srgb, var(--engine-execute) 78%, white 16%)',
-  Flagged: 'color-mix(in srgb, var(--engine-govern) 88%, white 16%)',
-}
+  Verified: "color-mix(in srgb, var(--engine-protect) 72%, white 20%)",
+  "Pending review": "color-mix(in srgb, var(--engine-execute) 78%, white 16%)",
+  Flagged: "color-mix(in srgb, var(--engine-govern) 88%, white 16%)",
+};
 
 interface GovernLedgerLineDescriptor {
-  id: string
-  text: string
-  color: string
+  id: string;
+  text: string;
+  color: string;
 }
 
 interface GovernLedgerTimelineLine extends GovernLedgerLineDescriptor {
-  delayMs: number
-  charIntervalMs: number
-  charsPerTick: number
+  delayMs: number;
+  charIntervalMs: number;
+  charsPerTick: number;
 }
 
 function buildGovernLedgerLines({
@@ -85,53 +87,53 @@ function buildGovernLedgerLines({
   const coverageSummary = engineBreakdown
     .filter((entry) => entry.count > 0)
     .map((entry) => `${entry.engine} ${entry.count} (${entry.percent}%)`)
-    .join(' · ')
+    .join(" · ");
 
-  const latestTrace = auditEntries[0]
+  const latestTrace = auditEntries[0];
   const primaryEscalation =
-    auditEntries.find((entry) => entry.status === 'Flagged') ??
-    auditEntries.find((entry) => entry.status === 'Pending review') ??
-    spotlightEntry
+    auditEntries.find((entry) => entry.status === "Flagged") ??
+    auditEntries.find((entry) => entry.status === "Pending review") ??
+    spotlightEntry;
 
   const lines: Array<GovernLedgerLineDescriptor | null> = [
     {
-      id: 'boot-sequence',
+      id: "boot-sequence",
       text: `Govern console online. ${decisionsAudited} auditable decisions in the current selector set.`,
-      color: 'color-mix(in srgb, var(--engine-govern) 72%, white 18%)',
+      color: "color-mix(in srgb, var(--engine-govern) 72%, white 18%)",
     },
     statusBreakdown
       ? {
-          id: 'verification-queue',
+          id: "verification-queue",
           text: `Verification queue stable. ${statusBreakdown.verified} verified / ${statusBreakdown.pending} pending / ${statusBreakdown.flagged} flagged.`,
-          color: 'color-mix(in srgb, var(--engine-govern) 52%, white 16%)',
+          color: "color-mix(in srgb, var(--engine-govern) 52%, white 16%)",
         }
       : null,
     coverageSummary
       ? {
-          id: 'coverage-map',
+          id: "coverage-map",
           text: `Coverage by engine: ${coverageSummary}.`,
-          color: 'color-mix(in srgb, var(--engine-govern) 46%, white 14%)',
+          color: "color-mix(in srgb, var(--engine-govern) 46%, white 14%)",
         }
       : null,
     trustGuarantees
       ? {
-          id: 'consent-guardrail',
+          id: "consent-guardrail",
           text: `Consent guardrail locked. ${trustGuarantees.autoExecutionsWithoutConsent} actions executed without approval. Paper trail coverage ${trustGuarantees.auditCoveragePercent}%.`,
-          color: 'color-mix(in srgb, var(--engine-govern) 60%, white 12%)',
+          color: "color-mix(in srgb, var(--engine-govern) 60%, white 12%)",
         }
       : null,
     trustGuarantees?.llmTrainingOptOut
       ? {
-          id: 'data-boundary',
-          text: 'Training boundary enforced. Customer data remains excluded from model training datasets.',
-          color: 'color-mix(in srgb, var(--engine-govern) 68%, white 14%)',
+          id: "data-boundary",
+          text: "Training boundary enforced. Customer data remains excluded from model training datasets.",
+          color: "color-mix(in srgb, var(--engine-govern) 68%, white 14%)",
         }
       : null,
     latestTrace
       ? {
-          id: 'trace-evidence',
+          id: "trace-evidence",
           text: `Latest trace ${latestTrace.id} used ${latestTrace.modelVersion} with ${latestTrace.topFactor.toLowerCase()}.`,
-          color: 'color-mix(in srgb, var(--engine-govern) 78%, white 14%)',
+          color: "color-mix(in srgb, var(--engine-govern) 78%, white 14%)",
         }
       : null,
     primaryEscalation
@@ -146,56 +148,67 @@ function buildGovernLedgerLines({
       text: `[${entry.time}] ${entry.id} ${entry.status} ${entry.engine} | ${entry.action}`,
       color: LEDGER_STATUS_COLOR[entry.status],
     })),
-  ]
+  ];
 
-  return lines.filter((line): line is GovernLedgerLineDescriptor => line !== null)
+  return lines.filter(
+    (line): line is GovernLedgerLineDescriptor => line !== null,
+  );
 }
 
 function GovernLedgerLine({
   line,
   reducedMotion,
 }: {
-  line: GovernLedgerTimelineLine
-  reducedMotion: boolean
+  line: GovernLedgerTimelineLine;
+  reducedMotion: boolean;
 }) {
-  const totalCharacters = line.text.length
+  const totalCharacters = line.text.length;
   const [visibleCharacters, setVisibleCharacters] = useState(() =>
     reducedMotion ? totalCharacters : 0,
-  )
+  );
 
   useEffect(() => {
     if (reducedMotion) {
-      setVisibleCharacters(totalCharacters)
-      return
+      setVisibleCharacters(totalCharacters);
+      return;
     }
 
-    setVisibleCharacters(0)
+    setVisibleCharacters(0);
 
-    let intervalId: number | undefined
+    let intervalId: number | undefined;
     const timeoutId = window.setTimeout(() => {
-      setVisibleCharacters(Math.min(line.charsPerTick, totalCharacters))
+      setVisibleCharacters(Math.min(line.charsPerTick, totalCharacters));
 
       intervalId = window.setInterval(() => {
         setVisibleCharacters((current) => {
-          const next = Math.min(current + line.charsPerTick, totalCharacters)
+          const next = Math.min(current + line.charsPerTick, totalCharacters);
           if (next >= totalCharacters && intervalId !== undefined) {
-            window.clearInterval(intervalId)
+            window.clearInterval(intervalId);
           }
-          return next
-        })
-      }, line.charIntervalMs)
-    }, line.delayMs)
+          return next;
+        });
+      }, line.charIntervalMs);
+    }, line.delayMs);
 
     return () => {
-      window.clearTimeout(timeoutId)
+      window.clearTimeout(timeoutId);
       if (intervalId !== undefined) {
-        window.clearInterval(intervalId)
+        window.clearInterval(intervalId);
       }
-    }
-  }, [line.charIntervalMs, line.charsPerTick, line.delayMs, line.text, reducedMotion, totalCharacters])
+    };
+  }, [
+    line.charIntervalMs,
+    line.charsPerTick,
+    line.delayMs,
+    line.text,
+    reducedMotion,
+    totalCharacters,
+  ]);
 
-  const visibleText = reducedMotion ? line.text : line.text.slice(0, visibleCharacters)
-  return <p>{visibleText}</p>
+  const visibleText = reducedMotion
+    ? line.text
+    : line.text.slice(0, visibleCharacters);
+  return <p>{visibleText}</p>;
 }
 
 export function GovernHero(props: GovernHeroProps) {
@@ -207,62 +220,75 @@ export function GovernHero(props: GovernHeroProps) {
     statusBreakdown,
     trustGuarantees,
     spotlightEntry,
-  } = props
+  } = props;
 
-  const reducedMotion = useReducedMotionSafe()
-  const v = reducedMotion ? noMotionVariants : variants
-  const [isHoveringPrism, setIsHoveringPrism] = useState(false)
+  const reducedMotion = useReducedMotionSafe();
+  const { heroFadeUp, heroStaggerContainer } = getMotionPreset(reducedMotion);
+  const [isHoveringPrism, setIsHoveringPrism] = useState(false);
 
   // Ledger calculation to satisfy integration tests
   const ledgerLines = useMemo(
     () => buildGovernLedgerLines(props),
-    [props] // props object reference is stable enough for this use memo or rebuilds simply
-  )
+    [props], // props object reference is stable enough for this use memo or rebuilds simply
+  );
 
   const ledgerTimeline = useMemo(() => {
-    let nextDelayMs = 120
+    let nextDelayMs = 120;
 
     return ledgerLines.map((line) => {
-      const charsPerTick = line.text.length > 120 ? 4 : line.text.length > 72 ? 3 : 2
-      const charIntervalMs = line.text.length > 120 ? 12 : 14
-      const delayMs = nextDelayMs
+      const charsPerTick =
+        line.text.length > 120 ? 4 : line.text.length > 72 ? 3 : 2;
+      const charIntervalMs = line.text.length > 120 ? 12 : 14;
+      const delayMs = nextDelayMs;
       const revealDurationMs =
-        Math.ceil(line.text.length / charsPerTick) * charIntervalMs + 90
+        Math.ceil(line.text.length / charsPerTick) * charIntervalMs + 90;
 
-      nextDelayMs += revealDurationMs
+      nextDelayMs += revealDurationMs;
 
       return {
         ...line,
         delayMs,
         charIntervalMs,
         charsPerTick,
-      }
-    })
-  }, [ledgerLines])
+      };
+    });
+  }, [ledgerLines]);
 
   return (
     <section
       role="region"
       aria-labelledby="govern-hero-title"
-      className="relative flex h-full flex-1 flex-col overflow-hidden rounded-[32px] border border-white/10 bg-[#020202]"
+      className="hero-canvas relative flex h-full flex-1 flex-col overflow-hidden rounded-[32px] border border-white/10"
     >
-      
       {/* Test adherence hidden container */}
-      <div className="sr-only" aria-hidden="true" data-testid="govern-ledger-tests">
+      <div
+        className="sr-only"
+        aria-hidden="true"
+        data-testid="govern-ledger-tests"
+      >
         {engineBreakdown.map((item) => (
-          <p key={item.engine}>{item.engine} {item.percent}%</p>
+          <p key={item.engine}>
+            {item.engine} {item.percent}%
+          </p>
         ))}
         {trustGuarantees && (
           <>
             <p>Your safety guarantees</p>
-            <p>{trustGuarantees.autoExecutionsWithoutConsent} actions taken without your approval</p>
+            <p>
+              {trustGuarantees.autoExecutionsWithoutConsent} actions taken
+              without your approval
+            </p>
           </>
         )}
         {ledgerTimeline.map((line) => (
-          <GovernLedgerLine key={line.id} line={line} reducedMotion={reducedMotion} />
+          <GovernLedgerLine
+            key={line.id}
+            line={line}
+            reducedMotion={reducedMotion}
+          />
         ))}
       </div>
-      
+
       {/* Background Layer (Matrix Rain kept from previous iteration) */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-40 mix-blend-screen">
         <MatrixRain columnCount={48} className="opacity-100" />
@@ -277,47 +303,50 @@ export function GovernHero(props: GovernHeroProps) {
 
       <div className="relative z-10 flex h-full flex-1 flex-col p-5 sm:p-8">
         <motion.div
-           initial="hidden"
-           animate="visible"
-           variants={{
-             visible: { transition: { staggerChildren: 0.08 } }
-           }}
-           className="flex h-full flex-col"
+          initial="hidden"
+          animate="visible"
+          variants={heroStaggerContainer}
+          className="flex h-full flex-col"
         >
           {/* Top Bar: Eyebrow + Status */}
-          <motion.div variants={v} className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <motion.div
+            variants={heroFadeUp}
+            className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+          >
             <div className="flex flex-col gap-1">
-              <h2 id="govern-hero-title" className="sr-only">Govern</h2>
-              <div className="flex items-center gap-2 text-[var(--engine-govern)] glow-govern-subtle">
-                <Shield className="h-4 w-4" />
-                <span className="font-mono text-[10px] uppercase tracking-widest">
-                  [🛡️ GOVERN]
-                </span>
-                <span className="font-mono text-[10px] uppercase tracking-wide text-white/50">
-                  100% auditability
-                </span>
+              <h2 id="govern-hero-title" className="sr-only">
+                Govern
+              </h2>
+              <div className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] border-[var(--engine-govern)]/20 bg-[var(--engine-govern)]/5 text-[var(--engine-govern)] glow-govern-subtle">
+                <Shield className="h-3.5 w-3.5" />
+                100% auditability
               </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-               <span className="inline-flex items-center rounded-full border border-[var(--engine-govern)]/30 bg-[var(--engine-govern)]/10 px-2.5 py-1 text-[11px] font-medium text-[var(--engine-govern)] glow-govern-subtle">
-                 {decisionsAudited.toLocaleString()} total audited decisions
-               </span>
-               {errorCount > 0 && (
-                 <span className="inline-flex items-center rounded-full border border-[var(--state-error)]/30 bg-[var(--state-error)]/10 px-2.5 py-1 text-[11px] font-medium text-[var(--state-error)] animate-pulse">
-                   <ShieldAlert className="mr-1 h-3 w-3" />
-                   {errorCount} INTEGRITY BREAKS
-                 </span>
-               )}
+              <span className="inline-flex items-center rounded-full border border-[var(--engine-govern)]/30 bg-[var(--engine-govern)]/10 px-2.5 py-1 text-[11px] font-medium text-[var(--engine-govern)] glow-govern-subtle">
+                {decisionsAudited.toLocaleString()} total audited decisions
+              </span>
+              {errorCount > 0 && (
+                <span className="inline-flex items-center rounded-full border border-[var(--state-error)]/30 bg-[var(--state-error)]/10 px-2.5 py-1 text-[11px] font-medium text-[var(--state-error)] animate-pulse">
+                  <ShieldAlert className="mr-1 h-3 w-3" />
+                  {errorCount} INTEGRITY BREAKS
+                </span>
+              )}
             </div>
           </motion.div>
 
           {/* FOCUS PRISM: Center large card */}
-          <motion.div variants={v} className="flex flex-col flex-1 items-center justify-center py-8">
-            <div 
+          <motion.div
+            variants={heroFadeUp}
+            className="flex flex-col flex-1 items-center justify-center py-8"
+          >
+            <div
               className={cn(
                 "group relative w-full max-w-4xl rounded-[32px] p-[1px] transition-all duration-700",
-                isHoveringPrism && !reducedMotion ? "shadow-[0_0_80px_-20px_var(--engine-govern)]" : ""
+                isHoveringPrism && !reducedMotion
+                  ? "shadow-[0_0_40px_-15px_var(--engine-govern)]/40"
+                  : "",
               )}
               onMouseEnter={() => setIsHoveringPrism(true)}
               onMouseLeave={() => setIsHoveringPrism(false)}
@@ -327,18 +356,19 @@ export function GovernHero(props: GovernHeroProps) {
 
               {/* Quantum Routing Border Animation */}
               {!reducedMotion && (
-                <div 
+                <div
                   className={cn(
                     "absolute -inset-[1px] rounded-[33px] opacity-0 transition-opacity duration-500 overflow-hidden pointer-events-none z-0",
-                    isHoveringPrism && "opacity-100"
+                    isHoveringPrism && "opacity-40",
                   )}
                 >
-                  <div 
+                  <div
                     className="absolute inset-[-50%] w-[200%] h-[200%]"
                     style={{
-                      background: 'conic-gradient(from 0deg, transparent 70%, var(--engine-govern) 100%)',
-                      animation: 'spin 2s linear infinite',
-                      transformOrigin: '50% 50%'
+                      background:
+                        "conic-gradient(from 0deg, transparent 70%, var(--engine-govern) 100%)",
+                      animation: "spin 2s linear infinite",
+                      transformOrigin: "50% 50%",
                     }}
                   />
                 </div>
@@ -347,18 +377,34 @@ export function GovernHero(props: GovernHeroProps) {
               <div className="relative h-full w-full rounded-[31px] bg-black/60 backdrop-blur-3xl p-6 sm:p-10 z-10 border border-white/5 group-hover:border-white/10 min-w-0 transition-all duration-500">
                 {spotlightEntry ? (
                   // Escalation Spotlight View
-                  <div className="flex flex-col justify-between gap-8 min-w-0">
+                  <Link
+                    to={
+                      spotlightEntry.id.startsWith("THR")
+                        ? `/protect/alert-detail?alertId=${spotlightEntry.id}`
+                        : spotlightEntry.id.startsWith("REC") ||
+                            spotlightEntry.id.startsWith("GRW")
+                          ? `/grow/recommendation?id=${spotlightEntry.id}`
+                          : spotlightEntry.id.startsWith("GV")
+                            ? `/govern/audit-detail?decision=${spotlightEntry.id}`
+                            : `/execute/approval?actionId=${spotlightEntry.id}`
+                    }
+                    className="flex flex-col justify-between gap-8 min-w-0 transition-colors hover:bg-white/[0.02] p-4 -m-4 rounded-xl"
+                  >
                     <div className="flex flex-wrap items-center gap-3">
                       <span className="font-mono text-xs text-white/50 border border-white/10 bg-white/5 rounded px-2 py-0.5">
                         {spotlightEntry.id}
                       </span>
-                      <span className={cn(
-                         "inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] uppercase tracking-widest font-medium",
-                         spotlightEntry.status === 'Flagged' ? "border-[var(--state-error)]/30 bg-[var(--state-error)]/10 text-[var(--state-error)]" :
-                         spotlightEntry.status === 'Pending review' ? "border-[var(--engine-execute)]/30 bg-[var(--engine-execute)]/10 text-[var(--engine-execute)]" :
-                         "border-[var(--engine-protect)]/30 bg-[var(--engine-protect)]/10 text-[var(--engine-protect)]"
-                      )}>
-                         {spotlightEntry.status}
+                      <span
+                        className={cn(
+                          "inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] uppercase tracking-widest font-medium",
+                          spotlightEntry.status === "Flagged"
+                            ? "border-[var(--state-error)]/30 bg-[var(--state-error)]/10 text-[var(--state-error)]"
+                            : spotlightEntry.status === "Pending review"
+                              ? "border-[var(--engine-execute)]/30 bg-[var(--engine-execute)]/10 text-[var(--engine-execute)]"
+                              : "border-[var(--engine-protect)]/30 bg-[var(--engine-protect)]/10 text-[var(--engine-protect)]",
+                        )}
+                      >
+                        {spotlightEntry.status}
                       </span>
                       <span className="inline-flex items-center gap-1.5 text-xs text-white/70">
                         <Activity className="h-3.5 w-3.5" />
@@ -369,14 +415,24 @@ export function GovernHero(props: GovernHeroProps) {
                       <h3 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white tracking-tight leading-snug line-clamp-3">
                         {spotlightEntry.action}
                       </h3>
-                      <p className={cn("mt-5 text-sm font-mono tracking-wider glow-govern-subtle", spotlightEntry.status === 'Flagged' ? "text-[var(--state-error)]" : "text-[var(--engine-govern)]")}>
+                      <p
+                        className={cn(
+                          "mt-5 text-sm font-mono tracking-wider glow-govern-subtle",
+                          spotlightEntry.status === "Flagged"
+                            ? "text-[var(--state-error)]"
+                            : "text-[var(--engine-govern)]",
+                        )}
+                      >
                         EXCEPTION DETECTED. GOVERNANCE REVIEW REQUIRED.
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 ) : (
                   // Absolute Integrity & Status Monolith View
-                  <div className="flex flex-col gap-8 min-w-0">
+                  <Link
+                    to="/govern/audit"
+                    className="flex flex-col gap-8 min-w-0 transition-colors hover:bg-white/[0.02] p-4 -m-4 rounded-xl"
+                  >
                     <div className="flex flex-wrap items-center gap-3">
                       <span className="inline-flex items-center rounded-full border border-[var(--engine-govern)]/30 bg-[var(--engine-govern)]/10 px-2.5 py-0.5 text-[10px] uppercase tracking-widest font-medium text-[var(--engine-govern)]">
                         SYSTEM HEALTH OPTIMAL
@@ -387,99 +443,148 @@ export function GovernHero(props: GovernHeroProps) {
                       </span>
                     </div>
                     <div className="min-w-0">
-                      <h3 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white tracking-tight leading-snug line-clamp-3">
-                        Your safety guarantees are locked and continuously verified.
+                      <h3 className="text-lg font-semibold text-white tracking-tight leading-snug line-clamp-3">
+                        Your safety guarantees are locked and continuously
+                        verified.
                       </h3>
                       <div className="mt-8 flex flex-col gap-4">
-                         <div className="flex items-center gap-4 text-white/80 text-sm sm:text-base">
-                           <CheckCircle2 className="h-5 w-5 text-[var(--engine-protect)] shrink-0" />
-                           <span><strong>{trustGuarantees?.autoExecutionsWithoutConsent.toLocaleString() ?? 0}</strong> actions taken without your approval</span>
-                         </div>
-                         <div className="flex items-center gap-4 text-white/80 text-sm sm:text-base">
-                           <CheckCircle2 className="h-5 w-5 text-[var(--engine-protect)] shrink-0" />
-                           <span><strong>{trustGuarantees?.auditCoveragePercent.toLocaleString() ?? 100}%</strong> audit coverage on all decisions</span>
-                         </div>
-                         {trustGuarantees?.llmTrainingOptOut && (
-                           <div className="flex items-center gap-4 text-white/80 text-sm sm:text-base">
-                             <Lock className="h-5 w-5 text-[var(--engine-govern)] shrink-0" />
-                             <span>Zero customer data is used for LLM training</span>
-                           </div>
-                         )}
+                        <div className="flex items-center gap-4 text-white/80 text-sm sm:text-base">
+                          <CheckCircle2 className="h-5 w-5 text-[var(--engine-protect)] shrink-0" />
+                          <span>
+                            <strong>
+                              {trustGuarantees?.autoExecutionsWithoutConsent.toLocaleString() ??
+                                0}
+                            </strong>{" "}
+                            actions taken without your approval
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-4 text-white/80 text-sm sm:text-base">
+                          <CheckCircle2 className="h-5 w-5 text-[var(--engine-protect)] shrink-0" />
+                          <span>
+                            <strong>
+                              {trustGuarantees?.auditCoveragePercent.toLocaleString() ??
+                                100}
+                              %
+                            </strong>{" "}
+                            audit coverage on all decisions
+                          </span>
+                        </div>
+                        {trustGuarantees?.llmTrainingOptOut && (
+                          <div className="flex items-center gap-4 text-white/80 text-sm sm:text-base">
+                            <Lock className="h-5 w-5 text-[var(--engine-govern)] shrink-0" />
+                            <span>
+                              Zero customer data is used for LLM training
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 )}
               </div>
             </div>
           </motion.div>
 
           {/* Pending Details & Status */}
-          <motion.div variants={v} className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-auto">
-             
-             {/* Left: Status Breakdown */}
-             <div className="rounded-2xl border border-white/5 bg-white/[0.01] p-5 flex flex-col min-w-0 justify-between gap-6 overflow-hidden">
-                <span className="font-mono text-[10px] uppercase text-white/30 tracking-wider block border-b border-white/5 pb-3">
-                  Verification Queue Stability
-                </span>
-                {statusBreakdown && (
-                  <div className="flex items-end justify-between gap-2 overflow-x-auto hide-scrollbar pb-1">
-                     <div className="flex flex-col">
-                        <span className="text-[2rem] sm:text-[2.5rem] font-mono leading-none text-[var(--engine-protect)] tracking-tighter shadow-sm">{statusBreakdown.verified.toLocaleString()}</span>
-                        <span className="text-[10px] uppercase text-white/40 mt-3 tracking-wider">Verified</span>
-                     </div>
-                     <div className="flex flex-col">
-                        <span className="text-[2rem] sm:text-[2.5rem] font-mono leading-none text-[var(--engine-execute)] tracking-tighter shadow-sm">{statusBreakdown.pending.toLocaleString()}</span>
-                        <span className="text-[10px] uppercase text-white/40 mt-3 tracking-wider">Pending</span>
-                     </div>
-                     <div className="flex flex-col">
-                        <span className={cn("text-[2rem] sm:text-[2.5rem] font-mono leading-none tracking-tighter shadow-sm", statusBreakdown.flagged > 0 ? "text-[var(--state-error)] animate-pulse" : "text-[var(--engine-govern)]")}>
-                          {statusBreakdown.flagged.toLocaleString()}
-                        </span>
-                        <span className="text-[10px] uppercase text-white/40 mt-3 tracking-wider">Flagged</span>
-                     </div>
+          <motion.div
+            variants={heroFadeUp}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-auto"
+          >
+            {/* Left: Status Breakdown */}
+            <div className="rounded-2xl border border-[var(--engine-govern)]/10 bg-white/[0.03] p-5 flex flex-col min-w-0 justify-between gap-6 overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]">
+              <span className="font-mono text-[10px] uppercase text-white/30 tracking-wider block border-b border-white/5 pb-3">
+                Verification Queue Stability
+              </span>
+              {statusBreakdown && (
+                <div className="flex items-end justify-between gap-2 overflow-x-auto hide-scrollbar pb-1">
+                  <div className="flex flex-col">
+                    <span className="text-[clamp(2.5rem,5vw,3.5rem)] font-mono leading-none text-[var(--engine-protect)] tracking-tighter shadow-sm">
+                      {statusBreakdown.verified.toLocaleString()}
+                    </span>
+                    <span className="text-[10px] uppercase text-white/40 mt-3 tracking-wider">
+                      Verified
+                    </span>
                   </div>
-                )}
-             </div>
-
-             {/* Right: Coverage Map / Engine Breakdown */}
-             <div className="rounded-2xl border border-white/5 bg-white/[0.01] p-5 flex flex-col min-w-0 h-full justify-between">
-                <div>
-                  <span className="font-mono text-[10px] uppercase text-white/30 tracking-wider block border-b border-white/5 pb-3 mb-5">
-                    What Poseidon checked
-                  </span>
-                  <div className="flex h-[6px] overflow-hidden rounded-full bg-white/[0.06] mb-5">
-                    {engineBreakdown.map((item) => (
-                      <div
-                        key={item.engine}
-                        className="h-full transition-all duration-1000"
-                        style={{ width: `${item.percent}%`, backgroundColor: item.color }}
-                        title={`${item.engine} ${item.percent}%`}
-                      />
-                    ))}
+                  <div className="flex flex-col">
+                    <span className="text-[clamp(2.5rem,5vw,3.5rem)] font-mono leading-none text-[var(--engine-execute)] tracking-tighter shadow-sm">
+                      {statusBreakdown.pending.toLocaleString()}
+                    </span>
+                    <span className="text-[10px] uppercase text-white/40 mt-3 tracking-wider">
+                      Pending
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span
+                      className={cn(
+                        "text-[clamp(2.5rem,5vw,3.5rem)] font-mono leading-none tracking-tighter shadow-sm",
+                        statusBreakdown.flagged > 0
+                          ? "text-[var(--state-error)] animate-pulse"
+                          : "text-[var(--engine-govern)]",
+                      )}
+                    >
+                      {statusBreakdown.flagged.toLocaleString()}
+                    </span>
+                    <span className="text-[10px] uppercase text-white/40 mt-3 tracking-wider">
+                      Flagged
+                    </span>
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-x-4 gap-y-3">
-                  {engineBreakdown.map(source => (
-                    <span 
-                      key={source.engine}
-                      className="inline-flex items-center gap-2 text-xs text-white/60 px-2.5 py-1 rounded-md border border-white/5 bg-black/40 backdrop-blur-sm shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)]"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: source.color }} />
-                      <span className="font-medium text-white/80">{source.engine}</span> 
-                      <span className="text-[var(--engine-govern)]/70 font-mono ml-0.5">{source.percent}%</span>
-                    </span>
+              )}
+            </div>
+
+            {/* Right: Coverage Map / Engine Breakdown */}
+            <div className="rounded-2xl border border-[var(--engine-govern)]/10 bg-white/[0.03] p-5 flex flex-col min-w-0 h-full justify-between shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]">
+              <div>
+                <span className="font-mono text-[10px] uppercase text-white/30 tracking-wider block border-b border-white/5 pb-3 mb-5">
+                  What Poseidon checked
+                </span>
+                <div className="flex h-[6px] overflow-hidden rounded-full bg-white/[0.06] mb-5">
+                  {engineBreakdown.map((item) => (
+                    <div
+                      key={item.engine}
+                      className="h-full transition-all duration-1000"
+                      style={{
+                        width: `${item.percent}%`,
+                        backgroundColor: item.color,
+                      }}
+                      title={`${item.engine} ${item.percent}%`}
+                    />
                   ))}
                 </div>
-             </div>
+              </div>
+              <div className="flex flex-wrap gap-x-4 gap-y-3">
+                {engineBreakdown.map((source) => (
+                  <span
+                    key={source.engine}
+                    className="inline-flex items-center gap-2 text-xs text-white/60 px-2.5 py-1 rounded-md border border-white/5 bg-black/40 backdrop-blur-sm shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)]"
+                  >
+                    <span
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: source.color }}
+                    />
+                    <span className="font-medium text-white/80">
+                      {source.engine}
+                    </span>
+                    <span className="text-[var(--engine-govern)]/70 font-mono ml-0.5">
+                      {source.percent}%
+                    </span>
+                  </span>
+                ))}
+              </div>
+            </div>
           </motion.div>
 
           {/* Bottom link */}
-          <motion.div variants={v} className="mt-6 flex justify-center pb-2">
-            <HeroGhostLink to="/govern/audit" engineColor="var(--engine-govern)">
-              VIEW FULL IMMUTABLE AUDIT LOG
-            </HeroGhostLink>
+          <motion.div
+            variants={heroFadeUp}
+            className="-mx-5 -mb-5 mt-6 sm:-mx-8 sm:-mb-8"
+          >
+            <HeroUnifiedFooter
+              to="/govern/audit"
+              label="VIEW FULL IMMUTABLE AUDIT LOG"
+              engineColor="var(--engine-govern)"
+            />
           </motion.div>
-
         </motion.div>
       </div>
 
@@ -499,7 +604,7 @@ export function GovernHero(props: GovernHeroProps) {
         }
       `}</style>
     </section>
-  )
+  );
 }
 
-export const GovernImmutableLedger = GovernHero
+export const GovernImmutableLedger = GovernHero;

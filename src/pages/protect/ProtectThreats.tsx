@@ -222,7 +222,7 @@ export default function ProtectThreatsPage() {
           {/* Tabs: Pending / Resolved */}
           <motion.div variants={fadeUp}>
             <Tabs defaultValue="pending" className="w-full">
-              <TabsList className="bg-white/[0.04]">
+              <TabsList className="bg-white/[0.04] backdrop-blur-sm">
                 <TabsTrigger value="pending" className="gap-2">
                   <Clock className="h-4 w-4" />
                   Pending ({pendingThreats.length})
@@ -241,9 +241,24 @@ export default function ProtectThreatsPage() {
                     description="No pending threats to review"
                   />
                 ) : (
-                  pendingThreats.map(threat => (
-                    <ThreatCard key={threat.id} threat={threat} />
-                  ))
+                  <>
+                    {/* Spotlight: first (highest-priority) pending threat */}
+                    <SpotlightThreatCard threat={pendingThreats[0]} />
+
+                    {pendingThreats.length > 1 && (
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 h-px bg-white/[0.06]" />
+                        <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest shrink-0">
+                          {pendingThreats.length - 1} more threat{pendingThreats.length - 1 !== 1 ? 's' : ''}
+                        </span>
+                        <div className="flex-1 h-px bg-white/[0.06]" />
+                      </div>
+                    )}
+
+                    {pendingThreats.slice(1).map(threat => (
+                      <ThreatCard key={threat.id} threat={threat} />
+                    ))}
+                  </>
                 )}
               </TabsContent>
 
@@ -268,6 +283,69 @@ export default function ProtectThreatsPage() {
   )
 }
 
+/* ── Severity border color mapping ── */
+
+const severityBorderColor: Record<ThreatSeverity, string> = {
+  Critical: 'var(--state-critical)',
+  High: 'var(--state-critical)',
+  Medium: 'var(--state-warning)',
+  Low: 'var(--engine-protect)',
+}
+
+/* ── Spotlight Threat Card ── */
+
+function SpotlightThreatCard({ threat }: { threat: ThreatRow }) {
+  const config = severityBadgeConfig[threat.severity]
+
+  return (
+    <Link to={`/protect/alert-detail?alertId=${threat.id}`} className="block">
+      <div
+        className="bg-white/[0.02] border border-white/[0.06] backdrop-blur-lg rounded-2xl p-5 md:p-6 border-l-[3px] transition-all duration-300 hover:border-white/[0.1]"
+        style={{
+          borderLeftColor: severityBorderColor[threat.severity],
+          background: 'linear-gradient(135deg, color-mix(in srgb, var(--engine-protect) 6%, transparent), transparent)',
+          boxShadow: '0 0 24px color-mix(in srgb, var(--engine-protect) 8%, transparent), inset 0 1px 0 rgba(255,255,255,0.04)',
+        }}
+      >
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--state-critical)' }}>
+              Priority Alert
+            </span>
+            <Badge variant="outline" className={cn('text-[9px] uppercase tracking-widest', config.bg, config.text, config.border)}>
+              {threat.severity}
+            </Badge>
+          </div>
+
+          <div className="flex items-start gap-4">
+            <div className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-full', severityIconBg[threat.severity])}>
+              <AlertTriangle className={cn('h-5 w-5', severityIconColor[threat.severity])} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-lg font-semibold text-foreground">{threat.counterparty}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{threat.description}</p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/40">
+            {threat.account && <span>{threat.account}</span>}
+            <span className="font-mono tabular-nums">{threat.amount}</span>
+            <span>Detected: {threat.time}</span>
+            <span className="tabular-nums">{Math.round(threat.confidence * 100)}% confidence</span>
+          </div>
+
+          <span
+            className="self-start hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors bg-red-600 text-white"
+          >
+            Investigate
+            <ChevronRight size={14} />
+          </span>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
 /* ── Threat Card ── */
 
 function ThreatCard({ threat }: { threat: ThreatRow }) {
@@ -275,55 +353,56 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
   const isResolved = threat.status === 'resolved'
 
   return (
-    <Card className="bg-card border-white/[0.06] transition-all hover:bg-white/[0.04]">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <div
-              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${severityIconBg[threat.severity]}`}
-            >
-              {isResolved ? (
-                <CheckCircle2 className="h-5 w-5 text-emerald-400" />
-              ) : (
-                <AlertTriangle className={`h-5 w-5 ${severityIconColor[threat.severity]}`} />
-              )}
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <p className="font-semibold text-foreground">{threat.counterparty}</p>
-                <Badge variant="outline" className={`${config.bg} ${config.text} ${config.border}`}>
-                  {threat.severity}
-                </Badge>
-                {isResolved && (
-                  <Badge variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
-                    Resolved
-                  </Badge>
-                )}
-              </div>
-              <p className="mt-1 text-sm text-muted-foreground">{threat.description}</p>
-              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/40">
-                {threat.account && <span>{threat.account}</span>}
-                <span className="font-mono">{threat.amount}</span>
-                <span>Detected: {threat.time}</span>
-                {threat.resolvedAt && <span>Resolved: {threat.resolvedAt}</span>}
-              </div>
-            </div>
+    <div
+      className="bg-white/[0.02] border border-white/[0.04] backdrop-blur-sm rounded-2xl p-4 hover:bg-white/[0.04] hover:border-white/[0.1] hover:translate-y-[-1px] transition-all duration-300 border-l-[3px]"
+      style={{ borderLeftColor: severityBorderColor[threat.severity] }}
+    >
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-start gap-4">
+          <div
+            className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-full', severityIconBg[threat.severity])}
+          >
+            {isResolved ? (
+              <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+            ) : (
+              <AlertTriangle className={cn('h-5 w-5', severityIconColor[threat.severity])} />
+            )}
           </div>
 
-          <Link
-            to={`/protect/alert-detail?alertId=${threat.id}`}
-            className={cn(
-              buttonVariants({ variant: isResolved ? 'outline' : 'default', size: 'sm' }),
-              'shrink-0 whitespace-nowrap'
-            )}
-          >
-            {isResolved ? 'View' : 'Investigate'}
-            <ChevronRight className="ml-1 h-4 w-4" />
-          </Link>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="font-semibold text-foreground">{threat.counterparty}</p>
+              <Badge variant="outline" className={cn('text-[9px] uppercase tracking-widest', config.bg, config.text, config.border)}>
+                {threat.severity}
+              </Badge>
+              {isResolved && (
+                <Badge variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-emerald-400 text-[9px] uppercase tracking-widest">
+                  Resolved
+                </Badge>
+              )}
+            </div>
+            <p className="mt-1 text-sm text-muted-foreground">{threat.description}</p>
+            <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/40">
+              {threat.account && <span>{threat.account}</span>}
+              <span className="font-mono tabular-nums">{threat.amount}</span>
+              <span>Detected: {threat.time}</span>
+              {threat.resolvedAt && <span>Resolved: {threat.resolvedAt}</span>}
+            </div>
+          </div>
         </div>
-      </CardContent>
-    </Card>
+
+        <Link
+          to={`/protect/alert-detail?alertId=${threat.id}`}
+          className={cn(
+            buttonVariants({ variant: isResolved ? 'outline' : 'default', size: 'sm' }),
+            'shrink-0 whitespace-nowrap'
+          )}
+        >
+          {isResolved ? 'View' : 'Investigate'}
+          <ChevronRight className="ml-1 h-4 w-4" />
+        </Link>
+      </div>
+    </div>
   )
 }
 
@@ -339,7 +418,7 @@ function InlineEmptyState({
   description: string
 }) {
   return (
-    <Card className="bg-card border-white/[0.06]">
+    <Card className="bg-white/[0.02] border border-white/[0.04] backdrop-blur-md">
       <CardContent className="flex flex-col items-center justify-center py-12">
         {icon}
         <p className="mt-4 text-lg font-medium text-foreground">{title}</p>

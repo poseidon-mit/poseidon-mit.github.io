@@ -84,3 +84,4 @@ export { ExportButton, type ExportButtonProps, type ExportFormat } from './expor
 
 /* ── Decrypt Text Animation ── */
 export { DecryptText, type DecryptTextProps } from './decrypt-text'
+export * from "./horizontal-impact-bars";

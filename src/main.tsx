@@ -1,7 +1,7 @@
 import React, { Suspense, Component, useEffect, type ReactNode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, useRouter } from './router';
-import { routes, type RoutePath } from './router/lazyRoutes';
+import { getLoadedRouteComponent, routes, type RoutePath } from './router/lazyRoutes';
 import { isAppRoute } from './router/app-shell-routes';
 import { AuthenticatedLayout } from './components/layout/AuthenticatedLayout';
 import { DemoModeBanner } from './components/layout/DemoModeBanner';
@@ -137,8 +137,9 @@ function installRuntimeTelemetry() {
 function RouterOutlet() {
   const { path, search, navigate } = useRouter();
   const { state, beginDemoSession } = useDemoState();
+  const LoadedComponent = getLoadedRouteComponent(path);
   const LazyComponent = routes[path as RoutePath];
-  const PageComponent = LazyComponent || routes['/404'] || routes['/'];
+  const PageComponent = LoadedComponent || LazyComponent || routes['/404'] || routes['/'];
   const requiresSession = isAppRoute(path);
   const SELF_GUIDED_QR_MODE = true;
 

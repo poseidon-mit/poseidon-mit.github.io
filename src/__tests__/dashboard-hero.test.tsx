@@ -99,7 +99,7 @@ describe("DashboardPage integration", () => {
     renderDashboard();
     expect(screen.getByText("Portfolio Command Center")).toBeInTheDocument();
     expect(screen.getByText(/\d+ anomal(y|ies) flagged/)).toBeInTheDocument();
-    expect(screen.getByText("+$92/mo ready")).toBeInTheDocument();
+    expect(screen.getByText("+$75/mo ready")).toBeInTheDocument();
     expect(screen.getByText("15 authorizations live")).toBeInTheDocument();
   });
 

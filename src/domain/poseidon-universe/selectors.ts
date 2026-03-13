@@ -399,7 +399,7 @@ export function selectCouncilMetrics() {
 export function selectSpotlightThreat(): ProtectThreatEntity | null {
   const threats = selectProtectThreats()
   if (threats.length === 0) return null
-  return threats.reduce((best, t) => (t.compositePriority > best.compositePriority ? t : best))
+  return threats.find((t) => t.id === 'THR-006') || threats.reduce((best, t) => (t.compositePriority > best.compositePriority ? t : best))
 }
 
 export function selectGrowRecommendations(): RecommendationListItem[] {
@@ -418,13 +418,13 @@ export function selectSpotlightRecommendation(): RecommendationListItem | null {
 export function selectSpotlightAction(): ExecuteActionEntity | null {
   const actions = selectExecuteActionsView()
   if (actions.length === 0) return null
-  return actions.reduce((best, a) => (a.compositePriority > best.compositePriority ? a : best))
+  return actions.find((a) => a.id === 'EXE-001') || actions.reduce((best, a) => (a.compositePriority > best.compositePriority ? a : best))
 }
 
 export function selectSpotlightAuditEntry(): GovernAuditEntryEntity | null {
   const entries = selectGovernAuditEntries().filter(e => e.status !== 'Verified')
   if (entries.length === 0) return null
-  return entries.reduce((best, e) => (e.compositePriority > best.compositePriority ? e : best))
+  return entries.find(e => e.id === 'GV-2026-0309-007') || entries.reduce((best, e) => (e.compositePriority > best.compositePriority ? e : best))
 }
 
 /* ── Spotlight Context — Unified Output Shape (Phase 0 Precision) ── */
@@ -727,6 +727,7 @@ export interface GrowHeroView {
   recommendationCount: number
   simulationData: GrowthSimulationPoint[]
   spotlightRec: {
+    id: number
     title: string
     monthlySavings: number
     confidence: number
@@ -850,7 +851,7 @@ export function selectDashboardHeroView(actionStates?: ExecuteActionStateLike): 
           recCount: recommendations.length,
           topTitle: spotlightRecommendation.title,
           attentionItems: recommendations.slice(0, 2).map((rec) => ({
-            label: `${rec.title} · +$${rec.projectedBenefitUsd}/mo`,
+            label: `${rec.title} · +$${rec.monthly}/mo`,
             href: `/grow/recommendation?id=${rec.rank}`,
           })),
         }
@@ -860,10 +861,16 @@ export function selectDashboardHeroView(actionStates?: ExecuteActionStateLike): 
           pendingCount: pendingActions.length,
           topTitle: featuredAction.title,
           topAmount: featuredAction.amountLabel,
-          attentionItems: pendingActions.slice(0, 2).map((action) => ({
-            label: `${action.title} · ${action.amountLabel}`,
-            href: `/execute/approval?id=${action.id}`,
-          })),
+          attentionItems: pendingActions
+            .filter((action) => {
+              const topProtectCounterparties = activeThreats.slice(0, 2).map(t => t.counterparty.split(' ')[0].toLowerCase());
+              return !topProtectCounterparties.some(cp => action.title.toLowerCase().includes(cp));
+            })
+            .slice(0, 2)
+            .map((action) => ({
+              label: `${action.title} · ${action.amountLabel}`,
+              href: `/execute/approval?id=${action.id}`,
+            })),
         }
       : null,
     decisionsAudited: governSummary.decisionsAuditedTotal,
@@ -959,12 +966,14 @@ export function selectGrowHeroView(): GrowHeroView {
     simulationData: selectGrowSimulationData(),
     spotlightRec: spotlight
       ? {
+          id: spotlight.id,
           title: spotlight.title,
           monthlySavings: spotlight.monthlySavings,
           confidence: spotlight.confidence,
         }
       : null,
     cohortHeadline: selectCohortHeadlines().grow,
+    goals: selectGoals(),
   }
 }
 

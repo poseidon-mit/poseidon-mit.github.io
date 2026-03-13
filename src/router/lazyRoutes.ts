@@ -5,7 +5,8 @@ import {
   getRouteMetaContract,
 } from '@/contracts/rebuild-contracts';
 
-type RouteLoader = () => Promise<{ default: ComponentType<any> }>;
+type RouteModule = { default: ComponentType<any> };
+type RouteLoader = () => Promise<RouteModule>;
 
 const CHUNK_RELOAD_KEY = 'poseidon:chunk-reload-attempted';
 const ROUTE_IMPORT_TIMEOUT_MS = 12000;
@@ -163,9 +164,9 @@ export const routeLoaders = {
 
   // ─── Settings ───────────────────────────────────────────────────────────────
   '/settings': () => import('../pages/Settings'),
-  '/settings/ai': () => import('../pages/SettingsAI'),
-  '/settings/integrations': () => import('../pages/SettingsIntegrations'),
-  '/settings/rights': () => import('../pages/SettingsRights'),
+  '/settings/ai': () => import('../pages/Settings'),
+  '/settings/integrations': () => import('../pages/Settings'),
+  '/settings/rights': () => import('../pages/Settings'),
 
   // ─── System ─────────────────────────────────────────────────────────────────
   '/404': () => import('../pages/NotFound'),
@@ -178,6 +179,10 @@ export const routeLoaders = {
 } satisfies Record<string, RouteLoader>;
 
 export type RoutePath = keyof typeof routeLoaders;
+
+export function isKnownRoutePath(path: string): path is RoutePath {
+  return path in routeLoaders;
+}
 
 /**
  * Routes in the current rebuild target scope.
@@ -231,22 +236,6 @@ export function getRouteUXMeta(path: string): ResolvedRouteUXMeta | undefined {
   };
 }
 
-const prefetchedRoutes = new Set<RoutePath>();
-
-export async function prefetchRoute(path: RoutePath): Promise<void> {
-  if (prefetchedRoutes.has(path)) return;
-
-  const load = routeLoaders[path];
-  if (!load) return;
-
-  prefetchedRoutes.add(path);
-  try {
-    await load();
-  } catch {
-    prefetchedRoutes.delete(path);
-  }
-}
-
 const comingSoonLoader = () => import('../pages/ComingSoon');
 const notFoundLoader = () => import('../pages/NotFound');
 const IS_PRODUCTION = import.meta.env.PROD;
@@ -280,9 +269,49 @@ function resolveRouteLoader(path: string, loader: RouteLoader): RouteLoader {
   return comingSoonLoader;
 }
 
+const resolvedRouteLoaders = Object.fromEntries(
+  Object.entries(routeLoaders).map(([path, loader]) => [
+    path,
+    withRouteImportRecovery(path, resolveRouteLoader(path, loader)),
+  ]),
+) as Record<RoutePath, RouteLoader>;
+
+const loadedRouteModules = new Map<RoutePath, RouteModule>();
+const routeModulePromises = new Map<RoutePath, Promise<RouteModule>>();
+
+export function getLoadedRouteComponent(path: string): ComponentType<any> | undefined {
+  if (!isKnownRoutePath(path)) return undefined;
+  return loadedRouteModules.get(path)?.default;
+}
+
+export async function loadRouteModule(path: RoutePath): Promise<RouteModule> {
+  const cachedModule = loadedRouteModules.get(path);
+  if (cachedModule) return cachedModule;
+
+  const inFlightPromise = routeModulePromises.get(path);
+  if (inFlightPromise) return inFlightPromise;
+
+  const promise = resolvedRouteLoaders[path]()
+    .then((module) => {
+      loadedRouteModules.set(path, module);
+      return module;
+    })
+    .catch((error) => {
+      routeModulePromises.delete(path);
+      throw error;
+    });
+
+  routeModulePromises.set(path, promise);
+  return promise;
+}
+
+export async function prefetchRoute(path: RoutePath): Promise<void> {
+  await loadRouteModule(path);
+}
+
 export const routes = Object.fromEntries(
-  Object.entries(routeLoaders).map(([path, loader]) => {
-    const resolvedLoader = resolveRouteLoader(path, loader);
-    return [path, lazy(withRouteImportRecovery(path, resolvedLoader))];
+  Object.keys(routeLoaders).map((path) => {
+    const routePath = path as RoutePath;
+    return [routePath, lazy(() => loadRouteModule(routePath))];
   }),
 ) as unknown as Record<RoutePath, LazyExoticComponent<ComponentType<any>>>;
