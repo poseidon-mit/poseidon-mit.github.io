@@ -64,6 +64,9 @@ export const COMPAT_ROUTE_ALIASES: Record<string, string> = {
   '/grow-v2': '/grow',
   '/execute-v2': '/execute',
   '/govern-v2': '/govern',
+  '/settings/ai': '/settings',
+  '/settings/integrations': '/settings',
+  '/settings/rights': '/settings',
   '/engines': '/dashboard',
   '/v3': '/dashboard',
 };

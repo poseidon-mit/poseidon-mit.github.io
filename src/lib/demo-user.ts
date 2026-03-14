@@ -3,6 +3,7 @@ export interface DemoUser {
   name: string
   initials: string
   email: string
+  phone?: string
   plan: 'Starter' | 'Pro' | 'Enterprise'
 }
 
@@ -11,5 +12,6 @@ export const DEMO_USER: DemoUser = {
   name: 'Shinji Fujiwara',
   initials: 'SF',
   email: 'shinji@mit.com',
+  phone: '+1 (123) 456 7890',
   plan: 'Pro',
 }

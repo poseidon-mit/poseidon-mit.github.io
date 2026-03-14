@@ -1,11 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Bell, Menu, Settings } from "lucide-react";
+import React, {
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from "react";
+import { Bell, Settings } from "lucide-react";
 import { Link, useRouter } from "@/router";
-import { SideDrawer } from "@/components/ui/sheet";
 import { useCommandPalette } from "@/hooks/useCommandPalette";
 import { usePresentationMode } from "@/hooks/usePresentationMode";
 import { usePWA } from "@/hooks/usePWA";
-import { CommandPalette } from "./CommandPalette";
+import { useRouteWarmup } from "@/hooks/useRouteWarmup";
 import { Button } from "@/components/ui/button";
 import { TalkToMoneyFab } from "@/components/ui/TalkToMoneyFab";
 import { type EngineName } from "@/lib/engine-tokens";
@@ -18,8 +25,7 @@ import {
   TONE_CLASSES,
 } from "../navigation/Sidebar";
 import { TopBar } from "../navigation/TopBar";
-import { useDemoState } from "@/lib/demo-state/provider";
-import { getPendingExecuteCount } from "@/lib/demo-state/selectors";
+import { useDemoExecute } from "@/lib/demo-state/provider";
 import { useDismissedAlerts } from "@/pages/protect/useDismissedAlerts";
 import { CANONICAL_UNIVERSE } from "@/domain/poseidon-universe/canonical";
 
@@ -45,6 +51,29 @@ const SHELL_HEADING_PATHS = new Set([
   "/settings",
 ]);
 
+const LazyCommandPalette = lazy(async () => {
+  const module = await import("./CommandPalette");
+  return { default: module.CommandPalette };
+});
+
+function scrollShellViewportToTop(
+  main: HTMLElement | null,
+  behavior: ScrollBehavior = "auto",
+) {
+  if (main) {
+    if (typeof main.scrollTo === "function") {
+      main.scrollTo({ top: 0, left: 0, behavior });
+    } else {
+      main.scrollTop = 0;
+      main.scrollLeft = 0;
+    }
+  }
+
+  if (typeof window.scrollTo === "function") {
+    window.scrollTo({ top: 0, left: 0, behavior });
+  }
+}
+
 export function AppNavShell({
   children,
   path,
@@ -62,7 +91,7 @@ export function AppNavShell({
     if (!SHELL_HEADING_PATHS.has(path)) return undefined;
     return activeSection?.label ?? breadcrumbs[breadcrumbs.length - 1] ?? "";
   }, [activeSection?.label, breadcrumbs, path]);
-  const { navigate } = useRouter();
+  const { navigate, pendingPath, showPendingIndicator } = useRouter();
   const {
     isOpen: isPaletteOpen,
     open: openPalette,
@@ -70,13 +99,18 @@ export function AppNavShell({
   } = useCommandPalette();
   const { isPresentation } = usePresentationMode();
   const { isOffline } = usePWA();
-  const { state } = useDemoState();
+  const executeState = useDemoExecute();
   const activeTone = activeSection?.tone;
   const activeToneClasses = activeTone ? TONE_CLASSES[activeTone] : undefined;
+  const mainRef = useRef<HTMLElement | null>(null);
+  useRouteWarmup(path);
 
   const pendingExecuteCount = useMemo(
-    () => getPendingExecuteCount(state),
-    [state],
+    () =>
+      Object.values(executeState.actionStates).filter(
+        (entry) => entry.status === "pending",
+      ).length,
+    [executeState],
   );
   const { dismissed } = useDismissedAlerts();
   const activeProtectCount = useMemo(
@@ -96,17 +130,18 @@ export function AppNavShell({
     [activeProtectCount, pendingExecuteCount],
   );
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   useEffect(() => {
     closePalette();
-    setDrawerOpen(false);
   }, [path, closePalette]);
+
+  useLayoutEffect(() => {
+    scrollShellViewportToTop(mainRef.current, "auto");
+  }, [path]);
 
   const handleBottomNavTap = useCallback(
     (itemPath: string) => {
       if (path.startsWith(itemPath)) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        scrollShellViewportToTop(mainRef.current, "smooth");
       }
     },
     [path],
@@ -120,69 +155,18 @@ export function AppNavShell({
       >
         Skip to main content
       </a>
-      <CommandPalette isOpen={isPaletteOpen} onClose={closePalette} />
-
-      {/* ── Mobile Drawer ── */}
-      <SideDrawer open={drawerOpen} onDismiss={() => setDrawerOpen(false)}>
-        <div className="px-6 pt-8 pb-4">
-          <Link
-            to="/"
-            className="flex items-center gap-3"
-            aria-label="Poseidon home"
-          >
-            <img
-              src="/logo.png"
-              alt=""
-              width="48"
-              height="48"
-              className="h-12 w-12 object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
-              aria-hidden="true"
-            />
-            <span className="text-lg font-semibold tracking-widest text-foreground">
-              Poseidon
-            </span>
-          </Link>
-        </div>
-        <nav
-          className="flex flex-col gap-1 px-3 pb-8"
-          aria-label="Main navigation"
-        >
-          {NAV_ITEMS.map((item) => {
-            const isActive =
-              path === item.path || path.startsWith(item.path + "/");
-            const Icon = item.icon;
-            const tone = TONE_CLASSES[item.tone];
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                prefetch={item.group === "engine" ? "render" : "none"}
-                className={cn(
-                  "flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-200",
-                  isActive
-                    ? tone.activeLink
-                    : "text-white/30 hover:bg-white/[0.03] hover:text-white/60",
-                )}
-                aria-current={isActive ? "page" : undefined}
-              >
-                <Icon
-                  className={cn(
-                    "h-[18px] w-[18px]",
-                    isActive && tone.activeIcon,
-                  )}
-                  aria-hidden="true"
-                />
-                <span className="flex-1 text-sm font-medium tracking-wide">
-                  {item.label}
-                </span>
-              </Link>
-            );
-          })}
-        </nav>
-      </SideDrawer>
+      {isPaletteOpen ? (
+        <Suspense fallback={null}>
+          <LazyCommandPalette isOpen={isPaletteOpen} onClose={closePalette} />
+        </Suspense>
+      ) : null}
 
       {/* ── Desktop Sidebar ── */}
-      <Sidebar path={path} />
+      <Sidebar
+        path={path}
+        pendingPath={pendingPath}
+        showPendingIndicator={showPendingIndicator}
+      />
 
       <div className="relative flex min-w-0 flex-1 flex-col lg:ml-[280px]">
         {/* ── Desktop TopBar ── */}
@@ -193,37 +177,30 @@ export function AppNavShell({
           isOffline={isOffline}
           isPresentation={isPresentation}
           onOpenPalette={openPalette}
+          pendingPath={pendingPath}
+          showPendingIndicator={showPendingIndicator}
         />
 
         {/* ── Mobile top header ── */}
         <header className="sticky top-0 z-30 border-b border-white/5 bg-[#08080D]/90 px-3 backdrop-blur-xl lg:hidden">
           <div className="flex h-16 w-full items-center justify-between gap-2">
-            <div className="flex shrink-0 items-center gap-1 min-w-0">
-              <button
-                onClick={() => setDrawerOpen(true)}
-                className="flex h-11 w-11 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                aria-label="Open menu"
-              >
-                <Menu className="h-5 w-5" />
-              </button>
-              <Link
-                to="/"
-                className="flex min-w-0 items-center gap-1.5"
-                aria-label="Poseidon home"
-              >
-                <img
-                  src="/logo.png"
-                  alt=""
-                  width="40"
-                  height="40"
-                  className="h-10 w-10 object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
-                  aria-hidden="true"
-                />
-                <span className="hidden min-[430px]:inline text-sm font-semibold tracking-widest text-foreground">
-                  Poseidon
-                </span>
-              </Link>
-            </div>
+            <Link
+              to="/"
+              className="flex shrink-0 items-center gap-1.5 min-w-0"
+              aria-label="Poseidon home"
+            >
+              <img
+                src="/logo.png"
+                alt=""
+                width="40"
+                height="40"
+                className="h-10 w-10 object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
+                aria-hidden="true"
+              />
+              <span className="hidden min-[430px]:inline text-sm font-semibold tracking-widest text-foreground">
+                Poseidon
+              </span>
+            </Link>
             <nav aria-label="Breadcrumb" className="min-w-0">
               <ol className="flex items-center justify-center">
                 <li className="truncate px-1 text-center text-sm font-medium text-foreground">
@@ -249,6 +226,9 @@ export function AppNavShell({
                 aria-label="Settings"
               >
                 <Settings className="h-5 w-5" aria-hidden="true" />
+                {showPendingIndicator && pendingPath?.startsWith("/settings") ? (
+                  <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-white/70 animate-pulse" aria-hidden="true" />
+                ) : null}
               </Link>
               <Button
                 variant="ghost"
@@ -271,6 +251,7 @@ export function AppNavShell({
         <main
           id="main-content"
           role="main"
+          ref={mainRef}
           className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:overflow-visible lg:pb-0"
         >
           <div className="min-h-full">{children}</div>
@@ -293,22 +274,24 @@ export function AppNavShell({
             <Link
               key={item.path}
               to={item.path}
-              prefetch="render"
+              prefetch="intent"
               className={cn(
                 "flex min-h-12 flex-1 flex-col items-center justify-center gap-1 py-2 transition-colors duration-150",
                 isActive ? "text-white" : "text-white/25",
               )}
               onClick={() => handleBottomNavTap(item.path)}
               aria-current={isActive ? "page" : undefined}
-            >
-              <span
-                className={cn(
-                  "h-1 w-1 rounded-full transition-opacity duration-150",
-                  tone.indicator,
-                  isActive ? "opacity-100" : "opacity-0",
-                )}
-                aria-hidden="true"
-              />
+              >
+                <span
+                  className={cn(
+                    "h-1 w-1 rounded-full transition-opacity duration-150",
+                    tone.indicator,
+                    isActive || (showPendingIndicator && pendingPath?.startsWith(item.path))
+                      ? "opacity-100"
+                      : "opacity-0",
+                  )}
+                  aria-hidden="true"
+                />
               <div className="relative">
                 <Icon className="h-5 w-5" aria-hidden="true" />
               </div>

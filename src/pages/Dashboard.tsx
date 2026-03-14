@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { DashboardHero } from '@/components/poseidon/dashboard-hero'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useRouter } from '@/router'
-import { useDemoState } from '@/lib/demo-state/provider'
+import { useDemoExecute } from '@/lib/demo-state/provider'
 import {
   selectDashboardHeroView,
 } from '@/domain/poseidon-universe'
@@ -10,11 +10,11 @@ import {
 export default function Dashboard() {
   usePageTitle('Dashboard')
   const router = useRouter()
-  const { state } = useDemoState()
+  const executeState = useDemoExecute()
 
   const heroView = useMemo(
-    () => selectDashboardHeroView(state.execute.actionStates),
-    [state.execute.actionStates],
+    () => selectDashboardHeroView(executeState.actionStates),
+    [executeState.actionStates],
   )
 
   return (

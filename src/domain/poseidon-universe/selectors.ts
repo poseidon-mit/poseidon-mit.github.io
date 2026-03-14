@@ -767,6 +767,12 @@ export interface ExecuteHeroView {
   currentSavingsUsd: number
   potentialSavingsUsd: number
   pendingQueue: { id: string; title: string }[]
+  featuredActionSteps: {
+    id: string
+    label: string
+    actor: 'agent' | 'user'
+    status: 'completed' | 'current' | 'waiting' | 'blocked'
+  }[]
 }
 
 export interface GovernHeroView {
@@ -1031,6 +1037,14 @@ export function selectExecuteHeroView(
     currentSavingsUsd: savings.currentMonthlySavingsUsd,
     potentialSavingsUsd: savings.potentialMonthlySavingsUsd,
     pendingQueue: pendingActions.map((a) => ({ id: a.id, title: a.title })),
+    featuredActionSteps: featuredAction
+      ? featuredAction.steps.map((s) => ({
+          id: s.id,
+          label: s.label,
+          actor: s.actor as 'agent' | 'user',
+          status: s.status as 'completed' | 'current' | 'waiting' | 'blocked',
+        }))
+      : [],
   }
 }
 

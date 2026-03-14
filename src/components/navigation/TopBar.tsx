@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { type AccentTone, TONE_CLASSES } from './Sidebar';
 import { type EngineName } from '@/lib/engine-tokens';
-import { useDemoState } from '@/lib/demo-state/provider';
+import { useDemoUser } from '@/lib/demo-state/provider';
 import { useRouter } from '@/router';
 
 interface TopBarProps {
@@ -14,6 +14,8 @@ interface TopBarProps {
     isOffline: boolean;
     isPresentation: boolean;
     onOpenPalette: () => void;
+    pendingPath?: string | null;
+    showPendingIndicator?: boolean;
 }
 
 export function TopBar({
@@ -23,8 +25,10 @@ export function TopBar({
     isOffline,
     isPresentation,
     onOpenPalette,
+    pendingPath,
+    showPendingIndicator,
 }: TopBarProps) {
-    const { state } = useDemoState();
+    const user = useDemoUser();
     const { navigate } = useRouter();
 
     return (
@@ -82,6 +86,12 @@ export function TopBar({
                         Presenting
                     </span>
                 )}
+                {showPendingIndicator && pendingPath && (
+                    <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white/60" aria-label="Page switch in progress">
+                        <span className="h-1.5 w-1.5 rounded-full bg-white/70 animate-pulse" aria-hidden="true" />
+                        Switching
+                    </span>
+                )}
 
                 <button
                     onClick={() => navigate('/dashboard/notifications')}
@@ -96,7 +106,7 @@ export function TopBar({
                     className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xs font-semibold text-white/60 transition-colors duration-300 hover:bg-white/10"
                     aria-label="User menu"
                 >
-                    {state.user.initials}
+                    {user.initials}
                 </button>
             </div>
         </header>

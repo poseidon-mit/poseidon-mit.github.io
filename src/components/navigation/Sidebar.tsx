@@ -11,8 +11,7 @@ import {
 } from 'lucide-react';
 import { Link } from '@/router';
 import { type EngineName } from '@/lib/engine-tokens';
-import { useDemoState } from '@/lib/demo-state/provider';
-import { getPendingExecuteCount } from '@/lib/demo-state/selectors';
+import { useDemoExecute, useDemoUser } from '@/lib/demo-state/provider';
 import { cn } from '@/lib/utils';
 import { useDismissedAlerts } from '@/pages/protect/useDismissedAlerts';
 import { CANONICAL_UNIVERSE } from '@/domain/poseidon-universe/canonical';
@@ -93,10 +92,22 @@ function buildNavBadges(pendingExecuteCount: number, activeProtectCount: number)
     };
 }
 
-export function Sidebar({ path }: { path: string }) {
-    const { state } = useDemoState();
+export function Sidebar({
+    path,
+    pendingPath,
+    showPendingIndicator,
+}: {
+    path: string;
+    pendingPath?: string | null;
+    showPendingIndicator?: boolean;
+}) {
+    const executeState = useDemoExecute();
+    const user = useDemoUser();
     const { dismissed } = useDismissedAlerts();
-    const pendingExecuteCount = useMemo(() => getPendingExecuteCount(state), [state]);
+    const pendingExecuteCount = useMemo(
+        () => Object.values(executeState.actionStates).filter((entry) => entry.status === 'pending').length,
+        [executeState],
+    );
     const activeProtectCount = useMemo(
         () => CANONICAL_UNIVERSE.entities.protectThreats.filter(
             t => (t.severity === 'Critical' || t.severity === 'High') && !dismissed.has(t.id)
@@ -130,7 +141,7 @@ export function Sidebar({ path }: { path: string }) {
                         <Link
                             key={item.path}
                             to={item.path}
-                            prefetch="render"
+                            prefetch="intent"
                             className={cn(
                                 'group relative flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-300',
                                 isActive
@@ -139,7 +150,12 @@ export function Sidebar({ path }: { path: string }) {
                             )}
                             aria-current={isActive ? 'page' : undefined}
                         >
-                            <Icon className={cn('h-[18px] w-[18px] transition-transform duration-300 group-hover:scale-110', isActive && tone.activeIcon)} aria-hidden="true" />
+                            <div className="relative">
+                                <Icon className={cn('h-[18px] w-[18px] transition-transform duration-300 group-hover:scale-110', isActive && tone.activeIcon)} aria-hidden="true" />
+                                {showPendingIndicator && pendingPath && (pendingPath === item.path || pendingPath.startsWith(item.path + '/')) ? (
+                                    <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-white/70 animate-pulse" aria-hidden="true" />
+                                ) : null}
+                            </div>
                             <span className="flex-1 text-sm font-medium tracking-wide">
                                 {item.label}
                             </span>
@@ -171,9 +187,9 @@ export function Sidebar({ path }: { path: string }) {
 
             <div className="flex items-center gap-4 border-t border-white/5 px-8 py-6 transition-colors duration-300 hover:bg-white/[0.03] cursor-pointer">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-sm font-bold text-white/60 border border-white/10" aria-hidden="true">
-                    {state.user.initials}
+                    {user.initials}
                 </div>
-                <span className="text-sm font-medium tracking-wide text-foreground">{state.user.name}</span>
+                <span className="text-sm font-medium tracking-wide text-foreground">{user.name}</span>
             </div>
         </aside>
     );

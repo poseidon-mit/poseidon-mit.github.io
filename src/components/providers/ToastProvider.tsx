@@ -1,5 +1,7 @@
 import {
   createContext,
+  lazy,
+  Suspense,
   useCallback,
   useContext,
   useMemo,
@@ -7,7 +9,6 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { Toast } from '@/components/ui/toast'
 
 export type ToastVariant = 'info' | 'success' | 'warning' | 'error'
 
@@ -40,6 +41,11 @@ const ToastContext = createContext<ToastContextValue>({
   showToast: () => '',
   dismissToast: () => { },
   clearToasts: () => { },
+})
+
+const LazyToast = lazy(async () => {
+  const module = await import('@/components/ui/toast')
+  return { default: module.Toast }
 })
 
 function createToastId() {
@@ -95,16 +101,20 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         aria-live="polite"
         aria-atomic="false"
       >
-        {toasts.map((toast) => (
-          <div key={toast.id} className="pointer-events-auto">
-            <Toast
-              variant={toast.variant}
-              message={toast.message}
-              action={toast.action}
-              onDismiss={() => dismissToast(toast.id)}
-            />
-          </div>
-        ))}
+        {toasts.length > 0 ? (
+          <Suspense fallback={null}>
+            {toasts.map((toast) => (
+              <div key={toast.id} className="pointer-events-auto">
+                <LazyToast
+                  variant={toast.variant}
+                  message={toast.message}
+                  action={toast.action}
+                  onDismiss={() => dismissToast(toast.id)}
+                />
+              </div>
+            ))}
+          </Suspense>
+        ) : null}
       </div>
     </ToastContext.Provider>
   )

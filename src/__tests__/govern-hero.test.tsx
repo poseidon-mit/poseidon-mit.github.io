@@ -1,11 +1,22 @@
 import { act, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-vi.mock("../hooks/useReducedMotionSafe", () => ({
-  useReducedMotionSafe: vi.fn(() => true),
+vi.mock("../hooks/usePerformanceProfile", () => ({
+  usePerformanceProfile: vi.fn(() => ({
+    profile: "full",
+    allowBackdrop: true,
+    allowContinuousAnimation: true,
+    allowHeavyBlur: true,
+    allowHoverEnhancements: true,
+    allowMarquee: true,
+    coarsePointer: false,
+    hoverNone: false,
+    prefersReducedMotion: false,
+    isPageVisible: true,
+  })),
 }));
 
 import { GovernHero, GovernImmutableLedger } from "../components/poseidon/govern-hero";
-import { useReducedMotionSafe } from "../hooks/useReducedMotionSafe";
+import { usePerformanceProfile } from "../hooks/usePerformanceProfile";
 import { RouterProvider } from "../router";
 import GovernPage from "../pages/Govern";
 
@@ -65,7 +76,18 @@ function renderHero(overrides: Record<string, unknown> = {}) {
 
 describe("GovernHero", () => {
   afterEach(() => {
-    vi.mocked(useReducedMotionSafe).mockReturnValue(true);
+    vi.mocked(usePerformanceProfile).mockReturnValue({
+      profile: "full",
+      allowBackdrop: true,
+      allowContinuousAnimation: true,
+      allowHeavyBlur: true,
+      allowHoverEnhancements: true,
+      allowMarquee: true,
+      coarsePointer: false,
+      hoverNone: false,
+      prefersReducedMotion: false,
+      isPageVisible: true,
+    });
     vi.useRealTimers();
   });
 
@@ -92,6 +114,19 @@ describe("GovernHero", () => {
   });
 
   it("renders live disclosure lines from govern data when reduced motion is enabled", () => {
+    vi.mocked(usePerformanceProfile).mockReturnValue({
+      profile: "static",
+      allowBackdrop: false,
+      allowContinuousAnimation: false,
+      allowHeavyBlur: false,
+      allowHoverEnhancements: false,
+      allowMarquee: false,
+      coarsePointer: true,
+      hoverNone: true,
+      prefersReducedMotion: true,
+      isPageVisible: true,
+    });
+
     renderHero({
       trustGuarantees: {
         autoExecutionsWithoutConsent: 0,
@@ -123,7 +158,6 @@ describe("GovernHero", () => {
 
   it("reveals the immutable ledger lines progressively when motion is allowed", () => {
     vi.useFakeTimers();
-    vi.mocked(useReducedMotionSafe).mockReturnValue(false);
 
     renderHero({
       trustGuarantees: {
@@ -191,7 +225,7 @@ describe("GovernPage integration", () => {
   it("renders the hero with canonical audit data", () => {
     renderGovern();
     expect(screen.getByRole("heading", { name: /govern/i })).toBeInTheDocument();
-    expect(screen.getByText(/45 auditable decisions/i)).toBeInTheDocument();
+    expect(screen.getByText(/45 total audited decisions/i)).toBeInTheDocument();
   });
 
   it("renders trust guarantees and the audit portal link", () => {

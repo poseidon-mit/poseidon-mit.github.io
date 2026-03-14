@@ -1,5 +1,4 @@
 import { ArrowRight, ShieldAlert, Users } from "lucide-react";
-import { motion } from "framer-motion";
 import { Link } from "@/router";
 import { buttonVariants } from "@/components/ui/button";
 import { ListPortalBar } from "./list-portal-bar";
@@ -10,8 +9,7 @@ import {
   HeroMetricPill,
   HeroUnifiedFooter,
 } from "./hero-concept-primitives";
-import { useReducedMotionSafe } from "@/hooks/useReducedMotionSafe";
-import { getMotionPreset } from "@/lib/motion-presets";
+import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 
 type HeroSeverity = "Critical" | "High" | "Medium" | "Low";
 
@@ -70,10 +68,10 @@ function ProtectLedgerField({
 
 function BackgroundTransactionTape({
   items,
-  reducedMotion,
+  animate,
 }: {
   items: string[];
-  reducedMotion: boolean;
+  animate: boolean;
 }) {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-10">
@@ -84,7 +82,7 @@ function BackgroundTransactionTape({
             key={`${item}-${index}`}
             className={cn(
               "flex justify-between gap-6 whitespace-nowrap opacity-20",
-              !reducedMotion && "animate-[pulse_8s_ease-in-out_infinite]",
+              animate && "animate-[pulse_8s_ease-in-out_infinite]",
               index % 2 === 0 ? "translate-x-[5%]" : "-translate-x-[5%]",
             )}
             style={{ animationDelay: `${index * 1.5}s` }}
@@ -110,8 +108,7 @@ export function ProtectAnomalyRadar({
   fpRate,
   onReviewThreat,
 }: ProtectAnomalyRadarProps) {
-  const reducedMotion = useReducedMotionSafe();
-  const { heroFadeUp, heroStaggerContainer } = getMotionPreset(reducedMotion);
+  const performance = usePerformanceProfile();
   const tapeItems = [
     `NODE-891`,
     `NODE-892`,
@@ -131,21 +128,16 @@ export function ProtectAnomalyRadar({
         <HeroBackdrop
           accent="var(--engine-protect)"
           secondaryAccent="#020202"
-          reducedMotion={reducedMotion}
+          performanceProfile={performance.profile}
         />
         <BackgroundTransactionTape
           items={tapeItems}
-          reducedMotion={reducedMotion}
+          animate={performance.allowContinuousAnimation}
         />
 
-        <motion.div
-          className="relative z-10 flex flex-1 w-full flex-col"
-          variants={heroStaggerContainer}
-          initial="hidden"
-          animate="visible"
-        >
+        <div className="relative z-10 flex w-full flex-1 flex-col">
           <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-6 py-12 md:px-10">
-            <motion.div variants={heroFadeUp} className="mb-8 w-full flex justify-center">
+            <div className="mb-8 flex w-full justify-center">
               <div className="flex flex-col items-center gap-2 text-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.02]">
                 <HeroEyebrow className="border-[var(--engine-protect)]/20 bg-[var(--engine-protect)]/5 text-[var(--engine-protect)]">
                   <ShieldAlert className="h-3.5 w-3.5" />
@@ -158,11 +150,18 @@ export function ProtectAnomalyRadar({
                   Status: 1 anomaly flagged
                 </p>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div variants={heroFadeUp} className="w-full">
-              <div className="group relative w-full overflow-hidden rounded-[24px] border border-white/[0.08] bg-white/[0.02] p-[1px] shadow-2xl backdrop-blur-3xl transition-all duration-500 hover:border-[var(--engine-protect)]/30 hover:shadow-[0_0_80px_-20px_var(--engine-protect)]">
-              {!reducedMotion && (
+            <div className="w-full">
+              <div
+                className={cn(
+                  "group relative w-full overflow-hidden rounded-[24px] border border-white/[0.08] bg-white/[0.02] p-[1px] transition-all duration-500 hover:border-[var(--engine-protect)]/30",
+                  performance.allowHeavyBlur
+                    ? "shadow-2xl backdrop-blur-3xl hover:shadow-[0_0_80px_-20px_var(--engine-protect)]"
+                    : "shadow-[0_10px_30px_rgba(0,0,0,0.25)]",
+                )}
+              >
+              {performance.allowContinuousAnimation && (
                 <div className="pointer-events-none absolute inset-0 -z-10 rounded-[24px] bg-[conic-gradient(from_0deg,transparent_0_340deg,var(--engine-protect)_360deg)] opacity-0 mix-blend-screen transition-opacity duration-300 group-hover:animate-[spin_3s_linear_infinite] group-hover:opacity-100" />
               )}
 
@@ -205,7 +204,7 @@ export function ProtectAnomalyRadar({
                 </div>
 
                 <div className="relative flex flex-col overflow-hidden bg-[radial-gradient(ellipse_at_top_right,rgba(34,197,94,0.05)_0%,transparent_70%)] p-8 md:p-10">
-                  {!reducedMotion && (
+                  {performance.allowContinuousAnimation && (
                     <div className="absolute top-0 right-0 h-[1px] w-full bg-gradient-to-r from-transparent via-[var(--engine-protect)]/30 to-transparent opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
                   )}
 
@@ -222,6 +221,7 @@ export function ProtectAnomalyRadar({
                     <div className="mt-2 ml-auto flex-1 w-full max-w-md">
                       <p className="sr-only">SHAP Waterfall</p>
                       <ShapWaterfall
+                        variant="inline"
                         factors={shapFactors.map((f) => ({
                           label: f.label,
                           value: f.mitigating ? -f.weight : f.weight,
@@ -253,9 +253,9 @@ export function ProtectAnomalyRadar({
                 </div>
               </div>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div variants={heroFadeUp} className="w-full max-w-4xl">
+            <div className="w-full max-w-4xl">
               <div className="mt-8 flex w-full flex-col items-center justify-between gap-6 border-t border-white/5 pt-6 sm:flex-row">
                 <div className="flex flex-wrap items-center justify-center gap-8">
                   <ProtectLedgerField
@@ -282,18 +282,19 @@ export function ProtectAnomalyRadar({
                   </div>
                 )}
               </div>
-            </motion.div>
+            </div>
           </div>
 
-          <motion.div variants={heroFadeUp}>
+          <div>
             <HeroUnifiedFooter
               to="/protect/threats"
               label="VIEW ALL ANOMALIES"
               engineColor="var(--engine-protect)"
+              performanceProfile={performance.profile}
               icon={ShieldAlert}
             />
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </section>
     </div>
   );
@@ -322,35 +323,26 @@ export function ProtectThreatPosture({
   topAlert,
   onOpenTopAlert,
 }: ProtectThreatPostureProps) {
-  const reducedMotion = useReducedMotionSafe();
-  const { heroFadeUp, heroStaggerContainer } = getMotionPreset(reducedMotion);
+  const performance = usePerformanceProfile();
 
   return (
     <section className="hero-canvas relative flex min-h-[580px] w-full flex-col items-center justify-center overflow-hidden rounded-[32px] border border-white/10">
       <HeroBackdrop
         accent="var(--engine-protect)"
         secondaryAccent="#020202"
-        reducedMotion={reducedMotion}
+        performanceProfile={performance.profile}
       />
 
       {/* Subtle Breathing Green Glow */}
-      {!reducedMotion && (
+      {performance.allowContinuousAnimation && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center mix-blend-screen opacity-20">
           <div className="h-[40vh] w-[40vw] rounded-full bg-[var(--engine-protect)] blur-[120px] animate-[pulse_6s_ease-in-out_infinite]" />
         </div>
       )}
 
-      <motion.div
-        className="relative z-10 flex flex-1 w-full flex-col"
-        variants={heroStaggerContainer}
-        initial="hidden"
-        animate="visible"
-      >
+      <div className="relative z-10 flex w-full flex-1 flex-col">
         <div className="mx-auto flex max-w-3xl flex-1 flex-col items-center justify-center px-6 py-12 text-center md:px-10">
-          <motion.div
-            variants={heroFadeUp}
-            className="mb-8 flex flex-col items-center gap-4"
-          >
+          <div className="mb-8 flex flex-col items-center gap-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[var(--engine-protect)]/20 bg-[var(--engine-protect)]/10 text-[var(--engine-protect)] shadow-[0_0_30px_rgba(34,197,94,0.1)]" />
 
             <h2 className="mb-2 max-w-2xl text-[clamp(1.5rem,4vw,3.5rem)] font-light tracking-tight text-white">
@@ -358,21 +350,15 @@ export function ProtectThreatPosture({
                 ? "All clear"
                 : `Monitoring matrix stable. ${activeCount} alerts still tracked.`}
             </h2>
-          </motion.div>
+          </div>
 
-          <motion.p
-            variants={heroFadeUp}
-            className="mt-6 max-w-xl text-base leading-relaxed text-white/50"
-          >
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-white/50">
             {activeCount === 0
               ? "No suspicious activity detected. Protect engines are continuously scanning telemetry in the background."
               : "Protect stays read-only, keeps background telemetry flowing, and only escalates when the evidence stack becomes undeniable."}
-          </motion.p>
+          </p>
 
-          <motion.div
-            variants={heroFadeUp}
-            className="mt-12 flex flex-wrap justify-center gap-x-8 gap-y-4 border-t border-white/10 pt-8"
-          >
+          <div className="mt-12 flex flex-wrap justify-center gap-x-8 gap-y-4 border-t border-white/10 pt-8">
             <ProtectLedgerField
               label="Total Tracked"
               value={activeCount.toString()}
@@ -383,10 +369,10 @@ export function ProtectThreatPosture({
             />
             <ProtectLedgerField label="False Positives" value={fpRate} />
             <ProtectLedgerField label="Model Update" value={modelUpdate} />
-          </motion.div>
+          </div>
 
           {topAlert && onOpenTopAlert && (
-            <motion.div variants={heroFadeUp} className="mt-12">
+            <div className="mt-12">
               <button
                 type="button"
                 onClick={onOpenTopAlert}
@@ -394,18 +380,19 @@ export function ProtectThreatPosture({
               >
                 Review top alert: {topAlert.counterparty}
               </button>
-            </motion.div>
+            </div>
           )}
         </div>
 
-        <motion.div variants={heroFadeUp}>
+        <div>
           <HeroUnifiedFooter
             to="/protect/threats"
             label="View all threats"
             engineColor="var(--engine-protect)"
+            performanceProfile={performance.profile}
           />
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </section>
   );
 }

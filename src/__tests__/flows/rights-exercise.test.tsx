@@ -10,7 +10,7 @@ import SettingsRights from '../../pages/SettingsRights';
  */
 describe('Settings rights exercise flow (SET04)', () => {
   function renderSET04() {
-    window.history.pushState({}, '', '/settings/rights');
+    window.history.pushState({}, '', '/settings');
     return render(
       <RouterProvider>
         <SettingsRights />

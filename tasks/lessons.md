@@ -21,3 +21,17 @@
 - When the user says a visual bug still reproduces, do not stop after removing one animation layer; verify the live route pipeline end-to-end, including `Suspense` fallbacks, lazy-module caching, and unrelated overlays triggered by route prefetch.
 - When the user says a settings surface is still too dense, do not respond by only shortening copy or splitting routes. Remove whole panels, summaries, and secondary controls until the screen has one obvious purpose.
 - When a route family should visually match the flagship hero pages, do not polish it with route-local badges, pill navigation, or custom icon boxes. Reuse the shared hero canvas, backdrop, typography rhythm, and glass surfaces first.
+
+## 2026-03-14
+
+- When the user narrows public-route optimization scope, keep LP CTA changes strictly within that route. Do not reintroduce removed actions, such as download affordances, on the landing surface or as a substitute requirement elsewhere.
+- When the user collapses a multi-route settings area into one canonical screen, remove the internal pseudo-navigation and normalize legacy URLs immediately; keeping both models alive at once just preserves the old complexity.
+- When a settings screen feels visually detached from the flagship HERO routes, do not solve it with more badges or local accent colors. Reuse the HERO typography rhythm, Govern-led accent hierarchy, symbolic section icons, and shared surface treatment first.
+- When the user asks for better balance on a settings surface, widen the dominant center card and remove explanatory helper copy and scope pills before introducing any new decoration.
+- When the user says a widened settings card still does not read full-width, remove route-local max-width constraints entirely and align it to the same shell width as the page header rather than just making it somewhat larger.
+- When a widened settings card overflows on the right, treat it as a grid shrink/min-width bug first: add `min-w-0` to the right rail and row containers before changing the overall width again.
+- When iPhone local-dev looks black or blank across every route, verify Vite host/port stability and the exact LAN URL before touching route or page code; silent dev-port hopping is a more likely cause than a cross-app render failure.
+- When a HERO step tracker looks visually uneven, do not stretch connector lines inside per-step cells; separate steps and connectors into distinct layout columns so line lengths stay uniform regardless of label wrapping.
+- When a HERO step tracker requires the connector to align with the center of the circles, pin step nodes and connectors to the same explicit grid row and move labels to a separate row; otherwise the line will drift downward with text flow.
+- When a shared HERO step-tracker grid row must center circles and connectors together, never leave `items-start` on the grid container; it collapses connector cells to line height and pins them to the top of the row.
+- When mobile app-shell routes scroll inside `main#main-content`, router-level `window.scrollTo` is not enough; reset the shell-owned scroll container itself on route changes and same-tab retaps.

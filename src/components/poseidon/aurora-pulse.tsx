@@ -4,14 +4,14 @@
  * Replaces static radial-gradient backgrounds with a subtle pulsing aurora.
  * Respects prefers-reduced-motion via useReducedMotionSafe.
  */
-
-import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
+import type { PerformanceProfile } from '@/hooks/usePerformanceProfile'
 import { engineTokens, type EngineName } from '@/lib/engine-tokens'
 
 export interface AuroraPulseProps {
   color?: string
   engine?: EngineName
   intensity?: 'subtle' | 'normal' | 'vivid'
+  performanceProfile?: PerformanceProfile
   className?: string
 }
 
@@ -29,14 +29,20 @@ const variableColorMap: Record<string, string> = {
   'var(--engine-govern)': engineTokens.govern.color,
 }
 
-export function AuroraPulse({ color, engine, intensity = 'normal', className = '' }: AuroraPulseProps) {
-  const reducedMotion = useReducedMotionSafe()
+export function AuroraPulse({
+  color,
+  engine,
+  intensity = 'normal',
+  performanceProfile = 'full',
+  className = '',
+}: AuroraPulseProps) {
   const { primary, secondary } = opacityMap[intensity]
   // Fallback to CSS var instead of hex for JS evaluation. Let CSS do the mix.
   const resolvedColor = color ?? (engine ? `var(--engine-${engine})` : 'var(--engine-dashboard)')
+  const multiplier = performanceProfile === 'static' ? 0.7 : performanceProfile === 'lite' ? 0.85 : 1
 
-  const primaryMix = `color-mix(in srgb, ${resolvedColor} ${primary * 100}%, transparent)`
-  const secondaryMix = `color-mix(in srgb, ${resolvedColor} ${secondary * 100}%, transparent)`
+  const primaryMix = `color-mix(in srgb, ${resolvedColor} ${primary * multiplier * 100}%, transparent)`
+  const secondaryMix = `color-mix(in srgb, ${resolvedColor} ${secondary * multiplier * 100}%, transparent)`
 
   return (
     <div

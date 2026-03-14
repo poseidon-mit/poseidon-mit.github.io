@@ -1,18 +1,56 @@
 import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 
 export interface MatrixRainProps {
   className?: string;
   color?: string;
   columnCount?: number;
+  active?: boolean;
 }
 
 const HEX_CHARS = '0123456789ABCDEF';
 
-export function MatrixRain({ className, color = 'var(--engine-govern)', columnCount = 40 }: MatrixRainProps) {
+function resolveColor(color: string, element: HTMLElement): string {
+  if (!color.startsWith('var(')) return color;
+  const variableName = color.slice(4, -1).trim();
+  return getComputedStyle(element).getPropertyValue(variableName).trim() || '#3B82F6';
+}
+
+function withAlpha(color: string, alpha: number): string {
+  if (color.startsWith('rgb')) {
+    const channels = color
+      .replace(/rgba?\(/, '')
+      .replace(')', '')
+      .split(',')
+      .map((part) => part.trim())
+      .slice(0, 3);
+
+    if (channels.length === 3) {
+      return `rgba(${channels.join(', ')}, ${alpha})`;
+    }
+  }
+
+  if (!color.startsWith('#')) {
+    return `rgba(59, 130, 246, ${alpha})`;
+  }
+
+  const normalized = color.length === 4
+    ? `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}`
+    : color;
+  const red = Number.parseInt(normalized.slice(1, 3), 16);
+  const green = Number.parseInt(normalized.slice(3, 5), 16);
+  const blue = Number.parseInt(normalized.slice(5, 7), 16);
+
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+}
+
+export function MatrixRain({
+  className,
+  color = 'var(--engine-govern)',
+  columnCount = 40,
+  active = true,
+}: MatrixRainProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const reducedMotion = useReducedMotionSafe();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -26,7 +64,7 @@ export function MatrixRain({ className, color = 'var(--engine-govern)', columnCo
       const rect = canvas.getBoundingClientRect();
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
-      ctx.scale(dpr, dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     resize();
@@ -37,11 +75,9 @@ export function MatrixRain({ className, color = 'var(--engine-govern)', columnCo
     const drops: number[] = Array.from({ length: cols }, () => Math.random() * -20);
     const speeds: number[] = Array.from({ length: cols }, () => 0.3 + Math.random() * 0.7);
 
-    // Resolve CSS variable to actual color
-    const computedColor = getComputedStyle(canvas).getPropertyValue('--engine-govern').trim() || '#3B82F6';
+    const computedColor = resolveColor(color, canvas);
 
-    if (reducedMotion) {
-      // Static grid display
+    const drawStaticGrid = () => {
       const rect = canvas.getBoundingClientRect();
       ctx.clearRect(0, 0, rect.width, rect.height);
       const colWidth = rect.width / cols;
@@ -51,12 +87,15 @@ export function MatrixRain({ className, color = 'var(--engine-govern)', columnCo
         for (let r = 0; r < rows; r++) {
           const char = HEX_CHARS[Math.floor(Math.random() * HEX_CHARS.length)];
           const alpha = 0.03 + (1 - r / rows) * 0.08;
-          ctx.fillStyle = `rgba(59, 130, 246, ${alpha})`;
+          ctx.fillStyle = withAlpha(computedColor, alpha);
           ctx.font = `${fontSize}px monospace`;
           ctx.fillText(char, c * colWidth, r * fontSize + fontSize);
         }
       }
+    };
 
+    if (!active) {
+      drawStaticGrid();
       return () => window.removeEventListener('resize', resize);
     }
 
@@ -83,14 +122,14 @@ export function MatrixRain({ className, color = 'var(--engine-govern)', columnCo
         const y = drops[i] * fontSize;
 
         // Bright head
-        ctx!.fillStyle = `rgba(59, 130, 246, 0.9)`;
+        ctx!.fillStyle = withAlpha(computedColor, 0.9);
         ctx!.font = `bold ${fontSize}px monospace`;
         ctx!.fillText(char, i * colWidth, y);
 
         // Trail chars
         if (drops[i] > 1) {
           const trailChar = HEX_CHARS[Math.floor(Math.random() * HEX_CHARS.length)];
-          ctx!.fillStyle = `rgba(59, 130, 246, 0.15)`;
+          ctx!.fillStyle = withAlpha(computedColor, 0.15);
           ctx!.font = `${fontSize}px monospace`;
           ctx!.fillText(trailChar, i * colWidth, y - fontSize * 2);
         }
@@ -111,7 +150,7 @@ export function MatrixRain({ className, color = 'var(--engine-govern)', columnCo
       cancelAnimationFrame(rafId);
       window.removeEventListener('resize', resize);
     };
-  }, [columnCount, reducedMotion, color]);
+  }, [active, columnCount, color]);
 
   return (
     <canvas

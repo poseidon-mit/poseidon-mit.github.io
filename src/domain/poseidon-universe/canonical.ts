@@ -786,10 +786,10 @@ const EXECUTE_ACTIONS: ExecuteActionEntity[] = [
     riskTier: 1,
     compositePriority: 88,
     steps: [
-      { id: 'EXE-001-S1', label: 'Limit check', description: 'Poseidon verified that a $20,000 transfer keeps your post-transfer operating balance above all scheduled obligations and alerts.', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '2s' },
+      { id: 'EXE-001-S1', label: 'Analyze', description: 'Poseidon verified that a $20,000 transfer keeps your post-transfer operating balance above all scheduled obligations and alerts.', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '2s' },
       { id: 'EXE-001-S2', label: 'Prepare ACH instruction', description: 'A one-time ACH transfer from Chase Total Checking to Marcus High-Yield Savings was drafted with settlement rails and fraud checks preloaded.', actor: 'agent', status: 'completed', requiresConsent: false, estimatedDuration: '3s' },
       { id: 'EXE-001-S3', label: 'Authorize transfer', description: 'You review the amount, destination account, and rollback window, then approve the transfer with cryptographic consent.', actor: 'user', status: 'current', requiresConsent: true, estimatedDuration: '~45s' },
-      { id: 'EXE-001-S4', label: 'Monitor settlement', description: 'Poseidon watches the ACH lifecycle, confirms settlement in 2 to 3 business days, and records the result in Govern.', actor: 'agent', status: 'waiting', requiresConsent: false, estimatedDuration: '2-3 days' },
+      { id: 'EXE-001-S4', label: 'Audit', description: 'You review the completed transfer, verify settlement, and confirm the audit trail in Govern.', actor: 'user', status: 'waiting', requiresConsent: false, estimatedDuration: '2-3 days' },
     ],
   },
   {
@@ -3110,7 +3110,7 @@ export const CANONICAL_UNIVERSE: CanonicalUniverseV1 = {
     cohortHeadlines: {
       dashboard: 'Command-center view: one anomaly, two queued actions, and 142 governed inferences in motion.',
       protect: '2,450 transactions scanned in the last 30 days. One anomaly crossed the critical threshold.',
-      grow: 'Poseidon found 2 high-conviction capital-allocation moves worth roughly $1,100/year.',
+      grow: 'Similar households save 12% more per month on average — Poseidon identified 2 moves to narrow the gap.',
       execute: 'Every transfer and dispute waits for your cryptographic consent before it moves.',
       govern: '100% traceability across 45 auditable decisions, with every decision replayable on demand.',
     },

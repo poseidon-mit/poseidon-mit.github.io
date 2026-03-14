@@ -1,3 +1,34 @@
+# Landing Cross-Platform Performance Stabilization
+
+## Intent
+
+- Human: the landing page is too slow on iPhone Safari over cellular, the hero video takes too long to start, and the `Presentation` CTA can feel unresponsive.
+- Task: improve first paint, CTA responsiveness, hero video startup, and `/deck` loading without degrading the desktop visual experience.
+- Feel: same visual language, faster and more reliable interaction, no new LP download CTA.
+
+## Plan
+
+- [x] Rework landing hero media into a poster-first flow with delayed video start and Safari-safe playback control.
+- [x] Add optimistic navigation support to router links and apply it to landing CTAs.
+- [x] Switch `/deck` to the delivery PDF, render a lightweight shell first, and lazy-load the PDF viewer.
+- [x] Move service-worker cleanup off the render-critical path and stop pulling app-shell code into public boot.
+- [x] Generate optimized poster/video assets, run targeted tests/build, and record the outcome.
+
+## Review
+
+- Added poster-first hero media to `src/pages/Landing.tsx`: the landing now renders a high-priority poster immediately, delays MP4 assignment until after first paint, chooses among new mobile/tablet/desktop MP4 variants before playback, and reuses Safari-safe autoplay handling with fallback to poster on failure.
+- Extended `src/router/index.tsx` with `navigationStrategy="optimistic"` and applied it to landing CTA links so `/deck` and dashboard transitions commit immediately instead of waiting on lazy-route downloads.
+- Moved `/deck` into a lightweight shell in `src/pages/DeckViewer.tsx` and lazy-loaded the pdfjs viewer from `src/components/deck/DeckPdfViewer.tsx`, while switching the inline viewer to `public/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf` rather than the 23MB master PDF.
+- Deferred service-worker cleanup in `src/main.tsx` until after initial render and lazy-loaded `AuthenticatedLayout`, which moves app-shell code out of the public-route critical path.
+- Added small performance mark helpers in `src/lib/performance-marks.ts` and emitted marks for poster visibility, CTA click start, deck route feedback, video first frame, and first deck page render.
+- Added/updated tests in `src/router/__tests__/navigation-strategy.test.tsx` and `src/__tests__/landing-layout-freeze.test.tsx` to cover optimistic routing and the new poster-first hero contract.
+- Generated optimized media assets:
+  `public/videos/hero-theme-mobile-v3.mp4` (`927KB`), `public/videos/hero-theme-tablet-v3.mp4` (`2.2MB`), `public/videos/hero-theme-desktop-v3.mp4` (`4.9MB`), and `public/videos/hero-theme-poster-v3.webp` (`118KB`).
+- Verification passed:
+  `npm run typecheck`
+  `npx vitest run src/router/__tests__/navigation-strategy.test.tsx src/__tests__/landing-layout-freeze.test.tsx src/pages/__tests__/LandingStructure.test.tsx`
+  `npm run build`
+
 # Landing Section 3 Shell Baseline Lock
 
 ## Intent
@@ -187,6 +218,37 @@
 - Removed the accidental circular default-export pattern from `src/pages/SettingsGeneral.tsx`, `src/pages/SettingsAI.tsx`, `src/pages/SettingsIntegrations.tsx`, and `src/pages/SettingsRights.tsx`.
 - Compressed the shared Settings shell copy in `src/components/settings/SettingsLayout.tsx`: shorter workspace titles, shorter summaries, lighter helper text, and tighter secondary text styles.
 - Trimmed repeated descriptions inside Settings Overview, AI, Integrations, and Rights so cards no longer explain the same concept twice.
+
+---
+
+# Mobile Local-Dev Load Reliability (iPhone)
+
+## Intent
+
+- Human: iPhone real-device local development can look black/blank, and the local dev URL is easy to invalidate when Vite silently hops ports.
+- Task: make local mobile boot deterministic, fail fast on port drift, and surface a diagnostic instead of an empty screen.
+- Feel: minimal, operational, no engine-page rewrites.
+
+## Plan
+
+- [x] Lock Vite dev to `5173` with `strictPort: true`.
+- [x] Add an explicit `dev:mobile` entrypoint aligned to the same LAN-safe host/port contract.
+- [x] Add a pre-mount local-dev boot overlay plus a route-resolution diagnostic card for delayed local boot.
+- [x] Emit dev-only telemetry for overlay install, pre-mount resolve, first-route ready, and route-resolution timeout.
+- [x] Add targeted tests and verify build plus mobile local-dev smoke behavior.
+
+## Review
+
+- Updated `vite.config.ts` to use `strictPort: true` and aligned `package.json` scripts so `dev`, `dev:vite`, and new `dev:mobile` all target `0.0.0.0:5173` without silent port fallback.
+- Added `src/bootstrap/dev-boot-diagnostics.tsx` with LAN/local-origin detection, a lightweight pre-mount overlay for local dev, and a reusable route-timeout diagnostic card that tells the user to use the LAN IP, stay on the same Wi-Fi, and clear any process occupying `5173`.
+- Wired `src/main.tsx` to install the pre-mount overlay before `ReactDOM.createRoot`, dismiss it on first mount, and log dev telemetry for pre-mount resolution and first-route readiness.
+- Extended `RouteLoadingFallback` so local dev shows the diagnostic card after a shorter route-resolution timeout instead of only a generic spinner/reload state.
+- Added `src/__tests__/local-dev-mobile-reliability.test.tsx` to lock the local-host detection, diagnostic copy, and strict-port script/config contract.
+- Verification passed:
+  `npx vitest run src/__tests__/loading-state-architecture.test.tsx src/__tests__/local-dev-mobile-reliability.test.tsx`
+  `npm run build`
+  `npm run dev` now fails fast with `Error: Port 5173 is already in use` when that port is occupied.
+- Mobile smoke verification passed against `http://192.168.68.53:5173/protect` on a mobile-sized viewport: the pre-mount overlay appeared, logged telemetry, dismissed, and the Protect page rendered successfully.
 - Verification: `npm run typecheck` passes.
 - Verification: headless Playwright against `http://127.0.0.1:4175/settings` reports `hasOverlay: false`, and the page now renders the shortened Settings copy without a Vite error overlay.
 
@@ -208,20 +270,95 @@
 - [x] Recompose `/settings/ai`, `/settings/integrations`, and `/settings/rights` around dedicated content instead of one-tab-page behavior.
 - [x] Run targeted settings verification and capture the results here.
 
+---
+
+# Settings Static Visual Alignment
+
+## Intent
+
+- Human: the unified Settings screen still feels like a separate admin surface instead of part of the same flagship HERO family.
+- Task: align Settings typography, accent hierarchy, symbolic iconography, and glass surfaces with the Govern-led HERO visual grammar without changing layout, routing, or state behavior.
+- Feel: controlled, cinematic, precise, premium, and quieter than the flagship HERO pages.
+
+## Plan
+
+- [x] Rework the shared Settings header and section metadata so the page reads like a Govern control surface instead of a generic admin page.
+- [x] Collapse section-level dominant accents to a Govern-led system while preserving only local semantic accents where they materially aid interpretation.
+- [x] Restyle Settings cards, profile details, labels, and footer terminus so they belong to the same surface family as the HERO panels.
+- [x] Add a lightweight visual-contract test for the Settings header/section static grammar, then run targeted verification.
+- [x] Record the final review here after verification.
+
 ## Review
 
-- Rebuilt `src/components/settings/SettingsLayout.tsx` into a route-aware settings shell with a persistent local workspace nav, route-specific hero copy, a shared posture rail, and reusable settings surface primitives (`SettingsPanel`, `SettingsMetric`, `SettingsWorkspaceCard`).
-- Reworked `src/pages/Settings.tsx` so the route switch now renders inside the new shared shell instead of presenting the settings cluster as one tabbed container.
-- Redesigned `src/pages/SettingsGeneral.tsx` into an actual hub: overview metrics, explicit workspace cards for AI / Integrations / Rights, identity and security controls, and system-wide defaults/alert routing.
-- Rebuilt `src/pages/SettingsAI.tsx` around AI-specific controls: global autonomy threshold, persona selection, and per-engine delegation/risk/toggle controls backed by demo state.
-- Rebuilt `src/pages/SettingsIntegrations.tsx` into a connections workspace with lane-style integration cards, sync/scope posture, and an explicit handoff into Rights for governance controls.
-- Rebuilt `src/pages/SettingsRights.tsx` into a sovereignty workspace with training opt-out, retention, export actions, consent scope disclosure, and the existing DELETE confirmation guard plus governance badge.
-- Verification:
+- Reworked `src/components/settings/SettingsLayout.tsx` so the header now uses a shared HERO backdrop, a Govern-led eyebrow, lighter title hierarchy, and unified section metadata rather than the older admin-shell treatment.
+- Collapsed `SETTINGS_SECTION_ACCENTS` to a Govern-dominant system with symbolic section icons (`User`, `Brain`, `Link2`, `Shield`) and kept the old cyan/violet/amber accents only for local detail cues such as the AI slider and integration status dots.
+- Restyled `src/pages/SettingsGeneral.tsx`, `src/pages/SettingsAI.tsx`, `src/pages/SettingsIntegrations.tsx`, and `src/pages/SettingsRights.tsx` to use mono micro-labels, lighter HERO-style headings, quieter profile chrome, blue-active controls, toned-down row icons, and a footer-like audit terminus instead of the old card-grid admin tone.
+- Updated shared primitives in `src/components/poseidon/hero-concept-primitives.tsx`, `src/components/poseidon/glass-slider.tsx`, and `src/styles/layers/poseidon.css` so the Settings surfaces belong to the same prism/surface family as the HERO pages without introducing new motion or heavier blur.
+- Added `src/__tests__/settings-visual-contract.test.tsx` to lock the Govern-led header copy and unified section-accent contract while keeping the existing route/state tests intact.
+- Verification passed:
   `npm run typecheck`
-  `npx vitest run src/__tests__/flows/rights-exercise.test.tsx src/pages/__tests__/visual-system-all-pages.test.tsx src/__tests__/target-scope-contracts.test.ts src/__tests__/infra-integrity.test.ts`
+  `npx vitest run src/__tests__/settings-route-persistence.test.tsx src/__tests__/settings-visual-contract.test.tsx src/__tests__/flows/rights-exercise.test.tsx src/contracts/__tests__/screen-contracts-v4.test.tsx`
+  `npm run build`
 - Browser verification:
-  Desktop at `1440x1100` confirmed `/settings` now renders as a hub with visible route segmentation and no horizontal overflow.
-  Mobile at `375x900` confirmed `/settings` and `/settings/ai` keep the local nav usable and `scrollWidth === clientWidth === 375`.
+  Playwright at `1440x1100` confirmed the static hierarchy now reads as a Govern control surface with a centered identity card, quieter profile chrome, unified blue section eyebrows, and a clearer footer terminus.
+  Playwright at `375x900` confirmed `window.innerWidth === scrollWidth === 375`, the main Settings grids collapse to single-column computed layouts, and the same Govern-led static tone holds on the narrow viewport.
+
+---
+
+# Settings Balance Pass
+
+## Intent
+
+- Human: the current unified Settings page still feels text-heavy and the centered profile card is too vertical for the surrounding layout.
+- Task: rebalance the screen by widening the profile card, renaming it to `Profile`, and removing non-essential helper copy and permissions pills.
+- Feel: wider, cleaner, more balanced, less explanatory.
+
+## Plan
+
+- [x] Convert the profile card into a wider landscape layout while preserving the same identity data.
+- [x] Remove the requested helper text and section descriptions from AI and Rights.
+- [x] Remove the permissions pill badges from Integrations and keep only the essential status information.
+- [x] Update the targeted Settings tests to the new copy and run verification.
+
+## Review
+
+- Updated `src/pages/SettingsGeneral.tsx` so the former `Identity Surface` card now reads `Profile`, drops `Workspace owner`, and becomes a landscape card on desktop with the avatar/name block on the left and contact rows on the right.
+- Removed the requested helper copy from `src/pages/SettingsAI.tsx` and `src/pages/SettingsRights.tsx`, keeping only the core control labels and action content.
+- Removed the integration permissions pill badges from `src/pages/SettingsIntegrations.tsx` so the rows now show only the provider, description, status, and toggle.
+- Updated `src/__tests__/settings-visual-contract.test.tsx` to reflect the new `Profile` label and the removal of the deleted copy.
+- Verification passed:
+  `npm run typecheck`
+  `npx vitest run src/__tests__/settings-route-persistence.test.tsx src/__tests__/settings-visual-contract.test.tsx src/__tests__/flows/rights-exercise.test.tsx`
+- Browser verification:
+  Playwright at `http://127.0.0.1:4174/settings` confirmed the profile card is landscape on desktop (`728px` wide vs `382px` tall) and the page still has no horizontal overflow (`scrollWidth === innerWidth`).
+
+---
+
+# Settings Profile Width Alignment
+
+## Intent
+
+- Human: the `Profile` card still reads as a centered medium-width block instead of a full-width landscape panel matching the `Settings` shell above it.
+- Task: remove the remaining width constraint from the profile panel and align its outer width to the header shell while keeping the same content and mobile behavior.
+- Feel: full-width, flatter, more balanced against the header shell.
+
+## Plan
+
+- [x] Remove the `Profile` panel max-width constraint and use the section width already provided by the shared page content container.
+- [x] Switch the desktop internals to a fixed 2-column grid that keeps the identity rail wide enough for `Shinji Fujiwara` to stay on one line.
+- [x] Tighten the visual contract so the widened panel shape is locked, then rerun targeted verification.
+
+## Review
+
+- Updated `src/pages/SettingsGeneral.tsx` so the `Profile` panel no longer uses `mx-auto max-w-[52rem]`; it now fills the shared page content width and uses a desktop `lg:grid-cols-[minmax(320px,420px)_minmax(0,1fr)]` layout.
+- Kept the identity rail on the left and the contact rows on the right, but widened the left rail and added desktop-only `whitespace-nowrap` so `Shinji Fujiwara` stays on one line when the screen is wide enough.
+- Updated `src/__tests__/settings-visual-contract.test.tsx` to assert that the profile card remains `w-full` and no longer carries the old centering and max-width classes.
+- Verification passed:
+  `npm run typecheck`
+  `npx vitest run src/__tests__/settings-route-persistence.test.tsx src/__tests__/settings-visual-contract.test.tsx src/__tests__/flows/rights-exercise.test.tsx`
+- Browser verification:
+  Playwright against `http://127.0.0.1:4175/settings` measured `settings-hero-header` width `728px` and `settings-profile-card` width `728px` with `diff = 0`, and the profile card remained landscape.
+  A follow-up Playwright pass confirmed the right contact rows no longer overflow the card: `maxOverflowRight = 0` and `scrollWidth === innerWidth`.
 
 ---
 
@@ -282,3 +419,112 @@
   `npx vitest run src/__tests__/flows/rights-exercise.test.tsx src/pages/__tests__/visual-system-all-pages.test.tsx src/__tests__/target-scope-contracts.test.ts src/__tests__/infra-integrity.test.ts`
 - Browser verification:
   Desktop at `1440x1100` confirmed `/settings`, `/settings/integrations`, and `/settings/rights` render with the simplified hero-style header and without the removed pill/badge treatments.
+# HERO / Settings ページ遷移・描画性能最適化
+
+## Intent
+
+- Human: HERO と Settings の app-shell ページで、通常遷移時のローディング画面をなくし、クロスプラットフォームでの描画負荷も下げたい。
+- Task: app-shell 内遷移を seamless 化し、Settings keep-mounted 化、hero/settings の motion / blur / canvas / rerender を整理し、in-scope regression guard を追加する。
+- Feel: same visual language, less flashing, lighter idle cost, more native-feeling navigation.
+
+## Plan
+
+- [x] Add staged `seamless` app-shell navigation with pending-route telemetry and delayed busy state.
+- [x] Replace shell `prefetch="render"` with intent prefetch plus idle warmup for flagship routes.
+- [x] Introduce shared performance profiling and shared hero/settings CSS fallbacks for blur, viewport height, and continuous effects.
+- [x] Convert Settings to keep-mounted route sections and remove `framer-motion` from Settings + GovernFooter.
+- [x] Remove `framer-motion` from in-scope hero routes and gate heavy effects/timers/canvas by performance profile.
+- [x] Split demo-state consumption into slice hooks for shell + HERO/Settings surfaces.
+- [x] Add/update targeted tests, run verification, and record the outcome below.
+
+## Review
+
+- Added staged app-shell navigation in `src/router/index.tsx`: app routes now default to `seamless`, keep the current page visible while target modules preload, expose `pendingPath`/`showPendingIndicator`, and mark `route_intent`, `route_module_ready`, `route_commit`, `route_paint`, `module_load_ms`, `app_shell_route_switch_ms`, and `route_commit_to_paint_ms`.
+- Reworked shell prefetching: engine/settings links were moved to `prefetch="intent"`, `src/hooks/useRouteWarmup.ts` now warms `/dashboard → /protect → /grow → /execute → /govern → /settings` on idle when device/network conditions allow, and `AppNavShell` / `Sidebar` / `TopBar` now surface a delayed non-blocking pending indicator instead of full-page takeover.
+- Added `src/hooks/usePerformanceProfile.ts` and applied it across HERO/Settings surfaces. `HeroBackdrop`, `HeroUnifiedFooter`, `AuroraPulse`, `MatrixRain`, Execute, Govern, Protect, Grow, Dashboard, and Settings now downgrade blur, hover glow, marquee, pulse, and continuous animation based on reduced motion, pointer type, page visibility, and low-end device signals.
+- Converted Settings into a keep-mounted route model in `src/pages/Settings.tsx`, moved Settings state reads to slice hooks in `src/pages/SettingsGeneral.tsx`, `src/pages/SettingsAI.tsx`, and `src/pages/SettingsRights.tsx`, and removed `framer-motion` from the Settings route family and `src/components/poseidon/govern-footer.tsx`.
+- Rebuilt `src/components/poseidon/execute-hero.tsx` and `src/components/poseidon/govern-hero.tsx` onto plain DOM/CSS transitions, replaced Govern canvas scaling with `setTransform()` in `src/components/poseidon/effects/MatrixRain.tsx`, and moved shared footer/orbit animation rules into `src/styles/layers/poseidon.css` with Safari-safe viewport/backdrop fallbacks plus `100vh -> 100svh -> 100dvh` in `src/styles/layouts/hero-viewport.css`.
+- Split demo-state subscriptions by slice in `src/lib/demo-state/provider.tsx`, then migrated shell, Dashboard, Execute, and Settings consumers off the monolithic `useDemoState()` read path where it mattered for HERO/Settings rerender pressure.
+- Reduced shell-side motion cost by lazy-loading `CommandPalette`, mobile `SideDrawer`, and toast UI renderers in `src/components/layout/AppNavShell.tsx` and `src/components/providers/ToastProvider.tsx`; the build now emits separate `CommandPalette`, `sheet`, and `toast` chunks rather than forcing those motion surfaces into the earliest shell render path.
+- Verification passed:
+  `npm run typecheck`
+  `npx vitest run src/router/__tests__/navigation-strategy.test.tsx src/__tests__/settings-route-persistence.test.tsx src/__tests__/govern-hero.test.tsx src/__tests__/execute-hero.test.tsx src/__tests__/loading-state-architecture.test.tsx`
+  `npm run build`
+# Settings Unified Focus-Center Layout
+
+## Intent
+
+- Human: make Settings feel like one coherent control surface instead of four split workspaces, with the user identity visually centered and the rest of the controls subordinate.
+- Task: collapse Overview, AI, Integrations, and Rights into a single `/settings` page using the focus-center layout, while keeping the current controls and reducing route/UI overhead.
+- Feel: Dark-Luxe, composed, premium, lighter than the current tabbed/settings-subroute experience.
+
+## Plan
+
+- [x] Replace the tabbed `SettingsLayout` shell with a single-page header and centered profile card layout.
+- [x] Recompose `Settings.tsx` so Profile, AI, Integrations, and Rights always render on one page and keep their local state.
+- [x] Normalize legacy `/settings/ai`, `/settings/integrations`, and `/settings/rights` URLs to `/settings` and update visible settings links/breadcrumbs accordingly.
+- [x] Add the necessary Settings-specific performance fallbacks so the unified page stays light on mobile/Safari.
+- [x] Update the targeted Settings tests and route-contract assertions, then run the relevant verification commands.
+
+## Review
+
+- Replaced the old tabbed Settings shell with a single `Settings` canvas that centers the profile card, places AI and Integrations in a responsive middle band, and keeps Rights full-width below with a split internal layout.
+- Added `phone` to `DemoUser`, surfaced profile identity in the centered hero card, and removed the old Overview jump-card pattern so all controls stay inline on one screen.
+- Added router-level `replace` support and used it to normalize `/settings/ai`, `/settings/integrations`, and `/settings/rights` back to `/settings`, while also collapsing visible Settings links and breadcrumbs onto the canonical route.
+- Swapped Settings-specific visuals off the old tab/nav shell and onto lightweight CSS surfaces with single-layer glass, static accent gradients, and existing `usePerformanceProfile()` fallbacks.
+- Verification passed:
+  `npm run typecheck`
+  `npx vitest run src/__tests__/settings-route-persistence.test.tsx src/__tests__/flows/rights-exercise.test.tsx src/contracts/__tests__/screen-contracts-v4.test.tsx src/__tests__/target-scope-contracts.test.ts`
+  `npm run build`
+  Browser spot check with Playwright on `http://127.0.0.1:4174/settings` at `1440x1100` and `375x900`
+
+# Execute HERO Connector Centerline Fix
+
+## Intent
+
+- Human: the Execute HERO step tracker still shows connector lines above the circles instead of through their vertical centerline.
+- Task: correct the step-tracker row alignment without changing copy, step state logic, or the equal-width connector model.
+- Feel: precise, stable, visually centered.
+
+## Plan
+
+- [x] Remove the row-1 `items-start` behavior and replace it with an explicit two-row grid for the pipeline.
+- [x] Make node wrappers and connector wrappers fill the first row so both center against the same 40px track.
+- [x] Add regression hooks/assertions for the pipeline grid and connector wrappers.
+- [x] Update the lessons log and run targeted verification.
+
+## Review
+
+- Updated `src/components/poseidon/execute-hero.tsx` so `StepPipeline` now uses `gridTemplateRows: "40px auto"`, no longer uses `items-start`, and gives both circle wrappers and connector wrappers `h-full` in row 1.
+- Added `data-testid="execute-step-pipeline"` and per-connector test ids so the row contract is asserted directly instead of relying on text-only DOM checks.
+- Extended `src/__tests__/execute-hero.test.tsx` with a regression test that verifies the two-row grid, the equal-width alternating columns, and row-1 connector placement.
+- Verification:
+  `npx vitest run src/__tests__/execute-hero.test.tsx`
+- Browser verification:
+  Playwright against `http://127.0.0.1:5173/execute` measured connector centerline deltas of `0` at both `1440x1100` and `390x844`, with all three connector wrappers rendering at `40px` row height.
+
+# Mobile App-Shell Scroll Reset
+
+## Intent
+
+- Human: on mobile, switching between Protect, Grow, Execute, and Govern should always land at the top of the next screen instead of preserving the previous scroll position.
+- Task: reset the actual mobile scroll owner during app-shell route changes and when the active mobile tab is tapped again.
+- Feel: deterministic, native, no retained scroll carryover between flagship routes.
+
+## Plan
+
+- [x] Confirm whether mobile scroll ownership lives on `window` or `main#main-content`.
+- [x] Reset the shell-owned scroll container on app-shell path changes.
+- [x] Reuse the same scroll-to-top helper for active mobile-tab retaps.
+- [x] Add regression coverage and verify with a mobile browser pass.
+
+## Review
+
+- Updated `src/components/layout/AppNavShell.tsx` to track `main#main-content` via ref and reset that shell-owned scroll container in a `useLayoutEffect` whenever the `path` prop changes.
+- Kept the existing `window.scrollTo` fallback, but moved the source of truth to the shell viewport so mobile app-shell navigation no longer depends on the wrong scroll owner.
+- Rewired the active mobile bottom-nav retap path to use the same helper, so tapping the current engine tab now scrolls the shell viewport to the top on mobile as originally intended.
+- Added regression tests in `src/__tests__/mobile-scroll-contract.test.tsx` for both path-change reset and active-tab retap reset.
+- Verification:
+  `npx vitest run src/__tests__/mobile-scroll-contract.test.tsx`
+- Browser verification:
+  Playwright at `390x844` reproduced the old issue (`/protect` -> `/grow` kept `main.scrollTop = 640`) before the fix, and after the fix measured `main.scrollTop = 0` on `/grow`, `/execute`, and `/govern` immediately after each mobile nav transition.

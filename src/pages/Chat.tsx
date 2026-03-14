@@ -518,14 +518,9 @@ export default function Chat() {
             <div className="absolute inset-0 bg-white/5 opacity-0 transition-opacity group-hover:opacity-100" />
             <Sparkles className="h-4 w-4 text-cyan-400 drop-shadow-[0_0_8px_rgba(0,240,255,0.8)] relative z-10" />
           </div>
-          <div className="flex flex-col">
-            <h1 className="text-sm font-semibold tracking-wide text-white/90">
-              Poseidon Intelligence
-            </h1>
-            <span className="text-[10px] font-medium tracking-widest text-emerald-400 uppercase">
-              Secure Link Active
-            </span>
-          </div>
+          <h1 className="text-sm font-semibold tracking-wide text-white/90">
+            Talk your money
+          </h1>
         </div>
 
         <button
@@ -542,22 +537,6 @@ export default function Chat() {
       <div className="flex-1 overflow-y-auto px-4 lg:px-0 scrollbar-hide relative z-10">
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center h-full px-4 py-8 max-w-2xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-violet-500/20 to-cyan-500/20 border border-white/[0.08] shadow-[0_0_30px_rgba(139,92,246,0.2)] mb-8 relative overflow-hidden group cursor-default"
-            >
-              <div className="absolute inset-0 bg-white/5 opacity-0 transition-opacity group-hover:opacity-100" />
-              <MessageCircle className="h-10 w-10 text-violet-400 drop-shadow-[0_0_12px_rgba(139,92,246,0.6)] relative z-10 transition-transform duration-500 group-hover:scale-110" />
-            </motion.div>
-            <h2 className="typo-display text-center text-3xl font-light tracking-tight text-white mb-3">
-              Initializing Engine
-            </h2>
-            <p className="text-center text-sm text-white/50 max-w-md mb-10 leading-relaxed">
-              Your autonomous financial intelligence is online. Formulate a
-              directive or utilize a recommended vector below.
-            </p>
             <div className="w-full">
               <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-white/30 text-center">
                 Suggested Execution Vectors

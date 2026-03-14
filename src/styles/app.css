@@ -13,6 +13,9 @@
 @import './effects/glass.css';
 @import './effects/neon.css';
 
+/* ── Layer 2: Poseidon Expression Tokens ── */
+@import './layers/poseidon.css';
+
 /* ── Layout utilities ── */
 @import './layouts/hero-viewport.css';
 

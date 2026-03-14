@@ -132,9 +132,9 @@ export function SettingsControlCenter({
       <HeroBento.Portal>
         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
           <PortalLink to="/settings" icon={User} label="Profile" />
-          <PortalLink to="/settings/integrations" icon={Link2} label={`Integrations (${connectedAccounts} active)`} />
-          <PortalLink to="/settings/ai" icon={Brain} label={`AI Preferences · ${aiMode}`} />
-          <PortalLink to="/settings/rights" icon={Shield} label="Privacy & Rights · GDPR compliant" />
+          <PortalLink to="/settings" icon={Link2} label={`Integrations (${connectedAccounts} active)`} />
+          <PortalLink to="/settings" icon={Brain} label={`AI Preferences · ${aiMode}`} />
+          <PortalLink to="/settings" icon={Shield} label="Privacy & Rights · GDPR compliant" />
         </div>
       </HeroBento.Portal>
     </HeroBento>

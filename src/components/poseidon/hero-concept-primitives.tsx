@@ -1,22 +1,26 @@
+import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 import { Link } from "@/router";
 import { ChevronRight } from "lucide-react";
-import { useReducedMotionSafe } from "@/hooks/useReducedMotionSafe";
+import type { PerformanceProfile } from "@/hooks/usePerformanceProfile";
 
 export interface HeroBackdropProps {
   accent: string;
   secondaryAccent?: string;
-  reducedMotion?: boolean;
+  performanceProfile?: PerformanceProfile;
   className?: string;
 }
 
 export function HeroBackdrop({
   accent,
   secondaryAccent,
-  reducedMotion = false,
+  performanceProfile = "full",
   className,
 }: HeroBackdropProps) {
   const secondary = secondaryAccent ?? accent;
+  const allowContinuousAnimation = performanceProfile === "full";
+  const backdropOpacity = performanceProfile === "static" ? "opacity-80" : "opacity-90";
+  const glowOpacity = performanceProfile === "lite" ? "opacity-30" : "opacity-45";
 
   return (
     <div
@@ -26,7 +30,7 @@ export function HeroBackdrop({
       )}
     >
       <div
-        className="absolute inset-0 opacity-90"
+        className={cn("absolute inset-0", backdropOpacity)}
         style={{
           background: [
             `radial-gradient(circle at 18% 4%, color-mix(in srgb, ${accent} 20%, transparent), transparent 30%)`,
@@ -39,8 +43,9 @@ export function HeroBackdrop({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0,rgba(0,0,0,0.28)_72%)]" />
       <div
         className={cn(
-          "absolute left-1/2 top-[18%] h-56 w-[82%] -translate-x-1/2 rounded-full blur-3xl opacity-45",
-          !reducedMotion && "animate-[pulse_9s_ease-in-out_infinite]",
+          "absolute left-1/2 top-[18%] h-56 w-[82%] -translate-x-1/2 rounded-full blur-3xl",
+          glowOpacity,
+          allowContinuousAnimation && "animate-[pulse_9s_ease-in-out_infinite]",
         )}
         style={{
           background: `linear-gradient(90deg, transparent, color-mix(in srgb, ${accent} 32%, transparent), transparent)`,
@@ -53,16 +58,18 @@ export function HeroBackdrop({
 export function HeroEyebrow({
   children,
   className,
+  ...rest
 }: {
   children: React.ReactNode;
   className?: string;
-}) {
+} & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(
         "inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-white/60",
         className,
       )}
+      {...rest}
     >
       {children}
     </div>
@@ -103,16 +110,24 @@ export function HeroMetricPill({
 export function HeroPanel({
   children,
   className,
+  performanceProfile = "full",
   ...rest
 }: React.HTMLAttributes<HTMLDivElement> & {
   children: React.ReactNode;
+  performanceProfile?: PerformanceProfile;
 }) {
   return (
     <div
       className={cn(
-        "rounded-[28px] border border-white/10 bg-black/28 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-xl",
+        "poseidon-surface-panel rounded-[28px] border border-white/10 bg-black/28 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]",
+        performanceProfile === "static"
+          ? "poseidon-surface-panel-static"
+          : performanceProfile === "lite"
+            ? "poseidon-surface-panel-lite"
+            : "poseidon-surface-panel-full",
         className,
       )}
+      data-performance-profile={performanceProfile}
       {...rest}
     >
       {children}
@@ -124,6 +139,7 @@ export interface HeroUnifiedFooterProps {
   to: string;
   label: string;
   engineColor: string;
+  performanceProfile?: PerformanceProfile;
   icon?: React.ComponentType<{
     className?: string;
     style?: React.CSSProperties;
@@ -134,20 +150,24 @@ export function HeroUnifiedFooter({
   to,
   label,
   engineColor,
+  performanceProfile = "full",
   icon: Icon,
 }: HeroUnifiedFooterProps) {
-  const reducedMotion = useReducedMotionSafe();
-
   // Make enough copies to ensure the screen is always filled during the scroll
   const repeatCount = 8;
   const items = Array.from({ length: repeatCount });
+  const useStaticFooter = performanceProfile !== "full";
+  const footerStyle = {
+    ["--poseidon-footer-color" as string]: engineColor,
+  } as CSSProperties;
 
   return (
     <Link
       to={to}
+      style={footerStyle}
       className={cn(
-        "group relative mt-auto flex w-full items-center border-t border-white/5 bg-transparent py-5 transition-all duration-500 hover:bg-[#050510] hover:border-white/10 z-10 overflow-hidden",
-        reducedMotion ? "justify-center" : "",
+        "poseidon-hero-footer group relative z-10 mt-auto flex w-full items-center overflow-hidden border-t border-white/5 bg-transparent py-5 transition-all duration-500 hover:border-white/10",
+        useStaticFooter ? "justify-center" : "",
       )}
     >
       {/* Test / Accessibility anchor to prevent RTL 'multiple elements' errors */}
@@ -155,30 +175,23 @@ export function HeroUnifiedFooter({
 
       {/* Top border glow effect */}
       <div
-        className="absolute top-0 left-0 w-full h-[1px] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{
-          background: `linear-gradient(90deg, transparent, ${engineColor}, transparent)`,
-          boxShadow: `0 0 10px 1px ${engineColor}`,
-        }}
+        className="poseidon-hero-footer-topline absolute left-0 top-0 h-[1px] w-full opacity-0 transition-opacity duration-500 group-hover:opacity-100"
       />
 
-      {/* Dynamic Glow Effect on Text */}
-      <style>{`
-        .group:hover .marquee-text-glow {
-          text-shadow: 0 0 15px color-mix(in srgb, ${engineColor} 80%, transparent);
-          color: #fff;
-        }
-      `}</style>
+      {/* Bottom border glow effect */}
+      <div
+        className="poseidon-hero-footer-bottomline absolute bottom-0 left-0 h-[1px] w-full opacity-0 transition-opacity duration-500 group-hover:opacity-70"
+      />
 
-      {reducedMotion ? (
+      {useStaticFooter ? (
         <div className="flex items-center gap-3 px-6">
           {Icon && (
             <Icon
-              className="h-4 w-4 opacity-50 transition-all duration-300 group-hover:opacity-100 group-hover:scale-110"
+              className="poseidon-hero-footer-icon h-4 w-4 opacity-50 transition-all duration-300"
               style={{ color: engineColor }}
             />
           )}
-          <span className="marquee-text-glow font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] text-white/40 transition-all duration-300">
+          <span className="poseidon-hero-footer-glow font-mono text-[11px] uppercase tracking-[0.2em] text-white/40 transition-all duration-300 sm:text-xs">
             [ {label} ]
           </span>
           <ChevronRight
@@ -188,7 +201,7 @@ export function HeroUnifiedFooter({
         </div>
       ) : (
         <div
-          className="flex whitespace-nowrap group-hover:[animation-play-state:paused] animate-[marquee_25s_linear_infinite]"
+          className="poseidon-hero-footer-marquee flex whitespace-nowrap"
           aria-hidden="true"
         >
           {/* Group 1 */}
@@ -197,14 +210,14 @@ export function HeroUnifiedFooter({
               <div key={i} className="flex items-center gap-8 px-6 shrink-0">
                 {Icon && (
                   <Icon
-                    className="h-3.5 w-3.5 opacity-30 transition-all duration-300 group-hover:opacity-100"
+                    className="poseidon-hero-footer-icon h-3.5 w-3.5 opacity-30 transition-all duration-300"
                     style={{ color: engineColor }}
                   />
                 )}
-                <span className="marquee-text-glow font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] text-white/30 transition-all duration-300">
+                <span className="poseidon-hero-footer-glow font-mono text-[11px] uppercase tracking-[0.2em] text-white/30 transition-all duration-300 sm:text-xs">
                   {label}
                 </span>
-                <span className="text-white/10 text-[10px]">&bull;</span>
+                <span className="text-white/10 text-[10px] transition-colors duration-300 group-hover:text-white/40">&bull;</span>
               </div>
             ))}
           </div>
@@ -217,27 +230,20 @@ export function HeroUnifiedFooter({
               >
                 {Icon && (
                   <Icon
-                    className="h-3.5 w-3.5 opacity-30 transition-all duration-300 group-hover:opacity-100"
+                    className="poseidon-hero-footer-icon h-3.5 w-3.5 opacity-30 transition-all duration-300"
                     style={{ color: engineColor }}
                   />
                 )}
-                <span className="marquee-text-glow font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] text-white/30 transition-all duration-300">
+                <span className="poseidon-hero-footer-glow font-mono text-[11px] uppercase tracking-[0.2em] text-white/30 transition-all duration-300 sm:text-xs">
                   {label}
                 </span>
-                <span className="text-white/10 text-[10px]">&bull;</span>
+                <span className="text-white/10 text-[10px] transition-colors duration-300 group-hover:text-white/40">&bull;</span>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Marquee Keyframes */}
-      <style>{`
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
     </Link>
   );
 }

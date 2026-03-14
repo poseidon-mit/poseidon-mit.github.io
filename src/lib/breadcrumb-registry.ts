@@ -23,7 +23,7 @@ export const BREADCRUMB_MAP: Record<string, string[]> = {
   '/chat': ['Chat'],
   '/talk': ['Talk'],
   '/settings': ['Settings'],
-  '/settings/ai': ['Settings', 'AI Preferences'],
-  '/settings/integrations': ['Settings', 'Integrations'],
-  '/settings/rights': ['Settings', 'Rights & Privacy'],
+  '/settings/ai': ['Settings'],
+  '/settings/integrations': ['Settings'],
+  '/settings/rights': ['Settings'],
 }

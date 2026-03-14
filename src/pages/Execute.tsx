@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { ExecuteHero } from '@/components/poseidon/execute-hero'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { useRouter } from '@/router'
-import { useDemoState } from '@/lib/demo-state/provider'
+import { useDemoExecute } from '@/lib/demo-state/provider'
 import {
   selectExecuteHeroView,
 } from '@/domain/poseidon-universe'
@@ -10,11 +10,11 @@ import {
 export default function ExecutePage() {
   usePageTitle('Execute')
   const router = useRouter()
-  const { state } = useDemoState()
+  const executeState = useDemoExecute()
 
   const heroView = useMemo(
-    () => selectExecuteHeroView(state.execute.actionStates),
-    [state.execute.actionStates],
+    () => selectExecuteHeroView(executeState.actionStates),
+    [executeState.actionStates],
   )
 
   return (

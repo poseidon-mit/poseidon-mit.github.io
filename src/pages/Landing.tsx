@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useMotionValue, useSpring, useMotionTemplate, AnimatePresence } from 'framer-motion';
 import { Link } from '@/router';
-import { Shield, TrendingUp, Zap, Scale, Lock, ShieldCheck, Eye, Play, FileText, Blocks, ArrowRight, CheckCircle2, Presentation, X } from 'lucide-react';
+import { Shield, TrendingUp, Zap, Scale, Lock, ShieldCheck, Eye, Play, Blocks, ArrowRight, CheckCircle2, Presentation, X } from 'lucide-react';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/motion-presets';
+import { markPerformance } from '@/lib/performance-marks';
 import { usePageTitle } from '@/hooks/use-page-title';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { MenuOverlay } from '@/components/landing/jeton/MenuOverlay';
 import { Footer } from '@/components/landing/jeton/Footer';
-import { selectArchitecturalTrust, selectCohortMetrics } from '@/domain/poseidon-universe';
 import { LANDING_COPY } from '@/content/landing-copy';
 
 const ENGINE_COLORS: Record<string, string> = {
@@ -16,6 +16,45 @@ const ENGINE_COLORS: Record<string, string> = {
   execute: 'var(--engine-execute)',
   govern: 'var(--engine-govern)',
 };
+
+const HERO_VIDEO_POSTER_WEBP_SRC = '/videos/hero-theme-poster-v3.webp';
+const HERO_VIDEO_POSTER_FALLBACK_SRC = '/videos/hero-theme-poster-v2.jpg';
+const HERO_VIDEO_SOURCES = {
+  mobile: '/videos/hero-theme-mobile-v3.mp4',
+  tablet: '/videos/hero-theme-tablet-v3.mp4',
+  desktop: '/videos/hero-theme-desktop-v3.mp4',
+} as const;
+
+function resolveLandingHeroVideoSrc(width: number): string {
+  if (width < 768) return HERO_VIDEO_SOURCES.mobile;
+  if (width < 1200) return HERO_VIDEO_SOURCES.tablet;
+  return HERO_VIDEO_SOURCES.desktop;
+}
+
+function useLandingHeroVideoSrc(): string {
+  const [src, setSrc] = useState(() =>
+    typeof window !== 'undefined'
+      ? resolveLandingHeroVideoSrc(window.innerWidth)
+      : HERO_VIDEO_SOURCES.desktop,
+  );
+
+  useEffect(() => {
+    const sync = () => {
+      setSrc(resolveLandingHeroVideoSrc(window.innerWidth));
+    };
+
+    sync();
+    window.addEventListener('resize', sync);
+    window.addEventListener('orientationchange', sync);
+
+    return () => {
+      window.removeEventListener('resize', sync);
+      window.removeEventListener('orientationchange', sync);
+    };
+  }, []);
+
+  return src;
+}
 
 const ENGINES = [
   { id: 'protect', name: LANDING_COPY.engineShowcase.cards[0].name, desc: LANDING_COPY.engineShowcase.cards[0].description, icon: Shield, confidence: LANDING_COPY.engineShowcase.cards[0].confidence },
@@ -28,9 +67,18 @@ export default function Landing() {
   usePageTitle('Welcome to Poseidon');
   const reducedMotion = useReducedMotionSafe();
   const { scrollYProgress } = useScroll();
-  
+
   const [isMobile, setIsMobile] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const [shouldLoadHeroVideo, setShouldLoadHeroVideo] = useState(false);
+  const [heroVideoReady, setHeroVideoReady] = useState(false);
+  const [heroVideoFailed, setHeroVideoFailed] = useState(false);
+  const heroSectionRef = useRef<HTMLElement | null>(null);
+  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
+  const posterImageRef = useRef<HTMLImageElement | null>(null);
+  const posterMarkedRef = useRef(false);
+  const heroVideoSrc = useLandingHeroVideoSrc();
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
     checkMobile();
@@ -38,9 +86,27 @@ export default function Landing() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const trust = selectArchitecturalTrust();
-  const cohort = selectCohortMetrics();
+  useEffect(() => {
+    const rafId = window.requestAnimationFrame(() => {
+      setShouldLoadHeroVideo(true);
+    });
 
+    return () => {
+      window.cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  useEffect(() => {
+    setHeroVideoReady(false);
+    setHeroVideoFailed(false);
+  }, [heroVideoSrc]);
+
+  useEffect(() => {
+    const posterImage = posterImageRef.current;
+    if (!posterImage?.complete || posterMarkedRef.current) return;
+    posterMarkedRef.current = true;
+    markPerformance('landing_poster_visible');
+  }, []);
   // Section 1: Hero Lens
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -57,9 +123,135 @@ export default function Landing() {
 
   // Section 3: Glass Vault Parallax
   const vaultRotateX = useTransform(scrollYProgress, [0.3, 0.7], [10, -5]);
-  
-  // Section 4: Z-Pattern 
-  const zPathProgress = useTransform(scrollYProgress, [0.6, 0.9], [1, 0]);
+
+  useEffect(() => {
+    if (!shouldLoadHeroVideo || heroVideoFailed) {
+      return;
+    }
+
+    const video = heroVideoRef.current;
+    const heroSection = heroSectionRef.current;
+    if (!video || !heroSection) {
+      return;
+    }
+
+    video.defaultMuted = true;
+    video.muted = true;
+
+    let visible = document.visibilityState === 'visible';
+    let intersecting = true;
+    let disposed = false;
+    let retryScheduled = false;
+    let readyReported = false;
+
+    const reportVideoReady = () => {
+      if (!readyReported) {
+        readyReported = true;
+        markPerformance('landing_video_first_frame');
+      }
+      setHeroVideoReady(true);
+    };
+
+    const tryPlay = async () => {
+      if (!visible || !intersecting || disposed) return;
+
+      try {
+        await video.play();
+      } catch (error: any) {
+        if (disposed) return;
+        if (error?.name === 'AbortError') {
+          if (!retryScheduled) {
+            retryScheduled = true;
+            window.setTimeout(() => {
+              retryScheduled = false;
+              void tryPlay();
+            }, 200);
+          }
+          return;
+        }
+
+        if (error?.name !== 'NotAllowedError') {
+          setHeroVideoFailed(true);
+        }
+      }
+    };
+
+    const handleLoadedData = () => {
+      reportVideoReady();
+      void tryPlay();
+    };
+
+    const handleCanPlay = () => {
+      reportVideoReady();
+      void tryPlay();
+    };
+
+    const handleVisibilityChange = () => {
+      visible = document.visibilityState === 'visible';
+      if (!visible) {
+        video.pause();
+        return;
+      }
+      void tryPlay();
+    };
+
+    video.addEventListener('loadeddata', handleLoadedData);
+    video.addEventListener('canplay', handleCanPlay);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    let observer: IntersectionObserver | null = null;
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          intersecting = Boolean(entry?.isIntersecting);
+
+          if (!intersecting) {
+            video.pause();
+            return;
+          }
+
+          void tryPlay();
+        },
+        {
+          threshold: 0.08,
+        },
+      );
+      observer.observe(heroSection);
+    }
+
+    if (video.readyState >= 2) {
+      reportVideoReady();
+      void tryPlay();
+    }
+
+    return () => {
+      disposed = true;
+      video.removeEventListener('loadeddata', handleLoadedData);
+      video.removeEventListener('canplay', handleCanPlay);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      observer?.disconnect();
+      video.pause();
+    };
+  }, [heroVideoFailed, heroVideoSrc, shouldLoadHeroVideo]);
+
+  const handlePosterLoad = () => {
+    if (posterMarkedRef.current) return;
+    posterMarkedRef.current = true;
+    markPerformance('landing_poster_visible');
+  };
+
+  const handlePresentationClick = () => {
+    markPerformance('landing_cta_click_start');
+  };
+
+  const heroPosterClassName = isMobile
+    ? 'absolute inset-0 h-full w-full object-cover opacity-60 transition-opacity duration-500'
+    : 'absolute inset-0 h-full w-full object-cover scale-[1.04] opacity-62 transition-opacity duration-500 mix-blend-screen';
+
+  const heroVideoClassName = isMobile
+    ? 'absolute inset-0 h-full w-full object-cover opacity-58 transition-opacity duration-700'
+    : 'absolute inset-0 h-full w-full object-cover scale-[1.04] opacity-60 transition-opacity duration-700 mix-blend-screen';
 
   return (
     <div className="overflow-x-clip bg-[#06060A] text-white selection:bg-[var(--engine-dashboard)]/30">
@@ -76,20 +268,44 @@ export default function Landing() {
             SECTION 1: THE MONOLITHIC OBELISK (HERO)
             ========================================= */}
         <motion.section
+          ref={heroSectionRef}
           onPointerMove={handleHeroPointerMove}
           className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden pt-16 group"
         >
-          {/* Background Video */}
-          <video
-            src="/videos/hero-theme-desktop-v2.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 h-full w-full object-cover scale-[1.05] opacity-60 pointer-events-none mix-blend-screen"
-          />
+          <div className="absolute inset-0 overflow-hidden">
+            <picture className="pointer-events-none absolute inset-0 block">
+              <source srcSet={HERO_VIDEO_POSTER_WEBP_SRC} type="image/webp" />
+              <img
+                ref={posterImageRef}
+                src={HERO_VIDEO_POSTER_FALLBACK_SRC}
+                alt=""
+                aria-hidden="true"
+                fetchPriority="high"
+                decoding="async"
+                onLoad={handlePosterLoad}
+                className={`${heroPosterClassName} ${heroVideoReady && !heroVideoFailed ? 'opacity-0' : 'opacity-100'}`}
+              />
+            </picture>
+
+            <video
+              ref={heroVideoRef}
+              key={heroVideoSrc}
+              src={shouldLoadHeroVideo ? heroVideoSrc : undefined}
+              loop
+              muted
+              playsInline
+              disablePictureInPicture
+              preload={shouldLoadHeroVideo ? 'auto' : 'none'}
+              poster={HERO_VIDEO_POSTER_FALLBACK_SRC}
+              onError={() => setHeroVideoFailed(true)}
+              className={`${heroVideoClassName} ${heroVideoReady && !heroVideoFailed ? 'opacity-100' : 'opacity-0'} pointer-events-none`}
+              aria-hidden="true"
+              tabIndex={-1}
+            />
+          </div>
+
           {/* Cinematic Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[var(--engine-dashboard)]/5 via-[#06060A]/60 to-[#06060A] pointer-events-none" />
+          <div className={`absolute inset-0 pointer-events-none ${isMobile ? 'bg-gradient-to-b from-[rgba(0,240,255,0.04)] via-[rgba(6,6,10,0.64)] to-[#06060A]' : 'bg-gradient-to-b from-[var(--engine-dashboard)]/5 via-[#06060A]/60 to-[#06060A]'}`} />
 
           {/* WOW Visual 2: Central Aurora Glass Lens */}
           {!isMobile && !reducedMotion && (
@@ -122,7 +338,9 @@ export default function Landing() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4 w-full max-w-2xl mx-auto">
                 <Link
                   to="/dashboard"
-                  className="group relative inline-flex items-center justify-center px-8 py-4 rounded-full bg-[var(--engine-dashboard)] text-[#06060A] font-semibold text-[15px] tracking-wide transition-all hover:scale-[1.02] shadow-[0_0_40px_rgba(0,240,255,0.3)] hover:shadow-[0_0_60px_rgba(0,240,255,0.5)] flex-1 min-w-[200px]"
+                  prefetch="intent"
+                  navigationStrategy="optimistic"
+                  className="group relative inline-flex min-h-[56px] [touch-action:manipulation] items-center justify-center px-8 py-4 rounded-full bg-[var(--engine-dashboard)] text-[#06060A] font-semibold text-[15px] tracking-wide transition-all hover:scale-[1.02] shadow-[0_0_40px_rgba(0,240,255,0.3)] hover:shadow-[0_0_60px_rgba(0,240,255,0.5)] flex-1 min-w-[200px]"
                 >
                   <span className="relative z-10">{LANDING_COPY.hero.primaryCta}</span>
                   <div className="absolute inset-0 rounded-full bg-white/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -131,7 +349,7 @@ export default function Landing() {
                 <button
                   type="button"
                   onClick={() => setShowVideo(true)}
-                  className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium text-[15px] hover:bg-white/10 transition-colors backdrop-blur-md flex-1 min-w-[200px]"
+                  className="inline-flex min-h-[56px] [touch-action:manipulation] items-center justify-center gap-3 px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium text-[15px] hover:bg-white/10 transition-colors backdrop-blur-md flex-1 min-w-[200px]"
                 >
                   <Play className="w-4 h-4" />
                   {LANDING_COPY.hero.secondaryCta}
@@ -139,7 +357,10 @@ export default function Landing() {
 
                 <Link
                   to="/deck"
-                  className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium text-[15px] hover:bg-white/10 transition-colors backdrop-blur-md flex-1 min-w-[200px]"
+                  prefetch="intent"
+                  navigationStrategy="optimistic"
+                  onClick={handlePresentationClick}
+                  className="inline-flex min-h-[56px] [touch-action:manipulation] items-center justify-center gap-3 px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium text-[15px] hover:bg-white/10 transition-colors backdrop-blur-md flex-1 min-w-[200px]"
                 >
                   <Presentation className="w-4 h-4" />
                   Presentation
@@ -168,7 +389,7 @@ export default function Landing() {
         {/* =========================================
             SECTION 2: CINEMATIC HUD
             ========================================= */}
-        <section className="relative px-6 py-32 md:py-40 md:px-8 border-t border-white/5 bg-gradient-to-b from-[#06060A] to-[#0A0A0F]">
+        <section className="relative px-6 py-32 md:py-40 md:px-8 bg-gradient-to-b from-[#06060A] to-[#0A0A0F]">
           <div className="mx-auto max-w-7xl relative z-10">
             <motion.div
               className="mb-20 text-center md:text-left"
@@ -186,13 +407,13 @@ export default function Landing() {
             </motion.div>
 
             {/* WOW Visual 4: Fast-Packet Neural Synapses */}
-            <div className="absolute top-0 left-0 right-0 h-px bg-white/5">
-              {!isMobile && !reducedMotion && (
+            {!isMobile && !reducedMotion && (
+              <div className="absolute top-0 left-0 right-0 h-0 overflow-visible">
                 <svg className="absolute inset-0 w-full h-[2px] overflow-visible" preserveAspectRatio="none">
-                  <motion.line 
-                    x1="0" y1="0" x2="100%" y2="0" 
-                    stroke="var(--engine-dashboard)" 
-                    strokeWidth="2" 
+                  <motion.line
+                    x1="0" y1="0" x2="100%" y2="0"
+                    stroke="var(--engine-dashboard)"
+                    strokeWidth="2"
                     strokeDasharray="100 1000"
                     initial={{ strokeDashoffset: -1000 }}
                     animate={{ strokeDashoffset: 0 }}
@@ -200,8 +421,8 @@ export default function Landing() {
                     style={{ filter: 'drop-shadow(0 0 8px var(--engine-dashboard))' }}
                   />
                 </svg>
-              )}
-            </div>
+              </div>
+            )}
 
             <motion.div
               className="flex flex-col sm:flex-row items-stretch gap-4 md:gap-6 w-full"
@@ -257,7 +478,7 @@ export default function Landing() {
             {/* WOW Visual 5: The Glass Vault 3D Parallax */}
             <div className="order-1 lg:order-2 lg:self-end">
               <motion.div
-                style={{ rotateX: reducedMotion ? 0 : vaultRotateX, transformPerspective: 1200 }}
+                style={{ rotateX: isMobile || reducedMotion ? 0 : vaultRotateX, transformPerspective: 1200 }}
                 className="origin-bottom h-[400px] w-full rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.05] to-transparent backdrop-blur-3xl relative p-8 flex flex-col items-center justify-center shadow-[0_0_100px_rgba(255,255,255,0.02)]"
               >
                 <SpotlightVault isMobile={isMobile} />
@@ -284,7 +505,7 @@ export default function Landing() {
                 fill="none"
                 stroke="var(--engine-dashboard)"
                 strokeWidth="2"
-                style={{ pathLength: reducedMotion ? 1 : scrollYProgress }}
+                style={{ pathLength: reducedMotion || isMobile ? 1 : scrollYProgress }}
                 className="opacity-30 drop-shadow-[0_0_8px_var(--engine-dashboard)]"
               />
             </svg>
@@ -507,7 +728,9 @@ function MagneticCTA({ isMobile, reducedMotion }: { isMobile: boolean, reducedMo
       <motion.div ref={ref} style={{ x: springX, y: springY }}>
         <Link
           to="/dashboard"
-          className="group relative flex items-center gap-3 px-12 py-5 rounded-full bg-white text-black font-semibold tracking-wide text-lg overflow-hidden transition-colors hover:bg-white/90"
+          prefetch="intent"
+          navigationStrategy="optimistic"
+          className="group relative flex min-h-[60px] [touch-action:manipulation] items-center gap-3 px-12 py-5 rounded-full bg-white text-black font-semibold tracking-wide text-lg overflow-hidden transition-colors hover:bg-white/90"
         >
           <span className="relative z-10">{LANDING_COPY.finalCta.button}</span>
           <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />

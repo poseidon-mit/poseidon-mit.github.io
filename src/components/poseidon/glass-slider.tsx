@@ -37,9 +37,22 @@ export function GlassSlider({
     blue: "bg-blue-500/80",
   };
 
+  const labelColorMap = {
+    cyan: "text-cyan-300",
+    violet: "text-violet-300",
+    amber: "text-amber-300",
+    green: "text-emerald-300",
+    blue: "text-blue-300",
+  };
+
   return (
     <div className="relative w-full pt-8 pb-4 group">
-      <div className="absolute top-0 left-0 text-sm font-mono text-[var(--engine-execute,theme(colors.amber.400))] transition-opacity">
+      <div
+        className={cn(
+          "absolute top-0 left-0 text-sm font-mono transition-opacity",
+          labelColorMap[accent],
+        )}
+      >
         {formatLabel(value)}
       </div>
       

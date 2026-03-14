@@ -57,10 +57,39 @@ interface DemoStateContextValue {
   resetAllDemoState: () => void
 }
 
+type DemoStateActions = Omit<DemoStateContextValue, 'state'>
+
 const FALLBACK_DEMO_STATE = createDefaultDemoState()
 
 const DemoStateContext = createContext<DemoStateContextValue>({
   state: FALLBACK_DEMO_STATE,
+  beginDemoSession: () => {},
+  endDemoSession: () => {},
+  updateOnboarding: () => {},
+  markOnboardingCompleted: () => {},
+  setExecuteDecision: () => {},
+  resetExecuteDecision: () => {},
+  resolveThreat: () => {},
+  decideRecommendation: () => {},
+  updateSettings: () => {},
+  updateGovernTrust: () => {},
+  createSupportTicket: (input) => ({
+    id: timestampId('TKT'),
+    subject: input.subject,
+    category: input.category,
+    priority: input.priority,
+    description: input.description,
+    createdAt: new Date().toISOString(),
+  }),
+  resetAllDemoState: () => {},
+})
+
+const DemoUserContext = createContext<DemoState['user']>(FALLBACK_DEMO_STATE.user)
+const DemoAuthContext = createContext<DemoState['auth']>(FALLBACK_DEMO_STATE.auth)
+const DemoExecuteContext = createContext<DemoState['execute']>(FALLBACK_DEMO_STATE.execute)
+const DemoSettingsContext = createContext<DemoState['settings']>(FALLBACK_DEMO_STATE.settings)
+const DemoThreatsContext = createContext<DemoState['threats']>(FALLBACK_DEMO_STATE.threats)
+const DemoActionsContext = createContext<DemoStateActions>({
   beginDemoSession: () => {},
   endDemoSession: () => {},
   updateOnboarding: () => {},
@@ -284,9 +313,8 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
     setState(createDefaultDemoState())
   }, [])
 
-  const value = useMemo<DemoStateContextValue>(
+  const actions = useMemo<DemoStateActions>(
     () => ({
-      state,
       beginDemoSession,
       endDemoSession,
       updateOnboarding,
@@ -301,7 +329,6 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
       resetAllDemoState,
     }),
     [
-      state,
       beginDemoSession,
       endDemoSession,
       updateOnboarding,
@@ -317,9 +344,57 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
     ],
   )
 
-  return <DemoStateContext.Provider value={value}>{children}</DemoStateContext.Provider>
+  const value = useMemo<DemoStateContextValue>(
+    () => ({
+      state,
+      ...actions,
+    }),
+    [state, actions],
+  )
+
+  return (
+    <DemoStateContext.Provider value={value}>
+      <DemoActionsContext.Provider value={actions}>
+        <DemoUserContext.Provider value={state.user}>
+          <DemoAuthContext.Provider value={state.auth}>
+            <DemoExecuteContext.Provider value={state.execute}>
+              <DemoSettingsContext.Provider value={state.settings}>
+                <DemoThreatsContext.Provider value={state.threats}>
+                  {children}
+                </DemoThreatsContext.Provider>
+              </DemoSettingsContext.Provider>
+            </DemoExecuteContext.Provider>
+          </DemoAuthContext.Provider>
+        </DemoUserContext.Provider>
+      </DemoActionsContext.Provider>
+    </DemoStateContext.Provider>
+  )
 }
 
 export function useDemoState(): DemoStateContextValue {
   return useContext(DemoStateContext)
+}
+
+export function useDemoUser(): DemoState['user'] {
+  return useContext(DemoUserContext)
+}
+
+export function useDemoAuth(): DemoState['auth'] {
+  return useContext(DemoAuthContext)
+}
+
+export function useDemoExecute(): DemoState['execute'] {
+  return useContext(DemoExecuteContext)
+}
+
+export function useDemoSettings(): DemoState['settings'] {
+  return useContext(DemoSettingsContext)
+}
+
+export function useDemoThreats(): DemoState['threats'] {
+  return useContext(DemoThreatsContext)
+}
+
+export function useDemoActions(): DemoStateActions {
+  return useContext(DemoActionsContext)
 }

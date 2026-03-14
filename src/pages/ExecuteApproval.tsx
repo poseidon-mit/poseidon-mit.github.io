@@ -12,7 +12,7 @@ import {
   Zap,
 } from "lucide-react";
 import { Link, useRouter } from "@/router";
-import { EmptyState, ProofChips, ShapWaterfall } from "@/components/poseidon";
+import { EmptyState, ProofChips } from "@/components/poseidon";
 import { SlideToApprove } from "@/components/poseidon/slide-to-approve";
 import {
   Dialog,
@@ -64,6 +64,71 @@ function getStepStatus(
   if (stepIndex < currentIndex) return "completed";
   if (stepIndex === currentIndex) return "active";
   return "pending";
+}
+
+/* ── Decision Drivers — Execute-specific contributing factor bars ── */
+function DecisionDrivers({
+  factors,
+  confidence,
+}: {
+  factors: { label: string; value: number }[];
+  confidence: number;
+}) {
+  const sorted = useMemo(() => {
+    const pos = factors.filter((f) => f.value >= 0).sort((a, b) => b.value - a.value);
+    const neg = factors.filter((f) => f.value < 0).sort((a, b) => a.value - b.value);
+    return [...pos, ...neg];
+  }, [factors]);
+
+  const maxAbs = Math.max(...sorted.map((f) => Math.abs(f.value)), 0.01);
+
+  return (
+    <div className="flex flex-col gap-3">
+      {sorted.map((factor, i) => {
+        const isPositive = factor.value >= 0;
+        const widthPct = (Math.abs(factor.value) / maxAbs) * 100;
+        return (
+          <div key={`${factor.label}-${i}`} className="group flex flex-col gap-1">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] text-white/60 font-medium truncate pr-2">
+                {factor.label}
+              </span>
+              <span
+                className={cn(
+                  "font-mono text-[11px] font-semibold tabular-nums shrink-0",
+                  isPositive ? "text-rose-400" : "text-blue-400",
+                )}
+              >
+                {isPositive ? "+" : "\u2212"}
+                {Math.abs(factor.value * 100).toFixed(0)}%
+              </span>
+            </div>
+            <div className="relative h-[6px] w-full rounded-full bg-white/5">
+              <div
+                className={cn(
+                  "absolute top-0 left-0 h-full rounded-full transition-all duration-500",
+                  isPositive
+                    ? "bg-rose-500/70"
+                    : "bg-blue-500/70",
+                )}
+                style={{ width: `${Math.max(2, widthPct)}%` }}
+              />
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Final Score */}
+      <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-3">
+        <span className="text-[11px] font-bold uppercase tracking-widest text-white/70">
+          Confidence
+        </span>
+        <span className="font-mono text-sm font-bold tabular-nums text-[var(--engine-execute)]">
+          {Math.round(confidence * 100)}%
+        </span>
+      </div>
+    </div>
+  );
 }
 
 export function ExecuteApproval() {
@@ -361,17 +426,13 @@ export function ExecuteApproval() {
                   <h3 className="mb-3 text-[10px] font-bold uppercase tracking-widest text-white/40">
                     Decision Drivers
                   </h3>
-                  <div className="h-[120px] relative">
-                    <ShapWaterfall
-                      factors={action.factors.map((factor) => {
-                        return {
-                          label: factor.label,
-                          value: factor.value,
-                        };
-                      })}
-                      engine="execute"
-                    />
-                  </div>
+                  <DecisionDrivers
+                    factors={action.factors.map((factor) => ({
+                      label: factor.label,
+                      value: factor.value,
+                    }))}
+                    confidence={action.confidence}
+                  />
                 </div>
 
                 <div className="space-y-3 flex flex-col justify-center">

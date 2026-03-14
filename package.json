@@ -7,10 +7,11 @@
   "scripts": {
     "setup:hooks": "git config core.hooksPath .githooks",
     "deploy:trigger": "gh workflow run deploy.yml --repo poseidon-mit/poseidon-mit.github.io --ref main",
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0 --port 5173",
+    "dev:mobile": "vite --host 0.0.0.0 --port 5173 --strictPort",
     "build": "vite build",
     "build:dev": "vite build --mode development",
-    "dev:vite": "vite",
+    "dev:vite": "vite --host 0.0.0.0 --port 5173 --strictPort",
     "build:vite": "vite build",
     "typecheck": "tsc --noEmit",
     "verify:dashboard-artifacts": "node scripts/verify-dashboard-artifact-freshness.mjs",

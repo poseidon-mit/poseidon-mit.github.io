@@ -1,6 +1,7 @@
 import React, { Component, Suspense, useMemo } from 'react';
 import { AppNavShell } from './AppNavShell';
-import { AuroraPulse, GovernFooter } from '@/components/poseidon';
+import { AuroraPulse } from '@/components/poseidon/aurora-pulse';
+import { GovernFooter } from '@/components/poseidon/govern-footer';
 import { PageSkeleton } from '@/components/poseidon/page-skeleton';
 import { getGovernanceMeta } from '@/lib/governance-meta';
 import { ROUTE_TO_DECISION, AUDIT_DECISIONS } from '@/lib/govern-audit-data';

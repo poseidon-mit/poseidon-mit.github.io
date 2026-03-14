@@ -19,9 +19,7 @@ import {
   HeroMetricPill,
   HeroPanel,
 } from "./hero-concept-primitives";
-import { useReducedMotionSafe } from "@/hooks/useReducedMotionSafe";
-import { motion, AnimatePresence } from "framer-motion";
-import { getMotionPreset } from "@/lib/motion-presets";
+import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 
 export interface DashboardHeroProps {
   userName: string;
@@ -85,49 +83,47 @@ function formatMoney(value: number): string {
 
 function DecryptingCurrency({
   value,
-  isHovered,
-  reducedMotion,
+  animate,
+  onComplete,
 }: {
   value: number;
-  isHovered: boolean;
-  reducedMotion: boolean;
+  animate: boolean;
+  onComplete?: () => void;
 }) {
   const [displayValue, setDisplayValue] = useState(formatMoney(value));
   const targetStr = formatMoney(value);
 
   useEffect(() => {
-    if (reducedMotion) {
+    if (!animate) {
       setDisplayValue(targetStr);
       return;
     }
 
-    if (isHovered) {
-      let iterations = 0;
-      const chars = "0123456789X$0@#";
-      const interval = setInterval(() => {
-        setDisplayValue(
-          targetStr
-            .split("")
-            .map((char, index) => {
-              if (char === "," || char === ".") return char;
-              if (index < iterations) return targetStr[index];
-              return chars[Math.floor(Math.random() * chars.length)];
-            })
-            .join(""),
-        );
-        if (iterations >= targetStr.length) {
-          clearInterval(interval);
-        }
-        iterations += 1 / 2; // Speed of decrypt
-      }, 30);
-      return () => {
+    let iterations = 0;
+    const chars = "0123456789X$0@#";
+    const interval = setInterval(() => {
+      setDisplayValue(
+        targetStr
+          .split("")
+          .map((char, index) => {
+            if (char === "," || char === ".") return char;
+            if (index < iterations) return targetStr[index];
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join(""),
+      );
+      if (iterations >= targetStr.length) {
         clearInterval(interval);
-        setDisplayValue(targetStr);
-      };
-    } else {
+        onComplete?.();
+      }
+      iterations += 1 / 2;
+    }, 30);
+
+    return () => {
+      clearInterval(interval);
       setDisplayValue(targetStr);
-    }
-  }, [value, isHovered, reducedMotion, targetStr]);
+    };
+  }, [animate, onComplete, targetStr, value]);
 
   return <>{displayValue}</>;
 }
@@ -218,10 +214,9 @@ export function DashboardHero({
   complianceScore,
   onNavigate,
 }: DashboardHeroProps) {
-  const reducedMotion = useReducedMotionSafe();
-  const { heroFadeUp, dashboardHeroStaggerContainer } =
-    getMotionPreset(reducedMotion);
+  const performance = usePerformanceProfile();
   const [isHovered, setIsHovered] = useState(false);
+  const [hasCompletedDecrypt, setHasCompletedDecrypt] = useState(false);
 
   const positiveDay = netWorthChange >= 0;
   const resolvedAssets = assets ?? netWorth;
@@ -292,21 +287,6 @@ export function DashboardHero({
   }, [decisionsAudited, executeSignal, growSignal, protectSignal]);
 
   // Core Ignition scanline animation
-  const ignitionLineVariants: any = reducedMotion
-    ? undefined
-    : {
-        hidden: { scaleX: 0, opacity: 0 },
-        visible: {
-          scaleX: 1,
-          opacity: [0, 1, 0.5, 0],
-          transition: {
-            duration: 1.2,
-            ease: "easeInOut",
-            times: [0, 0.2, 0.8, 1],
-          },
-        },
-      };
-
   return (
     <section
       role="region"
@@ -326,29 +306,15 @@ export function DashboardHero({
 
       <HeroBackdrop
         accent="var(--engine-dashboard)"
-        reducedMotion={reducedMotion}
+        performanceProfile={performance.profile}
         className="opacity-70"
       />
 
-      <motion.div
-        variants={dashboardHeroStaggerContainer}
-        initial="hidden"
-        animate="visible"
-        className="relative z-10 flex h-full flex-1 flex-col p-4 sm:p-6 lg:p-8"
-      >
-        {/* Core Ignition Effect Line */}
-        <motion.div
-          className="absolute top-1/2 left-0 w-full h-[1px] bg-[var(--engine-dashboard)] pointer-events-none z-0"
-          variants={ignitionLineVariants}
-          style={{
-            boxShadow: "0 0 20px 2px var(--engine-dashboard)",
-            transformOrigin: "center",
-          }}
-        />
-
+      <div className="relative z-10 flex h-full flex-1 flex-col p-4 sm:p-6 lg:p-8">
         {/* UPPER: The Core Reactor / Focus Prism */}
-        <motion.div variants={heroFadeUp} className="w-full relative z-10">
+        <div className="relative z-10 w-full">
           <HeroPanel
+            performanceProfile={performance.profile}
             className="group relative flex flex-col items-center justify-center overflow-hidden px-6 py-10 md:py-16 text-center transition-all duration-700 hover:border-[var(--engine-dashboard)]/30 hover:shadow-[0_0_100px_-20px_rgba(0,240,255,0.2)]"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -378,8 +344,12 @@ export function DashboardHero({
                 $
                 <DecryptingCurrency
                   value={netWorth}
-                  isHovered={isHovered}
-                  reducedMotion={reducedMotion}
+                  animate={
+                    performance.allowHoverEnhancements &&
+                    isHovered &&
+                    !hasCompletedDecrypt
+                  }
+                  onComplete={() => setHasCompletedDecrypt(true)}
                 />
               </p>
             </div>
@@ -397,13 +367,10 @@ export function DashboardHero({
               {formatUsd(Math.abs(netWorthChange))} today
             </div>
           </HeroPanel>
-        </motion.div>
+        </div>
 
         {/* LOWER: Engine Telemetry / 4 Glass Cards */}
-        <motion.div
-          variants={heroFadeUp}
-          className="mt-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 w-full h-full min-h-0 relative z-10"
-        >
+        <div className="relative z-10 mt-6 grid h-full min-h-0 w-full grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {signalCards.map((card) => (
             <SignalDockCard
               key={card.key}
@@ -417,8 +384,8 @@ export function DashboardHero({
               attentionItems={card.attentionItems}
             />
           ))}
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </section>
   );
 }

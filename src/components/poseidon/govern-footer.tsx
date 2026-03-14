@@ -1,8 +1,6 @@
 import { useMemo, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import { ExternalLink, FileText, Lock, Shield, ShieldCheck, User } from 'lucide-react'
 import { Link } from '@/router'
-import { accordionTransition, accordionVariants } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
 import { selectGovernFooterView } from '@/domain/poseidon-universe'
 import type { GovernAuditEntryEntity } from '@/domain/poseidon-universe/types'
@@ -155,29 +153,24 @@ export function GovernFooter({
         100% Auditable · {footerData.total.toLocaleString()} records · Last: {relativeTime(footerData.lastRecordIso)}
       </div>
 
-      <AnimatePresence initial={false}>
-        {expanded && (
-          <motion.div
-            id="govern-footer-preview"
-            variants={accordionVariants}
-            initial="collapsed"
-            animate="expanded"
-            exit="collapsed"
-            transition={accordionTransition}
-            className="overflow-hidden border-t border-white/[0.04] bg-black/10"
-          >
-            <div className="space-y-3 px-4 py-4 md:px-6">
-              {footerData.latestEntries.length === 0 ? (
-                <p className="text-xs text-white/35">No decisions recorded yet.</p>
-              ) : (
-                footerData.latestEntries.map((entry) => (
-                  <EntryRow key={entry.id} entry={entry} />
-                ))
-              )}
-            </div>
-          </motion.div>
+      <div
+        id="govern-footer-preview"
+        aria-hidden={!expanded}
+        className={cn(
+          'overflow-hidden border-t border-white/[0.04] bg-black/10 transition-[max-height,opacity] duration-300 ease-out',
+          expanded ? 'max-h-[28rem] opacity-100' : 'max-h-0 opacity-0',
         )}
-      </AnimatePresence>
+      >
+        <div className="space-y-3 px-4 py-4 md:px-6">
+          {footerData.latestEntries.length === 0 ? (
+            <p className="text-xs text-white/35">No decisions recorded yet.</p>
+          ) : (
+            footerData.latestEntries.map((entry) => (
+              <EntryRow key={entry.id} entry={entry} />
+            ))
+          )}
+        </div>
+      </div>
     </footer>
   )
 }

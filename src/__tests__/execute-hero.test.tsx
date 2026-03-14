@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { ExecuteApprovalCommandDeck, ExecuteHero } from "../components/poseidon/execute-hero";
 import { RouterProvider } from "../router";
 import { DemoStateProvider, useDemoState } from "../lib/demo-state/provider";
@@ -29,6 +29,12 @@ const DEFAULT_PROPS = {
   urgencyBreakdown: { high: 1, medium: 1, low: 0 },
   currentSavingsUsd: 0,
   potentialSavingsUsd: 92,
+  featuredActionSteps: [
+    { id: "S1", label: "Analyze", actor: "agent" as const, status: "completed" as const },
+    { id: "S2", label: "Prepare", actor: "agent" as const, status: "completed" as const },
+    { id: "S3", label: "Authorize", actor: "user" as const, status: "current" as const },
+    { id: "S4", label: "Audit", actor: "user" as const, status: "waiting" as const },
+  ],
 };
 
 function renderHero(overrides: Partial<typeof DEFAULT_PROPS> = {}) {
@@ -44,12 +50,28 @@ describe("ExecuteApprovalCommandDeck", () => {
     expect(within(hero).getByRole("heading", { name: /execute/i })).toBeInTheDocument();
   });
 
-  it("renders the featured action and posture panels", () => {
+  it("renders the featured action and step pipeline", () => {
     const { hero } = renderHero();
     expect(within(hero).getByText("Freeze card and dispute Apple Store Miami charge")).toBeInTheDocument();
-    expect(within(hero).getByText("Execution posture")).toBeInTheDocument();
+    expect(within(hero).getByText("Analyze")).toBeInTheDocument();
+    expect(within(hero).getByText("Authorize")).toBeInTheDocument();
     expect(within(hero).getByText("Cross-engine sources")).toBeInTheDocument();
-    expect(within(hero).getByText("2/4 steps completed")).toBeInTheDocument();
+  });
+
+  it("pins connectors to the icon centerline with an explicit two-row grid", () => {
+    const { hero, props } = renderHero();
+    const pipeline = within(hero).getByTestId("execute-step-pipeline");
+
+    expect(pipeline).toHaveStyle({
+      gridTemplateColumns: `repeat(${props.featuredActionSteps.length * 2 - 1}, minmax(0, 1fr))`,
+      gridTemplateRows: "40px auto",
+    });
+
+    for (const step of props.featuredActionSteps.slice(0, -1)) {
+      const connector = within(hero).getByTestId(`execute-step-connector-${step.id}`);
+      expect(connector).toHaveStyle({ gridRow: "1 / span 1" });
+      expect(connector.className).toContain("h-full");
+    }
   });
 
   it("renders queue count and singular/plural state", () => {
@@ -69,7 +91,7 @@ describe("ExecuteApprovalCommandDeck", () => {
   it("renders the empty state when featuredAction is null", () => {
     const { hero } = renderHero({ featuredAction: null, onReviewApproval: null });
     expect(within(hero).getByText("Queue Clear")).toBeInTheDocument();
-    expect(within(hero).queryByText("Execution posture")).not.toBeInTheDocument();
+    expect(within(hero).queryByText("Analyze")).not.toBeInTheDocument();
   });
 });
 
@@ -101,12 +123,14 @@ describe("ExecutePage integration", () => {
     expect(screen.getAllByText("Freeze card and dispute Apple Store Miami charge")[0]).toBeInTheDocument();
   });
 
-  it("navigates to the approval deep link from the hero CTA", () => {
+  it("navigates to the approval deep link from the hero CTA", async () => {
     const { container } = renderExecute();
     const hero = container.querySelector('[role="region"]') as HTMLElement;
 
     fireEvent.click(within(hero).getByRole("button", { name: /review & approve/i }));
-    expect(window.location.pathname).toBe("/execute/approval");
+    await waitFor(() => {
+      expect(window.location.pathname).toBe("/execute/approval");
+    });
     expect(window.location.search).toBe("?actionId=EXE-001");
   });
 
