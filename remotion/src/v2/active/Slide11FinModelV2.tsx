@@ -136,7 +136,7 @@ export const Slide11FinModelV2: React.FC<Slide11FinModelV2Props> = ({
                 {([
                   { label: 'Value / Cost for customer', value: '4.3X', accent: theme.accent.teal, detail: '' },
                   { label: 'Profit Margin', value: '77%', accent: theme.accent.violet, detail: '' },
-                  { label: 'Operating Breakeven', value: 'Month 12', accent: theme.accent.amber, detail: '' },
+                  { label: 'Breakeven', value: 'Month 12', accent: theme.accent.amber, detail: '' },
                 ] as const).map((row) => (
                   <div
                     key={row.label}

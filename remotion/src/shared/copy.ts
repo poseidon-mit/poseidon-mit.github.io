@@ -359,7 +359,7 @@ export const copy = {
         goal: 'Increase user base, data coverage, and ML model scope.',
         definition: '',
         gateMetrics: [
-          { label: 'Users', target: '~251K', value: 251 },
+          { label: 'Users', target: '~235K', value: 235 },
           { label: 'Precision', target: '>=90%', value: 90 },
           { label: 'False Pos', target: '<=5%', value: 5 },
         ],
@@ -584,26 +584,26 @@ export const copy = {
     },
     arr: {
       months: ['M0', '', '', '', '', '', 'M6', '', '', '', '', '', 'M12', '', '', '', '', '', 'M18', '', '', '', '', '', 'M24'],
-      values: [0, -0.13, -0.26, -0.39, -0.50, -0.61, -0.70, -0.82, -0.91, -0.99, -1.04, -1.07, -1.06, -1.02, -0.95, -0.84, -0.68, -0.47, -0.22, 0.02, 0.31, 0.67, 1.09, 1.59, 2.16],
+      values: [0, -0.13, -0.26, -0.39, -0.50, -0.61, -0.70, -0.82, -0.91, -0.99, -1.04, -1.07, -1.07, -1.04, -0.97, -0.87, -0.73, -0.56, -0.38, -0.20, -0.02, 0.20, 0.48, 0.82, 1.22],
       milestones: [
         { month: 12, label: 'Month 12: Breakeven', color: 'amber' },
-        { month: 19, label: 'Month 19: Payback',       color: 'blue', atZeroCrossing: true },
-        { month: 24, label: 'Month 24: +$2.2M',          color: 'emerald' },
+        { month: 21, label: 'Month 21: Payback',       color: 'blue', atZeroCrossing: true },
+        { month: 24, label: 'Month 24: +$1.2M',          color: 'emerald' },
       ],
     },
     market: {
       items: [
         { label: 'US retail banking profit', value: '$750B/yr', detail: '' },
         { label: 'Balance with low APY', value: '$17.5T', detail: '' },
-        { label: '3-Year Capture', value: '$46M', detail: 'Conservative 1.3% penetration' },
+        { label: '3-Year Capture', value: '$36M', detail: 'Conservative 1.3% penetration' },
       ],
       citation: '(McKinsey 2024)',
     },
     stressTest: {
       scenarios: [
-        { name: 'Base',         paidConv: '3.5%', churn: '5%',  opBreakeven: 'M12', payback: 'M19', color: 'emerald' },
-        { name: 'Conservative', paidConv: '2.0%', churn: '7%',  opBreakeven: 'M16', payback: 'M26', color: 'amber'   },
-        { name: 'Pessimistic',  paidConv: '1.5%', churn: '10%', opBreakeven: 'M18', payback: 'M31', color: 'red'     },
+        { name: 'Base',         paidConv: '3.5%', churn: '5%',  opBreakeven: 'M12', payback: 'M20', color: 'emerald' },
+        { name: 'Conservative', paidConv: '2.0%', churn: '7%',  opBreakeven: 'M17', payback: 'M32', color: 'amber'   },
+        { name: 'Pessimistic',  paidConv: '1.5%', churn: '10%', opBreakeven: 'M29', payback: '>M36', color: 'red'     },
       ],
     },
     footnote: 'Growth: 12% → 2.4%/mo over 36 mo. Benchmarked vs Copilot, Cleo, Rocket Money.',
