@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform, useMotionValue, useSpring, useMotionTemplate, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
 import { Link } from '@/router';
-import { Shield, TrendingUp, Zap, Scale, Lock, ShieldCheck, Eye, Play, Blocks, ArrowRight, CheckCircle2, Presentation, X } from 'lucide-react';
+import { Shield, TrendingUp, Zap, Scale, Lock, ShieldCheck, Eye, Blocks, ArrowRight, CheckCircle2, Presentation } from 'lucide-react';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/motion-presets';
 import { markPerformance } from '@/lib/performance-marks';
 import { usePageTitle } from '@/hooks/use-page-title';
@@ -69,7 +69,6 @@ export default function Landing() {
   const { scrollYProgress } = useScroll();
 
   const [isMobile, setIsMobile] = useState(false);
-  const [showVideo, setShowVideo] = useState(false);
   const [shouldLoadHeroVideo, setShouldLoadHeroVideo] = useState(false);
   const [heroVideoReady, setHeroVideoReady] = useState(false);
   const [heroVideoFailed, setHeroVideoFailed] = useState(false);
@@ -121,8 +120,6 @@ export default function Landing() {
     mouseY.set((clientY - top) - height / 2);
   };
 
-  // Section 3: Glass Vault Parallax
-  const vaultRotateX = useTransform(scrollYProgress, [0.3, 0.7], [10, -5]);
 
   useEffect(() => {
     if (!shouldLoadHeroVideo || heroVideoFailed) {
@@ -273,7 +270,7 @@ export default function Landing() {
           className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden pt-16 group"
         >
           <div className="absolute inset-0 overflow-hidden">
-            <picture className="pointer-events-none absolute inset-0 block">
+            <picture className={`pointer-events-none absolute inset-0 block transition-opacity duration-500 ${heroVideoReady && !heroVideoFailed ? 'opacity-0' : 'opacity-100'}`}>
               <source srcSet={HERO_VIDEO_POSTER_WEBP_SRC} type="image/webp" />
               <img
                 ref={posterImageRef}
@@ -283,7 +280,7 @@ export default function Landing() {
                 fetchPriority="high"
                 decoding="async"
                 onLoad={handlePosterLoad}
-                className={`${heroPosterClassName} ${heroVideoReady && !heroVideoFailed ? 'opacity-0' : 'opacity-100'}`}
+                className={heroPosterClassName}
               />
             </picture>
 
@@ -296,7 +293,6 @@ export default function Landing() {
               playsInline
               disablePictureInPicture
               preload={shouldLoadHeroVideo ? 'auto' : 'none'}
-              poster={HERO_VIDEO_POSTER_FALLBACK_SRC}
               onError={() => setHeroVideoFailed(true)}
               className={`${heroVideoClassName} ${heroVideoReady && !heroVideoFailed ? 'opacity-100' : 'opacity-0'} pointer-events-none`}
               aria-hidden="true"
@@ -345,15 +341,6 @@ export default function Landing() {
                   <span className="relative z-10">{LANDING_COPY.hero.primaryCta}</span>
                   <div className="absolute inset-0 rounded-full bg-white/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
-
-                <button
-                  type="button"
-                  onClick={() => setShowVideo(true)}
-                  className="inline-flex min-h-[56px] [touch-action:manipulation] items-center justify-center gap-3 px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium text-[15px] hover:bg-white/10 transition-colors backdrop-blur-md flex-1 min-w-[200px]"
-                >
-                  <Play className="w-4 h-4" />
-                  {LANDING_COPY.hero.secondaryCta}
-                </button>
 
                 <Link
                   to="/deck"
@@ -438,60 +425,6 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* =========================================
-            SECTION 3: THE GLASS VAULT
-            ========================================= */}
-        <section className="relative px-6 py-32 md:py-48 overflow-hidden bg-[#0A0A0F]">
-          <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-16 items-center lg:items-end">
-            
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-20%' }}
-              className="order-2 lg:order-1"
-            >
-              <h2 className="text-3xl sm:text-5xl font-medium tracking-tight mb-6">
-                {LANDING_COPY.trustSection.sectionTitle}
-              </h2>
-              <p className="text-lg text-white/50 mb-8 leading-relaxed">
-                {LANDING_COPY.trustSection.sectionSubtitle}
-              </p>
-
-              <div className="flex flex-col gap-4">
-                {[
-                  { icon: Lock, label: LANDING_COPY.trustSection.features[0].label, desc: LANDING_COPY.trustSection.features[0].description },
-                  { icon: Eye, label: LANDING_COPY.trustSection.features[1].label, desc: LANDING_COPY.trustSection.features[1].description },
-                  { icon: Blocks, label: LANDING_COPY.trustSection.features[2].label, desc: LANDING_COPY.trustSection.features[2].description }
-                ].map((item) => (
-                  <div key={item.label} className="flex items-start gap-4 p-4 rounded-xl border border-white/5 bg-white/[0.02]">
-                    <div className="p-2 rounded-lg bg-white/5 text-[var(--engine-protect)]"><item.icon size={20} /></div>
-                    <div>
-                      <h4 className="font-medium text-white/90">{item.label}</h4>
-                      <p className="text-sm text-white/50">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* WOW Visual 5: The Glass Vault 3D Parallax */}
-            <div className="order-1 lg:order-2 lg:self-end">
-              <motion.div
-                style={{ rotateX: isMobile || reducedMotion ? 0 : vaultRotateX, transformPerspective: 1200 }}
-                className="origin-bottom h-[400px] w-full rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.05] to-transparent backdrop-blur-3xl relative p-8 flex flex-col items-center justify-center shadow-[0_0_100px_rgba(255,255,255,0.02)]"
-              >
-                <SpotlightVault isMobile={isMobile} />
-
-                {/* Animated Audit Log Simulation */}
-                <div className="absolute inset-0 z-10 pointer-events-none">
-                  <AuditLogSimulation isMobile={isMobile} reducedMotion={reducedMotion} />
-                </div>
-              </motion.div>
-            </div>
-
-          </div>
-        </section>
 
         {/* =========================================
             SECTION 4: FLUID Z-PATTERN CTA
@@ -545,42 +478,6 @@ export default function Landing() {
       </main>
       <Footer />
 
-      {/* Video Modal */}
-      <AnimatePresence>
-        {showVideo && (
-          <motion.div
-            className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowVideo(false)}
-          >
-            <motion.div
-              className="relative w-[90vw] max-w-4xl aspect-video"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                type="button"
-                onClick={() => setShowVideo(false)}
-                className="absolute -top-10 right-0 text-white/60 hover:text-white transition-colors"
-                aria-label="Close video"
-              >
-                <X size={24} />
-              </button>
-              <iframe
-                src="https://www.youtube.com/embed/ymwtd7X3CYI?autoplay=1&rel=0"
-                title="Poseidon AI Demo"
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-                className="w-full h-full rounded-xl border border-white/10"
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
@@ -655,33 +552,6 @@ function TiltHUDCard({ engine, isMobile, reducedMotion }: any) {
   );
 }
 
-// ----- WOW Visual 6: Interactive Spotlight Tooltips -----
-function SpotlightVault({ isMobile }: { isMobile: boolean }) {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const spotlightBackground = useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(255,255,255,0.06), transparent 80%)`;
-
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (isMobile) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    mouseX.set(e.clientX - rect.left);
-    mouseY.set(e.clientY - rect.top);
-  };
-
-  return (
-    <div 
-      className="absolute inset-0 z-20 group"
-      onPointerMove={handlePointerMove}
-    >
-      {!isMobile && (
-        <motion.div
-          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          style={{ background: spotlightBackground }}
-        />
-      )}
-    </div>
-  );
-}
 
 // ----- WOW Visual 8: Magnetic Supermassive CTA -----
 function MagneticCTA({ isMobile, reducedMotion }: { isMobile: boolean, reducedMotion: boolean }) {
@@ -740,56 +610,3 @@ function MagneticCTA({ isMobile, reducedMotion }: { isMobile: boolean, reducedMo
   );
 }
 
-// ----- WOW Visual 9: Animated Audit Log Simulation -----
-function AuditLogSimulation({ isMobile, reducedMotion }: { isMobile: boolean, reducedMotion: boolean }) {
-  const LOGS = [
-    { id: 1, engine: 'protect', action: 'Login Attempt Blocked', detail: 'Unrecognized device in new region', time: '0.01s ago' },
-    { id: 2, engine: 'govern', action: 'Policy Updated', detail: 'New tax regulations applied to portfolio', time: '0.4s ago' },
-    { id: 3, engine: 'grow', action: 'Dividend Reinvested', detail: 'Purchased fractional shares of VTI', time: '1.2s ago' },
-    { id: 4, engine: 'govern', action: 'Activity Logged', detail: 'Saved securely to your permanent record', time: '2.5s ago' },
-    { id: 5, engine: 'protect', action: 'Anomaly Detected', detail: 'Flagged unusual merchant context', time: '3.8s ago' },
-    { id: 6, engine: 'grow', action: 'Yield Harvested', detail: 'Reallocated $4,200 to higher rate', time: '5.1s ago' },
-    { id: 7, engine: 'execute', action: 'Transaction Staged', detail: 'Awaiting your biological approval', time: '6.4s ago' },
-    { id: 8, engine: 'govern', action: 'Activity Logged', detail: 'Saved securely to your permanent record', time: '8.2s ago' },
-  ];
-
-  return (
-    <div className="absolute inset-x-4 bottom-4 md:inset-x-8 md:bottom-8 h-[80%] flex flex-col justify-end gap-2 overflow-hidden">
-      {/* Top fade out mask */}
-      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#0A0A0F] to-transparent z-10 pointer-events-none" />
-      
-      {/* Dynamic scan line - moved to z-10 for visibility */}
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--engine-dashboard)]/20 to-transparent animate-pulse pointer-events-none z-10" />
-      
-      <div className="flex flex-col gap-2 w-full max-w-lg mx-auto relative z-0">
-        <AnimatePresence>
-          {LOGS.map((log, index) => {
-            const Icon = ENGINES.find(e => e.id === log.engine)?.icon || Shield;
-            const color = ENGINE_COLORS[log.engine];
-            
-            return (
-              <motion.div
-                key={log.id}
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ delay: reducedMotion ? 0 : index * 0.15, duration: 0.5, ease: "easeOut" }}
-                className="flex items-center gap-3 p-3 md:p-4 rounded-lg bg-[#0A0A0F]/80 border border-white/10 backdrop-blur-md shadow-lg"
-              >
-                <div className="p-2 rounded bg-white/5 border border-white/10" style={{ color }}>
-                  <Icon size={14} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-medium text-white/90 truncate">{log.action}</span>
-                    <span className="text-[10px] font-mono text-white/30 whitespace-nowrap">{log.time}</span>
-                  </div>
-                  <p className="text-xs text-white/50 truncate mt-0.5">{log.detail}</p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </AnimatePresence>
-      </div>
-    </div>
-  );
-}

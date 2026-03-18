@@ -79,21 +79,19 @@ const ENGINE_CONTENT: Record<
     ],
   },
   grow: {
-    proof: 'Short & long term recommendation',
+    proof: 'Cashflow and saving opportunities',
     signals: [
-      { icon: 'wave', label: 'Cash Flow Forecast' },
-      { icon: 'roadmap-pin', label: 'Portfolio Analysis' },
-      { icon: 'budget-tool', label: 'Optimization' },
-      { icon: 'signal-beam', label: 'Actionable insights' },
+      { icon: 'wave', label: 'Cashflow Forecast' },
+      { icon: 'roadmap-pin', label: 'Spending Analysis' },
+      { icon: 'budget-tool', label: 'Saving Opportunities' },
+      { icon: 'signal-beam', label: 'Next Best Review' },
     ],
   },
   execute: {
-    proof: 'Human approval based automated execution',
+    proof: 'Execution assistant',
     signals: [
-      { icon: 'orbit-connector', label: 'Cross-Engine Link' },
-      { icon: 'consent-check', label: 'Human Approval' },
-      { icon: 'replay-spiral', label: 'Reversible Actions' },
-      { icon: 'ai-brain', label: 'Centralized UI' },
+      { icon: 'orbit-connector', label: 'Regulatory Compliant UI' },
+      { icon: 'replay-spiral', label: 'Execution steps' },
     ],
   },
   govern: {
@@ -336,7 +334,7 @@ export const Slide04Solution3A: React.FC<Slide04Solution3AProps> = ({
                       <div
                         style={{
                           display: 'grid',
-                          gridTemplateColumns: '1fr 1fr',
+                          gridTemplateColumns: content.signals.length <= 2 ? '1fr' : '1fr 1fr',
                           gap: '10px 10px',
                           flex: 1,
                           alignContent: 'center',
@@ -422,8 +420,8 @@ export const Slide04Solution3A: React.FC<Slide04Solution3AProps> = ({
             {([
               { text: 'Deterministic models compute', icon: 'gear', glow: 'teal' as const },
               { text: 'GenAI explains', icon: 'explainability', glow: 'violet' as const },
-              { text: 'AI Agents execute', icon: 'gear', glow: 'amber' as const },
-              { text: 'Humans confidently approve', icon: 'compliance-badge', glow: 'blue' as const },
+              { text: 'Minimize user effort', icon: 'gear', glow: 'amber' as const },
+              { text: 'Auditable analysis result', icon: 'compliance-badge', glow: 'blue' as const },
             ]).map((item) => (
               <div
                 key={item.text}

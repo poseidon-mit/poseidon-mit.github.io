@@ -27,30 +27,23 @@ const resolvePillarColor = (pillarId: string, fallback: string): string => {
 
 const GOVERNANCE_COLOR = resolvePillarColor('governance', '#14d8c1');
 const ARCHITECTURE_COLOR = resolvePillarColor('assistant', '#f7b228');
-const BUSINESS_COLOR = resolvePillarColor('business', '#7b6df2');
 
 /* ── Governance glass chips ── */
 const GOVERNANCE_CHIPS = [
   { icon: 'compliance-badge', label: 'Regulatory Compliance', glow: 'teal' as const },
   { icon: 'gear', label: 'ML/LLMOps', glow: 'teal' as const },
-  { icon: 'explainability', label: 'Explainable AI', glow: 'teal' as const },
-  { icon: 'replay-spiral', label: 'Reversible AI', glow: 'teal' as const },
+  { icon: 'explainability', label: 'Model management', glow: 'teal' as const },
+  { icon: 'replay-spiral', label: '3rd party assessment', glow: 'teal' as const },
 ];
 
 /* ── Architecture timeline steps ── */
 const ARCH_TIMELINE = [
   { icon: 'ai-brain', label: 'Deterministic models compute', detail: 'ML models calculate with precision', color: theme.accent.amber },
   { icon: 'explainability', label: 'GenAI explains', detail: 'Plain English explanation', color: theme.accent.teal },
-  { icon: 'gear', label: 'AI Agents execute', detail: 'Workflow orchestration', color: theme.accent.violet },
-  { icon: 'consent-check', label: 'Humans confidently approve', detail: 'Human-in-the-loop with centralized control', color: theme.accent.blue },
+  { icon: 'gear', label: 'Minimize user effort', detail: 'Workflow orchestration', color: theme.accent.violet },
+  { icon: 'consent-check', label: 'Auditability', detail: 'Every recommendation auditable', color: theme.accent.blue },
 ];
 
-/* ── Business metric chips (headline only; detail → Appendix) ── */
-const BUSINESS_CHIPS = [
-  { icon: 'ai-economics', label: 'Gross Margin', value: '77%', glow: 'violet' as const },
-  { icon: 'pulse', label: 'Op. Break-even', value: 'Month 12', glow: 'violet' as const },
-  { icon: 'wave', label: 'Value / Cost for customer', value: '4.3X', glow: 'violet' as const },
-];
 
 /* ── Shared glass chip style (Slide06 pattern) ── */
 const glassChipStyle: React.CSSProperties = {
@@ -60,7 +53,7 @@ const glassChipStyle: React.CSSProperties = {
   background: theme.glassPremium.innerPanelBg,
   border: `1px solid ${theme.glassPremium.innerPanelBorder}`,
   borderRadius: 8,
-  padding: '6px 14px',
+  padding: '14px 14px',
   flexShrink: 0,
 };
 
@@ -85,7 +78,7 @@ export const Slide08SummaryV2: React.FC<Slide08SummaryV2Props> = ({
   const layout = slideLayouts.slide08v2;
 
   return (
-    <SlideFrame debug={debug} debugGrid={debugGrid} debugIds={debugIds} slideNumber={9}>
+    <SlideFrame debug={debug} debugGrid={debugGrid} debugIds={debugIds} slideNumber={7}>
       <Tier3Background layers={recolorBackgroundLayers(v4Presets.slide08Summary, { primary: 'white', secondary: 'violet', intensityMultiplier: 1.4 })} />
       <DustMotes count={26} opacity={0.04} />
 
@@ -218,7 +211,7 @@ export const Slide08SummaryV2: React.FC<Slide08SummaryV2Props> = ({
                   textShadow: theme.textCrisp,
                 }}
               >
-                Governance first
+                Compliance first
               </span>
               <span
                 style={{
@@ -228,7 +221,7 @@ export const Slide08SummaryV2: React.FC<Slide08SummaryV2Props> = ({
                   marginLeft: 8,
                 }}
               >
-                Meet regulatory expectation, every AI decision auditable
+                Make sure Poseidon meets regulatory expectations
               </span>
             </div>
             <div style={{ display: 'flex', flex: 1, alignItems: 'center', gap: 10 }}>
@@ -286,6 +279,7 @@ export const Slide08SummaryV2: React.FC<Slide08SummaryV2Props> = ({
                 gap: 0,
                 flex: 1,
                 alignItems: 'flex-start',
+                marginTop: 15,
               }}
             >
               {/* Horizontal line */}
@@ -351,76 +345,6 @@ export const Slide08SummaryV2: React.FC<Slide08SummaryV2Props> = ({
             </div>
           </div>
 
-          {/* ── Pillar 3: Business Model — Hero Stats ── */}
-          <div style={pillarBarStyle(BUSINESS_COLOR)} data-debug-id="slide08v2.pillar.business">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <SlideIcon name="pulse" size={46} glowColor="violet" renderMode="mask" />
-              <span
-                style={{
-                  fontFamily: theme.typography.fontHeader,
-                  fontSize: layout.pillarTitleSize,
-                  fontWeight: 700,
-                  color: BUSINESS_COLOR,
-                  textShadow: theme.textCrisp,
-                }}
-              >
-                Business Model
-              </span>
-              <span
-                style={{
-                  fontFamily: theme.typography.fontUi,
-                  fontSize: layout.pillarSubtitleSize,
-                  color: 'rgba(255,255,255,0.6)',
-                  marginLeft: 8,
-                }}
-              >
-                Sustainable business, measurable progress
-              </span>
-            </div>
-            {/* Large stat numbers row */}
-            <div style={{ display: 'flex', flex: 1, alignItems: 'center' }}>
-              {BUSINESS_CHIPS.map((chip, idx) => (
-                <React.Fragment key={chip.label}>
-                  {idx > 0 && (
-                    <div style={{ width: 1, height: 36, background: 'rgba(255,255,255,0.08)', flexShrink: 0 }} />
-                  )}
-                  <div
-                    style={{
-                      flex: 1,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: 4,
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontFamily: theme.typography.fontMono,
-                        fontSize: layout.statValueSize,
-                        fontWeight: 700,
-                        color: BUSINESS_COLOR,
-                        textShadow: `0 0 8px ${BUSINESS_COLOR}44`,
-                        fontVariantNumeric: theme.typography.numericVariant,
-                        fontFeatureSettings: theme.typography.numericFeatureSettings,
-                      }}
-                    >
-                      {chip.value}
-                    </span>
-                    <span
-                      style={{
-                        fontFamily: theme.typography.fontUi,
-                        fontSize: layout.statLabelSize,
-                        color: 'rgba(255,255,255,0.50)',
-                        fontWeight: 500,
-                      }}
-                    >
-                      {chip.label}
-                    </span>
-                  </div>
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </SlideFrame>

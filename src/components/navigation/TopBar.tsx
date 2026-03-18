@@ -93,14 +93,13 @@ export function TopBar({
                     </span>
                 )}
 
-                <button
-                    onClick={() => navigate('/dashboard/notifications')}
-                    className="relative flex h-9 w-9 items-center justify-center rounded-lg text-white/30 transition-colors duration-300 hover:bg-white/5 hover:text-white/60"
-                    aria-label="Notifications (new)"
+                <div
+                    className="relative flex h-9 w-9 items-center justify-center rounded-lg text-white/30"
+                    aria-label="Notifications"
                 >
                     <Bell className="h-4.5 w-4.5" aria-hidden="true" />
                     <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-red-400 ring-2 ring-[#08080D]" aria-hidden="true" />
-                </button>
+                </div>
 
                 <button
                     className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xs font-semibold text-white/60 transition-colors duration-300 hover:bg-white/10"

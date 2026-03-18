@@ -9,7 +9,6 @@ import {
   TrendingUp,
   Zap,
 } from "lucide-react";
-import { Link } from "@/router";
 import { cn } from "@/lib/utils";
 import { formatUsd } from "@/domain/poseidon-universe";
 import type { FinancialHealthBreakdown } from "@/domain/poseidon-universe";
@@ -166,10 +165,9 @@ function SignalDockCard({
         {attentionItems && attentionItems.length > 0 && (
           <div className="mt-4 space-y-2 relative z-10 w-full">
             {attentionItems.map((item) => (
-              <Link
+              <div
                 key={item.href}
-                to={item.href}
-                className="flex items-center gap-2 rounded-lg px-2 py-1.5 -ml-2 text-xs text-white/50 transition-colors hover:bg-white/[0.04] hover:text-white/80 min-w-0"
+                className="flex items-center gap-2 rounded-lg px-2 py-1.5 -ml-2 text-xs text-white/50 min-w-0"
               >
                 <span
                   className="h-1 w-1 shrink-0 rounded-full"
@@ -178,19 +176,18 @@ function SignalDockCard({
                 <span className="truncate whitespace-nowrap overflow-hidden">
                   {item.label}
                 </span>
-              </Link>
+              </div>
             ))}
           </div>
         )}
       </div>
       <div className="pt-5 mt-auto border-t border-white/5">
-        <Link
-          to={listPath}
-          className="relative z-10 flex w-full items-center justify-between rounded-xl bg-white/[0.01] px-4 py-2.5 text-xs text-white/40 transition-all hover:bg-white/[0.06] hover:text-white"
+        <div
+          className="relative z-10 flex w-full items-center justify-between rounded-xl bg-white/[0.01] px-4 py-2.5 text-xs text-white/40"
         >
           <span>{listLabel}</span>
-          <ArrowRight className="h-3 w-3 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
-        </Link>
+          <ArrowRight className="h-3 w-3 opacity-40" />
+        </div>
       </div>
     </div>
   );
@@ -274,7 +271,7 @@ export function DashboardHero({
     cards.push({
       key: "govern",
       label: "Govern",
-      body: `${decisionsAudited.toLocaleString()} decisions replayable`,
+      body: `${decisionsAudited.toLocaleString()} auditable records`,
       icon: Shield,
       accent: "var(--engine-govern)",
       path: "/govern",
@@ -329,11 +326,6 @@ export function DashboardHero({
                 background: `radial-gradient(ellipse at center, color-mix(in srgb, var(--engine-dashboard) 10%, transparent) 0%, transparent 60%)`,
               }}
             />
-
-            <HeroEyebrow className="mb-6 opacity-80 backdrop-blur-md">
-              <Sparkles className="h-3.5 w-3.5 text-[var(--engine-dashboard)]" />
-              SYSTEM PULSE: OPTIMAL
-            </HeroEyebrow>
 
             <p className="text-[11px] font-mono tracking-[0.2em] uppercase text-white/40 mb-3">
               Total Net Worth

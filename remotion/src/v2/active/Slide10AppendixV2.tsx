@@ -24,7 +24,7 @@ export const Slide10AppendixV2: React.FC<Slide10AppendixV2Props> = ({
   const layout = slideLayouts.slide10v2;
 
   return (
-    <SlideFrame debug={debug} debugGrid={debugGrid} debugIds={debugIds} slideNumber={11}>
+    <SlideFrame debug={debug} debugGrid={debugGrid} debugIds={debugIds} slideNumber={9}>
       <Tier3Background layers={recolorBackgroundLayers(v4Presets.slide10Appendix, { primary: 'blue', secondary: 'white', intensityMultiplier: 1.4 })} />
       <DustMotes count={22} opacity={0.04} />
 

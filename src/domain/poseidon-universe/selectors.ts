@@ -399,7 +399,7 @@ export function selectCouncilMetrics() {
 export function selectSpotlightThreat(): ProtectThreatEntity | null {
   const threats = selectProtectThreats()
   if (threats.length === 0) return null
-  return threats.find((t) => t.id === 'THR-006') || threats.reduce((best, t) => (t.compositePriority > best.compositePriority ? t : best))
+  return threats.find((t) => t.id === 'THR-001') || threats.reduce((best, t) => (t.compositePriority > best.compositePriority ? t : best))
 }
 
 export function selectGrowRecommendations(): RecommendationListItem[] {
@@ -807,20 +807,16 @@ export function selectDashboardHeroView(actionStates?: ExecuteActionStateLike): 
   const balanceSheet = selectBalanceSheet()
   const cohort = selectCohortMetrics()
   const recommendations = selectRecommendationsSummary()
+  const growListItems = selectRecommendationListItems()
   const spotlightThreat = selectSpotlightThreat()
   const spotlightRecommendation = selectSpotlightRecommendation()
-  const pendingActions = selectPendingExecuteActions(actionStates)
-  const spotlightAction = selectSpotlightAction()
-  const featuredAction = spotlightAction
-    ? pendingActions.find((action) => action.id === spotlightAction.id) ?? pendingActions[0] ?? null
-    : pendingActions[0] ?? null
   const governSummary = selectGovernSummaryView()
   const trust = selectArchitecturalTrust()
   const activeThreats = selectProtectThreats().filter((threat) => threat.status !== 'resolved')
   const { score, breakdown } = computeFinancialHealthScore({
     activeThreats: spotlightThreat ? 1 : 0,
     totalThreats: Math.max(activeThreats.length, 1),
-    pendingActions: pendingActions.length,
+    pendingActions: 0,
     totalActions: Math.max(selectExecuteActionsView().length, 1),
   })
 
@@ -854,31 +850,15 @@ export function selectDashboardHeroView(actionStates?: ExecuteActionStateLike): 
     growSignal: spotlightRecommendation
       ? {
           savingsPerMonth: selectExecuteSavingsView().potentialMonthlySavingsUsd,
-          recCount: recommendations.length,
+          recCount: growListItems.length,
           topTitle: spotlightRecommendation.title,
-          attentionItems: recommendations.slice(0, 2).map((rec) => ({
-            label: `${rec.title} · +$${rec.monthly}/mo`,
-            href: `/grow/recommendation?id=${rec.rank}`,
+          attentionItems: growListItems.slice(0, 2).map((rec) => ({
+            label: rec.title,
+            href: `/grow/recommendation?id=${rec.id}`,
           })),
         }
       : null,
-    executeSignal: featuredAction
-      ? {
-          pendingCount: pendingActions.length,
-          topTitle: featuredAction.title,
-          topAmount: featuredAction.amountLabel,
-          attentionItems: pendingActions
-            .filter((action) => {
-              const topProtectCounterparties = activeThreats.slice(0, 2).map(t => t.counterparty.split(' ')[0].toLowerCase());
-              return !topProtectCounterparties.some(cp => action.title.toLowerCase().includes(cp));
-            })
-            .slice(0, 2)
-            .map((action) => ({
-              label: `${action.title} · ${action.amountLabel}`,
-              href: `/execute/approval?id=${action.id}`,
-            })),
-        }
-      : null,
+    executeSignal: null,
     decisionsAudited: governSummary.decisionsAuditedTotal,
     complianceScore: trust.auditCoveragePercent,
   }

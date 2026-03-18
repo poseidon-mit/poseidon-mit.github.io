@@ -192,7 +192,7 @@ export default function ProtectAlertDetailPage() {
     <main
       id="main-content"
       role="main"
-      className="detail-canvas flex flex-col min-h-screen text-white selection:bg-cyan-500/30"
+      className="detail-canvas flex flex-col min-h-screen overflow-x-hidden text-white selection:bg-cyan-500/30"
     >
       <SubPageNav
         engine="protect"
@@ -216,10 +216,10 @@ export default function ProtectAlertDetailPage() {
         {/* ── HEADER: Alert Overview ── */}
         <motion.div
           variants={fadeUp}
-          className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-white/[0.08] pb-8"
+          className="flex flex-col gap-6 border-b border-white/[0.08] pb-8 md:flex-row md:flex-wrap md:items-end md:justify-between"
         >
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
+          <div className="flex min-w-0 flex-1 flex-col gap-4">
+            <div className="flex min-w-0 items-start gap-3">
               <div
                 className={cn(
                   "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 relative overflow-hidden",
@@ -232,9 +232,9 @@ export default function ProtectAlertDetailPage() {
                   className={cn("h-6 w-6 relative z-10", sevConfig.iconColor)}
                 />
               </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-3">
-                  <h1 className="text-3xl font-light tracking-tight text-white">
+              <div className="min-w-0 flex flex-1 flex-col">
+                <div className="flex flex-wrap items-center gap-3">
+                  <h1 className="min-w-0 text-3xl font-light tracking-tight text-white">
                     {alert.counterparty}
                   </h1>
                   <span
@@ -248,12 +248,12 @@ export default function ProtectAlertDetailPage() {
                     {alert.severity} Risk
                   </span>
                 </div>
-                <p className="text-white/50 text-sm mt-1">
+                <p className="mt-1 max-w-3xl text-sm text-white/50">
                   {alert.description}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-6 mt-2">
+            <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-3">
               <div>
                 <p className="text-[10px] uppercase font-bold tracking-widest text-white/40 mb-1">
                   Exposure Amount
@@ -276,38 +276,19 @@ export default function ProtectAlertDetailPage() {
 
           {/* Action Buttons */}
           {disputeState === "idle" && (
-            <div className="flex flex-row gap-3 w-full md:w-auto mt-4 md:mt-0">
-              <button
-                onClick={() => {
-                  setActionTaken("confirmed");
-                  showToast({
-                    message: "Activity confirmed as yours",
-                    variant: "success",
-                  });
-                  dismiss(alert.id);
-                  setTimeout(() => navigate("/protect"), 1000);
-                }}
-                disabled={actionTaken !== null}
-                className="flex-1 md:flex-none px-6 py-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 transition-all font-semibold tracking-wide flex items-center justify-center gap-2"
+            <div className="mt-4 flex w-full flex-row gap-3 md:ml-auto md:mt-0 md:w-auto md:shrink-0">
+              <div
+                className="flex-1 md:flex-none px-6 py-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400/50 font-semibold tracking-wide flex items-center justify-center gap-2 cursor-default"
               >
                 <CheckCircle2 size={18} />
-                {actionTaken === "confirmed" ? "Confirmed" : "This was me"}
-              </button>
-              <button
-                onClick={() => {
-                  setActionTaken("blocked");
-                  showToast({
-                    message: "Threat blocked and reported",
-                    variant: "success",
-                  });
-                  setDisputeState("drafting");
-                }}
-                disabled={actionTaken !== null}
-                className="flex-1 md:flex-none px-6 py-3 rounded-xl border border-red-500/50 bg-red-500/20 hover:bg-red-500/30 text-red-400 transition-all font-semibold tracking-wide flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(239,68,68,0.2)]"
+                This was me
+              </div>
+              <div
+                className="flex-1 md:flex-none px-6 py-3 rounded-xl border border-red-500/50 bg-red-500/20 text-red-400/50 font-semibold tracking-wide flex items-center justify-center gap-2 cursor-default"
               >
                 <XCircle size={18} />
-                {actionTaken === "blocked" ? "Blocked" : "Secure Account"}
-              </button>
+                Prepare Resolution
+              </div>
             </div>
           )}
         </motion.div>

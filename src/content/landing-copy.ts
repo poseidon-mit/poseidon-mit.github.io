@@ -40,7 +40,7 @@ export const LANDING_COPY = {
   finalCta: {
     headlineLine1: "Experience",
     headlineLine2: "the Demo.",
-    subtitle: "Try out our interactive app using non-real money. See how Protect, Grow, Execute, and Govern work together for you.",
+    subtitle: "Try out our interactive app using non-real money.",
     button: "START DEMO",
     proofPoints: [
       "No real money used",

@@ -22,7 +22,7 @@ export const SlideFrame: React.FC<SlideFrameProps> = ({
   showFooter = true,
   showDisclosure = false,
   slideNumber,
-  totalSlides = 12,
+  totalSlides = 10,
   debug = false,
   debugGrid,
   debugIds,

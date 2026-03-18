@@ -69,7 +69,7 @@ const STAGES: readonly Stage[] = [
     items: [
       { icon: 'ai-brain', label: 'Predictive Intelligence', mark: '★', desc: 'Personalized ML models' },
       { icon: 'explainability', label: 'Explainable AI', mark: '★', desc: 'Plain English explanation with low temperature + contributing factors' },
-      { icon: 'consent-check', label: 'Approval-first Execution', mark: '★', desc: 'Human-in-the-loop automation' },
+      { icon: 'consent-check', label: 'Execution assistant', mark: '★', desc: 'Minimize users burden' },
     ],
   },
 ];
@@ -96,8 +96,8 @@ export const Slide05DifferentiationV2: React.FC<Slide05DifferentiationV2Props> =
       <SlideHeader
         badge="DIFFERENTIATOR"
         title="Beyond Aggregation"
-        subtitle="From dashboards to prediction, and approval-first execution."
-        subtitleHighlight="prediction, and approval-first execution."
+        subtitle="Dashboards to Predictive Intelligence, minimizing user burden."
+        subtitleHighlight="minimizing user burden."
         badgeTheme={tc.badgeTheme}
         titleColor="white"
         subtitleHighlightColor={tc.subtitleHighlightColor}

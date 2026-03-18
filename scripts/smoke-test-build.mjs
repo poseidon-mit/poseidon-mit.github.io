@@ -50,6 +50,14 @@ const ROUTES = [
     desc: 'Govern — Audit Ledger',
     expectAny: [/audit/i, /ledger/i, /govern/i],
   },
+  {
+    path: '/protect/alert-detail?alertId=THR-001',
+    desc: 'Protect — Alert Detail',
+    expectAny: [/apple store miami/i, /secure account/i, /this was me/i],
+    viewport: { width: 1024, height: 768 },
+    assertNoHorizontalOverflow: true,
+    buttonsInViewport: [/this was me/i, /secure account/i],
+  },
 ];
 
 /**
@@ -149,12 +157,23 @@ function startPreviewServer() {
 // ---------------------------------------------------------------------------
 
 async function checkRoute(browser, route) {
-  const { path, desc, expectAny } = route;
+  const {
+    path,
+    desc,
+    expectAny,
+    viewport,
+    assertNoHorizontalOverflow,
+    buttonsInViewport,
+  } = route;
   const url = `${BASE_URL}${path}`;
   log(`\n[smoke] ${desc} (${path})`);
 
   const crashMessages = [];
   const page = await browser.newPage();
+
+  if (viewport) {
+    await page.setViewportSize(viewport);
+  }
 
   page.on('console', (msg) => {
     const text = msg.text();
@@ -218,6 +237,56 @@ async function checkRoute(browser, route) {
     } else {
       const snippet = await page.evaluate(() => document.body.innerText.slice(0, 300));
       fail(`None of ${expectAny.map(String).join(' | ')} found. Body: ${snippet}`);
+    }
+  }
+
+  if (assertNoHorizontalOverflow) {
+    const widthMetrics = await page.evaluate(() => {
+      const root = document.documentElement;
+      const body = document.body;
+      const scroller = document.scrollingElement;
+      return {
+        innerWidth: window.innerWidth,
+        rootScrollWidth: root.scrollWidth,
+        bodyScrollWidth: body.scrollWidth,
+        scrollerScrollWidth: scroller?.scrollWidth ?? 0,
+      };
+    });
+    const widest = Math.max(
+      widthMetrics.rootScrollWidth,
+      widthMetrics.bodyScrollWidth,
+      widthMetrics.scrollerScrollWidth,
+    );
+    if (widest <= widthMetrics.innerWidth + 1) {
+      ok('No horizontal overflow at desktop width');
+    } else {
+      fail(
+        `Horizontal overflow detected: widest=${widest}px viewport=${widthMetrics.innerWidth}px`,
+      );
+    }
+  }
+
+  if (buttonsInViewport && buttonsInViewport.length > 0) {
+    const viewportWidth = page.viewportSize()?.width ?? 0;
+    for (const label of buttonsInViewport) {
+      const button = page.getByRole('button', { name: label });
+      const count = await button.count();
+      if (count === 0) {
+        fail(`Expected button ${label} not found`);
+        continue;
+      }
+      const box = await button.first().boundingBox();
+      if (!box) {
+        fail(`Expected button ${label} is not visible`);
+        continue;
+      }
+      if (box.x >= 0 && box.x + box.width <= viewportWidth + 1) {
+        ok(`Button ${label} fits within desktop viewport`);
+      } else {
+        fail(
+          `Button ${label} exceeds viewport: left=${box.x.toFixed(1)} right=${(box.x + box.width).toFixed(1)} viewport=${viewportWidth}`,
+        );
+      }
     }
   }
 

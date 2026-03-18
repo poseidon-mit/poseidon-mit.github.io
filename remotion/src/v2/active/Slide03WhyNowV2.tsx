@@ -73,9 +73,9 @@ export const Slide03WhyNowV2: React.FC<Slide03WhyNowV2Props> = ({
       <SlideHeader
         badge="WHY NOW?"
         badgeTheme={tc.badgeTheme}
-        title="Environmental Shift"
-        subtitle="Three forces converging to make trustworthy personal finance AI."
-        subtitleHighlight="trustworthy personal finance AI."
+        title="Conditions are aligning"
+        subtitle="The conditions to build a trusted financial coordination layer is becoming stronger."
+        subtitleHighlight="is becoming stronger."
         titleColor="white"
         subtitleHighlightColor={tc.subtitleHighlightColor}
         subtitleHighlightShadow={tc.subtitleHighlightShadow}
@@ -156,7 +156,7 @@ export const Slide03WhyNowV2: React.FC<Slide03WhyNowV2Props> = ({
                     lineHeight: 1,
                   }}
                 >
-                  Open Banking
+                  Open Banking Maturity
                 </div>
               </div>
               <div
@@ -167,8 +167,8 @@ export const Slide03WhyNowV2: React.FC<Slide03WhyNowV2Props> = ({
                   lineHeight: 1.25,
                 }}
               >
-                <div>- APIs are standardizing</div>
-                <div>- Data processing rules clarified(GDPR, etc)</div>
+                <div>- API access and connectivity are improving</div>
+                <div>- Data access and processing rules are becoming clearer</div>
               </div>
               <div style={{ display: 'flex', gap: 28, justifyContent: 'center', alignItems: 'center', marginTop: 'auto', flexWrap: 'wrap' }}>
                 {[
@@ -235,7 +235,7 @@ export const Slide03WhyNowV2: React.FC<Slide03WhyNowV2Props> = ({
                     lineHeight: 1,
                   }}
                 >
-                  AI-Native Expectation
+                  AI Coordination Feasibility
                 </div>
               </div>
               <div
@@ -246,12 +246,12 @@ export const Slide03WhyNowV2: React.FC<Slide03WhyNowV2Props> = ({
                   lineHeight: 1.25,
                 }}
               >
-                Users now expect proactive, personalized financial guidance
+                <div>- GenAI makes insights easier to explain in natural language</div>
+                <div>- AI for financial coordination Is becoming more practical</div>
               </div>
               <div style={{ display: 'flex', gap: 28, justifyContent: 'center', alignItems: 'center', marginTop: 'auto', flexWrap: 'wrap' }}>
                 {[
-                  { icon: 'digital-shift', label: 'Behavioral Shift' },
-                  { icon: 'advice-first', label: 'AI Native Expectation' },
+                  { icon: 'explainability', label: 'Explainability' },
                 ].map((tag) => (
                   <div key={tag.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <SlideIcon name={tag.icon} size={layout.miniIconSize} glowColor="amber" renderMode="mask" style={{ flexShrink: 0 }} />
@@ -319,9 +319,9 @@ export const Slide03WhyNowV2: React.FC<Slide03WhyNowV2Props> = ({
             }}
           >
             {[
-              { year: '2021', color: theme.accent.teal, yearAboveLine: false },
-              { year: '2023', color: theme.accent.violet, yearAboveLine: true },
-              { year: '2025', color: theme.accent.amber, yearAboveLine: false },
+              { year: '', color: theme.accent.teal, yearAboveLine: false },
+              { year: '', color: theme.accent.violet, yearAboveLine: true },
+              { year: '', color: theme.accent.amber, yearAboveLine: false },
             ].map((m) => (
               <div
                 key={m.year}
@@ -415,8 +415,8 @@ export const Slide03WhyNowV2: React.FC<Slide03WhyNowV2Props> = ({
               flexContent
               style={{
                 ...cardBase,
-                padding: '20px 30px 4px',
-                flex: 1,
+                padding: '20px 30px 19px',
+                flex: 0.75,
                 minHeight: 0,
                 width: cardWidth,
                 marginLeft: -layout.cardWidthExtra / 2,
@@ -436,7 +436,7 @@ export const Slide03WhyNowV2: React.FC<Slide03WhyNowV2Props> = ({
                     lineHeight: 1,
                   }}
                 >
-                  AI Economics
+                  Consumer Protection Pressure
                 </div>
               </div>
               <div
@@ -447,30 +447,21 @@ export const Slide03WhyNowV2: React.FC<Slide03WhyNowV2Props> = ({
                   lineHeight: 1.25,
                 }}
               >
-                Inference cost dropping 10x annually (Epoch AI, 2025)
+                <div>- Fraud and fee harms are drawing sustained scrutiny</div>
+                <div>- Expectation to the need for better financial innovation</div>
               </div>
-              <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', minHeight: 0 }}>
-                <ChartLine
-                  data={COST_DECLINE}
-                  width={layout.chartLineWidth}
-                  height={80}
-                  color={theme.accent.violet}
-                  strokeWidth={2.5}
-                  showArea
-                  showGrid={false}
-                  showDotGrid
-                  smooth
-                  smoothTension={0.42}
-                  highlightLastPoint={false}
-                  xLabels={COST_LABELS}
-                  showAxisLabels
-                  xPadding={40}
-                  xLabelFontSize={18}
-                  xLabelYOffset={8}
-                  style={{
-                    filter: `drop-shadow(0 0 12px ${theme.accent.violet}50)`,
-                  }}
-                />
+              <div style={{ display: 'flex', gap: 28, justifyContent: 'center', alignItems: 'center', marginTop: 12, flexWrap: 'wrap' }}>
+                {[
+                  { icon: 'risk-warning', label: 'Consumer harm' },
+                  { icon: 'regulation-scale', label: 'Regulatory scrutiny' },
+                ].map((tag) => (
+                  <div key={tag.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <SlideIcon name={tag.icon} size={layout.miniIconSize} glowColor="violet" renderMode="mask" style={{ flexShrink: 0 }} />
+                    <span style={{ fontFamily: theme.typography.fontUi, fontSize: layout.tagLabelSize, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>
+                      {tag.label}
+                    </span>
+                  </div>
+                ))}
               </div>
             </GlassCard>
           </div>
@@ -479,37 +470,6 @@ export const Slide03WhyNowV2: React.FC<Slide03WhyNowV2Props> = ({
           <div />
         </div>
 
-        {/* ═══ Footer Callout ═══ */}
-        <div
-          style={{
-            padding: '23px 20px 12px',
-            flexShrink: v2Policy.card.cardFlexShrink,
-          }}
-          data-debug-id="slide03v2.footer"
-        >
-          <div
-            style={{
-              fontFamily: theme.typography.fontUi,
-              fontSize: layout.footerTextSize,
-              fontWeight: 600,
-              color: 'rgba(255,255,255,0.9)',
-              lineHeight: 1.16,
-              textAlign: 'center',
-            }}
-          >
-            Infrastructure + economics + user demand converged in 2025.
-            <span
-              style={{
-                color: theme.accent.cyan,
-                textShadow: `${theme.textCrisp}, ${theme.neon.cyan.deep}`,
-                marginLeft: 10,
-                fontWeight: 700,
-              }}
-            >
-              Ready for scale.
-            </span>
-          </div>
-        </div>
       </div>
     </SlideFrame>
   );

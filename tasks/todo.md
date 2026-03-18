@@ -1,3 +1,32 @@
+# Protect Alert Detail Desktop CTA Overflow
+
+## Intent
+
+- Human: the CTA buttons on `/protect/alert-detail?alertId=THR-XXX` overflow on desktop while mobile is already acceptable.
+- Task: make the desktop header wrap safely so both actions remain fully visible without changing CTA copy, behavior, or the mobile layout.
+- Feel: minimal, precise, same visual hierarchy.
+
+## Plan
+
+- [x] Make the Protect alert-detail summary column shrinkable and wrap-friendly.
+- [x] Let the desktop CTA group wrap below the summary before it can overflow the container.
+- [x] Add a desktop overflow regression check against the real alert-detail route in the production smoke suite.
+- [x] Run targeted route verification plus browser-level width checks and record the outcome.
+
+## Review
+
+- Updated `src/pages/protect/ProtectAlertDetail.tsx` so the page shell has defensive `overflow-x-hidden`, the summary column uses `min-w-0` + flex growth, the title/badge block wraps naturally, the metadata row can wrap, and the CTA group now drops below the summary on constrained desktop widths instead of spilling past the right edge.
+- Updated `scripts/smoke-test-build.mjs` to cover `/protect/alert-detail?alertId=THR-001` at `1024x768`, assert no horizontal overflow, and verify both `This was me` and `Secure Account` remain fully inside the desktop viewport.
+- Updated `src/__tests__/protect-detail-truthfulness.test.tsx` to match the current severity badge copy (`Critical Risk`) so the targeted detail suite reflects the live UI.
+- Verification passed:
+  `npx vitest run src/__tests__/protect-detail-truthfulness.test.tsx`
+  `npm run build`
+  `node scripts/smoke-test-build.mjs`
+- Browser verification passed on `http://127.0.0.1:5173/protect/alert-detail?alertId=THR-001`:
+  `1024x768` and `1440x900` showed `scrollWidth === innerWidth` and both buttons fully visible;
+  `375x812` stayed unchanged with `scrollWidth === innerWidth`;
+  `768x900` showed the CTA row below the summary (`button top 464px` vs. heading bottom `242px`) with no overflow.
+
 # Landing Cross-Platform Performance Stabilization
 
 ## Intent

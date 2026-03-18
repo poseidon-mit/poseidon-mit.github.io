@@ -7,14 +7,12 @@ import React, {
   useMemo,
   useRef,
 } from "react";
-import { Bell, Settings } from "lucide-react";
+import { Bell } from "lucide-react";
 import { Link, useRouter } from "@/router";
 import { useCommandPalette } from "@/hooks/useCommandPalette";
 import { usePresentationMode } from "@/hooks/usePresentationMode";
 import { usePWA } from "@/hooks/usePWA";
 import { useRouteWarmup } from "@/hooks/useRouteWarmup";
-import { Button } from "@/components/ui/button";
-import { TalkToMoneyFab } from "@/components/ui/TalkToMoneyFab";
 import { type EngineName } from "@/lib/engine-tokens";
 import { cn } from "@/lib/utils";
 import { BREADCRUMB_MAP } from "@/lib/breadcrumb-registry";
@@ -25,7 +23,6 @@ import {
   TONE_CLASSES,
 } from "../navigation/Sidebar";
 import { TopBar } from "../navigation/TopBar";
-import { useDemoExecute } from "@/lib/demo-state/provider";
 import { useDismissedAlerts } from "@/pages/protect/useDismissedAlerts";
 import { CANONICAL_UNIVERSE } from "@/domain/poseidon-universe/canonical";
 
@@ -46,9 +43,6 @@ const SHELL_HEADING_PATHS = new Set([
   "/dashboard",
   "/protect",
   "/grow",
-  "/execute",
-  "/govern",
-  "/settings",
 ]);
 
 const LazyCommandPalette = lazy(async () => {
@@ -91,7 +85,7 @@ export function AppNavShell({
     if (!SHELL_HEADING_PATHS.has(path)) return undefined;
     return activeSection?.label ?? breadcrumbs[breadcrumbs.length - 1] ?? "";
   }, [activeSection?.label, breadcrumbs, path]);
-  const { navigate, pendingPath, showPendingIndicator } = useRouter();
+  const { pendingPath, showPendingIndicator } = useRouter();
   const {
     isOpen: isPaletteOpen,
     open: openPalette,
@@ -99,19 +93,10 @@ export function AppNavShell({
   } = useCommandPalette();
   const { isPresentation } = usePresentationMode();
   const { isOffline } = usePWA();
-  const executeState = useDemoExecute();
   const activeTone = activeSection?.tone;
   const activeToneClasses = activeTone ? TONE_CLASSES[activeTone] : undefined;
   const mainRef = useRef<HTMLElement | null>(null);
   useRouteWarmup(path);
-
-  const pendingExecuteCount = useMemo(
-    () =>
-      Object.values(executeState.actionStates).filter(
-        (entry) => entry.status === "pending",
-      ).length,
-    [executeState],
-  );
   const { dismissed } = useDismissedAlerts();
   const activeProtectCount = useMemo(
     () =>
@@ -125,9 +110,8 @@ export function AppNavShell({
   const mobileBadges: Record<string, number> = useMemo(
     () => ({
       "/protect": activeProtectCount,
-      "/execute": pendingExecuteCount,
     }),
-    [activeProtectCount, pendingExecuteCount],
+    [activeProtectCount],
   );
 
   useEffect(() => {
@@ -215,26 +199,8 @@ export function AppNavShell({
               </ol>
             </nav>
             <div className="flex items-center justify-end gap-1">
-              <Link
-                to="/settings"
-                className={cn(
-                  "relative flex h-11 w-11 items-center justify-center rounded-lg transition-colors",
-                  path === "/settings"
-                    ? "text-foreground"
-                    : "text-muted-foreground",
-                )}
-                aria-label="Settings"
-              >
-                <Settings className="h-5 w-5" aria-hidden="true" />
-                {showPendingIndicator && pendingPath?.startsWith("/settings") ? (
-                  <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-white/70 animate-pulse" aria-hidden="true" />
-                ) : null}
-              </Link>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative !h-11 !min-h-11 !w-11 rounded-lg !px-0 text-muted-foreground"
-                onClick={() => navigate("/dashboard/notifications")}
+              <div
+                className="relative flex h-11 w-11 items-center justify-center rounded-lg text-muted-foreground"
                 aria-label="Notifications"
               >
                 <Bell className="h-5 w-5" aria-hidden="true" />
@@ -242,7 +208,7 @@ export function AppNavShell({
                   className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500"
                   aria-hidden="true"
                 />
-              </Button>
+              </div>
             </div>
           </div>
         </header>
@@ -258,7 +224,6 @@ export function AppNavShell({
         </main>
       </div>
 
-      <TalkToMoneyFab />
 
       {/* ── Mobile bottom navigation ── */}
       <nav

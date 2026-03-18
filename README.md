@@ -1,103 +1,63 @@
-# v0-poseidon
+# Poseidon.AI
 
-Poseidon.AI — AI-powered personal finance guardian (MIT CTO Program Capstone Project).
+Poseidon.AI is an AI-powered personal finance guardian for the MIT CTO Program capstone. This repository contains the React + Vite prototype, the deck rendering pipeline, and the supporting scripts and assets used to build and ship the project.
 
-## Runtime Policy
+## What Is In This Repo
 
-- Frontend runtime is **Vite-only**.
-- Canonical route components live in `src/pages/`.
-- Next.js assets are archived under `legacy/next/` and are excluded from active build/test flows.
-- Package manager is **npm** (`package-lock.json` is authoritative).
+- `src/` - the active Vite app and route screens
+- `remotion/` - the presentation rendering pipeline
+- `public/` - static assets served by the app
+- `scripts/` - build, verification, and export tooling
+- `tasks/` - working notes, prompts, and project logs
 
-## Overview
-
-Poseidon.AI is a unified AI backbone for personal finance that combines governance-first compliance, deterministic ML models, GenAI explanations, and consent-based execution. This repository contains the interactive prototype and pitch deck source.
-
-## Repository Structure
-
-```
-poseidon-mit.github.io/
-├── src/                  # React + Vite prototype app (36 screens)
-│   ├── pages/            # Screen components
-│   ├── components/       # Shared UI components
-│   ├── design-system/    # Design tokens & system
-│   └── ...
-├── remotion/             # Pitch deck rendering pipeline
-│   ├── src/v2/           # Active slide components (11 slides)
-│   ├── src/shared/       # Shared theme, GlassCard, icons, visuals
-│   ├── scripts/          # Render & PPTX generation scripts
-│   └── out/              # Rendered PNGs + PPTX output
-├── public/               # Static assets (PWA manifest, icons)
-└── docs/                 # Documentation
-```
-
-## Prototype App
-
-Interactive React SPA showcasing all 36 screens of the Poseidon.AI experience.
+## Quick Start
 
 ```bash
 npm install
-npm run dev        # Start dev server
-npm run build      # Production build
-npm test           # Run tests
+npm run dev
 ```
 
-Common quality gates:
+Requirements:
+
+- Node.js `>=20.19.0`
+- npm `11.6.2`
+
+## Common Commands
+
+```bash
+npm run build
+npm run typecheck
+npm run test:run
+npm run smoke-test-build
+npm run test:e2e
+```
+
+Useful checks:
 
 ```bash
 npm run guard:vite-only
-npm run typecheck
-npm run test:run
 npm run check:contracts
 npm run check:target-contracts
-npm run check:design-system
 npm run check:a11y-structure
 npm run check:inline-style-hex
 ```
 
-## CI/CD
+## Deck Pipeline
 
-- Deploy workflow: `.github/workflows/deploy.yml`
-  - Builds Vite app and deploys `dist/` to GitHub Pages (main branch only)
-  - Includes Vite preview smoke check before artifact upload
-- CI workflow: `.github/workflows/ci.yml`
-  - PR/dispatch validation: guard, typecheck, tests, contract gates, design-system gates, build
-- UX workflow: `.github/workflows/ux-quality.yml`
-  - PR split jobs (`ux-pr-fast`, `ux-pr-visual`) for faster feedback
-  - Nightly non-blocking UX scan/report with summary output
-
-To include the pitch deck PDF on the site (e.g. for `/deck` and download), copy it into `public/` before building:
+The pitch deck is rendered separately in `remotion/`. The repo includes scripts for exporting PNG, PDF, and PPTX variants, then copying the delivery PDF into `public/` when needed for the web app.
 
 ```bash
-npm run copy:deck-pdf   # copies remotion/out/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf → public/
-npm run build
+npm run pdf:v3:delivery
+npm run copy:deck-pdf:delivery
 ```
 
-**Tech stack:** React 19, Vite, Tailwind CSS v4, Framer Motion, Recharts, Lucide Icons
+## Deployment
 
-## Pitch Deck (Remotion)
+The main branch deploy workflow builds the Vite app, runs a preview smoke check, and rsyncs `dist/` to the configured production server via `.github/workflows/deploy.yml`.
 
-11-slide visual-first pitch deck with quality-first export profiles:
-- `master`: scale-3 PNG (`5760x3240`) + PNG-embedded PPTX
-- `delivery`: target-sized PDF (`10-13MB`) and optional JPEG-embedded PPTX
+## Notes
 
-```bash
-cd remotion
-npm install
-npm start                          # Remotion Studio preview
-node scripts/build-v3-exports.mjs  # Master PNG + master PPTX + delivery PDF
-node scripts/gen-v3-pptx.js        # Master PPTX (PNG images, notes on by default)
-node scripts/gen-v3-pptx.js --image-format jpeg --jpeg-quality 82 --notes --alt-text # Optional delivery PPTX
-```
-
-**Slides:** Title, Problem, Why Now, Solution, Differentiation, Business/Roadmap, Demo, Summary, Epilogue, Appendix, Financial Model
-
-**Design system:** 8-layer premium glass cards, Tabler-based SVG icons, neon text effects, Tier3 animated backgrounds
-
-## Team
-
-MIT CTO Program — Poseidon Team
-
-## License
-
-Private — MIT CTO Program Capstone
+- The frontend runtime is Vite-only.
+- Canonical route components live in `src/pages/`.
+- Legacy assets are archived and are not part of the active runtime.
+- Package manager is npm; `package-lock.json` is authoritative.

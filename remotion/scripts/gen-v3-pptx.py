@@ -252,8 +252,8 @@ def main() -> None:
         "v3-Slide04SolutionV3.png",
         "v3-Slide05DifferentiationV3.png",
         "v3-Slide06BusinessV3.png",
-        "v3-Slide07DemoV3.png",
-        "v3-Slide11FinModelV3.png",
+        # "v3-Slide07DemoV3.png",  # hidden
+        # "v3-Slide11FinModelV3.png",  # hidden
         "v3-Slide08SummaryV3.png",
         "v3-Slide09EpilogueV3.png",
         "v3-Slide10AppendixV3.png",

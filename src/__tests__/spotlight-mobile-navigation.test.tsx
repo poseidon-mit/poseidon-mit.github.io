@@ -20,17 +20,15 @@ function renderPage(ui: React.ReactElement, path: string) {
   )
 }
 
-describe('Spotlight cards are tappable links on mobile', () => {
-  it('GrowRecommendations spotlight card links to recommendation detail', () => {
+describe('Spotlight cards mobile behavior', () => {
+  it('GrowRecommendations spotlight card is not tappable', () => {
     renderPage(<GrowRecommendations />, '/grow/recommendations')
-    // The spotlight card should contain a link wrapping the entire card
     const allLinks = screen.getAllByRole('link')
     const spotlightLink = allLinks.find(
       (link) => link.getAttribute('href')?.includes('/grow/recommendation?id='),
     )
-    expect(spotlightLink).toBeTruthy()
-    // The link should have block display (full card tappable, not hidden on mobile)
-    expect(spotlightLink!.className).toContain('block')
+    expect(spotlightLink).toBeUndefined()
+    expect(screen.getAllByRole('button', { name: /see opportunity/i })[0]).toBeDisabled()
   })
 
   it('ProtectThreats spotlight card links to alert detail', () => {
@@ -53,17 +51,11 @@ describe('Spotlight cards are tappable links on mobile', () => {
     expect(spotlightLink!.className).toContain('block')
   })
 
-  it('spotlight cards do not contain nested <a> tags', () => {
+  it('GrowRecommendations spotlight card contains no nested detail links', () => {
     renderPage(<GrowRecommendations />, '/grow/recommendations')
-    const allLinks = screen.getAllByRole('link')
-    const spotlightLink = allLinks.find(
-      (link) =>
-        link.getAttribute('href')?.includes('/grow/recommendation?id=') &&
-        link.className.includes('block'),
-    )
-    expect(spotlightLink).toBeTruthy()
-    // No nested <a> inside the spotlight link
-    const nestedLinks = spotlightLink!.querySelectorAll('a')
-    expect(nestedLinks.length).toBe(0)
+    const growLinks = screen
+      .getAllByRole('link')
+      .filter((link) => link.getAttribute('href')?.includes('/grow/recommendation?id='))
+    expect(growLinks).toHaveLength(0)
   })
 })

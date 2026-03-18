@@ -24,11 +24,10 @@ const BULLET_ICONS: Record<string, { icon: string; glow: IconGlowColor }> = {
   // Phase 1: Foundation
   'Compliance': { icon: 'compliance-badge', glow: 'violet' },
   'Governance': { icon: 'regulation-scale', glow: 'violet' },
-  'Compliance and governance': { icon: 'compliance-badge', glow: 'violet' },
-  'AI explainability': { icon: 'explainability', glow: 'violet' },
+  'Foundation Evaluation': { icon: 'explainability', glow: 'violet' },
+  'Business case refinement': { icon: 'compliance-badge', glow: 'violet' },
   'Detection and Grow pilots': { icon: 'shield', glow: 'violet' },
   'Data Architecture': { icon: 'vault', glow: 'violet' },
-  'LLMOps / MLOps': { icon: 'gear', glow: 'violet' },
   // Phase 3: Frontier
   // Precision moved to gateMetrics for Phase 3
   'Reverse Option': { icon: 'replay-spiral', glow: 'blue' },
@@ -87,7 +86,6 @@ export const Slide06BusinessV2: React.FC<Slide06BusinessV2Props> = ({
   const layout = slideLayouts.slide06v2;
   const slideCopy = copy.slide06;
   const phases = slideCopy.phases as ReadonlyArray<RoadmapPhase>;
-  const phase5 = slideCopy.phase5;
 
   return (
     <SlideFrame debug={debug} debugGrid={debugGrid} debugIds={debugIds} slideNumber={6}>
@@ -411,47 +409,6 @@ export const Slide06BusinessV2: React.FC<Slide06BusinessV2Props> = ({
               );
             })}
 
-            {/* Phase 5: compact horizontal glass bar */}
-            <div
-              style={{
-                display: 'flex', alignItems: 'center', gap: 14,
-                background: theme.glassPremium.innerPanelBg,
-                border: `1px solid ${phase5.color}44`,
-                borderRadius: 14, padding: '10px 18px',
-              }}
-              data-debug-id="slide06v2.phase.phase-5"
-            >
-              <span style={{
-                fontFamily: theme.typography.fontHeader,
-                fontSize: layout.rightPhaseLabelSize, fontWeight: 700,
-                color: phase5.color,
-              }}>
-                {phase5.label}
-              </span>
-              <div style={{
-                width: 1, height: 22,
-                background: `${phase5.color}44`, flexShrink: 0,
-              }} />
-              <span style={{
-                fontFamily: theme.typography.fontHeader,
-                fontSize: layout.rightTitleSize, fontWeight: 600,
-                color: phase5.color,
-              }}>
-                {phase5.title}
-              </span>
-              <div style={{ flex: 1 }} />
-              <div style={{
-                borderRadius: 999, padding: '3px 12px 2px',
-                ...PILLAR_BADGE_DARK_STYLE,
-                border: `1px solid ${phase5.color}`,
-                color: phase5.color,
-                fontFamily: theme.typography.fontMono,
-                fontSize: Math.max(v2Policy.typography.metaMinPx, 16),
-                fontWeight: 700, letterSpacing: '0.03em',
-              }}>
-                {phase5.pillar}
-              </div>
-            </div>
           </div>
         </GlassCard>
       </div>

@@ -1,11 +1,10 @@
-import { ArrowRight, ShieldAlert, Users } from "lucide-react";
+import { ArrowRight, ShieldAlert } from "lucide-react";
 import { Link } from "@/router";
 import { buttonVariants } from "@/components/ui/button";
 import { ListPortalBar } from "./list-portal-bar";
 import { cn } from "@/lib/utils";
 import {
   HeroBackdrop,
-  HeroEyebrow,
   HeroMetricPill,
   HeroUnifiedFooter,
 } from "./hero-concept-primitives";
@@ -102,10 +101,6 @@ export function ProtectAnomalyRadar({
   alert,
   radarAxes, // Kept for interface compatibility but unused in this visual paradigm
   shapFactors,
-  auditChain,
-  remainingCount,
-  totalExposure,
-  fpRate,
   onReviewThreat,
 }: ProtectAnomalyRadarProps) {
   const performance = usePerformanceProfile();
@@ -137,20 +132,9 @@ export function ProtectAnomalyRadar({
 
         <div className="relative z-10 flex w-full flex-1 flex-col">
           <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-6 py-12 md:px-10">
-            <div className="mb-8 flex w-full justify-center">
-              <div className="flex flex-col items-center gap-2 text-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.02]">
-                <HeroEyebrow className="border-[var(--engine-protect)]/20 bg-[var(--engine-protect)]/5 text-[var(--engine-protect)]">
-                  <ShieldAlert className="h-3.5 w-3.5" />
-                  Protect matrix live
-                </HeroEyebrow>
-                <h2 id="protect-hero-title" className="sr-only">
-                  Protect
-                </h2>
-                <p className="mt-2 text-[11px] font-mono tracking-[0.2em] uppercase text-white/50">
-                  Status: 1 anomaly flagged
-                </p>
-              </div>
-            </div>
+            <h2 id="protect-hero-title" className="sr-only">
+              Protect
+            </h2>
 
             <div className="w-full">
               <div
@@ -167,13 +151,6 @@ export function ProtectAnomalyRadar({
 
               <div className="relative z-10 grid gap-0 rounded-[23px] bg-[#050A0F] lg:grid-cols-2">
                 <div className="flex flex-col border-b border-white/10 p-8 lg:border-b-0 lg:border-r md:p-10">
-                  <div className="mb-6 flex items-center gap-3">
-                    <div className="flex h-2 w-2 rounded-full bg-[var(--engine-protect)] shadow-[0_0_10px_var(--engine-protect)]" />
-                    <span className="font-mono text-xs uppercase tracking-[0.2em] text-white/50">
-                      Target Identification
-                    </span>
-                  </div>
-
                   <h3 className="mb-1 min-w-0 text-lg font-semibold leading-snug tracking-tight text-white/90">
                     {alert.counterparty}
                   </h3>
@@ -210,10 +187,7 @@ export function ProtectAnomalyRadar({
 
                   <div className="mb-8 flex items-center justify-between">
                     <span className="font-mono text-xs uppercase tracking-[0.2em] text-white/50">
-                      Diagnostic Trace
-                    </span>
-                    <span className="font-mono text-xs text-[var(--engine-protect)]">
-                      {alert.id}
+                      Drivers
                     </span>
                   </div>
 
@@ -255,34 +229,6 @@ export function ProtectAnomalyRadar({
               </div>
             </div>
 
-            <div className="w-full max-w-4xl">
-              <div className="mt-8 flex w-full flex-col items-center justify-between gap-6 border-t border-white/5 pt-6 sm:flex-row">
-                <div className="flex flex-wrap items-center justify-center gap-8">
-                  <ProtectLedgerField
-                    label="Total exposure"
-                    value={`$${totalExposure.toLocaleString()}`}
-                  />
-                  <ProtectLedgerField label="False positives" value={fpRate} />
-                  <ProtectLedgerField
-                    label="Linked review"
-                    value={auditChain ? auditChain.actionId : "Govern audit"}
-                  />
-                </div>
-
-                {auditChain && (
-                  <div className="flex w-full max-w-md shrink-0 items-center justify-center gap-2 rounded-[14px] border border-white/10 bg-white/[0.02] px-4 py-3 lg:w-auto lg:justify-end">
-                    <Users className="h-4 w-4 shrink-0 text-[var(--engine-protect)]/60" />
-                    <span className="mr-2 shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-white/30">
-                      Cohort signal
-                    </span>
-                    <p className="text-xs leading-snug text-white/70">
-                      Credential-stuffing attacks up 31% this quarter. Threat
-                      correlated across 12,847 profiles in real-time.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
 
           <div>

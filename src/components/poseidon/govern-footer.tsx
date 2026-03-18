@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ExternalLink, FileText, Lock, Shield, ShieldCheck, User } from 'lucide-react'
-import { Link } from '@/router'
+import { FileText, Lock, Shield, ShieldCheck, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { selectGovernFooterView } from '@/domain/poseidon-universe'
 import type { GovernAuditEntryEntity } from '@/domain/poseidon-universe/types'
@@ -28,9 +27,8 @@ function relativeTime(iso: string | null | undefined): string {
 
 function EntryRow({ entry }: { entry: GovernAuditEntryEntity }) {
   return (
-    <Link
-      to={`/govern/audit-detail?decision=${entry.id}`}
-      className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 transition-colors hover:bg-white/[0.06]"
+    <div
+      className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3"
     >
       <div className="min-w-0">
         <p className="truncate text-sm text-white">{entry.action}</p>
@@ -41,7 +39,7 @@ function EntryRow({ entry }: { entry: GovernAuditEntryEntity }) {
       <span className="shrink-0 rounded-full border border-white/[0.08] px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/55">
         {entry.status}
       </span>
-    </Link>
+    </div>
   )
 }
 
@@ -60,7 +58,6 @@ export function GovernFooter({
   )
 
   const displayId = traceBinding?.auditDecisionId ?? auditId
-  const deepLinkHref = `/govern/audit-detail?decision=${displayId}`
 
   if (compact) {
     return (
@@ -79,13 +76,9 @@ export function GovernFooter({
               Auditable
             </span>
           </div>
-          <Link
-            to={deepLinkHref}
-            className="inline-flex items-center gap-1 text-xs font-mono text-white/55 transition-colors hover:text-white"
-          >
+          <span className="inline-flex items-center gap-1 text-xs font-mono text-white/55">
             {displayId}
-            <ExternalLink className="h-3 w-3" aria-hidden="true" />
-          </Link>
+          </span>
         </div>
       </footer>
     )
@@ -122,13 +115,9 @@ export function GovernFooter({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <Link
-            to={deepLinkHref}
-            className="inline-flex items-center gap-1 text-xs font-mono text-white/55 transition-colors hover:text-white"
-          >
+          <span className="inline-flex items-center gap-1 text-xs font-mono text-white/55">
             {displayId}
-            <ExternalLink className="h-3 w-3" aria-hidden="true" />
-          </Link>
+          </span>
           <button
             type="button"
             className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-white/[0.08] px-4 py-2 text-xs font-medium text-white/72 transition-colors hover:bg-white/[0.04]"

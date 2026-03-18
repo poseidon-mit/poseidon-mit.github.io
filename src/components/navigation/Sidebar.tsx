@@ -3,9 +3,6 @@ import {
     LayoutDashboard,
     Shield,
     TrendingUp,
-    Zap,
-    Scale,
-    Settings,
     MessageCircle,
     type LucideIcon,
 } from 'lucide-react';
@@ -77,9 +74,6 @@ export const NAV_ITEMS: NavItem[] = [
     { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, engine: 'dashboard', group: 'engine', tone: 'dashboard' },
     { label: 'Protect', path: '/protect', icon: Shield, engine: 'protect', group: 'engine', tone: 'protect' },
     { label: 'Grow', path: '/grow', icon: TrendingUp, engine: 'grow', group: 'engine', tone: 'grow' },
-    { label: 'Execute', path: '/execute', icon: Zap, engine: 'execute', group: 'engine', tone: 'execute' },
-    { label: 'Govern', path: '/govern', icon: Scale, engine: 'govern', group: 'engine', tone: 'govern' },
-    { label: 'Settings', path: '/settings', icon: Settings, group: 'system', tone: 'system' },
 ];
 
 export const ENGINE_ITEMS = NAV_ITEMS.filter((i) => i.group === 'engine');
@@ -163,26 +157,6 @@ export function Sidebar({
                     );
                 })}
 
-                <div className="pt-6" />
-                {SYSTEM_ITEMS.map((item) => {
-                    const isActive = path === item.path || path.startsWith(item.path + '/');
-                    const Icon = item.icon;
-                    const tone = TONE_CLASSES[item.tone];
-                    return (
-                        <Link
-                            key={item.path}
-                            to={item.path}
-                            className={cn(
-                                'group flex items-center gap-4 rounded-2xl px-5 py-3.5 transition-all duration-300',
-                                isActive ? tone.activeLink : 'text-white/30 hover:bg-white/[0.03] hover:text-white/60 border border-transparent'
-                            )}
-                            aria-current={isActive ? 'page' : undefined}
-                        >
-                            <Icon className={cn('h-[18px] w-[18px] transition-transform duration-300 group-hover:scale-110', isActive && tone.activeIcon)} aria-hidden="true" />
-                            <span className="text-sm font-medium tracking-wide">{item.label}</span>
-                        </Link>
-                    );
-                })}
             </nav>
 
             <div className="flex items-center gap-4 border-t border-white/5 px-8 py-6 transition-colors duration-300 hover:bg-white/[0.03] cursor-pointer">

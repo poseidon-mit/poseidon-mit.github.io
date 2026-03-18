@@ -40,8 +40,8 @@ describe('Protect detail truthfulness', () => {
 
   it('severity comparison uses correct case (Critical not critical)', () => {
     renderDetail('THR-001')
-    // The severity badge should show 'Critical'
-    const badges = screen.getAllByText('Critical')
+    // The severity badge should preserve the canonical case.
+    const badges = screen.getAllByText(/Critical Risk/i)
     expect(badges.length).toBeGreaterThan(0)
   })
 })

@@ -315,7 +315,7 @@ export const Slide02ProblemOptionA: React.FC<Slide02ProblemOptionAProps> = ({
             }}
           >
             <span style={{ whiteSpace: 'nowrap' }}>
-              Fintech solved visibility. Coordination is not.
+              Visibility is solved. Coordination is not.
             </span>
           </div>
         </div>

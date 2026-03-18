@@ -58,7 +58,7 @@ export const Slide12QAV2: React.FC<Slide12QAV2Props> = ({
   const layout = slideLayouts.slide12v2;
 
   return (
-    <SlideFrame debug={debug} debugGrid={debugGrid} debugIds={debugIds} slideNumber={12}>
+    <SlideFrame debug={debug} debugGrid={debugGrid} debugIds={debugIds} slideNumber={10}>
       <Tier3Background
         layers={recolorBackgroundLayers(v4Presets.slide10Appendix, {
           primary: 'teal',

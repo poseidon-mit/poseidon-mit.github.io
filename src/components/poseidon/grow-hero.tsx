@@ -1,12 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, Sparkles, Users } from "lucide-react";
-import { Link } from "@/router";
+import { ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import {
   HeroBackdrop,
-  HeroEyebrow,
   HeroMetricPill,
   HeroUnifiedFooter,
 } from "./hero-concept-primitives";
@@ -41,385 +38,10 @@ export interface GrowHeroProps {
 
 export type GrowGrowthAdvantageProps = GrowHeroProps;
 
-function money(value: number) {
-  return value.toLocaleString(undefined, {
-    maximumFractionDigits: 0,
-  });
-}
-
-function GrowLedgerField({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex min-w-[100px] flex-col items-start gap-1">
-      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
-        {label}
-      </span>
-      <p className="mt-1 truncate font-mono text-sm leading-none text-white/80">
-        {value}
-      </p>
-    </div>
-  );
-}
-
-function CompoundTerrain({
-  data,
-  showDelta,
-  allowContinuousAnimation,
-  allowHeavyBlur,
-  allowScrub,
-}: {
-  data: GrowHeroProps["simulationData"];
-  showDelta: boolean;
-  allowContinuousAnimation: boolean;
-  allowHeavyBlur: boolean;
-  allowScrub: boolean;
-}) {
-  const [activeIndex, setActiveIndex] = useState(Math.max(data.length - 1, 0));
-  const activeIndexRef = useRef(activeIndex);
-  const queuedIndexRef = useRef<number | null>(null);
-  const rafRef = useRef<number | null>(null);
-  const width = 820;
-  const height = 320;
-  const allValues = data.flatMap((point) => [
-    point.baseline,
-    point.aiOptimized,
-    point.low ?? point.aiOptimized,
-    point.high ?? point.aiOptimized,
-  ]);
-  const min = Math.min(...allValues);
-  const max = Math.max(...allValues);
-
-  const normalized = useMemo(
-    () =>
-      data.map((point, index) => {
-        const x = (index / Math.max(data.length - 1, 1)) * width;
-        const baselineY =
-          height -
-          ((point.baseline - min) / Math.max(max - min, 1)) * (height - 80) -
-          40;
-        const optimizedY =
-          height -
-          ((point.aiOptimized - min) / Math.max(max - min, 1)) * (height - 80) -
-          40;
-        const lowY =
-          height -
-          (((point.low ?? point.aiOptimized) - min) / Math.max(max - min, 1)) *
-            (height - 80) -
-          40;
-        const highY =
-          height -
-          (((point.high ?? point.aiOptimized) - min) / Math.max(max - min, 1)) *
-            (height - 80) -
-          40;
-        return { x, baselineY, optimizedY, lowY, highY };
-      }),
-    [data, height, max, min, width],
-  );
-
-  const baselinePoints = normalized
-    .map((point) => `${point.x},${point.baselineY}`)
-    .join(" ");
-  const optimizedPoints = normalized
-    .map((point) => `${point.x},${point.optimizedY}`)
-    .join(" ");
-  const vaporArea = normalized
-    .map((point) => `${point.x},${point.highY}`)
-    .concat(
-      [...normalized].reverse().map((point) => `${point.x},${point.lowY}`),
-    )
-    .join(" ");
-  const activePoint =
-    normalized[activeIndex] ?? normalized[normalized.length - 1];
-  const activeData = data[activeIndex] ?? data[data.length - 1];
-
-  useEffect(() => {
-    activeIndexRef.current = activeIndex;
-  }, [activeIndex]);
-
-  useEffect(() => {
-    return () => {
-      if (rafRef.current !== null) {
-        cancelAnimationFrame(rafRef.current);
-      }
-    };
-  }, []);
-
-  const queueActiveIndexUpdate = (ratio: number) => {
-    if (!allowScrub || data.length <= 1) return;
-
-    const nextIndex = Math.max(
-      0,
-      Math.min(data.length - 1, Math.round(ratio * (data.length - 1))),
-    );
-
-    if (nextIndex === activeIndexRef.current) return;
-    queuedIndexRef.current = nextIndex;
-
-    if (rafRef.current !== null) return;
-
-    rafRef.current = requestAnimationFrame(() => {
-      rafRef.current = null;
-      if (
-        queuedIndexRef.current !== null &&
-        queuedIndexRef.current !== activeIndexRef.current
-      ) {
-        activeIndexRef.current = queuedIndexRef.current;
-        setActiveIndex(queuedIndexRef.current);
-      }
-      queuedIndexRef.current = null;
-    });
-  };
-
-  return (
-    <div
-      className="relative flex h-full w-full flex-col overflow-hidden"
-      onMouseMove={(event) => {
-        const rect = event.currentTarget.getBoundingClientRect();
-        const ratio = (event.clientX - rect.left) / Math.max(rect.width, 1);
-        queueActiveIndexUpdate(ratio);
-      }}
-      onTouchMove={(event) => {
-        const touch = event.touches[0];
-        if (!touch) return;
-        const rect = event.currentTarget.getBoundingClientRect();
-        const ratio = (touch.clientX - rect.left) / Math.max(rect.width, 1);
-        queueActiveIndexUpdate(ratio);
-      }}
-    >
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(139,92,246,0.03),transparent_65%)]" />
-      <div
-        className={cn(
-          "absolute inset-x-[12%] top-1/4 h-32 rounded-full blur-3xl opacity-30 mix-blend-screen pointer-events-none",
-          showDelta &&
-            allowContinuousAnimation &&
-            "animate-[pulse_8s_ease-in-out_infinite]",
-        )}
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, rgba(139,92,246,0.5), transparent)",
-        }}
-      />
-
-      <div className="relative z-10 flex w-full flex-1 flex-col justify-end pt-8 md:pt-12">
-        <svg
-          viewBox={`0 0 ${width} ${height}`}
-          className={cn(
-            "h-full w-full overflow-visible",
-            allowHeavyBlur && "drop-shadow-[0_0_15px_rgba(139,92,246,0.1)]",
-          )}
-          preserveAspectRatio="none"
-          role="img"
-          aria-label={`3-year growth outlook from $${money(data[0]?.baseline ?? 0)} to $${money(data[data.length - 1]?.aiOptimized ?? 0)} optimized versus $${money(data[data.length - 1]?.baseline ?? 0)} baseline`}
-        >
-          <defs>
-            <linearGradient
-              id="grow-optimized-gradient"
-              x1="0"
-              y1="0"
-              x2="1"
-              y2="0"
-            >
-              <stop offset="0%" stopColor="rgba(139,92,246,0.4)" />
-              <stop offset="50%" stopColor="rgba(255,255,255,0.9)" />
-              <stop offset="100%" stopColor="rgba(139,92,246,1)" />
-            </linearGradient>
-            <linearGradient id="grow-vapor-fill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="rgba(139,92,246,0.25)" />
-              <stop offset="100%" stopColor="rgba(139,92,246,0.01)" />
-            </linearGradient>
-            <filter
-              id="grow-vapor-glow"
-              x="-20%"
-              y="-20%"
-              width="140%"
-              height="140%"
-            >
-              <feGaussianBlur stdDeviation="6" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <pattern
-              id="grid-pattern"
-              width="40"
-              height="40"
-              patternUnits="userSpaceOnUse"
-            >
-              <path
-                d="M 40 0 L 0 0 0 40"
-                fill="none"
-                stroke="rgba(255,255,255,0.03)"
-                strokeWidth="1"
-              />
-            </pattern>
-          </defs>
-
-          <rect width="100%" height="100%" fill="url(#grid-pattern)" />
-
-          {[0.2, 0.5, 0.8].map((line) => (
-            <line
-              key={line}
-              x1="0"
-              y1={height * line}
-              x2={width}
-              y2={height * line}
-              stroke="rgba(255,255,255,0.05)"
-              strokeDasharray="4 8"
-            />
-          ))}
-
-          {showDelta && (
-            <polygon
-              points={vaporArea}
-              fill="url(#grow-vapor-fill)"
-              filter={allowHeavyBlur ? "url(#grow-vapor-glow)" : undefined}
-              className={cn(
-                allowContinuousAnimation && "animate-[pulse_10s_ease-in-out_infinite]",
-              )}
-            />
-          )}
-
-          <polyline
-            points={baselinePoints}
-            fill="none"
-            stroke="rgba(255,255,255,0.2)"
-            strokeWidth="3"
-            strokeDasharray="5 10"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <polyline
-            points={optimizedPoints}
-            fill="none"
-            stroke="url(#grow-optimized-gradient)"
-            strokeWidth="4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className={cn(
-              allowHeavyBlur && "drop-shadow-[0_0_8px_rgba(139,92,246,0.6)]",
-            )}
-          />
-
-          {activePoint && allowContinuousAnimation && (
-            <g
-              style={{
-                transformOrigin: `${activePoint.x}px ${activePoint.optimizedY}px`,
-              }}
-              className="animate-[pulse_4s_ease-in-out_infinite]"
-            >
-              <circle
-                cx={activePoint.x}
-                cy={activePoint.optimizedY}
-                r="40"
-                fill="url(#grow-vapor-fill)"
-                filter={allowHeavyBlur ? "url(#grow-vapor-glow)" : undefined}
-                opacity="0.6"
-              />
-            </g>
-          )}
-
-          {activePoint && (
-            <g className="transition-all duration-200 ease-out">
-              <line
-                x1={activePoint.x}
-                y1="0"
-                x2={activePoint.x}
-                y2={height}
-                stroke="rgba(255,255,255,0.2)"
-                strokeDasharray="4 6"
-                strokeWidth="2"
-              />
-              <circle
-                cx={activePoint.x}
-                cy={activePoint.optimizedY}
-                r="6"
-                fill="var(--engine-grow)"
-                className={cn(
-                  "cursor-ew-resize transition-transform duration-200",
-                  allowHeavyBlur && "drop-shadow-[0_0_5px_rgba(139,92,246,1)]",
-                )}
-              />
-              <circle
-                cx={activePoint.x}
-                cy={activePoint.optimizedY}
-                r="16"
-                fill="var(--engine-grow)"
-                opacity="0.15"
-                className="pointer-events-none"
-              />
-
-              <circle
-                cx={activePoint.x}
-                cy={activePoint.baselineY}
-                r="4"
-                fill="rgba(255,255,255,0.6)"
-                className="cursor-ew-resize transition-transform duration-200"
-              />
-              <circle
-                cx={activePoint.x}
-                cy={activePoint.baselineY}
-                r="10"
-                fill="rgba(255,255,255,0.1)"
-                opacity="0.2"
-                className="pointer-events-none"
-              />
-            </g>
-          )}
-        </svg>
-      </div>
-
-      <div className="relative z-10 flex w-full flex-col px-6 pt-4 pb-6 md:px-10 md:pb-8">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/5 pt-4 text-[10px] uppercase tracking-[0.2em] text-white/30">
-          <span>Baseline path finding</span>
-          <span className="font-bold text-[var(--engine-grow)]">
-            {activeData?.year ?? "Now"}
-          </span>
-          <span>AI Optimized arc</span>
-        </div>
-
-        {activeData && (
-          <div className="flex flex-wrap justify-between gap-4">
-            <div className="flex flex-col gap-1">
-              <span className="text-[10px] uppercase tracking-widest text-white/40">
-                Baseline
-              </span>
-              <span className="font-mono text-lg text-white/50">
-                ${money(activeData.baseline)}
-              </span>
-            </div>
-
-            <div className="flex flex-col items-end gap-1">
-              <span className="text-[10px] uppercase tracking-widest text-[var(--engine-grow)]/60">
-                Optimized
-              </span>
-              <span
-                className={cn(
-                  "font-mono text-xl text-[var(--engine-grow)] md:text-2xl",
-                  allowHeavyBlur && "drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]",
-                )}
-              >
-                ${money(activeData.aiOptimized)}
-              </span>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 export function GrowHero({
-  projectedGain,
-  totalMonthlySavings,
-  avgConfidence,
-  recommendationCount,
-  simulationData,
   spotlightRec,
-  cohortHeadline,
-  goals,
-}: GrowHeroProps & { goals?: unknown }) {
+}: GrowHeroProps) {
   const performance = usePerformanceProfile();
-  const showDelta = true;
 
   return (
     <div className="flex flex-col gap-3">
@@ -442,20 +64,9 @@ export function GrowHero({
 
         <div className="relative z-10 flex w-full flex-1 flex-col">
           <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center px-6 py-12 md:px-10">
-            <div className="mb-10 flex w-full justify-center">
-              <div className="flex flex-col items-center gap-2 text-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.02]">
-                <HeroEyebrow className="border-[var(--engine-grow)]/20 bg-[var(--engine-grow)]/5 text-[var(--engine-grow)]">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  Grow horizon live
-                </HeroEyebrow>
-                <h2 id="grow-hero-title" className="sr-only">
-                  Grow
-                </h2>
-                <p className="sr-only mt-2 text-sm font-medium tracking-wide text-white/50">
-                  {recommendationCount} ranked opportunities ready for execution
-                </p>
-              </div>
-            </div>
+            <h2 id="grow-hero-title" className="sr-only">
+              Grow
+            </h2>
 
             <div className="w-full">
               <div
@@ -470,23 +81,19 @@ export function GrowHero({
                   <div className="pointer-events-none absolute inset-0 -z-10 rounded-[24px] bg-[conic-gradient(from_0deg,transparent_0_340deg,var(--engine-grow)_360deg)] opacity-0 mix-blend-screen transition-opacity duration-300 group-hover:animate-[spin_4s_linear_infinite] group-hover:opacity-100" />
                 )}
 
-                <div className="relative z-10 grid gap-0 rounded-[23px] bg-[#050510] lg:grid-cols-2">
-                  <div className="flex flex-col border-b border-white/10 p-8 lg:border-r lg:border-b-0 md:p-10">
+                <div className="relative z-10 rounded-[23px] bg-[#050510]">
+                  <div className="flex flex-col p-8 md:p-10">
                     <h3 className="mb-4 text-lg font-semibold leading-snug tracking-tight text-white/80">
-                      Projected Gain
+                      Potential Savings Identified
                     </h3>
-                    <p className="mb-2 break-all font-mono text-[clamp(1.5rem,2.5vw,2.5rem)] leading-none tracking-tighter text-white">
-                      +${money(projectedGain)}
-                    </p>
 
                     <p className="mb-10 max-w-sm text-sm leading-relaxed text-white/60">
-                      AI has optimized your portfolio distribution. Executing
-                      these recommendations will compound your theoretical gain.
+                      We detected spending patterns across your accounts that may be worth reviewing.
                     </p>
 
                     <div className="mt-auto mb-8 flex flex-col gap-4">
                       <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/30">
-                        Top recommendation
+                        Top observation
                       </span>
 
                       {spotlightRec ? (
@@ -496,105 +103,34 @@ export function GrowHero({
                           </h3>
                           <div className="flex flex-wrap items-center gap-2">
                             <HeroMetricPill
-                              label="Monthly Lift"
-                              value={`+$${money(spotlightRec.monthlySavings)}/mo`}
-                              tone="var(--engine-grow)"
-                            />
-                            <HeroMetricPill
-                              label="Confidence"
-                              value={`${Math.round(spotlightRec.confidence * 100)}%`}
-                              tone="var(--state-success)"
+                              label="Risk"
+                              value="Potential overdraft fee"
+                              tone="var(--state-critical)"
                             />
                           </div>
                         </div>
                       ) : (
                         <div className="flex items-center justify-center rounded-xl border border-dashed border-white/10 p-4">
                           <p className="text-xs text-white/40">
-                            No priority recommendations detected.
+                            No observations detected.
                           </p>
                         </div>
                       )}
                     </div>
 
-                    <Link
-                      to={
-                        spotlightRec
-                          ? `/grow/recommendation?id=${spotlightRec.id}`
-                          : "/grow/recommendations"
-                      }
+                    <div
                       className={cn(
                         buttonVariants({ variant: "default", size: "lg" }),
-                        "min-h-[48px] w-full rounded-xl bg-[var(--engine-grow)] px-7 font-semibold text-black transition-all duration-300 hover:bg-[var(--engine-grow)]/90 sm:w-auto",
+                        "min-h-[48px] w-full rounded-xl bg-[var(--engine-grow)]/50 px-7 font-semibold text-black/50 cursor-default sm:w-auto",
                       )}
                     >
-                      Approve
-                    </Link>
-                  </div>
-
-                  <div className="relative flex min-h-[400px] flex-col overflow-hidden bg-[radial-gradient(ellipse_at_top_right,rgba(139,92,246,0.05)_0%,transparent_70%)]">
-                    {performance.allowContinuousAnimation && (
-                      <div className="absolute top-0 right-0 z-20 h-[1px] w-full bg-gradient-to-r from-transparent via-[var(--engine-grow)]/30 to-transparent opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
-                    )}
-
-                    <div className="absolute top-8 right-8 left-8 z-20 flex items-center justify-between">
-                      <span className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--engine-grow)]">
-                        Compound Singularity
-                      </span>
-                    </div>
-
-                    <div className="relative flex w-full flex-1 pt-12">
-                      <CompoundTerrain
-                        data={simulationData}
-                        showDelta={showDelta}
-                        allowContinuousAnimation={performance.allowContinuousAnimation}
-                        allowHeavyBlur={performance.allowHeavyBlur}
-                        allowScrub={performance.profile !== "static"}
-                      />
+                      See detail
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div>
-              <div className="mt-8 flex w-full max-w-5xl flex-col items-center justify-between gap-6 border-t border-white/5 pt-6 lg:flex-row">
-                <div className="flex w-full flex-wrap items-center justify-center gap-6 md:gap-10 lg:w-auto">
-                  {goals && (
-                    <span className="sr-only mr-2 font-mono text-[10px] uppercase tracking-[0.2em] text-white/30">
-                      Goal progress
-                    </span>
-                  )}
-                  <div className="sr-only">87%</div>
-                  <GrowLedgerField
-                    label="Avg Confidence"
-                    value={`${Math.round(avgConfidence * 100)}%`}
-                  />
-                  <GrowLedgerField
-                    label="Ranked Ops"
-                    value={recommendationCount.toString()}
-                  />
-                  <div className="sr-only">
-                    {recommendationCount} ranked opportunities ready for execution
-                  </div>
-                  <GrowLedgerField
-                    label="Total Monthly Savings"
-                    value={`+$${money(totalMonthlySavings)}/mo`}
-                  />
-                </div>
-
-                {cohortHeadline && (
-                  <div className="flex w-full max-w-sm shrink-0 items-center justify-center gap-2 rounded-[14px] border border-white/10 bg-white/[0.02] px-4 py-3 lg:w-auto lg:justify-end">
-                    <Users className="h-4 w-4 text-[var(--engine-grow)]/60" />
-                    <span className="mr-2 font-mono text-[10px] uppercase tracking-[0.2em] text-white/30">
-                      Cohort signal
-                    </span>
-                    <p className="text-xs leading-snug text-white/70">
-                      {cohortHeadline}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
 
           <div>

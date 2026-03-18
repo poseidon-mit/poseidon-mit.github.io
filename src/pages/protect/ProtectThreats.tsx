@@ -1,24 +1,14 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { Shield, AlertTriangle, CheckCircle2, ChevronRight, Clock, Filter } from 'lucide-react'
+import { Shield, AlertTriangle, CheckCircle2, ChevronRight, ArrowLeft } from 'lucide-react'
 import { Link } from '@/router'
-import { selectAccounts } from '@/domain/poseidon-universe'
 import { getMotionPreset } from '@/lib/motion-presets'
 import { cn } from '@/lib/utils'
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { ListHeroBanner } from '@/components/poseidon/list-hero-banner'
+import { buttonVariants } from '@/components/ui/button'
 import { THREATS } from './protect-data'
 import type { ThreatRow, ThreatSeverity } from './protect-data'
 import { useDismissedAlerts } from './useDismissedAlerts'
@@ -61,48 +51,10 @@ export default function ProtectThreatsPage() {
   const { fadeUp, staggerContainer } = getMotionPreset(prefersReducedMotion)
   const { dismissed } = useDismissedAlerts()
 
-  const [sortMode, setSortMode] = useState<'critical' | 'confidence' | 'recent'>('critical')
-  const [accountFilter, setAccountFilter] = useState('all')
-  const [severityFilter, setSeverityFilter] = useState('all')
-  const [dateFilter, setDateFilter] = useState('7days')
-
-  const activeThreats = useMemo(() => THREATS.filter(t => !dismissed.has(t.id)), [dismissed])
-  const accounts = useMemo(() => selectAccounts(), [])
-
-  const threatAccounts = useMemo(() => {
-    const accts = new Set(activeThreats.map(t => t.account).filter(Boolean))
-    return Array.from(accts) as string[]
-  }, [activeThreats])
-
-  const filtered = useMemo(() => {
-    return activeThreats.filter(t => {
-      if (accountFilter !== 'all' && t.account !== accountFilter) return false
-      if (severityFilter !== 'all' && t.severity !== severityFilter) return false
-      return true
-    })
-  }, [activeThreats, accountFilter, severityFilter])
-
-  const sorted = useMemo(() => {
-    const rows = [...filtered]
-    return rows.sort((left, right) => {
-      if (sortMode === 'confidence') return right.confidence - left.confidence
-      if (sortMode === 'recent') return right.sortTime - left.sortTime
-      return SEVERITY_SORT_ORDER[right.severity] - SEVERITY_SORT_ORDER[left.severity]
-    })
-  }, [filtered, sortMode])
-
-  const pendingThreats = useMemo(() => sorted.filter(t => t.status === 'pending'), [sorted])
-  const resolvedThreats = useMemo(() => sorted.filter(t => t.status === 'resolved'), [sorted])
-  const allResolved = THREATS.filter(t => t.status === 'resolved').length
-
-  const clearFilters = () => {
-    setSortMode('critical')
-    setAccountFilter('all')
-    setSeverityFilter('all')
-    setDateFilter('7days')
-  }
-
-  const hasActiveFilters = sortMode !== 'critical' || accountFilter !== 'all' || severityFilter !== 'all' || dateFilter !== '7days'
+  const pendingThreats = useMemo(() => {
+    const active = THREATS.filter(t => !dismissed.has(t.id) && t.status === 'pending')
+    return [...active].sort((a, b) => SEVERITY_SORT_ORDER[b.severity] - SEVERITY_SORT_ORDER[a.severity])
+  }, [dismissed])
 
   return (
     <main id="main-content" role="main" className="hero-viewport">
@@ -112,171 +64,37 @@ export default function ProtectThreatsPage() {
         initial="hidden"
         animate="visible"
       >
-        {/* Hero Banner */}
+        {/* Back link */}
         <motion.div variants={fadeUp}>
-          <ListHeroBanner
-            engine="protect"
-            icon={Shield}
-            engineLabel="Protect · Threats"
-            title="Security Threats"
-            subtitle="Review and manage security alerts across all accounts"
-            backTo="/protect"
-            backLabel="Back to Protect"
-            stats={[
-              { label: 'Pending', value: pendingThreats.length, color: 'var(--state-critical)' },
-              { label: 'Resolved', value: allResolved, color: 'var(--state-healthy)' },
-              { label: 'Monitored', value: accounts.length },
-            ]}
+          <Link
+            to="/protect"
+            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors self-start"
           >
-            <div className="flex flex-wrap gap-1.5">
-              {[
-                { label: 'Critical', count: activeThreats.filter(t => t.severity === 'Critical').length, color: '#ef4444' },
-                { label: 'High', count: activeThreats.filter(t => t.severity === 'High').length, color: '#f97316' },
-                { label: 'Medium', count: activeThreats.filter(t => t.severity === 'Medium').length, color: '#eab308' },
-                { label: 'Low', count: activeThreats.filter(t => t.severity === 'Low').length, color: '#3b82f6' },
-              ].filter(s => s.count > 0).map(s => (
-                <span key={s.label} className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/[0.06] bg-white/[0.03]">
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: s.color }} />
-                  {s.count} {s.label}
-                </span>
-              ))}
-            </div>
-          </ListHeroBanner>
+            <ArrowLeft className="h-4 w-4" />
+            Back to Protect
+          </Link>
         </motion.div>
 
-        {/* Scrollable list area */}
-        <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4">
-          <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2">
-            {[
-              { id: 'critical', label: 'Critical first' },
-              { id: 'confidence', label: 'Highest confidence' },
-              { id: 'recent', label: 'Most recent' },
-            ].map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                onClick={() => setSortMode(option.id as typeof sortMode)}
-                className={cn(
-                  'rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors',
-                  sortMode === option.id
-                    ? 'border-red-500/20 bg-red-500/10 text-red-300'
-                    : 'border-white/[0.06] bg-white/[0.03] text-muted-foreground hover:border-white/10 hover:text-foreground',
-                )}
-              >
-                {option.label}
-              </button>
-            ))}
-          </motion.div>
-
-          {/* Filters */}
-          <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Filter className="h-4 w-4" />
-              <span>Filter:</span>
-            </div>
-
-            <Select value={accountFilter} onValueChange={setAccountFilter}>
-              <SelectTrigger className="w-[180px] bg-white/[0.03] border-white/[0.06] text-foreground">
-                <SelectValue placeholder="All Accounts" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Accounts</SelectItem>
-                {threatAccounts.map(acct => (
-                  <SelectItem key={acct} value={acct}>{acct}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={severityFilter} onValueChange={setSeverityFilter}>
-              <SelectTrigger className="w-[140px] bg-white/[0.03] border-white/[0.06] text-foreground">
-                <SelectValue placeholder="Severity" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Severity</SelectItem>
-                <SelectItem value="Critical">Critical</SelectItem>
-                <SelectItem value="High">High</SelectItem>
-                <SelectItem value="Medium">Medium</SelectItem>
-                <SelectItem value="Low">Low</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={dateFilter} onValueChange={setDateFilter}>
-              <SelectTrigger className="w-[140px] bg-white/[0.03] border-white/[0.06] text-foreground">
-                <SelectValue placeholder="Date Range" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="today">Today</SelectItem>
-                <SelectItem value="7days">Last 7 Days</SelectItem>
-                <SelectItem value="30days">Last 30 Days</SelectItem>
-                <SelectItem value="all">All Time</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {hasActiveFilters && (
-              <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={clearFilters}>
-                Clear
-              </Button>
-            )}
-          </motion.div>
-
-          {/* Tabs: Pending / Resolved */}
-          <motion.div variants={fadeUp}>
-            <Tabs defaultValue="pending" className="w-full">
-              <TabsList className="bg-white/[0.04] backdrop-blur-sm">
-                <TabsTrigger value="pending" className="gap-2">
-                  <Clock className="h-4 w-4" />
-                  Pending ({pendingThreats.length})
-                </TabsTrigger>
-                <TabsTrigger value="resolved" className="gap-2">
-                  <CheckCircle2 className="h-4 w-4" />
-                  Resolved ({resolvedThreats.length})
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="pending" className="mt-4 space-y-3">
-                {pendingThreats.length === 0 ? (
-                  <InlineEmptyState
-                    icon={<CheckCircle2 className="h-12 w-12 text-emerald-400" />}
-                    title="All clear!"
-                    description="No pending threats to review"
-                  />
-                ) : (
-                  <>
-                    {/* Spotlight: first (highest-priority) pending threat */}
-                    <SpotlightThreatCard threat={pendingThreats[0]} />
-
-                    {pendingThreats.length > 1 && (
-                      <div className="flex items-center gap-3">
-                        <div className="flex-1 h-px bg-white/[0.06]" />
-                        <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest shrink-0">
-                          {pendingThreats.length - 1} more threat{pendingThreats.length - 1 !== 1 ? 's' : ''}
-                        </span>
-                        <div className="flex-1 h-px bg-white/[0.06]" />
-                      </div>
-                    )}
-
-                    {pendingThreats.slice(1).map(threat => (
-                      <ThreatCard key={threat.id} threat={threat} />
-                    ))}
-                  </>
-                )}
-              </TabsContent>
-
-              <TabsContent value="resolved" className="mt-4 space-y-3">
-                {resolvedThreats.length === 0 ? (
-                  <InlineEmptyState
-                    icon={<Clock className="h-12 w-12 text-white/40" />}
-                    title="No history yet"
-                    description="Resolved threats will appear here"
-                  />
-                ) : (
-                  resolvedThreats.map(threat => (
-                    <ThreatCard key={threat.id} threat={threat} />
-                  ))
-                )}
-              </TabsContent>
-            </Tabs>
-          </motion.div>
+        {/* Threat list */}
+        <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-3">
+          {pendingThreats.length === 0 ? (
+            <motion.div variants={fadeUp}>
+              <Card className="bg-white/[0.02] border border-white/[0.04] backdrop-blur-md">
+                <CardContent className="flex flex-col items-center justify-center py-12">
+                  <CheckCircle2 className="h-12 w-12 text-emerald-400" />
+                  <p className="mt-4 text-lg font-medium text-foreground">All clear!</p>
+                  <p className="text-muted-foreground">No pending threats to review</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ) : (
+            <motion.div variants={fadeUp} className="space-y-3">
+              <SpotlightThreatCard threat={pendingThreats[0]} />
+              {pendingThreats.slice(1).map(threat => (
+                <ThreatCard key={threat.id} threat={threat} />
+              ))}
+            </motion.div>
+          )}
         </div>
       </motion.div>
     </main>
@@ -298,51 +116,42 @@ function SpotlightThreatCard({ threat }: { threat: ThreatRow }) {
   const config = severityBadgeConfig[threat.severity]
 
   return (
-    <Link to={`/protect/alert-detail?alertId=${threat.id}`} className="block">
-      <div
-        className="bg-white/[0.02] border border-white/[0.06] backdrop-blur-lg rounded-2xl p-5 md:p-6 border-l-[3px] transition-all duration-300 hover:border-white/[0.1]"
-        style={{
-          borderLeftColor: severityBorderColor[threat.severity],
-          background: 'linear-gradient(135deg, color-mix(in srgb, var(--engine-protect) 6%, transparent), transparent)',
-          boxShadow: '0 0 24px color-mix(in srgb, var(--engine-protect) 8%, transparent), inset 0 1px 0 rgba(255,255,255,0.04)',
-        }}
-      >
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--state-critical)' }}>
-              Priority Alert
-            </span>
-            <Badge variant="outline" className={cn('text-[9px] uppercase tracking-widest', config.bg, config.text, config.border)}>
-              {threat.severity}
-            </Badge>
-          </div>
-
-          <div className="flex items-start gap-4">
-            <div className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-full', severityIconBg[threat.severity])}>
-              <AlertTriangle className={cn('h-5 w-5', severityIconColor[threat.severity])} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-lg font-semibold text-foreground">{threat.counterparty}</p>
-              <p className="mt-1 text-sm text-muted-foreground">{threat.description}</p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/40">
-            {threat.account && <span>{threat.account}</span>}
-            <span className="font-mono tabular-nums">{threat.amount}</span>
-            <span>Detected: {threat.time}</span>
-            <span className="tabular-nums">{Math.round(threat.confidence * 100)}% confidence</span>
-          </div>
-
-          <span
-            className="self-start hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold mt-1 transition-colors bg-red-600 text-white"
-          >
-            Investigate
-            <ChevronRight size={14} />
+    <div
+      className="bg-white/[0.02] border border-white/[0.06] backdrop-blur-lg rounded-2xl p-5 md:p-6 border-l-[3px]"
+      style={{
+        borderLeftColor: severityBorderColor[threat.severity],
+        background: 'linear-gradient(135deg, color-mix(in srgb, var(--engine-protect) 6%, transparent), transparent)',
+        boxShadow: '0 0 24px color-mix(in srgb, var(--engine-protect) 8%, transparent), inset 0 1px 0 rgba(255,255,255,0.04)',
+      }}
+    >
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--state-critical)' }}>
+            Priority Alert
           </span>
+          <Badge variant="outline" className={cn('text-[9px] uppercase tracking-widest', config.bg, config.text, config.border)}>
+            {threat.severity}
+          </Badge>
+        </div>
+
+        <div className="flex items-start gap-4">
+          <div className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-full', severityIconBg[threat.severity])}>
+            <AlertTriangle className={cn('h-5 w-5', severityIconColor[threat.severity])} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-lg font-semibold text-foreground">{threat.counterparty}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{threat.description}</p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/40">
+          {threat.account && <span>{threat.account}</span>}
+          <span className="font-mono tabular-nums">{threat.amount}</span>
+          <span>Detected: {threat.time}</span>
+          <span className="tabular-nums">{Math.round(threat.confidence * 100)}% confidence</span>
         </div>
       </div>
-    </Link>
+    </div>
   )
 }
 
@@ -391,16 +200,15 @@ function ThreatCard({ threat }: { threat: ThreatRow }) {
           </div>
         </div>
 
-        <Link
-          to={`/protect/alert-detail?alertId=${threat.id}`}
+        <span
           className={cn(
             buttonVariants({ variant: isResolved ? 'outline' : 'default', size: 'sm' }),
-            'shrink-0 whitespace-nowrap'
+            'shrink-0 whitespace-nowrap cursor-default opacity-50'
           )}
         >
           {isResolved ? 'View' : 'Investigate'}
           <ChevronRight className="ml-1 h-4 w-4" />
-        </Link>
+        </span>
       </div>
     </div>
   )

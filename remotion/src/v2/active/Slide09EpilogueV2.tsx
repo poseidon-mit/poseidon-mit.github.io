@@ -68,7 +68,7 @@ export const Slide09EpilogueV2: React.FC<Slide09EpilogueV2Props> = ({
   }, [content.cta.url, qrOptions]);
 
   return (
-    <SlideFrame debug={debug} debugGrid={debugGrid} debugIds={debugIds} slideNumber={10}>
+    <SlideFrame debug={debug} debugGrid={debugGrid} debugIds={debugIds} slideNumber={8}>
       <Tier3Background layers={recolorBackgroundLayers(v4Presets.slide09Epilogue, { primary: 'teal', secondary: 'cyan', intensityMultiplier: 1.4 })} />
       <DustMotes count={26} opacity={0.05} />
 

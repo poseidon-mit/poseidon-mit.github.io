@@ -3,7 +3,7 @@ import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from 'pdfjs-d
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { markPerformance } from '@/lib/performance-marks';
 
-const PDF_PATH = '/Poseidon_AI_MIT_CTO_V3_Visual_First.pdf';
+const PDF_PATH = '/Poseidon_CTO_GROUP7.pdf';
 const RESIZE_DEBOUNCE_MS = 180;
 const WIDTH_CHANGE_THRESHOLD_PX = 12;
 const VISIBLE_BUFFER_PAGES = 1;
@@ -17,27 +17,6 @@ const DESKTOP_MAX_RENDER_SCALE = 4.0;
 const MOBILE_VISIBLE_BUFFER_PAGES = 0;
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-
-const requestIdle = (cb: () => void) => {
-  const w = window as Window & {
-    requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
-  };
-  if (typeof w.requestIdleCallback === 'function') {
-    return w.requestIdleCallback(() => cb(), { timeout: 350 });
-  }
-  return window.setTimeout(cb, 80);
-};
-
-const cancelIdle = (id: number) => {
-  const w = window as Window & {
-    cancelIdleCallback?: (handle: number) => void;
-  };
-  if (typeof w.cancelIdleCallback === 'function') {
-    w.cancelIdleCallback(id);
-    return;
-  }
-  window.clearTimeout(id);
-};
 
 GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
@@ -273,13 +252,9 @@ const DeckPdfViewer: React.FC = () => {
     renderedQualityRef.current.clear();
     firstPageMarkedRef.current = false;
 
-    const highPriorityQueue = [0];
-    const previewQueue = isMobile
-      ? []
-      : Array.from({ length: pageCount }, (_, idx) => idx).filter((idx) => idx !== 0);
-
-    const renderHighPriority = async () => {
-      for (const pageIndex of highPriorityQueue) {
+    // Render pages sequentially, one by one from page 1 onward
+    const renderSequential = async () => {
+      for (let pageIndex = 0; pageIndex < pageCount; pageIndex++) {
         if (disposed || runId !== renderRunIdRef.current) return;
         try {
           await renderPage(pageIndex, 'high', runId);
@@ -294,27 +269,10 @@ const DeckPdfViewer: React.FC = () => {
       }
     };
 
-    const idleId = requestIdle(async () => {
-      for (const pageIndex of previewQueue) {
-        if (disposed || runId !== renderRunIdRef.current) return;
-        try {
-          await renderPage(pageIndex, 'preview', runId);
-        } catch (error) {
-          if (disposed) return;
-          if (error && typeof error === 'object' && 'name' in error && (error as { name: string }).name === 'RenderingCancelledException') {
-            return;
-          }
-          setRenderError(error instanceof Error ? error.message : 'Failed to render PDF.');
-          return;
-        }
-      }
-    });
-
-    void renderHighPriority();
+    void renderSequential();
 
     return () => {
       disposed = true;
-      cancelIdle(idleId);
       cancelAllRenderTasks();
     };
   }, [cancelAllRenderTasks, containerWidth, isMobile, pageCount, pdfDoc, renderPage]);
